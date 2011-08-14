@@ -206,7 +206,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         If all usernames are valid, ``obj.examiners`` is cleared, and the
         given examiners are added (I.E.: All current examiners are replaced).
         """
-        if hasattr(obj, 'fake_examiners'):
+        if hasattr(obj, 'fake_examiners') and obj.fake_examiners != None:
             fake_examiners = obj.fake_examiners
             users = []
             for username in fake_examiners:
@@ -234,7 +234,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         If all usernames are valid, ``obj.candidates`` is cleared, and the
         given candidates are added (I.E.: All current candidates are replaced).
         """
-        if hasattr(obj, 'fake_candidates'):
+        if hasattr(obj, 'fake_candidates') and obj.fake_candidates != None:
             candidateskwargs = []
             for candidatespec in obj.fake_candidates:
                 try:

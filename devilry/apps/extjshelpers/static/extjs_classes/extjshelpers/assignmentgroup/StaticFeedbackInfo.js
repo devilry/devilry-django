@@ -7,13 +7,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackDetailsTable'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView'
     ],
-    frame: false,
-    frameHeader: false,
-    border: 0,
-
 
     config: {
         /**
@@ -42,21 +37,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.bodyContent = Ext.create('Ext.container.Container');
 
-        this.infotableBottomToolbar = Ext.ComponentManager.create({
+        this.editToolbar = Ext.ComponentManager.create({
             xtype: 'toolbar',
             dock: 'bottom',
+            width: 200,
+            style: {
+                border: 'none'
+            },
             hidden: true
         });
 
-        this.infotable = Ext.ComponentManager.create({
-            xtype: 'panel',
-            width: 350,
-            hidden: true,
-            cls: 'infotable',
+        Ext.apply(this, {
+            items: [this.bodyContent],
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
-                items: ['->', {
+                items: [this.editToolbar, '->', {
                     xtype: 'devilrypager',
                     store: this.staticfeedbackstore,
                     width: 200,
@@ -67,16 +63,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                     '   {firstRecord.data.save_timestamp:date}',
                     '</tpl>'
                     )
-                }, '->']
-            }, this.infotableBottomToolbar],
-            items: [{
-                xtype: 'staticfeedbackdetailstable',
-                singlerecordontainer: this.staticfeedback_recordcontainer
-            }]
-        });
-
-        Ext.apply(this, {
-            items: [this.infotable, this.bodyContent]
+                }]
+            }],
         });
 
         this.callParent(arguments);
@@ -119,11 +107,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     onLoadStaticfeedbackstore: function(store, records, successful) {
         if(successful) {
             if(records.length == 0) {
-                this.infotable.hide();
+                //this.infotable.hide();
+                this.editToolbar.hide();
                 this.bodyWithNoFeedback();
             }
             else {
-                this.infotable.show();
+                //this.infotable.show();
+                this.editToolbar.show();
                 this.staticfeedback_recordcontainer.setRecord(records[0]);
                 this.fireEvent('afterStoreLoadMoreThanZero');
             }

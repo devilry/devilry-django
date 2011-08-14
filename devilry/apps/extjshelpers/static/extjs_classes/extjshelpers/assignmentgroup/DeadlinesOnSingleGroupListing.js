@@ -3,7 +3,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     alias: 'widget.deadlinesonsinglegrouplisting',
     cls: 'widget-deadlinesonsinglegrouplisting',
     requires: [
-        'devilry.extjshelpers.forms.Deadline'
+        'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
     rowTpl: Ext.create('Ext.XTemplate',
@@ -139,20 +139,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
      * @private
      */
     onCreateNewDeadline: function() {
-        var deadlineRecord = Ext.create(this.deadlinemodel, {
-            'assignment_group': this.assignmentgroup_recordcontainer.record.data.id
-        });
-
         var me = this;
-        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
-            title: 'Create deadline',
-            width: 500,
-            height: 400,
-            editpanel: Ext.widget('restfulsimplified_editpanel', {
-                modelname: this.deadlinemodel,
-                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
-                record: deadlineRecord
-            }),
+        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
+            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
+            deadlinemodel: this.deadlinemodel,
             onSaveSuccess: function(record) {
                 this.close();
                 me.reload();

@@ -5,20 +5,19 @@
  *     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupoverview',
     cls: 'widget-assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
-        'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing',
-        'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
+
+    //title: 'Assignment group',
 
     config: {
         /**
@@ -27,7 +26,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         */
         renderTitleTo: 'content-heading',
 
-        /**
+        /*Assignment group*
          * @cfg
         * ID of the div to render the body to. Defaults to 'content-main'.
         */
@@ -99,6 +98,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
             this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
         }
+
     },
 
     /**
@@ -150,158 +150,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     createLayout: function() {
-        this.onOtherDeliveriesBtn = Ext.ComponentManager.create({
-            xtype: 'button',
-            menu: [], // To get an arrow
-            id: 'tooltip-other-deliveries',
-            text: 'Deliveries',
-            scale: 'large',
-            enableToggle: true,
-            listeners: {
-                scope: this,
-                click: this.onOtherDeliveries
-            }
-        });
-
-        var tbarItems = [{
-            xtype: 'button',
-            menu: [], // To get an arrow
-            id: 'tooltip-deliveries',
-            text: 'Deadlines',
-            scale: 'large',
-            enableToggle: true,
-            listeners: {
-                scope: this,
-                click: this.onDeadlines
-            }
-        }, this.onOtherDeliveriesBtn, '->', {
-            xtype: 'deliveryinfo',
-            delivery_recordcontainer: this.delivery_recordcontainer,
-            filemetastore: this.filemetastore
-        }];
-
-        if(this.canExamine) {
-            var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
-                xtype: 'button',
-                menu: [], // To get an arrow
-                id: 'tooltip-uncorrected-groups',
-                text: 'To-do',
-                scale: 'large',
-                enableToggle: true,
-                listeners: {
-                    scope: this,
-                    click: this.onUncorrectedGroups
-                }
-            });
-            Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
-        }
-
-
         Ext.apply(this, {
-            xtype: 'panel',
-            frame: false,
-            layout: 'fit',
-            tbar: tbarItems,
+            border: false,
             items: [{
+                xtype: 'assignmentgroupinfo',
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                assignmentgroupstore: this.assignmentgroupstore,
+                deliverymodel: this.deliverymodel,
+                deadlinemodel: this.deadlinemodel,
+                canExamine: this.canExamine
+            }, {
+                xtype: 'deliveryinfo',
+                title: 'Delivery',
+                filemetastore: this.filemetastore,
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                deliverymodel: this.deliverymodel,
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+            }, {
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                title: 'Feedback',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
+                deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
                 gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
             }]
         });
     },
 
-
-    /**
-     * @private
-     */
-    onUncorrectedGroups: function(button) {
-        var groupsWindow = Ext.create('Ext.window.Window', {
-            title: 'To-to list (Open assignment groups)',
-            height: 500,
-            width: 400,
-            modal: true,
-            layout: 'fit',
-            items: {
-                xtype: 'assignmentgrouptodolist',
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                store: this.assignmentgroupstore
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
-            }
-        });
-        groupsWindow.show();
-        groupsWindow.alignTo(button, 'bl', [0, 0]);
-    },
-
-    /**
-     * @private
-     */
-    onOtherDeliveries: function(button) {
-        if(!this.deliveriesWindow) {
-            this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries',
-                height: 500,
-                width: 400,
-                modal: true,
-                layout: 'fit',
-                closeAction: 'hide',
-                items: {
-                    xtype: 'deliveriesonsinglegrouplisting',
-                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    deliverymodel: this.deliverymodel,
-                    deadlinemodel: this.deadlinemodel,
-                    enableDeadlineCreation: this.canExamine
-                },
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        this.onOtherDeliveriesBtn.toggle(false);
-                    }
-                }
-            });
-        }
-        this.deliveriesWindow.show();
-        if(button) {
-            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
-        }
-    },
-
-    /**
-     * @private
-     */
-    onDeadlines: function(button) {
-        var deadlinesWindow = Ext.create('Ext.window.Window', {
-            title: 'Deadlines',
-            width: 600,
-            height: 400,
-            modal: true,
-            layout: 'fit',
-            closeAction: 'hide',
-            items: {
-                xtype: 'deadlinesonsinglegrouplisting',
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                deliverymodel: this.deliverymodel,
-                deadlinemodel: this.deadlinemodel,
-                enableDeadlineCreation: this.canExamine
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
-            }
-        });
-        deadlinesWindow.show();
-        deadlinesWindow.alignTo(button, 'bl', [0, 0]);
-    },
 
     /**
      * @private
@@ -328,7 +206,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             });
         } else {
-            this.onOtherDeliveries();
+            this.down('deliveryinfo').onOtherDeliveries();
         }
     }
 });

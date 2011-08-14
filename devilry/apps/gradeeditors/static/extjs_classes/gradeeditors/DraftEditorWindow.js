@@ -37,8 +37,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
+        this.addEvents('publishNewFeedback');
     },
 
     initComponent: function() {
@@ -231,6 +232,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
             success: function(response) {
+                me.fireEvent('publishNewFeedback');
                 me.exit();
             },
             failure: onFailure

@@ -5,7 +5,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     alias: 'widget.staticfeedbackeditor',
     requires: [
         'devilry.gradeeditors.DraftEditorWindow',
-        'devilry.gradeeditors.RestfulRegistryItem'
+        'devilry.gradeeditors.RestfulRegistryItem',
+        'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
     config: {
@@ -20,7 +21,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          * Use the administrator RESTful interface to store drafts? If this is
          * ``false``, we use the examiner RESTful interface.
          */
-        isAdministrator: false
+        isAdministrator: false,
+
+        assignmentgroup_recordcontainer: undefined,
+        deadlinemodel: undefined
     },
 
     constructor: function(config) {
@@ -30,10 +34,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     initComponent: function() {
         this.callParent(arguments);
 
+        this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecordInEditor, this);
+
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'Edit feedback',
-            iconCls: 'icon-edit-32',
+            //iconCls: 'icon-edit-32',
             hidden: true,
             scale: 'large',
             listeners: {
@@ -41,9 +47,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 click: this.loadGradeEditor
             }
         });
-        this.infotableBottomToolbar.add('->');
-        this.infotableBottomToolbar.add(this.createButton);
-        this.infotableBottomToolbar.show();
+        this.editToolbar.add(this.createButton);
 
         this.addListener('afterStoreLoadMoreThanZero', this.showCreateButton, this);
 
@@ -59,6 +63,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
+
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.showCreateButton, this);
 
     },
 
@@ -108,8 +114,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     showCreateButton: function() {
         if(this.gradeeditor_config_recordcontainer.record &&
                 this.delivery_recordcontainer.record &&
-                this.registryitem_recordcontainer.record) {
-            this.createButton.show();
+                this.registryitem_recordcontainer.record &&
+                this.assignmentgroup_recordcontainer.record) {
+            if(this.assignmentgroup_recordcontainer.record.data.is_open) {
+                this.createButton.show();
+            } else {
+                this.createButton.hide();
+            }
         }
     },
 
@@ -124,7 +135,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             registryitem: this.registryitem_recordcontainer.record.data,
             listeners: {
                 scope: this,
-                beforeclose: this.onCloseGradeEditor
+                publishNewFeedback: this.onPublishNewFeedback
             }
         }).show();
     },
@@ -149,7 +160,84 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     /**
      * @private
      */
-    onCloseGradeEditor: function() {
+    onPublishNewFeedback: function() {
+        this.hasNewPublishedStaticFeedback = true;
         this.onLoadDelivery();
+    },
+
+    /**
+     * @private
+     */
+    onSetStaticFeedbackRecordInEditor: function() {
+        if(this.hasNewPublishedStaticFeedback) {
+            this.hasNewPublishedStaticFeedback = false;
+            this.onNewPublishedStaticFeedback();
+        }
+    },
+
+    /**
+     * @private
+     */
+    onNewPublishedStaticFeedback: function() {
+        var staticfeedback = this.staticfeedback_recordcontainer.record.data;
+        if(staticfeedback.is_passing_grade) {
+            this.closeAssignmentGroup();
+        } else {
+            this.onFailingGrade();
+        }
+    },
+
+    /**
+     * @private
+     */
+    closeAssignmentGroup: function() {
+        this.assignmentgroup_recordcontainer.record.data.is_open = false;
+        this.assignmentgroup_recordcontainer.record.save({
+            scope: this,
+            success: function(record) {
+                // TODO: Notify about closing the group
+                this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+            },
+            failure: function() {
+                throw "Failed to close group."
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    onFailingGrade: function() {
+        var win = Ext.MessageBox.show({
+            title: 'You published a feedback with a failing grade',
+            msg: '<p>Would you like to give the group another try?</p><ul>' +
+                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
+                '<li>Choose <em>no</no> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
+                '</ul>',
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            closable: false,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.createNewDeadline();
+                } else {
+                    this.closeAssignmentGroup();
+                }
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    createNewDeadline: function() {
+        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
+            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
+            deadlinemodel: this.deadlinemodel,
+            onSaveSuccess: function(record) {
+                this.close();
+            }
+        });
+        createDeadlineWindow.show();
     }
 });

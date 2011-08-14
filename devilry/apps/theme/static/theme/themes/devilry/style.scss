@@ -52,6 +52,39 @@ body {
     }
 }
 
+@mixin inlineItem($bg, $fg, $bordercolor) {
+    border: 1px solid $bordercolor;
+    border-radius: 3px;
+    background-color: $bg;
+    color: $fg;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap;
+}
+
+@mixin commonSectionElements() {
+    strong {
+        font-weight: bold;
+    }
+    em {
+        font-style: italic;
+    }
+
+    p {
+        padding: 5px 0;
+        line-height: 1.2em;
+    }
+
+    ul {
+        li {
+            padding: 5px 0;
+            margin-left: 25px !important;
+            list-style-type: disc !important;
+            list-style-position: outside !important;
+        }
+    }
+}
+
 header {
     background-color: #000; color: #fff;
 
@@ -206,17 +239,6 @@ header {
         a:visited {
             color: #6E0840;
         }
-        strong {
-            font-weight: bold;
-        }
-        em {
-            font-style: italic;
-        }
-
-        p {
-            padding: 5px 0;
-            line-height: 1.2em;
-        }
 
         dt {
             padding-top: 6px;
@@ -303,6 +325,9 @@ section.popuplistitem {
                 color: #888;
             }
         }
+    }
+    strong {
+        font-weight: bold;
     }
     ul {
         @include inlineList();
@@ -409,22 +434,6 @@ a.warning-button {
 }
 
 
-@mixin commonSectionElements() {
-    strong {
-        font-weight: bold;
-    }
-    em {
-        font-style: italic;
-    }
-    ul {
-        li {
-            padding: 5px 0;
-            margin-left: 25px !important;
-            list-style-type: disc !important;
-            list-style-position: outside !important;
-        }
-    }
-}
 
 section.helpsection {
     @include commonSectionElements();
@@ -480,15 +489,8 @@ span.error {
     color: #a00;
 }
 
-
 span.menuref {
-    border: 1px solid $neutralcolor_hoverbg;
-    border-radius: 3px;
-    background-color: $neutralcolor_bg;
-    color: $neutralcolor_fg;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap;
+    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
 }
 
 table.verticalinfotable {
@@ -517,45 +519,52 @@ table.verticalinfotable {
 
 
 .widget-assignmentgroupoverview {
+    .widget-deliveryinfo {
+        > .x-panel-body {
+            padding: 20px;
+        }
+    }
+
+    .widget-assignmentgroupdetails {
+        padding: 20px;
+    }
+
+    .widget-deliveryinfo, .widget-staticfeedbackinfo {
+        margin-top: 20px;
+    }
+    
     .widget-staticfeedbackinfo {
         width: 100% !important;
-        padding: 30px;
-        .widget-staticfeedbackinfo-feedbackview {
-            $padding: 20px;
-            padding: $padding;
-            table.verticalinfotable {
-                margin: 0 auto $padding auto;
-            }
-        }
-        .no-feedback, .no-feedback-editable {
-            padding: 40px;
-            text-align: center;
-            font-size: 2.0em;
-        }
-        .no-feedback-editable {
-            cursor: pointer;
-            border: 4px solid transparent;
-            &:hover {
-                border: 4px solid $goodcolor_bg;
-                background-color: $goodcolor_fg;
-            }
-        }
-
-        .infotable {
-            margin: 0 auto 30px auto !important;
-            .widget-staticfeedbackdetailstable {
+        > .x-panel-body {
+            padding: 20px;
+            .widget-staticfeedbackinfo-feedbackview {
+                $padding: 20px;
+                padding: $padding;
                 table.verticalinfotable {
-                    width: 100%;
+                    margin: 0 auto $padding auto;
                 }
             }
-        }
+            .no-feedback, .no-feedback-editable {
+                padding: 40px;
+                text-align: center;
+                font-size: 2.0em;
+            }
+            .no-feedback-editable {
+                cursor: pointer;
+                border: 4px solid transparent;
+                &:hover {
+                    border: 4px solid $goodcolor_bg;
+                    background-color: $goodcolor_fg;
+                }
+            }
 
-        section.rendered_view {
-            //margin: 0 20px 20px 20px;
-            @include commonSectionElements();
-            p {
-                padding: 5px 0 !important;
-                line-height: 1.6em !important;
+            section.rendered_view {
+                //margin: 0 20px 20px 20px;
+                @include commonSectionElements();
+                p {
+                    padding: 5px 0 !important;
+                    line-height: 1.6em !important;
+                }
             }
         }
     }
@@ -607,21 +616,49 @@ section.extravisible {
     @include commonSectionElements();
 }
 
-section.ok {
-    @include bigIconBox(url(icons/128x128/ok.png));
+@mixin iconBox($category, $icon, $size) {
+    section.#{$category} {
+        padding: 0px 0 0 ($size + 20px);
+        min-height: $size;
+        background-image: $icon;
+        background-repeat: no-repeat;
+        margin: 20px 0 20px 0;
+
+        p {
+            padding: 5px 0;
+            line-height: 1.6em !important;
+        }
+        @include commonSectionElements();
+
+        &:first-child {
+            margin-top: 0;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
 }
-section.info {
-    @include bigIconBox(url(icons/128x128/info.png));
+
+@each $category in ok, info, warning, error, help {
+    @include iconBox(#{$category}-small, url(icons/64x64/#{$category}.png), 64px);
+
+    section.#{$category}-small { // The normal heading styles are to massive for -small
+        h1 {
+            font-size: 1.6em;
+            margin: 10px 0 5px 0;
+        }
+        h1:first-child {
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.3em;
+            margin: 16px 0 6px 0;
+        }
+    }
+
+    @include iconBox($category, url(icons/128x128/#{$category}.png), 128px);
 }
-section.help {
-    @include bigIconBox(url(icons/128x128/help.png));
-}
-section.warning {
-    @include bigIconBox(url(icons/128x128/warning.png));
-}
-section.error {
-    @include bigIconBox(url(icons/128x128/error.png));
-}
+
 
 .widget-fileuploadpanel{
     section.ok {
@@ -677,6 +714,12 @@ section.treeheading {
     margin-top: 30px;
 }
 
+.x-message-box {
+    .x-window-body {
+        @include commonSectionElements();
+    }
+}
+
 
 .studentsmanager {
     .pointscolumn {
@@ -685,6 +728,13 @@ section.treeheading {
     .nofeedback {
         color: #aaa;
     }
+}
+
+.group_is_open {
+    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+.group_is_closed {
+    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
 }
 
 

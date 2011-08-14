@@ -4,14 +4,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     cls: 'widget-assignmentgrouptodolist',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="name">',
-        '   {name}: ',
-        '</tpl>',
-        '<ul>',
-        '<tpl for="candidates__identifier">',
-        '   <li>{.}</li>',
-        '</tpl>',
-        '</ul>'
+        '<section class="popuplistitem">',
+        '    <tpl if="name">',
+        '        {name}: ',
+        '    </tpl>',
+        '    <ul style="display: inline-block;">',
+        '    <tpl for="candidates__identifier">',
+        '        <li>{.}</li>',
+        '    </tpl>',
+        '    </ul>',
+        '    <tpl if="id == current_assignment_group.id">',
+        '        &mdash; <strong>(currently selected)</strong>',
+        '    </tpl>',
+        '</section>'
     ),
 
     config: {
@@ -43,7 +48,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, grouprecord) {
                     //console.log(grouprecord.data);
-                    return this.rowTpl.apply(grouprecord.data);
+                    var data = {
+                        current_assignment_group: me.assignmentgroup_recordcontainer.record.data
+                    };
+                    Ext.apply(data, grouprecord.data);
+                    return this.rowTpl.apply(data);
                 }
             }],
             listeners: {
@@ -77,6 +86,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             field: 'parentnode',
             comp: 'exact',
             value: this.assignmentgroup_recordcontainer.record.data.parentnode
+        }, {
+            field: 'is_open',
+            comp: 'exact',
+            value: true
         }]);
         this.store.load();
     },
