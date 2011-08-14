@@ -29,6 +29,7 @@
         //this.getMainWin().changeSize(500, 500); 
 
         // Load configuration, and fall back on defaults
+        console.log("test");
         var configobj = {
             maxpoints: 'Example: 100',
             approvedlimit: 'Example: 60',
@@ -61,7 +62,7 @@
             configobj = Ext.JSON.decode(config.config);
             this.approvedlimitField.setValue(configobj.approvedlimit);
             this.maxpointsField.setValue(configobj.maxpoints);
-            this.gradeField.setValue(this.getGradeValue(configobj.grades));
+            this.gradeField.setValue(this.parseGradeValue(configobj.grades));
         }
 
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
@@ -97,15 +98,20 @@
         console.error('Failed!');
     },
 
-    getGradeValue: function(rawvalue) {
-        var asArray = rawValue.split(',');
+    parseGradeValue: function(gradestring) {
         var retval = '';
-        for (int i=0; i<asArray.length; i++) {
-            retval = retval + asArray[i] + ':'+asArray[i+1] + '\n';
-            i++;
-
-        return retval;
+        var i=0;
+        for (i=0; i<gradestring.length; i++) {
+            if (i != 0) {
+                retval = retval + '\n';
+            }
+            var grade = gradestring[i] + "";
+            var gradearray = grade.split(',');
+            retval = retval+gradearray[0]+" : "+gradearray[1];
         }
+
+        console.log("retval: " + retval);
+        return retval;
     },
     
     parseTextToGradeList: function(rawValue) {
@@ -115,7 +121,9 @@
         Ext.Array.each(asArray, function(line) {
             line = Ext.String.trim(line);
             var split = line.split(/\s*:\s*/, 2);
-            resultArray.push(split);
+            if(split != '') {
+                resultArray.push(split);
+            }
         });
         return resultArray;
     },
