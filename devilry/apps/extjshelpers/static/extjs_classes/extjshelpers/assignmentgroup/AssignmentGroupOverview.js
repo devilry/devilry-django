@@ -5,7 +5,7 @@
  *     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupoverview',
     cls: 'widget-assignmentgroupoverview',
     requires: [
@@ -151,8 +151,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         Ext.apply(this, {
-            xtype: 'panel',
-            frame: false,
+            border: false,
             items: [{
                 xtype: 'assignmentgroupinfo',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
@@ -165,10 +164,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 xtype: 'deliveryinfo',
                 title: 'Delivery',
                 delivery_recordcontainer: this.delivery_recordcontainer,
-                frame: false,
                 filemetastore: this.filemetastore
             }, {
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                title: 'Feedback',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor

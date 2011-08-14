@@ -458,6 +458,8 @@ table.verticalinfotable {
   padding: 20px; }
 .widget-assignmentgroupoverview .widget-assignmentgroupdetails {
   padding: 20px; }
+.widget-assignmentgroupoverview .widget-deliveryinfo, .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
+  margin-top: 20px; }
 .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
   width: 100% !important; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body {

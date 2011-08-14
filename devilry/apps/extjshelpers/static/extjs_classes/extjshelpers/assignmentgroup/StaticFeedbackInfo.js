@@ -9,11 +9,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView'
     ],
-    frame: false,
-    //frameHeader: false,
-    border: 0,
-    title: 'Feedback',
-
 
     config: {
         /**
