@@ -34,7 +34,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '<tpl if="time_of_delivery">', // If time_of_delivery is false, the record is not loaded yet
         '    <section class="info-small">',
         '       <h1>Delivery number {number}</h1>',
-        '       <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">browse files</span> to download the delivered files.</p>',
+        '       <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">Browse files</span> in the toolbar to download the delivered files.</p>',
         '    </section>',
         '    <tpl if="time_of_delivery &gt; deadline__deadline">',
         '        <section class="warning-small">',

@@ -456,6 +456,8 @@ table.verticalinfotable {
 
 .widget-assignmentgroupoverview .widget-deliveryinfo > .x-panel-body {
   padding: 20px; }
+.widget-assignmentgroupoverview .widget-assignmentgroupdetailspanel {
+  padding: 20px; }
 .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
   width: 100% !important; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body {

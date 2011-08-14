@@ -223,14 +223,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             frame: false,
             tbar: tbarItems,
             items: [{
-                xtype: 'box',
-                html: 'todo',
+                xtype: 'assignmentgroupdetailspanel',
+                singlerecordontainer: this.assignmentgroup_recordcontainer
             }, {
                 xtype: 'deliveryinfo',
                 title: 'Delivery',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 frame: false,
-                //border: false,
                 filemetastore: this.filemetastore
             }, {
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
