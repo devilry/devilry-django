@@ -10,10 +10,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.studentsmanager.FilterSelector',
         'devilry.extjshelpers.studentsmanager.StudentsGrid',
         'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
-        'devilry.extjshelpers.SearchField'
+        'devilry.extjshelpers.SearchField',
+        'devilry.gradeeditors.EditManyDraftEditorWindow'
     ],
 
     config: {
+        /**
+         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false,
+
         assignmentgroupstore: undefined,
         assignmentid: undefined,
         gradeeditor_config_model: undefined
@@ -146,15 +154,30 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         if(this.giveFeedbackButton.rendered) {
             this.giveFeedbackButton.getEl().unmask();
         }
-        console.log(this.gradeeditor_config_recordcontainer.record.data);
-        console.log(this.registryitem_recordcontainer.record.data);
     },
 
     /**
      * @private
      */
     onGiveFeedbackToSelected: function(button) {
-        console.log(this.registryitem_recordcontainer.record.data);
+        var draftEditor = Ext.create('devilry.gradeeditors.EditManyDraftEditorWindow', {
+            isAdministrator: this.isAdministrator,
+            gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
+            registryitem: this.registryitem_recordcontainer.record.data,
+            listeners: {
+                scope: this,
+                createNewDraft: this.onPublishFeedback
+            }
+        });
+        draftEditor.show();
+    },
+
+
+    /**
+     * @private
+     */
+    onPublishFeedback: function(draftstring) {
+        console.log(draftstring);
         this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,

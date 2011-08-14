@@ -155,11 +155,19 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             if(records.length !== 0) {
                 draftstring = records[0].data.draft;
             }
-            this.getDraftEditor().initializeEditor(this.getGradeEditorConfig());
-            this.getDraftEditor().setDraftstring(draftstring);
+            this.initializeDraftEditor(draftstring);
         } else {
             throw "Failed to load current draft."
         }
+    },
+
+    /**
+     * @private
+     * @param draftstring May be undefined.
+     */
+    initializeDraftEditor: function(draftstring) {
+        this.getDraftEditor().initializeEditor(this.getGradeEditorConfig());
+        this.getDraftEditor().setDraftstring(draftstring);
     },
 
     /**
