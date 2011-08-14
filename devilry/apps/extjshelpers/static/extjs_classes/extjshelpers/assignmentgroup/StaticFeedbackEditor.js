@@ -20,7 +20,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          * Use the administrator RESTful interface to store drafts? If this is
          * ``false``, we use the examiner RESTful interface.
          */
-        isAdministrator: false
+        isAdministrator: false,
+
+        assignmentgroup_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -180,7 +182,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     closeAssignmentGroup: function() {
-        console.log('close group');
+        this.assignmentgroup_recordcontainer.record.data.is_open = false;
+        this.assignmentgroup_recordcontainer.record.save({
+            scope: this,
+            success: function(record) {
+                // TODO: Notify about closing the group
+                this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+            },
+            failure: function() {
+                throw "Failed to close group."
+            }
+        });
     },
 
     /**
