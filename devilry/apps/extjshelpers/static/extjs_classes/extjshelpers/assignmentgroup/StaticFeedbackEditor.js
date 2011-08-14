@@ -208,8 +208,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     onFailingGrade: function() {
-        console.log('failing grade...');
-
         var win = Ext.MessageBox.show({
             title: 'You published a feedback with a failing grade',
             msg: '<p>Would you like to give the group another try?</p><ul>' +
@@ -225,7 +223,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 } else {
                     this.closeAssignmentGroup();
                 }
-                button.toggle(false);
             }
         });
     },
