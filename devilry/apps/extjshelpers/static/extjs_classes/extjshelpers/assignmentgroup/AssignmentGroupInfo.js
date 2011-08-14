@@ -19,7 +19,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
          * When this is ``true``, the authenticated user still needs to have
          * permission to POST new feedbacks for the view to work.
          */
-        canExamine: false
+        canExamine: false,
+
+        assignmentgroup_recordcontainer: undefined,
+        delivery_recordcontainer: undefined,
+        assignmentgroupstore: undefined,
+        deliverymodel: undefined,
+        deadlinemodel: undefined
     },
 
     constructor: function(config) {
