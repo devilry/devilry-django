@@ -89,7 +89,23 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Examiner can use on an AssignmentGroup object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ('search', 'read', 'update')
+        editablefields = ('is_open',)
+
+
+    @classmethod
+    def write_authorize(cls, user, obj):
+        """ Checks if the given ``user`` is an examiner in the given
+        StaticFeedback ``obj``, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A StaticFeedback-object.
+        :throws PermissionDenied:
+        """
+        if not cls._meta.model.published_where_is_examiner(user).filter(id=obj.id):
+            raise PermissionDenied()
+        if obj.id == None:
+            raise PermissionDenied() # We only allow update
 
 
 @simplified_modelapi
