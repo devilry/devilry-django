@@ -205,8 +205,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 items: {
                     xtype: 'deliveriesonsinglegrouplisting',
                     store: this.deliverystore,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    deliverymodel: this.deliverymodel
+                    delivery_recordcontainer: this.delivery_recordcontainer
                 },
 
                 //listeners: {
