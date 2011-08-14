@@ -12,6 +12,7 @@
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
