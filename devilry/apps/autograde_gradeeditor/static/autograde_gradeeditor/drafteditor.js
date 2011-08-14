@@ -33,13 +33,13 @@
         this.editorConfig = Ext.JSON.decode(config.config);
 
         this.points = Ext.widget('numberfield', {
-            fieldLabel: this.editorConfig.pointlabel,
+            fieldLabel: 'Enter points',
             minValue: 0,
             maxValue: this.editorConfig.maxpoints,
             flex: 0
         });
         this.textarea = Ext.widget('textareafield', {
-            fieldLabel: this.editorConfig.feedbacklabel,
+            fieldLabel: 'Enter feedback',
             flex: 1
         });
         this.add(this.points);

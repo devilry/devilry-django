@@ -18,7 +18,7 @@ class Approved(JsonRegistryItem):
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/approved_gradeeditor/drafteditor.js'
 
     @classmethod
-    def validate_draft(cls, draftstring):
+    def validate_draft(cls, draftstring, configstring):
         buf = json.loads(draftstring)
         is_approved = buf[0]
         feedback = buf[1]
@@ -27,7 +27,7 @@ class Approved(JsonRegistryItem):
             raise DraftValidationError('The draft string must contain a single boolean value.')
 
     @classmethod
-    def draft_to_staticfeedback_kwargs(cls, draftstring):
+    def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
         buf = json.loads(draftstring)
         is_approved = buf[0]
         feedback = buf[1]
@@ -40,7 +40,5 @@ class Approved(JsonRegistryItem):
                     grade=grade,
                     points=int(is_approved),
                     rendered_view=feedback)
-
-        #TODO: .format() crashes when using non-ascii symbols.. need to find a fix since norwegian characters are bound to be used in feedbacks!!
 
 gradeeditor_registry.register(Approved)

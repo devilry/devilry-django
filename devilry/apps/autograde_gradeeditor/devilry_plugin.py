@@ -22,14 +22,10 @@ class Manual(JsonRegistryItem):
         retval = ''
         retpoints = 0
         for grade in grades:
-            print "GRADEINGRADES = '{}'".format(grade)
-            print "GRADE[1] = '{}'".format(int(grade[1]))
-            print "GRADE[0] = '{}'".format(grade[0])
             if points >= int(grade[1]) and int(grade[1]) >= retpoints:
                 retval = grade[0]
                 retpoints = int(grade[1])
 
-        print "RETVAL = '{}'".format(retval)
         return retval
 
     @classmethod
@@ -37,9 +33,7 @@ class Manual(JsonRegistryItem):
         config = cls.decode_configstring(configstring)
         cls.validate_dict(config, ConfigValidationError, {'maxpoints': int,
                                                           'grades': list,
-                                                          'approvedlimit': int,
-                                                          'pointlabel': basestring,
-                                                          'feedbacklabel': basestring})
+                                                          'approvedlimit': int})
 
 
         if config['approvedlimit'] > config['maxpoints']:
@@ -94,9 +88,6 @@ class Manual(JsonRegistryItem):
         feedback = buf['feedback']
 
         grade = cls.getGrade(points, config['grades'])
-        print "======GRADE = '{}'".format(grade)
-        print "======POINTS = '{}'".format(points)
-        print "======GRADES = '{}'".format(config['grades'])
 
         is_approved = False
         if points >= config['approvedlimit']:

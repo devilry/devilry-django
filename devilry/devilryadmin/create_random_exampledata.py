@@ -273,9 +273,7 @@ def create_assignment(period, deadlines, **assignment_kwargs):
 
     assignment.gradeeditor_config.config = json.dumps({'maxpoints': 100,
                                                        'approvedlimit': 30,
-                                                       'grades': grades,
-                                                       'pointlabel': 'Enter number of points earned',
-                                                       'feedbacklabel': 'Enter feedback'})
+                                                       'grades': grades})
     assignment.gradeeditor_config.full_clean()
     assignment.gradeeditor_config.save()
     assignment.save()
