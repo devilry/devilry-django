@@ -32,16 +32,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     tpl: Ext.create('Ext.XTemplate',
         '<tpl if="time_of_delivery">', // If time_of_delivery is false, the record is not loaded yet
+        '    <section class="info-small">',
+        '       <h1>Delivery number {number}</h1>',
+        '       <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">browse files</span> to download the delivered files.</p>',
+        '    </section>',
         '    <tpl if="time_of_delivery &gt; deadline__deadline">',
-        '        <section class="warning">',
-        '           <h1>Delivery number {number}</h1>',
-        '           <p>This delivery was made <em>{time_of_delivery:date}</em>, which is <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
-        '        </section>',
-        '    </tpl>',
-        '    <tpl if="time_of_delivery &lt;= deadline__deadline">',
-        '        <section class="ok">',
-        '           <h1>Delivery number {number}</h1>',
-        '           <p>This delivery was made <em>{time_of_delivery:date}</em>, which is before the deadline (<em>{deadline__deadline:date}</em>).</p>',
+        '        <section class="warning-small">',
+        '           <h1>After deadline</h1>',
+        '           <p>This delivery was made <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
         '        </section>',
         '    </tpl>',
         '</tpl>'

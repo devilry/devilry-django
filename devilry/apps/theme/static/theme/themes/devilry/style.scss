@@ -519,10 +519,15 @@ table.verticalinfotable {
 
 
 .widget-assignmentgroupoverview {
+    .widget-deliveryinfo {
+        > .x-panel-body {
+            padding: 20px;
+        }
+    }
     .widget-staticfeedbackinfo {
         width: 100% !important;
         > .x-panel-body {
-            padding: 30px;
+            padding: 20px;
             .widget-staticfeedbackinfo-feedbackview {
                 $padding: 20px;
                 padding: $padding;
@@ -625,6 +630,37 @@ section.warning {
 }
 section.error {
     @include bigIconBox(url(icons/128x128/error.png));
+}
+
+@mixin smallIconBox($icon) {
+    padding: 0px 0 0 84px;
+    min-height: 64px;
+    background-image: $icon;
+    background-repeat: no-repeat;
+    margin: 20px 0 20px 0;
+
+
+    p {
+        padding: 5px 0;
+        line-height: 1.6em !important;
+    }
+    @include commonSectionElements();
+}
+
+section.ok-small {
+    @include smallIconBox(url(icons/64x64/ok.png));
+}
+section.info-small {
+    @include smallIconBox(url(icons/64x64/info.png));
+}
+section.help-small {
+    @include smallIconBox(url(icons/64x64/help.png));
+}
+section.warning-small {
+    @include smallIconBox(url(icons/64x64/warning.png));
+}
+section.error-small {
+    @include smallIconBox(url(icons/64x64/error.png));
 }
 
 .widget-fileuploadpanel{

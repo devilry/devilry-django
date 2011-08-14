@@ -454,10 +454,12 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
+.widget-assignmentgroupoverview .widget-deliveryinfo > .x-panel-body {
+  padding: 20px; }
 .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
   width: 100% !important; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body {
-    padding: 30px; }
+    padding: 20px; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview {
       padding: 20px; }
       .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
@@ -619,6 +621,116 @@ section.error {
     padding: 5px 0;
     line-height: 1.2em; }
   section.error ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+section.ok-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/ok.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.ok-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.ok-small strong {
+    font-weight: bold; }
+  section.ok-small em {
+    font-style: italic; }
+  section.ok-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.ok-small ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+section.info-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/info.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.info-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.info-small strong {
+    font-weight: bold; }
+  section.info-small em {
+    font-style: italic; }
+  section.info-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.info-small ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+section.help-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/help.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.help-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.help-small strong {
+    font-weight: bold; }
+  section.help-small em {
+    font-style: italic; }
+  section.help-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.help-small ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+section.warning-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/warning.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.warning-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.warning-small strong {
+    font-weight: bold; }
+  section.warning-small em {
+    font-style: italic; }
+  section.warning-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.warning-small ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+section.error-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/error.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.error-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.error-small strong {
+    font-weight: bold; }
+  section.error-small em {
+    font-style: italic; }
+  section.error-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.error-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
