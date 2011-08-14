@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Max
 
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            PermissionDenied, FieldSpec,
@@ -197,6 +197,15 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         fake_editablefields = ('fake_examiners', 'fake_candidates')
         methods = ['create', 'read', 'update', 'delete', 'search']
 
+
+    @classmethod
+    def create_searchqryset(cls, user):
+        """ Returns all Deadline-objects where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
+        return cls._meta.model.where_is_admin_or_superadmin(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'))
 
     @classmethod
     def _parse_examiners_as_list_of_usernames(cls, obj):
