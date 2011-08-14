@@ -1,6 +1,7 @@
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsmanager_studentsgrid',
+    cls: 'widget-studentsmanager_studentsgrid',
     sortableColumns: false,
 
     config: {
@@ -24,14 +25,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     pointsColTpl: Ext.create('Ext.XTemplate', 
-        '<div class="pointscolumn">',
+        '<span class="pointscolumn">',
         '    <tpl if="feedback">',
         '       {feedback__points}',
         '    </tpl>',
         '    <tpl if="!feedback">',
         '       <div class="nofeedback">&empty;</div>',
         '   </tpl>',
-        '</div>'
+        '</span>'
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 

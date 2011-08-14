@@ -722,11 +722,19 @@ section.treeheading {
 
 
 .studentsmanager {
-    .pointscolumn {
-        font-size: 30px;
-    }
-    .nofeedback {
-        color: #aaa;
+    .widget-studentsmanager_studentsgrid {
+        td.x-grid-cell {
+            vertical-align: middle !important;
+        }
+        .candidatescolumn, .examinerscolumn {
+            @include inlineList();
+        }   
+        .pointscolumn {
+            font-size: 30px;
+        }
+        .nofeedback {
+            color: #aaa;
+        }
     }
 }
 
@@ -736,6 +744,7 @@ section.treeheading {
 .group_is_closed {
     @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
 }
+
 
 
 
