@@ -1,9 +1,9 @@
 /** AssignmentGroup details panel.
  */
-Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel', {
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails', {
     extend: 'devilry.extjshelpers.SingleRecordView',
-    alias: 'widget.assignmentgroupdetailspanel',
-    cls: 'widget-assignmentgroupdetailspanel',
+    alias: 'widget.assignmentgroupdetails',
+    cls: 'widget-assignmentgroupdetails',
 
     tpl: Ext.create('Ext.XTemplate',
         // TODO !is_open without any published feedback and perhaps with failing grade?
@@ -19,5 +19,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel', {
         '       <p>This group is <em>closed</em>. This usually means that a group has been corrected and given feedback. A closed group can be re-opened at any time using <span class="menuref">Open group</span> in the toolbar.</p>',
         '    </section>',
         '</tpl>'
-    )
+    ),
+
+    initComponent: function() {
+        Ext.apply(this, {
+            
+        });
+        this.callParent(arguments);
+    }
 });

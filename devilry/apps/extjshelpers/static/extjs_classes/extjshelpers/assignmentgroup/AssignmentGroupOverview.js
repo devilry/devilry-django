@@ -10,7 +10,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     cls: 'widget-assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails',
         'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing',
         'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
@@ -223,7 +223,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             frame: false,
             tbar: tbarItems,
             items: [{
-                xtype: 'assignmentgroupdetailspanel',
+                xtype: 'assignmentgroupdetails',
                 singlerecordontainer: this.assignmentgroup_recordcontainer
             }, {
                 xtype: 'deliveryinfo',
