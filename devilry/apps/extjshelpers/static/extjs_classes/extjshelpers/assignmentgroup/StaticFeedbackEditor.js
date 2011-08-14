@@ -30,6 +30,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     initComponent: function() {
         this.callParent(arguments);
 
+        this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecordInEditor, this);
+
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'Edit feedback',
@@ -122,7 +124,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             registryitem: this.registryitem_recordcontainer.record.data,
             listeners: {
                 scope: this,
-                beforeclose: this.onCloseGradeEditor
+                publishNewFeedback: this.onPublishNewFeedback
             }
         }).show();
     },
@@ -147,7 +149,44 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     /**
      * @private
      */
-    onCloseGradeEditor: function() {
+    onPublishNewFeedback: function() {
+        this.hasNewPublishedStaticFeedback = true;
         this.onLoadDelivery();
+    },
+
+    /**
+     * @private
+     */
+    onSetStaticFeedbackRecordInEditor: function() {
+        if(this.hasNewPublishedStaticFeedback) {
+            this.hasNewPublishedStaticFeedback = false;
+            this.onNewPublishedStaticFeedback();
+        }
+    },
+
+    /**
+     * @private
+     */
+    onNewPublishedStaticFeedback: function() {
+        var staticfeedback = this.staticfeedback_recordcontainer.record.data;
+        if(staticfeedback.is_passing_grade) {
+            this.closeAssignmentGroup();
+        } else {
+            this.onFailingGrade();
+        }
+    },
+
+    /**
+     * @private
+     */
+    closeAssignmentGroup: function() {
+        console.log('close group');
+    },
+
+    /**
+     * @private
+     */
+    onFailingGrade: function() {
+        console.log('failing grade...');
     }
 });
