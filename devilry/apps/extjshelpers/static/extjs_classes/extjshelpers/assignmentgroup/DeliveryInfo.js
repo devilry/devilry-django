@@ -107,7 +107,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             id: 'tooltip-other-deliveries',
             text: 'Other deliveries',
             scale: 'large',
-            enableToggle: true,
+            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onOtherDeliveries
@@ -136,16 +136,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                     enableDeadlineCreation: this.canExamine
                 },
 
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        try {
-                            button.toggle(false);
-                        } catch(err) {
-                            // This error occurrs because we clear the toolbar on selection.
-                        }
-                    }
-                }
+                //listeners: {
+                    //scope: this,
+                    //close: function() {
+                        //if(button) {
+                            //button.toggle(false);
+                        //}
+                    //}
+                //}
             });
         }
         this.deliveriesWindow.show();
