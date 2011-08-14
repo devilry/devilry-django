@@ -134,7 +134,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     performActionOnAll: function(action, loadMaskElement) {
         this._performActionOnAllTmp = {
-            currentPage: this.store.currentPage,
+            originalCurrentPage: this.store.currentPage,
             action: action,
             loadMaskElement: loadMaskElement,
             allRecords: []
@@ -153,6 +153,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
         if(pagenum > totalPages) {
             this._performActionOnAllTmp.loadMaskElement.unmask();
+            this.store.currentPage = this._performActionOnAllTmp.originalCurrentPage;
+            this.store.load();
             this._performActionOnSelected(this._performActionOnAllTmp.action, this._performActionOnAllTmp.allRecords);
         } else {
             tpl = 'Finding all items in table. Processing page {0}/{1}';

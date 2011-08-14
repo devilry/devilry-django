@@ -102,7 +102,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onGiveFeedbackToSelected: function(button) {
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.giveFeedbackToSelected
