@@ -5,7 +5,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     alias: 'widget.staticfeedbackeditor',
     requires: [
         'devilry.gradeeditors.DraftEditorWindow',
-        'devilry.gradeeditors.RestfulRegistryItem'
+        'devilry.gradeeditors.RestfulRegistryItem',
+        'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
     config: {
@@ -22,7 +23,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          */
         isAdministrator: false,
 
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_recordcontainer: undefined,
+        deadlinemodel: undefined
     },
 
     constructor: function(config) {
@@ -209,7 +211,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         console.log('failing grade...');
 
         var win = Ext.MessageBox.show({
-            title: 'You published a feedback with a <em>failing</em> grade',
+            title: 'You published a feedback with a failing grade',
             msg: '<p>Would you like to give the group another try?</p><ul>' +
                 '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
                 '<li>Choose <em>no</no> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
@@ -219,12 +221,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             closable: false,
             fn: function(buttonId) {
                 if(buttonId == 'yes') {
-
+                    this.createNewDeadline();
                 } else {
                     this.closeAssignmentGroup();
                 }
                 button.toggle(false);
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    createNewDeadline: function() {
+        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
+            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
+            deadlinemodel: this.deadlinemodel,
+            onSaveSuccess: function(record) {
+                this.close();
+            }
+        });
+        createDeadlineWindow.show();
     }
 });

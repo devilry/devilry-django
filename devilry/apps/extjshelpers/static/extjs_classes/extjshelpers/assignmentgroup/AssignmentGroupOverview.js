@@ -174,6 +174,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
+                deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
                 gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
             }]
         });
