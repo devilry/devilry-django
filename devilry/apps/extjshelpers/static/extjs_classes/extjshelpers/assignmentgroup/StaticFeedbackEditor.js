@@ -62,6 +62,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
 
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.showCreateButton, this);
+
     },
 
     /**
@@ -110,8 +112,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     showCreateButton: function() {
         if(this.gradeeditor_config_recordcontainer.record &&
                 this.delivery_recordcontainer.record &&
-                this.registryitem_recordcontainer.record) {
-            this.createButton.show();
+                this.registryitem_recordcontainer.record &&
+                this.assignmentgroup_recordcontainer.record) {
+            if(this.assignmentgroup_recordcontainer.record.data.is_open) {
+                this.createButton.show();
+            } else {
+                this.createButton.hide();
+            }
         }
     },
 
