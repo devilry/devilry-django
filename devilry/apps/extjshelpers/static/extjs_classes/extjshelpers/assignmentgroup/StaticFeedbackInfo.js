@@ -52,33 +52,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             hidden: true
         });
 
-        //this.infotable = Ext.ComponentManager.create({
-            //xtype: 'panel',
-            //width: 350,
-            //hidden: true,
-            //cls: 'infotable',
-            //dockedItems: [{
-                //xtype: 'toolbar',
-                //dock: 'top',
-                //items: ['->', {
-                    //xtype: 'devilrypager',
-                    //store: this.staticfeedbackstore,
-                    //width: 200,
-                    //reverseDirection: true,
-                    //middleLabelTpl: Ext.create('Ext.XTemplate',
-                        //'<tpl if="firstRecord">',
-                    //'   {currentNegativePageOffset})&nbsp;&nbsp;',
-                    //'   {firstRecord.data.save_timestamp:date}',
-                    //'</tpl>'
-                    //)
-                //}, '->']
-            //}, this.editToolbar],
-            //items: [{
-                //xtype: 'staticfeedbackdetails',
-                //singlerecordontainer: this.staticfeedback_recordcontainer
-            //}]
-        //});
-
         Ext.apply(this, {
             items: [this.bodyContent],
             dockedItems: [{
