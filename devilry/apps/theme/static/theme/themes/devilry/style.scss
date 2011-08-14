@@ -646,6 +646,21 @@ section.extravisible {
 
 @each $category in ok, info, warning, error, help {
     @include iconBox(#{$category}-small, url(icons/64x64/#{$category}.png), 64px);
+
+    section.#{$category}-small { // The normal heading styles are to massive for -small
+        h1 {
+            font-size: 1.6em;
+            margin: 10px 0 5px 0;
+        }
+        h1:first-child {
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.3em;
+            margin: 16px 0 6px 0;
+        }
+    }
+
     @include iconBox($category, url(icons/128x128/#{$category}.png), 128px);
 }
 

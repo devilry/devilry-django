@@ -33,7 +33,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'Edit feedback',
-            iconCls: 'icon-edit-32',
+            //iconCls: 'icon-edit-32',
             hidden: true,
             scale: 'large',
             listeners: {
@@ -41,9 +41,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 click: this.loadGradeEditor
             }
         });
-        this.infotableBottomToolbar.add('->');
-        this.infotableBottomToolbar.add(this.createButton);
-        this.infotableBottomToolbar.show();
+        this.editToolbar.add(this.createButton);
 
         this.addListener('afterStoreLoadMoreThanZero', this.showCreateButton, this);
 

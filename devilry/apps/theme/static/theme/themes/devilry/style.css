@@ -544,6 +544,15 @@ section.ok-small {
   section.ok-small:last-child {
     margin-bottom: 0; }
 
+section.ok-small h1 {
+  font-size: 1.6em;
+  margin: 10px 0 5px 0; }
+section.ok-small h1:first-child {
+  margin-top: 0; }
+section.ok-small h2 {
+  font-size: 1.3em;
+  margin: 16px 0 6px 0; }
+
 section.ok {
   padding: 0px 0 0 148px;
   min-height: 128px;
@@ -595,6 +604,15 @@ section.info-small {
     margin-top: 0; }
   section.info-small:last-child {
     margin-bottom: 0; }
+
+section.info-small h1 {
+  font-size: 1.6em;
+  margin: 10px 0 5px 0; }
+section.info-small h1:first-child {
+  margin-top: 0; }
+section.info-small h2 {
+  font-size: 1.3em;
+  margin: 16px 0 6px 0; }
 
 section.info {
   padding: 0px 0 0 148px;
@@ -648,6 +666,15 @@ section.warning-small {
   section.warning-small:last-child {
     margin-bottom: 0; }
 
+section.warning-small h1 {
+  font-size: 1.6em;
+  margin: 10px 0 5px 0; }
+section.warning-small h1:first-child {
+  margin-top: 0; }
+section.warning-small h2 {
+  font-size: 1.3em;
+  margin: 16px 0 6px 0; }
+
 section.warning {
   padding: 0px 0 0 148px;
   min-height: 128px;
@@ -700,6 +727,15 @@ section.error-small {
   section.error-small:last-child {
     margin-bottom: 0; }
 
+section.error-small h1 {
+  font-size: 1.6em;
+  margin: 10px 0 5px 0; }
+section.error-small h1:first-child {
+  margin-top: 0; }
+section.error-small h2 {
+  font-size: 1.3em;
+  margin: 16px 0 6px 0; }
+
 section.error {
   padding: 0px 0 0 148px;
   min-height: 128px;
@@ -751,6 +787,15 @@ section.help-small {
     margin-top: 0; }
   section.help-small:last-child {
     margin-bottom: 0; }
+
+section.help-small h1 {
+  font-size: 1.6em;
+  margin: 10px 0 5px 0; }
+section.help-small h1:first-child {
+  margin-top: 0; }
+section.help-small h2 {
+  font-size: 1.3em;
+  margin: 16px 0 6px 0; }
 
 section.help {
   padding: 0px 0 0 148px;
