@@ -75,6 +75,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 }
             });
             Ext.Array.insert(tbarItems, 3, [this.closeopenbtn]);
+
+            if(this.assignmentgroup_recordcontainer.record) {
+                this.onSetAssignmentGroup();
+            }
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
         }
 
         Ext.apply(this, {
@@ -85,10 +90,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
             }]
         });
 
-        if(this.assignmentgroup_recordcontainer.record) {
-            this.onSetAssignmentGroup();
-        }
-        this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
         this.callParent(arguments);
     },
 
