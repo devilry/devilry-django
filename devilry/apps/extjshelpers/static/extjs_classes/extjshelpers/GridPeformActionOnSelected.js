@@ -49,6 +49,8 @@ Ext.define('devilry.extjshelpers.GridPeformActionOnSelected', {
      *          1, and total is the total number of records.
      *      scope
      *          The scope to execute `callback` in.
+     *      extraArgs
+     *          Array of extra arguments to callback.
      *          
      */
     performActionOnAll: function(action) {
@@ -113,7 +115,7 @@ Ext.define('devilry.extjshelpers.GridPeformActionOnSelected', {
      */
     _performActionOnSelected: function(action, selected, startIndex, total) {
         Ext.each(selected, function(record, index) {
-            Ext.bind(action.callback, action.scope)(record, startIndex + index, total);
+            Ext.bind(action.callback, action.scope, action.extraArgs, true)(record, startIndex + index, total);
         });
     }
 });
