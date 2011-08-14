@@ -119,6 +119,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         } else {
             var msg = Ext.String.format('Processing group {0}/{1}', index, total);
             this.getEl().mask(msg);
+            console.log(msg);
         }
     },
     

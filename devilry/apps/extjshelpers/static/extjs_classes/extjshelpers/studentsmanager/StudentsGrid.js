@@ -131,9 +131,25 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     performActionOnSelected: function(action) {
         var selected = this.selModel.getSelection();
         var totalOnCurrentPage = this.store.getCount();
-        if(selected.length === totalOnCurrentPage) {
-            // TODO: Ask if _all_
-            this.performActionOnAll(action);
+        if(selected.length === totalOnCurrentPage && this._getTotalStorePages() > 1) {
+            var msg = Ext.String.format(
+                'You have selected all items on the current page. Choose <strong>yes</strong> to perform the selected action on <strong>all {0}</strong> items instead of just the items on the current page.',
+                this.store.getTotalCount()
+            );
+            Ext.MessageBox.show({
+                title: 'Do you want to perform the action on ALL items?',
+                msg: msg,
+                buttons: Ext.Msg.YESNO,
+                icon: Ext.Msg.QUESTION,
+                scope: this,
+                fn: function(btn) {
+                    if(btn == 'yes') {
+                        this.performActionOnAll(action);
+                    } else {
+                        this._performActionOnSelected(action, selected, 1, selected.length);
+                    }
+                }
+            });
         } else {
             this._performActionOnSelected(action, selected, 1, selected.length);
         }
@@ -162,14 +178,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         this._performActionOnPage(1);
     },
 
+
     /**
      * @private
      */
-    _performActionOnPage: function(pagenum) {
+    _getTotalStorePages: function() {
         var totalPages = this.store.getTotalCount() / this.store.pageSize;
         if(this.store.getTotalCount() % this.store.pageSize != 0) {
             totalPages = Math.ceil(totalPages);
         }
+        return totalPages;
+    },
+
+    /**
+     * @private
+     */
+    _performActionOnPage: function(pagenum) {
+        var totalPages = this._getTotalStorePages();
 
         if(pagenum > totalPages) {
             this.store.currentPage = this._performActionOnAllTmp.originalCurrentPage;
