@@ -27,7 +27,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
          */
-        delivery_recordcontainer: undefined
+        delivery_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * Delivery ``Ext.data.Model``.
+         */
+        deliverymodel: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
     },
 
     tpl: Ext.create('Ext.XTemplate',
@@ -57,6 +69,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             dockedItems: [this.toolbar]
         });
         this.callParent(arguments);
+
         if(this.delivery_recordcontainer.record) {
             this.onLoadDelivery();
         }
@@ -71,6 +84,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         this.show();
         this.toolbar.removeAll();
         this.update(delivery);
+
         this.toolbar.add({
             xtype: 'button',
             text: 'Browse files',
@@ -86,6 +100,58 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 }
             }
         });
+
+        this.toolbar.add({
+            xtype: 'button',
+            menu: [], // To get an arrow
+            id: 'tooltip-other-deliveries',
+            text: 'Other deliveries',
+            scale: 'large',
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.onOtherDeliveries
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    onOtherDeliveries: function(button) {
+        if(!this.deliveriesWindow) {
+            this.deliveriesWindow = Ext.create('Ext.window.Window', {
+                title: 'Deliveries by this group',
+                height: 500,
+                width: 400,
+                modal: true,
+                layout: 'fit',
+                closeAction: 'hide',
+                items: {
+                    xtype: 'deliveriesonsinglegrouplisting',
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    deliverymodel: this.deliverymodel,
+                    deadlinemodel: this.deadlinemodel,
+                    enableDeadlineCreation: this.canExamine
+                },
+
+                listeners: {
+                    scope: this,
+                    close: function() {
+                        try {
+                            button.toggle(false);
+                        } catch(err) {
+                            // This error occurrs because we clear the toolbar on selection.
+                        }
+                    }
+                }
+            });
+        }
+        this.deliveriesWindow.show();
+        if(button) {
+            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+        }
     },
 
     /**

@@ -163,8 +163,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }, {
                 xtype: 'deliveryinfo',
                 title: 'Delivery',
+                filemetastore: this.filemetastore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
-                filemetastore: this.filemetastore
+                deliverymodel: this.deliverymodel,
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
             }, {
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                 title: 'Feedback',
@@ -202,7 +204,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             });
         } else {
-            this.down('assignmentgroupinfo').onOtherDeliveries();
+            this.down('deliveryinfo').onOtherDeliveries();
         }
     }
 });

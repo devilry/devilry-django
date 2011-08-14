@@ -29,19 +29,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
 
 
     initComponent: function() {
-        this.onOtherDeliveriesBtn = Ext.ComponentManager.create({
-            xtype: 'button',
-            menu: [], // To get an arrow
-            id: 'tooltip-other-deliveries',
-            text: 'Deliveries',
-            scale: 'large',
-            enableToggle: true,
-            listeners: {
-                scope: this,
-                click: this.onOtherDeliveries
-            }
-        });
-
         var tbarItems = [{
             xtype: 'button',
             menu: [], // To get an arrow
@@ -53,7 +40,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 scope: this,
                 click: this.onDeadlines
             }
-        }, this.onOtherDeliveriesBtn];
+        }];
         
         if(this.canExamine) {
             var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
@@ -131,40 +118,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         });
         groupsWindow.show();
         groupsWindow.alignTo(button, 'bl', [0, 0]);
-    },
-
-    /**
-     * @private
-     */
-    onOtherDeliveries: function(button) {
-        if(!this.deliveriesWindow) {
-            this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries by this group',
-                height: 500,
-                width: 400,
-                modal: true,
-                layout: 'fit',
-                closeAction: 'hide',
-                items: {
-                    xtype: 'deliveriesonsinglegrouplisting',
-                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    deliverymodel: this.deliverymodel,
-                    deadlinemodel: this.deadlinemodel,
-                    enableDeadlineCreation: this.canExamine
-                },
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        this.onOtherDeliveriesBtn.toggle(false);
-                    }
-                }
-            });
-        }
-        this.deliveriesWindow.show();
-        if(button) {
-            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
-        }
     },
 
     /**
