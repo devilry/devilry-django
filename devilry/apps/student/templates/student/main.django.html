@@ -27,6 +27,30 @@
         });
         searchwidget.loadInitialValues();
         //searchwidget.focusOnSearchfield();
+        
+        var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
+        var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
+        
+        deadlinestore.load(function(records, operation, success) {
+            console.log('loaded records');
+        });
+        
+        var deadlinetpl = Ext.create('Ext.XTemplate',
+            '<tpl for=".">',
+                '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
+                '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
+                '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
+                '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
+            '</tpl>'
+        );
+
+        Ext.create('Ext.view.View', {
+            store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+            tpl: deadlinetpl,
+            renderTo: 'content-heading'
+        });
+        
+        
     });
 
 </script>
@@ -39,4 +63,5 @@
 <p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
 have permission to view as a <strong>student</strong>. You can, for example, search for the name of a subject to find anything
 related to subject, or search for a specific assignment.
+<section class="treeheading" id="content-heading"></section>
 {% endblock %}
