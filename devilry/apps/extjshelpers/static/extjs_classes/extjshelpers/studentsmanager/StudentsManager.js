@@ -197,12 +197,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             var msg = Ext.String.format('Processing group {0}/{1}', index, total);
             this.getEl().mask(msg);
             
-            //var draftrecord = Ext.create(feedbackdraftModelName, {
-                //draft: draftstring,
-                //published: published,
-                //delivery: this.deliveryid
-            //});
-            //draftrecord.save(saveconfig);
+            var draftrecord = Ext.create(feedbackdraftModelName, {
+                draft: draftstring,
+                published: true,
+                delivery: record.data.latest_delivery_id
+            });
+            draftrecord.save();
         }
     },
     
