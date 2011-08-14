@@ -29,6 +29,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     initComponent: function() {
+        this.giveFeedbackButton = Ext.widget('button', {
+            scale: 'large',
+            text: 'Give feedback to selected',
+            listeners: {
+                scope: this,
+                click: this.onGiveFeedbackToSelected,
+                render: function(button) {
+                    if(!this.registryitem_recordcontainer.record) {
+                        button.getEl().mask('Loading'); // TODO: Only mask the affected buttons
+                    }
+                }
+            }
+        });
+
         Ext.apply(this, {
             items: [{
                 region: 'north',     // position for region
@@ -82,15 +96,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'toolbar',
                     dock: 'bottom',
                     ui: 'footer',
-                    items: ['->', {
-                        xtype: 'button',
-                        scale: 'large',
-                        text: 'Give feedback to selected',
-                        listeners: {
-                            scope: this,
-                            click: this.onGiveFeedbackToSelected
-                        }
-                    }]
+                    items: ['->', this.giveFeedbackButton]
                 }]
             }],
 
@@ -137,7 +143,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onLoadRegistryItem: function() {
-        console.log('TODO: Enable Give feedback to selected');
+        if(this.giveFeedbackButton.rendered) {
+            this.giveFeedbackButton.getEl().unmask();
+        }
         console.log(this.gradeeditor_config_recordcontainer.record.data);
         console.log(this.registryitem_recordcontainer.record.data);
     },
