@@ -132,6 +132,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    noneSelected: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0;
+    },
+
+    /**
+     * @private
+     */
     loadFirstPage: function() {
         this.assignmentgroupstore.currentPage = 1;
         this.assignmentgroupstore.load();
@@ -141,6 +148,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onSetExaminers: function() {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
         var win = Ext.widget('window', {
             title: 'Set examiners',
             modal: true,
@@ -245,7 +256,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onGiveFeedbackToSelected: function(button) {
-        if(this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0) {
+        if(this.noneSelected()) {
             this.onSelectNone();
             return;
         }
