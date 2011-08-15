@@ -2,7 +2,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.studentsmanager',
     cls: 'studentsmanager',
-    layout: 'border',
     frame: false,
     border: false,
 
@@ -52,48 +51,44 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
-        Ext.apply(this, {
-            items: [{
-                region: 'north',     // position for region
-                xtype: 'panel',
-                frame: false,
-                border: false,
-                height: 100,
-                layout: { //Layout spec of underlying components
-                    type: 'vbox',
-                    align: 'center'
-                },
-                items: [{
-                    xtype: 'searchfield',
-                    width: 600,
-                    height: 40,
-                    padding: '30 0 0 0'
+        this.addStudentsButton = Ext.widget('button', {
+            text: 'Add students',
+            iconCls: 'icon-add-32',
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: this.onManuallyCreateUsers
+            }
+        });
 
-                }]
-            },{
-                region:'west',
+        Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'searchfield',
+                //width: 600,
+                //height: 40,
+                //padding: '30 0 0 0'
+                //padding: 40,
+                emptyText: 'Search...',
+                margin: 10,
+                flex: 0,
+
+            //}, {
+                //region:'west',
+                //xtype: 'panel',
+                //width: 200,
+                //layout: 'fit',
+                //items: [{
+                    //xtype: 'studentsmanager_filterselector'
+                //}]
+            }, {
                 xtype: 'panel',
-                width: 200,
+                flex: 1,
                 layout: 'fit',
-                tbar: [{
-                    xtype: 'button',
-                    text: 'Add more students',
-                    iconCls: 'icon-add-32',
-                    scale: 'large',
-                    width: 194,
-                    listeners: {
-                        scope: this,
-                        click: this.onManuallyCreateUsers
-                    }
-                }],
-                items: [{
-                    xtype: 'studentsmanager_filterselector'
-                }]
-            },{
-                region: 'center',     // center region is required, no width/height specified
-                xtype: 'panel',
-                layout: 'fit',
-                frame: false,
+                frame: true,
                 border: false,
                 items: [{
                     xtype: 'studentsmanager_studentsgrid',
