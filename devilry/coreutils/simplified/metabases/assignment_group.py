@@ -8,7 +8,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
     search and which fields can be used to search for an AssignmentGroup object
     using the Simplified API """
     model = models.AssignmentGroup
-    annotated_fields = ('latest_delivery_id',)
+    annotated_fields = ('latest_delivery_id', 'number_of_deliveries')
     resultfields = FieldSpec('id',
                              'name',
                              'is_open',
@@ -16,6 +16,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'parentnode',
                              'feedback',
                              'latest_delivery_id',
+                             'number_of_deliveries',
                              users=['examiners__username',
                                     'candidates__identifier'],
                              feedback=['feedback__points',
