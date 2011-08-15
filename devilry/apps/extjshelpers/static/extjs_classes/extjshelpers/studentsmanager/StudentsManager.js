@@ -189,20 +189,26 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
-        console.log(feedbackdraftModelName);
-        console.log(draftstring);
+        //console.log(feedbackdraftModelName);
+        //console.log(draftstring);
         if(index == total) {
             this.getEl().unmask();
         } else {
             var msg = Ext.String.format('Processing group {0}/{1}', index, total);
             this.getEl().mask(msg);
-            
-            var draftrecord = Ext.create(feedbackdraftModelName, {
-                draft: draftstring,
-                published: true,
-                delivery: record.data.latest_delivery_id
-            });
-            draftrecord.save();
+            if(record.data.latest_delivery_id != null) {
+                var draftrecord = Ext.create(feedbackdraftModelName, {
+                    draft: draftstring,
+                    published: true,
+                    delivery: record.data.latest_delivery_id
+                });
+                draftrecord.save({
+                    scope: this,
+                    failure: function() {
+                        console.log('Failed to save a draft');
+                    }
+                });
+            }
         }
     },
     
