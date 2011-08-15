@@ -11,6 +11,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.studentsmanager.StudentsGrid',
         'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
         'devilry.extjshelpers.SearchField',
+        'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow'
     ],
 
@@ -104,7 +105,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'toolbar',
                     dock: 'bottom',
                     ui: 'footer',
-                    items: ['->', this.giveFeedbackButton]
+                    items: ['->', {
+                        xtype: 'button',
+                        text: 'Set examiners',
+                        scale: 'large',
+                        listeners: {
+                            scope: this,
+                            click: this.onSetExaminers
+                        }
+                    }, this.giveFeedbackButton]
                 }]
             }],
 
@@ -116,6 +125,35 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
         //}, this);
         this.loadGradeEditorConfigModel();
+    },
+
+    /**
+     * @private
+     */
+    onSetExaminers: function() {
+        var win = Ext.widget('window', {
+            title: 'Set examiners',
+            modal: true,
+            width: 500,
+            height: 400,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'setlistofusers',
+                usernames: ['donald', 'scrooge'],
+                saveScope: this,
+                saveCallback: this.setExaminersOnSelected,
+                saveExtraArgs: []
+            }
+        });
+        win.show();
+    },
+
+    /**
+     * @private
+     */
+    setExaminersOnSelected: function(usernames) {
+        console.log(usernames);
     },
 
     /**
