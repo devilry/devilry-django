@@ -264,9 +264,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.getEl().mask(msg);
 
         if(append) {
-            console.log(record);
+            //console.log(record);
             usernames = Ext.Array.merge(usernames, record.data.examiners__username);
-            console.log(usernames);
+            //console.log(usernames);
         };
 
         var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
