@@ -328,7 +328,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         var studentswindow = Ext.create('Ext.window.Window', {
             title: 'Students',
             width: 926,
-            height: 600,
+            height: 500,
             layout: 'fit',
             maximizable: true,
             modal: true,
