@@ -67,6 +67,65 @@
         });
         searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
+        
+        var dashboard_assignment_model = {{ RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+        
+        var dashboard_assignment_store = Ext.create('Ext.data.Store', {
+            model: dashboard_assignment_model,
+            groupField: 'parentnode__parentnode__long_name',
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
+
+        //dashboard_assignment_store.proxy.extraParams.result_fieldgroups = Ext.JSON.encode(["subject"]);
+        
+        dashboard_assignment_store.load();        
+        
+        var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
+            groupHeaderTpl: '{name}'
+        });
+        
+        var rowTpl = Ext.create('Ext.XTemplate',
+            '{.:date}'
+        );
+        
+        var listView = Ext.create('Ext.grid.Panel', {
+            collapsible:true,
+            title:'Default',
+            renderTo: 'content-heading',
+
+            store: dashboard_assignment_store,
+            features: [groupingFeature],
+            columns: [{
+                text: 'Assignment',
+                flex: 30,
+                dataIndex: 'long_name'
+            },{
+                text: 'Period',
+                dataIndex: 'parentnode__long_name',
+                flex: 20
+            },{
+                text: 'Publishing Time',
+                flex: 15,
+                dataIndex: 'publishing_time',
+                renderer: function(value) {
+                    return rowTpl.apply(value);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function() {
+                    console.log("link to assignment");
+                }
+            }
+        });
+        
+        
+        
+        
+        
+        
     });
 
 
@@ -82,4 +141,5 @@ related to anything that you have permission to view or edit as an
 <strong>examiner</strong>. Searching for a user will find any item related to
 that user, and searching for a subject will find anything related to that
 subject.</p>
+<section class="treeheading" id="content-heading"></section>
 {% endblock %}
