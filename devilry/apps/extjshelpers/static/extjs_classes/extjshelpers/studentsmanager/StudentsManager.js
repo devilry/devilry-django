@@ -102,12 +102,26 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
-                        text: 'Set examiners',
+                        text: 'Examiners',
                         scale: 'large',
-                        listeners: {
-                            scope: this,
-                            click: this.onSetExaminers
-                        }
+                        menu: [{
+                            text: 'Replace examiners',
+                            listeners: {
+                                scope: this,
+                                click: this.onReplaceExaminers
+                            }
+                        }, {
+                            text: 'Add examiners',
+                            listeners: {
+                                scope: this,
+                                click: this.onAddExaminers
+                            }
+                        }, {
+                            text: 'Random distribute examiners',
+                            listeners: {
+                                scope: this
+                            }
+                        }]
                     }, this.giveFeedbackButton]
                 }]
             }],
@@ -144,10 +158,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.assignmentgroupstore.load();
     },
 
+
     /**
      * @private
      */
-    onSetExaminers: function() {
+    onSetExaminers: function(append) {
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -165,7 +180,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 helptext: '<p>The username of a single examiner on each line. Example:</p>',
                 listeners: {
                     scope: this,
-                    saveClicked: this.setExaminersOnSelected
+                    saveClicked: function(setlistofusersobj, usernames) {
+                        this.setExaminersOnSelected(setlistofusersobj, usernames, append);
+                    }
                 }
             },
         });
@@ -176,22 +193,43 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
-    setExaminersOnSelected: function(setlistofusersobj, usernames) {
+    onAddExaminers: function() {
+        this.onSetExaminers(true);
+    },
+
+    /**
+     * @private
+     */
+    onReplaceExaminers: function() {
+        this.onSetExaminers(false);
+    },
+
+
+    /**
+     * @private
+     */
+    setExaminersOnSelected: function(setlistofusersobj, usernames, append) {
         setlistofusersobj.up('window').close();
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminers,
-            extraArgs: [usernames]
+            extraArgs: [usernames, append]
         });
     },
 
     /**
      * @private
      */
-    setExaminers: function(record, index, total, usernames) {
+    setExaminers: function(record, index, total, usernames, append) {
         var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, total);
         this.getEl().mask(msg);
+
+        if(append) {
+            console.log(record);
+            usernames = Ext.Array.merge(usernames, record.data.examiners__username);
+            console.log(usernames);
+        };
 
         var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
             // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
