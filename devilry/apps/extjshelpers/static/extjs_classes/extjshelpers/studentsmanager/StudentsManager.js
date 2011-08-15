@@ -121,6 +121,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    onSelectNone: function() {
+        Ext.MessageBox.alert('No element(s) selected', 'You must select at least one group to use the selected action.');
+    },
+
+    /**
+     * @private
+     */
     loadGradeEditorConfigModel: function() {
         this.gradeeditor_config_model.load(this.assignmentid, {
             scope: this,
@@ -160,6 +167,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onGiveFeedbackToSelected: function(button) {
+        if(this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0) {
+            this.onSelectNone();
+            return;
+        }
         var draftEditor = Ext.create('devilry.gradeeditors.EditManyDraftEditorWindow', {
             isAdministrator: this.isAdministrator,
             gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,

@@ -89,6 +89,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 text: 'Examiners', dataIndex: 'id', flex: 2,
                 renderer: this.formatExaminersCol
             }, {
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 1
+            }, {
                 text: 'Latest feedback',
                 columns: [{
                     text: 'Points',
