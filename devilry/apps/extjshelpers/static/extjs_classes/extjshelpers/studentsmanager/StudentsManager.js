@@ -309,6 +309,21 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
     },
 
+
+    /**
+     * @private
+     */
+    createRecordFromStoreRecord: function(record) {
+        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
+            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
+            id: record.data.id,
+            name: record.data.name,
+            is_open: record.data.is_open,
+            parentnode: record.data.parentnode,
+        });
+        return editRecord;
+    },
+
     /**
      * @private
      */
@@ -317,20 +332,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.getEl().mask(msg);
 
         if(append) {
-            //console.log(record);
             usernames = Ext.Array.merge(usernames, record.data.examiners__username);
-            //console.log(usernames);
         };
 
-        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
-            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
-            id: record.data.id,
-            name: record.data.name,
-            is_open: record.data.is_open,
-            parentnode: record.data.parentnode,
-            fake_examiners: usernames
-        });
-
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.fake_examiners = usernames;
         editRecord.save({
             failure: function() {
                 console.error('Failed to save record');
