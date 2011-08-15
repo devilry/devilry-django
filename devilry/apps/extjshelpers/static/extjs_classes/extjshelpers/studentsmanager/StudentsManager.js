@@ -137,6 +137,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    loadFirstPage: function() {
+        this.assignmentgroupstore.currentPage = 1;
+        this.assignmentgroupstore.load();
+    },
+
+    /**
+     * @private
+     */
     onSetExaminers: function() {
         var win = Ext.widget('window', {
             title: 'Set examiners',
@@ -148,6 +156,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             items: {
                 xtype: 'setlistofusers',
                 usernames: ['donald', 'scrooge'],
+                helptext: '<p>The username of a single examiner on each line. Example:</p>',
                 listeners: {
                     scope: this,
                     saveClicked: this.setExaminersOnSelected
@@ -163,7 +172,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     setExaminersOnSelected: function(setlistofusersobj, usernames) {
         setlistofusersobj.up('window').close();
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminers,
@@ -178,15 +187,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, total);
         this.getEl().mask(msg);
 
-        record.data.fake_examiners = usernames;
-        record.save({
+        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
+            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
+            id: record.data.id,
+            name: record.data.name,
+            is_open: record.data.is_open,
+            parentnode: record.data.parentnode,
+            fake_examiners: usernames
+        });
+
+        editRecord.save({
             failure: function() {
-                // TODO: Find out why exception is raised on save, but not here??
                 console.error('Failed to save record');
             }
         });
 
         if(index == total) {
+            this.loadFirstPage();
             this.getEl().unmask();
         }
     },
@@ -285,6 +302,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }
 
         if(index == total) {
+            this.loadFirstPage();
             this.getEl().unmask();
         }
     },

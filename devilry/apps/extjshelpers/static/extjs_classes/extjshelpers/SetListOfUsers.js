@@ -11,14 +11,19 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
          */
         usernames: [],
 
-        buttonLabel: 'Save'
+        buttonLabel: 'Save',
+
+        example: 'bob\nalice\neve\ndave',
+        helptext: '<p>One username on each line. Example:</p>',
+
+        helptpl: Ext.create('Ext.XTemplate',
+            '<section class="helpsection">',
+            '   {helptext}',
+            '   <pre style="border: 1px solid #999; padding: 5px;">{example}</pre>',
+            '</section>'
+        ),
     },
 
-    helptext:
-        '<section class="helpsection">' +
-        '   <p>One username on each line. Example:</p>' +
-        '   <pre style="border: 1px solid #999; padding: 5px;">bob\nalice\neve\ndave</pre>' +
-        '</section>',
 
     constructor: function(config) {
         this.addEvents(
@@ -50,7 +55,6 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
             value: currentValue
         });
 
-        //this.userinput.setValue('dewey\nlouie:401');
         Ext.apply(this, {
             layout: {
                 type: 'hbox',
@@ -61,7 +65,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
                 flex: 10,
                 xtype: 'box',
                 padding: 10,
-                html: this.helptext
+                html: this.helptpl.apply(this)
             }],
 
             dockedItems: [{

@@ -80,8 +80,8 @@ Ext.define('devilry.extjshelpers.GridPeformActionOnSelected', {
         var totalPages = this._getTotalStorePages();
 
         if(pagenum > totalPages) {
-            this.store.currentPage = this._performActionOnAllTmp.originalCurrentPage;
-            this.store.load();
+            //this.store.currentPage = this._performActionOnAllTmp.originalCurrentPage;
+            //this.store.load();
         } else {
             this.store.currentPage = pagenum;
             this.store.load({
