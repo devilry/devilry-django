@@ -888,8 +888,42 @@ section.treeheading {
     content: ""; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
   font-size: 30px; }
-.studentsmanager .widget-studentsmanager_studentsgrid .nofeedback {
+.studentsmanager .widget-studentsmanager_studentsgrid .nofeedback, .studentsmanager .widget-studentsmanager_studentsgrid .nodeliveries {
   color: #aaa; }
+.studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn {
+  line-height: 1.6em; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .not_passing_grade {
+    border: 1px solid #e64d00;
+    border-radius: 3px;
+    background-color: #cc4400;
+    color: #ffeee5;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .passing_grade {
+    border: 1px solid #88cc00;
+    border-radius: 3px;
+    background-color: #77b300;
+    color: #f7ffe5;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
+.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .open {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
 
 .group_is_open {
   border: 1px solid #e64d00;

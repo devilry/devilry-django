@@ -62,6 +62,16 @@ body {
     white-space: nowrap;
 }
 
+@mixin goodInlineItem() {
+    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+}
+@mixin neutralInlineItem() {
+    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+}
+@mixin warningInlineItem() {
+    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+
 @mixin commonSectionElements() {
     strong {
         font-weight: bold;
@@ -495,7 +505,7 @@ span.error {
 }
 
 span.menuref {
-    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+    @include neutralInlineItem();
 }
 
 table.verticalinfotable {
@@ -737,17 +747,36 @@ section.treeheading {
         .pointscolumn {
             font-size: 30px;
         }
-        .nofeedback {
+        .nofeedback, .nodeliveries {
             color: #aaa;
+        }
+        section.gradecolumn {
+            line-height: 1.6em;
+            .is_passing_grade {
+                .not_passing_grade {
+                    @include warningInlineItem();
+                }
+                .passing_grade {
+                    @include goodInlineItem();
+                }
+            }
+        }
+        .is_opencol{
+            .open {
+                @include warningInlineItem();
+            }
+            .closed {
+                @include goodInlineItem();
+            }
         }
     }
 }
 
 .group_is_open {
-    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+    @include warningInlineItem();
 }
 .group_is_closed {
-    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+    @include goodInlineItem();
 }
 
 
