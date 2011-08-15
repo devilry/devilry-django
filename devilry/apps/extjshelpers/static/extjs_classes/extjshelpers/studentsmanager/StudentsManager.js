@@ -100,7 +100,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'toolbar',
                     dock: 'bottom',
                     ui: 'footer',
-                    items: ['->', {
+                    items: [this.addStudentsButton, '->', {
                         xtype: 'button',
                         text: 'Set examiners',
                         scale: 'large',
