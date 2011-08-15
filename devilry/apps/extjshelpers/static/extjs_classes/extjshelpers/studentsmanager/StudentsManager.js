@@ -296,7 +296,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             draftrecord.save({
                 scope: this,
                 failure: function() {
-                    console.log('Failed to save a draft');
+                    console.error('Failed to save a draft');
+                    console.error(draftrecord);
                 }
             });
         }
