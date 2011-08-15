@@ -106,12 +106,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         scale: 'large',
                         menu: [{
                             text: 'Replace',
+                            iconCls: 'icon-edit-16',
                             listeners: {
                                 scope: this,
                                 click: this.onReplaceExaminers
                             }
                         }, {
                             text: 'Add',
+                            iconCls: 'icon-add-16',
                             listeners: {
                                 scope: this,
                                 click: this.onAddExaminers
@@ -123,6 +125,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                             }
                         }, {
                             text: 'Clear',
+                            iconCls: 'icon-delete-16',
                             listeners: {
                                 scope: this,
                                 click: this.onClearExaminers
