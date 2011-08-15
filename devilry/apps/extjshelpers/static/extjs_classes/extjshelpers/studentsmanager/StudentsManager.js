@@ -119,6 +119,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         }]
                     }, {
                         xtype: 'button',
+                        text: 'Add deadline to selected',
+                        scale: 'large',
+                        listeners: {
+                            scope: this,
+                            click: this.onAddDeadline
+                        }
+                    }, {
+                        xtype: 'button',
                         text: 'Change examiners on selected',
                         scale: 'large',
                         menu: [{
@@ -210,6 +218,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    onAddDeadline: function() {
+        console.log('TODO');
+    },
+
+    /**
+     * @private
+     */
     onSetExaminers: function(append) {
         if(this.noneSelected()) {
             this.onSelectNone();
@@ -278,7 +293,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 }
             }
         });
-
     },
 
 
