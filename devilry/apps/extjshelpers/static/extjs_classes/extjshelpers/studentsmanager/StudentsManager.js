@@ -177,7 +177,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onPublishFeedback: function(feedbackdraftModelName, draftstring) {
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.giveFeedbackToSelected,
@@ -190,25 +190,25 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
         //console.log(feedbackdraftModelName);
-        //console.log(draftstring);
+        var msg = Ext.String.format('Processing group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        if(record.data.latest_delivery_id != null) {
+            var draftrecord = Ext.create(feedbackdraftModelName, {
+                draft: draftstring,
+                published: true,
+                delivery: record.data.latest_delivery_id
+            });
+            draftrecord.save({
+                scope: this,
+                failure: function() {
+                    console.log('Failed to save a draft');
+                }
+            });
+        }
+
         if(index == total) {
             this.getEl().unmask();
-        } else {
-            var msg = Ext.String.format('Processing group {0}/{1}', index, total);
-            this.getEl().mask(msg);
-            if(record.data.latest_delivery_id != null) {
-                var draftrecord = Ext.create(feedbackdraftModelName, {
-                    draft: draftstring,
-                    published: true,
-                    delivery: record.data.latest_delivery_id
-                });
-                draftrecord.save({
-                    scope: this,
-                    failure: function() {
-                        console.log('Failed to save a draft');
-                    }
-                });
-            }
         }
     },
     
