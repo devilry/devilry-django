@@ -11,15 +11,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
          */
         usernames: [],
 
-        buttonLabel: 'Save',
-        saveScope: undefined,
-        saveCallback: undefined,
-        saveExtraArgs: []
-    },
-
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
+        buttonLabel: 'Save'
     },
 
     helptext:
@@ -27,6 +19,20 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
         '   <p>One username on each line. Example:</p>' +
         '   <pre style="border: 1px solid #999; padding: 5px;">bob\nalice\neve\ndave</pre>' +
         '</section>',
+
+    constructor: function(config) {
+        this.addEvents(
+            /**
+             * @event
+             * Fired when the save button is clicked.
+             *
+             * @param setlistofusersobj This object.
+             * @param usernames Array of usernames.
+             */
+            'saveClicked');
+        this.initConfig(config);
+        this.callParent([config]);
+    },
 
     initComponent: function() {
         var currentValue = "";
@@ -94,6 +100,6 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
      */
     onSave: function() {
         var usernames = this.parseInput(this.userinput.getValue());
-        Ext.bind(this.saveCallback, this.saveScope, this.saveExtraArgs, true)(this, usernames);
+        this.fireEvent('saveClicked', this, usernames);
     }
 });

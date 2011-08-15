@@ -148,10 +148,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             items: {
                 xtype: 'setlistofusers',
                 usernames: ['donald', 'scrooge'],
-                saveScope: this,
-                saveCallback: this.setExaminersOnSelected,
-                saveExtraArgs: []
-            }
+                listeners: {
+                    scope: this,
+                    saveClicked: this.setExaminersOnSelected
+                }
+            },
         });
         win.show();
     },
@@ -160,8 +161,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
-    setExaminersOnSelected: function(panel, usernames) {
-        panel.up('window').close();
+    setExaminersOnSelected: function(setlistofusersobj, usernames) {
+        setlistofusersobj.up('window').close();
         this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
@@ -180,7 +181,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         record.data.fake_examiners = usernames;
         record.save({
             failure: function() {
-                // TODO: Exception is raised on save, but not here??
+                // TODO: Find out why exception is raised on save, but not here??
                 console.error('Failed to save record');
             }
         });
