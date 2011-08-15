@@ -94,6 +94,6 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
      */
     onSave: function() {
         var usernames = this.parseInput(this.userinput.getValue());
-        Ext.bind(this.saveCallback, this.saveScope, this.saveExtraArgs, true)(usernames);
+        Ext.bind(this.saveCallback, this.saveScope, this.saveExtraArgs, true)(this, usernames);
     }
 });

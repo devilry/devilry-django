@@ -130,6 +130,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    onSelectNone: function() {
+        Ext.MessageBox.alert('No element(s) selected', 'You must select at least one group to use the selected action.');
+    },
+
+    /**
+     * @private
+     */
     onSetExaminers: function() {
         var win = Ext.widget('window', {
             title: 'Set examiners',
@@ -149,18 +156,38 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         win.show();
     },
 
+
     /**
      * @private
      */
-    setExaminersOnSelected: function(usernames) {
-        console.log(usernames);
+    setExaminersOnSelected: function(panel, usernames) {
+        panel.up('window').close();
+        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.setExaminers,
+            extraArgs: [usernames]
+        });
     },
 
     /**
      * @private
      */
-    onSelectNone: function() {
-        Ext.MessageBox.alert('No element(s) selected', 'You must select at least one group to use the selected action.');
+    setExaminers: function(record, index, total, usernames) {
+        var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        record.data.fake_examiners = usernames;
+        record.save({
+            failure: function() {
+                // TODO: Exception is raised on save, but not here??
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.getEl().unmask();
+        }
     },
 
     /**
@@ -239,7 +266,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
         //console.log(feedbackdraftModelName);
-        var msg = Ext.String.format('Processing group {0}/{1}', index, total);
+        var msg = Ext.String.format('Setting feedback on group {0}/{1}', index, total);
         this.getEl().mask(msg);
 
         if(record.data.latest_delivery_id != null) {
