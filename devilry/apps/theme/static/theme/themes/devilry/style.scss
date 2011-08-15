@@ -62,6 +62,16 @@ body {
     white-space: nowrap;
 }
 
+@mixin goodInlineItem() {
+    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+}
+@mixin neutralInlineItem() {
+    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+}
+@mixin warningInlineItem() {
+    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+
 @mixin commonSectionElements() {
     strong {
         font-weight: bold;
@@ -257,13 +267,18 @@ header {
  * SearchWidget
  *
  */
+
+.widget-searchfield {
+    font-size: 24px;
+    line-height: normal !important;
+    height: auto !important;
+    padding: 4px 15px 4px 15px !important;
+    border-radius: 20px;
+}
+
+
 .widget-searchwidget {
     .widget-searchfield {
-        font-size: 24px;
-        line-height: normal !important;
-        height: auto !important;
-        padding: 4px 15px 4px 15px !important;
-        border-radius: 20px;
         width: $mainwidth !important;
     }
 }
@@ -389,17 +404,17 @@ a.warning-button {
  *
  */
 
-.icon-delete-16 { background-image: url(icons/16x16/delete.png); }
-.icon-edit-16 { background-image: url(icons/16x16/edit.png); }
-.icon-save-16 { background-image: url(icons/16x16/save.png); }
-.icon-save-16 { background-image: url(icons/16x16/save.png); }
-.icon-add-16 { background-image: url(icons/16x16/add.png); }
+.icon-delete-16 { background-image: url(icons/16x16/delete.png) !important; }
+.icon-edit-16 { background-image: url(icons/16x16/edit.png) !important; }
+.icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
+.icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
+.icon-add-16 { background-image: url(icons/16x16/add.png) !important; }
 
-.icon-delete-32 { background-image: url(icons/32x32/delete.png); }
-.icon-edit-32 { background-image: url(icons/32x32/edit.png); }
-.icon-save-32 { background-image: url(icons/32x32/save.png); }
-.icon-save-32 { background-image: url(icons/32x32/save.png); }
-.icon-add-32 { background-image: url(icons/32x32/add.png); }
+.icon-delete-32 { background-image: url(icons/32x32/delete.png) !important; }
+.icon-edit-32 { background-image: url(icons/32x32/edit.png) !important; }
+.icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
+.icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
+.icon-add-32 { background-image: url(icons/32x32/add.png) !important; }
 
 
 
@@ -490,7 +505,7 @@ span.error {
 }
 
 span.menuref {
-    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+    @include neutralInlineItem();
 }
 
 table.verticalinfotable {
@@ -732,17 +747,36 @@ section.treeheading {
         .pointscolumn {
             font-size: 30px;
         }
-        .nofeedback {
+        .nofeedback, .nodeliveries {
             color: #aaa;
+        }
+        section.gradecolumn {
+            line-height: 1.6em;
+            .is_passing_grade {
+                .not_passing_grade {
+                    @include warningInlineItem();
+                }
+                .passing_grade {
+                    @include goodInlineItem();
+                }
+            }
+        }
+        .is_opencol{
+            .open {
+                @include warningInlineItem();
+            }
+            .closed {
+                @include goodInlineItem();
+            }
         }
     }
 }
 
 .group_is_open {
-    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+    @include warningInlineItem();
 }
 .group_is_closed {
-    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+    @include goodInlineItem();
 }
 
 

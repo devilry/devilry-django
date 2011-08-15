@@ -226,12 +226,14 @@ header {
  * SearchWidget
  *
  */
-.widget-searchwidget .widget-searchfield {
+.widget-searchfield {
   font-size: 24px;
   line-height: normal !important;
   height: auto !important;
   padding: 4px 15px 4px 15px !important;
-  border-radius: 20px;
+  border-radius: 20px; }
+
+.widget-searchwidget .widget-searchfield {
   width: 930px !important; }
 
 .multisearchresults {
@@ -329,34 +331,34 @@ a.warning-button {
  *
  */
 .icon-delete-16 {
-  background-image: url(icons/16x16/delete.png); }
+  background-image: url(icons/16x16/delete.png) !important; }
 
 .icon-edit-16 {
-  background-image: url(icons/16x16/edit.png); }
+  background-image: url(icons/16x16/edit.png) !important; }
 
 .icon-save-16 {
-  background-image: url(icons/16x16/save.png); }
+  background-image: url(icons/16x16/save.png) !important; }
 
 .icon-save-16 {
-  background-image: url(icons/16x16/save.png); }
+  background-image: url(icons/16x16/save.png) !important; }
 
 .icon-add-16 {
-  background-image: url(icons/16x16/add.png); }
+  background-image: url(icons/16x16/add.png) !important; }
 
 .icon-delete-32 {
-  background-image: url(icons/32x32/delete.png); }
+  background-image: url(icons/32x32/delete.png) !important; }
 
 .icon-edit-32 {
-  background-image: url(icons/32x32/edit.png); }
+  background-image: url(icons/32x32/edit.png) !important; }
 
 .icon-save-32 {
-  background-image: url(icons/32x32/save.png); }
+  background-image: url(icons/32x32/save.png) !important; }
 
 .icon-save-32 {
-  background-image: url(icons/32x32/save.png); }
+  background-image: url(icons/32x32/save.png) !important; }
 
 .icon-add-32 {
-  background-image: url(icons/32x32/add.png); }
+  background-image: url(icons/32x32/add.png) !important; }
 
 /**
  *
@@ -886,8 +888,42 @@ section.treeheading {
     content: ""; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
   font-size: 30px; }
-.studentsmanager .widget-studentsmanager_studentsgrid .nofeedback {
+.studentsmanager .widget-studentsmanager_studentsgrid .nofeedback, .studentsmanager .widget-studentsmanager_studentsgrid .nodeliveries {
   color: #aaa; }
+.studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn {
+  line-height: 1.6em; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .not_passing_grade {
+    border: 1px solid #e64d00;
+    border-radius: 3px;
+    background-color: #cc4400;
+    color: #ffeee5;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .passing_grade {
+    border: 1px solid #88cc00;
+    border-radius: 3px;
+    background-color: #77b300;
+    color: #f7ffe5;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
+.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .open {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
 
 .group_is_open {
   border: 1px solid #e64d00;

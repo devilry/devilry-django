@@ -28,30 +28,54 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '</ul>'
     ),
 
+    isOpenColTpl: Ext.create('Ext.XTemplate', 
+        '<span class="is_opencol">',
+        '    <tpl if="is_open">',
+        '       <span class="open">Open</div>',
+        '    </tpl>',
+        '    <tpl if="!is_open">',
+        '       <span class="closed">Closed</div>',
+        '   </tpl>',
+        '</span>'
+    ),
+
+    deliveriesColTpl: Ext.create('Ext.XTemplate', 
+        '<span class="deliveriescol">',
+        '    <tpl if="number_of_deliveries &gt; 0">',
+        '       {number_of_deliveries}',
+        '    </tpl>',
+        '    <tpl if="number_of_deliveries == 0">',
+        '       <span class="nodeliveries">0</div>',
+        '   </tpl>',
+        '</span>'
+    ),
+
     pointsColTpl: Ext.create('Ext.XTemplate', 
         '<span class="pointscolumn">',
         '    <tpl if="feedback">',
         '       {feedback__points}',
         '    </tpl>',
         '    <tpl if="!feedback">',
-        '       <div class="nofeedback">&empty;</div>',
+        '       <span class="nofeedback">&empty;</span>',
         '   </tpl>',
         '</span>'
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
-        '<div class="gradecolumn">',
+        '<section class="gradecolumn">',
         '   <tpl if="feedback">',
+        '        <div class="is_passing_grade">Passing grade?',
+        '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">yes</span></tpl>',
+        '           <tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">no</span></tpl>',
+        '        </div>',
         '        <div class="grade">Grade: {feedback__grade}</div>',
-        '        <div class="passing_grade">Passing grade? {feedback__is_passing_grade}</div>',
-        '        <div class="grade"></div>',
         '   </tpl>',
         '    <tpl if="!feedback">',
         '        <div class="nofeedback">',
         '           No feedback',
         '        </div>',
         '    </tpl>',
-        '</div>'
+        '</section>'
     ),
 
     constructor: function(config) {
@@ -81,13 +105,19 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             }],
 
             columns: [{
-                text: 'Group name', dataIndex: 'name', flex: 2
+                text: 'Open?', dataIndex: 'id', width: 60,
+                renderer: this.formatIsOpenCol
             }, {
-                text: 'Students', dataIndex: 'id', flex: 2,
+                text: 'Group name', dataIndex: 'name', flex: 4
+            }, {
+                text: 'Students', dataIndex: 'id', flex: 4,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 2,
+                text: 'Examiners', dataIndex: 'id', flex: 4,
                 renderer: this.formatExaminersCol
+            }, {
+                text: 'Deliveries', dataIndex: 'id', flex: 2,
+                renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
                 columns: [{
@@ -107,12 +137,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         this.store.load();
     },
 
+    formatIsOpenCol: function(value, p, record) {
+        return this.isOpenColTpl.apply(record.data);
+    },
+
     formatCandidatesCol: function(value, p, record) {
         return this.candidatesCol.apply(record.data);
     },
 
     formatExaminersCol: function(value, p, record) {
         return this.examinersCol.apply(record.data);
+    },
+
+    formatDeliveriesCol: function(value, p, record) {
+        return this.deliveriesColTpl.apply(record.data);
     },
 
     formatPointsCol: function(value, p, record) {
