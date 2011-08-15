@@ -102,6 +102,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
+                        text: 'Close/open selected',
+                        scale: 'large',
+                        menu: [{
+                            text: 'Close',
+                            listeners: {
+                                scope: this,
+                                click: this.onCloseGroups
+                            }
+                        }, {
+                            text: 'Open',
+                            listeners: {
+                                scope: this,
+                                click: this.onOpenGroups
+                            }
+                        }]
+                    }, {
+                        xtype: 'button',
                         text: 'Change examiners on selected',
                         scale: 'large',
                         menu: [{
@@ -121,7 +138,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         }, {
                             text: 'Random distribute',
                             listeners: {
-                                scope: this
+                                scope: this,
+                                click: this.onRandomDistributeExaminers
                             }
                         }, {
                             text: 'Clear',
@@ -167,6 +185,27 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.assignmentgroupstore.load();
     },
 
+
+    /**
+     * @private
+     */
+    onCloseGroups: function() {
+        console.log('TODO');
+    },
+
+    /**
+     * @private
+     */
+    onOpenGroups: function() {
+        console.log('TODO');
+    },
+
+    /**
+     * @private
+     */
+    onRandomDistributeExaminers: function() {
+        console.log('TODO');
+    },
 
     /**
      * @private
