@@ -102,24 +102,30 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
-                        text: 'Examiners',
+                        text: 'Change examiners on selected',
                         scale: 'large',
                         menu: [{
-                            text: 'Replace examiners',
+                            text: 'Replace',
                             listeners: {
                                 scope: this,
                                 click: this.onReplaceExaminers
                             }
                         }, {
-                            text: 'Add examiners',
+                            text: 'Add',
                             listeners: {
                                 scope: this,
                                 click: this.onAddExaminers
                             }
                         }, {
-                            text: 'Random distribute examiners',
+                            text: 'Random distribute',
                             listeners: {
                                 scope: this
+                            }
+                        }, {
+                            text: 'Clear',
+                            listeners: {
+                                scope: this,
+                                click: this.onClearExaminers
                             }
                         }]
                     }, this.giveFeedbackButton]
@@ -202,6 +208,34 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     onReplaceExaminers: function() {
         this.onSetExaminers(false);
+    },
+
+    /**
+     * @private
+     */
+    onClearExaminers: function() {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+
+        Ext.MessageBox.show({
+            title: 'Confirm clear examiners?',
+            msg: 'Are you sure you want to clear examiners on all the selected items?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            scope: this,
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                        scope: this,
+                        callback: this.setExaminers,
+                        extraArgs: [[], false]
+                    });
+                }
+            }
+        });
+
     },
 
 
