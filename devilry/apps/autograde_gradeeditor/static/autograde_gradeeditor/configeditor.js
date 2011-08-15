@@ -25,62 +25,45 @@
      * @param config Get the grade editor configuration that is stored on the
      *      current assignment.
      */
-    //'maxpoints'
-    //'approvedlimit'
-    //'grades'
-    //'pointlabel'
-    //'feedbacklabel'
-
     initializeEditor: function(config) {
-        this.getMainWin().changeSize(500, 500); 
+        //this.getMainWin().changeSize(500, 500); 
 
         // Load configuration, and fall back on defaults
+        console.log("test");
         var configobj = {
-            maxpoints: 100,
-            approvedlimit: 60,
-            pointlabel: 'Enter points',
-            feedbacklabel: 'Enter feedback',
-            grades: 'approved: 60\nnot approved: 0'
+            maxpoints: 'Example: 100',
+            approvedlimit: 'Example: 60',
+            grades: 'Example: approved: 60'
         };
-        if(config.config) {
-            configobj = Ext.JSON.decode(config.config);
-        }
 
         // Create and add the fields
-        this.pointlabelField = Ext.widget('textfield', {
-            fieldLabel: 'Points label',
-            flex: 0,
-            value: configobj.pointlabel
-        });
-        this.add(this.pointlabelField);
-        
-        this.feedbacklabelField = Ext.widget('textfield', {
-            fieldLabel: 'Feedback label',
-            flex: 0,
-            value: configobj.feedbacklabel
-        });
-        this.add(this.feedbacklabelField);
-
         this.approvedlimitField = Ext.widget('numberfield', {
             fieldLabel: 'Points to pass assignment',
             flex: 0,
-            value: configobj.approvedlimit
+            emptyText: configobj.approvedlimit
         });
         this.add(this.approvedlimitField);
         
         this.maxpointsField = Ext.widget('numberfield', {
             fieldLabel: 'Maximum number of points',
             flex: 0,
-            value: configobj.maxpoints
+            emptyText: configobj.maxpoints
         });
         this.add(this.maxpointsField);
 
         this.gradeField = Ext.widget('textareafield', {
             fieldLabel: 'Grades',
             flex: 1,
-            value: configobj.grades
+            emptyText: configobj.grades
         });
         this.add(this.gradeField);
+
+        if(config.config) {
+            configobj = Ext.JSON.decode(config.config);
+            this.approvedlimitField.setValue(configobj.approvedlimit);
+            this.maxpointsField.setValue(configobj.maxpoints);
+            this.gradeField.setValue(this.parseGradeValue(configobj.grades));
+        }
 
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -94,8 +77,6 @@
                 maxpoints: this.maxpointsField.getValue(),
                 approvedlimit: this.approvedlimitField.getValue(),
                 grades: this.parseTextToGradeList(this.gradeField.getValue()),
-                pointlabel: this.pointlabelField.getValue(),
-                feedbacklabel: this.feedbacklabelField.getValue()
             });
             this.getMainWin().saveConfig(config, this.onFailure);
         }
@@ -116,6 +97,22 @@
     onFailure: function() {
         console.error('Failed!');
     },
+
+    parseGradeValue: function(gradestring) {
+        var retval = '';
+        var i=0;
+        for (i=0; i<gradestring.length; i++) {
+            if (i != 0) {
+                retval = retval + '\n';
+            }
+            var grade = gradestring[i] + "";
+            var gradearray = grade.split(',');
+            retval = retval+gradearray[0]+" : "+gradearray[1];
+        }
+
+        console.log("retval: " + retval);
+        return retval;
+    },
     
     parseTextToGradeList: function(rawValue) {
         var asArray = rawValue.split('\n');
@@ -124,7 +121,9 @@
         Ext.Array.each(asArray, function(line) {
             line = Ext.String.trim(line);
             var split = line.split(/\s*:\s*/, 2);
-            resultArray.push(split);
+            if(split != '') {
+                resultArray.push(split);
+            }
         });
         return resultArray;
     },
