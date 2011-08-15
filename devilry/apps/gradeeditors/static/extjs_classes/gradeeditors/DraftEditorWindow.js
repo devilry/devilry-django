@@ -44,6 +44,28 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
 
     initComponent: function() {
         Ext.apply(this, {
+            items: {
+                xtype: 'panel',
+                frame: false,
+                border: false,
+                layout: 'fit',
+                loader: {
+                    url: this.registryitem.draft_editor_url,
+                    renderer: 'component',
+                    autoLoad: true,
+                    loadMask: true,
+                    scope: this, // for success and failure
+                    success: this.onLoadDraftEditorSuccess,
+                    failure: this.onLoadDraftEditorFailure
+                }
+            }
+        });
+        this.initComponentExtra();
+        this.callParent(arguments);
+    },
+
+    initComponentExtra: function() {
+        Ext.apply(this, {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
@@ -67,29 +89,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                         click: this.onPublish
                     }
                 }]
-            }],
-
-            items: {
-                xtype: 'panel',
-                frame: false,
-                border: false,
-                layout: 'fit',
-                loader: {
-                    url: this.registryitem.draft_editor_url,
-                    renderer: 'component',
-                    autoLoad: true,
-                    loadMask: true,
-                    scope: this, // for success and failure
-                    success: this.onLoadDraftEditorSuccess,
-                    failure: this.onLoadDraftEditorFailure
-                    //listeners: {
-                        //scope: this,
-                        //load: this.onLoadDraftEditorSuccess
-                    //}
-                }
-            }
+            }]
         });
-        this.callParent(arguments);
     },
 
     /**

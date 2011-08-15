@@ -29,6 +29,26 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
         this.addEvents('createNewDraft');
     },
 
+    initComponentExtra: function() {
+        Ext.apply(this, {
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: ['->', {
+                    xtype: 'button',
+                    text: 'Publish this feedback to all selected groups',
+                    scale: 'large',
+                    iconCls: 'icon-add-32',
+                    listeners: {
+                        scope: this,
+                        click: this.onPublish
+                    }
+                }]
+            }]
+        });
+    },
+
     /**
      * @private
      *
