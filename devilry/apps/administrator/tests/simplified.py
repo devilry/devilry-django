@@ -1031,6 +1031,8 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
     def setUp(self):
         super(TestSimplifiedAdminAssignmentGroup, self).setUp()
+        self.add_delivery(self.inf101_firstsem_a1_g1)
+        self.secondDelivery = self.add_delivery(self.inf101_firstsem_a1_g1)
 
     def test_search_filters(self):
         qrywrap = SimplifiedAssignment.search(self.admin1)
@@ -1066,13 +1068,16 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_secondsem_a1_g1, self.baseFields),
                         modelinstance_to_dict(self.inf110_secondsem_a2_g1, self.baseFields),
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2, self.baseFields),
-                        modelinstance_to_dict(self.inf101_secondsem_a2_g2, self.baseFields),
-                        ]
+                        modelinstance_to_dict(self.inf101_secondsem_a2_g2, self.baseFields)]
+        expected_res[0].update(dict(latest_delivery_id=self.secondDelivery.id))
+        for expected_resitem in expected_res[1:]:
+            expected_resitem.update(dict(latest_delivery_id=None))
 
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
 
     def test_search_allextras(self):
         # search with no query and with extra fields
