@@ -212,11 +212,24 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     openOrCloseGroups: function(is_open) {
-        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+        var action = is_open? 'open': 'close';
+        Ext.MessageBox.show({
+            title: Ext.String.format('Confirm {0} groups?', action),
+            msg: Ext.String.format('Are you sure you want to {0} the selected groups?', action),
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
             scope: this,
-            callback: this.openOrCloseGroup,
-            extraArgs: [is_open]
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                        scope: this,
+                        callback: this.openOrCloseGroup,
+                        extraArgs: [is_open]
+                    });
+                }
+            }
         });
+
     },
 
     /**
@@ -311,7 +324,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         Ext.MessageBox.show({
             title: 'Confirm clear examiners?',
-            msg: 'Are you sure you want to clear examiners on all the selected items?',
+            msg: 'Are you sure you want to clear examiners on all the selected groups?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             scope: this,
