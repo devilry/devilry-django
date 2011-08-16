@@ -102,6 +102,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
+                        text: 'Close/open selected',
+                        scale: 'large',
+                        menu: [{
+                            text: 'Close',
+                            listeners: {
+                                scope: this,
+                                click: this.onCloseGroups
+                            }
+                        }, {
+                            text: 'Open',
+                            listeners: {
+                                scope: this,
+                                click: this.onOpenGroups
+                            }
+                        }]
+                    }, {
+                        xtype: 'button',
+                        text: 'Add deadline to selected',
+                        scale: 'large',
+                        listeners: {
+                            scope: this,
+                            click: this.onAddDeadline
+                        }
+                    }, {
+                        xtype: 'button',
                         text: 'Change examiners on selected',
                         scale: 'large',
                         menu: [{
@@ -121,7 +146,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         }, {
                             text: 'Random distribute',
                             listeners: {
-                                scope: this
+                                scope: this,
+                                click: this.onRandomDistributeExaminers
                             }
                         }, {
                             text: 'Clear',
@@ -167,6 +193,79 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.assignmentgroupstore.load();
     },
 
+
+    /**
+     * @private
+     */
+    onCloseGroups: function() {
+        this.openOrCloseGroups(false);
+    },
+
+    /**
+     * @private
+     */
+    onOpenGroups: function() {
+        this.openOrCloseGroups(true);
+    },
+
+    /**
+     * @private
+     */
+    openOrCloseGroups: function(is_open) {
+        var action = is_open? 'open': 'close';
+        Ext.MessageBox.show({
+            title: Ext.String.format('Confirm {0} groups?', action),
+            msg: Ext.String.format('Are you sure you want to {0} the selected groups?', action),
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            scope: this,
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                        scope: this,
+                        callback: this.openOrCloseGroup,
+                        extraArgs: [is_open]
+                    });
+                }
+            }
+        });
+
+    },
+
+    /**
+     * @private
+     */
+    openOrCloseGroup: function(record, index, total, is_open) {
+        var msg = Ext.String.format('Closing group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.is_open = is_open;
+        editRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    },
+
+    /**
+     * @private
+     */
+    onRandomDistributeExaminers: function() {
+        console.log('TODO');
+    },
+
+    /**
+     * @private
+     */
+    onAddDeadline: function() {
+        console.log('TODO');
+    },
 
     /**
      * @private
@@ -225,7 +324,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         Ext.MessageBox.show({
             title: 'Confirm clear examiners?',
-            msg: 'Are you sure you want to clear examiners on all the selected items?',
+            msg: 'Are you sure you want to clear examiners on all the selected groups?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             scope: this,
@@ -239,7 +338,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 }
             }
         });
-
     },
 
 
@@ -256,6 +354,21 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
     },
 
+
+    /**
+     * @private
+     */
+    createRecordFromStoreRecord: function(record) {
+        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
+            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
+            id: record.data.id,
+            name: record.data.name,
+            is_open: record.data.is_open,
+            parentnode: record.data.parentnode,
+        });
+        return editRecord;
+    },
+
     /**
      * @private
      */
@@ -264,20 +377,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.getEl().mask(msg);
 
         if(append) {
-            console.log(record);
             usernames = Ext.Array.merge(usernames, record.data.examiners__username);
-            console.log(usernames);
         };
 
-        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
-            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
-            id: record.data.id,
-            name: record.data.name,
-            is_open: record.data.is_open,
-            parentnode: record.data.parentnode,
-            fake_examiners: usernames
-        });
-
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.fake_examiners = usernames;
         editRecord.save({
             failure: function() {
                 console.error('Failed to save record');
