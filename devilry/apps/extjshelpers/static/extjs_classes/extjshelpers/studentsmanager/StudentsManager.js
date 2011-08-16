@@ -198,14 +198,46 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onCloseGroups: function() {
-        console.log('TODO');
+        this.openOrCloseGroups(false);
     },
 
     /**
      * @private
      */
     onOpenGroups: function() {
-        console.log('TODO');
+        this.openOrCloseGroups(true);
+    },
+
+    /**
+     * @private
+     */
+    openOrCloseGroups: function(is_open) {
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.openOrCloseGroup,
+            extraArgs: [is_open]
+        });
+    },
+
+    /**
+     * @private
+     */
+    openOrCloseGroup: function(record, index, total, is_open) {
+        var msg = Ext.String.format('Closing group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.is_open = is_open;
+        editRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
     },
 
     /**
