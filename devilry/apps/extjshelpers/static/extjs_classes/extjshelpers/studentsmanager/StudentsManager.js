@@ -17,6 +17,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     mixins: {
         manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers',
+        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
+        createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
         closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
@@ -200,57 +202,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.assignmentgroupstore.load();
     },
 
-    /**
-     * @private
-     */
-    onAddDeadline: function() {
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
-        if(this.noneSelected()) {
-            this.onSelectNone();
-            return;
-        }
-        var me = this;
-        var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
-            deadlinemodel: this.deadlinemodel,
-            onSaveSuccess: function(record) {
-                this.close();
-                me.addDeadlineToSelected(record);
-            }
-        });
-        createDeadlineWindow.show();
-    },
-
-    /**
-     * @private
-     */
-    addDeadlineToSelected: function(record) {
-        this.down('studentsmanager_studentsgrid').performActionOnSelected({
-            scope: this,
-            callback: this.addDeadline,
-            extraArgs: [record]
-        });
-    },
-
-    /**
-     * @private
-     */
-    addDeadline: function(assignmentGroupRecord, index, total, deadlineRecord) {
-        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
-        this.getEl().mask(msg);
-
-        var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
-        newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
-        newDeadlineRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
-            }
-        });
-
-        if(index == total) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-        }
-    },
 
 
 
@@ -367,30 +318,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }
     },
     
-    /**
-     * @private
-     */
-    onManuallyCreateUsers: function() {
-        var win = Ext.widget('window', {
-            title: 'Create assignment groups',
-            modal: true,
-            width: 830,
-            height: 600,
-            maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'manuallycreateusers',
-                assignmentid: this.assignmentid
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    this.refreshStore();
-                }
-            }
-        });
-        win.show();
-    },
     
     /**
      * @private

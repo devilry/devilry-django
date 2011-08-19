@@ -1,7 +1,7 @@
 /** The close/open methods for StudentsManager.
  *
- * Note that this class depends on createRecordFromStoreRecord() and
- * loadFirstPage() from StudentsManager to be available. */
+ * Note that this class depends on createRecordFromStoreRecord(),
+ * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
     /**
      * @private
