@@ -3,9 +3,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     alias: 'widget.administrator_studentsmanager',
 
     mixins: {
-        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers',
-        createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
-        loadRelatedUsers: 'devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin'
+        manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
+        createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin'
     },
 
     constructor: function(config) {

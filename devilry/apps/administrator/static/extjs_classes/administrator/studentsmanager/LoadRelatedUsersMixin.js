@@ -1,5 +1,4 @@
-Ext.define('devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin', {
-
+Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
     loadAllRelatedUsers: function(modelname, callback) {
         var relatedUserModel = Ext.ModelManager.getModel(modelname);
 
