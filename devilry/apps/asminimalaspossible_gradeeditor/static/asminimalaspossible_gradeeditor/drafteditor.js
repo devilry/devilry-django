@@ -38,15 +38,17 @@
                         buttonLabel: 'Hello world!',
                         listeners: {
                             scope: this,
-                            gotSomeValue: function(stuff) {
-                                console.log(stuff);
-                            }
+                            gotSomeValue: this.onGotSomeValue
                         }
                     });
                     win.show();
                 }
             }
         });
+    },
+
+    onGotSomeValue: function() {
+        console.log(stuff);
     },
 
     /**
