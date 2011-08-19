@@ -15,6 +15,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.gradeeditors.EditManyDraftEditorWindow'
     ],
 
+    mixins: {
+        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
+    },
+
     config: {
         /**
          * @cfg
