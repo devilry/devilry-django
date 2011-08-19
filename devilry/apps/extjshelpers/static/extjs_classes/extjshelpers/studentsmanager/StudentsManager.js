@@ -39,6 +39,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent([config]);
         this.initConfig(config);
 
+        this.role = this.isAdministrator? 'administrator': 'examiner';
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
@@ -163,7 +164,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     createRecordFromStoreRecord: function(record) {
-        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
+        var modelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedAssignmentGroup', this.role);
+        var editRecord = Ext.create(modelname, {
             // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
             id: record.data.id,
             name: record.data.name,
