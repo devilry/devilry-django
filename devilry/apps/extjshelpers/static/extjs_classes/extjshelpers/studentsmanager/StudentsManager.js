@@ -266,7 +266,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onAddDeadline: function() {
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -302,7 +302,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
         newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
-        console.log(newDeadlineRecord);
         newDeadlineRecord.save({
             failure: function() {
                 console.error('Failed to save record');
@@ -517,7 +516,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
-        //console.log(feedbackdraftModelName);
         var msg = Ext.String.format('Setting feedback on group {0}/{1}', index, total);
         this.getEl().mask(msg);
 
@@ -595,7 +593,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.assignmentgroupstore.loadPage(1, {
             scope: this,
             callback: function(records, operation, success) {
-                //console.log(records);
             }
         });
     },
