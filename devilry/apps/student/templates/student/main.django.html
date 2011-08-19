@@ -78,8 +78,9 @@
             }],
             listeners: {
                 scope: this,
-                itemmouseup: function() {
-                    window.location = "http://www.vg.no";
+                itemmouseup: function(view, record) {
+                    var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
+                    window.location = url;
                 }
             }
         });
