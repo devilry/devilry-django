@@ -6,7 +6,6 @@
 {{ block.super }}
 
 <script>
-    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/examiner/';
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
@@ -14,17 +13,9 @@
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
 
-    Ext.require('devilry.administrator.assignment.PrettyView');
-    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
+    Ext.require('devilry.examiner.AssignmentView');
     Ext.onReady(function() {
-        var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
-            renderTo: 'content-main',
-            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-            objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL,
-            assignmentgroupstore: assignmentgroupstore
-        });
+        var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         var heading = Ext.ComponentManager.create({
             xtype: 'component',
@@ -38,26 +29,16 @@
                 '</tpl>'
             ]
         });
-
-        prettyview.addListener('loadmodel', function(record) {
-            heading.update(record.data);
-            {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
-            {# prettyview.onStudents(); #}
+        assignment_recordcontainer.addListener('setRecord', function() {
+            heading.update(assignment_recordcontainer.record.data);
         });
 
-        // prettyview.addListener('edit', function(record, button) {
-            // var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                // prettyview: prettyview,
-                // listeners: {
-                    // scope: this,
-                    // close: function() {
-                        // button.toggle(false);
-                    // }
-                // }
-            // });
-            // editwindow.show();
-            // editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
-        // });
+        var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
+            renderTo: 'content-main',
+            assignment_recordcontainer: assignment_recordcontainer,
+            assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            assignmentid: {{ assignmentid }}
+        });
     });
 </script>
 {% endblock %}
