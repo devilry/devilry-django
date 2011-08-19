@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
     /**
      * @private
      */
-    onManuallyCreateUsers: function() {
+    showManuallyCreateUsersWindow: function(initialLines) {
         var win = Ext.widget('window', {
             title: 'Create assignment groups',
             modal: true,
@@ -14,7 +14,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
             layout: 'fit',
             items: {
                 xtype: 'manuallycreateusers',
-                assignmentid: this.assignmentid
+                assignmentid: this.assignmentid,
+                initialLines: initialLines
             },
             listeners: {
                 scope: this,
@@ -29,43 +30,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
     /**
      * @private
      */
+    onManuallyCreateUsers: function() {
+        this.showManuallyCreateUsersWindow();
+    },
+
+    /**
+     * @private
+     */
     onOneGroupForEachRelatedStudent: function() {
-        this.loadAllRelatedStudents();
-    },
-
-    loadAllRelatedStudents: function() {
-        var relatedStudentModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedRelatedStudent');
-
-        var relatedStudentStore = Ext.create('Ext.data.Store', {
-            model: relatedStudentModel,
-            remoteFilter: true,
-            remoteSort: true
-        });
-
-        relatedStudentStore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'period',
-            comp: 'exact',
-            value: this.periodid
-        }]);
-        //deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
-
-        relatedStudentStore.proxy.extraParams.page = 1;
-        relatedStudentStore.pageSize = 1;
-        relatedStudentStore.load({
+        this.loadAllRelatedStudents({
             scope: this,
-            callback: function(records) {
-                relatedStudentStore.proxy.extraParams.page = 1;
-                relatedStudentStore.pageSize = relatedStudentStore.totalCount;
-                relatedStudentStore.load({
-                    scope: this,
-                    callback: this.onLoadAllRelatedStudents
-                });
-            }
+            callback: this.createOneGroupForEachRelatedStudent
+            //args: ['Hello world']
         });
     },
 
-    onLoadAllRelatedStudents: function(records) {
-        console.log(records);
-        console.log(records.length);
+    relatedUserRecordsToArray: function(relatedUsers) {
+        return Ext.Array.map(relatedUsers, function(relatedUser) {
+            return relatedUser.data.username;
+        }, this);
+    },
+
+    /**
+     * @private
+     */
+    createOneGroupForEachRelatedStudent: function(relatedStudents) {
+        this.showManuallyCreateUsersWindow(this.relatedUserRecordsToArray(relatedStudents));
     }
 });

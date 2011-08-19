@@ -20,6 +20,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
         createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
         createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
+        loadRelatedUsers: 'devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin',
         closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
@@ -185,10 +186,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent(arguments);
         this.setSearchfieldAttributes();
 
-        this.addListener('render', function() {
-            //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-            this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
-        }, this);
+        //this.addListener('render', function() {
+            ////this.up('window').addListener('show', this.onManuallyCreateUsers, this);
+            //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+        //}, this);
         this.loadGradeEditorConfigModel();
     },
 

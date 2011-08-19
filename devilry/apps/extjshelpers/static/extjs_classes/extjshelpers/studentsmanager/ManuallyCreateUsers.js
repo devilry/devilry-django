@@ -12,6 +12,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
     config: {
         /**
          * @cfg
+         * Lines to fill in on load (one line for each element in the array).
+         */
+        initialLines: undefined,
+
+        /**
+         * @cfg
          * 
          */
         assignmentid: undefined
@@ -55,10 +61,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
     },
 
     initComponent: function() {
+        var currentValue = "";
+        if(this.initialLines) {
+            Ext.each(this.initialLines, function(line, index) {
+                currentValue += Ext.String.format('{0}\n', line);
+            });
+        };
+
         this.userinput = Ext.widget('textareafield', {
             hideLabel: true,
             emptyText: 'My optional group name:: somestudent, anotherstudent',
-            flex: 10 // Take up all remaining vertical space
+            flex: 10, // Take up all remaining vertical space
+            value: currentValue
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         //this.userinput.setValue('dewey\nlouie:401');
