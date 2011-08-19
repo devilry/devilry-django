@@ -7,4 +7,5 @@ def template_variables(request):
             'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
             'session': request.session,
             'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
-            'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL}
+            'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
+            'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM}

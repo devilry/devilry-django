@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
     /**
      * @private
      */
-    onManuallyCreateUsers: function() {
+    showManuallyCreateUsersWindow: function(initialLines) {
         var win = Ext.widget('window', {
             title: 'Create assignment groups',
             modal: true,
@@ -14,7 +14,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
             layout: 'fit',
             items: {
                 xtype: 'manuallycreateusers',
-                assignmentid: this.assignmentid
+                assignmentid: this.assignmentid,
+                initialLines: initialLines
             },
             listeners: {
                 scope: this,
@@ -24,5 +25,30 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
             }
         });
         win.show();
+    },
+
+    /**
+     * @private
+     */
+    onManuallyCreateUsers: function() {
+        this.showManuallyCreateUsersWindow();
+    },
+
+    /**
+     * @private
+     */
+    onOneGroupForEachRelatedStudent: function() {
+        this.loadAllRelatedStudents({
+            scope: this,
+            callback: this.createOneGroupForEachRelatedStudent
+            //args: ['Hello world']
+        });
+    },
+
+    /**
+     * @private
+     */
+    createOneGroupForEachRelatedStudent: function(relatedStudents) {
+        this.showManuallyCreateUsersWindow(this.relatedUserRecordsToArray(relatedStudents));
     }
 });

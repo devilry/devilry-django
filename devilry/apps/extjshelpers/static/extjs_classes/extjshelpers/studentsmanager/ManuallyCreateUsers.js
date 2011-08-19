@@ -12,6 +12,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
     config: {
         /**
          * @cfg
+         * Lines to fill in on load (one line for each element in the array).
+         */
+        initialLines: undefined,
+
+        /**
+         * @cfg
          * 
          */
         assignmentid: undefined
@@ -19,7 +25,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
 
     helptext:
         '<section class="helpsection">' +
-        '   <h1>Help</h1>' +
+        //'   <h1>Help</h1>' +
         '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box on the right hand side.</p>' +
         '   <h2>Common usage examples</h2>' +
         '   <h3>Individual deliveries</h3>' +
@@ -55,10 +61,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
     },
 
     initComponent: function() {
+        var currentValue = "";
+        if(this.initialLines) {
+            Ext.each(this.initialLines, function(line, index) {
+                currentValue += Ext.String.format('{0}\n', line);
+            });
+        };
+
         this.userinput = Ext.widget('textareafield', {
-            hideLabel: true,
-            emptyText: 'My optional group name:: somestudent, anotherstudent',
-            flex: 10 // Take up all remaining vertical space
+            //hideLabel: true,
+            fieldLabel: 'Assignment groups',
+            labelAlign: 'top',
+            labelWidth: 100,
+            labelStyle: 'font-weight:bold',
+            emptyText: 'Read the text on your right hand side for help...',
+            flex: 10, // Take up all remaining vertical space
+            margin: 10,
+            value: currentValue
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         //this.userinput.setValue('dewey\nlouie:401');
@@ -70,13 +89,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
                 align: 'stretch'
             },
 
-            items: [{
+            items: [this.userinput, {
                 flex: 10,
                 xtype: 'box',
                 padding: 20,
                 autoScroll: true,
                 html: this.helptext
-            }, this.userinput],
+            }],
 
             dockedItems: [{
                 xtype: 'toolbar',

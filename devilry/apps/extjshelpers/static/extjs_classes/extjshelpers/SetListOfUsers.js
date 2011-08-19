@@ -40,20 +40,30 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
     },
 
     initComponent: function() {
-        var currentValue = "";
-        Ext.each(this.usernames, function(username, index) {
-            currentValue += Ext.String.format('{0}\n', username);
-        });
-
         this.userinput = Ext.widget('textareafield', {
             fieldLabel: 'Usernames',
             flex: 12, // Take up all remaining vertical space
             margin: 10,
             labelAlign: 'top',
             labelWidth: 100,
-            labelStyle: 'font-weight:bold',
-            value: currentValue
+            labelStyle: 'font-weight:bold'
         });
+        this.setValueFromArray(this.usernames);
+
+        var toolbarItems = ['->', {
+            xtype: 'button',
+            iconCls: 'icon-save-32',
+            scale: 'large',
+            text: this.buttonLabel,
+            listeners: {
+                scope: this,
+                click: this.onSave
+            }
+        }];
+
+        if(this.extraToolbarButtons) {
+            Ext.Array.insert(toolbarItems, 0, this.extraToolbarButtons);
+        }
 
         Ext.apply(this, {
             layout: {
@@ -72,16 +82,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
                 xtype: 'toolbar',
                 dock: 'bottom',
                 ui: 'footer',
-                items: ['->', {
-                    xtype: 'button',
-                    iconCls: 'icon-save-32',
-                    scale: 'large',
-                    text: this.buttonLabel,
-                    listeners: {
-                        scope: this,
-                        click: this.onSave
-                    }
-                }]
+                items: toolbarItems
             }]
         });
         this.callParent(arguments);
@@ -97,6 +98,14 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
             }
         });
         return usernames;
+    },
+
+    setValueFromArray: function(arrayOfUsernames) {
+        var currentValue = "";
+        Ext.each(arrayOfUsernames, function(username, index) {
+            currentValue += Ext.String.format('{0}\n', username);
+        });
+        this.userinput.setValue(currentValue);
     },
 
     /**

@@ -7,6 +7,9 @@
 {{ block.super }}
 
 <script>
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};

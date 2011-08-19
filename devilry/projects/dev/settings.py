@@ -58,7 +58,7 @@ DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-
+DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
 #
 # The if's below is just to make it easy to toggle these settings on and off during development

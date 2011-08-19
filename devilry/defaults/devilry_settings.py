@@ -24,6 +24,7 @@ DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment deliver
                   "Please do not respond to this email."
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
+DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 
 #################################################

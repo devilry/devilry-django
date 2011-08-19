@@ -20,6 +20,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
         createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
         createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
+        loadRelatedUsers: 'devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin',
         closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
@@ -34,7 +35,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         deadlinemodel: undefined,
         assignmentgroupstore: undefined,
         assignmentid: undefined,
-        gradeeditor_config_model: undefined
+        gradeeditor_config_model: undefined,
+        periodid: undefined
     },
 
     constructor: function(config) {
@@ -62,13 +64,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
 
         this.addStudentsButton = Ext.widget('button', {
-            text: 'Add students',
+            text: 'Create groups',
             iconCls: 'icon-add-32',
             scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onManuallyCreateUsers
-            }
+            menu: [{
+                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                listeners: {
+                    scope: this,
+                    click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Manually',
+                listeners: {
+                    scope: this,
+                    click: this.onManuallyCreateUsers
+                }
+            }]
         });
 
         Ext.apply(this, {
@@ -112,60 +123,59 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
-                        text: 'Close/open selected',
+                        text: 'Actions on selected',
                         scale: 'large',
                         menu: [{
-                            text: 'Close',
+                            text: 'Close/open selected',
+                            menu: [{
+                                text: 'Close',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onCloseGroups
+                                }
+                            }, {
+                                text: 'Open',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onOpenGroups
+                                }
+                            }]
+                        }, {
+                            text: 'Add deadline to selected',
                             listeners: {
                                 scope: this,
-                                click: this.onCloseGroups
+                                click: this.onAddDeadline
                             }
                         }, {
-                            text: 'Open',
-                            listeners: {
-                                scope: this,
-                                click: this.onOpenGroups
-                            }
-                        }]
-                    }, {
-                        xtype: 'button',
-                        text: 'Add deadline to selected',
-                        scale: 'large',
-                        listeners: {
-                            scope: this,
-                            click: this.onAddDeadline
-                        }
-                    }, {
-                        xtype: 'button',
-                        text: 'Change examiners on selected',
-                        scale: 'large',
-                        menu: [{
-                            text: 'Replace',
-                            iconCls: 'icon-edit-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onReplaceExaminers
-                            }
-                        }, {
-                            text: 'Add',
-                            iconCls: 'icon-add-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onAddExaminers
-                            }
-                        }, {
-                            text: 'Random distribute',
-                            listeners: {
-                                scope: this,
-                                click: this.onRandomDistributeExaminers
-                            }
-                        }, {
-                            text: 'Clear',
-                            iconCls: 'icon-delete-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onClearExaminers
-                            }
+                            text: 'Change examiners on selected',
+                            menu: [{
+                                text: 'Replace',
+                                iconCls: 'icon-edit-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onReplaceExaminers
+                                }
+                            }, {
+                                text: 'Add',
+                                iconCls: 'icon-add-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onAddExaminers
+                                }
+                            }, {
+                                text: 'Random distribute',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onRandomDistributeExaminers
+                                }
+                            }, {
+                                text: 'Clear',
+                                iconCls: 'icon-delete-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onClearExaminers
+                                }
+                            }]
                         }]
                     }, this.giveFeedbackButton]
                 }]
@@ -175,9 +185,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent(arguments);
         this.setSearchfieldAttributes();
 
-        //this.addListener('render', function() {
+        this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-        //}, this);
+            //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+        }, this);
         this.loadGradeEditorConfigModel();
     },
 
