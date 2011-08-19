@@ -134,5 +134,5 @@ class CompressedFileDownloadView(View):
                                 content_type=guess_type(zip_file_name))
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
-        response['Content-Length'] = stat(zip_file_name).st_size
+        response['Content-Length'] = stat(tempfile.name).st_size
         return response
