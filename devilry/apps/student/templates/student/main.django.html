@@ -33,20 +33,17 @@
         
 
         deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
-        console.log(deadlinestore);
                 
-        deadlinestore.load(function(records, operation, success) {
-            console.log('loaded records');
-        });
+        deadlinestore.load();
         
-        var deadlinetpl = Ext.create('Ext.XTemplate',
-            '<tpl for=".">',
-                '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
-                '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
-                '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
-                '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
-            '</tpl>'
-        );
+        //var deadlinetpl = Ext.create('Ext.XTemplate',
+        //    '<tpl for=".">',
+        //        '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
+        //        '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
+                // '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
+                // '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
+            // '</tpl>'
+        //);
 
         //Ext.create('Ext.view.View', {
           //  store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
@@ -65,13 +62,13 @@
             renderTo: 'content-heading',
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
             columns: [{
-                text: 'Assignment',
-                flex: 30,
-                dataIndex: 'assignment_group__parentnode__long_name'
-            },{
                 text: 'Subject',
                 dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
                 flex: 20
+            },{
+                text: 'Assignment',
+                flex: 30,
+                dataIndex: 'assignment_group__parentnode__long_name'
             },{
                 text: 'Deadline',
                 flex: 15,
