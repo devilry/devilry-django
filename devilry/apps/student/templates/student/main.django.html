@@ -31,6 +31,10 @@
         var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
         var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
         
+
+        deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
+        console.log(deadlinestore);
+                
         deadlinestore.load(function(records, operation, success) {
             console.log('loaded records');
         });
