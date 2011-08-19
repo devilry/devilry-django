@@ -21,7 +21,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
             layout: 'fit',
             items: {
                 xtype: 'setlistofusers',
-                usernames: ['donald', 'scrooge'],
+                usernames: ['donald', 'scrooge', 'daisy', 'clarabelle'],
                 //usernames: [],
                 helptext: '<p>The username of a single examiner on each line. Example:</p>',
                 listeners: {
@@ -38,33 +38,69 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
     /**
      * @private
      */
-    randomDistributeExaminersOnSelected: function(setlistofusersobj, usernames) {
+    randomDistributeExaminersOnSelected: function(setlistofusersobj, examiners) {
         setlistofusersobj.up('window').close();
+
+        this._randomDistributeTmp = {
+            remainingExaminers: examiners,
+            totExaminers: examiners.length,
+            result: {}
+        };
+        Ext.each(examiners, function(examiner, index) {
+            this._randomDistributeTmp.result[examiner] = [];
+        }, this);
+
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
-            callback: this.randowDistributeExaminers,
-            extraArgs: [usernames]
+            callback: this.randomDistributeExaminers,
+            extraArgs: []
         });
     },
 
     /**
      * @private
      */
-    randowDistributeExaminers: function(record, index, total, usernames) {
-        var msg = Ext.String.format('Random distributing examiner to group {0}/{1}', index, total);
+    getRandomExaminer: function() {
+        var numRemainingExaminers = this._randomDistributeTmp.remainingExaminers.length;
+        var randomIndex = Math.floor(Math.random() * (numRemainingExaminers));
+        return this._randomDistributeTmp.remainingExaminers[randomIndex];
+    },
+
+    /**
+     * @private
+     */
+    removeExaminerIfEnoughStudents: function(examiner, totalSelectedGroups) {
+        var totExaminers = this._randomDistributeTmp.totExaminers;
+        var groupsPerExaminer = Math.ceil(totalSelectedGroups/totExaminers);
+        if(this._randomDistributeTmp.result[examiner].length === groupsPerExaminer) {
+            Ext.Array.remove(this._randomDistributeTmp.remainingExaminers, examiner);
+        }
+    },
+
+
+    /**
+     * @private
+     */
+    randomDistributeExaminers: function(record, index, totalSelectedGroups) {
+        var msg = Ext.String.format('Random distributing examiner to group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
-        //var editRecord = this.createRecordFromStoreRecord(record);
-        //editRecord.data.fake_examiners = usernames;
-        //editRecord.save({
-            //failure: function() {
-                //console.error('Failed to save record');
-            //}
-        //});
+        var editRecord = this.createRecordFromStoreRecord(record);
+        var examiner = this.getRandomExaminer();
+        this._randomDistributeTmp.result[examiner].push(editRecord);
+        this.removeExaminerIfEnoughStudents(examiner, totalSelectedGroups);
 
-        if(index == total) {
+        editRecord.data.fake_examiners = [examiner];
+        editRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
+            console.log(this._randomDistributeTmp.result);
         }
     },
 
@@ -105,6 +141,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
      * @private
      */
     onAddExaminers: function() {
+        console.log('TP');
         this.onSetExaminers(true);
     },
 
@@ -159,8 +196,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
     /**
      * @private
      */
-    setExaminers: function(record, index, total, usernames, append) {
-        var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, total);
+    setExaminers: function(record, index, totalSelectedGroups, usernames, append) {
+        var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
         if(append) {
@@ -175,7 +212,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
             }
         });
 
-        if(index == total) {
+        if(index == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
         }
