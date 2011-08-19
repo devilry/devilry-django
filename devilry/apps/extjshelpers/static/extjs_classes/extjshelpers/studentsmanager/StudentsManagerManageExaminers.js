@@ -38,7 +38,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
                     saveClicked: function(setlistofusersobj, usernames) {
                         this.randomDistributeExaminersOnSelected(setlistofusersobj, usernames);
                     }
-                }
+                },
+
+                extraToolbarButtons: [{
+                    xtype: 'button',
+                    scale: 'large',
+                    text: Ext.String.format('Import examiners registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                    listeners: {
+                        scope: this,
+                        click: this.onImportRelatedExaminers
+                    }
+                }]
             },
         });
         win.show();
@@ -166,7 +176,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
                 extraToolbarButtons: [{
                     xtype: 'button',
                     scale: 'large',
-                    text: 'Import related examiners',
+                    text: Ext.String.format('Import examiners registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
                     listeners: {
                         scope: this,
                         click: this.onImportRelatedExaminers

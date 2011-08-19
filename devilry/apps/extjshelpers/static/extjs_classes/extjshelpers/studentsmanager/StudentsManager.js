@@ -68,7 +68,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             iconCls: 'icon-add-32',
             scale: 'large',
             menu: [{
-                text: Ext.String.format('One group for each user registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
                 listeners: {
                     scope: this,
                     click: this.onOneGroupForEachRelatedStudent
