@@ -120,7 +120,7 @@ class CompressedFileDownloadView(View):
 
     def get(self, request, deliveryid):
         delivery = get_object_or_404(Delivery, id=deliveryid)
-        zip_file_name = str(request.user) + ".zip"
+        zip_file_name = str(delivery.delivered_by) + ".zip"
 
         tempfile = TemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
@@ -132,7 +132,7 @@ class CompressedFileDownloadView(View):
 
         tempfile.seek(0)
         response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
-                                content_type=guess_type(zip_file_name))
+                                content_type="application/zip")
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
         response['Content-Length'] = stat(tempfile.name).st_size
@@ -145,7 +145,7 @@ class TarFileDownloadView(View):
         tar_file_name = str(request.user) + ".tar.gz"
 
         tempfile = TemporaryFile()
-        tar_file = tarfile.open(tempfile.name, 'w:gz');
+        tar_file = tarfile.open(tempfile.name, 'w');
 
         for filemeta in delivery.filemetas.all():
             file_content = filemeta.deliverystore.read_open(filemeta)
