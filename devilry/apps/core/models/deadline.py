@@ -120,6 +120,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                       % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
         super(Deadline, self).clean(*args, **kwargs)
 
+    def save(self, *args, **kwargs):
+        if self.id == None:
+            self.assignment_group.is_open = True
+            self.assignment_group.save()
+        super(Deadline, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return unicode(self.deadline)
 
