@@ -23,6 +23,13 @@ Ext.define('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
+
+        this.addEvents(
+            /**
+             * @param stuff A message.
+             */
+            "gotSomeValue"
+        );
     },
 
     initComponent: function() {
@@ -34,9 +41,17 @@ Ext.define('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
             
             bbar: [{
                 xtype: 'button',
-                text: this.buttonLabel
+                text: this.buttonLabel,
+                listeners: {
+                    scope: this,
+                    click: this.onClickButton
+                }
             }]
         });
         this.callParent(arguments);
+    },
+
+    onClickButton: function() {
+        this.fireEvent('gotSomeValue', 'Hello world!');
     }
 });

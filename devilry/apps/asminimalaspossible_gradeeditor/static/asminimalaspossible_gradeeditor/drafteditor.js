@@ -35,7 +35,13 @@
                 click: function() {
                     var win = Ext.create('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
                         message: 'Just to show how to do loading of classes from draft editor!',
-                        buttonLabel: 'Hello world!'
+                        buttonLabel: 'Hello world!',
+                        listeners: {
+                            scope: this,
+                            gotSomeValue: function(stuff) {
+                                console.log(stuff);
+                            }
+                        }
                     });
                     win.show();
                 }
