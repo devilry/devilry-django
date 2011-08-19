@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.core.servers.basehttp import FileWrapper
 from datetime import datetime
 import zipfile
+import tarfile
 from os import stat
 from mimetypes import guess_type
 import json
@@ -136,3 +137,25 @@ class CompressedFileDownloadView(View):
             zip_file_name.encode("ascii", 'replace')
         response['Content-Length'] = stat(tempfile.name).st_size
         return response
+
+class TarFileDownloadView(View):
+
+    def get(self, request, deliveryid):
+        delivery = get_object_or_404(Delivery, id=deliveryid)
+        tar_file_name = str(request.user) + ".tar.gz"
+
+        tempfile = TemporaryFile()
+        tar_file = tarfile.open(tempfile.name, 'w:gz');
+
+        for filemeta in delivery.filemetas.all():
+            file_content = filemeta.deliverystore.read_open(filemeta)
+            tar_file.write(file_content.name, filemeta.filename)
+        tar_file.close()
+
+        tempfile.seek(0)
+        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
+                                content_type=guess_type(tar_file_name))
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+            tar_file_name.encode("ascii", 'replace')
+        response['Content-Length'] = stat(tempfile.name).st_size
+        return response        

@@ -5,7 +5,7 @@ from restful import student_restful
 from views import (MainView, AddDeliveryView, 
                    FileUploadView, AssignmentGroupView,
                    FileDownloadView, ShowDeliveryView,
-                   CompressedFileDownloadView)
+                   CompressedFileDownloadView, TarFileDownloadView)
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),
@@ -29,6 +29,9 @@ urlpatterns = patterns('devilry.apps.student',
                        url(r'^show-delivery/compressedfiledownload/(?P<deliveryid>\d+)$',
                            login_required(CompressedFileDownloadView.as_view()),
                            name='compressed-file-download'),
+                       url(r'^show-delivery/tarfiledownload/(?P<deliveryid>\d+)$',
+                           login_required(TarFileDownloadView.as_view()),
+                           name='tar-file-download'),
                        )
 
 urlpatterns += student_restful
