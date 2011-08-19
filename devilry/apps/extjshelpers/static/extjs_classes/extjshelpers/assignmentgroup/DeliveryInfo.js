@@ -193,34 +193,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     /**
      * @private
      */
-    onOtherDeliveries: function(button) {
-        if(!this.deliveriesWindow) {
-            this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries by this group',
-                height: 500,
-                width: 400,
-                modal: true,
-                layout: 'fit',
-                closeAction: 'hide',
-                items: {
-                    xtype: 'deliveriesonsinglegrouplisting',
-                    store: this.deliverystore,
-                    delivery_recordcontainer: this.delivery_recordcontainer
-                },
-
-                //listeners: {
-                    //scope: this,
-                    //close: function() {
-                        //if(button) {
-                            //button.toggle(false);
-                        //}
-                    //}
-                //}
-            });
-        }
-        this.deliveriesWindow.show();
+    onOtherDeliveries: function(button, notClosable) {
+        var deliveriesWindow = Ext.create('Ext.window.Window', {
+            title: 'Deliveries by this group',
+            height: 500,
+            width: 400,
+            modal: true,
+            layout: 'fit',
+            closeAction: 'hide',
+            closable: button != undefined,
+            items: {
+                xtype: 'deliveriesonsinglegrouplisting',
+                store: this.deliverystore,
+                delivery_recordcontainer: this.delivery_recordcontainer
+            }
+        });
+        deliveriesWindow.show();
         if(button) {
-            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+            deliveriesWindow.alignTo(button, 'bl', [0, 0]);
         }
     },
 
