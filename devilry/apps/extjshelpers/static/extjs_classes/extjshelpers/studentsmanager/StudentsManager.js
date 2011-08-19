@@ -34,7 +34,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         deadlinemodel: undefined,
         assignmentgroupstore: undefined,
         assignmentid: undefined,
-        gradeeditor_config_model: undefined
+        gradeeditor_config_model: undefined,
+        periodid: undefined
     },
 
     constructor: function(config) {
@@ -62,13 +63,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
 
         this.addStudentsButton = Ext.widget('button', {
-            text: 'Add students',
+            text: 'Create groups',
             iconCls: 'icon-add-32',
             scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onManuallyCreateUsers
-            }
+            menu: [{
+                text: 'One group for each related user',
+                listeners: {
+                    scope: this,
+                    click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Manually',
+                listeners: {
+                    scope: this,
+                    click: this.onManuallyCreateUsers
+                }
+            }]
         });
 
         Ext.apply(this, {
@@ -175,9 +185,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent(arguments);
         this.setSearchfieldAttributes();
 
-        //this.addListener('render', function() {
+        this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-        //}, this);
+            this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+        }, this);
         this.loadGradeEditorConfigModel();
     },
 

@@ -24,5 +24,48 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
             }
         });
         win.show();
+    },
+
+    /**
+     * @private
+     */
+    onOneGroupForEachRelatedStudent: function() {
+        this.loadAllRelatedStudents();
+    },
+
+    loadAllRelatedStudents: function() {
+        var relatedStudentModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedRelatedStudent');
+
+        var relatedStudentStore = Ext.create('Ext.data.Store', {
+            model: relatedStudentModel,
+            remoteFilter: true,
+            remoteSort: true
+        });
+
+        relatedStudentStore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'period',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        //deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
+
+        relatedStudentStore.proxy.extraParams.page = 1;
+        relatedStudentStore.pageSize = 1;
+        relatedStudentStore.load({
+            scope: this,
+            callback: function(records) {
+                relatedStudentStore.proxy.extraParams.page = 1;
+                relatedStudentStore.pageSize = relatedStudentStore.totalCount;
+                relatedStudentStore.load({
+                    scope: this,
+                    callback: this.onLoadAllRelatedStudents
+                });
+            }
+        });
+    },
+
+    onLoadAllRelatedStudents: function(records) {
+        console.log(records);
+        console.log(records.length);
     }
 });
