@@ -20,10 +20,7 @@ Ext.define('devilry.examiner.AssignmentView', {
 
     initComponent: function() {
         this._todolist = Ext.widget('assignmentgrouptodolist', {
-            store: this.assignmentgroupstore
-        });
-
-        Ext.apply(this, {
+            store: this.assignmentgroupstore,
             tbar: [{
                xtype: 'button',
                scale: 'large',
@@ -34,7 +31,10 @@ Ext.define('devilry.examiner.AssignmentView', {
                    click: this.onStudents
                }
             }],
-            items: [this._todolist]
+        });
+
+        Ext.apply(this, {
+            items: this._todolist
         });
         this.callParent(arguments);
 
