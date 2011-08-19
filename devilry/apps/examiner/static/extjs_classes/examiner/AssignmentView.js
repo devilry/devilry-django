@@ -1,6 +1,10 @@
 Ext.define('devilry.examiner.AssignmentView', {
     extend: 'Ext.panel.Panel',
 
+    requires: [
+        'devilry.extjshelpers.studentsmanager.StudentsManager'
+    ],
+
     config: {
         assignment_recordcontainer: undefined,
         assignmentmodelname: undefined,
@@ -58,6 +62,8 @@ Ext.define('devilry.examiner.AssignmentView', {
                 xtype: 'studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
                 assignmentid: this.assignmentid,
+                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
+                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
                 isAdministrator: false
             },
             listeners: {

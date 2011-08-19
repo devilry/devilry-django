@@ -13,6 +13,29 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         this.callParent([config]);
     },
 
+    initComponent: function() {
+        this.addStudentsButton = Ext.widget('button', {
+            text: 'Create groups',
+            iconCls: 'icon-add-32',
+            scale: 'large',
+            menu: [{
+                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                listeners: {
+                    scope: this,
+                    click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Manually',
+                listeners: {
+                    scope: this,
+                    click: this.onManuallyCreateUsers
+                }
+            }]
+        });
+
+        this.callParent(arguments);
+    },
+
     getToolbarItems: function() {
         var defaults = this.callParent();
         defaults[0] = this.addStudentsButton;

@@ -1,6 +1,6 @@
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     extend: 'Ext.panel.Panel',
-    //alias: 'widget.studentsmanager',
+    alias: 'widget.studentsmanager',
     cls: 'studentsmanager',
     frame: false,
     border: false,
@@ -27,11 +27,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
          * ``false``, we use the examiner RESTful interface.
          */
         isAdministrator: false,
-
-        deadlinemodel: undefined,
-        assignmentgroupstore: undefined,
-        assignmentid: undefined,
         gradeeditor_config_model: undefined,
+        deadlinemodel: undefined,
+        assignmentid: undefined,
+        assignmentgroupstore: undefined,
+
         periodid: undefined
     },
 
@@ -57,25 +57,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     }
                 }
             }
-        });
-
-        this.addStudentsButton = Ext.widget('button', {
-            text: 'Create groups',
-            iconCls: 'icon-add-32',
-            scale: 'large',
-            menu: [{
-                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
-                listeners: {
-                    scope: this,
-                    click: this.onOneGroupForEachRelatedStudent
-                }
-            }, {
-                text: 'Manually',
-                listeners: {
-                    scope: this,
-                    click: this.onManuallyCreateUsers
-                }
-            }]
         });
 
         Ext.apply(this, {
