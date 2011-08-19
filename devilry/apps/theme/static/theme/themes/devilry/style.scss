@@ -763,10 +763,10 @@ section.treeheading {
         }
         .is_opencol{
             .open {
-                @include warningInlineItem();
+                @include goodInlineItem();
             }
             .closed {
-                @include goodInlineItem();
+                @include warningInlineItem();
             }
         }
     }
