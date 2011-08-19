@@ -258,13 +258,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
-    onRandomDistributeExaminers: function() {
-        console.log('TODO');
-    },
-
-    /**
-     * @private
-     */
     onAddDeadline: function() {
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
@@ -314,6 +307,70 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }
     },
 
+    /**
+     * @private
+     */
+    onRandomDistributeExaminers: function() {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var win = Ext.widget('window', {
+            title: 'Select examiners',
+            modal: true,
+            width: 500,
+            height: 400,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'setlistofusers',
+                usernames: ['donald', 'scrooge'],
+                //usernames: [],
+                helptext: '<p>The username of a single examiner on each line. Example:</p>',
+                listeners: {
+                    scope: this,
+                    saveClicked: function(setlistofusersobj, usernames) {
+                        this.randomDistributeExaminersOnSelected(setlistofusersobj, usernames);
+                    }
+                }
+            },
+        });
+        win.show();
+    },
+
+    /**
+     * @private
+     */
+    randomDistributeExaminersOnSelected: function(setlistofusersobj, usernames) {
+        setlistofusersobj.up('window').close();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.randowDistributeExaminers,
+            extraArgs: [usernames]
+        });
+    },
+
+    /**
+     * @private
+     */
+    randowDistributeExaminers: function(record, index, total, usernames) {
+        var msg = Ext.String.format('Random distributing examiner to group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        //var editRecord = this.createRecordFromStoreRecord(record);
+        //editRecord.data.fake_examiners = usernames;
+        //editRecord.save({
+            //failure: function() {
+                //console.error('Failed to save record');
+            //}
+        //});
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    },
+
 
     /**
      * @private
@@ -324,7 +381,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             return;
         }
         var win = Ext.widget('window', {
-            title: 'Set examiners',
+            title: 'Select examiners',
             modal: true,
             width: 500,
             height: 400,
