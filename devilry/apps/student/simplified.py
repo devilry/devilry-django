@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Max
 from datetime import datetime
 
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
@@ -109,6 +109,17 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
         methods = ['search', 'read']
+
+    @classmethod
+    def create_searchqryset(cls, user):
+        """ Returns all AssignmentGroup-objects where given ``user`` is candidate.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
+        return cls._meta.model.published_where_is_candidate(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                                                                           number_of_deliveries=Count('deadlines__deliveries'))
+
 
 
 @simplified_modelapi
