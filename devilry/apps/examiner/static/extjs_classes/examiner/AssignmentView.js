@@ -4,7 +4,8 @@ Ext.define('devilry.examiner.AssignmentView', {
     config: {
         assignment_recordcontainer: undefined,
         assignmentmodelname: undefined,
-        assignmentid: undefined
+        assignmentid: undefined,
+        assignmentgroupstore: undefined
     },
 
     constructor: function(config) {
@@ -18,7 +19,11 @@ Ext.define('devilry.examiner.AssignmentView', {
                xtype: 'button',
                scale: 'large',
                text: 'Students',
-               menu: []
+               menu: [],
+               listeners: {
+                   scope: this,
+                   click: this.onStudents
+               }
             }],
             items: []
         });
@@ -40,4 +45,29 @@ Ext.define('devilry.examiner.AssignmentView', {
     onLoadAssignmentFailure: function() {
         throw "Failed to load assignment";
     },
+
+    onStudents: function(button) {
+        var studentswindow = Ext.create('Ext.window.Window', {
+            title: 'Students',
+            width: 926,
+            height: 500,
+            layout: 'fit',
+            maximizable: true,
+            modal: true,
+            items: {
+                xtype: 'studentsmanager',
+                assignmentgroupstore: this.assignmentgroupstore,
+                assignmentid: this.assignmentid,
+                isAdministrator: false
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        studentswindow.show();
+        studentswindow.alignTo(button, 'bl', [0, 0]);
+    }
 });

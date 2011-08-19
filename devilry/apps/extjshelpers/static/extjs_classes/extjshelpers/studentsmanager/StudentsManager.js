@@ -89,22 +89,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             },
             items: [{
                 xtype: 'searchfield',
-                //width: 600,
-                //height: 40,
-                //padding: '30 0 0 0'
-                //padding: 40,
                 emptyText: 'Search...',
                 margin: 10,
                 flex: 0,
-
-            //}, {
-                //region:'west',
-                //xtype: 'panel',
-                //width: 200,
-                //layout: 'fit',
-                //items: [{
-                    //xtype: 'studentsmanager_filterselector'
-                //}]
             }, {
                 xtype: 'panel',
                 flex: 1,

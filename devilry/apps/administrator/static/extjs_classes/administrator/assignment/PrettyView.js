@@ -332,7 +332,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             layout: 'fit',
             maximizable: true,
             modal: true,
-            closeAction: 'hide',
             items: {
                 xtype: 'studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
