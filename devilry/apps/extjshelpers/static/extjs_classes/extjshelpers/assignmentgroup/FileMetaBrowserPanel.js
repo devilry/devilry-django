@@ -31,7 +31,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
 
         this.filemetastore.load();
         
-
+        //TODO Necessary. Get undefined when referenced later
         var stored_delivery_id = this.deliveryid;
 
         
@@ -58,7 +58,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 text: 'Download all files (zip)',
                 listeners: {
                     click: function(view, record, item) {
-                        console.log(stored_delivery_id);
                         var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
                         window.open(url, 'download');
                     }
