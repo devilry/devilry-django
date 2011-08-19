@@ -16,7 +16,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     ],
 
     mixins: {
-        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
+        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers',
+        closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
     config: {
@@ -197,66 +198,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     loadFirstPage: function() {
         this.assignmentgroupstore.currentPage = 1;
         this.assignmentgroupstore.load();
-    },
-
-
-    /**
-     * @private
-     */
-    onCloseGroups: function() {
-        this.openOrCloseGroups(false);
-    },
-
-    /**
-     * @private
-     */
-    onOpenGroups: function() {
-        this.openOrCloseGroups(true);
-    },
-
-    /**
-     * @private
-     */
-    openOrCloseGroups: function(is_open) {
-        var action = is_open? 'open': 'close';
-        Ext.MessageBox.show({
-            title: Ext.String.format('Confirm {0} groups?', action),
-            msg: Ext.String.format('Are you sure you want to {0} the selected groups?', action),
-            buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.WARNING,
-            scope: this,
-            fn: function(btn) {
-                if(btn == 'yes') {
-                    this.down('studentsmanager_studentsgrid').performActionOnSelected({
-                        scope: this,
-                        callback: this.openOrCloseGroup,
-                        extraArgs: [is_open]
-                    });
-                }
-            }
-        });
-
-    },
-
-    /**
-     * @private
-     */
-    openOrCloseGroup: function(record, index, total, is_open) {
-        var msg = Ext.String.format('Closing group {0}/{1}', index, total);
-        this.getEl().mask(msg);
-
-        var editRecord = this.createRecordFromStoreRecord(record);
-        editRecord.data.is_open = is_open;
-        editRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
-            }
-        });
-
-        if(index == total) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-        }
     },
 
     /**

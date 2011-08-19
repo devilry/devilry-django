@@ -1,7 +1,7 @@
 /** The examiner management methods for StudentsManager.
  *
- * Note that this class depends on the createRecordFromStoreRecord from
- * StudentsManager to be available. */
+ * Note that this class depends on createRecordFromStoreRecord(),
+ * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers', {
 
     randomDistResultTpl: Ext.create('Ext.XTemplate',
