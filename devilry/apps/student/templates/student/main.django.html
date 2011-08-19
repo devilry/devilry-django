@@ -31,23 +31,59 @@
         var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
         var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
         
-        deadlinestore.load(function(records, operation, success) {
-            console.log('loaded records');
-        });
-        
-        var deadlinetpl = Ext.create('Ext.XTemplate',
-            '<tpl for=".">',
-                '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
-                '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
-                '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
-                '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
-            '</tpl>'
-        );
 
-        Ext.create('Ext.view.View', {
+        deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
+                
+        deadlinestore.load();
+        
+        //var deadlinetpl = Ext.create('Ext.XTemplate',
+        //    '<tpl for=".">',
+        //        '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
+        //        '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
+                // '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
+                // '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
+            // '</tpl>'
+        //);
+
+        //Ext.create('Ext.view.View', {
+          //  store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+            //tpl: deadlinetpl,
+            //renderTo: 'content-heading'
+        //});
+        
+        var rowTpl = Ext.create('Ext.XTemplate',
+            '{.:date}'
+        );
+        
+        
+        var listView = Ext.create('Ext.grid.Panel', {
+            collapsible:true,
+            title:'Default',
+            renderTo: 'content-heading',
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
-            tpl: deadlinetpl,
-            renderTo: 'content-heading'
+            columns: [{
+                text: 'Subject',
+                dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
+                flex: 20
+            },{
+                text: 'Assignment',
+                flex: 30,
+                dataIndex: 'assignment_group__parentnode__long_name'
+            },{
+                text: 'Deadline',
+                flex: 15,
+                dataIndex: 'deadline',
+                renderer: function(value) {
+                    return rowTpl.apply(value);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function(view, record) {
+                    var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
+                    window.location = url;
+                }
+            }
         });
         
         
