@@ -9,6 +9,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.studentsmanager.FilterSelector',
         'devilry.extjshelpers.studentsmanager.StudentsGrid',
         'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow',
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow'
@@ -22,6 +23,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
          */
         isAdministrator: false,
 
+        deadlinemodel: undefined,
         assignmentgroupstore: undefined,
         assignmentid: undefined,
         gradeeditor_config_model: undefined
@@ -264,8 +266,55 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onAddDeadline: function() {
-        console.log('TODO');
+        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var me = this;
+        var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
+            deadlinemodel: this.deadlinemodel,
+            onSaveSuccess: function(record) {
+                this.close();
+                me.addDeadlineToSelected(record);
+            }
+        });
+        createDeadlineWindow.show();
     },
+
+    /**
+     * @private
+     */
+    addDeadlineToSelected: function(record) {
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.addDeadline,
+            extraArgs: [record]
+        });
+    },
+
+    /**
+     * @private
+     */
+    addDeadline: function(assignmentGroupRecord, index, total, deadlineRecord) {
+        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
+        newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
+        console.log(newDeadlineRecord);
+        newDeadlineRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    },
+
 
     /**
      * @private
@@ -346,7 +395,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     setExaminersOnSelected: function(setlistofusersobj, usernames, append) {
         setlistofusersobj.up('window').close();
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminers,

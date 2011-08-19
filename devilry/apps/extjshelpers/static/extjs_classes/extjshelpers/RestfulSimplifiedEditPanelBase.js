@@ -1,8 +1,15 @@
 Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
     extend: 'Ext.panel.Panel',
+    alias: 'widget.restfulsimplified_editpanel_base',
     requires: ['devilry.extjshelpers.RestSubmit'],
 
     config: {
+        /**
+         * @cfg
+         * The model we are editing.
+         */
+        model: undefined,
+
         /**
          * @cfg
          * A instance of the ``Ext.data.Model`` which should be loaded into the
@@ -24,6 +31,15 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
+
+        this.addEvents(
+        /**
+         * Fired when save is clicked. This may be when the record have been
+         * saved successfully, or when the save button has been clicked
+         * depending on the subclass.  By default this is fired when the save
+         * button in clicked.
+         */
+        'saveSuccess');
     },
 
     initComponent: function() {
@@ -98,7 +114,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
     },
 
     onSave: function() {
-        throw "onSave must be implemented in a subclass."
+        if(this.editform.getForm().isValid()) {
+            var record = Ext.ModelManager.create(this.editform.getForm().getValues(),
+                                                 this.model);
+            this.fireEvent('saveSucess', record);
+        };
     },
 
     loadRecord: function() {
