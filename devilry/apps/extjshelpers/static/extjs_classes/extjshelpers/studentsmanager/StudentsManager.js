@@ -123,60 +123,59 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: [this.addStudentsButton, '->', {
                         xtype: 'button',
-                        text: 'Close/open selected',
+                        text: 'Actions on selected',
                         scale: 'large',
                         menu: [{
-                            text: 'Close',
+                            text: 'Close/open selected',
+                            menu: [{
+                                text: 'Close',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onCloseGroups
+                                }
+                            }, {
+                                text: 'Open',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onOpenGroups
+                                }
+                            }]
+                        }, {
+                            text: 'Add deadline to selected',
                             listeners: {
                                 scope: this,
-                                click: this.onCloseGroups
+                                click: this.onAddDeadline
                             }
                         }, {
-                            text: 'Open',
-                            listeners: {
-                                scope: this,
-                                click: this.onOpenGroups
-                            }
-                        }]
-                    }, {
-                        xtype: 'button',
-                        text: 'Add deadline to selected',
-                        scale: 'large',
-                        listeners: {
-                            scope: this,
-                            click: this.onAddDeadline
-                        }
-                    }, {
-                        xtype: 'button',
-                        text: 'Change examiners on selected',
-                        scale: 'large',
-                        menu: [{
-                            text: 'Replace',
-                            iconCls: 'icon-edit-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onReplaceExaminers
-                            }
-                        }, {
-                            text: 'Add',
-                            iconCls: 'icon-add-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onAddExaminers
-                            }
-                        }, {
-                            text: 'Random distribute',
-                            listeners: {
-                                scope: this,
-                                click: this.onRandomDistributeExaminers
-                            }
-                        }, {
-                            text: 'Clear',
-                            iconCls: 'icon-delete-16',
-                            listeners: {
-                                scope: this,
-                                click: this.onClearExaminers
-                            }
+                            text: 'Change examiners on selected',
+                            menu: [{
+                                text: 'Replace',
+                                iconCls: 'icon-edit-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onReplaceExaminers
+                                }
+                            }, {
+                                text: 'Add',
+                                iconCls: 'icon-add-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onAddExaminers
+                                }
+                            }, {
+                                text: 'Random distribute',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onRandomDistributeExaminers
+                                }
+                            }, {
+                                text: 'Clear',
+                                iconCls: 'icon-delete-16',
+                                listeners: {
+                                    scope: this,
+                                    click: this.onClearExaminers
+                                }
+                            }]
                         }]
                     }, this.giveFeedbackButton]
                 }]
