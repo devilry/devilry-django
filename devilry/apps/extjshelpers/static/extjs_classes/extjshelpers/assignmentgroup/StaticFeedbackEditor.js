@@ -24,6 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         isAdministrator: false,
 
         assignmentgroup_recordcontainer: undefined,
+        assignmentgroupmodel: undefined,
         deadlinemodel: undefined
     },
 
@@ -181,7 +182,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     onNewPublishedStaticFeedback: function() {
         var staticfeedback = this.staticfeedback_recordcontainer.record.data;
         if(staticfeedback.is_passing_grade) {
-            this.closeAssignmentGroup();
+            this.reloadAssignmentGroup();
         } else {
             this.onFailingGrade();
         }
@@ -190,16 +191,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     /**
      * @private
      */
-    closeAssignmentGroup: function() {
-        this.assignmentgroup_recordcontainer.record.data.is_open = false;
-        this.assignmentgroup_recordcontainer.record.save({
+    reloadAssignmentGroup: function() {
+        this.assignmentgroupmodel.load(this.assignmentgroup_recordcontainer.record.data.id, {
             scope: this,
             success: function(record) {
-                // TODO: Notify about closing the group
-                this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+                this.assignmentgroup_recordcontainer.setRecord(record);
             },
             failure: function() {
-                throw "Failed to close group."
+                // TODO: Handle errors
             }
         });
     },
@@ -221,7 +220,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 if(buttonId == 'yes') {
                     this.createNewDeadline();
                 } else {
-                    this.closeAssignmentGroup();
+                    this.reloadAssignmentGroup();
                 }
             }
         });
@@ -231,10 +230,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     createNewDeadline: function() {
+        var me = this;
         var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
             assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
             deadlinemodel: this.deadlinemodel,
             onSaveSuccess: function(record) {
+                me.reloadAssignmentGroup();
                 this.close();
             }
         });

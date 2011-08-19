@@ -37,7 +37,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
 
         Ext.apply(this, {
             editpanel: Ext.widget('restfulsimplified_editpanel', {
-                modelname: this.deadlinemodel,
+                model: this.deadlinemodel,
                 editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
                 record: deadlineRecord
             }),

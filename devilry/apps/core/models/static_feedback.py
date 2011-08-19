@@ -121,6 +121,8 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     def save(self, *args, **kwargs):
         super(StaticFeedback, self).save(*args, **kwargs)
+        self.delivery.deadline.assignment_group.is_open = False
+        self.delivery.deadline.assignment_group.save()
         self._publish_if_allowed()
 
     def __unicode__(self):

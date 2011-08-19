@@ -24,11 +24,12 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
         fieldLabel: 'Deadline',
         xtype: 'devilrydatetimefield',
         flex: 0,
+        allowBlank: false
     }, {
         name: "text",
         fieldLabel: "Text",
         flex: 1,
-        xtype: 'textarea',
+        xtype: 'textarea'
     }],
 
 
