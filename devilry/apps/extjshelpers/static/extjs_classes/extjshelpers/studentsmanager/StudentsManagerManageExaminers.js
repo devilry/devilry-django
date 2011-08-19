@@ -3,6 +3,15 @@
  * Note that this class depends on the createRecordFromStoreRecord from
  * StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers', {
+
+    randomDistResultTpl: Ext.create('Ext.XTemplate',
+        '<p>The selected examiners got the following number of groups:</p>',
+        '<ul>',
+        '<tpl for="result">',
+        '   <li><strong>{examiner}</strong>: {groups.length}</li>',
+        '</tpl>',
+        '</ul>'
+    ),
     
     /**
      * @private
@@ -42,7 +51,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
         setlistofusersobj.up('window').close();
 
         this._randomDistributeTmp = {
-            remainingExaminers: examiners,
+            remainingExaminers: Ext.Array.clone(examiners),
+            allExaminers: examiners,
             totExaminers: examiners.length,
             result: {}
         };
@@ -77,6 +87,27 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
         }
     },
 
+    /**
+     * @private
+     */
+    showRandomDistributeResults: function() {
+        //console.log(this._randomDistributeTmp.result);
+        var resultArray = [];
+        Ext.each(this._randomDistributeTmp.allExaminers, function(examiner, index) {
+            resultArray.push({
+                examiner: examiner,
+                groups: this._randomDistributeTmp.result[examiner]
+            });
+        }, this);
+
+        Ext.MessageBox.show({
+            title: 'Random distribution of examiners complete',
+            msg: this.randomDistResultTpl.apply({result: resultArray}),
+            buttons: Ext.Msg.OK,
+            scope: this
+        });
+    },
+
 
     /**
      * @private
@@ -100,7 +131,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
         if(index == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
-            console.log(this._randomDistributeTmp.result);
+            this.showRandomDistributeResults();
         }
     },
 
