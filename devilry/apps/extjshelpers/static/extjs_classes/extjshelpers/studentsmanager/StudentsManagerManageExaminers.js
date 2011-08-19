@@ -30,8 +30,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
             layout: 'fit',
             items: {
                 xtype: 'setlistofusers',
-                usernames: ['donald', 'scrooge', 'daisy', 'clarabelle'],
-                //usernames: [],
+                //usernames: ['donald', 'scrooge', 'daisy', 'clarabelle'],
+                usernames: [],
                 helptext: '<p>The username of a single examiner on each line. Example:</p>',
                 listeners: {
                     scope: this,
