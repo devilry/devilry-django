@@ -44,10 +44,44 @@
             '</tpl>'
         );
 
-        Ext.create('Ext.view.View', {
+        //Ext.create('Ext.view.View', {
+          //  store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+            //tpl: deadlinetpl,
+            //renderTo: 'content-heading'
+        //});
+        
+        var rowTpl = Ext.create('Ext.XTemplate',
+            '{.:date}'
+        );
+        
+        
+        var listView = Ext.create('Ext.grid.Panel', {
+            collapsible:true,
+            title:'Default',
+            renderTo: 'content-heading',
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
-            tpl: deadlinetpl,
-            renderTo: 'content-heading'
+            columns: [{
+                text: 'Assignment',
+                flex: 30,
+                dataIndex: 'assignment_group__parentnode__long_name'
+            },{
+                text: 'Subject',
+                dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
+                flex: 20
+            },{
+                text: 'Deadline',
+                flex: 15,
+                dataIndex: 'deadline',
+                renderer: function(value) {
+                    return rowTpl.apply(value);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function() {
+                    window.location = "http://www.vg.no";
+                }
+            }
         });
         
         
