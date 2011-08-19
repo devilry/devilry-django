@@ -94,7 +94,6 @@
             collapsible:true,
             title:'Default',
             renderTo: 'content-heading',
-
             store: dashboard_assignment_store,
             features: [groupingFeature],
             columns: [{
@@ -106,7 +105,7 @@
                 dataIndex: 'parentnode__long_name',
                 flex: 20
             },{
-                text: 'Publishing Time',
+                text: 'Published',
                 flex: 15,
                 dataIndex: 'publishing_time',
                 renderer: function(value) {
@@ -116,7 +115,7 @@
             listeners: {
                 scope: this,
                 itemmouseup: function() {
-                    console.log("link to assignment");
+                    window.location = "http://www.vg.no";
                 }
             }
         });
