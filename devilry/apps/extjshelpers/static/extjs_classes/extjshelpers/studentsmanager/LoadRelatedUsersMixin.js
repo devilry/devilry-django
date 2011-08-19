@@ -40,6 +40,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin', {
         )(relatedUsers);
     },
 
+    relatedUserRecordsToArray: function(relatedUsers) {
+        return Ext.Array.map(relatedUsers, function(relatedUser) {
+            return relatedUser.data.username;
+        }, this);
+    },
 
 
     loadAllRelatedStudents: function(callbackOpt) {
@@ -60,5 +65,26 @@ Ext.define('devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin', {
         this._relatedStudents = records;
         this.postLoadAllRelatedUsers(this._onLoadAllRelatedStudentsCallbackOpt, records);
         this._onLoadAllRelatedStudentsCallbackOpt = undefined;
+    },
+
+
+    loadAllRelatedExaminers: function(callbackOpt) {
+        if(this._relatedExaminers == undefined) {
+            this.getEl().mask('Loading related students');
+            this._onLoadAllRelatedExaminersCallbackOpt = callbackOpt
+            this.loadAllRelatedUsers(
+                'devilry.apps.administrator.simplified.SimplifiedRelatedExaminer',
+                this.onLoadAllRelatedExaminers
+            );
+        } else {
+            this.postLoadAllRelatedUsers(callbackOpt, this._relatedExaminers);
+        };
+    },
+
+    onLoadAllRelatedExaminers: function(records) {
+        this.getEl().unmask();
+        this._relatedExaminers = records;
+        this.postLoadAllRelatedUsers(this._onLoadAllRelatedExaminersCallbackOpt, records);
+        this._onLoadAllRelatedExaminersCallbackOpt = undefined;
     }
 });

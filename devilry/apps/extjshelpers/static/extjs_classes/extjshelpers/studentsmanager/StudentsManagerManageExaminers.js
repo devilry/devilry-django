@@ -161,10 +161,34 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
                     saveClicked: function(setlistofusersobj, usernames) {
                         this.setExaminersOnSelected(setlistofusersobj, usernames, append);
                     }
-                }
+                },
+
+                extraToolbarButtons: [{
+                    xtype: 'button',
+                    scale: 'large',
+                    text: 'Import related examiners',
+                    listeners: {
+                        scope: this,
+                        click: this.onImportRelatedExaminers
+                    }
+                }]
             },
         });
         win.show();
+    },
+
+    onImportRelatedExaminers: function(button) {
+        var setlistofusersobj = button.up('setlistofusers');
+        this.loadAllRelatedExaminers({
+            scope: this,
+            callback: this.importRelatedExaminers,
+            args: [setlistofusersobj]
+        });
+    },
+
+    importRelatedExaminers: function(relatedExaminers, setlistofusersobj) {
+        var examiners = this.relatedUserRecordsToArray(relatedExaminers);
+        setlistofusersobj.setValueFromArray(examiners);
     },
 
 
@@ -172,7 +196,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
      * @private
      */
     onAddExaminers: function() {
-        console.log('TP');
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.onSetExaminers(true);
     },
 

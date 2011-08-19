@@ -45,12 +45,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
         });
     },
 
-    relatedUserRecordsToArray: function(relatedUsers) {
-        return Ext.Array.map(relatedUsers, function(relatedUser) {
-            return relatedUser.data.username;
-        }, this);
-    },
-
     /**
      * @private
      */

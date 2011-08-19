@@ -186,10 +186,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent(arguments);
         this.setSearchfieldAttributes();
 
-        //this.addListener('render', function() {
-            ////this.up('window').addListener('show', this.onManuallyCreateUsers, this);
+        this.addListener('render', function() {
+            //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
             //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
-        //}, this);
+        }, this);
         this.loadGradeEditorConfigModel();
     },
 
