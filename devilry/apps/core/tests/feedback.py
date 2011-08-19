@@ -24,7 +24,19 @@ class TestFeedback(TestCase, TestHelper):
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.old_period.assignment1.g1", self.goodFile)
-        
+
+    def test_create_new_groupclose(self):
+        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
+        delivery = self.add_delivery("inf1100.period1.assignment1.group1",
+                                     {'good.py': "print 'hello world'"})
+        group = delivery.deadline.assignment_group
+        group.is_open = True
+        group.save()
+        self.assertTrue(group.is_open)
+        feedback = self.add_feedback(delivery,
+                                     verdict={"grade": "C", "points": 85, "is_passing_grade": True})
+        self.assertFalse(group.is_open)
+
     def test_where_is_candidate(self):
         self.assertEquals(StaticFeedback.where_is_candidate(self.student1).count(), 0)
         self.add_feedback(self.inf1100_period1_assignment1_g1_deliveries[0], verdict=self.okVerdict)
