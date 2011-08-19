@@ -1,6 +1,6 @@
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.studentsmanager',
+    //alias: 'widget.studentsmanager',
     cls: 'studentsmanager',
     frame: false,
     border: false,
@@ -16,11 +16,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     ],
 
     mixins: {
-        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers',
-        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
-        createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
         createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
-        loadRelatedUsers: 'devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin',
+        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
         closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
