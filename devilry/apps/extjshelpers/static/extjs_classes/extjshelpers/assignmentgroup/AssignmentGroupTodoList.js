@@ -13,7 +13,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '        <li>{.}</li>',
         '    </tpl>',
         '    </ul>',
-        '    <tpl if="id == current_assignment_group.id">',
+        '    <tpl if="id == current_assignment_group_id">',
         '        &mdash; <strong>(currently selected)</strong>',
         '    </tpl>',
         '</section>'
@@ -22,15 +22,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     config: {
         /**
          * @cfg
-         * AssignmentGroup ``Ext.data.Store``.
+         * AssignmentGroup ``Ext.data.Store``. (Required).
          */
         store: undefined,
 
         /**
          * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup. (Optional).
+         *
+         * Used to show current assignmentgroup.
          */
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_recordcontainer: undefined,
+
+        pageSize: 10
     },
 
     constructor: function(config) {
@@ -48,9 +52,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, grouprecord) {
                     //console.log(grouprecord.data);
-                    var data = {
-                        current_assignment_group: me.assignmentgroup_recordcontainer.record.data
-                    };
+                    var data = {};
+                    if(me.assignmentgroup_recordcontainer) {
+                        data.current_assignment_group_id = me.assignmentgroup_recordcontainer.record.data.id;
+                    }
                     Ext.apply(data, grouprecord.data);
                     return this.rowTpl.apply(data);
                 }
@@ -63,15 +68,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 xtype: 'pagingtoolbar',
                 store: this.store,
                 dock: 'bottom',
-                displayInfo: false
+                displayInfo: true
             }]
         });
 
         this.callParent(arguments);
-        if(this.assignmentgroup_recordcontainer.record) {
-            this.reload();
+
+        if(this.assignmentgroup_recordcontainer) {
+            if(this.assignmentgroup_recordcontainer.record) {
+                this.onSetAssignmentGroup();
+            }
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
         }
-        this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
     },
 
     onSelectGroup: function(grid, assignmentgroupRecord) {
@@ -80,12 +88,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     /**
      * @private
+     */
+    onSetAssignmentGroup: function() {
+        this.loadTodoListForAssignment(this.assignmentgroup_recordcontainer.record.data.parentnode);
+    },
+
+    /**
+     * Reload store with the given assignmentid.
      * */
-    reload: function(assignmentgroupid) {
+    loadTodoListForAssignment: function(assignmentid) {
+        this.store.pageSize = this.pageSize;
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
-            value: this.assignmentgroup_recordcontainer.record.data.parentnode
+            value: assignmentid
         }, {
             field: 'is_open',
             comp: 'exact',

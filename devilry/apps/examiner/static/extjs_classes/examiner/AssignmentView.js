@@ -2,7 +2,8 @@ Ext.define('devilry.examiner.AssignmentView', {
     extend: 'Ext.panel.Panel',
 
     requires: [
-        'devilry.extjshelpers.studentsmanager.StudentsManager'
+        'devilry.extjshelpers.studentsmanager.StudentsManager',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList'
     ],
 
     config: {
@@ -18,6 +19,10 @@ Ext.define('devilry.examiner.AssignmentView', {
     },
 
     initComponent: function() {
+        this._todolist = Ext.widget('assignmentgrouptodolist', {
+            store: this.assignmentgroupstore
+        });
+
         Ext.apply(this, {
             tbar: [{
                xtype: 'button',
@@ -29,7 +34,7 @@ Ext.define('devilry.examiner.AssignmentView', {
                    click: this.onStudents
                }
             }],
-            items: []
+            items: [this._todolist]
         });
         this.callParent(arguments);
 
@@ -39,11 +44,16 @@ Ext.define('devilry.examiner.AssignmentView', {
             success: this.onLoadAssignmentSuccess,
             failure: this.onLoadAssignmentFailure
         });
+        this.loadTodoList();
     },
 
+    loadTodoList: function() {
+        this._todolist.loadTodoListForAssignment(this.assignmentid);
+    },
 
     onLoadAssignmentSuccess: function(record) {
         this.assignment_recordcontainer.setRecord(record);
+        //this.onStudents();
     },
 
     onLoadAssignmentFailure: function() {
@@ -69,11 +79,16 @@ Ext.define('devilry.examiner.AssignmentView', {
             listeners: {
                 scope: this,
                 close: function() {
-                    button.toggle(false);
+                    if(button) {
+                        button.toggle(false);
+                    }
+                    this.loadTodoList();
                 }
             }
         });
         studentswindow.show();
-        studentswindow.alignTo(button, 'bl', [0, 0]);
+        if(button) {
+            studentswindow.alignTo(button, 'bl', [0, 0]);
+        }
     }
 });
