@@ -24,6 +24,23 @@
             boxLabel: this.editorConfig.fieldlabel
         });
         this.add(this.checkbox);
+
+        // This opens a new window. Just to show how to load classes in a grade editor.
+        Ext.require('devilry.asminimalaspossible_gradeeditor.DummyWindow');
+        this.add({
+            xtype: 'button',
+            text: 'click me',
+            listeners: {
+                scope: this,
+                click: function() {
+                    var win = Ext.create('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
+                        message: 'Just to show how to do loading of classes from draft editor!',
+                        buttonLabel: 'Hello world!'
+                    });
+                    win.show();
+                }
+            }
+        });
     },
 
     /**
