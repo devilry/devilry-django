@@ -8,7 +8,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     requires: [
         'devilry.extjshelpers.studentsmanager.FilterSelector',
         'devilry.extjshelpers.studentsmanager.StudentsGrid',
-        'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
         'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow',
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
@@ -16,11 +15,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     ],
 
     mixins: {
-        manageExaminers: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers',
-        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
-        createGroups: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups',
         createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
-        loadRelatedUsers: 'devilry.extjshelpers.studentsmanager.LoadRelatedUsersMixin',
+        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
         closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
     },
 
@@ -31,11 +27,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
          * ``false``, we use the examiner RESTful interface.
          */
         isAdministrator: false,
-
-        deadlinemodel: undefined,
-        assignmentgroupstore: undefined,
-        assignmentid: undefined,
         gradeeditor_config_model: undefined,
+        deadlinemodel: undefined,
+        assignmentid: undefined,
+        assignmentgroupstore: undefined,
+
         periodid: undefined
     },
 
@@ -43,6 +39,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.callParent([config]);
         this.initConfig(config);
 
+        this.role = this.isAdministrator? 'administrator': 'examiner';
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
@@ -63,25 +60,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
-        this.addStudentsButton = Ext.widget('button', {
-            text: 'Create groups',
-            iconCls: 'icon-add-32',
-            scale: 'large',
-            menu: [{
-                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
-                listeners: {
-                    scope: this,
-                    click: this.onOneGroupForEachRelatedStudent
-                }
-            }, {
-                text: 'Manually',
-                listeners: {
-                    scope: this,
-                    click: this.onManuallyCreateUsers
-                }
-            }]
-        });
-
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -89,22 +67,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             },
             items: [{
                 xtype: 'searchfield',
-                //width: 600,
-                //height: 40,
-                //padding: '30 0 0 0'
-                //padding: 40,
                 emptyText: 'Search...',
                 margin: 10,
                 flex: 0,
-
-            //}, {
-                //region:'west',
-                //xtype: 'panel',
-                //width: 200,
-                //layout: 'fit',
-                //items: [{
-                    //xtype: 'studentsmanager_filterselector'
-                //}]
             }, {
                 xtype: 'panel',
                 flex: 1,
@@ -121,63 +86,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'toolbar',
                     dock: 'bottom',
                     ui: 'footer',
-                    items: [this.addStudentsButton, '->', {
-                        xtype: 'button',
-                        text: 'Actions on selected',
-                        scale: 'large',
-                        menu: [{
-                            text: 'Close/open selected',
-                            menu: [{
-                                text: 'Close',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onCloseGroups
-                                }
-                            }, {
-                                text: 'Open',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onOpenGroups
-                                }
-                            }]
-                        }, {
-                            text: 'Add deadline to selected',
-                            listeners: {
-                                scope: this,
-                                click: this.onAddDeadline
-                            }
-                        }, {
-                            text: 'Change examiners on selected',
-                            menu: [{
-                                text: 'Replace',
-                                iconCls: 'icon-edit-16',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onReplaceExaminers
-                                }
-                            }, {
-                                text: 'Add',
-                                iconCls: 'icon-add-16',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onAddExaminers
-                                }
-                            }, {
-                                text: 'Random distribute',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onRandomDistributeExaminers
-                                }
-                            }, {
-                                text: 'Clear',
-                                iconCls: 'icon-delete-16',
-                                listeners: {
-                                    scope: this,
-                                    click: this.onClearExaminers
-                                }
-                            }]
-                        }]
-                    }, this.giveFeedbackButton]
+                    items: this.getToolbarItems()
                 }]
             }],
 
@@ -190,6 +99,40 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
         }, this);
         this.loadGradeEditorConfigModel();
+    },
+
+    getToolbarItems: function() {
+        return ['->', {
+            xtype: 'button',
+            text: 'Actions on selected',
+            scale: 'large',
+            menu: this.getOnSelectedMenuItems()
+        }, this.giveFeedbackButton];
+    },
+
+    getOnSelectedMenuItems: function() {
+        return [{
+            text: 'Close/open',
+            menu: [{
+                text: 'Close',
+                listeners: {
+                    scope: this,
+                    click: this.onCloseGroups
+                }
+            }, {
+                text: 'Open',
+                listeners: {
+                    scope: this,
+                    click: this.onOpenGroups
+                }
+            }]
+        }, {
+            text: 'Add deadline',
+            listeners: {
+                scope: this,
+                click: this.onAddDeadline
+            }
+        }];
     },
 
     /**
@@ -221,7 +164,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     createRecordFromStoreRecord: function(record) {
-        var editRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup', {
+        var modelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedAssignmentGroup', this.role);
+        var editRecord = Ext.create(modelname, {
             // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
             id: record.data.id,
             name: record.data.name,

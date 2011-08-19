@@ -29,7 +29,7 @@ class AssignmentGroupView(View):
 
 class AssignmentView(View):
     def get(self, request, assignmentid):
-        context = {'objectid': assignmentid,
+        context = {'assignmentid': assignmentid,
                    'restfulapi': dump_all_into_dict(restful),
                    'gradeeditors': dump_all_into_dict(gradeeditors_restful)
                   }

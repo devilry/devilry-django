@@ -3,7 +3,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',
     requires: [
-        'devilry.extjshelpers.studentsmanager.StudentsManager',
+        'devilry.administrator.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
@@ -332,9 +332,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             layout: 'fit',
             maximizable: true,
             modal: true,
-            closeAction: 'hide',
             items: {
-                xtype: 'studentsmanager',
+                xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
                 assignmentid: this.objectid,
                 periodid: this.record.data.parentnode,

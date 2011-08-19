@@ -1,5 +1,10 @@
 /** The feedback creation methods for StudentsManager. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback', {
+
+    requires: [
+        'devilry.gradeeditors.RestfulRegistryItem'
+    ],
+
     /**
      * @private
      */
