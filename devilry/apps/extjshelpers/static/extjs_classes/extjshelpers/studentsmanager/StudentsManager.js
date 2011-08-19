@@ -120,63 +120,37 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getToolbarItems: function() {
-        return [this.addStudentsButton, '->', {
+        return ['->', {
             xtype: 'button',
             text: 'Actions on selected',
             scale: 'large',
+            menu: this.getOnSelectedMenuItems()
+        }, this.giveFeedbackButton];
+    },
+
+    getOnSelectedMenuItems: function() {
+        return [{
+            text: 'Close/open',
             menu: [{
-                text: 'Close/open selected',
-                menu: [{
-                    text: 'Close',
-                    listeners: {
-                        scope: this,
-                        click: this.onCloseGroups
-                    }
-                }, {
-                    text: 'Open',
-                    listeners: {
-                        scope: this,
-                        click: this.onOpenGroups
-                    }
-                }]
-            }, {
-                text: 'Add deadline to selected',
+                text: 'Close',
                 listeners: {
                     scope: this,
-                    click: this.onAddDeadline
+                    click: this.onCloseGroups
                 }
             }, {
-                text: 'Change examiners on selected',
-                menu: [{
-                    text: 'Replace',
-                    iconCls: 'icon-edit-16',
-                    listeners: {
-                        scope: this,
-                        click: this.onReplaceExaminers
-                    }
-                }, {
-                    text: 'Add',
-                    iconCls: 'icon-add-16',
-                    listeners: {
-                        scope: this,
-                        click: this.onAddExaminers
-                    }
-                }, {
-                    text: 'Random distribute',
-                    listeners: {
-                        scope: this,
-                        click: this.onRandomDistributeExaminers
-                    }
-                }, {
-                    text: 'Clear',
-                    iconCls: 'icon-delete-16',
-                    listeners: {
-                        scope: this,
-                        click: this.onClearExaminers
-                    }
-                }]
+                text: 'Open',
+                listeners: {
+                    scope: this,
+                    click: this.onOpenGroups
+                }
             }]
-        }, this.giveFeedbackButton];
+        }, {
+            text: 'Add deadline',
+            listeners: {
+                scope: this,
+                click: this.onAddDeadline
+            }
+        }];
     },
 
     /**
