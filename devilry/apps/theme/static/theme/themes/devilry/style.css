@@ -252,8 +252,7 @@ header {
         border: 4px solid transparent;
         height: auto !important; }
         .multisearchresults > .x-panel-body .searchresults .searchresultitem:hover {
-          border: 4px solid #77b300;
-          background-color: #f7ffe5; }
+          background-color: #eee; }
       .multisearchresults > .x-panel-body .searchresults .searchresultitem-even {
         background-color: #f8f8f8; }
 

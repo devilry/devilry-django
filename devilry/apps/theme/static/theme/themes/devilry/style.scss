@@ -300,8 +300,9 @@ header {
                 border: 4px solid transparent;
                 height: auto !important;
                 &:hover {
-                    border: 4px solid $goodcolor_bg;
-                    background-color: $goodcolor_fg;
+                    //border: 4px solid $goodcolor_bg;
+                    background-color: #eee;
+                    //color: $goodcolor_fg !important;
                 }
             }
             .searchresultitem-even {
