@@ -1,3 +1,6 @@
+/**
+ * Panel for file upload.
+ */
 Ext.define('devilry.student.FileUploadPanel', {
     extend: 'Ext.form.Panel',
     alias: 'widget.fileuploadpanel',
@@ -16,8 +19,16 @@ Ext.define('devilry.student.FileUploadPanel', {
          */
         deadlineid: undefined,
 
+        /**
+         * @cfg
+         * Only used to display "Click to view" link. (optional)
+         */
         deadline_recordcontainer: undefined,
 
+        /**
+         * @cfg
+         * The name of the Delivery ``Ext.data.Model``.
+         */
         deliverymodelname: undefined
     },
 
@@ -114,7 +125,6 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     updateInfoBox: function(finished) {
-        //console.log(this.deliveryrecord);
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
