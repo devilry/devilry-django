@@ -122,7 +122,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             text: 'Open examiner interface',
             listeners: {
                 scope: this,
-                click: function() { console.log('TODO'); }
+                click: this.onOpenExaminerInterface
             }
         }];
     },
@@ -169,13 +169,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
+    onNotSingleSelected: function() {
+        Ext.MessageBox.alert('Invalid selection', 'You must select exactly one group to use the selected action.');
+    },
+
+    /**
+     * @private
+     */
+    singleSelected: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 1;
+    },
+
+    /**
+     * @private
+     */
+    getSelection: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection();
+    },
+
+    /**
+     * @private
+     */
     loadFirstPage: function() {
         this.assignmentgroupstore.currentPage = 1;
         this.refreshStore();
     },
-
-
-
 
     /**
      * @private
@@ -190,6 +208,19 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             parentnode: record.data.parentnode,
         });
         return editRecord;
+    },
+
+
+    /**
+     * @private
+     */
+    onOpenExaminerInterface: function() {
+        if(this.noneSelected()) {
+            this.onNotSingleSelected();
+            return;
+        }
+        var record = this.getSelection()[0];
+        window.location.href = Ext.String.format('../assignmentgroup/{0}', record.data.id);
     },
 
     
