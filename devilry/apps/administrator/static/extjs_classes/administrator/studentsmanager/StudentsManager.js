@@ -9,6 +9,10 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         loadRelatedUsers: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
+    //config: {
+        //assignmentgroupPrevApprovedStore: undefined
+    //},
+
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
@@ -54,18 +58,18 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: function() { console.log('TODO'); }
             }
         });
+        //menu.push({
+            //text: 'Mark as approved in a previous period',
+            //listeners: {
+                //scope: this,
+                //click: this.onPreviouslyApproved
+            //}
+        //});
         menu.push({
-            text: 'Mark as approved in a previous period',
+            text: 'Create dummy delivery',
             listeners: {
                 scope: this,
-                click: function() { console.log('TODO'); }
-            }
-        });
-        menu.push({
-            text: 'Create delivery',
-            listeners: {
-                scope: this,
-                click: this.onCreateDeliveryForGroup
+                click: this.onCreateDummyDelivery
             }
         });
         return menu;

@@ -216,7 +216,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onOpenExaminerInterface: function() {
-        if(this.noneSelected()) {
+        if(!this.singleSelected()) {
             this.onNotSingleSelected();
             return;
         }
