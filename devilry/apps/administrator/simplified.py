@@ -198,7 +198,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         fake_editablefields = ('fake_examiners', 'fake_candidates')
         annotated_fields = ['latest_deadline_id'] + list(SimplifiedAssignmentGroupMetaMixin.annotated_fields)
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec('latest_deadline_id') + SimplifiedAssignmentGroupMetaMixin.resultfields
+        resultfields = FieldSpec('latest_deadline_id', users=['candidates__student__username']) + \
+                SimplifiedAssignmentGroupMetaMixin.resultfields
+        filters = FilterSpecs(FilterSpec('candidates__student__username')) + SimplifiedAssignmentGroupMetaMixin.filters
 
 
     @classmethod
