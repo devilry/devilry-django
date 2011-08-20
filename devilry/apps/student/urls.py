@@ -9,7 +9,7 @@ from views import (MainView, AddDeliveryView,
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),
-                       url(r'^add-delivery/(?P<deliveryid>\d+)$', 
+                       url(r'^add-delivery/(?P<deadlineid>\d+)$', 
                            login_required(AddDeliveryView.as_view()), 
                            name='add-delivery'),
                        url(r'^add-delivery/fileupload/(?P<deadlineid>\d+)$',
