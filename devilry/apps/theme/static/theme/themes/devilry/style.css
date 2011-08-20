@@ -513,21 +513,12 @@ td.selectable-gridcell {
       border: 4px solid #77b300 !important;
       background-color: #f7ffe5; }
 
-tr.dashboard:hover .x-grid-cell-inner {
+.selectable-grid tr.x-grid-row:hover .x-grid-cell-inner {
   cursor: pointer;
   font-weight: bold;
   background-color: #77b300;
   color: #f7ffe5; }
-
-tr.dashboard .x-grid-cell-inner {
-  padding: 10px; }
-
-.selectable-grid tr:hover .x-grid-cell-inner {
-  cursor: pointer;
-  font-weight: bold;
-  background-color: #77b300;
-  color: #f7ffe5; }
-.selectable-grid tr .x-grid-cell-inner {
+.selectable-grid tr.x-grid-row .x-grid-cell-inner {
   padding: 8px; }
 
 section.extravisible {

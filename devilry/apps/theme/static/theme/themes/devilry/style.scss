@@ -607,26 +607,19 @@ td.selectable-gridcell {
     }
 }
 
-tr.dashboard:hover .x-grid-cell-inner{
-    cursor: pointer;
-    font-weight: bold;
-    background-color: $goodcolor_bg;
-    color: $goodcolor_fg;
-}
-tr.dashboard .x-grid-cell-inner{
-    padding: 10px;
-}
-
 
 .selectable-grid {
-    tr:hover .x-grid-cell-inner{
-        cursor: pointer;
-        font-weight: bold;
-        background-color: $goodcolor_bg;
-        color: $goodcolor_fg;
-    }
-    tr .x-grid-cell-inner{
-        padding: 8px;
+    tr.x-grid-row {
+        &:hover .x-grid-cell-inner{
+            cursor: pointer;
+            font-weight: bold;
+            background-color: $goodcolor_bg;
+            color: $goodcolor_fg;
+        }
+
+        .x-grid-cell-inner {
+            padding: 8px;
+        }
     }
 }
 

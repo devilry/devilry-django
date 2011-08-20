@@ -2,7 +2,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliveriesonsinglegrouplisting',
-    cls: 'widget-deliveriesonsinglegrouplisting',
+    cls: 'widget-deliveriesonsinglegrouplisting selectable-grid',
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel'
@@ -49,7 +49,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
                 header: 'Data',
                 dataIndex: 'id',
                 flex: 1,
-                tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, deliveryrecord) {
                     //console.log(deliveryrecord.data);
                     return this.rowTpl.apply(deliveryrecord.data);
