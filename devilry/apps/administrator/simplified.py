@@ -196,7 +196,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         editablefields = ('id', 'name', 'is_open', 'parentnode')
         fake_editablefields = ('fake_examiners', 'fake_candidates')
+        annotated_fields = ['latest_deadline_id'] + list(SimplifiedAssignmentGroupMetaMixin.annotated_fields)
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('latest_deadline_id') + SimplifiedAssignmentGroupMetaMixin.resultfields
 
 
     @classmethod
@@ -207,6 +209,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         :rtype: a django queryset
         """
         return cls._meta.model.where_is_admin_or_superadmin(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                                                                           latest_deadline_id=Max('deadlines__id'),
                                                                            number_of_deliveries=Count('deadlines__deliveries'))
 
     @classmethod
