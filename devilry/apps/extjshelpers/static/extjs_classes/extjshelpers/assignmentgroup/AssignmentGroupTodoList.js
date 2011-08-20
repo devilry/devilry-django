@@ -130,6 +130,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             comp: 'exact',
             value: true
         }];
-        searchfield.onEmptyInput();
+        searchfield.refreshStore();
     },
 });

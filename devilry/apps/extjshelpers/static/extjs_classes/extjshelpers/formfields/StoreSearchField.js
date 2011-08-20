@@ -50,6 +50,10 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
         this.store.load();
     },
 
+    refreshStore: function() {
+        this.onNewSearchValue(this.getValue());
+    },
+
     onEmptyInput: function() {
         this.onNewSearchValue('');
     }
