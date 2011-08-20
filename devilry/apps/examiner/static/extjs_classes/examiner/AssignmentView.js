@@ -1,11 +1,12 @@
 Ext.define('devilry.examiner.AssignmentView', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.Container',
     frame: false,
     border: false,
 
     requires: [
         'devilry.extjshelpers.studentsmanager.StudentsManager',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList'
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
+        'devilry.extjshelpers.charts.PointsOfGroupsOnSingleAssignment'
     ],
 
     config: {
@@ -44,8 +45,22 @@ Ext.define('devilry.examiner.AssignmentView', {
             },
         });
 
+
         Ext.apply(this, {
-            items: this._todolist
+            items: [this._todolist, {
+                xtype: 'panel',
+                title: 'Overview',
+                margin: {
+                    top: 30
+                },
+                layout: 'fit',
+                height: 800,
+                width: "100%",
+                items: {
+                    xtype: 'chart_pointsofgroupsonsingleassignment',
+                    store: this.assignmentgroupGraphstore
+                }
+            }]
         });
         this.callParent(arguments);
 
@@ -56,6 +71,18 @@ Ext.define('devilry.examiner.AssignmentView', {
             failure: this.onLoadAssignmentFailure
         });
         this.loadTodoList();
+
+
+        this.assignmentgroupGraphstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.assignmentid
+        }]);
+        this.assignmentgroupGraphstore.load({
+            callback: function(records) {
+                //console.log(records[0].data);
+            }
+        });
     },
 
     loadTodoList: function() {

@@ -13,6 +13,9 @@
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
 
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,users;Graph" }};
+    var assignmentgroupGraphstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"Graph" }};
+
     Ext.require('devilry.examiner.AssignmentView');
     Ext.onReady(function() {
         var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
@@ -38,7 +41,8 @@
             assignment_recordcontainer: assignment_recordcontainer,
             assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             assignmentid: {{ assignmentid }},
-            assignmentgroupstore: assignmentgroupstore
+            assignmentgroupstore: assignmentgroupstore,
+            assignmentgroupGraphstore: assignmentgroupGraphstore
         });
     });
 </script>
