@@ -46,8 +46,41 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
             this.onNotSingleSelected();
             return;
         }
-
         var groupRecord = this.getSelection()[0];
+        
+        var msg = Ext.create('Ext.XTemplate',
+            '<p>Are you sure you want to create a dummy delivery for <em>',
+            '    <tpl if="name">',
+            '        {name}: ',
+            '    </tpl>',
+            '    <tpl for="candidates__identifier">',
+            '        {.}<tpl if="xindex &lt; xcount">, </tpl>',
+            '    </tpl>',
+            '</em>?',
+            '<tpl if="number_of_deliveries &gt; 0">',
+            '   <p><strong>WARNING:</strong> One usually only creates dummy deliveries for groups with no ',
+            '   deliveries, however this group has <strong>{number_of_deliveries}</strong> deliveries.</p>',
+            '</tpl>'
+        );
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Confirm that you want to create dummy delivery',
+            msg: msg.apply(groupRecord.data),
+            animateTarget: this.deletebutton,
+            buttons: Ext.Msg.YESNO,
+            icon: (groupRecord.data.number_of_deliveries>0? Ext.Msg.WARNING: Ext.Msg.QUESTION),
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    me.createDummyDeliveryForSelected(groupRecord);
+                }
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    createDummyDelivery: function(groupRecord) {
         this.createDeliveryForGroup(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
         this.refreshStore();
     },
