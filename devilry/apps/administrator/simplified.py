@@ -270,7 +270,7 @@ class SimplifiedDelivery(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read'] #, 'create', 'update', 'delete'] # TODO: Delivered by administrator?
+        methods = ['search', 'read', 'create', 'update', 'delete']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -293,6 +293,8 @@ class SimplifiedDelivery(SimplifiedModelApi):
         :throws PermissionDenied:
         """
         if not obj.deadline.assignment_group.can_save(user):
+            raise PermissionDenied()
+        if obj.delivered_by != None:
             raise PermissionDenied()
 
 
