@@ -603,7 +603,7 @@ td.selectable-gridcell {
     }
 }
 
-tr.x-grid-row-over .x-grid-cell-inner{
+tr.dashboard:hover .x-grid-cell-inner{
     cursor: pointer;
     font-size: large;
     background-color: #77b300;
