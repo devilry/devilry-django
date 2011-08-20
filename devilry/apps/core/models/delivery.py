@@ -84,7 +84,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     delivered_by = models.ForeignKey("Candidate")
 
     # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
-    alias_delivery = models.OneToOneField("Delivery", blank=True, null=True)
+    alias_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+                                          help_text='Links to another delivery. Used when delivery_type is Alias.')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
