@@ -24,7 +24,9 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
          */
         alwaysAppliedFilters: undefined,
 
-        autoLoad: true
+        autoLoad: true,
+
+        pageSize: 10
     },
 
     constructor: function(config) {
@@ -40,7 +42,7 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
 
     onNewSearchValue: function(value) {
         var parsedValue = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            pageSizeWithoutType: 10,
+            pageSizeWithoutType: this.pageSize,
             searchstring: value,
             alwaysAppliedFilters: this.alwaysAppliedFilters
         });

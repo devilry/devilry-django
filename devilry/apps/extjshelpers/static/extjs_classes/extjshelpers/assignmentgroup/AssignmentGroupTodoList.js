@@ -49,7 +49,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
          */
         assignmentgroup_recordcontainer: undefined,
 
-        pageSize: 10,
+        pageSize: 7,
         tbarExtra: undefined
     },
 
@@ -65,6 +65,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             xtype: 'storesearchfield',
             emptyText: 'Search...',
             store: this.store,
+            pageSize: this.pageSize || 7, // TODO: Fix config order to avoid this hack
             width: 300,
             autoLoad: false
         }];
