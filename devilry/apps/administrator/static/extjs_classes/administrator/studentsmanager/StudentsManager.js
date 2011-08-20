@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     mixins: {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
         createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
-        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin'
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin',
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
     constructor: function(config) {
@@ -54,10 +55,17 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             }
         });
         menu.push({
-            text: 'Mark as approved in a previous semester',
+            text: 'Mark as approved in a previous period',
             listeners: {
                 scope: this,
                 click: function() { console.log('TODO'); }
+            }
+        });
+        menu.push({
+            text: 'Create delivery',
+            listeners: {
+                scope: this,
+                click: this.onCreateDeliveryForGroup
             }
         });
         return menu;
