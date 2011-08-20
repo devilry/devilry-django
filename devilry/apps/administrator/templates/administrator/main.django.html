@@ -45,7 +45,7 @@
                             model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
                             editform: Ext.widget('administrator_nodeform')
                         }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'node/{id}')
                     }).show();
                 }
             }, {
@@ -64,7 +64,7 @@
                             model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
                             editform: Ext.widget('administrator_subjectform')
                         }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'subject/view/{id}')
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'subject/{id}')
                     }).show();
                 }
             }, {
@@ -83,7 +83,7 @@
                             model: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
                             editform: Ext.widget('administrator_periodform')
                         }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'period/view/{id}')
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'period/{id}')
                     }).show();
                 }
             }, {
@@ -102,7 +102,7 @@
                             model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
                             editform: Ext.widget('administrator_assignmentform')
                         }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/view/{id}')
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/{id}')
                     }).show();
                 }
             }]
