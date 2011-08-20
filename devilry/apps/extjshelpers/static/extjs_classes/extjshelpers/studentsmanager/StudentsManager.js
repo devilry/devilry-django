@@ -145,6 +145,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }]
         }, {
             text: 'Add deadline',
+            iconCls: 'icon-add-16',
             listeners: {
                 scope: this,
                 click: this.onAddDeadline

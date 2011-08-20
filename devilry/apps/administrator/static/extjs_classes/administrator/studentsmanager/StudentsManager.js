@@ -47,6 +47,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         var menu = this.callParent();
         menu.push({
             text: 'Edit group details',
+            iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
                 click: function() { console.log('TODO'); }
@@ -94,6 +95,14 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                     click: this.onClearExaminers
                 }
             }]
+        });
+        menu.push({
+            text: 'Delete',
+            iconCls: 'icon-delete-16',
+            listeners: {
+                scope: this,
+                click: function() { console.log('TODO'); }
+            }
         });
         return menu;
     }
