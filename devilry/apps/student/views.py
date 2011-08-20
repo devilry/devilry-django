@@ -58,9 +58,12 @@ class FileUploadView(View):
         logged_in_user = request.user
         deliveryid = request.POST['deliveryid']
 
-        if not assignment_group_obj.is_candidate(logged_in_user):
-            return HttpResponseForbidden()
+        # Allow administrators and candidates on the group
+        if not assignment_group_obj.can_save(logged_in_user):
+            if not assignment_group_obj.is_candidate(logged_in_user):
+                return HttpResponseForbidden()
 
+        # Only allowed to add on open groups
         if not assignment_group_obj.can_add_deliveries():
             return HttpResponseForbidden()
 
