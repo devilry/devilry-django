@@ -59,15 +59,21 @@
         var listView = Ext.create('Ext.grid.Panel', {
             collapsible:true,
             title:'Default',
+            columnLines: true,
             renderTo: 'content-heading',
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+            viewConfig: {
+                getRowClass: function(record, rowIndex, rowParams, store){
+                    return "dashboard";
+                }
+            },
             columns: [{
                 text: 'Subject',
                 dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
                 flex: 20
             },{
                 text: 'Assignment',
-                flex: 30,
+                flex: 15,
                 dataIndex: 'assignment_group__parentnode__long_name'
             },{
                 text: 'Deadline',
@@ -82,10 +88,13 @@
                 itemmouseup: function(view, record) {
                     var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
                     window.location = url;
+                },
+                itemmouseenter: function(view, record, item) {
+                    //console.log(item);
                 }
             }
         });
-        
+        console.log(listView);
         
     });
 
