@@ -35,6 +35,13 @@ Ext.define('devilry.examiner.AssignmentView', {
                    click: this.onStudents
                }
             }],
+
+            onSelectGroup: function(grid, assignmentgroupRecord) {
+                var url = Ext.String.format('../assignmentgroup/{0}',
+                    assignmentgroupRecord.data.id
+                );
+                window.location.href = url;
+            },
         });
 
         Ext.apply(this, {
