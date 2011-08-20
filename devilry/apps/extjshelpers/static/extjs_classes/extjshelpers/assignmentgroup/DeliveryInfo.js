@@ -201,7 +201,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             modal: true,
             layout: 'fit',
             closeAction: 'hide',
-            closable: button != undefined,
+            //closable: button != undefined,
             items: {
                 xtype: 'deliveriesonsinglegrouplisting',
                 store: this.deliverystore,
