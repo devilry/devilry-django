@@ -43,7 +43,26 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         return defaults;
     },
 
-    getOnSelectedMenuItems: function() {
+    getOnSingleMenuItems: function() {
+        var menu = this.callParent();
+        menu.push({
+            text: 'Edit group details',
+            listeners: {
+                scope: this,
+                click: function() { console.log('TODO'); }
+            }
+        });
+        menu.push({
+            text: 'Mark as approved in a previous semester',
+            listeners: {
+                scope: this,
+                click: function() { console.log('TODO'); }
+            }
+        });
+        return menu;
+    },
+
+    getOnManyMenuItems: function() {
         var menu = this.callParent();
         menu.push({
             text: 'Change examiners',

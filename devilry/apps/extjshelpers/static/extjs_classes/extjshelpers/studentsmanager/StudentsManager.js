@@ -48,7 +48,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     initComponent: function() {
         this.giveFeedbackButton = Ext.widget('button', {
             scale: 'large',
-            text: 'Give feedback to selected',
+            text: 'Give feedback to many',
             listeners: {
                 scope: this,
                 click: this.onGiveFeedbackToSelected,
@@ -106,13 +106,28 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     getToolbarItems: function() {
         return ['->', {
             xtype: 'button',
-            text: 'Actions on selected',
+            text: 'On single group',
             scale: 'large',
-            menu: this.getOnSelectedMenuItems()
+            menu: this.getOnSingleMenuItems()
+        }, {
+            xtype: 'button',
+            text: 'On many groups',
+            scale: 'large',
+            menu: this.getOnManyMenuItems()
         }, this.giveFeedbackButton];
     },
 
-    getOnSelectedMenuItems: function() {
+    getOnSingleMenuItems: function() {
+        return [{
+            text: 'Open examiner interface',
+            listeners: {
+                scope: this,
+                click: function() { console.log('TODO'); }
+            }
+        }];
+    },
+
+    getOnManyMenuItems: function() {
         return [{
             text: 'Close/open',
             menu: [{
