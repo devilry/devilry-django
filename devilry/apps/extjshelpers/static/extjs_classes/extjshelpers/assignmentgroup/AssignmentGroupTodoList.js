@@ -67,7 +67,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             store: this.store,
             pageSize: this.pageSize || 7, // TODO: Fix config order to avoid this hack
             width: 300,
-            autoLoad: false
+            autoLoadStore: false
         }];
         if(this.tbarExtra) {
             Ext.Array.insert(this.tbarItems, 1, this.tbarExtra);

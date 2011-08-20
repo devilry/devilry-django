@@ -17,8 +17,8 @@ Ext.define('devilry.extjshelpers.SearchField', {
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
         this.addEvents('emptyInput');
         this.addEvents('newSearchValue');
     },

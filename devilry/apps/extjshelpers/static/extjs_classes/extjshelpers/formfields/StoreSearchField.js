@@ -24,7 +24,7 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
          */
         alwaysAppliedFilters: undefined,
 
-        autoLoad: true,
+        autoLoadStore: true,
 
         pageSize: 10
     },
