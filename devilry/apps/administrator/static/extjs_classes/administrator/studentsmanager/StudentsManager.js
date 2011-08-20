@@ -55,7 +55,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
-                click: function() { console.log('TODO'); }
+                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
             }
         });
         //menu.push({
@@ -113,7 +113,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             iconCls: 'icon-delete-16',
             listeners: {
                 scope: this,
-                click: function() { console.log('TODO'); }
+                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
             }
         });
         return menu;
