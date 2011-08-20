@@ -603,6 +603,12 @@ td.selectable-gridcell {
     }
 }
 
+tr.x-grid-row-over .x-grid-cell-inner{
+    cursor: pointer;
+    font-size: large;
+    background-color: #77b300;
+}
+
 
 section.extravisible {
     //border: 2px solid #999;
