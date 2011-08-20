@@ -2,7 +2,7 @@
  *
  * Note that this class depends on createRecordFromStoreRecord(),
  * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
-Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers', {
+Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers', {
 
     randomDistResultTpl: Ext.create('Ext.XTemplate',
         '<p>The selected examiners got the following number of groups:</p>',
@@ -38,7 +38,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
                     saveClicked: function(setlistofusersobj, usernames) {
                         this.randomDistributeExaminersOnSelected(setlistofusersobj, usernames);
                     }
-                }
+                },
+
+                extraToolbarButtons: [{
+                    xtype: 'button',
+                    scale: 'large',
+                    text: Ext.String.format('Import examiners registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                    listeners: {
+                        scope: this,
+                        click: this.onImportRelatedExaminers
+                    }
+                }]
             },
         });
         win.show();
@@ -166,7 +176,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageExaminers'
                 extraToolbarButtons: [{
                     xtype: 'button',
                     scale: 'large',
-                    text: 'Import related examiners',
+                    text: Ext.String.format('Import examiners registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
                     listeners: {
                         scope: this,
                         click: this.onImportRelatedExaminers

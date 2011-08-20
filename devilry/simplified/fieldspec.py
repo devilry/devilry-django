@@ -102,6 +102,8 @@ class FieldSpec(object):
 
         # then self's field_groups
         for key, val in other.additional_fieldgroups.items():
+            if not key in new_fieldgroups:
+                new_fieldgroups[key] = []
             for v in val:
                 if v in new_fieldgroups[key]:
                     raise ValueError("%s already in additional_fieldgroups['%s']" % (v, key))

@@ -14,6 +14,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              'time_of_delivery',
                              'deadline',
                              'successful',
+                             'delivery_type', 'alias_delivery',
                              delivered_by=['delivered_by__identifier'],
                              candidates=['deadline__assignment_group__candidates__identifier'],
                              deadline=['deadline__deadline'],

@@ -16,8 +16,8 @@
 
         <!-- ** ExtJS ** -->
         <link rel="stylesheet" type="text/css"
-                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />
-                {# href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />#}
+                {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
+                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
 
         <script src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
         <script>
@@ -37,7 +37,8 @@
             Ext.define('DevilrySettings', {
                 singleton: true,
                 DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
-                DEVILRY_MAIN_PAGE: '{{ DEVILRY_MAIN_PAGE }}'
+                DEVILRY_MAIN_PAGE: '{{ DEVILRY_MAIN_PAGE }}',
+                DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}'
             });
         </script>
         <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>

@@ -1,4 +1,4 @@
-Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
+Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.manuallycreateusers',
     frame: false,

@@ -65,9 +65,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     TYPE_ALIAS = 2
 
     delivery_type = models.PositiveIntegerField(default=TYPE_ELECTRONIC,
-            verbose_name = _("Type of deliveries"),
-            help_text=_('This option controls if this assignment accepts only '
-                        'electronic deliveries, or accepts other kinds as well.'))
+                                                verbose_name = "Type of delivery",
+                                                help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
     time_of_delivery = models.DateTimeField(auto_now_add=True,
                                            help_text=_('Holds the date and time the Delivery was uploaded.'))
@@ -82,10 +81,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     # Fields set by user
     successful = models.BooleanField(blank=True, default=False,
                                     help_text=_('Has the delivery and all its files been uploaded successfully?'))
-    delivered_by = models.ForeignKey("Candidate")
+    delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
+                                     help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
 
     # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
-    alias_delivery = models.OneToOneField("Delivery", blank=True, null=True)
+    alias_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+                                          help_text='Links to another delivery. Used when delivery_type is Alias.')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.

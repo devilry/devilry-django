@@ -10,6 +10,7 @@
         {{ RestfulCls|extjs_combobox_model }}
     {% endfor %}
 
+    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/examiner/';
     var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
     var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
@@ -94,7 +95,6 @@
             collapsible:true,
             title:'Default',
             renderTo: 'content-heading',
-
             store: dashboard_assignment_store,
             features: [groupingFeature],
             columns: [{
@@ -106,7 +106,7 @@
                 dataIndex: 'parentnode__long_name',
                 flex: 20
             },{
-                text: 'Publishing Time',
+                text: 'Published',
                 flex: 15,
                 dataIndex: 'publishing_time',
                 renderer: function(value) {
@@ -115,8 +115,9 @@
             }],
             listeners: {
                 scope: this,
-                itemmouseup: function() {
-                    console.log("link to assignment");
+                itemmouseup: function(view, record) {
+                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    window.location = url;
                 }
             }
         });

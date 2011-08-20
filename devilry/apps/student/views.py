@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.core.servers.basehttp import FileWrapper
 from datetime import datetime
 import zipfile
+import tarfile
 from os import stat
 from mimetypes import guess_type
 import json
@@ -30,13 +31,13 @@ class MainView(TemplateView):
 
 
 class AddDeliveryView(View):
-    def get(self, request, deliveryid):
+    def get(self, request, deadlineid):
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
-                       'deadlineid': deliveryid,
+                       'deadlineid': deadlineid,
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
                       )
 
@@ -57,9 +58,12 @@ class FileUploadView(View):
         logged_in_user = request.user
         deliveryid = request.POST['deliveryid']
 
-        if not assignment_group_obj.is_candidate(logged_in_user):
-            return HttpResponseForbidden()
+        # Allow administrators and candidates on the group
+        if not assignment_group_obj.can_save(logged_in_user):
+            if not assignment_group_obj.is_candidate(logged_in_user):
+                return HttpResponseForbidden()
 
+        # Only allowed to add on open groups
         if not assignment_group_obj.can_add_deliveries():
             return HttpResponseForbidden()
 
@@ -119,7 +123,7 @@ class CompressedFileDownloadView(View):
 
     def get(self, request, deliveryid):
         delivery = get_object_or_404(Delivery, id=deliveryid)
-        zip_file_name = str(request.user) + ".zip"
+        zip_file_name = str(delivery.delivered_by) + ".zip"
 
         tempfile = TemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
@@ -131,8 +135,30 @@ class CompressedFileDownloadView(View):
 
         tempfile.seek(0)
         response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
-                                content_type=guess_type(zip_file_name))
+                                content_type="application/zip")
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
-        response['Content-Length'] = stat(zip_file_name).st_size
+        response['Content-Length'] = stat(tempfile.name).st_size
         return response
+
+class TarFileDownloadView(View):
+
+    def get(self, request, deliveryid):
+        delivery = get_object_or_404(Delivery, id=deliveryid)
+        tar_file_name = str(request.user) + ".tar.gz"
+
+        tempfile = TemporaryFile()
+        tar_file = tarfile.open(tempfile.name, 'w');
+
+        for filemeta in delivery.filemetas.all():
+            file_content = filemeta.deliverystore.read_open(filemeta)
+            tar_file.write(file_content.name, filemeta.filename)
+        tar_file.close()
+
+        tempfile.seek(0)
+        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
+                                content_type=guess_type(tar_file_name))
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+            tar_file_name.encode("ascii", 'replace')
+        response['Content-Length'] = stat(tempfile.name).st_size
+        return response        

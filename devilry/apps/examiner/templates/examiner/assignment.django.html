@@ -1,0 +1,57 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+{{ block.super }}
+
+<script>
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
+    {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
+    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+
+    
+    {#{{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,users;Graph" }};#}
+    {#var assignmentgroupGraphstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"Graph" }}; #}
+    Ext.require('devilry.examiner.AssignmentView');
+    Ext.onReady(function() {
+        var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
+        var heading = Ext.ComponentManager.create({
+            xtype: 'component',
+            renderTo: 'content-heading',
+            data: {},
+            tpl: [
+                '<tpl if="long_name">',
+                '   <h1>{parentnode__parentnode__long_name}</h1>',
+                '   <h2>{parentnode__long_name}</h2>',
+                '   <h3>{long_name} ({short_name})</h3>',
+                '</tpl>'
+            ]
+        });
+        assignment_recordcontainer.addListener('setRecord', function() {
+            heading.update(assignment_recordcontainer.record.data);
+        });
+
+        var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
+            renderTo: 'content-main',
+            assignment_recordcontainer: assignment_recordcontainer,
+            assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            assignmentid: {{ assignmentid }},
+            assignmentgroupstore: assignmentgroupstore
+            //assignmentgroupGraphstore: assignmentgroupGraphstore
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+
+<section class="treeheading" id="content-heading"></section>
+<div id="content-main"></div>
+
+{% endblock %}
+

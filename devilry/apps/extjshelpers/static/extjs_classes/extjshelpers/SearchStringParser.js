@@ -10,7 +10,8 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
     config: {
         searchstring: undefined,
         pageSizeWithType: 10,
-        pageSizeWithoutType: 3
+        pageSizeWithoutType: 3,
+        alwaysAppliedFilters: [],
     },
 
     constructor: function(config) {
@@ -60,7 +61,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         if(this.isInt(filter.value)) {
             filter.value = parseInt(filter.value);
         }
-        this.filters.push(filter);
+        if(!Ext.Array.contains(this.illegalFilters, filter.field)) {
+            this.filters.push(filter);
+        }
     },
 
     parseFilterIsh: function(filterstring) {
@@ -94,6 +97,11 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
      *      ``undefined`` if not found.
      */
     parseSearchString: function() {
+        this.illegalFilters = [];
+        Ext.each(this.alwaysAppliedFilters, function(filter, index) {
+            this.illegalFilters.push(filter.field);
+        }, this);
+
         var split = this.searchstring.split(' ');
         var query = "";
         var me = this;
@@ -124,15 +132,20 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         if(this.query) {
             extraParams.query = this.query;
         }
+
+        var localfilters = [];
         if(this.filters) {
-            var localfilters;
             if(shortcuts) {
                 localfilters = this.applyShortcuts(shortcuts);
             } else {
                 localfilters = this.filters;
             }
-            extraParams.filters = Ext.JSON.encode(localfilters);
         }
+        if(this.alwaysAppliedFilters) {
+            Ext.Array.insert(localfilters, 0, this.alwaysAppliedFilters);
+        }
+
+        extraParams.filters = Ext.JSON.encode(localfilters);
         return extraParams;
     },
 

@@ -26,3 +26,13 @@ class AssignmentGroupView(View):
         return render(request,
                       'examiner/assignmentgroupview.django.html',
                        context)
+
+class AssignmentView(View):
+    def get(self, request, assignmentid):
+        context = {'assignmentid': assignmentid,
+                   'restfulapi': dump_all_into_dict(restful),
+                   'gradeeditors': dump_all_into_dict(gradeeditors_restful)
+                  }
+        return render(request,
+                      'examiner/assignment.django.html',
+                       context) 

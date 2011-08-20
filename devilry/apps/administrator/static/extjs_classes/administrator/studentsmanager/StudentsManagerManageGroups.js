@@ -1,5 +1,8 @@
 /** The group management methods for StudentsManager. */
-Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageGroups', {
+Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', {
+    requires: [
+        'devilry.administrator.studentsmanager.ManuallyCreateUsers'
+    ],
 
     /**
      * @private

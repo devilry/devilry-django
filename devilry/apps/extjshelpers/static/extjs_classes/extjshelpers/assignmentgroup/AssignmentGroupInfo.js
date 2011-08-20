@@ -86,6 +86,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
             tbar: tbarItems,
             items: [{
                 xtype: 'assignmentgroupdetails',
+                extradata: {
+                    canExamine: this.canExamine
+                },
                 singlerecordontainer: this.assignmentgroup_recordcontainer
             }]
         });
@@ -107,7 +110,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     onUncorrectedGroups: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'To-do list (Open groups on this assignment)',
-            height: 500,
+            height: 340,
             width: 400,
             modal: true,
             layout: 'fit',

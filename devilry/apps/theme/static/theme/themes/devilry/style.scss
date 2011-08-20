@@ -269,17 +269,21 @@ header {
  */
 
 .widget-searchfield {
-    font-size: 24px;
     line-height: normal !important;
     height: auto !important;
-    padding: 4px 15px 4px 15px !important;
-    border-radius: 20px;
+
+    font-size: 1.0em;
+    padding: 4px 10px 4px 10px !important;
+    border-radius: 8px;
 }
 
 
 .widget-searchwidget {
     .widget-searchfield {
         width: $mainwidth !important;
+        font-size: 24px;
+        padding: 4px 15px 4px 15px !important;
+        border-radius: 20px;
     }
 }
 
@@ -296,8 +300,9 @@ header {
                 border: 4px solid transparent;
                 height: auto !important;
                 &:hover {
-                    border: 4px solid $goodcolor_bg;
-                    background-color: $goodcolor_fg;
+                    //border: 4px solid $goodcolor_bg;
+                    background-color: #eee;
+                    //color: $goodcolor_fg !important;
                 }
             }
             .searchresultitem-even {
@@ -604,6 +609,22 @@ td.selectable-gridcell {
 }
 
 
+.selectable-grid {
+    tr.x-grid-row {
+        &:hover .x-grid-cell-inner{
+            cursor: pointer;
+            font-weight: bold;
+            background-color: $goodcolor_bg;
+            color: $goodcolor_fg;
+        }
+
+        .x-grid-cell-inner {
+            padding: 8px;
+        }
+    }
+}
+
+
 section.extravisible {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
@@ -763,20 +784,20 @@ section.treeheading {
         }
         .is_opencol{
             .open {
-                @include warningInlineItem();
+                @include goodInlineItem();
             }
             .closed {
-                @include goodInlineItem();
+                @include warningInlineItem();
             }
         }
     }
 }
 
 .group_is_open {
-    @include warningInlineItem();
+    @include goodInlineItem();
 }
 .group_is_closed {
-    @include goodInlineItem();
+    @include warningInlineItem();
 }
 
 

@@ -30,6 +30,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
         ]);
 
         this.filemetastore.load();
+        
+        //TODO Necessary. Get undefined when referenced later
+        var stored_delivery_id = this.deliveryid;
+
+        
         Ext.apply(this, {
             items: [{
                 xtype: 'grid',
@@ -40,19 +45,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                     header: 'Size', dataIndex: 'size'
                 }],
                     listeners: {
-                    itemclick: function(self, rec) {
-                        //console.log('File name: ' + rec.data.filename + ', id: ' + rec.data.id);
-                        var url = "/student/show-delivery/filedownload/" + rec.data.id;
-                        // Ext.Ajax.request({
-                            // url: asdf,
-                            // failure: function() {
-                                // console.log("Dette gikk dårlig");
-                            // },
-                            // callback: function() {
-                                // console.log("Callback");
-                            // }
-                        // });
-                        //TODO: Get it to work with ajax
+                    itemclick: function(self, record) {
+                        var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/filedownload/" + record.data.id;
                         window.open(url, 'download');
                     }
                 }
@@ -63,9 +57,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 xtype: 'button',
                 text: 'Download all files (zip)',
                 listeners: {
-                    click: function() {
-                        console.log('Downloading ZIP some time in the future');
-                        window.open('/student/show-delivery/compressedfiledownload/92', 'download');
+                    click: function(view, record, item) {
+                        var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
+                        window.open(url, 'download');
                     }
                 }
             }, {

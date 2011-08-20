@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
@@ -195,7 +196,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         editablefields = ('id', 'name', 'is_open', 'parentnode')
         fake_editablefields = ('fake_examiners', 'fake_candidates')
+        annotated_fields = ['latest_deadline_id'] + list(SimplifiedAssignmentGroupMetaMixin.annotated_fields)
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('latest_deadline_id') + SimplifiedAssignmentGroupMetaMixin.resultfields
 
 
     @classmethod
@@ -206,6 +209,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         :rtype: a django queryset
         """
         return cls._meta.model.where_is_admin_or_superadmin(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                                                                           latest_deadline_id=Max('deadlines__id'),
                                                                            number_of_deliveries=Count('deadlines__deliveries'))
 
     @classmethod
@@ -270,7 +274,8 @@ class SimplifiedDelivery(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read'] #, 'create', 'update', 'delete'] # TODO: Delivered by administrator?
+        methods = ['search', 'read', 'create', 'update', 'delete']
+        editablefields = ('successful', 'deadline', 'delivery_type', 'alias_delivery')
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -284,6 +289,12 @@ class SimplifiedDelivery(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
+    def pre_full_clean(cls, user, obj):
+        obj.time_of_delivery = datetime.now()
+        obj.delivered_by = None # None marks this as delivered by an administrator
+        obj._set_number()
+
+    @classmethod
     def write_authorize(cls, user, obj):
         """ Check if the given ``user`` can save changes to the given
         ``obj``, and raise ``PermissionDenied`` if not.
@@ -293,6 +304,8 @@ class SimplifiedDelivery(SimplifiedModelApi):
         :throws PermissionDenied:
         """
         if not obj.deadline.assignment_group.can_save(user):
+            raise PermissionDenied()
+        if obj.delivered_by != None:
             raise PermissionDenied()
 
 

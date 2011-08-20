@@ -54,7 +54,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '        <section class="warning-small">',
         '           <h1>Not the latest delivery</h1>',
         '           <p>',
-        '               The group has made one or more deliveries after the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
+        '               One or more deliveries has been made <strong>after</strong> the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
         '               <tpl if="time_of_delivery &gt; deadline__deadline">',
         '                   However since this delivery was made after the deadline, an earlier delivery may be corrected instead.',
         '               </tpl>',
@@ -120,6 +120,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             callback: function(records, op, success) {
                 if(success) {
                     this.deliverystoreLoaded = true;
+                    this.fireEvent('deliveriesLoaded', this.deliverystore);
                     this.onLoadSomething(records);
                 } else {
                     throw "Failed to load delivery store.";
@@ -193,34 +194,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     /**
      * @private
      */
-    onOtherDeliveries: function(button) {
-        if(!this.deliveriesWindow) {
-            this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries by this group',
-                height: 500,
-                width: 400,
-                modal: true,
-                layout: 'fit',
-                closeAction: 'hide',
-                items: {
-                    xtype: 'deliveriesonsinglegrouplisting',
-                    store: this.deliverystore,
-                    delivery_recordcontainer: this.delivery_recordcontainer
-                },
-
-                //listeners: {
-                    //scope: this,
-                    //close: function() {
-                        //if(button) {
-                            //button.toggle(false);
-                        //}
-                    //}
-                //}
-            });
-        }
-        this.deliveriesWindow.show();
+    onOtherDeliveries: function(button, notClosable) {
+        var deliveriesWindow = Ext.create('Ext.window.Window', {
+            title: 'Deliveries by this group',
+            height: 500,
+            width: 400,
+            modal: true,
+            layout: 'fit',
+            closeAction: 'hide',
+            //closable: button != undefined,
+            items: {
+                xtype: 'deliveriesonsinglegrouplisting',
+                store: this.deliverystore,
+                delivery_recordcontainer: this.delivery_recordcontainer
+            }
+        });
+        deliveriesWindow.show();
         if(button) {
-            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+            deliveriesWindow.alignTo(button, 'bl', [0, 0]);
         }
     },
 
