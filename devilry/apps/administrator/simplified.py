@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
@@ -271,6 +272,7 @@ class SimplifiedDelivery(SimplifiedModelApi):
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
         methods = ['search', 'read', 'create', 'update', 'delete']
+        editablefields = ('successful', 'deadline', 'delivery_type', 'alias_delivery')
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -282,6 +284,12 @@ class SimplifiedDelivery(SimplifiedModelApi):
         :rtype: a django queryset
         """
         return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def pre_full_clean(cls, user, obj):
+        obj.time_of_delivery = datetime.now()
+        obj.delivered_by = None # None marks this as delivered by an administrator
+        obj._set_number()
 
     @classmethod
     def write_authorize(cls, user, obj):
