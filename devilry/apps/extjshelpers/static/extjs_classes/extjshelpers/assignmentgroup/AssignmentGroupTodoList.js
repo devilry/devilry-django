@@ -54,6 +54,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             xtype: 'storesearchfield',
             emptyText: 'Search...',
             store: this.store,
+            width: 300,
             autoLoad: false
         }];
         if(this.tbarExtra) {

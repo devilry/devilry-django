@@ -269,17 +269,21 @@ header {
  */
 
 .widget-searchfield {
-    font-size: 24px;
     line-height: normal !important;
     height: auto !important;
-    padding: 4px 15px 4px 15px !important;
-    border-radius: 20px;
+
+    font-size: 1.0em;
+    padding: 4px 10px 4px 10px !important;
+    border-radius: 8px;
 }
 
 
 .widget-searchwidget {
     .widget-searchfield {
         width: $mainwidth !important;
+        font-size: 24px;
+        padding: 4px 15px 4px 15px !important;
+        border-radius: 20px;
     }
 }
 
