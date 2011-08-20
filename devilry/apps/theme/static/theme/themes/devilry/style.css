@@ -515,8 +515,12 @@ td.selectable-gridcell {
 
 tr.dashboard:hover .x-grid-cell-inner {
   cursor: pointer;
-  font-size: large;
-  background-color: #77b300; }
+  font-weight: bold;
+  background-color: #77b300;
+  color: #f7ffe5; }
+
+tr.dashboard .x-grid-cell-inner {
+  padding: 10px; }
 
 section.extravisible {
   border-radius: 14px;
