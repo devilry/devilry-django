@@ -18,6 +18,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails', {
         '       <h1>Closed</h1>',
         '       <p>This group is <em>closed</em>. This usually means that a group has been corrected and given feedback. A closed group can be re-opened at any time using <span class="menuref">Open group</span> in the toolbar.</p>',
         '    </section>',
+        '</tpl>',
+        '<tpl if="numDeliveries == 0">',
+        '    <section class="warning-small">',
+        '       <h1>No deliveries</h1>',
+        '       <p>This group has no deliveries.</p>',
+        '    </section>',
         '</tpl>'
     ),
 

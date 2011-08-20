@@ -191,9 +191,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 filemetastore: this.filemetastore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 deliverymodel: this.deliverymodel,
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                listeners: {
+                    scope: this,
+                    deliveriesLoaded: this.onDeliveriesLoaded
+                }
             }, this.feedbackPanel]
         });
+    },
+
+    /** 
+     * @private
+     */
+    onDeliveriesLoaded: function(deliverystore) {
+        var assignmentgroupdetails = this.down('assignmentgroupdetails');
+        assignmentgroupdetails.extradata.numDeliveries = deliverystore.totalCount;
+        assignmentgroupdetails.updateBody();
     },
 
 

@@ -120,6 +120,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             callback: function(records, op, success) {
                 if(success) {
                     this.deliverystoreLoaded = true;
+                    this.fireEvent('deliveriesLoaded', this.deliverystore);
                     this.onLoadSomething(records);
                 } else {
                     throw "Failed to load delivery store.";
