@@ -773,10 +773,10 @@ section.treeheading {
 }
 
 .group_is_open {
-    @include warningInlineItem();
+    @include goodInlineItem();
 }
 .group_is_closed {
-    @include goodInlineItem();
+    @include warningInlineItem();
 }
 
 

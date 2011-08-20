@@ -19,6 +19,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '</section>'
     ),
 
+    requires: [
+        'devilry.extjshelpers.formfields.StoreSearchField'
+    ],
+
     config: {
         /**
          * @cfg
@@ -34,7 +38,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
          */
         assignmentgroup_recordcontainer: undefined,
 
-        pageSize: 10
+        pageSize: 10,
+        tbarExtra: undefined
     },
 
     constructor: function(config) {
@@ -44,6 +49,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     initComponent: function() {
         var me = this;
+
+        this.tbarItems = [{
+            xtype: 'storesearchfield',
+            emptyText: 'Search...',
+            store: this.store,
+            autoLoad: false
+        }];
+        if(this.tbarExtra) {
+            Ext.Array.insert(this.tbarItems, 1, this.tbarExtra);
+        }
+
         Ext.apply(this, {
             columns: [{
                 header: 'Data',
@@ -64,7 +80,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 scope: this,
                 itemmouseup: this.onSelectGroup
             },
+
+
             dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.tbarItems
+            }, {
                 xtype: 'pagingtoolbar',
                 store: this.store,
                 dock: 'bottom',
@@ -98,7 +120,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
      * */
     loadTodoListForAssignment: function(assignmentid) {
         this.store.pageSize = this.pageSize;
-        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+        var searchfield = this.down('storesearchfield');
+        searchfield.alwaysAppliedFilters = [{
             field: 'parentnode',
             comp: 'exact',
             value: assignmentid
@@ -106,7 +129,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             field: 'is_open',
             comp: 'exact',
             value: true
-        }]);
-        this.store.load();
+        }];
+        searchfield.onEmptyInput();
     },
 });

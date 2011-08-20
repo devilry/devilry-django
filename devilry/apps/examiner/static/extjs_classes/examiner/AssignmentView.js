@@ -1,5 +1,7 @@
 Ext.define('devilry.examiner.AssignmentView', {
     extend: 'Ext.panel.Panel',
+    frame: false,
+    border: false,
 
     requires: [
         'devilry.extjshelpers.studentsmanager.StudentsManager',
@@ -21,11 +23,13 @@ Ext.define('devilry.examiner.AssignmentView', {
     initComponent: function() {
         this._todolist = Ext.widget('assignmentgrouptodolist', {
             store: this.assignmentgroupstore,
-            tbar: [{
+            title: 'To-do list',
+            tbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
-               text: 'Students',
+               text: 'Complete students overview',
                menu: [],
+               enableToggle: true,
                listeners: {
                    scope: this,
                    click: this.onStudents
@@ -88,7 +92,7 @@ Ext.define('devilry.examiner.AssignmentView', {
         });
         studentswindow.show();
         if(button) {
-            studentswindow.alignTo(button, 'bl', [0, 0]);
+            studentswindow.alignTo(button, 'br', [-studentswindow.width, 0]);
         }
     }
 });

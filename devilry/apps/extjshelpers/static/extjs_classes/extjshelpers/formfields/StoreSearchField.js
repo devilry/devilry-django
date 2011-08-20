@@ -16,22 +16,33 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
          * @cfg
          * Forwarded to {@link devilry.extjshelpers.SearchStringParser#applyToExtraParams}.
          */
-        shortcuts: undefined
+        shortcuts: undefined,
+
+        /**
+         * @cfg
+         * Forwarded to SearchStringParser.
+         */
+        alwaysAppliedFilters: undefined,
+
+        autoLoad: true
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
-
-        this.onEmptyInput();
+        this.callParent([config]);
         this.addListener('newSearchValue', this.onNewSearchValue, this);
         this.addListener('emptyInput', this.onEmptyInput, this);
+
+        if(this.autoLoad) {
+            this.onEmptyInput();
+        };
     },
 
     onNewSearchValue: function(value) {
         var parsedValue = Ext.create('devilry.extjshelpers.SearchStringParser', {
             pageSizeWithoutType: 10,
-            searchstring: value
+            searchstring: value,
+            alwaysAppliedFilters: this.alwaysAppliedFilters
         });
 
         parsedValue.applyPageSizeToStore(this.store);
