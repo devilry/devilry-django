@@ -44,10 +44,10 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
                     tpl: this.deliveryRowTpl,
-                    //defaultbutton: {
-                        //text: 'View',
-                        //clickLinkTpl: this.urlPrefix + 'assignmentgroup/view/{deadline__assignment_group}?deliveryid={id}'
-                    //}
+                    defaultbutton: {
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
+                    }
                 }
             }, {
                 xtype: 'searchresults',
