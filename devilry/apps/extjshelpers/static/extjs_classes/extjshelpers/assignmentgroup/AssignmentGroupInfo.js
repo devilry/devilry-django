@@ -86,6 +86,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
             tbar: tbarItems,
             items: [{
                 xtype: 'assignmentgroupdetails',
+                extradata: {
+                    canExamine: this.canExamine
+                },
                 singlerecordontainer: this.assignmentgroup_recordcontainer
             }]
         });
