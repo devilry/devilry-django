@@ -65,9 +65,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     TYPE_ALIAS = 2
 
     delivery_type = models.PositiveIntegerField(default=TYPE_ELECTRONIC,
-            verbose_name = _("Type of deliveries"),
-            help_text=_('This option controls if this assignment accepts only '
-                        'electronic deliveries, or accepts other kinds as well.'))
+                                                verbose_name = "Type of delivery",
+                                                help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
     time_of_delivery = models.DateTimeField(auto_now_add=True,
                                            help_text=_('Holds the date and time the Delivery was uploaded.'))
