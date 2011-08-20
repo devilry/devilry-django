@@ -6,7 +6,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
         createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
         loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin',
-        loadRelatedUsers: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
+        addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
     //config: {
