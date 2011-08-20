@@ -522,6 +522,14 @@ tr.dashboard:hover .x-grid-cell-inner {
 tr.dashboard .x-grid-cell-inner {
   padding: 10px; }
 
+.selectable-grid tr:hover .x-grid-cell-inner {
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #77b300;
+  color: #f7ffe5; }
+.selectable-grid tr .x-grid-cell-inner {
+  padding: 8px; }
+
 section.extravisible {
   border-radius: 14px;
   padding: 10px 10px 10px 158px !important;

@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.assignmentgrouptodolist',
-    cls: 'widget-assignmentgrouptodolist',
+    cls: 'widget-assignmentgrouptodolist selectable-grid',
     //hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
         '<section class="popuplistitem">',
@@ -77,7 +77,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 header: 'Students',
                 dataIndex: 'id',
                 flex: 2,
-                //tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, grouprecord) {
                     //console.log(grouprecord.data);
                     var data = {};
