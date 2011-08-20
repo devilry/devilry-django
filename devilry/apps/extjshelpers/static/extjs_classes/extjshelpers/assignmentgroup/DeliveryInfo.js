@@ -54,7 +54,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '        <section class="warning-small">',
         '           <h1>Not the latest delivery</h1>',
         '           <p>',
-        '               The group has made one or more deliveries after the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
+        '               One or more deliveries has been made <strong>after</strong> the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
         '               <tpl if="time_of_delivery &gt; deadline__deadline">',
         '                   However since this delivery was made after the deadline, an earlier delivery may be corrected instead.',
         '               </tpl>',
@@ -120,6 +120,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             callback: function(records, op, success) {
                 if(success) {
                     this.deliverystoreLoaded = true;
+                    this.fireEvent('deliveriesLoaded', this.deliverystore);
                     this.onLoadSomething(records);
                 } else {
                     throw "Failed to load delivery store.";
@@ -201,7 +202,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             modal: true,
             layout: 'fit',
             closeAction: 'hide',
-            closable: button != undefined,
+            //closable: button != undefined,
             items: {
                 xtype: 'deliveriesonsinglegrouplisting',
                 store: this.deliverystore,

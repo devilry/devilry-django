@@ -36,6 +36,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
             groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
         });
 
+        this.pagingtoolbar = Ext.widget('pagingtoolbar', {
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: false
+        });
+
         var me = this;
         Ext.apply(this, {
             features: [groupingFeature],
@@ -53,15 +59,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
                 scope: this,
                 itemmouseup: this.onSelectDelivery
             },
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: false
-            }]
+            dockedItems: [this.pagingtoolbar]
         });
 
+        this.store.addListener('load', this.onLoadStore, this);
+
         this.callParent(arguments);
+    },
+
+    /**
+     * @private
+     */
+    onLoadStore: function() {
+        if(this.store.totalCount == 0) {
+            this.up('window').close();
+        };
+        //this.removeDocked(this.pagingtoolbar);
+        //this.addDocked({
+            //xtype: 'box',
+            //dock: 'top',
+            //padding: 10,
+            //frame: true,
+            //html: 'This group has no deliveries. Close this window and '
+        //});
     },
 
     /**

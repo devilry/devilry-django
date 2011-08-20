@@ -227,14 +227,17 @@ header {
  *
  */
 .widget-searchfield {
-  font-size: 24px;
   line-height: normal !important;
   height: auto !important;
-  padding: 4px 15px 4px 15px !important;
-  border-radius: 20px; }
+  font-size: 1.0em;
+  padding: 4px 10px 4px 10px !important;
+  border-radius: 8px; }
 
 .widget-searchwidget .widget-searchfield {
-  width: 930px !important; }
+  width: 930px !important;
+  font-size: 24px;
+  padding: 4px 15px 4px 15px !important;
+  border-radius: 20px; }
 
 .multisearchresults {
   width: 900px; }
@@ -914,36 +917,36 @@ section.treeheading {
     padding: 1px 4px;
     white-space: nowrap; }
 .studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .open {
-  border: 1px solid #e64d00;
-  border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
   border: 1px solid #88cc00;
   border-radius: 3px;
   background-color: #77b300;
   color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
   font-weight: bold;
   padding: 1px 4px;
   white-space: nowrap; }
 
 .group_is_open {
-  border: 1px solid #e64d00;
+  border: 1px solid #88cc00;
   border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
+  background-color: #77b300;
+  color: #f7ffe5;
   font-weight: bold;
   padding: 1px 4px;
   white-space: nowrap; }
 
 .group_is_closed {
-  border: 1px solid #88cc00;
+  border: 1px solid #e64d00;
   border-radius: 3px;
-  background-color: #77b300;
-  color: #f7ffe5;
+  background-color: #cc4400;
+  color: #ffeee5;
   font-weight: bold;
   padding: 1px 4px;
   white-space: nowrap; }

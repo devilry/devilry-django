@@ -99,6 +99,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
         }, this);
         this.loadGradeEditorConfigModel();
+
+        this.loadFirstPage();
     },
 
     getToolbarItems: function() {
@@ -154,7 +156,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     loadFirstPage: function() {
         this.assignmentgroupstore.currentPage = 1;
-        this.assignmentgroupstore.load();
+        this.refreshStore();
     },
 
 

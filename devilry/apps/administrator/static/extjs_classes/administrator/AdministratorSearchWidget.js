@@ -66,7 +66,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.nodeRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'node/view/{id}'
+                        clickLinkTpl: this.urlPrefix + 'node/{id}'
                     }
                 }
             }, {
@@ -80,7 +80,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.subjectRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'subject/view/{id}'
+                        clickLinkTpl: this.urlPrefix + 'subject/{id}'
                     }
                 }
             }, {
@@ -94,7 +94,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.periodRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'period/view/{id}'
+                        clickLinkTpl: this.urlPrefix + 'period/{id}'
                     }
                 }
             }, {
@@ -106,7 +106,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.assignmentRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'assignment/view/{id}'
+                        clickLinkTpl: this.urlPrefix + 'assignment/{id}'
                     },
                     menuitems: [{
                         text: 'Show deliveries',
@@ -122,7 +122,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.assignmentgroupRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/view/{id}'
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
                     }
                 }
             }, {
@@ -134,7 +134,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.deliveryRowTpl,
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/view/{deadline__assignment_group}?deliveryid={id}'
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
                     }
                 }
             }]
