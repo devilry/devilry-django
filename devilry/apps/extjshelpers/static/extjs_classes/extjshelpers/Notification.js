@@ -65,11 +65,12 @@ Ext.define('devilry.extjshelpers.Notification', {
 
         this.pos = 0;
         while (devilry.NotificationMgr.positions.indexOf(this.pos) > -1)
-        this.pos++;
+            this.pos++;
         devilry.NotificationMgr.positions.push(this.pos);
 
-        this.el.alignTo(document, "br-br", [-20, -20 - ((this.getSize().height + 10) * this.pos)]);
-        this.el.slideIn('b', {
+        var offset = (this.getSize().height + 10) * this.pos;
+        this.el.alignTo(document, "tr-tr", [-20, 20 + offset]);
+        this.el.slideIn('t', {
             duration: 500,
             listeners: {
                 afteranimate: {
