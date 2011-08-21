@@ -51,6 +51,13 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getOnSingleMenuItems: function() {
         var menu = this.callParent();
         menu.push({
+            text: 'Create dummy delivery',
+            listeners: {
+                scope: this,
+                click: this.onCreateDummyDelivery
+            }
+        });
+        menu.push({
             text: 'Edit group details',
             iconCls: 'icon-edit-16',
             listeners: {
@@ -58,25 +65,18 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
             }
         });
-        //menu.push({
-            //text: 'Mark as approved in a previous period',
-            //listeners: {
-                //scope: this,
-                //click: this.onPreviouslyApproved
-            //}
-        //});
-        menu.push({
-            text: 'Create dummy delivery',
-            listeners: {
-                scope: this,
-                click: this.onCreateDummyDelivery
-            }
-        });
         return menu;
     },
 
     getOnManyMenuItems: function() {
         var menu = this.callParent();
+        menu.push({
+            text: 'Mark as passed in a previous period',
+            listeners: {
+                scope: this,
+                click: this.onPreviouslyPassed
+            }
+        });
         menu.push({
             text: 'Change examiners',
             menu: [{

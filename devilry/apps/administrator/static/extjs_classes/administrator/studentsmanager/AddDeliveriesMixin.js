@@ -37,7 +37,6 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
             //}
         //}).show();
 
-        ////this.createDeliveryForGroup(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
         ////this.refreshStore();
     //},
 
@@ -81,20 +80,77 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
      * @private
      */
     createDummyDelivery: function(groupRecord) {
-        this.createDeliveryForGroup(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
+        var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
+        delivery.save();
         this.refreshStore();
+    },
+
+
+    onPreviouslyPassed: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        this.prevPassedGiveFeedbackToSelected();
     },
 
     /**
      * @private
      */
-    createDeliveryForGroup: function(groupRecord, deliveryType) {
-        var delivery = Ext.create('devilry.apps.administrator.simplified.SimplifiedDelivery', {
+    prevPassedGiveFeedbackToSelected: function() {
+        var draftEditor = Ext.create('devilry.gradeeditors.EditManyDraftEditorWindow', {
+            isAdministrator: this.isAdministrator,
+            gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
+            registryitem: this.registryitem_recordcontainer.record.data,
+            listeners: {
+                scope: this,
+                createNewDraft: this.prevPassedOnPublishFeedback
+            }
+        });
+        draftEditor.show();
+    },
+
+
+    /**
+     * @private
+     */
+    prevPassedOnPublishFeedback: function(feedbackdraftModelName, draftstring) {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.createPreviouslyPassedDelivery,
+            extraArgs: [feedbackdraftModelName, draftstring]
+        });
+    },
+
+    /**
+     * @private
+     */
+    createPreviouslyPassedDelivery: function(groupRecord, index, total, feedbackdraftModelName, draftstring) {
+        var msg = Ext.String.format('Creating a delivery on group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ALIAS);
+        delivery.save({
+            scope: this,
+            success: function(record) {
+                groupRecord.data.latest_delivery_id = record.data.id;
+                this.giveFeedbackToSelected(groupRecord, index, total, feedbackdraftModelName, draftstring);
+            }
+        });
+    },
+
+
+    /**
+     * @private
+     */
+    createDeliveryRecord: function(groupRecord, deliveryType) {
+        return Ext.create('devilry.apps.administrator.simplified.SimplifiedDelivery', {
             successful: true,
             deadline: groupRecord.data.latest_deadline_id,
             delivery_type: deliveryType
             //alias_delivery
         });
-        delivery.save();
     }
 });
