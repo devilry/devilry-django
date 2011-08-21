@@ -1,10 +1,9 @@
 #!/usr/bin/env python
+from os import linesep
+from sys import argv
+from devilry.devilryadmin.common import getdir, getcommandnames, execcommand, gethelp
 
-
-if __name__ == '__main__':
-    from os import linesep
-    from sys import argv
-    from devilry.devilryadmin.common import getdir, getcommandnames, execcommand, gethelp
+def cli():
 
     thisdir = getdir(__file__)
     commandnames = getcommandnames()
@@ -28,3 +27,6 @@ if __name__ == '__main__':
         if not cmdname in commandnames:
             exit_help()
         execcommand(cmdname)
+
+if __name__ == '__main__':
+    cli()
