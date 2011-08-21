@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.Notification', {
 
     initComponent: function() {
         Ext.apply(this, {
-            iconCls: this.iconCls || 'x-icon-information',
+            iconCls: this.iconCls || 'icon-info-16',
             cls: 'x-notification',
             width: 200,
             autoHeight: true,
