@@ -16,11 +16,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
          */
         initialLines: undefined,
 
-        /**
-         * @cfg
-         * 
-         */
-        assignmentid: undefined
+        assignmentid: undefined,
+        deadlinemodel: undefined
     },
 
     helptext:
@@ -175,7 +172,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     createAll: function(parsedArray) {
-        this.userinput.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
+        this.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
         var assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
         var finishedCounter = 0;
         var unsuccessful = [];
@@ -189,7 +186,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 scope: this,
                 success: function() {
                     finishedCounter ++;
-                    this.userinput.getEl().mask(
+                    this.getEl().mask(
                         Ext.String.format('Finished saving {0}/{1} groups',
                         finishedCounter, parsedArray.length,
                         parsedArray.length));
@@ -200,7 +197,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 failure: function() {
                     finishedCounter ++;
                     unsuccessful.push(groupSpecObj);
-                    this.userinput.getEl().mask(
+                    this.getEl().mask(
                         Ext.String.format('Finished saving {0}/{1} groups',
                         finishedCounter, parsedArray.length,
                         parsedArray.length));
@@ -247,7 +244,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onFinishedSavingAll: function(unsuccessful, totalCount) {
-        this.userinput.getEl().unmask();
+        this.getEl().unmask();
         if(unsuccessful.length == 0) {
             this.onSuccess(totalCount);
         } else {
@@ -293,9 +290,24 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onCreate: function() {
-        this.userinput.getEl().mask('Parsing input');
+        this.getEl().mask('Parsing input');
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
-        //console.log(parsedArray);
-        this.createAll(parsedArray);
+        this.getEl().unmask();
+        this.selectDeadline(parsedArray);
+    },
+
+    /**
+     * @private
+     */
+    selectDeadline: function(parsedArray) {
+        var me = this;
+        var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
+            deadlinemodel: this.deadlinemodel,
+            onSaveSuccess: function(record) {
+                this.close();
+                me.createAll(parsedArray);
+            }
+        });
+        createDeadlineWindow.show();
     }
 });

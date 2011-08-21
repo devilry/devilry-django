@@ -3,6 +3,10 @@
  * Note that this class depends on createRecordFromStoreRecord(),
  * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines', {
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow'
+    ],
+
     /**
      * @private
      */
