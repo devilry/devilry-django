@@ -10,6 +10,10 @@ $neutralcolor_fg: #E5F7FF;
 $warningcolor_bg: #CC4400;
 $warningcolor_hoverbg: #E64D00;
 $warningcolor_fg: #FFEEE5;
+$errorcolor_bg: #B00;
+$errorcolor_hoverbg: #F00;
+$errorcolor_fg: #FFF0F0;
+
 
 $studentcolor_bg: $goodcolor_bg;
 $studentcolor_hoverbg: $goodcolor_hoverbg;
@@ -70,6 +74,9 @@ body {
 }
 @mixin warningInlineItem() {
     @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+@mixin errorInlineItem() {
+    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
 }
 
 @mixin commonSectionElements() {
@@ -409,12 +416,15 @@ a.warning-button {
  *
  */
 
+.icon-info-16 { }
 .icon-delete-16 { background-image: url(icons/16x16/delete.png) !important; }
 .icon-edit-16 { background-image: url(icons/16x16/edit.png) !important; }
 .icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
 .icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
 .icon-add-16 { background-image: url(icons/16x16/add.png) !important; }
 
+.icon-previous-32 { background-image: url(icons/32x32/previous.png) !important; }
+.icon-next-32 { background-image: url(icons/32x32/next.png) !important; }
 .icon-delete-32 { background-image: url(icons/32x32/delete.png) !important; }
 .icon-edit-32 { background-image: url(icons/32x32/edit.png) !important; }
 .icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
@@ -458,6 +468,12 @@ a.warning-button {
 section.helpsection {
     @include commonSectionElements();
 
+    background-color: #fff;
+    background-image: url(icons/128x128/helpfade-rightdown.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    padding: 20px;
+
     p {
         padding: 5px 0;
         line-height: 1.3em;
@@ -481,10 +497,17 @@ section.helpsection {
     }
 }
 
-.x-item-disabled { /* The overlay of disabled ExtJS forms. */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1.0 !important;
+//.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    //-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    //filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    //opacity: 1.0 !important;
+//}
+
+.x-mask {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+    opacity: 0.7 !important;
+    background-color: #000 !important;
 }
 
 
@@ -762,6 +785,12 @@ section.treeheading {
         td.x-grid-cell {
             vertical-align: middle !important;
         }
+        section.infocolumn {
+            line-height: 1.8em;
+            .has_no_deadlines {
+                @include errorInlineItem();
+            }
+        }
         .candidatescolumn, .examinerscolumn {
             @include inlineList();
         }   
@@ -772,22 +801,22 @@ section.treeheading {
             color: #aaa;
         }
         section.gradecolumn {
-            line-height: 1.6em;
-            .is_passing_grade {
-                .not_passing_grade {
-                    @include warningInlineItem();
-                }
-                .passing_grade {
-                    @include goodInlineItem();
-                }
+            line-height: 1.8em;
+            .not_passing_grade {
+                @include warningInlineItem();
             }
-        }
-        .is_opencol{
-            .open {
+            .passing_grade {
                 @include goodInlineItem();
             }
-            .closed {
-                @include warningInlineItem();
+            .delivery_type {
+                font-style: italic;
+                font-weight: bold !important;
+                .alias {
+                    @include neutralInlineItem();
+                }
+                .unknown {
+                    @include errorInlineItem();
+                }
             }
         }
     }

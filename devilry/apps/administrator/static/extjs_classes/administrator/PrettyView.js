@@ -2,10 +2,11 @@
 Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
-    bodyPadding: 20,
+    bodyPadding: 0,
 
     requires: [
-        'devilry.extjshelpers.SetListOfUsers'
+        'devilry.extjshelpers.SetListOfUsers',
+        'devilry.extjshelpers.NotificationManager'
     ],
 
     config: {
@@ -116,8 +117,12 @@ Ext.define('devilry.administrator.PrettyView', {
             Ext.Array.insert(tbar, 0, this.relatedButtons);
         }
 
+        this.bodyBox = Ext.widget('box', {
+            padding: 20
+        });
         Ext.apply(this, {
             tbar: tbar,
+            items: this.bodyBox
         });
         this.callParent(arguments);
 
@@ -143,17 +148,26 @@ Ext.define('devilry.administrator.PrettyView', {
     refreshBody: function() {
         var bodyData = this.getExtraBodyData(this.record);
         Ext.apply(bodyData, this.record.data);
-        this.update(this.bodyTpl.apply(bodyData));
+        this.bodyBox.update(this.bodyTpl.apply(bodyData));
     },
 
+    /**
+     * @private
+     */
     getExtraBodyData: function(record) {
         return {};
     },
 
+    /**
+     * @private
+     */
     onModelLoadFailure: function(record, operation) {
         throw 'Failed to load the model';
     },
 
+    /**
+     * @private
+     */
     onEdit: function(button) {
         this.fireEvent('edit', this.record, button);
     },
@@ -163,6 +177,9 @@ Ext.define('devilry.administrator.PrettyView', {
         this.onModelLoadSuccess(record);
     },
 
+    /**
+     * @private
+     */
     onDelete: function(button) {
         var me = this;
         var win = Ext.MessageBox.show({
@@ -181,6 +198,9 @@ Ext.define('devilry.administrator.PrettyView', {
         win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
+    /**
+     * @private
+     */
     deleteObject: function() {
         this.record.destroy({
             scope: this,
@@ -191,6 +211,9 @@ Ext.define('devilry.administrator.PrettyView', {
         });
     },
 
+    /**
+     * @private
+     */
     onDeleteFailure: function(record, operation) {
         var title, msg;
         if(operation.error.status == 403) {
@@ -209,12 +232,15 @@ Ext.define('devilry.administrator.PrettyView', {
         });
     },
 
+    /**
+     * @private
+     */
     onSetadministrators: function(button) {
         var win = Ext.widget('window', {
             title: 'Set administrators',
             modal: true,
-            width: 450,
-            height: 250,
+            width: 550,
+            height: 300,
             maximizable: true,
             layout: 'fit',
             listeners: {
@@ -236,6 +262,9 @@ Ext.define('devilry.administrator.PrettyView', {
         win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
+    /**
+     * @private
+     */
     onSaveAdmins: function(setlistofusersobj, usernames) {
         setlistofusersobj.getEl().mask('Saving...');
         this.record.data.fake_admins = usernames
@@ -247,6 +276,10 @@ Ext.define('devilry.administrator.PrettyView', {
                 this.onModelLoadSuccess(record)
                 setlistofusersobj.up('window').close();
                 this.setadminsbutton.toggle(false);
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Save successful',
+                    message: 'Updated adminstrators.'
+                });
             },
             failure: function() {
                 setlistofusersobj.getEl().unmask();
@@ -258,5 +291,20 @@ Ext.define('devilry.administrator.PrettyView', {
                 });
             }
         });
+    },
+
+    alignToCoverBody: function(item) {
+        item.alignTo(this.bodyBox, 'tl', [0, 0]);
+    },
+
+    setSizeToCoverBody: function(item, height) {
+        item.setWidth(this.bodyBox.getWidth());
+        if(!height) {
+            height = this.bodyBox.getHeight();
+            if(height > 500) {
+                height = 500;
+            }
+        }
+        item.setHeight(height);
     }
 });

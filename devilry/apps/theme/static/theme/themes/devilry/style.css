@@ -347,6 +347,12 @@ a.warning-button {
 .icon-add-16 {
   background-image: url(icons/16x16/add.png) !important; }
 
+.icon-previous-32 {
+  background-image: url(icons/32x32/previous.png) !important; }
+
+.icon-next-32 {
+  background-image: url(icons/32x32/next.png) !important; }
+
 .icon-delete-32 {
   background-image: url(icons/32x32/delete.png) !important; }
 
@@ -380,21 +386,27 @@ a.warning-button {
   .editform .editform-body .extrabaronright {
     margin-left: 30px; }
 
-section.helpsection strong {
-  font-weight: bold; }
-section.helpsection em {
-  font-style: italic; }
-section.helpsection p {
-  padding: 5px 0;
-  line-height: 1.2em; }
-section.helpsection ul li {
-  padding: 5px 0;
-  margin-left: 25px !important;
-  list-style-type: disc !important;
-  list-style-position: outside !important; }
-section.helpsection p {
-  padding: 5px 0;
-  line-height: 1.3em; }
+section.helpsection {
+  background-color: #fff;
+  background-image: url(icons/128x128/helpfade-rightdown.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  padding: 20px; }
+  section.helpsection strong {
+    font-weight: bold; }
+  section.helpsection em {
+    font-style: italic; }
+  section.helpsection p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.helpsection ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.helpsection p {
+    padding: 5px 0;
+    line-height: 1.3em; }
 
 /**
  *
@@ -407,11 +419,11 @@ section.helpsection p {
   .tooltip-title span.tooltip-title-current-item {
     font-weight: bold; }
 
-.x-item-disabled {
-  /* The overlay of disabled ExtJS forms. */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1.0 !important; }
+.x-mask {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+  opacity: 0.7 !important;
+  background-color: #000 !important; }
 
 /*
  *
@@ -890,6 +902,16 @@ section.treeheading {
 
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
+.studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn {
+  line-height: 1.8em; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn .has_no_deadlines {
+    border: 1px solid red;
+    border-radius: 3px;
+    background-color: #bb0000;
+    color: #fff0f0;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
 .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li {
   display: inline; }
   .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after {
@@ -901,8 +923,8 @@ section.treeheading {
 .studentsmanager .widget-studentsmanager_studentsgrid .nofeedback, .studentsmanager .widget-studentsmanager_studentsgrid .nodeliveries {
   color: #aaa; }
 .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn {
-  line-height: 1.6em; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .not_passing_grade {
+  line-height: 1.8em; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .not_passing_grade {
     border: 1px solid #e64d00;
     border-radius: 3px;
     background-color: #cc4400;
@@ -910,7 +932,7 @@ section.treeheading {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .is_passing_grade .passing_grade {
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .passing_grade {
     border: 1px solid #88cc00;
     border-radius: 3px;
     background-color: #77b300;
@@ -918,22 +940,25 @@ section.treeheading {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .open {
-  border: 1px solid #88cc00;
-  border-radius: 3px;
-  background-color: #77b300;
-  color: #f7ffe5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
-  border: 1px solid #e64d00;
-  border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type {
+    font-style: italic;
+    font-weight: bold !important; }
+    .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type .alias {
+      border: 1px solid #0088cc;
+      border-radius: 3px;
+      background-color: #0077b3;
+      color: #e5f7ff;
+      font-weight: bold;
+      padding: 1px 4px;
+      white-space: nowrap; }
+    .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type .unknown {
+      border: 1px solid red;
+      border-radius: 3px;
+      background-color: #bb0000;
+      color: #fff0f0;
+      font-weight: bold;
+      padding: 1px 4px;
+      white-space: nowrap; }
 
 .group_is_open {
   border: 1px solid #88cc00;

@@ -101,14 +101,20 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     search: function(value) {
+        this.showResults();
+        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
+            var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+                searchstring: value,
+                alwaysAppliedFilters: searchresults.alwaysAppliedFilters
+            });
+            searchresults.search(parsedSearch);
+        });
+
+        // Create a parsed search without any alwaysAppliedFilters for modifySearch() to use
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: value
         });
         this.currentParsedSearch = parsedSearch;
-        this.showResults();
-        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
-            searchresults.search(parsedSearch);
-        });
     },
 
     modifySearch: function(properties) {

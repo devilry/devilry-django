@@ -348,6 +348,11 @@ class SimplifiedDelivery(SimplifiedModelApi):
         if obj.delivered_by != None:
             raise PermissionDenied()
 
+    @classmethod
+    def read_authorize(cls, user, obj):
+        if not obj.deadline.assignment_group.can_save(user):
+            raise PermissionDenied()
+
 
 @simplified_modelapi
 class SimplifiedStaticFeedback(SimplifiedModelApi):

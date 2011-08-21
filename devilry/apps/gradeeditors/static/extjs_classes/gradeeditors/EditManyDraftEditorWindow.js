@@ -21,7 +21,10 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
          * The data attribute of the record returned when loading the
          * grade-editor registry item. (Required).
          */
-        registryitem: undefined
+        registryitem: undefined,
+
+        buttonText: 'Publish this feedback to all selected groups',
+        buttonIcon: 'icon-add-32'
     },
 
     constructor: function(config) {
@@ -37,9 +40,9 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
                 ui: 'footer',
                 items: ['->', {
                     xtype: 'button',
-                    text: 'Publish this feedback to all selected groups',
+                    text: this.buttonText,
                     scale: 'large',
-                    iconCls: 'icon-add-32',
+                    iconCls: this.buttonIcon,
                     listeners: {
                         scope: this,
                         click: this.onPublish
