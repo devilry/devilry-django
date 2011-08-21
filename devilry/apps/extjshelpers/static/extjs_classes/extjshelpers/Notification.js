@@ -1,5 +1,5 @@
 devilry.NotificationMgr = {
-    positions: []
+    height: 0
 };
 
 Ext.define('devilry.extjshelpers.Notification', {
@@ -36,7 +36,6 @@ Ext.define('devilry.extjshelpers.Notification', {
     },
 
     onDestroy: function() {
-        devilry.NotificationMgr.positions.splice(this.pos);
         devilry.extjshelpers.Notification.superclass.onDestroy.call(this);
     },
 
@@ -63,13 +62,10 @@ Ext.define('devilry.extjshelpers.Notification', {
     onShow: function() {
         var me = this;
 
-        this.pos = 0;
-        while (devilry.NotificationMgr.positions.indexOf(this.pos) > -1)
-            this.pos++;
-        devilry.NotificationMgr.positions.push(this.pos);
+        var pos = devilry.NotificationMgr.height + 10;
+        this.el.alignTo(document, "tr-tr", [-20, 10 + pos]);
+        devilry.NotificationMgr.height = pos + this.getHeight();
 
-        var offset = (this.getSize().height + 10) * this.pos;
-        this.el.alignTo(document, "tr-tr", [-20, 20 + offset]);
         this.el.slideIn('t', {
             duration: 500,
             listeners: {
@@ -84,11 +80,11 @@ Ext.define('devilry.extjshelpers.Notification', {
 
     onHide: function() {
         this.el.disableShadow();
-        this.el.ghost("b", {
+        this.el.ghost("t", {
             duration: 500,
             remove: true
         });
-        devilry.NotificationMgr.positions.splice(this.pos);
+        devilry.NotificationMgr.height -= this.getHeight() - 10;
     },
 
     focus: Ext.emptyFn
