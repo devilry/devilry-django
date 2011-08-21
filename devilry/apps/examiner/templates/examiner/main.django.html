@@ -84,32 +84,38 @@
         dashboard_assignment_store.load();        
         
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
-            groupHeaderTpl: '{name}'
+            groupHeaderTpl: '{name}',
         });
         
-        var rowTpl = Ext.create('Ext.XTemplate',
-            '{.:date}'
-        );
         
         var listView = Ext.create('Ext.grid.Panel', {
-            collapsible:true,
-            title:'Default',
-            renderTo: 'content-heading',
+            frame: false,
+            frameHeader: false,
+            border: false,
+            sortableColumns: false,
+            renderTo: 'dashtable',
+            cls: 'selectable-grid',
             store: dashboard_assignment_store,
             features: [groupingFeature],
             columns: [{
                 text: 'Assignment',
+                menuDisabled: true,
                 flex: 30,
                 dataIndex: 'long_name'
             },{
                 text: 'Period',
+                menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
-                flex: 20
+                flex: 20,
             },{
                 text: 'Published',
+                menuDisabled: true,
                 flex: 15,
                 dataIndex: 'publishing_time',
                 renderer: function(value) {
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '{.:date}'
+                    );
                     return rowTpl.apply(value);
                 }
             }],
@@ -142,5 +148,8 @@ related to anything that you have permission to view or edit as an
 <strong>examiner</strong>. Searching for a user will find any item related to
 that user, and searching for a subject will find anything related to that
 subject.</p>
-<section class="treeheading" id="content-heading"></section>
+<section>
+    <h1>Assignments</h1>
+    <section id="dashtable"></section>
+</section>
 {% endblock %}
