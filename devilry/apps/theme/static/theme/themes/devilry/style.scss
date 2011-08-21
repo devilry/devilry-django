@@ -785,6 +785,12 @@ section.treeheading {
         td.x-grid-cell {
             vertical-align: middle !important;
         }
+        section.infocolumn {
+            line-height: 1.8em;
+            .has_no_deadlines {
+                @include errorInlineItem();
+            }
+        }
         .candidatescolumn, .examinerscolumn {
             @include inlineList();
         }   
@@ -811,14 +817,6 @@ section.treeheading {
                 .unknown {
                     @include errorInlineItem();
                 }
-            }
-        }
-        .is_opencol{
-            .open {
-                @include goodInlineItem();
-            }
-            .closed {
-                @include warningInlineItem();
             }
         }
     }

@@ -902,6 +902,16 @@ section.treeheading {
 
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
+.studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn {
+  line-height: 1.8em; }
+  .studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn .has_no_deadlines {
+    border: 1px solid red;
+    border-radius: 3px;
+    background-color: #bb0000;
+    color: #fff0f0;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap; }
 .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li {
   display: inline; }
   .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after {
@@ -949,22 +959,6 @@ section.treeheading {
       font-weight: bold;
       padding: 1px 4px;
       white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .open {
-  border: 1px solid #88cc00;
-  border-radius: 3px;
-  background-color: #77b300;
-  color: #f7ffe5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .is_opencol .closed {
-  border: 1px solid #e64d00;
-  border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
 
 .group_is_open {
   border: 1px solid #88cc00;

@@ -12,6 +12,24 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         canPerformActionsOnSelected: 'devilry.extjshelpers.GridPeformActionOnSelected'
     },
 
+    infoColTpl: Ext.create('Ext.XTemplate', 
+        '<section class="infocolumn">',
+        '    <div>',
+        '        <tpl if="is_open">',
+        '           <span class="group_is_open">Open</span>',
+        '        </tpl>',
+        '        <tpl if="!is_open">',
+        '           <span class="group_is_closed">Closed</span>',
+        '       </tpl>',
+        '    </div>',
+        '    <div>',
+        '        <tpl if="latest_deadline_id === null">',
+        '           <span class="has_no_deadlines">No deadlines</span>',
+        '        </tpl>',
+        '    </div>',
+        '</section>'
+    ),
+
     candidatesCol: Ext.create('Ext.XTemplate', 
         '<ul class="candidatescolumn">',
         '    <tpl for="candidates__identifier">',
@@ -26,17 +44,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '       <li>{.}</li>',
         '    </tpl>',
         '</ul>'
-    ),
-
-    isOpenColTpl: Ext.create('Ext.XTemplate', 
-        '<span class="is_opencol">',
-        '    <tpl if="is_open">',
-        '       <span class="open">Open</span>',
-        '    </tpl>',
-        '    <tpl if="!is_open">',
-        '       <span class="closed">Closed</span>',
-        '   </tpl>',
-        '</span>'
     ),
 
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
@@ -122,16 +129,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             },
 
             columns: [{
-                text: 'Open?', dataIndex: 'id', width: 60,
-                renderer: this.formatIsOpenCol
-            }, {
-                text: 'Group name', dataIndex: 'name', flex: 4
+                text: '', dataIndex: 'id', width: 100,
+                renderer: this.formatInfoCol
             }, {
                 text: 'Students', dataIndex: 'id', flex: 4,
                 renderer: this.formatCandidatesCol
-            }, {
-                text: 'Examiners', dataIndex: 'id', flex: 4,
-                renderer: this.formatExaminersCol
             }, {
                 text: 'Deliveries', dataIndex: 'id', flex: 2,
                 renderer: this.formatDeliveriesCol
@@ -148,14 +150,19 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     width: 150,
                     renderer: this.formatGradeCol
                 }]
+            }, {
+                text: 'Examiners', dataIndex: 'id', flex: 4,
+                renderer: this.formatExaminersCol
+            }, {
+                text: 'Group name', dataIndex: 'name', flex: 3
             }]
         });
         this.callParent(arguments);
         this.store.load();
     },
 
-    formatIsOpenCol: function(value, p, record) {
-        return this.isOpenColTpl.apply(record.data);
+    formatInfoCol: function(value, p, record) {
+        return this.infoColTpl.apply(record.data);
     },
 
     formatCandidatesCol: function(value, p, record) {
