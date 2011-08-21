@@ -292,8 +292,14 @@ Ext.define('devilry.administrator.PrettyView', {
         item.alignTo(this.bodyBox, 'tl', [0, 0]);
     },
 
-    setSizeToCoverBody: function(item) {
+    setSizeToCoverBody: function(item, height) {
         item.setWidth(this.bodyBox.getWidth());
-        item.setHeight(this.bodyBox.getHeight());
+        if(!height) {
+            height = this.bodyBox.getHeight();
+            if(height > 500) {
+                height = 500;
+            }
+        }
+        item.setHeight(height);
     }
 });
