@@ -23,7 +23,7 @@
         '   <pre>{settings.text}</pre>',
         '</tpl>',
         '<tpl if="type == \'Boolean\'">',
-        '   <p>Points needed to pass: {settings.trueValue}</p>',
+        '   <p>Points given if passed: {settings.trueValue}</p>',
         '   <p>Labels: {settings.labels}</p>',
         '</tpl>',
         '<tpl if="type == \'Select\'">',
@@ -91,6 +91,39 @@
             renderTo: Ext.getBody()
         });
         this.add(this.grid);
+
+        this.markdownbutton = Ext.create('Ext.Button', {
+            text     : 'Add markdown-field',
+            renderTo : Ext.getBody(),
+            listeners: {
+                click: function() {
+                    this.setText('I was clicked!');
+                }
+            }
+        });
+        this.add(this.markdownbutton);
+        
+        this.booleanbutton = Ext.create('Ext.Button', {
+            text     : 'Add boolean-field',
+            renderTo : Ext.getBody(),
+            listeners: {
+                click: function() {
+                    this.setText('I was clicked!');
+                }
+            }
+        });
+        this.add(this.booleanbutton);
+        
+        this.selectbutton = Ext.create('Ext.Button', {
+            text     : 'Add select-field',
+            renderTo : Ext.getBody(),
+            listeners: {
+                click: function() {
+                    this.setText('I was clicked!');
+                }
+            }
+        });
+        this.add(this.selectbutton);
         
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
