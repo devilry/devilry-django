@@ -221,7 +221,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             return;
         }
         var record = this.getSelection()[0];
-        window.location.href = Ext.String.format('../assignmentgroup/{0}', record.data.id);
+        window.open(Ext.String.format('../assignmentgroup/{0}', record.data.id), '_blank');
     },
 
     
