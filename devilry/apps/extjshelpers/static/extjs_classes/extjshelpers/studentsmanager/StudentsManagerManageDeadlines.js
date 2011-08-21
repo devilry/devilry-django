@@ -45,6 +45,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
         var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
         this.getEl().mask(msg);
 
+        this.createDeadline(assignmentGroupRecord, deadlineRecord);
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    },
+
+    /**
+     * @private
+     */
+    createDeadline: function(assignmentGroupRecord, deadlineRecord) {
         var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
         newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
         newDeadlineRecord.save({
@@ -52,10 +64,5 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
                 console.error('Failed to save record');
             }
         });
-
-        if(index == total) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-        }
     }
 });
