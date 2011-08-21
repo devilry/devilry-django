@@ -182,8 +182,31 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     deleteObject: function() {
-        this.record.destroy();
-        window.location.href = this.dashboardUrl;
+        this.record.destroy({
+            scope: this,
+            success: function() {
+                window.location.href = this.dashboardUrl;
+            },
+            failure: this.onDeleteFailure
+        });
+    },
+
+    onDeleteFailure: function(record, operation) {
+        var title, msg;
+        if(operation.error.status == 403) {
+            title = "Forbidden";
+            msg = 'You do not have permission to delete this item. Only super-administrators have permission to delete items with any content.';
+        } else {
+            title = 'An unknow error occurred';
+            msg = "This is most likely caused by a bug, or a problem with the Devilry server.";
+        }
+
+        Ext.MessageBox.show({
+            title: title,
+            msg: msg,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR
+        });
     },
 
     onSetadministrators: function(button) {
