@@ -1,6 +1,7 @@
 Ext.data.JsonP.devilry_extjshelpers_searchwidget_SearchWidget({
   "subclasses": [
-    "devilry.administrator.AdministratorSearchWidget"
+    "devilry.administrator.AdministratorSearchWidget",
+    "devilry.student.StudentSearchWidget"
   ],
   "doc": "<p>Search widget with a devilry.extjshelpers.searchwidget.MultiSearchField on top\nand results in a <a href=\"#/api/devilry.extjshelpers.searchwidget.MultiSearchResults\" rel=\"devilry.extjshelpers.searchwidget.MultiSearchResults\" class=\"docClass\">devilry.extjshelpers.searchwidget.MultiSearchResults</a> below.</p>\n\n<pre><code>Search: ______________\n\n|Result1             |\n+--------------------|\n|                    |\n|                    |\n|                    |\n+--------------------+\n\n|Result2             |\n+--------------------|\n|                    |\n|                    |\n|                    |\n+--------------------+\n</code></pre>\n",
   "docauthor": null,

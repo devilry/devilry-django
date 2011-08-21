@@ -89,7 +89,7 @@ Ext.data.JsonP.devilry_extjshelpers_RestfulSimplifiedEditWindowBase({
   "xtypes": [
 
   ],
-  "extends": "Ext.window.Window",
+  "extends": "devilry.extjshelpers.MaximizableWindow",
   "allMixins": [
 
   ],

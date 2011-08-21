@@ -1,6 +1,6 @@
 Ext.data.JsonP.devilry_extjshelpers_SingleRecordView({
   "subclasses": [
-    "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel"
+    "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails"
   ],
   "doc": "<p>View panel bound to a <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a>.\nKind of like <code>Ext.view.View</code> only for a single record.</p>\n",
   "docauthor": null,

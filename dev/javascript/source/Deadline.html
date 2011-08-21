@@ -19,8 +19,11 @@
     extend: 'Ext.form.Panel',
     alias: 'widget.deadlineform',
     cls: 'widget-deadlineform',
+    requires: [
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
 
-    flex: 10,
+    flex: 6,
 
     layout: {
         type: 'vbox',
@@ -36,22 +39,21 @@
     items: [{
         name: &quot;deadline&quot;,
         fieldLabel: 'Deadline',
-        xtype: 'datefield',
+        xtype: 'devilrydatetimefield',
         flex: 0,
-        format: 'Y-m-d H:i:s',
+        allowBlank: false
     }, {
         name: &quot;text&quot;,
         fieldLabel: &quot;Text&quot;,
         flex: 1,
-        xtype: 'textarea',
+        xtype: 'textarea'
     }],
 
 
-    help: '&lt;p&gt;&lt;strong&gt;Choose a deadline&lt;/strong&gt;. Students will be able to deliver after the ' +
-        'deadline expires, however deliveries after the deadline will be clearly ' +
-        'marked.&lt;/p&gt;' +
-        '&lt;p&gt;The &lt;strong&gt;text&lt;/strong&gt; is displayed to students when they view the deadline, ' +
-        'and when they add deliveries on the deadline.&lt;/p&gt;'
+    help: [
+        '&lt;strong&gt;Choose a deadline&lt;/strong&gt;. Students will be able to deliver after the deadline expires, however deliveries after the deadline will be clearly marked.',
+        'The &lt;strong&gt;text&lt;/strong&gt; is displayed to students when they view the deadline, and when they add deliveries on the deadline.'
+    ]
 });
 </pre>
 </body>

@@ -32,7 +32,7 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignment_group", comp:"<", value:15},
+        filters: [{field:"assignment_group", comp:"startswith", value:15},
                       {field:"assignment_group__parentnode__long_name", comp:">=", value:"My example value"},
                       {field:"assignment_group__parentnode__parentnode", comp:"iexact", value:15}],
         orderby: ["id", "-text", "deadline", "assignment_group", "number_of_deliveries", "feedbacks_published"],
@@ -137,7 +137,7 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignment_group", comp:"<", value:15},
+        [{field:"assignment_group", comp:"startswith", value:15},
          {field:"assignment_group__parentnode__long_name", comp:">=", value:"My example value"},
          {field:"assignment_group__parentnode__parentnode", comp:"iexact", value:15}]
 

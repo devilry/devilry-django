@@ -20,18 +20,21 @@
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',
     requires: [
-        'devilry.extjshelpers.studentsmanager.StudentsManager',
+        'devilry.administrator.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.RestfulRegistryItem',
         'devilry.gradeeditors.ConfigEditorWindow',
-        'devilry.gradeeditors.GradeEditorSelectForm'
+        'devilry.gradeeditors.GradeEditorSelectForm',
+        'devilry.extjshelpers.NotificationManager'
     ],
 
     config: {
-        assignmentgroupstore: undefined
+        assignmentgroupstore: undefined,
+        assignmentgroupPrevApprovedStore: undefined
     },
 
     bodyTpl: Ext.create('Ext.XTemplate',
@@ -324,7 +327,8 @@
             xtype: 'restfulsimplified_editpanel',
             model: this.modelname,
             editform: Ext.widget('administrator_assignmentadvancedform'),
-            record: this.record
+            record: this.record,
+            saveSuccessMessage: 'Advanced options saved'
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
             title: 'Advanced options',
@@ -337,23 +341,28 @@
                 }
             }
         });
+        this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
+        this.alignToCoverBody(editwindow);
     },
 
     onStudents: function() {
-        var studentswindow = Ext.create('Ext.window.Window', {
+        var studentswindow = Ext.widget('maximizablewindow', {
             title: 'Students',
-            width: 800,
-            height: 600,
+            width: 926,
+            height: 500,
             layout: 'fit',
             maximizable: true,
             modal: true,
-            closeAction: 'hide',
             items: {
-                xtype: 'studentsmanager',
+                xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
-                assignmentid: this.objectid
+                assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
+                assignmentid: this.objectid,
+                periodid: this.record.data.parentnode,
+                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
+                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
+                isAdministrator: true
             },
             listeners: {
                 scope: this,
@@ -362,9 +371,34 @@
                 }
             }
         });
+        this.setSizeToCoverBody(studentswindow);
         studentswindow.show();
-        studentswindow.alignTo(this.studentsbutton, 'bl', [0, 0]);
-    }
+        this.alignToCoverBody(studentswindow);
+    },
+
+
+    onEdit: function(button) {
+        var editpanel = Ext.ComponentManager.create({
+            xtype: 'restfulsimplified_editpanel',
+            model: this.modelname,
+            editform: Ext.widget('administrator_assignmentform'),
+            record: this.record,
+            saveSuccessMessage: 'Assignment successfully saved'
+        });
+        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            editpanel: editpanel,
+            prettyview: this,
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        this.setSizeToCoverBody(editwindow);
+        editwindow.show();
+        this.alignToCoverBody(editwindow);
+    },
 });
 </pre>
 </body>

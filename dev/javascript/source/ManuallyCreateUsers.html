@@ -15,7 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
+  <pre class="prettyprint lang-js">Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.manuallycreateusers',
     frame: false,
@@ -27,6 +27,12 @@
     },
 
     config: {
+<span id='global-cfg-initialLines'>        /**
+</span>         * @cfg
+         * Lines to fill in on load (one line for each element in the array).
+         */
+        initialLines: undefined,
+
 <span id='global-cfg-assignmentid'>        /**
 </span>         * @cfg
          * 
@@ -36,7 +42,7 @@
 
     helptext:
         '&lt;section class=&quot;helpsection&quot;&gt;' +
-        '   &lt;h1&gt;Help&lt;/h1&gt;' +
+        //'   &lt;h1&gt;Help&lt;/h1&gt;' +
         '   &lt;p&gt;Students are organized in &lt;em&gt;assignment groups&lt;/em&gt;. You should specify &lt;strong&gt;one&lt;/strong&gt; &lt;em&gt;assignment group&lt;/em&gt; on each line in the input box on the right hand side.&lt;/p&gt;' +
         '   &lt;h2&gt;Common usage examples&lt;/h2&gt;' +
         '   &lt;h3&gt;Individual deliveries&lt;/h3&gt;' +
@@ -72,10 +78,23 @@
     },
 
     initComponent: function() {
+        var currentValue = &quot;&quot;;
+        if(this.initialLines) {
+            Ext.each(this.initialLines, function(line, index) {
+                currentValue += Ext.String.format('{0}\n', line);
+            });
+        };
+
         this.userinput = Ext.widget('textareafield', {
-            hideLabel: true,
-            emptyText: 'My optional group name:: somestudent, anotherstudent',
-            flex: 10 // Take up all remaining vertical space
+            //hideLabel: true,
+            fieldLabel: 'Assignment groups',
+            labelAlign: 'top',
+            labelWidth: 100,
+            labelStyle: 'font-weight:bold',
+            emptyText: 'Read the text on your right hand side for help...',
+            flex: 10, // Take up all remaining vertical space
+            margin: 10,
+            value: currentValue
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         //this.userinput.setValue('dewey\nlouie:401');
@@ -87,13 +106,13 @@
                 align: 'stretch'
             },
 
-            items: [{
+            items: [this.userinput, {
                 flex: 10,
                 xtype: 'box',
                 padding: 20,
                 autoScroll: true,
                 html: this.helptext
-            }, this.userinput],
+            }],
 
             dockedItems: [{
                 xtype: 'toolbar',

@@ -18,10 +18,15 @@
   <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsmanager_studentsgrid',
+    cls: 'widget-studentsmanager_studentsgrid',
     sortableColumns: false,
 
     config: {
         assignmentid: undefined
+    },
+
+    mixins: {
+        canPerformActionsOnSelected: 'devilry.extjshelpers.GridPeformActionOnSelected'
     },
 
     candidatesCol: Ext.create('Ext.XTemplate', 
@@ -40,30 +45,60 @@
         '&lt;/ul&gt;'
     ),
 
+    isOpenColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;span class=&quot;is_opencol&quot;&gt;',
+        '    &lt;tpl if=&quot;is_open&quot;&gt;',
+        '       &lt;span class=&quot;open&quot;&gt;Open&lt;/span&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!is_open&quot;&gt;',
+        '       &lt;span class=&quot;closed&quot;&gt;Closed&lt;/span&gt;',
+        '   &lt;/tpl&gt;',
+        '&lt;/span&gt;'
+    ),
+
+    deliveriesColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;span class=&quot;deliveriescol&quot;&gt;',
+        '    &lt;tpl if=&quot;number_of_deliveries &amp;gt; 0&quot;&gt;',
+        '       {number_of_deliveries}',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;number_of_deliveries == 0&quot;&gt;',
+        '       &lt;span class=&quot;nodeliveries&quot;&gt;0&lt;/div&gt;',
+        '   &lt;/tpl&gt;',
+        '&lt;/span&gt;'
+    ),
+
     pointsColTpl: Ext.create('Ext.XTemplate', 
-        '&lt;div class=&quot;pointscolumn&quot;&gt;',
+        '&lt;span class=&quot;pointscolumn&quot;&gt;',
         '    &lt;tpl if=&quot;feedback&quot;&gt;',
         '       {feedback__points}',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;!feedback&quot;&gt;',
-        '       &lt;div class=&quot;nofeedback&quot;&gt;&amp;empty;&lt;/div&gt;',
+        '       &lt;span class=&quot;nofeedback&quot;&gt;&amp;empty;&lt;/span&gt;',
         '   &lt;/tpl&gt;',
-        '&lt;/div&gt;'
+        '&lt;/span&gt;'
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
-        '&lt;div class=&quot;gradecolumn&quot;&gt;',
+        '&lt;section class=&quot;gradecolumn&quot;&gt;',
         '   &lt;tpl if=&quot;feedback&quot;&gt;',
-        '        &lt;div class=&quot;grade&quot;&gt;Grade: {feedback__grade}&lt;/div&gt;',
-        '        &lt;div class=&quot;passing_grade&quot;&gt;Passing grade? {feedback__is_passing_grade}&lt;/div&gt;',
-        '        &lt;div class=&quot;grade&quot;&gt;&lt;/div&gt;',
+        '        &lt;div class=&quot;is_passing_grade&quot;&gt;',
+        '           &lt;tpl if=&quot;feedback__is_passing_grade&quot;&gt;&lt;span class=&quot;passing_grade&quot;&gt;Passed&lt;/span&gt;&lt;/tpl&gt;',
+        '           &lt;tpl if=&quot;!feedback__is_passing_grade&quot;&gt;&lt;span class=&quot;not_passing_grade&quot;&gt;Failed&lt;/span&gt;&lt;/tpl&gt;',
+        '           : &lt;span class=&quot;grade&quot;&gt;{feedback__grade}&lt;/span&gt;',
+        '        &lt;/div&gt;',
+        '        &lt;div class=&quot;delivery_type&quot;&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 0&quot;&gt;&lt;span class=&quot;electronic&quot;&gt;Electronic&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 1&quot;&gt;&lt;span class=&quot;non-electronic&quot;&gt;Non-electronic&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 2&quot;&gt;&lt;span class=&quot;alias&quot;&gt;From previous period&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type &amp;gt; 2&quot;&gt;&lt;span class=&quot;unknown&quot;&gt;Unknown delivery type&lt;/span&gt;&lt;/tpl&gt;',
+        '       &lt;/div&gt;',
         '   &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;!feedback&quot;&gt;',
         '        &lt;div class=&quot;nofeedback&quot;&gt;',
         '           No feedback',
         '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
-        '&lt;/div&gt;'
+        '&lt;/section&gt;'
     ),
 
     constructor: function(config) {
@@ -72,7 +107,7 @@
     },
 
     initComponent: function() {
-        this.store.pageSize = 10;
+        this.store.pageSize = 30;
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
@@ -81,7 +116,12 @@
 
 
         this.selModel = Ext.create('Ext.selection.CheckboxModel', {
-            checkOnly: true
+            checkOnly: true,
+            listeners: {
+                click: function() {
+                    console.log('hei');
+                }
+            }
         });
 
         Ext.apply(this, {
@@ -93,13 +133,19 @@
             }],
 
             columns: [{
-                text: 'Group name', dataIndex: 'name', flex: 2
+                text: 'Open?', dataIndex: 'id', width: 60,
+                renderer: this.formatIsOpenCol
             }, {
-                text: 'Students', dataIndex: 'id', flex: 2,
+                text: 'Group name', dataIndex: 'name', flex: 4
+            }, {
+                text: 'Students', dataIndex: 'id', flex: 4,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 2,
+                text: 'Examiners', dataIndex: 'id', flex: 4,
                 renderer: this.formatExaminersCol
+            }, {
+                text: 'Deliveries', dataIndex: 'id', flex: 2,
+                renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
                 columns: [{
@@ -116,12 +162,11 @@
             }]
         });
         this.callParent(arguments);
-        this.store.load({
-            params: {
-                start: 0,
-                limit: 10
-            }
-        });
+        this.store.load();
+    },
+
+    formatIsOpenCol: function(value, p, record) {
+        return this.isOpenColTpl.apply(record.data);
     },
 
     formatCandidatesCol: function(value, p, record) {
@@ -130,6 +175,10 @@
 
     formatExaminersCol: function(value, p, record) {
         return this.examinersCol.apply(record.data);
+    },
+
+    formatDeliveriesCol: function(value, p, record) {
+        return this.deliveriesColTpl.apply(record.data);
     },
 
     formatPointsCol: function(value, p, record) {

@@ -68,6 +68,14 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">GET</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiednode</span><span class="o">/</span><span class="nx">id</span>
 </pre></div>
 </div>
+<p>Another example, this one uses the optional <em>result_fieldgroups</em> parameter.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">GET</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiednode</span><span class="o">/</span><span class="nx">id</span>
+
+<span class="p">{</span>
+    <span class="nx">result_fieldgroups</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;admins&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="required-request-parameters-encoded-in-the-url">
 <h3>Required request parameters encoded in the URL<a class="headerlink" href="#required-request-parameters-encoded-in-the-url" title="Permalink to this headline">¶</a></h3>
@@ -75,6 +83,37 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <h4>id<a class="headerlink" href="#id" title="Permalink to this headline">¶</a></h4>
 <p>The unique identifier of a Node. You will typically get
 this id in response from a search.</p>
+</div>
+</div>
+<div class="section" id="optional-request-parameters">
+<h3>Optional request parameters<a class="headerlink" href="#optional-request-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.</p>
+<div class="section" id="result-fieldgroups">
+<h4>result_fieldgroups<a class="headerlink" href="#result-fieldgroups" title="Permalink to this headline">¶</a></h4>
+<p>A list of group names. Each group adds an additional set of fields to the
+resulting data. The following group names are available:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>admins</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>admins__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -144,6 +183,8 @@ The result always contains the following fields:</p>
 </dd>
 </dl>
 </div></blockquote>
+<p>However, there may be more fields if specified with the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>
+request parameter.</p>
 </div>
 </div>
 <div class="section" id="on-error">
@@ -166,6 +207,10 @@ The result always contains the following fields:</p>
 <li><a class="reference internal" href="#example">Example</a></li>
 <li><a class="reference internal" href="#required-request-parameters-encoded-in-the-url">Required request parameters encoded in the URL</a><ul>
 <li><a class="reference internal" href="#id">id</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optional-request-parameters">Optional request parameters</a><ul>
+<li><a class="reference internal" href="#result-fieldgroups">result_fieldgroups</a></li>
 </ul>
 </li>
 </ul>

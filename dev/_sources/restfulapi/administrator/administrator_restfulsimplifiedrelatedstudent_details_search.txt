@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"period", comp:"startswith", value:15},
-                      {field:"username", comp:">", value:"My example value"}],
+        filters: [{field:"period", comp:"contains", value:15},
+                      {field:"username", comp:"<", value:"My example value"}],
         orderby: ["id", "-username", "period"],
         start: 10,
         limit: 100
@@ -88,8 +88,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"period", comp:"startswith", value:15},
-         {field:"username", comp:">", value:"My example value"}]
+        [{field:"period", comp:"contains", value:15},
+         {field:"username", comp:"<", value:"My example value"}]
 
 related students can be filtered on the following *fields*:
 

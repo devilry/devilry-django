@@ -19,7 +19,12 @@
 </span>Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
-    bodyPadding: 20,
+    bodyPadding: 0,
+
+    requires: [
+        'devilry.extjshelpers.SetListOfUsers',
+        'devilry.extjshelpers.NotificationManager'
+    ],
 
     config: {
 <span id='devilry-administrator-PrettyView-cfg-modelname'>        /**
@@ -81,9 +86,23 @@
     },
 
     initComponent: function() {
+        this.setadminsbutton = Ext.create('Ext.button.Button', {
+            text: 'Manage administrators',
+            scale: 'large',
+            menu: [],
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.onSetadministrators
+            }
+        });
+
+
         this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
             scale: 'large',
+            enableToggle: true,
+            menu: [],
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -101,7 +120,7 @@
             }
         });
 
-        var tbar = ['-&gt;', this.deletebutton, this.editbutton];
+        var tbar = ['-&gt;', this.deletebutton, this.setadminsbutton, this.editbutton];
 
         if(this.extraMeButtons) {
             Ext.Array.insert(tbar, 2, this.extraMeButtons);
@@ -115,8 +134,12 @@
             Ext.Array.insert(tbar, 0, this.relatedButtons);
         }
 
+        this.bodyBox = Ext.widget('box', {
+            padding: 20
+        });
         Ext.apply(this, {
             tbar: tbar,
+            items: this.bodyBox
         });
         this.callParent(arguments);
 
@@ -142,17 +165,26 @@
     refreshBody: function() {
         var bodyData = this.getExtraBodyData(this.record);
         Ext.apply(bodyData, this.record.data);
-        this.update(this.bodyTpl.apply(bodyData));
+        this.bodyBox.update(this.bodyTpl.apply(bodyData));
     },
 
+<span id='devilry-administrator-PrettyView-method-getExtraBodyData'>    /**
+</span>     * @private
+     */
     getExtraBodyData: function(record) {
         return {};
     },
 
+<span id='devilry-administrator-PrettyView-method-onModelLoadFailure'>    /**
+</span>     * @private
+     */
     onModelLoadFailure: function(record, operation) {
         throw 'Failed to load the model';
     },
 
+<span id='devilry-administrator-PrettyView-method-onEdit'>    /**
+</span>     * @private
+     */
     onEdit: function(button) {
         this.fireEvent('edit', this.record, button);
     },
@@ -162,25 +194,135 @@
         this.onModelLoadSuccess(record);
     },
 
-    onDelete: function() {
+<span id='devilry-administrator-PrettyView-method-onDelete'>    /**
+</span>     * @private
+     */
+    onDelete: function(button) {
         var me = this;
-        Ext.MessageBox.show({
+        var win = Ext.MessageBox.show({
             title: 'Confirm delete',
             msg: 'Are you sure you want to delete?',
-            animateTarget: this.deletebutton,
             buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.ERROR,
+            icon: Ext.Msg.WARNING,
+            closable: false,
             fn: function(btn) {
                 if(btn == 'yes') {
                     me.deleteObject();
                 }
+                button.toggle(false);
+            }
+        });
+        win.alignTo(button, 'br?', [-win.width, 0]);
+    },
+
+<span id='devilry-administrator-PrettyView-method-deleteObject'>    /**
+</span>     * @private
+     */
+    deleteObject: function() {
+        this.record.destroy({
+            scope: this,
+            success: function() {
+                window.location.href = this.dashboardUrl;
+            },
+            failure: this.onDeleteFailure
+        });
+    },
+
+<span id='devilry-administrator-PrettyView-method-onDeleteFailure'>    /**
+</span>     * @private
+     */
+    onDeleteFailure: function(record, operation) {
+        var title, msg;
+        if(operation.error.status == 403) {
+            title = &quot;Forbidden&quot;;
+            msg = 'You do not have permission to delete this item. Only super-administrators have permission to delete items with any content.';
+        } else {
+            title = 'An unknow error occurred';
+            msg = &quot;This is most likely caused by a bug, or a problem with the Devilry server.&quot;;
+        }
+
+        Ext.MessageBox.show({
+            title: title,
+            msg: msg,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR
+        });
+    },
+
+<span id='devilry-administrator-PrettyView-method-onSetadministrators'>    /**
+</span>     * @private
+     */
+    onSetadministrators: function(button) {
+        var win = Ext.widget('window', {
+            title: 'Set administrators',
+            modal: true,
+            width: 550,
+            height: 300,
+            maximizable: true,
+            layout: 'fit',
+            listeners: {
+                close: function() {
+                    button.toggle(false);
+                }
+            },
+            items: {
+                xtype: 'setlistofusers',
+                usernames: this.record.data.admins__username,
+                helptext: '&lt;p&gt;The username of a single administrator on each line. Example:&lt;/p&gt;',
+                listeners: {
+                    scope: this,
+                    saveClicked: this.onSaveAdmins
+                }
+            }
+        });
+        win.show();
+        win.alignTo(button, 'br?', [-win.width, 0]);
+    },
+
+<span id='devilry-administrator-PrettyView-method-onSaveAdmins'>    /**
+</span>     * @private
+     */
+    onSaveAdmins: function(setlistofusersobj, usernames) {
+        setlistofusersobj.getEl().mask('Saving...');
+        this.record.data.fake_admins = usernames
+        this.record.save({
+            scope: this,
+            success: function(record) {
+                setlistofusersobj.getEl().unmask();
+                record.data.admins__username = usernames
+                this.onModelLoadSuccess(record)
+                setlistofusersobj.up('window').close();
+                this.setadminsbutton.toggle(false);
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Save successful',
+                    message: 'Updated adminstrators.'
+                });
+            },
+            failure: function() {
+                setlistofusersobj.getEl().unmask();
+                Ext.MessageBox.show({
+                    title:'Error',
+                    msg: 'An error occurred. This is most likely caused by an &lt;strong&gt;invalid username&lt;/strong&gt;. Please review the usernames and try again.',
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
             }
         });
     },
 
-    deleteObject: function() {
-        this.record.destroy();
-        window.location.href = this.dashboardUrl;
+    alignToCoverBody: function(item) {
+        item.alignTo(this.bodyBox, 'tl', [0, 0]);
+    },
+
+    setSizeToCoverBody: function(item, height) {
+        item.setWidth(this.bodyBox.getWidth());
+        if(!height) {
+            height = this.bodyBox.getHeight();
+            if(height &gt; 500) {
+                height = 500;
+            }
+        }
+        item.setHeight(height);
     }
 });
 </pre>

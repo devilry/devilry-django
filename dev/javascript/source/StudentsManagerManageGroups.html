@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-administrator-studentsmanager-StudentsManagerManageGroups'>/** The group management methods for StudentsManager. */
+</span>Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', {
+    requires: [
+        'devilry.administrator.studentsmanager.ManuallyCreateUsers'
+    ],
+
+<span id='devilry-administrator-studentsmanager-StudentsManagerManageGroups-method-showManuallyCreateUsersWindow'>    /**
+</span>     * @private
+     */
+    showManuallyCreateUsersWindow: function(initialLines) {
+        var win = Ext.widget('window', {
+            title: 'Create assignment groups',
+            modal: true,
+            width: 830,
+            height: 600,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'manuallycreateusers',
+                assignmentid: this.assignmentid,
+                initialLines: initialLines
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    this.refreshStore();
+                }
+            }
+        });
+        win.show();
+    },
+
+<span id='devilry-administrator-studentsmanager-StudentsManagerManageGroups-method-onManuallyCreateUsers'>    /**
+</span>     * @private
+     */
+    onManuallyCreateUsers: function() {
+        this.showManuallyCreateUsersWindow();
+    },
+
+<span id='devilry-administrator-studentsmanager-StudentsManagerManageGroups-method-onOneGroupForEachRelatedStudent'>    /**
+</span>     * @private
+     */
+    onOneGroupForEachRelatedStudent: function() {
+        this.loadAllRelatedStudents({
+            scope: this,
+            callback: this.createOneGroupForEachRelatedStudent
+            //args: ['Hello world']
+        });
+    },
+
+<span id='devilry-administrator-studentsmanager-StudentsManagerManageGroups-method-createOneGroupForEachRelatedStudent'>    /**
+</span>     * @private
+     */
+    createOneGroupForEachRelatedStudent: function(relatedStudents) {
+        this.showManuallyCreateUsersWindow(this.relatedUserRecordsToArray(relatedStudents));
+    }
+});
+</pre>
+</body>
+</html>

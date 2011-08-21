@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.studentsmanager',
+    cls: 'studentsmanager',
+    frame: false,
+    border: false,
+
+    requires: [
+        'devilry.extjshelpers.studentsmanager.FilterSelector',
+        'devilry.extjshelpers.studentsmanager.StudentsGrid',
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow',
+        'devilry.extjshelpers.SearchField',
+        'devilry.extjshelpers.SetListOfUsers',
+        'devilry.gradeeditors.EditManyDraftEditorWindow'
+    ],
+
+    mixins: {
+        createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
+        manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
+        closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
+    },
+
+    config: {
+<span id='global-cfg-isAdministrator'>        /**
+</span>         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false,
+        gradeeditor_config_model: undefined,
+        deadlinemodel: undefined,
+        assignmentid: undefined,
+        assignmentgroupstore: undefined,
+
+        periodid: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+
+        this.role = this.isAdministrator? 'administrator': 'examiner';
+        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
+    },
+
+    initComponent: function() {
+        this.giveFeedbackButton = Ext.widget('button', {
+            scale: 'large',
+            text: 'Give feedback to many',
+            listeners: {
+                scope: this,
+                click: this.onGiveFeedbackToSelected,
+                render: function(button) {
+                    if(!this.registryitem_recordcontainer.record) {
+                        button.getEl().mask('Loading'); // TODO: Only mask the affected buttons
+                    }
+                }
+            }
+        });
+
+        Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'searchfield',
+                emptyText: 'Search...',
+                margin: 10,
+                flex: 0,
+            }, {
+                xtype: 'panel',
+                flex: 1,
+                layout: 'fit',
+                frame: true,
+                border: false,
+                items: [{
+                    xtype: 'studentsmanager_studentsgrid',
+                    store: this.assignmentgroupstore,
+                    assignmentid: this.assignmentid
+                }],
+
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    items: this.getToolbarItems()
+                }]
+            }],
+
+        });
+        this.callParent(arguments);
+        this.setSearchfieldAttributes();
+
+        this.addListener('render', function() {
+            //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
+            //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+        }, this);
+        this.loadGradeEditorConfigModel();
+
+        this.loadFirstPage();
+    },
+
+    getToolbarItems: function() {
+        return ['-&gt;', {
+            xtype: 'button',
+            text: 'On single group',
+            scale: 'large',
+            menu: this.getOnSingleMenuItems()
+        }, {
+            xtype: 'button',
+            text: 'On many groups',
+            scale: 'large',
+            menu: this.getOnManyMenuItems()
+        }, this.giveFeedbackButton];
+    },
+
+    getOnSingleMenuItems: function() {
+        return [{
+            text: 'Open examiner interface',
+            listeners: {
+                scope: this,
+                click: this.onOpenExaminerInterface
+            }
+        }];
+    },
+
+    getOnManyMenuItems: function() {
+        return [{
+            text: 'Close/open',
+            menu: [{
+                text: 'Close',
+                listeners: {
+                    scope: this,
+                    click: this.onCloseGroups
+                }
+            }, {
+                text: 'Open',
+                listeners: {
+                    scope: this,
+                    click: this.onOpenGroups
+                }
+            }]
+        }, {
+            text: 'Add deadline',
+            iconCls: 'icon-add-16',
+            listeners: {
+                scope: this,
+                click: this.onAddDeadline
+            }
+        }];
+    },
+
+<span id='global-method-onSelectNone'>    /**
+</span>     * @private
+     */
+    onSelectNone: function() {
+        Ext.MessageBox.alert('No element(s) selected', 'You must select at least one group to use the selected action.');
+    },
+
+<span id='global-method-noneSelected'>    /**
+</span>     * @private
+     */
+    noneSelected: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0;
+    },
+
+<span id='global-method-onNotSingleSelected'>    /**
+</span>     * @private
+     */
+    onNotSingleSelected: function() {
+        Ext.MessageBox.alert('Invalid selection', 'You must select exactly one group to use the selected action.');
+    },
+
+<span id='global-method-singleSelected'>    /**
+</span>     * @private
+     */
+    singleSelected: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 1;
+    },
+
+<span id='global-method-getSelection'>    /**
+</span>     * @private
+     */
+    getSelection: function() {
+        return this.down('studentsmanager_studentsgrid').selModel.getSelection();
+    },
+
+<span id='global-method-loadFirstPage'>    /**
+</span>     * @private
+     */
+    loadFirstPage: function() {
+        this.assignmentgroupstore.currentPage = 1;
+        this.refreshStore();
+    },
+
+<span id='global-method-createRecordFromStoreRecord'>    /**
+</span>     * @private
+     */
+    createRecordFromStoreRecord: function(record) {
+        var modelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedAssignmentGroup', this.role);
+        var editRecord = Ext.create(modelname, {
+            // NOTE: Very important that this is all the editablefields, since any missing fields will be None!
+            id: record.data.id,
+            name: record.data.name,
+            is_open: record.data.is_open,
+            parentnode: record.data.parentnode,
+        });
+        return editRecord;
+    },
+
+
+<span id='global-method-onOpenExaminerInterface'>    /**
+</span>     * @private
+     */
+    onOpenExaminerInterface: function() {
+        if(!this.singleSelected()) {
+            this.onNotSingleSelected();
+            return;
+        }
+        var record = this.getSelection()[0];
+        window.open(Ext.String.format('../assignmentgroup/{0}', record.data.id), '_blank');
+    },
+
+    
+<span id='global-method-setSearchfieldAttributes'>    /**
+</span>     * @private
+     */
+    setSearchfieldAttributes: function() {
+        var searchfield = this.down('searchfield');
+        searchfield.addListener('newSearchValue', this.search, this);
+        searchfield.addListener('emptyInput', function() {
+            this.search(&quot;&quot;);
+        }, this);
+    },
+    
+<span id='global-method-search'>    /**
+</span>     * @private
+     */
+    search: function(searchstring) {
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            searchstring: searchstring
+        });
+        var extraParams = this.assignmentgroupstore.proxy.extraParams;
+        this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.assignmentid
+        }]);
+        this.assignmentgroupstore.loadPage(1, {
+            scope: this,
+            callback: function(records, operation, success) {
+            }
+        });
+    },
+
+<span id='global-method-refreshStore'>    /**
+</span>     * @private
+     * Reftesh store by re-searching for the current value.
+     */
+    refreshStore: function() {
+        var searchfield = this.down('searchfield');
+        this.search(searchfield.getValue());
+    }
+});
+</pre>
+</body>
+</html>

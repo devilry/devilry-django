@@ -668,21 +668,15 @@ this check is not performed. If the check fails,
 
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedAssignmentGroup.create_searchqryset">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.create_searchqryset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all objects of this type that matches arguments
-given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is a student.</p>
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/student/simplified.html#SimplifiedAssignmentGroup.create_searchqryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all AssignmentGroup-objects where given <tt class="docutils literal"><span class="pre">user</span></tt> is candidate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>user</strong> &#8211; A django user object.</li>
-<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
 </tr>
 </tbody>
 </table>

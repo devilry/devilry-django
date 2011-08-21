@@ -15,8 +15,10 @@ Examiner
     examiner_restfulsimplifiedassignment_details_search
     examiner_restfulsimplifiedassignmentgroup_details_read
     examiner_restfulsimplifiedassignmentgroup_details_search
+    examiner_restfulsimplifiedassignmentgroup_details_update
     examiner_restfulsimplifieddeadline_details_read
     examiner_restfulsimplifieddeadline_details_search
+    examiner_restfulsimplifieddeadline_details_delete
     examiner_restfulsimplifieddeadline_details_create
     examiner_restfulsimplifieddeadline_details_update
     examiner_restfulsimplifieddelivery_details_read
@@ -135,6 +137,11 @@ AssignmentGroup
         <th><a href="examiner_restfulsimplifiedassignmentgroup_details_read.html">GET&nbsp;/examiner/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
         <td>Retrieve a assignment group.</td>
     </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifiedassignmentgroup_details_update.html">PUT&nbsp;/examiner/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
+        <td>Update a assignment group.</td>
+    </tr>
         </tbody>
     </table>
 
@@ -162,6 +169,11 @@ Deadline
     <tr>
         <th><a href="examiner_restfulsimplifieddeadline_details_read.html">GET&nbsp;/examiner/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Deadline.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifieddeadline_details_delete.html">DELETE&nbsp;/examiner/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
+        <td>Delete a Deadline.</td>
     </tr>
     
     <tr>

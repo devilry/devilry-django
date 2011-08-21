@@ -15,26 +15,37 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">Ext.define('devilry.student.FileUploadPanel', {
+  <pre class="prettyprint lang-js"><span id='devilry-student-FileUploadPanel'>/**
+</span> * Panel for file upload.
+ */
+Ext.define('devilry.student.FileUploadPanel', {
     extend: 'Ext.form.Panel',
     alias: 'widget.fileuploadpanel',
     cls: 'widget-fileuploadpanel',
 
     config: {
-<span id='global-cfg-initialhelptext'>        /**
+<span id='devilry-student-FileUploadPanel-cfg-initialhelptext'>        /**
 </span>         * @cfg
          * A help text to show with the upload field.
          */
         initialhelptext: undefined,
 
-<span id='global-cfg-deadlineid'>        /**
+<span id='devilry-student-FileUploadPanel-cfg-deadlineid'>        /**
 </span>         * @cfg
          * Id of the deadline.
          */
         deadlineid: undefined,
 
+<span id='devilry-student-FileUploadPanel-cfg-deadline_recordcontainer'>        /**
+</span>         * @cfg
+         * Only used to display &quot;Click to view&quot; link. (optional)
+         */
         deadline_recordcontainer: undefined,
 
+<span id='devilry-student-FileUploadPanel-cfg-deliverymodelname'>        /**
+</span>         * @cfg
+         * The name of the Delivery ``Ext.data.Model``.
+         */
         deliverymodelname: undefined
     },
 
@@ -127,11 +138,10 @@
     },
 
 
-<span id='global-method-updateInfoBox'>    /**
+<span id='devilry-student-FileUploadPanel-method-updateInfoBox'>    /**
 </span>     * @private
      */
     updateInfoBox: function(finished) {
-        //console.log(this.deliveryrecord);
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
@@ -144,7 +154,7 @@
 
 
 
-<span id='global-method-createInitialDelivery'>    /**
+<span id='devilry-student-FileUploadPanel-method-createInitialDelivery'>    /**
 </span>     * @private
      */
     createInitialDelivery: function() {
@@ -161,7 +171,7 @@
         });
     },
 
-<span id='global-method-onCreateDeliverySuccess'>    /**
+<span id='devilry-student-FileUploadPanel-method-onCreateDeliverySuccess'>    /**
 </span>     * @private
      */
     onCreateDeliverySuccess: function(deliveryrecord) {
@@ -170,7 +180,7 @@
         this.uploadFileInForm();
     },
 
-<span id='global-method-onCreateDeliveryFailure'>    /**
+<span id='devilry-student-FileUploadPanel-method-onCreateDeliveryFailure'>    /**
 </span>     * @private
      */
     onCreateDeliveryFailure: function(x) {
@@ -180,7 +190,7 @@
 
 
 
-<span id='global-method-onAddFile'>    /**
+<span id='devilry-student-FileUploadPanel-method-onAddFile'>    /**
 </span>     * @private
      */
     onAddFile: function () {
@@ -191,7 +201,7 @@
         }
     },
 
-<span id='global-method-uploadFileInForm'>    /**
+<span id='devilry-student-FileUploadPanel-method-uploadFileInForm'>    /**
 </span>     * @private
      */
     uploadFileInForm: function() {
@@ -212,7 +222,7 @@
         }
     },
 
-<span id='global-method-onAddFileSuccess'>    /**
+<span id='devilry-student-FileUploadPanel-method-onAddFileSuccess'>    /**
 </span>     * @private
      */
     onAddFileSuccess: function(form, res) {
@@ -221,7 +231,7 @@
         this.deliverbutton.enable(); // really only needed on first upload, but it does not hurt.
     },
 
-<span id='global-method-onAddFileFailure'>    /**
+<span id='devilry-student-FileUploadPanel-method-onAddFileFailure'>    /**
 </span>     * @private
      */
     onAddFileFailure: function(form, res) {
@@ -230,7 +240,7 @@
 
 
 
-<span id='global-method-onDeliver'>    /**
+<span id='devilry-student-FileUploadPanel-method-onDeliver'>    /**
 </span>     * @private
      */
     onDeliver: function() {
@@ -243,7 +253,7 @@
         });
     },
 
-<span id='global-method-onDeliverSuccess'>    /**
+<span id='devilry-student-FileUploadPanel-method-onDeliverSuccess'>    /**
 </span>     * @private
      */
     onDeliverSuccess: function() {
@@ -254,7 +264,7 @@
         this.getEl().unmask();
     },
 
-<span id='global-method-onDeliverFailure'>    /**
+<span id='devilry-student-FileUploadPanel-method-onDeliverFailure'>    /**
 </span>     * @private
      */
     onDeliverFailure: function() {

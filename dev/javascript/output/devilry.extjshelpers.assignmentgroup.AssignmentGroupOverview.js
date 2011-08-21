@@ -39,7 +39,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 46,
+        "linenr": 45,
         "inheritable": false,
         "alias": null,
         "name": "assignmentgroupid",
@@ -57,7 +57,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 36,
+        "linenr": 35,
         "inheritable": false,
         "alias": null,
         "name": "canExamine",
@@ -74,7 +74,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 52,
+        "linenr": 51,
         "inheritable": false,
         "alias": null,
         "name": "isAdministrator",
@@ -92,28 +92,10 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 24,
+        "linenr": 23,
         "inheritable": false,
         "alias": null,
         "name": "renderTitleTo",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupOverview.js",
-        "deprecated": null
-      },
-      {
-        "type": "String",
-        "owner": "devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview",
-        "doc": "<p>ID of the div to render the body to. Defaults to 'content-main'.</p>\n",
-        "html_filename": "AssignmentGroupOverview.html",
-        "href": "AssignmentGroupOverview.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-renderTo",
-        "tagname": "cfg",
-        "shortDoc": "ID of the div to render the body to. ...",
-        "protected": false,
-        "static": false,
-        "private": false,
-        "linenr": 30,
-        "inheritable": false,
-        "alias": null,
-        "name": "renderTo",
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupOverview.js",
         "deprecated": null
       }
@@ -160,7 +142,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
   "xtypes": [
     "assignmentgroupoverview"
   ],
-  "extends": "Ext.panel.Panel",
+  "extends": "Ext.container.Container",
   "allMixins": [
 
   ],

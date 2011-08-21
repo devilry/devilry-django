@@ -15,167 +15,125 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.studentsmanager',
-    cls: 'studentsmanager',
-    layout: 'border',
-    frame: false,
-    border: false,
+  <pre class="prettyprint lang-js">Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
+    extend: 'devilry.extjshelpers.studentsmanager.StudentsManager',
+    alias: 'widget.administrator_studentsmanager',
 
-    requires: [
-        'devilry.extjshelpers.studentsmanager.FilterSelector',
-        'devilry.extjshelpers.studentsmanager.StudentsGrid',
-        'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
-        'devilry.extjshelpers.SearchField'
-    ],
-
-    config: {
-        assignmentgroupstore: undefined,
-        assignmentid: undefined
+    mixins: {
+        manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
+        createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin',
+        addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
+    //config: {
+        //assignmentgroupPrevApprovedStore: undefined
+    //},
+
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
-        Ext.apply(this, {
-            items: [{
-                region: 'north',     // position for region
-                xtype: 'panel',
-                frame: false,
-                border: false,
-                height: 100,
-                layout: { //Layout spec of underlying components
-                    type: 'vbox',
-                    align: 'center'
-                },
-                items: [{
-                    xtype: 'searchfield',
-                    width: 600,
-                    height: 40,
-                    padding: '30 0 0 0'
-
-                }]
-            },{
-                region:'west',
-                xtype: 'panel',
-                width: 200,
-                layout: 'fit',
-                tbar: [{
-                    xtype: 'button',
-                    text: 'Add more students',
-                    iconCls: 'icon-add-32',
-                    scale: 'large',
-                    width: 194,
-                    listeners: {
-                        scope: this,
-                        click: this.onManuallyCreateUsers
-                    }
-                }],
-                items: [{
-                    xtype: 'studentsmanager_filterselector'
-                }]
-            },{
-                region: 'center',     // center region is required, no width/height specified
-                xtype: 'panel',
-                layout: 'fit',
-                frame: false,
-                border: false,
-                items: [{
-                    xtype: 'studentsmanager_studentsgrid',
-                    store: this.assignmentgroupstore,
-                    assignmentid: this.assignmentid
-                }],
-
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    ui: 'footer',
-                    items: ['-&gt;', {
-                        xtype: 'button',
-                        scale: 'large',
-                        text: 'Give feedback to selected'
-                    }]
-                }]
-            }],
-
+        this.addStudentsButton = Ext.widget('button', {
+            text: 'Create groups',
+            iconCls: 'icon-add-32',
+            scale: 'large',
+            menu: [{
+                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                listeners: {
+                    scope: this,
+                    click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Manually',
+                listeners: {
+                    scope: this,
+                    click: this.onManuallyCreateUsers
+                }
+            }]
         });
-        this.callParent(arguments);
-        this.setSearchfieldAttributes();
 
-        //this.addListener('render', function() {
-            //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-        //}, this);
+        this.callParent(arguments);
     },
-    
-<span id='global-method-onManuallyCreateUsers'>    /**
-</span>     * @private
-     */
-    onManuallyCreateUsers: function() {
-        var win = Ext.widget('window', {
-            title: 'Create assignment groups',
-            modal: true,
-            width: 830,
-            height: 600,
-            maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'manuallycreateusers',
-                assignmentid: this.assignmentid
-            },
+
+    getToolbarItems: function() {
+        var defaults = this.callParent();
+        defaults[0] = this.addStudentsButton;
+        Ext.Array.insert(defaults, 1, '-&gt;');
+        return defaults;
+    },
+
+    getOnSingleMenuItems: function() {
+        var menu = this.callParent();
+        //menu.push({
+            //text: 'Create dummy delivery',
+            //listeners: {
+                //scope: this,
+                //click: this.onCreateDummyDelivery
+            //}
+        //});
+        menu.push({
+            text: 'Edit group details',
+            iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
-                close: function() {
-                    this.refreshStore();
-                }
+                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
             }
         });
-        win.show();
-    },
-    
-<span id='global-method-setSearchfieldAttributes'>    /**
-</span>     * @private
-     */
-    setSearchfieldAttributes: function() {
-        var searchfield = this.down('searchfield');
-        searchfield.addListener('newSearchValue', this.search, this);
-        searchfield.addListener('emptyInput', function() {
-            this.search(&quot;&quot;);
-        }, this);
-    },
-    
-<span id='global-method-search'>    /**
-</span>     * @private
-     */
-    search: function(searchstring) {
-        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            searchstring: searchstring
-        });
-        var extraParams = this.assignmentgroupstore.proxy.extraParams;
-        this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.assignmentid
-        }]);
-        this.assignmentgroupstore.loadPage(1, {
-            scope: this,
-            callback: function(records, operation, success) {
-                //console.log(records);
-            }
-        });
+        return menu;
     },
 
-<span id='global-method-refreshStore'>    /**
-</span>     * @private
-     * Reftesh store by re-searching for the current value.
-     */
-    refreshStore: function() {
-        var searchfield = this.down('searchfield');
-        this.search(searchfield.getValue());
+    getOnManyMenuItems: function() {
+        var menu = this.callParent();
+        menu.push({
+            text: 'Mark as delivered in a previous period',
+            listeners: {
+                scope: this,
+                click: this.onPreviouslyPassed
+            }
+        });
+        menu.push({
+            text: 'Change examiners',
+            menu: [{
+                text: 'Replace',
+                iconCls: 'icon-edit-16',
+                listeners: {
+                    scope: this,
+                    click: this.onReplaceExaminers
+                }
+            }, {
+                text: 'Add',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    scope: this,
+                    click: this.onAddExaminers
+                }
+            }, {
+                text: 'Random distribute',
+                listeners: {
+                    scope: this,
+                    click: this.onRandomDistributeExaminers
+                }
+            }, {
+                text: 'Clear',
+                iconCls: 'icon-delete-16',
+                listeners: {
+                    scope: this,
+                    click: this.onClearExaminers
+                }
+            }]
+        });
+        menu.push({
+            text: 'Delete',
+            iconCls: 'icon-delete-16',
+            listeners: {
+                scope: this,
+                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
+            }
+        });
+        return menu;
     }
 });
 </pre>

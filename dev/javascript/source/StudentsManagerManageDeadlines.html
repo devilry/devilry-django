@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines'>/** The deadline management methods for StudentsManager.
+</span> *
+ * Note that this class depends on createRecordFromStoreRecord(),
+ * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
+Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines', {
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines-method-onAddDeadline'>    /**
+</span>     * @private
+     */
+    onAddDeadline: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var me = this;
+        var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
+            deadlinemodel: this.deadlinemodel,
+            onSaveSuccess: function(record) {
+                this.close();
+                me.addDeadlineToSelected(record);
+            }
+        });
+        createDeadlineWindow.show();
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines-method-addDeadlineToSelected'>    /**
+</span>     * @private
+     */
+    addDeadlineToSelected: function(record) {
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.addDeadline,
+            extraArgs: [record]
+        });
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines-method-addDeadline'>    /**
+</span>     * @private
+     */
+    addDeadline: function(assignmentGroupRecord, index, total, deadlineRecord) {
+        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
+        newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
+        newDeadlineRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    }
+});
+</pre>
+</body>
+</html>

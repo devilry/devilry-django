@@ -1,12 +1,12 @@
-Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetailsPanel({
+Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetails({
   "subclasses": [
 
   ],
   "doc": "<p>AssignmentGroup details panel.</p>\n",
   "docauthor": null,
   "singleton": false,
-  "html_filename": "AssignmentGroupDetailsPanel.html",
-  "href": "AssignmentGroupDetailsPanel.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetailsPanel",
+  "html_filename": "AssignmentGroupDetails.html",
+  "href": "AssignmentGroupDetails.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetails",
   "code_type": "ext_define",
   "superclasses": [
     "devilry.extjshelpers.SingleRecordView"
@@ -120,14 +120,14 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetailsPanel(
   "linenr": 1,
   "inheritable": false,
   "alias": null,
-  "name": "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel",
+  "name": "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails",
   "xtypes": [
-    "assignmentgroupdetailspanel"
+    "assignmentgroupdetails"
   ],
   "extends": "devilry.extjshelpers.SingleRecordView",
   "allMixins": [
 
   ],
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupDetailsPanel.js",
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupDetails.js",
   "deprecated": null
 });

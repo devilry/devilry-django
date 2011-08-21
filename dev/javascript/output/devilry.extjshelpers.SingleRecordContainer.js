@@ -25,6 +25,30 @@ Ext.data.JsonP.devilry_extjshelpers_SingleRecordContainer({
     "method": [
       {
         "params": [
+
+        ],
+        "owner": "devilry.extjshelpers.SingleRecordContainer",
+        "doc": "<p>Fire the setRecord event to with the current record (used to refresh\nviews after changing the current record).</p>\n",
+        "html_filename": "SingleRecordContainer.html",
+        "href": "SingleRecordContainer.html#devilry-extjshelpers-SingleRecordContainer-method-fireSetRecordEvent",
+        "tagname": "method",
+        "shortDoc": "Fire the setRecord event to with the current record (used to refresh\nviews after changing the current record). ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 27,
+        "inheritable": false,
+        "alias": null,
+        "name": "fireSetRecordEvent",
+        "return": {
+          "type": "void",
+          "doc": "\n"
+        },
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordContainer.js",
+        "deprecated": null
+      },
+      {
+        "params": [
           {
             "type": "Object",
             "doc": "\n",

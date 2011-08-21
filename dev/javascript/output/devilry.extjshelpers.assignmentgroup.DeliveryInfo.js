@@ -32,6 +32,23 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveryInfo({
       {
         "type": "Object",
         "owner": "devilry.extjshelpers.assignmentgroup.DeliveryInfo",
+        "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> for AssignmentGroup.</p>\n",
+        "html_filename": "DeliveryInfo.html",
+        "href": "DeliveryInfo.html#devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-assignmentgroup_recordcontainer",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 38,
+        "inheritable": false,
+        "alias": null,
+        "name": "assignmentgroup_recordcontainer",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeliveryInfo.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeliveryInfo",
         "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> for Delivery.</p>\n",
         "html_filename": "DeliveryInfo.html",
         "href": "DeliveryInfo.html#devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-delivery_recordcontainer",
@@ -43,6 +60,23 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveryInfo({
         "inheritable": false,
         "alias": null,
         "name": "delivery_recordcontainer",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeliveryInfo.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeliveryInfo",
+        "doc": "<p>Delivery <code>Ext.data.Model</code>.</p>\n",
+        "html_filename": "DeliveryInfo.html",
+        "href": "DeliveryInfo.html#devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-deliverymodel",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 32,
+        "inheritable": false,
+        "alias": null,
+        "name": "deliverymodel",
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeliveryInfo.js",
         "deprecated": null
       },
@@ -107,7 +141,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveryInfo({
   "xtypes": [
     "deliveryinfo"
   ],
-  "extends": "Ext.toolbar.Toolbar",
+  "extends": "Ext.panel.Panel",
   "allMixins": [
 
   ],

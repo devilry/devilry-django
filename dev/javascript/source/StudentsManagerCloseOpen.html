@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-studentsmanager-StudentsManagerCloseOpen'>/** The close/open methods for StudentsManager.
+</span> *
+ * Note that this class depends on createRecordFromStoreRecord(),
+ * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
+Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCloseOpen-method-onCloseGroups'>    /**
+</span>     * @private
+     */
+    onCloseGroups: function() {
+        this.openOrCloseGroups(false);
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCloseOpen-method-onOpenGroups'>    /**
+</span>     * @private
+     */
+    onOpenGroups: function() {
+        this.openOrCloseGroups(true);
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCloseOpen-method-openOrCloseGroups'>    /**
+</span>     * @private
+     */
+    openOrCloseGroups: function(is_open) {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var action = is_open? 'open': 'close';
+        Ext.MessageBox.show({
+            title: Ext.String.format('Confirm {0} groups?', action),
+            msg: Ext.String.format('Are you sure you want to {0} the selected groups?', action),
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            scope: this,
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                        scope: this,
+                        callback: this.openOrCloseGroup,
+                        extraArgs: [is_open]
+                    });
+                }
+            }
+        });
+
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCloseOpen-method-openOrCloseGroup'>    /**
+</span>     * @private
+     */
+    openOrCloseGroup: function(record, index, total, is_open) {
+        var msg = Ext.String.format('Closing group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.is_open = is_open;
+        editRecord.save({
+            failure: function() {
+                console.error('Failed to save record');
+            }
+        });
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    },
+
+});
+</pre>
+</body>
+</html>

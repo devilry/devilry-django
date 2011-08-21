@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback'>/** The feedback creation methods for StudentsManager. */
+</span>Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback', {
+
+    requires: [
+        'devilry.gradeeditors.RestfulRegistryItem'
+    ],
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-loadGradeEditorConfigModel'>    /**
+</span>     * @private
+     */
+    loadGradeEditorConfigModel: function() {
+        this.gradeeditor_config_model.load(this.assignmentid, {
+            scope: this,
+            success: function(record) {
+                this.gradeeditor_config_recordcontainer.setRecord(record);
+                this.loadRegistryItem();
+            },
+            failure: function() {
+                // TODO: Handle errors
+            }
+        });
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-loadRegistryItem'>    /**
+</span>     * @private
+     */
+    loadRegistryItem: function() {
+        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
+        registryitem_model.load(this.gradeeditor_config_recordcontainer.record.data.gradeeditorid, {
+            scope: this,
+            success: function(record) {
+                this.registryitem_recordcontainer.setRecord(record);
+            }
+        });
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-onLoadRegistryItem'>    /**
+</span>     * @private
+     */
+    onLoadRegistryItem: function() {
+        if(this.giveFeedbackButton.rendered) {
+            this.giveFeedbackButton.getEl().unmask();
+        }
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-onGiveFeedbackToSelected'>    /**
+</span>     * @private
+     */
+    onGiveFeedbackToSelected: function(button) {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var draftEditor = Ext.create('devilry.gradeeditors.EditManyDraftEditorWindow', {
+            isAdministrator: this.isAdministrator,
+            gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
+            registryitem: this.registryitem_recordcontainer.record.data,
+            listeners: {
+                scope: this,
+                createNewDraft: this.onPublishFeedback
+            }
+        });
+        draftEditor.show();
+    },
+
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-onPublishFeedback'>    /**
+</span>     * @private
+     */
+    onPublishFeedback: function(feedbackdraftModelName, draftstring) {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.giveFeedbackToSelected,
+            extraArgs: [feedbackdraftModelName, draftstring]
+        });
+    },
+
+<span id='devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback-method-giveFeedbackToSelected'>    /**
+</span>     * @private
+     */
+    giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
+        var msg = Ext.String.format('Setting feedback on group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        if(record.data.latest_delivery_id != null) {
+            var draftrecord = Ext.create(feedbackdraftModelName, {
+                draft: draftstring,
+                published: true,
+                delivery: record.data.latest_delivery_id
+            });
+            draftrecord.save({
+                scope: this,
+                failure: function() {
+                    console.error('Failed to save a draft');
+                    console.error(draftrecord);
+                }
+            });
+        }
+
+        if(index == total) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+        }
+    }
+});
+</pre>
+</body>
+</html>

@@ -33,7 +33,7 @@ Another example, this one uses the optional *result_fieldgroups* parameter.
     GET /administrator/restfulsimplifiedperiod/id
 
     {
-        result_fieldgroups: ["subject"]
+        result_fieldgroups: ["admins", "subject"]
     }
 
 
@@ -58,6 +58,18 @@ result_fieldgroups
 ------------------
 A list of group names. Each group adds an additional set of fields to the
 resulting data. The following group names are available:
+
+    admins
+        *Expands to the following fields:*
+        
+            admins__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
 
     subject
         *Expands to the following fields:*

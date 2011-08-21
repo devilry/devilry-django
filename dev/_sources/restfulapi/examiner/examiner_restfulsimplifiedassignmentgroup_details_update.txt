@@ -1,0 +1,97 @@
+.. _examiner_restfulsimplifiedassignmentgroup_details_update:
+
+=============================================================================
+PUT /examiner/restfulsimplifiedassignmentgroup/id
+=============================================================================
+
+Update a assignment group.
+
+The underlying data model where the item is updated is defined in
+:class:`devilry.apps.core.models.AssignmentGroup`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.update`.
+
+
+
+********
+Request
+********
+
+
+Example
+################
+
+.. code-block:: javascript
+
+    PUT /examiner/restfulsimplifiedassignmentgroup/id
+
+    {
+        is_open: true
+    }
+
+
+Required request parameters encoded in the URL
+##############################################
+
+id
+--------------
+
+The unique identifier of a assignment group as the last item in the
+URL. You will typically get this id in response from a search.
+
+
+Required request parameters
+###########################
+
+The following request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
+
+
+
+is_open
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.AssignmentGroup`
+About the field:
+    If this is checked, the group can add deliveries.
+Type
+    Boolean
+
+
+
+
+**************
+Response
+**************
+
+On success
+##########
+
+Example
+----------------
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        is_open: true,
+        id: 15
+    }
+
+
+Success response details
+------------------------
+
+As long as the assignment group is updated without an error, the
+response is *HTTP 201* with the requested data in the body.  The result always
+contains the data you sent in to the update method, however some values may
+have been changed due to logic performed on the server before saving.
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.

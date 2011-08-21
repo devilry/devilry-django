@@ -26,6 +26,17 @@ Example
 
 
 
+Another example, this one uses the optional *result_fieldgroups* parameter.
+
+.. code-block:: javascript
+
+    GET /administrator/restfulsimplifiednode/id
+
+    {
+        result_fieldgroups: ["admins"]
+    }
+
+
 Required request parameters encoded in the URL
 ##############################################
 
@@ -34,6 +45,31 @@ id
 
 The unique identifier of a Node. You will typically get
 this id in response from a search.
+
+
+
+Optional request parameters
+###########################
+
+Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
+
+result_fieldgroups
+------------------
+A list of group names. Each group adds an additional set of fields to the
+resulting data. The following group names are available:
+
+    admins
+        *Expands to the following fields:*
+        
+            admins__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Node`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
 
 
 
@@ -101,6 +137,9 @@ The result always contains the following fields:
                 String
     
 
+
+However, there may be more fields if specified with the ``result_fieldgroups``
+request parameter.
 
 
 

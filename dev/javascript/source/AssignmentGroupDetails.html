@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupDetails'>/** AssignmentGroup details panel.
+</span> */
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails', {
+    extend: 'devilry.extjshelpers.SingleRecordView',
+    alias: 'widget.assignmentgroupdetails',
+    cls: 'widget-assignmentgroupdetails',
+
+    tpl: Ext.create('Ext.XTemplate',
+        // TODO !is_open without any published feedback and perhaps with failing grade?
+        '&lt;tpl if=&quot;canExamine&quot;&gt;',
+        '    &lt;tpl if=&quot;is_open&quot;&gt;',
+        '        &lt;section class=&quot;info-small&quot;&gt;',
+        '           &lt;h1&gt;Open&lt;/h1&gt;',
+        '           &lt;p&gt;This group is &lt;em&gt;open&lt;/em&gt;. A group should remain open until you have finished grading them, and Devilry normally opens and closes groups for you automatically. You may want to manually close a group, using &lt;span class=&quot;menuref&quot;&gt;Close group&lt;/span&gt; in the toolbar, if you want to make the current grade their final grade on this assignment. A closed group can be re-opened at any time.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!is_open&quot;&gt;',
+        '        &lt;section class=&quot;ok-small&quot;&gt;',
+        '           &lt;h1&gt;Closed&lt;/h1&gt;',
+        '           &lt;p&gt;This group is &lt;em&gt;closed&lt;/em&gt;. This usually means that a group has been corrected and given feedback. A closed group can be re-opened at any time using &lt;span class=&quot;menuref&quot;&gt;Open group&lt;/span&gt; in the toolbar.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;numDeliveries == 0&quot;&gt;',
+        '        &lt;section class=&quot;warning-small&quot;&gt;',
+        '           &lt;h1&gt;No deliveries&lt;/h1&gt;',
+        '           &lt;p&gt;This group has no deliveries.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/tpl&gt;',
+        '&lt;tpl if=&quot;!canExamine&quot;&gt;',
+        '    &lt;tpl if=&quot;is_open&quot;&gt;',
+        '        &lt;section class=&quot;info-small&quot;&gt;',
+        '           &lt;h1&gt;Open&lt;/h1&gt;',
+        '           &lt;p&gt;This assignment is open for more deliveries. You can add as many deliveries as you like, and you examiner(s) will normally correct your latest delivery.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!is_open&quot;&gt;',
+        '        &lt;section class=&quot;ok-small&quot;&gt;',
+        '           &lt;h1&gt;Closed&lt;/h1&gt;',
+        '           &lt;p&gt;This assignment is &lt;em&gt;closed&lt;/em&gt;. This usually means that you have been given feedback, and that the latest feedback is your final grade on this assignment. If you have not been given feedback, and you think this is wrong, you should contact your examiner or course administrator.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;numDeliveries == 0&quot;&gt;',
+        '        &lt;section class=&quot;warning-small&quot;&gt;',
+        '           &lt;h1&gt;No deliveries&lt;/h1&gt;',
+        '           &lt;p&gt;You have no deliveries on this assignment.&lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/tpl&gt;'
+    ),
+
+    initComponent: function() {
+        Ext.apply(this, {
+            
+        });
+        this.callParent(arguments);
+    }
+});
+</pre>
+</body>
+</html>

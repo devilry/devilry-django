@@ -46,7 +46,7 @@
           <div class="body">
             
   <h1>Source code for devilry.apps.examiner.simplified</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span><span class="p">,</span> <span class="n">Max</span>
 
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
@@ -137,7 +137,33 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup.Meta"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Examiner can use on an AssignmentGroup object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">)</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;is_open&#39;</span><span class="p">,)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedAssignmentGroup.create_searchqryset"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns all AssignmentGroup-objects where given ``user`` is examiners.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :rtype: a django queryset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">latest_delivery_id</span><span class="o">=</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;deadlines__deliveries__id&#39;</span><span class="p">),</span>
+                                                                          <span class="n">number_of_deliveries</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;deadlines__deliveries&#39;</span><span class="p">))</span>
+
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedAssignmentGroup.write_authorize"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Checks if the given ``user`` is an examiner in the given</span>
+<span class="sd">        StaticFeedback ``obj``, and raises ``PermissionDenied`` if not.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :param obj: A StaticFeedback-object.</span>
+<span class="sd">        :throws PermissionDenied:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span> <span class="c"># We only allow update</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -186,7 +212,7 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDeadline.Meta"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Examiner can use on a Deadline object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
         <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;text&#39;</span><span class="p">,</span> <span class="s">&#39;deadline&#39;</span><span class="p">,</span> <span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
                           <span class="s">&#39;feedbacks_published&#39;</span><span class="p">)</span>
 </div>
