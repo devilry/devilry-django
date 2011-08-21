@@ -11,7 +11,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.RestfulRegistryItem',
         'devilry.gradeeditors.ConfigEditorWindow',
-        'devilry.gradeeditors.GradeEditorSelectForm'
+        'devilry.gradeeditors.GradeEditorSelectForm',
+        'devilry.extjshelpers.NotificationManager'
     ],
 
     config: {
@@ -309,7 +310,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             xtype: 'restfulsimplified_editpanel',
             model: this.modelname,
             editform: Ext.widget('administrator_assignmentadvancedform'),
-            record: this.record
+            record: this.record,
+            saveSuccessMessage: 'Advanced options saved'
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
             title: 'Advanced options',
@@ -363,7 +365,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             xtype: 'restfulsimplified_editpanel',
             model: this.modelname,
             editform: Ext.widget('administrator_assignmentform'),
-            record: this.record
+            record: this.record,
+            saveSuccessMessage: 'Assignment successfully saved'
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
             editpanel: editpanel,

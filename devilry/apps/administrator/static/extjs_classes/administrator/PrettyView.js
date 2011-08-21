@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.PrettyView', {
     bodyPadding: 0,
 
     requires: [
-        'devilry.extjshelpers.SetListOfUsers'
+        'devilry.extjshelpers.SetListOfUsers',
+        'devilry.extjshelpers.NotificationManager'
     ],
 
     config: {
@@ -275,6 +276,10 @@ Ext.define('devilry.administrator.PrettyView', {
                 this.onModelLoadSuccess(record)
                 setlistofusersobj.up('window').close();
                 this.setadminsbutton.toggle(false);
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Save successful',
+                    message: 'Updated adminstrators.'
+                });
             },
             failure: function() {
                 setlistofusersobj.getEl().unmask();
