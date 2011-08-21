@@ -58,7 +58,6 @@ class HasAdminsMixin(object):
 
 
 
-
 class CanSaveBase(SimplifiedModelApi):
     """ Mixin class extended by many of the classes in the Simplified API for Administrator """
     @classmethod
@@ -162,7 +161,7 @@ class SimplifiedPeriod(HasAdminsMixin, CanSaveBase):
     class Meta(HasAdminsMixin.MetaMixin, SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedSubjectMetaMixin.resultfields
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedPeriodMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
@@ -219,11 +218,12 @@ class SimplifiedRelatedStudent(RelatedUsersBase):
 
 
 @simplified_modelapi
-class SimplifiedAssignment(CanSaveBase):
+class SimplifiedAssignment(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
-    class Meta(SimplifiedAssignmentMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedAssignmentMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedAssignmentMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
@@ -231,6 +231,7 @@ class SimplifiedAssignment(CanSaveBase):
         Return ``True`` if the given assignment contains no assignmentgroups.
         """
         return obj.assignmentgroups.all().count() == 0
+
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(CanSaveBase):
