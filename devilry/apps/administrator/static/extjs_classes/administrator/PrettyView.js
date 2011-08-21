@@ -72,6 +72,7 @@ Ext.define('devilry.administrator.PrettyView', {
             text: 'Manage administrators',
             scale: 'large',
             menu: [],
+            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onSetadministrators
@@ -82,6 +83,8 @@ Ext.define('devilry.administrator.PrettyView', {
         this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
             scale: 'large',
+            enableToggle: true,
+            menu: [],
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -135,7 +138,6 @@ Ext.define('devilry.administrator.PrettyView', {
         this.refreshBody();
         this.getEl().unmask();
         this.fireEvent('loadmodel', record);
-        console.log(this.record.data);
     },
 
     refreshBody: function() {
@@ -161,20 +163,22 @@ Ext.define('devilry.administrator.PrettyView', {
         this.onModelLoadSuccess(record);
     },
 
-    onDelete: function() {
+    onDelete: function(button) {
         var me = this;
-        Ext.MessageBox.show({
+        var win = Ext.MessageBox.show({
             title: 'Confirm delete',
             msg: 'Are you sure you want to delete?',
-            animateTarget: this.deletebutton,
             buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.ERROR,
+            icon: Ext.Msg.WARNING,
+            closable: false,
             fn: function(btn) {
                 if(btn == 'yes') {
                     me.deleteObject();
                 }
+                button.toggle(false);
             }
         });
+        win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
     deleteObject: function() {
@@ -182,45 +186,54 @@ Ext.define('devilry.administrator.PrettyView', {
         window.location.href = this.dashboardUrl;
     },
 
-    onSetadministrators: function() {
+    onSetadministrators: function(button) {
         var win = Ext.widget('window', {
             title: 'Set administrators',
             modal: true,
-            width: 500,
-            height: 400,
+            width: 450,
+            height: 250,
             maximizable: true,
             layout: 'fit',
+            listeners: {
+                close: function() {
+                    button.toggle(false);
+                }
+            },
             items: {
                 xtype: 'setlistofusers',
                 usernames: this.record.data.admins__username,
                 helptext: '<p>The username of a single administrator on each line. Example:</p>',
                 listeners: {
                     scope: this,
-                    saveClicked: function(setlistofusersobj, usernames) {
-                        setlistofusersobj.getEl().mask('Saving...');
-                        this.record.data.fake_admins = usernames
-                        this.record.save({
-                            scope: this,
-                            success: function(record) {
-                                setlistofusersobj.getEl().unmask();
-                                record.data.admins__username = usernames
-                                this.onModelLoadSuccess(record)
-                                setlistofusersobj.up('window').close();
-                            },
-                            failure: function() {
-                                setlistofusersobj.getEl().unmask();
-                                Ext.MessageBox.show({
-                                    title:'Error',
-                                    msg: 'An error occurred. This is most likely caused by an <strong>invalid username</strong>. Please review the usernames and try again.',
-                                    buttons: Ext.Msg.OK,
-                                    icon: Ext.Msg.ERROR
-                                });
-                            }
-                        });
-                    }
+                    saveClicked: this.onSaveAdmins
                 }
             }
         });
         win.show();
+        win.alignTo(button, 'br?', [-win.width, 0]);
+    },
+
+    onSaveAdmins: function(setlistofusersobj, usernames) {
+        setlistofusersobj.getEl().mask('Saving...');
+        this.record.data.fake_admins = usernames
+        this.record.save({
+            scope: this,
+            success: function(record) {
+                setlistofusersobj.getEl().unmask();
+                record.data.admins__username = usernames
+                this.onModelLoadSuccess(record)
+                setlistofusersobj.up('window').close();
+                this.setadminsbutton.toggle(false);
+            },
+            failure: function() {
+                setlistofusersobj.getEl().unmask();
+                Ext.MessageBox.show({
+                    title:'Error',
+                    msg: 'An error occurred. This is most likely caused by an <strong>invalid username</strong>. Please review the usernames and try again.',
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
+            }
+        });
     }
 });
