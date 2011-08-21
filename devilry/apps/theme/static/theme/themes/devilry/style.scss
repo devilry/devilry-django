@@ -459,6 +459,13 @@ a.warning-button {
 section.helpsection {
     @include commonSectionElements();
 
+    background-color: #fff;
+    background-image: url(icons/128x128/helpfade-rightdown.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    padding: 20px;
+    border-radius: 10px;
+
     p {
         padding: 5px 0;
         line-height: 1.3em;

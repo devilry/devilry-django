@@ -380,21 +380,28 @@ a.warning-button {
   .editform .editform-body .extrabaronright {
     margin-left: 30px; }
 
-section.helpsection strong {
-  font-weight: bold; }
-section.helpsection em {
-  font-style: italic; }
-section.helpsection p {
-  padding: 5px 0;
-  line-height: 1.2em; }
-section.helpsection ul li {
-  padding: 5px 0;
-  margin-left: 25px !important;
-  list-style-type: disc !important;
-  list-style-position: outside !important; }
-section.helpsection p {
-  padding: 5px 0;
-  line-height: 1.3em; }
+section.helpsection {
+  background-color: #fff;
+  background-image: url(icons/128x128/helpfade-rightdown.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  padding: 20px;
+  border-radius: 10px; }
+  section.helpsection strong {
+    font-weight: bold; }
+  section.helpsection em {
+    font-style: italic; }
+  section.helpsection p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.helpsection ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.helpsection p {
+    padding: 5px 0;
+    line-height: 1.3em; }
 
 /**
  *
