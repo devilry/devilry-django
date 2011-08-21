@@ -87,7 +87,7 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
 
 
     onPreviouslyPassed: function() {
-        this.down('studentsmanager_studentsgrid').selModel.select(1);
+        //this.down('studentsmanager_studentsgrid').selModel.select(1);
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -104,19 +104,19 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
             height: 400,
             layout: 'fit',
             modal: true,
-            title: 'Mark as passed in previous period',
+            title: 'Mark as delivered in a previous period',
             items: {
                 'xtype': 'panel',
                 frame: false,
                 border: false,
                 html:
                     '<section class="helpsection">' +
-                    '   <p>Marking a group as passed in a previoud period/semester, does the following:</p>' +
+                    '   <p>Marking a group as delivered in a previoud period/semester, does the following:</p>' +
                     '   <ul>' +
                     '       <li>Create a new <em>empty</em> delivery that is marked as imported from a previous semester. This is done automatically.</li>' +
                     '       <li>Create a feedback for the new <em>fake</em> delivery using the grade editor configured for this assignment.</li>' +
                     '   </ul>' +
-                    '   <p>Click <em>next</em> to begin.</p>' +
+                    '   <p>Click <em>next</em> to create the feedback. The feedback you select will be applied to each selected group.</p>' +
                     '</section>'
             },
 

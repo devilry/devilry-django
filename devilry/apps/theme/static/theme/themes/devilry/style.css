@@ -347,6 +347,12 @@ a.warning-button {
 .icon-add-16 {
   background-image: url(icons/16x16/add.png) !important; }
 
+.icon-previous-32 {
+  background-image: url(icons/32x32/previous.png) !important; }
+
+.icon-next-32 {
+  background-image: url(icons/32x32/next.png) !important; }
+
 .icon-delete-32 {
   background-image: url(icons/32x32/delete.png) !important; }
 
@@ -385,8 +391,7 @@ section.helpsection {
   background-image: url(icons/128x128/helpfade-rightdown.png);
   background-repeat: no-repeat;
   background-position: right top;
-  padding: 20px;
-  border-radius: 10px; }
+  padding: 20px; }
   section.helpsection strong {
     font-weight: bold; }
   section.helpsection em {

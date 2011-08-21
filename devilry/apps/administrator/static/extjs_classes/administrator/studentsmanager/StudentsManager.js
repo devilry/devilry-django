@@ -71,7 +71,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getOnManyMenuItems: function() {
         var menu = this.callParent();
         menu.push({
-            text: 'Mark as passed in a previous period',
+            text: 'Mark as delivered in a previous period',
             listeners: {
                 scope: this,
                 click: this.onPreviouslyPassed
