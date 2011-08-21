@@ -178,15 +178,16 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
         this.finishedCounter = 0;
         this.unsuccessful = [];
+        this.parsedArray = parsedArray;
         Ext.Array.each(parsedArray, function(groupSpecObj) {
-            this.createGroup(groupSpecObj, parsedArray);
+            this.createGroup(groupSpecObj);
         }, this);
     },
 
     /**
      * @private
      */
-    createGroup: function(groupSpecObj, parsedArray) {
+    createGroup: function(groupSpecObj) {
         var completeGroupSpecObj = {
             parentnode: this.assignmentid
         };
@@ -194,28 +195,49 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
         group.save({
             scope: this,
-            success: function() {
-                this.finishedCounter ++;
-                this.getEl().mask(
-                    Ext.String.format('Finished saving {0}/{1} groups',
-                        this.finishedCounter, parsedArray.length,
-                    parsedArray.length));
-                    if(this.finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll();
-                    }
-            },
+            success: this.createDeadline,
             failure: function() {
                 this.finishedCounter ++;
                 this.unsuccessful.push(groupSpecObj);
                 this.getEl().mask(
                     Ext.String.format('Finished saving {0}/{1} groups',
-                        this.finishedCounter, parsedArray.length,
-                    parsedArray.length));
-                    if(this.finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll();
-                    }
+                        this.finishedCounter, this.parsedArray.length, this.parsedArray.length
+                    )
+                );
+                if(this.finishedCounter == this.parsedArray.length) {
+                    this.onFinishedSavingAll();
+                }
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    createDeadline: function(assignmentGroupRecord) {
+        devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines.createDeadline(
+            assignmentGroupRecord, this.deadlineRecord, this.deadlinemodel, {
+                scope: this,
+                failure: function() {
+                    console.error('Failed to save deadline record');
+                },
+                success: this.onCreateDeadlineSuccess
+            }
+        );
+    },
+
+    /**
+     * @private
+     */
+    onCreateDeadlineSuccess: function(record) {
+        this.finishedCounter ++;
+        this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
+            this.finishedCounter, this.parsedArray.length,
+            this.parsedArray.length
+        ));
+        if(this.finishedCounter == this.parsedArray.length) {
+            this.onFinishedSavingAll();
+        }
     },
 
     /**
@@ -314,6 +336,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             deadlinemodel: this.deadlinemodel,
             onSaveSuccess: function(record) {
                 this.close();
+                me.deadlineRecord = record;
                 me.createAll(parsedArray);
             }
         });
