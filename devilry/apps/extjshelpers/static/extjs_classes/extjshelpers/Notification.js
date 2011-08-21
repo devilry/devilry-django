@@ -1,9 +1,6 @@
-devilry.NotificationMgr = {
-    height: 0
-};
-
 Ext.define('devilry.extjshelpers.Notification', {
     extend: 'Ext.window.Window',
+    alias: 'widget.notification',
 
     initComponent: function() {
         Ext.apply(this, {
@@ -47,7 +44,6 @@ Ext.define('devilry.extjshelpers.Notification', {
     },
 
     afterShow: function() {
-
         devilry.extjshelpers.Notification.superclass.afterShow.call(this);
         Ext.fly(this.body.dom).on('click', this.cancelHiding, this);
         if (this.autoDestroy) {
@@ -62,9 +58,9 @@ Ext.define('devilry.extjshelpers.Notification', {
     onShow: function() {
         var me = this;
 
-        var pos = devilry.NotificationMgr.height + 10;
+        var pos = devilry.extjshelpers.NotificationManager.height + 10;
         this.el.alignTo(document, "tr-tr", [-20, 10 + pos]);
-        devilry.NotificationMgr.height = pos + this.getHeight();
+        devilry.extjshelpers.NotificationManager.height = pos + this.getHeight();
 
         this.el.slideIn('t', {
             duration: 500,
@@ -84,7 +80,7 @@ Ext.define('devilry.extjshelpers.Notification', {
             duration: 500,
             remove: true
         });
-        devilry.NotificationMgr.height -= this.getHeight() - 10;
+        devilry.extjshelpers.NotificationManager.height -= this.getHeight() - 10;
     },
 
     focus: Ext.emptyFn
