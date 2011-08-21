@@ -141,11 +141,12 @@ class SimplifiedNode(HasAdminsMixin, CanSaveBase):
 
 
 @simplified_modelapi
-class SimplifiedSubject(CanSaveBase):
+class SimplifiedSubject(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
-    class Meta(SimplifiedSubjectMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedSubjectMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
