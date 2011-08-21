@@ -58,6 +58,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     },
 
     initComponent: function() {
+        this.assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
+
         var currentValue = "";
         if(this.initialLines) {
             Ext.each(this.initialLines, function(line, index) {
@@ -100,8 +102,9 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 ui: 'footer',
                 items: ['->', {
                     xtype: 'button',
+                    iconCls: 'icon-next-32',
                     scale: 'large',
-                    text: 'Create assignment groups',
+                    text: 'Select deadline',
                     listeners: {
                         scope: this,
                         click: this.onCreate
@@ -173,40 +176,46 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      */
     createAll: function(parsedArray) {
         this.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
-        var assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
-        var finishedCounter = 0;
-        var unsuccessful = [];
+        this.finishedCounter = 0;
+        this.unsuccessful = [];
         Ext.Array.each(parsedArray, function(groupSpecObj) {
-            var completeGroupSpecObj = {
-                parentnode: this.assignmentid
-            };
-            Ext.apply(completeGroupSpecObj, groupSpecObj);
-            var group = Ext.create(assignmentGroupModelCls, completeGroupSpecObj);
-            group.save({
-                scope: this,
-                success: function() {
-                    finishedCounter ++;
-                    this.getEl().mask(
-                        Ext.String.format('Finished saving {0}/{1} groups',
-                        finishedCounter, parsedArray.length,
-                        parsedArray.length));
-                    if(finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
-                    }
-                },
-                failure: function() {
-                    finishedCounter ++;
-                    unsuccessful.push(groupSpecObj);
-                    this.getEl().mask(
-                        Ext.String.format('Finished saving {0}/{1} groups',
-                        finishedCounter, parsedArray.length,
-                        parsedArray.length));
-                    if(finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
-                    }
-                }
-            });
+            this.createGroup(groupSpecObj, parsedArray);
         }, this);
+    },
+
+    /**
+     * @private
+     */
+    createGroup: function(groupSpecObj, parsedArray) {
+        var completeGroupSpecObj = {
+            parentnode: this.assignmentid
+        };
+        Ext.apply(completeGroupSpecObj, groupSpecObj);
+        var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
+        group.save({
+            scope: this,
+            success: function() {
+                this.finishedCounter ++;
+                this.getEl().mask(
+                    Ext.String.format('Finished saving {0}/{1} groups',
+                        this.finishedCounter, parsedArray.length,
+                    parsedArray.length));
+                    if(this.finishedCounter == parsedArray.length) {
+                        this.onFinishedSavingAll();
+                    }
+            },
+            failure: function() {
+                this.finishedCounter ++;
+                this.unsuccessful.push(groupSpecObj);
+                this.getEl().mask(
+                    Ext.String.format('Finished saving {0}/{1} groups',
+                        this.finishedCounter, parsedArray.length,
+                    parsedArray.length));
+                    if(this.finishedCounter == parsedArray.length) {
+                        this.onFinishedSavingAll();
+                    }
+            }
+        });
     },
 
     /**
@@ -243,23 +252,23 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    onFinishedSavingAll: function(unsuccessful, totalCount) {
+    onFinishedSavingAll: function() {
         this.getEl().unmask();
-        if(unsuccessful.length == 0) {
-            this.onSuccess(totalCount);
+        if(this.unsuccessful.length == 0) {
+            this.onSuccess();
         } else {
-            this.onFailure(unsuccessful, totalCount);
+            this.onFailure();
         }
     },
 
     /**
      * @private
      */
-    onSuccess: function(totalCount) {
+    onSuccess: function() {
         var me = this;
         Ext.MessageBox.show({
             title: 'Success',
-            msg: Ext.String.format('Created {0} assignment groups.', totalCount),
+            msg: Ext.String.format('Created {0} assignment groups.', this.finishedCounter),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.INFO,
             fn: function() {
@@ -272,15 +281,13 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    onFailure: function(unsuccessful, totalCount) {
-        //console.log(totalCount);
-        //console.log(unsuccessful);
-        this.userinput.setValue(this.groupSpecObjArrayToString(unsuccessful));
+    onFailure: function() {
+        this.userinput.setValue(this.groupSpecObjArrayToString(this.unsuccessful));
         Ext.MessageBox.show({
             title: 'Error',
             msg: Ext.String.format(
                 'Failed to create {0} of {1} assignment groups. This is usually caused by invalid usernames. The groups with errors have been re-added to the input box.',
-                unsuccessful.length, totalCount),
+                this.unsuccessful.length, this.finishedCounter),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR
         });
@@ -302,6 +309,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     selectDeadline: function(parsedArray) {
         var me = this;
         var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
+            width: this.up('window').getWidth(),
+            height: this.up('window').getHeight(),
             deadlinemodel: this.deadlinemodel,
             onSaveSuccess: function(record) {
                 this.close();
