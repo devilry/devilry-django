@@ -10,6 +10,10 @@ $neutralcolor_fg: #E5F7FF;
 $warningcolor_bg: #CC4400;
 $warningcolor_hoverbg: #E64D00;
 $warningcolor_fg: #FFEEE5;
+$errorcolor_bg: #B00;
+$errorcolor_hoverbg: #F00;
+$errorcolor_fg: #FFF0F0;
+
 
 $studentcolor_bg: $goodcolor_bg;
 $studentcolor_hoverbg: $goodcolor_hoverbg;
@@ -70,6 +74,9 @@ body {
 }
 @mixin warningInlineItem() {
     @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+@mixin errorInlineItem() {
+    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
 }
 
 @mixin commonSectionElements() {
@@ -788,13 +795,21 @@ section.treeheading {
             color: #aaa;
         }
         section.gradecolumn {
-            line-height: 1.6em;
-            .is_passing_grade {
-                .not_passing_grade {
-                    @include warningInlineItem();
+            line-height: 1.8em;
+            .not_passing_grade {
+                @include warningInlineItem();
+            }
+            .passing_grade {
+                @include goodInlineItem();
+            }
+            .delivery_type {
+                font-style: italic;
+                font-weight: bold !important;
+                .alias {
+                    @include neutralInlineItem();
                 }
-                .passing_grade {
-                    @include goodInlineItem();
+                .unknown {
+                    @include errorInlineItem();
                 }
             }
         }
