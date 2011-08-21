@@ -8,7 +8,7 @@
 
 <script>
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model }}
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }}
 
     Ext.require('devilry.administrator.period.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');

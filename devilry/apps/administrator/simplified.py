@@ -18,6 +18,45 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
 
 
+def _convert_list_of_usernames_to_userobjects(usernames):
+    """
+    Parse list of usernames to list of User objects. Each username must be an existing user.
+
+    If all usernames are valid, usernames are returned.
+    """
+    users = []
+    for username in usernames:
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise PermissionDenied()
+        users.append(user)
+    return users
+
+
+class HasAdminsMixin(object):
+    class MetaMixin:
+        fake_editablefields = ('fake_admins',)
+
+    @classmethod
+    def _parse_admins_as_list_of_usernames(cls, obj):
+        """
+        Parse admins as a a list of usernames. Each username must be an existing user.
+
+        If all usernames are valid, ``obj.admins`` is cleared, and the
+        given admins are added (I.E.: All current admins are replaced).
+        """
+        if hasattr(obj, 'fake_admins') and obj.fake_admins != None:
+            users = _convert_list_of_usernames_to_userobjects(obj.fake_admins)
+            obj.admins.clear()
+            for user in users:
+                obj.admins.add(user)
+
+    @classmethod
+    def post_save(cls, user, obj):
+        cls._parse_admins_as_list_of_usernames(obj)
+
+
 
 class CanSaveBase(SimplifiedModelApi):
     """ Mixin class extended by many of the classes in the Simplified API for Administrator """
@@ -57,20 +96,22 @@ class CanSaveBase(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
 @simplified_modelapi
-class SimplifiedNode(CanSaveBase):
+class SimplifiedNode(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
-    class Meta:
+    class Meta(HasAdminsMixin.MetaMixin):
         """ Defines the CRUD+S methods, the django model to be used, resultfields returned by
         search and which fields can be used to search for a Node object
         using the Simplified API """
 
+        fake_editablefields = ('fake_admins',)
         methods = ['create', 'read', 'update', 'delete', 'search']
 
         model = models.Node
         resultfields = FieldSpec('id',
                                  'parentnode',
                                  'short_name',
-                                 'long_name')
+                                 'long_name',
+                                 admins=['admins__username'])
         searchfields = FieldSpec('short_name',
                                  'long_name')
         filters = FilterSpecs(FilterSpec('parentnode'),
@@ -99,11 +140,12 @@ class SimplifiedNode(CanSaveBase):
 
 
 @simplified_modelapi
-class SimplifiedSubject(CanSaveBase):
+class SimplifiedSubject(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
-    class Meta(SimplifiedSubjectMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedSubjectMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
@@ -114,11 +156,12 @@ class SimplifiedSubject(CanSaveBase):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(CanSaveBase):
+class SimplifiedPeriod(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
-    class Meta(SimplifiedPeriodMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedPeriodMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
@@ -175,11 +218,12 @@ class SimplifiedRelatedStudent(RelatedUsersBase):
 
 
 @simplified_modelapi
-class SimplifiedAssignment(CanSaveBase):
+class SimplifiedAssignment(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
-    class Meta(SimplifiedAssignmentMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedAssignmentMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedAssignmentMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
@@ -187,6 +231,7 @@ class SimplifiedAssignment(CanSaveBase):
         Return ``True`` if the given assignment contains no assignmentgroups.
         """
         return obj.assignmentgroups.all().count() == 0
+
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(CanSaveBase):
@@ -198,7 +243,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         fake_editablefields = ('fake_examiners', 'fake_candidates')
         annotated_fields = ['latest_deadline_id'] + list(SimplifiedAssignmentGroupMetaMixin.annotated_fields)
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec('latest_deadline_id') + SimplifiedAssignmentGroupMetaMixin.resultfields
+        resultfields = FieldSpec('latest_deadline_id', users=['candidates__student__username']) + \
+                SimplifiedAssignmentGroupMetaMixin.resultfields
+        filters = FilterSpecs(FilterSpec('candidates__student__username')) + SimplifiedAssignmentGroupMetaMixin.filters
 
 
     @classmethod
@@ -221,14 +268,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         given examiners are added (I.E.: All current examiners are replaced).
         """
         if hasattr(obj, 'fake_examiners') and obj.fake_examiners != None:
-            fake_examiners = obj.fake_examiners
-            users = []
-            for username in fake_examiners:
-                try:
-                    user = User.objects.get(username=username)
-                except User.DoesNotExist:
-                    raise PermissionDenied()
-                users.append(user)
+            users = _convert_list_of_usernames_to_userobjects(obj.fake_examiners)
             obj.examiners.clear()
             for user in users:
                 obj.examiners.add(user)
@@ -306,6 +346,11 @@ class SimplifiedDelivery(SimplifiedModelApi):
         if not obj.deadline.assignment_group.can_save(user):
             raise PermissionDenied()
         if obj.delivered_by != None:
+            raise PermissionDenied()
+
+    @classmethod
+    def read_authorize(cls, user, obj):
+        if not obj.deadline.assignment_group.can_save(user):
             raise PermissionDenied()
 
 

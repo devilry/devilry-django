@@ -42,7 +42,14 @@ def _recurse_getmodelattr(instance, path):
         # NOTE: Dirty hack to support list results. This is to return
         # multiple candidates
         if repr(type(instance)) == "<class 'django.db.models.fields.related.RelatedManager'>":
-            return [_get_instanceattr(obj, pathseg) for obj in instance.all()]
+            if path:
+                # NOTE: Dirty hack to support list results. This is to return
+                # multiple candidates__student__username
+                return [_recurse_getmodelattr(obj, [pathseg] + path) for obj in instance.all()]
+            else:
+                # NOTE: Dirty hack to support list results. This is to return
+                # multiple candidates__identifier
+                return [_get_instanceattr(obj, pathseg) for obj in instance.all()]
         # NOTE: Dirty hack to support list results. This is to return
         # multiple examiners
         if repr(type(instance)) == "<class 'django.db.models.fields.related.ManyRelatedManager'>":

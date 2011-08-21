@@ -31,10 +31,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     isOpenColTpl: Ext.create('Ext.XTemplate', 
         '<span class="is_opencol">',
         '    <tpl if="is_open">',
-        '       <span class="open">Open</div>',
+        '       <span class="open">Open</span>',
         '    </tpl>',
         '    <tpl if="!is_open">',
-        '       <span class="closed">Closed</div>',
+        '       <span class="closed">Closed</span>',
         '   </tpl>',
         '</span>'
     ),
@@ -84,7 +84,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     initComponent: function() {
-        this.store.pageSize = 12; // TODO: Default to 30
+        this.store.pageSize = 30;
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',

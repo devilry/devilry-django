@@ -1,20 +1,156 @@
 Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
-    onCreateDeliveryForGroup: function() {
-        //this.down('studentsmanager_studentsgrid').selModel.select(0);
-        if(this.noneSelected()) {
+    //requires: [
+        //'devilry.student.FileUploadPanel'
+        //'devilry.administrator.studentsmanager.LocateGroup'
+    //],
+
+    deliveryTypes: {
+        TYPE_ELECTRONIC: 0,
+        TYPE_NON_ELECTRONIC: 1,
+        TYPE_ALIAS: 2
+    },
+
+    //onPreviouslyApproved: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.select(1);
+        //if(this.noneSelected()) {
+            //this.onNotSingleSelected();
+            //return;
+        //}
+        //var groupRecord = this.getSelection()[0];
+        //console.log(groupRecord);
+
+        ////this.assignmentgroupPrevApprovedStore.proxy.extraParams.filters = Ext.JSON.encode([{
+            ////field: 'parentnode__parentnode__parentnode',
+            ////comp: 'exact',
+
+        //Ext.widget('window', {
+            //width: 800,
+            //height: 700,
+            //modal: true,
+            //maximizable: true,
+            //layout: 'fit',
+            //title: 'Select previously approved group',
+            //items: {
+                //xtype: 'locategroup',
+                //store: this.assignmentgroupPrevApprovedStore,
+                //groupRecord: groupRecord
+            //}
+        //}).show();
+
+        ////this.refreshStore();
+    //},
+
+    onCreateDummyDelivery: function() {
+        if(!this.singleSelected()) {
             this.onNotSingleSelected();
             return;
         }
+        var groupRecord = this.getSelection()[0];
+        
+        var msg = Ext.create('Ext.XTemplate',
+            '<p>Are you sure you want to create a dummy delivery for <em>',
+            '    <tpl if="name">',
+            '        {name}: ',
+            '    </tpl>',
+            '    <tpl for="candidates__identifier">',
+            '        {.}<tpl if="xindex &lt; xcount">, </tpl>',
+            '    </tpl>',
+            '</em>?',
+            '<tpl if="number_of_deliveries &gt; 0">',
+            '   <p><strong>WARNING:</strong> One usually only creates dummy deliveries for groups with no ',
+            '   deliveries, however this group has <strong>{number_of_deliveries}</strong> deliveries.</p>',
+            '</tpl>'
+        );
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Confirm that you want to create dummy delivery',
+            msg: msg.apply(groupRecord.data),
+            animateTarget: this.deletebutton,
+            buttons: Ext.Msg.YESNO,
+            icon: (groupRecord.data.number_of_deliveries>0? Ext.Msg.WARNING: Ext.Msg.QUESTION),
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    me.createDummyDeliveryForSelected(groupRecord);
+                }
+            }
+        });
+    },
 
-        var record = this.getSelection()[0];
-        var delivery = Ext.create('devilry.apps.administrator.simplified.SimplifiedDelivery', {
+    /**
+     * @private
+     */
+    createDummyDelivery: function(groupRecord) {
+        var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
+        delivery.save();
+        this.refreshStore();
+    },
+
+
+    onPreviouslyPassed: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        this.prevPassedGiveFeedbackToSelected();
+    },
+
+    /**
+     * @private
+     */
+    prevPassedGiveFeedbackToSelected: function() {
+        var draftEditor = Ext.create('devilry.gradeeditors.EditManyDraftEditorWindow', {
+            isAdministrator: this.isAdministrator,
+            gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
+            registryitem: this.registryitem_recordcontainer.record.data,
+            listeners: {
+                scope: this,
+                createNewDraft: this.prevPassedOnPublishFeedback
+            }
+        });
+        draftEditor.show();
+    },
+
+
+    /**
+     * @private
+     */
+    prevPassedOnPublishFeedback: function(feedbackdraftModelName, draftstring) {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.createPreviouslyPassedDelivery,
+            extraArgs: [feedbackdraftModelName, draftstring]
+        });
+    },
+
+    /**
+     * @private
+     */
+    createPreviouslyPassedDelivery: function(groupRecord, index, total, feedbackdraftModelName, draftstring) {
+        var msg = Ext.String.format('Creating a delivery on group {0}/{1}', index, total);
+        this.getEl().mask(msg);
+
+        var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ALIAS);
+        delivery.save({
+            scope: this,
+            success: function(record) {
+                groupRecord.data.latest_delivery_id = record.data.id;
+                this.giveFeedbackToSelected(groupRecord, index, total, feedbackdraftModelName, draftstring);
+            }
+        });
+    },
+
+
+    /**
+     * @private
+     */
+    createDeliveryRecord: function(groupRecord, deliveryType) {
+        return Ext.create('devilry.apps.administrator.simplified.SimplifiedDelivery', {
             successful: true,
-            deadline: record.data.latest_deadline_id,
-            delivery_type: 2
+            deadline: groupRecord.data.latest_deadline_id,
+            delivery_type: deliveryType
             //alias_delivery
         });
-        delivery.save();
-        console.log(delivery);
-        this.refreshStore();
     }
 });

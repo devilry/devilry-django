@@ -7,7 +7,7 @@
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedNode|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model:"admins" }}
 
     Ext.require('devilry.administrator.node.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');

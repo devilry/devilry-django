@@ -216,12 +216,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onOpenExaminerInterface: function() {
-        if(this.noneSelected()) {
+        if(!this.singleSelected()) {
             this.onNotSingleSelected();
             return;
         }
         var record = this.getSelection()[0];
-        window.location.href = Ext.String.format('../assignmentgroup/{0}', record.data.id);
+        window.open(Ext.String.format('../assignmentgroup/{0}', record.data.id), '_blank');
     },
 
     

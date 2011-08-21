@@ -14,7 +14,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     ],
 
     config: {
-        assignmentgroupstore: undefined
+        assignmentgroupstore: undefined,
+        assignmentgroupPrevApprovedStore: undefined
     },
 
     bodyTpl: Ext.create('Ext.XTemplate',
@@ -335,6 +336,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             items: {
                 xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
+                assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
                 assignmentid: this.objectid,
                 periodid: this.record.data.parentnode,
                 deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),

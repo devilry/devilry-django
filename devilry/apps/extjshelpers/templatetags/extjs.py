@@ -31,7 +31,6 @@ def extjs_model(restfulcls, args=None):
 
     if args:
         args = args.split(';', 1)
-        print args
         result_fieldgroups = args[0].split(',')
         if len(args) > 1:
             modelnamesuffix = args[1]

@@ -35,7 +35,7 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
         this.addListener('newSearchValue', this.onNewSearchValue, this);
         this.addListener('emptyInput', this.onEmptyInput, this);
 
-        if(this.autoLoad) {
+        if(this.autoLoadStore) {
             this.onEmptyInput();
         };
     },

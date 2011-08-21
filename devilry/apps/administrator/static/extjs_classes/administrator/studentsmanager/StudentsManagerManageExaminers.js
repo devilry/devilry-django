@@ -49,7 +49,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
                         click: this.onImportRelatedExaminers
                     }
                 }]
-            },
+            }
         });
         win.show();
     },
