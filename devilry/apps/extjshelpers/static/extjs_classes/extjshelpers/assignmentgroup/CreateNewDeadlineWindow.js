@@ -3,8 +3,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
     alias: 'widget.createnewdeadlinewindow',
     cls: 'widget-createnewdeadlinewindow',
     title: 'Create deadline',
-    width: 500,
-    height: 400,
+    width: 700,
+    height: 450,
 
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',

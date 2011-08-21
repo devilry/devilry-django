@@ -40,59 +40,105 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
         ////this.refreshStore();
     //},
 
-    onCreateDummyDelivery: function() {
-        if(!this.singleSelected()) {
-            this.onNotSingleSelected();
+    //onCreateDummyDelivery: function() {
+        //if(!this.singleSelected()) {
+            //this.onNotSingleSelected();
+            //return;
+        //}
+        //var groupRecord = this.getSelection()[0];
+        
+        //var msg = Ext.create('Ext.XTemplate',
+            //'<p>Are you sure you want to create a dummy delivery for <em>',
+            //'    <tpl if="name">',
+            //'        {name}: ',
+            //'    </tpl>',
+            //'    <tpl for="candidates__identifier">',
+            //'        {.}<tpl if="xindex &lt; xcount">, </tpl>',
+            //'    </tpl>',
+            //'</em>?',
+            //'<tpl if="number_of_deliveries &gt; 0">',
+            //'   <p><strong>WARNING:</strong> One usually only creates dummy deliveries for groups with no ',
+            //'   deliveries, however this group has <strong>{number_of_deliveries}</strong> deliveries.</p>',
+            //'</tpl>'
+        //);
+        //var me = this;
+        //Ext.MessageBox.show({
+            //title: 'Confirm that you want to create dummy delivery',
+            //msg: msg.apply(groupRecord.data),
+            //animateTarget: this.deletebutton,
+            //buttons: Ext.Msg.YESNO,
+            //icon: (groupRecord.data.number_of_deliveries>0? Ext.Msg.WARNING: Ext.Msg.QUESTION),
+            //fn: function(btn) {
+                //if(btn == 'yes') {
+                    //me.createDummyDeliveryForSelected(groupRecord);
+                //}
+            //}
+        //});
+    //},
+
+    /**
+     * @private
+     */
+    //createDummyDelivery: function(groupRecord) {
+        //var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
+        //delivery.save();
+        //this.refreshStore();
+    //},
+
+
+    onPreviouslyPassed: function() {
+        this.down('studentsmanager_studentsgrid').selModel.select(1);
+        if(this.noneSelected()) {
+            this.onSelectNone();
             return;
         }
-        var groupRecord = this.getSelection()[0];
-        
-        var msg = Ext.create('Ext.XTemplate',
-            '<p>Are you sure you want to create a dummy delivery for <em>',
-            '    <tpl if="name">',
-            '        {name}: ',
-            '    </tpl>',
-            '    <tpl for="candidates__identifier">',
-            '        {.}<tpl if="xindex &lt; xcount">, </tpl>',
-            '    </tpl>',
-            '</em>?',
-            '<tpl if="number_of_deliveries &gt; 0">',
-            '   <p><strong>WARNING:</strong> One usually only creates dummy deliveries for groups with no ',
-            '   deliveries, however this group has <strong>{number_of_deliveries}</strong> deliveries.</p>',
-            '</tpl>'
-        );
-        var me = this;
-        Ext.MessageBox.show({
-            title: 'Confirm that you want to create dummy delivery',
-            msg: msg.apply(groupRecord.data),
-            animateTarget: this.deletebutton,
-            buttons: Ext.Msg.YESNO,
-            icon: (groupRecord.data.number_of_deliveries>0? Ext.Msg.WARNING: Ext.Msg.QUESTION),
-            fn: function(btn) {
-                if(btn == 'yes') {
-                    me.createDummyDeliveryForSelected(groupRecord);
-                }
-            }
-        });
+        this.prevPassedIntro();
     },
 
     /**
      * @private
      */
-    createDummyDelivery: function(groupRecord) {
-        var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ELECTRONIC);
-        delivery.save();
-        this.refreshStore();
-    },
+    prevPassedIntro: function() {
+        Ext.widget('window', {
+            width: 500,
+            height: 400,
+            layout: 'fit',
+            modal: true,
+            title: 'Mark as passed in previous period',
+            items: {
+                'xtype': 'panel',
+                frame: false,
+                border: false,
+                html:
+                    '<section class="helpsection">' +
+                    '   <p>Marking a group as passed in a previoud period/semester, does the following:</p>' +
+                    '   <ul>' +
+                    '       <li>Create a new <em>empty</em> delivery that is marked as imported from a previous semester. This is done automatically.</li>' +
+                    '       <li>Create a feedback for the new <em>fake</em> delivery using the grade editor configured for this assignment.</li>' +
+                    '   </ul>' +
+                    '   <p>Click <em>next</em> to begin.</p>' +
+                    '</section>'
+            },
 
-
-    onPreviouslyPassed: function() {
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
-        if(this.noneSelected()) {
-            this.onSelectNone();
-            return;
-        }
-        this.prevPassedGiveFeedbackToSelected();
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: ['->', {
+                    xtype: 'button',
+                    iconCls: 'icon-next-32',
+                    scale: 'large',
+                    text: 'Next',
+                    listeners: {
+                        scope: this,
+                        click: function(button) {
+                            button.up('window').close();
+                            this.prevPassedGiveFeedbackToSelected();
+                        }
+                    }
+                }]
+            }]
+        }).show();
     },
 
     /**
@@ -103,6 +149,8 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
             isAdministrator: this.isAdministrator,
             gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
             registryitem: this.registryitem_recordcontainer.record.data,
+            buttonText: 'Next',
+            buttonIcon: 'icon-next-32',
             listeners: {
                 scope: this,
                 createNewDraft: this.prevPassedOnPublishFeedback

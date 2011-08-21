@@ -239,8 +239,8 @@ Ext.define('devilry.administrator.PrettyView', {
         var win = Ext.widget('window', {
             title: 'Set administrators',
             modal: true,
-            width: 450,
-            height: 250,
+            width: 550,
+            height: 300,
             maximizable: true,
             layout: 'fit',
             listeners: {

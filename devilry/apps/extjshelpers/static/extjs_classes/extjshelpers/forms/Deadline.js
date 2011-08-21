@@ -6,7 +6,7 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
         'devilry.extjshelpers.formfields.DateTimeField'
     ],
 
-    flex: 10,
+    flex: 6,
 
     layout: {
         type: 'vbox',
