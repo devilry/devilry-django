@@ -10,6 +10,7 @@ USE_I18N = True
 DATETIME_FORMAT = "N j, Y, H:i"
 LOGIN_URL = '/authenticate/login'
 STATIC_URL = '/static/'
+STATIC_ROOT = 'devilry-static-files'
 
 INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
