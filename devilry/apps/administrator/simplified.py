@@ -157,11 +157,12 @@ class SimplifiedSubject(HasAdminsMixin, CanSaveBase):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(CanSaveBase):
+class SimplifiedPeriod(HasAdminsMixin, CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
-    class Meta(SimplifiedPeriodMetaMixin):
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedSubjectMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
