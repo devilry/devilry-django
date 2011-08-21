@@ -20,7 +20,7 @@
 
     typetemplate: Ext.create('Ext.XTemplate',
         '<tpl if="type == \'Markdown\'">',
-        '   <strong>markdown</strong>',
+        '   <pre>{settings.text}</pre>',
         '</tpl>',
         '<tpl if="type == \'Boolean\'">',
         '   <strong>bool</strong>',
@@ -42,7 +42,7 @@
             data:{'items':[
                 {"type":"Markdown",
                     "settings": {
-                        text: "stuff"
+                        text: "Some markdown-text-stuff"
                     }
                 },
                 {"type":"Boolean", 
@@ -75,7 +75,7 @@
             store: this.store,
             columns: [
                 {header: 'Type',  dataIndex: 'type'},
-                {header: 'Settings', dataIndex: 'type',
+                {header: 'Settings', dataIndex: 'type', flex: 1,
                     renderer: function(value, metaData, settings) {
                         return me.typetemplate.apply(settings.data);
                     }
