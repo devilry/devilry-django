@@ -55,27 +55,6 @@
             {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
             {# prettyview.onStudents(); #}
         });
-
-        prettyview.addListener('edit', function(record, button) {
-            var editpanel = Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
-                model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-                editform: Ext.widget('administrator_assignmentform'),
-                record: record
-            });
-            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                editpanel: editpanel,
-                prettyview: prettyview,
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        button.toggle(false);
-                    }
-                }
-            });
-            editwindow.show();
-            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
-        });
     });
 </script>
 {% endblock %}

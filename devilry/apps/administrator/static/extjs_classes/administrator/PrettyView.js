@@ -2,7 +2,7 @@
 Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
-    bodyPadding: 20,
+    bodyPadding: 0,
 
     requires: [
         'devilry.extjshelpers.SetListOfUsers'
@@ -116,7 +116,9 @@ Ext.define('devilry.administrator.PrettyView', {
             Ext.Array.insert(tbar, 0, this.relatedButtons);
         }
 
-        this.bodyBox = Ext.widget('box');
+        this.bodyBox = Ext.widget('box', {
+            padding: 20
+        });
         Ext.apply(this, {
             tbar: tbar,
             items: this.bodyBox

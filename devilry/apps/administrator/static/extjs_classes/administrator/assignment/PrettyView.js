@@ -351,7 +351,31 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 }
             }
         });
+        this.setSizeToCoverBody(studentswindow);
         studentswindow.show();
-        studentswindow.alignTo(this.studentsbutton, 'bl', [0, 0]);
-    }
+        this.alignToCoverBody(studentswindow);
+    },
+
+
+    onEdit: function(button) {
+        var editpanel = Ext.ComponentManager.create({
+            xtype: 'restfulsimplified_editpanel',
+            model: this.modelname,
+            editform: Ext.widget('administrator_assignmentform'),
+            record: this.record
+        });
+        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            editpanel: editpanel,
+            prettyview: this,
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        this.setSizeToCoverBody(editwindow);
+        editwindow.show();
+        this.alignToCoverBody(editwindow);
+    },
 });
