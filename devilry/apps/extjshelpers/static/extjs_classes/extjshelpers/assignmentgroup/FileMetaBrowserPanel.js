@@ -38,11 +38,31 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
         Ext.apply(this, {
             items: [{
                 xtype: 'grid',
+                sortableColumns: false,
                 store: this.filemetastore,
                 columns: [{
-                    header: 'File name', flex:1, dataIndex: 'filename'
+                    header: 'File name',
+                    menuDisabled: true,
+                    flex:1, 
+                    dataIndex: 'filename'
                 }, {
-                    header: 'Size', dataIndex: 'size'
+                    header: 'Size',
+                    menuDisabled: true,
+                    dataIndex: 'size',
+                    renderer: function(value) {
+                        var units = ['Bytes', 'KBytes', 'MBytes', 'GBytes'];
+                        var i = 0;
+                        while(value >= 1024) {
+                            value /= 1024;
+                            ++i;
+                        }
+                        if(i < units.length) {
+                            return value.toFixed() + ' ' + units[i];
+                        } else {
+                            return value + ' ' + units[0];
+                        }
+                        
+                    }
                 }],
                     listeners: {
                     itemclick: function(self, record) {
@@ -55,22 +75,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
 
             bbar: [{
                 xtype: 'button',
-                text: 'Download all files (zip)',
+                scale: 'large',
+                text: 'Download all files (.zip)',
                 listeners: {
                     click: function(view, record, item) {
                         var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
                         window.open(url, 'download');
                     }
                 }
-            }, {
-                xtype: 'button',
-                text: 'Download all files (tar.gz)',
-                listeners: {
-                    click: function() {
-                        console.log('Downloading tar.gz some time in the future');
-                    }
-                }
             }]
+            // , {
+                // xtype: 'button',
+                // text: 'Download all files (tar.gz)',
+                // listeners: {
+                    // click: function() {
+                        // console.log('Downloading tar.gz some time in the future');
+                    // }
+                // }
+            // }]
         });
         this.callParent(arguments);
     }
