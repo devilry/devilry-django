@@ -50,13 +50,13 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getOnSingleMenuItems: function() {
         var menu = this.callParent();
-        menu.push({
-            text: 'Create dummy delivery',
-            listeners: {
-                scope: this,
-                click: this.onCreateDummyDelivery
-            }
-        });
+        //menu.push({
+            //text: 'Create dummy delivery',
+            //listeners: {
+                //scope: this,
+                //click: this.onCreateDummyDelivery
+            //}
+        //});
         menu.push({
             text: 'Edit group details',
             iconCls: 'icon-edit-16',
