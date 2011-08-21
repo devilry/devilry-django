@@ -42,8 +42,8 @@ docs/restfulapi/
 
 .installed.cfg
 bin/buildout
-bin/dev-manage.py
-bin/dev-manage.py.wsgi
+bin/devmanage.py
+bin/devmanage.py.wsgi
 bin/python
 develop-eggs
 dist
