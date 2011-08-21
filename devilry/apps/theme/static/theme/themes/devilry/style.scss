@@ -481,10 +481,17 @@ section.helpsection {
     }
 }
 
-.x-item-disabled { /* The overlay of disabled ExtJS forms. */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1.0 !important;
+//.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    //-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    //filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    //opacity: 1.0 !important;
+//}
+
+.x-mask {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+    opacity: 0.7 !important;
+    background-color: #000 !important;
 }
 
 
