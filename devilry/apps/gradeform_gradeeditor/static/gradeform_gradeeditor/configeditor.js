@@ -92,34 +92,64 @@
         });
         this.add(this.grid);
 
+        Ext.require('devilry.gradeform_gradeeditor.markdownwindow');
         this.markdownbutton = Ext.create('Ext.Button', {
-            text     : 'Add markdown-field',
-            renderTo : Ext.getBody(),
+            text: 'Add markdown-field',
+            renderTo: Ext.getBody(),
             listeners: {
+                scope: this,
                 click: function() {
-                    this.setText('I was clicked!');
+                    var markdownwin = Ext.create('devilry.gradeform_gradeeditor.markdownwindow', {
+                        message: 'Hello! This is a Markdown window!',
+                        buttonLabel: 'Add markdown!',
+                        listeners: {
+                            scope: this,
+                            gotSomeValue: this.onGotMarkdown
+                        }
+                    });
+                    markdownwin.show();
                 }
             }
         });
         this.add(this.markdownbutton);
-        
+    
+        Ext.require('devilry.gradeform_gradeeditor.booleanwindow');
         this.booleanbutton = Ext.create('Ext.Button', {
             text     : 'Add boolean-field',
             renderTo : Ext.getBody(),
             listeners: {
+                scope: this,
                 click: function() {
-                    this.setText('I was clicked!');
+                    var markdownwin = Ext.create('devilry.gradeform_gradeeditor.booleanwindow', {
+                        message: 'Hello! This is a Boolean window!',
+                        buttonLabel: 'Add boolean!',
+                        listeners: {
+                            scope: this,
+                            gotSomeValue: this.onGotBoolean
+                        }
+                    });
+                    markdownwin.show();
                 }
             }
         });
         this.add(this.booleanbutton);
         
+        Ext.require('devilry.gradeform_gradeeditor.selectwindow');
         this.selectbutton = Ext.create('Ext.Button', {
             text     : 'Add select-field',
             renderTo : Ext.getBody(),
             listeners: {
+                scope: this,
                 click: function() {
-                    this.setText('I was clicked!');
+                    var markdownwin = Ext.create('devilry.gradeform_gradeeditor.selectwindow', {
+                        message: 'Hello! This is a Select window!',
+                        buttonLabel: 'Add select',
+                        listeners: {
+                            scope: this,
+                            gotSomeValue: this.onGotSelect
+                        }
+                    });
+                    markdownwin.show();
                 }
             }
         });
@@ -128,6 +158,18 @@
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
 
+    onGotMarkdown: function() {
+        console.log("Markdown");
+    },
+        
+    onGotBoolean: function() {
+        console.log("Boolean");
+    },
+        
+    onGotSelect: function() {
+        console.log("Select");
+    },
+        
     /**
      * Called when the 'Save' button is clicked.
      */
