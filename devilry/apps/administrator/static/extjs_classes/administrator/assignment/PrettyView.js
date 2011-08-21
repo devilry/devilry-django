@@ -321,8 +321,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 }
             }
         });
+        this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
+        this.alignToCoverBody(editwindow);
     },
 
     onStudents: function() {

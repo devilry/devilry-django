@@ -116,8 +116,10 @@ Ext.define('devilry.administrator.PrettyView', {
             Ext.Array.insert(tbar, 0, this.relatedButtons);
         }
 
+        this.bodyBox = Ext.widget('box');
         Ext.apply(this, {
             tbar: tbar,
+            items: this.bodyBox
         });
         this.callParent(arguments);
 
@@ -143,17 +145,26 @@ Ext.define('devilry.administrator.PrettyView', {
     refreshBody: function() {
         var bodyData = this.getExtraBodyData(this.record);
         Ext.apply(bodyData, this.record.data);
-        this.update(this.bodyTpl.apply(bodyData));
+        this.bodyBox.update(this.bodyTpl.apply(bodyData));
     },
 
+    /**
+     * @private
+     */
     getExtraBodyData: function(record) {
         return {};
     },
 
+    /**
+     * @private
+     */
     onModelLoadFailure: function(record, operation) {
         throw 'Failed to load the model';
     },
 
+    /**
+     * @private
+     */
     onEdit: function(button) {
         this.fireEvent('edit', this.record, button);
     },
@@ -163,6 +174,9 @@ Ext.define('devilry.administrator.PrettyView', {
         this.onModelLoadSuccess(record);
     },
 
+    /**
+     * @private
+     */
     onDelete: function(button) {
         var me = this;
         var win = Ext.MessageBox.show({
@@ -181,6 +195,9 @@ Ext.define('devilry.administrator.PrettyView', {
         win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
+    /**
+     * @private
+     */
     deleteObject: function() {
         this.record.destroy({
             scope: this,
@@ -191,6 +208,9 @@ Ext.define('devilry.administrator.PrettyView', {
         });
     },
 
+    /**
+     * @private
+     */
     onDeleteFailure: function(record, operation) {
         var title, msg;
         if(operation.error.status == 403) {
@@ -209,6 +229,9 @@ Ext.define('devilry.administrator.PrettyView', {
         });
     },
 
+    /**
+     * @private
+     */
     onSetadministrators: function(button) {
         var win = Ext.widget('window', {
             title: 'Set administrators',
@@ -236,6 +259,9 @@ Ext.define('devilry.administrator.PrettyView', {
         win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
+    /**
+     * @private
+     */
     onSaveAdmins: function(setlistofusersobj, usernames) {
         setlistofusersobj.getEl().mask('Saving...');
         this.record.data.fake_admins = usernames
@@ -258,5 +284,14 @@ Ext.define('devilry.administrator.PrettyView', {
                 });
             }
         });
+    },
+
+    alignToCoverBody: function(item) {
+        item.alignTo(this.bodyBox, 'tl', [0, 0]);
+    },
+
+    setSizeToCoverBody: function(item) {
+        item.setWidth(this.bodyBox.getWidth());
+        item.setHeight(this.bodyBox.getHeight());
     }
 });
