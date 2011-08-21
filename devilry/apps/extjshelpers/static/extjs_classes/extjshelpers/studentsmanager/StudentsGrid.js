@@ -84,7 +84,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     initComponent: function() {
-        this.store.pageSize = 12; // TODO: Default to 30
+        this.store.pageSize = 30;
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
