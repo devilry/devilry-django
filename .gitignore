@@ -41,7 +41,10 @@ docs/restfulapi/
 .sass-cache/
 
 .installed.cfg
-bin
+bin/buildout
+bin/dev-manage.py
+bin/dev-manage.py.wsgi
+bin/python
 develop-eggs
 dist
 downloads
