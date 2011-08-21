@@ -97,7 +97,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
                 usernames.push(username);
             }
         });
-        return usernames;
+        return Ext.Array.unique(usernames);
     },
 
     setValueFromArray: function(arrayOfUsernames) {
