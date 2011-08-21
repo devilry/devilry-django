@@ -4,7 +4,7 @@
 if __name__ == '__main__':
     from os import linesep
     from sys import argv
-    from common import getdir, getcommandnames, execcommand, gethelp
+    from devilry.devilryadmin.common import getdir, getcommandnames, execcommand, gethelp
 
     thisdir = getdir(__file__)
     commandnames = getcommandnames()
