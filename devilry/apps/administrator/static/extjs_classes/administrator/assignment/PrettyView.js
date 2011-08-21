@@ -7,6 +7,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.RestfulRegistryItem',
         'devilry.gradeeditors.ConfigEditorWindow',
@@ -327,7 +328,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onStudents: function() {
-        var studentswindow = Ext.create('Ext.window.Window', {
+        var studentswindow = Ext.widget('maximizablewindow', {
             title: 'Students',
             width: 926,
             height: 500,

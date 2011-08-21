@@ -1,6 +1,6 @@
 /** Base class for windows used to Edit/Create RestfulSimplified models. */
 Ext.define('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
-    extend: 'Ext.window.Window',
+    extend: 'devilry.extjshelpers.MaximizableWindow',
     //width: 800,
     //height: 600,
     layout: 'fit',
