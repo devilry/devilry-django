@@ -23,10 +23,15 @@
         '   <pre>{settings.text}</pre>',
         '</tpl>',
         '<tpl if="type == \'Boolean\'">',
-        '   <strong>bool</strong>',
+        '   <p>Points needed to pass: {settings.trueValue}</p>',
+        '   <p>Labels: {settings.labels}</p>',
         '</tpl>',
         '<tpl if="type == \'Select\'">',
-        '   <strong>select</strong>',
+        '   <p>Values: ',
+        '       <tpl for="settings.values">',
+        '           <p>{label}: {value} </p>',
+        '       </tpl>',
+        '   </p>',
         '</tpl>'
     ),
     /**
@@ -54,9 +59,9 @@
                 {"type":"Select", 
                     "settings":{
                         values: [
-                            {"No":0},
-                            {"Somewhat":20},
-                            {"Yes":30}
+                            {value: 0, label: "No"},
+                            {value: 20, label: "Somewhat"},
+                            {value: 30, label: "Yes"}
                         ]
                     }
                 }
