@@ -39,3 +39,17 @@ exampledata-backup.tar.bz2
 .#*
 docs/restfulapi/
 .sass-cache/
+
+.installed.cfg
+bin/buildout
+bin/devmanage.py
+bin/devmanage.py.wsgi
+bin/python
+develop-eggs
+dist
+downloads
+eggs
+parts
+devilry.egg-info/
+devilry-static-files/
+example-productionenv/bin/
