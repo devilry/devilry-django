@@ -117,16 +117,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 displayInfo: true
             }],
 
-            listeners: {
-                scope: this,
-                itemclick: function(grid, record) {
-                    if(grid.getSelectionModel().isSelected(record)) {
-                        grid.getSelectionModel().deselect(record);
-                    } else {
-                        grid.getSelectionModel().select(record, true);
-                    }
-                }
-            },
+            //listeners: {
+                //scope: this,
+                //itemclick: function(grid, record) {
+                    //if(grid.getSelectionModel().isSelected(record)) {
+                        //grid.getSelectionModel().deselect(record);
+                    //} else {
+                        //grid.getSelectionModel().select(record, true);
+                    //}
+                //}
+            //},
 
             columns: [{
                 text: '', dataIndex: 'id', width: 100,
