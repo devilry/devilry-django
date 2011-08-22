@@ -52,3 +52,4 @@ eggs
 parts
 devilry.egg-info/
 devilry-static-files/
+example-productionenv/bin/
