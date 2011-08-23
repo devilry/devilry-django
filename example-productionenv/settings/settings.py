@@ -18,6 +18,8 @@ DELIVERY_STORE_ROOT = join(PARENT_DIR, 'deliverystore')
 ## tells users that this data comes from.
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
+## Nice to have this set to True while you are setting up devilry, however set
+## it to False for production
 DEBUG=True
 
 ## Example config for SQLite (see also PostgreSQL below)
@@ -37,3 +39,10 @@ DATABASES["default"] = {
 #    'HOST': '', # Set to empty string for localhost.
 #    'PORT': '', # Set to empty string for default.
 #}
+
+## Settings required to work with server-conf/apache-vhost.conf
+#DEVILRY_MAIN_PAGE='/devilry'
+#DEVILRY_LOGOUT_URL='/devilry/authenticate/logout'
+#LOGIN_URL='/devilry/authenticate/login'
+#DEVILRY_STATIC_URL = '/devilry-static-files'
+#DEVILRY_THEME_URL = '/devilry-static-files/theme/themes/devilry'
