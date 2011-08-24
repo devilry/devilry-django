@@ -29,7 +29,6 @@
         //this.getMainWin().changeSize(500, 500); 
 
         // Load configuration, and fall back on defaults
-        console.log("test");
         var configobj = {
             maxpoints: 'Example: 100',
             approvedlimit: 'Example: 60',
@@ -110,7 +109,6 @@
             retval = retval+gradearray[0]+" : "+gradearray[1];
         }
 
-        console.log("retval: " + retval);
         return retval;
     },
     
