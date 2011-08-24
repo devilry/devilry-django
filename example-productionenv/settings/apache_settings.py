@@ -1,9 +1,15 @@
 # Import settings.py
 from settings import *
 
-# Settings required to work with server-conf/apache-vhost.conf
-DEVILRY_MAIN_PAGE='/devilry'
-DEVILRY_LOGOUT_URL='/devilry/authenticate/logout'
-LOGIN_URL='/devilry/authenticate/login'
-DEVILRY_STATIC_URL = '/devilry-static-files'
-DEVILRY_THEME_URL = '/devilry-static-files/theme/themes/devilry'
+## Alternative log out url. Depends on how you authenticate
+#DEVILRY_LOGOUT_URL='/authenticate/logout'
+
+# Authentication against the REMOTE_USER environment variable.
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.RemoteUserBackend'
+]
