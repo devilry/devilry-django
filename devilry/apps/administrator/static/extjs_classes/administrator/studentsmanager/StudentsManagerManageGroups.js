@@ -54,5 +54,29 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
      */
     createOneGroupForEachRelatedStudent: function(relatedStudents) {
         this.showManuallyCreateUsersWindow(this.relatedUserRecordsToArray(relatedStudents));
+    },
+
+
+    onChangeGroupName: function() {
+        if(!this.singleSelected()) {
+            this.onNotSingleSelected();
+            return;
+        }
+
+        var me  = this;
+        Ext.Msg.prompt('Change group name', 'Please enter a new group name:', function(btn, name){
+            if (btn == 'ok'){
+                var record = me.getSelection()[0];
+                record.data.name = name;
+                record.save();
+            }
+        });
+    },
+
+    onChangeGroupMembers: function() {
+        if(!this.singleSelected()) {
+            this.onNotSingleSelected();
+            return;
+        }
     }
 });

@@ -58,11 +58,19 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             //}
         //});
         menu.push({
-            text: 'Edit group details',
+            text: 'Change group members',
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
-                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
+                click: this.onChangeGroupMembers
+            }
+        });
+        menu.push({
+            text: 'Change group name',
+            iconCls: 'icon-edit-16',
+            listeners: {
+                scope: this,
+                click: this.onChangeGroupName
             }
         });
         return menu;
