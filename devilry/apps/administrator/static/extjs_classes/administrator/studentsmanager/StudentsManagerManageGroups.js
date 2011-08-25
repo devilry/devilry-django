@@ -63,10 +63,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             return;
         }
 
-        var me  = this;
+        var record = this.getSelection()[0];
         Ext.Msg.prompt('Change group name', 'Please enter a new group name:', function(btn, name){
             if (btn == 'ok'){
-                var record = me.getSelection()[0];
                 record.data.name = name;
                 record.save();
             }
@@ -118,15 +117,14 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 ),
                 listeners: {
                     scope: this,
-                    saveClicked: this.changeGroupMembers
+                    saveClicked: Ext.bind(this.changeGroupMembers, this, [record], true)
                 }
             },
         });
         win.show();
     },
 
-    changeGroupMembers: function(setlistofusersobj, candidateSpecs) {
-        var record = this.getSelection()[0];
+    changeGroupMembers: function(setlistofusersobj, candidateSpecs, caller, record) {
         var editRecord = this.createRecordFromStoreRecord(record);
         editRecord.data.fake_candidates = [];
         Ext.Array.each(candidateSpecs, function(candidateSpec) {

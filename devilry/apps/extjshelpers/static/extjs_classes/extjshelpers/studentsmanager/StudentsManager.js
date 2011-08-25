@@ -60,6 +60,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
+        this.gridContextMenu = new Ext.menu.Menu({
+            items: this.getOnSingleMenuItems(),
+            listeners: {
+                scope: this,
+                hide: this.onGridContexMenuHide
+            }
+        });
+
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -97,6 +105,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
             //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+            this.down('studentsmanager_studentsgrid').on('itemcontextmenu', this.onGridContexMenu, this);
         }, this);
         this.loadGradeEditorConfigModel();
 
@@ -179,7 +188,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     noneSelected: function() {
-        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0;
+        return this.getSelection().length == 0;
     },
 
     /**
@@ -193,13 +202,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     singleSelected: function() {
-        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 1;
+        return this.getSelection().length == 1;
     },
 
     /**
      * @private
      */
     getSelection: function() {
+        if(this.contexSelectedItem) {
+            return [this.contexSelectedItem];
+        }
         return this.down('studentsmanager_studentsgrid').selModel.getSelection();
     },
 
@@ -237,6 +249,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }
         var record = this.getSelection()[0];
         window.open(Ext.String.format('../assignmentgroup/{0}', record.data.id), '_blank');
+    },
+
+    /**
+     * @private
+     */
+    onGridContexMenu: function(grid, record, index, item, ev) {
+        ev.stopEvent();
+        this.contexSelectedItem = record;
+        this.gridContextMenu.showAt(ev.xy);
+    },
+
+    /**
+     * @private
+     */
+    onGridContexMenuHide: function(grid, record, index, item, ev) {
+        this.contexSelectedItem = undefined;
     },
 
     
