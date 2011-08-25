@@ -978,6 +978,12 @@ section.treeheading {
   padding: 1px 4px;
   white-space: nowrap; }
 
+.menuheader {
+  font-weight: bold; }
+
+.menuheader:first-child {
+  margin-top: 0; }
+
 /**
  *
  * Footer

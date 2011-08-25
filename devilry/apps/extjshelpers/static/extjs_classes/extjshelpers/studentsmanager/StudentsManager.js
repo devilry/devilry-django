@@ -104,16 +104,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getToolbarItems: function() {
+        var singleheader = {
+            xtype: 'box',
+            plain: true,
+            html:'<div class="menuheader">On single</div>'
+        };
+        var multiheader = {
+            xtype: 'box',
+            plain: true,
+            html:'<div class="menuheader">On multiple</div>'
+        };
+        var advanced = Ext.Array.merge(
+            [singleheader], this.getOnSingleMenuItems(),
+            [{xtype: 'box', height: 12}],
+            [multiheader], this.getOnManyMenuItems()
+        );
+
         return ['->', {
             xtype: 'button',
-            text: 'On single group',
+            text: 'Advanced',
             scale: 'large',
-            menu: this.getOnSingleMenuItems()
-        }, {
-            xtype: 'button',
-            text: 'On many groups',
-            scale: 'large',
-            menu: this.getOnManyMenuItems()
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                items: advanced 
+            }
         }, this.giveFeedbackButton];
     },
 
