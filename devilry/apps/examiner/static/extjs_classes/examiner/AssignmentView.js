@@ -28,7 +28,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             tbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
-               text: 'Complete students overview',
+               text: 'Complete overview of students',
                menu: [],
                enableToggle: true,
                listeners: {
