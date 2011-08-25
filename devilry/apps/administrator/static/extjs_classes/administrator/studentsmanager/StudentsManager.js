@@ -43,8 +43,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getToolbarItems: function() {
         var defaults = this.callParent();
-        defaults[0] = this.addStudentsButton;
-        Ext.Array.insert(defaults, 1, '->');
+        Ext.Array.insert(defaults, 2, [this.addStudentsButton]);
         return defaults;
     },
 
