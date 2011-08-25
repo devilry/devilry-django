@@ -177,26 +177,32 @@ header {
       border-radius: 14px 6px 0 0;
       font-weight: bold; }
     header > nav li.student-navitem a {
-      background-color: #77b300;
+      background-color: #222;
       color: #f7ffe5; }
       header > nav li.student-navitem a:hover {
-        background-color: #88cc00; }
+        background-color: #88cc00 !important; }
     header > nav li.examiner-navitem a {
-      background-color: #0077b3;
+      background-color: #222;
       color: #e5f7ff; }
       header > nav li.examiner-navitem a:hover {
-        background-color: #0088cc; }
+        background-color: #0088cc !important; }
     header > nav li.administrator-navitem a {
-      background-color: #cc4400;
+      background-color: #222;
       color: #ffeee5; }
       header > nav li.administrator-navitem a:hover {
-        background-color: #e64d00; }
+        background-color: #e64d00 !important; }
   header > nav.student {
     border-bottom: 10px solid #77b300; }
+    header > nav.student li.student-navitem a {
+      background-color: #77b300; }
   header > nav.examiner {
     border-bottom: 10px solid #0077b3; }
+    header > nav.examiner li.examiner-navitem a {
+      background-color: #0077b3; }
   header > nav.administrator {
     border-bottom: 10px solid #cc4400; }
+    header > nav.administrator li.administrator-navitem a {
+      background-color: #cc4400; }
 
 /**
  *

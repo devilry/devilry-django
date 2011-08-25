@@ -36,13 +36,6 @@ body {
 }
 
 
-@mixin navitemlink($bg, $fg, $hoverbg) {
-    background-color: $bg;
-    color: $fg;
-    &:hover {
-        background-color: $hoverbg;
-    }
-}
 
 @mixin inlineList() {
     li {
@@ -99,6 +92,15 @@ body {
             list-style-type: disc !important;
             list-style-position: outside !important;
         }
+    }
+}
+
+
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: #222;
+    color: $fg;
+    &:hover {
+        background-color: $hoverbg !important;
     }
 }
 
@@ -222,12 +224,21 @@ header {
     /* Color the bottom border of the header with the color of the current section. */
     >nav.student {
         border-bottom: 10px solid $studentcolor_bg;
+        li.student-navitem a {
+            background-color: $studentcolor_bg;
+        }
     }
     >nav.examiner {
         border-bottom: 10px solid $examinercolor_bg;
+        li.examiner-navitem a {
+            background-color: $examinercolor_bg;
+        }
     }
     >nav.administrator {
         border-bottom: 10px solid $administratorcolor_bg;
+        li.administrator-navitem a {
+            background-color: $administratorcolor_bg;
+        }
     }
 }
 
