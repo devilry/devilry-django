@@ -41,7 +41,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'Edit feedback',
             //iconCls: 'icon-edit-32',
-            hidden: true,
+            hidden: false,
             scale: 'large',
             listeners: {
                 scope: this,
@@ -117,11 +117,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 this.delivery_recordcontainer.record &&
                 this.registryitem_recordcontainer.record &&
                 this.assignmentgroup_recordcontainer.record) {
-            if(this.assignmentgroup_recordcontainer.record.data.is_open) {
-                this.createButton.show();
-            } else {
-                this.createButton.hide();
-            }
+            //if(this.assignmentgroup_recordcontainer.record.data.is_open) {
+                //this.createButton.show();
+            //} else {
+                //this.createButton.hide();
+            //}
         }
     },
 
