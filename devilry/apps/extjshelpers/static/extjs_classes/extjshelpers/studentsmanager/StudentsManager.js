@@ -143,7 +143,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getOnSingleMenuItems: function() {
         return [{
-            text: 'Open examiner interface',
+            text: 'Open in examiner interface',
             listeners: {
                 scope: this,
                 click: this.onOpenExaminerInterface
