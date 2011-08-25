@@ -91,6 +91,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             }
         });
 
+
         var win = Ext.widget('window', {
             title: 'Select members',
             modal: true,
@@ -101,7 +102,20 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'setlistofusers',
                 usernames: candidatestrings,
-                helptext: '<p>The username of a single student on each line. Example:</p>',
+                anonymous: record.data.parentnode__anonymous,
+                helptpl: Ext.create('Ext.XTemplate',
+                    '<section class="helpsection">',
+                    '   <tpl if="anonymous">',
+                    '       <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by a single colon. Note that <em>candidate ID</em> does not have to be a number.</p>',
+                    '       <p>Example:</p>',
+                    '       <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
+                    '   </tpl>',
+                    '   <tpl if="!anonymous">',
+                    '       <p>One username on each line. Example</p>',
+                    '       <pre style="padding: 5px;">bob\nalice\neve\ndave</pre>',
+                    '   </tpl>',
+                    '</section>'
+                ),
                 listeners: {
                     scope: this,
                     saveClicked: this.changeGroupMembers
@@ -124,7 +138,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             scope: this,
             failure: function() {
                 setlistofusersobj.getEl().unmask();
-                Ext.MessageBox.alert('Failed to change group members', 'Please try again');
+                Ext.MessageBox.show({
+                    title: 'Failed to change group members',
+                    msg: 'This is normally caused by invalid usernames.',
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
             },
             success: function() {
                 setlistofusersobj.up('window').close();
