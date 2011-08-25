@@ -98,8 +98,9 @@ body {
 
 @mixin navitemlink($bg, $fg, $hoverbg) {
     background-color: #222;
-    color: $fg;
+    color: #fff;
     &:hover {
+        color: $fg;
         background-color: $hoverbg !important;
     }
 }

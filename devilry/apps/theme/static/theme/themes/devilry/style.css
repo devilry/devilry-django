@@ -178,18 +178,21 @@ header {
       font-weight: bold; }
     header > nav li.student-navitem a {
       background-color: #222;
-      color: #f7ffe5; }
+      color: #fff; }
       header > nav li.student-navitem a:hover {
+        color: #f7ffe5;
         background-color: #88cc00 !important; }
     header > nav li.examiner-navitem a {
       background-color: #222;
-      color: #e5f7ff; }
+      color: #fff; }
       header > nav li.examiner-navitem a:hover {
+        color: #e5f7ff;
         background-color: #0088cc !important; }
     header > nav li.administrator-navitem a {
       background-color: #222;
-      color: #ffeee5; }
+      color: #fff; }
       header > nav li.administrator-navitem a:hover {
+        color: #ffeee5;
         background-color: #e64d00 !important; }
   header > nav.student {
     border-bottom: 10px solid #77b300; }
