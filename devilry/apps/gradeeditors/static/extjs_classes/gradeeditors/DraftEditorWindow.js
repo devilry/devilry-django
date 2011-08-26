@@ -89,14 +89,39 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             }
         });
 
-        Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: ['->', this.draftButton, this.publishButton]
-            }]
+        this.buttonBar = Ext.widget('toolbar', {
+            dock: 'bottom',
+            ui: 'footer',
+            items: ['->', this.draftButton, this.publishButton]
         });
+
+        Ext.apply(this, {
+            dockedItems: [this.buttonBar]
+        });
+    },
+
+    /**
+     * @private
+     */
+    onHelp: function() {
+        var win = Ext.widget('window', {
+            title: 'Help',
+            modal: true,
+            width: this.getDraftEditor().helpwidth || 600,
+            height: this.getDraftEditor().helpheight || 500,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'box',
+                cls: 'helpbox',
+                autoScroll: true,
+                html: Ext.create('Ext.XTemplate',
+                    '<section class="helpsection">',
+                    '   {help}',
+                    '</section>'
+                ).apply({help: this.getDraftEditor().help})
+            }
+        }).show();
     },
 
     /**
@@ -113,6 +138,19 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onLoadDraftEditorSuccess: function() {
+
+        if(this.getDraftEditor().help) {
+            this.buttonBar.insert(0, {
+                text: 'Help',
+                iconCls: 'icon-help-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onHelp
+                }
+            });
+        }
+
         this.getDraftEditor().getEl().mask('Loading current draft');
 
         var store = Ext.create('Ext.data.Store', {

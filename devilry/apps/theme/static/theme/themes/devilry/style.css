@@ -407,6 +407,9 @@ a.warning-button {
   .editform .editform-body .extrabaronright {
     margin-left: 30px; }
 
+.helpbox {
+  background-color: #fff !important; }
+
 section.helpsection {
   background-color: #fff;
   min-height: 128px;
