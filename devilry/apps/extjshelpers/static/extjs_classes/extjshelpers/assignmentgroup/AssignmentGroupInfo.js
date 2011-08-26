@@ -56,7 +56,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 enableToggle: true,
                 listeners: {
                     scope: this,
-                    click: this.onUncorrectedGroups
+                    click: this.onTodo
                 }
             });
             Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
@@ -104,11 +104,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     /**
      * @private
      */
-    onUncorrectedGroups: function(button) {
+    onTodo: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'To-do list (Open groups on this assignment)',
-            height: 340,
-            width: 500,
+            height: 350,
+            width: 750,
             modal: true,
             layout: 'fit',
             items: {

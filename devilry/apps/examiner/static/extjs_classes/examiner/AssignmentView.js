@@ -24,18 +24,23 @@ Ext.define('devilry.examiner.AssignmentView', {
     initComponent: function() {
         this._todolist = Ext.widget('assignmentgrouptodolist', {
             store: this.assignmentgroupstore,
-            title: 'To-do list',
-            tbarExtra: ['->', {
+            height: 350,
+            toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
                text: 'Complete overview of students',
-               menu: [],
-               enableToggle: true,
                listeners: {
                    scope: this,
                    click: this.onStudents
                }
             }],
+            
+            helpTpl: Ext.create('Ext.XTemplate',
+                '<section class="helpsection">',
+                '   {todohelptext}',
+                '   <p>Choose <span class="menuref">Complete overview of students</span> to view all groups, and to give feedback to multiple groups.</p>',
+                '</section>'
+            ),
 
             onSelectGroup: function(grid, assignmentgroupRecord) {
                 var url = Ext.String.format('../assignmentgroup/{0}',
@@ -47,7 +52,12 @@ Ext.define('devilry.examiner.AssignmentView', {
 
 
         Ext.apply(this, {
-            items: [this._todolist]
+            items: [{
+                xtype: 'panel',
+                title: 'To-do list',
+                frame: false,
+                items: [this._todolist]
+            }]
                 //xtype: 'panel',
                 //title: 'Overview',
                 //margin: {
@@ -117,16 +127,10 @@ Ext.define('devilry.examiner.AssignmentView', {
             listeners: {
                 scope: this,
                 close: function() {
-                    if(button) {
-                        button.toggle(false);
-                    }
                     this.loadTodoList();
                 }
             }
         });
         studentswindow.show();
-        if(button) {
-            studentswindow.alignTo(button, 'br', [-studentswindow.width, 0]);
-        }
     }
 });
