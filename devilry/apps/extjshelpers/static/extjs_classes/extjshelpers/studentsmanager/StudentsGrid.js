@@ -130,31 +130,39 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
             columns: [{
                 text: '', dataIndex: 'id', width: 100,
+                menuDisabled: true,
                 renderer: this.formatInfoCol
             }, {
                 text: 'Students', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
                 text: 'Deliveries', dataIndex: 'id', flex: 2,
+                menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
+                menuDisabled: true,
                 columns: [{
                     text: 'Points',
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
+                    menuDisabled: true,
                     width: 70
                 }, {
                     text: 'Grade',
                     dataIndex: 'feedback__grade',
                     width: 150,
+                    menuDisabled: true,
                     renderer: this.formatGradeCol
                 }]
             }, {
                 text: 'Examiners', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatExaminersCol
             }, {
-                text: 'Group name', dataIndex: 'name', flex: 3
+                text: 'Group name', dataIndex: 'name', flex: 3,
+                menuDisabled: true
             }]
         });
         this.callParent(arguments);
