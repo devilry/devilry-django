@@ -409,6 +409,7 @@ a.warning-button {
 
 section.helpsection {
   background-color: #fff;
+  min-height: 128px;
   background-image: url(icons/128x128/helpfade-rightdown.png);
   background-repeat: no-repeat;
   background-position: right top;

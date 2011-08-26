@@ -501,6 +501,7 @@ section.helpsection {
     @include commonSectionElements();
 
     background-color: #fff;
+    min-height: 128px; // Make sure background icon is not clipped
     background-image: url(icons/128x128/helpfade-rightdown.png);
     background-repeat: no-repeat;
     background-position: right top;
