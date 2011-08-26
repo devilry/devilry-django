@@ -44,6 +44,7 @@ docs/restfulapi/
 */bin/buildout
 */bin/django_*.py
 */bin/django_*.py.wsgi
+*/bin/seleniumrc
 */bin/python
 */develop-eggs
 */dist
