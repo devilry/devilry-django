@@ -249,7 +249,7 @@ header {
   border-radius: 20px; }
 
 .multisearchresults .searchresults {
-  margin: 20px; }
+  margin: 0; }
   .multisearchresults .searchresults .searchresultitem {
     padding: 4px;
     border: 4px solid transparent;
@@ -260,7 +260,7 @@ header {
     background-color: #f8f8f8; }
 
 .multisearchresults-floating {
-  width: 900px; }
+  width: 500px; }
 
 .searchwidget-help {
   padding: 4px 15px 15px 15px !important;
@@ -270,30 +270,42 @@ header {
 .dashboard-buttonbar {
   width: 930px; }
 
-section.popuplistitem h1, section.popuplistitem h2, section.popuplistitem h3, section.popuplistitem h4 {
-  margin: 0; }
-section.popuplistitem h1 {
-  font-size: 1.2em; }
-section.popuplistitem h2 {
-  font-size: 1.1em; }
-section.popuplistitem h3 {
-  font-size: 1.0em; }
-section.popuplistitem table {
-  width: 100%; }
-  section.popuplistitem table td.rightaligned {
-    text-align: right; }
-    section.popuplistitem table td.rightaligned h1, section.popuplistitem table td.rightaligned h2, section.popuplistitem table td.rightaligned h3, section.popuplistitem table td.rightaligned h4 {
-      color: #888; }
-section.popuplistitem strong {
-  font-weight: bold; }
-section.popuplistitem ul li {
-  display: inline; }
-  section.popuplistitem ul li:after {
-    content: ", "; }
-  section.popuplistitem ul li:last-child:after {
-    content: ""; }
-section.popuplistitem ul.useridlist li {
-  font-size: 1.2em; }
+section.popuplistitem {
+  line-height: 1.6em; }
+  section.popuplistitem h1, section.popuplistitem h2, section.popuplistitem h3, section.popuplistitem h4 {
+    margin: 0; }
+  section.popuplistitem h1 {
+    font-size: 1.2em; }
+  section.popuplistitem h2 {
+    font-size: 1.1em; }
+  section.popuplistitem h3 {
+    font-size: 1.0em; }
+  section.popuplistitem table {
+    width: 100%; }
+    section.popuplistitem table td.rightaligned {
+      text-align: right; }
+      section.popuplistitem table td.rightaligned h1, section.popuplistitem table td.rightaligned h2, section.popuplistitem table td.rightaligned h3, section.popuplistitem table td.rightaligned h4 {
+        color: #888; }
+  section.popuplistitem strong {
+    font-weight: bold; }
+  section.popuplistitem ul li {
+    display: inline; }
+    section.popuplistitem ul li:after {
+      content: ", "; }
+    section.popuplistitem ul li:last-child:after {
+      content: ""; }
+  section.popuplistitem p.path {
+    font-size: 0.8em;
+    color: #666666;
+    font-weight: bold; }
+  section.popuplistitem section.dl_valueimportant > section {
+    font-weight: bold; }
+    section.popuplistitem section.dl_valueimportant > section h1 {
+      display: inline;
+      font-size: 0.8em;
+      font-weight: normal; }
+      section.popuplistitem section.dl_valueimportant > section h1:after {
+        content: ": "; }
 
 /**
  *
@@ -441,7 +453,7 @@ section.helpsection {
  */
 .unimportant {
   font-size: 1.0em;
-  color: #444; }
+  color: #666666; }
 
 .important {
   font-size: 1.1em;

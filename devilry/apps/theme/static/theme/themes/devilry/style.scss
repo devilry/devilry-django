@@ -13,6 +13,7 @@ $warningcolor_fg: #FFEEE5;
 $errorcolor_bg: #B00;
 $errorcolor_hoverbg: #F00;
 $errorcolor_fg: #FFF0F0;
+$unimportant_fontcolor: #666;
 
 
 $studentcolor_bg: $goodcolor_bg;
@@ -308,7 +309,7 @@ header {
 
 .multisearchresults {
     .searchresults {
-        margin: 20px;
+        margin: 0;
         .searchresultitem {
             padding: 4px;
             border: 4px solid transparent;
@@ -325,8 +326,8 @@ header {
     }
 }
 .multisearchresults-floating {
-    width: ($mainwidth - 30px);
-    //width: 500px;
+    //width: ($mainwidth - 30px);
+    width: 500px;
 }
 .searchwidget-help {
     padding: 4px 15px 15px 15px !important;
@@ -366,9 +367,32 @@ section.popuplistitem {
     ul {
         @include inlineList();
     }
-    ul.useridlist {
-        li {
-            font-size: 1.2em;
+    //ul.useridlist {
+        //li {
+            //font-size: 1.2em;
+        //}
+    //}
+
+    line-height: 1.6em;
+
+    p.path {
+        font-size: 0.8em;
+        color: $unimportant_fontcolor;
+        font-weight: bold;
+    }
+
+    section.dl_valueimportant {
+        >section {
+            font-weight: bold;
+
+            h1 {
+                display: inline;
+                &:after {
+                    content: ": ";
+                }
+                font-size: 0.8em;
+                font-weight: normal;
+            }
         }
     }
 }
@@ -528,7 +552,7 @@ section.helpsection {
 
 .unimportant {
     font-size: 1.0em;
-    color: #444;
+    color: $unimportant_fontcolor;
 }
 .important {
     font-size: 1.1em;
