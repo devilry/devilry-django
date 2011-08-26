@@ -198,7 +198,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         var deliveriesWindow = Ext.create('Ext.window.Window', {
             title: 'Deliveries by this group',
             height: 500,
-            width: 700,
+            width: 750,
             modal: true,
             layout: 'fit',
             closeAction: 'hide',
