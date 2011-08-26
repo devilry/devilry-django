@@ -25,7 +25,7 @@
         this.add({
             xtype: 'form',
             border: false,
-            flex: 3,
+            flex: 7,
             items: [this.checkbox, {
                 // This button opens a new window. Just to show how to load classes in a grade editor.
                 xtype: 'button',
@@ -48,7 +48,7 @@
         });
         this.add({
             xtype: 'box',
-            flex: 1,
+            flex: 3,
             html: '<section class="helpsection">This is the help for this draft editor.</section>'
         });
     },

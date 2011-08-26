@@ -6,6 +6,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     height: 600,
     layout: 'fit',
     modal: true,
+    maximizable: true,
     requires: [
         'devilry.extjshelpers.NotificationManager'
     ],
