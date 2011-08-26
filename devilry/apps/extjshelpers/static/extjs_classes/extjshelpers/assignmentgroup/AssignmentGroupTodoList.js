@@ -1,8 +1,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentgrouptodolist',
-    //cls: 'widget-assignmentgrouptodolist selectable-grid',
-    //hideHeaders: true, // Hide column header
+    cls: 'widget-assignmentgrouptodolist selectable-grid',
     requires: [
         'devilry.extjshelpers.formfields.StoreSearchField'
     ],
@@ -69,9 +68,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     initComponent: function() {
         var me = this;
-        console.log(this.height);
-        console.log(this.pageSize);
-
         this.tbarItems = [{
             xtype: 'storesearchfield',
             emptyText: 'Search...',
@@ -95,10 +91,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 store: this.store,
                 frame: false,
                 border: false,
+                sortableColumns: false,
                 columns: [{
                     header: 'Students',
                     dataIndex: 'id',
                     flex: 2,
+                    menuDisabled: true,
                     renderer: function(value, metaData, grouprecord) {
                         //console.log(grouprecord.data);
                         var data = {};
@@ -109,9 +107,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                         return me.studentsColTpl.apply(data);
                     }
                 }, {
-                    text: 'Group name', dataIndex: 'name', flex: 1
+                    text: 'Group name', dataIndex: 'name', flex: 1, menuDisabled: true
                 }, {
-                    text: 'Deliveries', dataIndex: 'id', width: 70,
+                    text: 'Deliveries', dataIndex: 'id', width: 70, menuDisabled: true,
                     renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
                 }],
 

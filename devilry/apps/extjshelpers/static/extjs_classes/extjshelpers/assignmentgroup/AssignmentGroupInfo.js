@@ -107,14 +107,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     onTodo: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'To-do list (Open groups on this assignment)',
-            height: 350,
+            height: 370,
             width: 750,
             modal: true,
             layout: 'fit',
             items: {
                 xtype: 'assignmentgrouptodolist',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                store: this.assignmentgroupstore
+                store: this.assignmentgroupstore,
+                toolbarExtra: ['->', {
+                    xtype: 'button',
+                    scale: 'large',
+                    text: 'Go to assignment',
+                    listeners: {
+                        scope: this,
+                        click: this.onGoToAssignmentsView
+                    }
+                }],
+
+                helpTpl: Ext.create('Ext.XTemplate',
+                    '<section class="helpsection">',
+                    '   {todohelptext}',
+                    '   <p>Choose <span class="menuref">Go to assignment</span> to show the assignment where you have access to all groups, and information about the assignment.</p>',
+                    '</section>'
+                ),
             },
             listeners: {
                 scope: this,
@@ -125,6 +141,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         });
         groupsWindow.show();
         groupsWindow.alignTo(button, 'bl', [0, 0]);
+    },
+
+    /**
+     * @private
+     */
+    onGoToAssignmentsView: function() {
+        var url = Ext.String.format('../assignment/{0}',
+            this.assignmentgroup_recordcontainer.record.data.parentnode
+        );
+        window.location.href = url;
     },
 
     /**
