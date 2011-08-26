@@ -2,7 +2,7 @@
     padding: 20,
     border: false,
     frame: false,
-    xtype: 'form',
+    xtype: 'panel',
     layout: {
         type: 'hbox',
         align: 'stretch'
@@ -23,7 +23,8 @@
 
         Ext.require('devilry.asminimalaspossible_gradeeditor.DummyWindow');
         this.add({
-            xtype: 'container',
+            xtype: 'form',
+            border: false,
             flex: 3,
             items: [this.checkbox, {
                 // This button opens a new window. Just to show how to load classes in a grade editor.
@@ -78,7 +79,7 @@
      * Called when the 'save draft' button is clicked.
      */
     onSaveDraft: function() {
-        if (this.getForm().isValid()) {
+        if (this.down('form').getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraft(draft, this.onFailure);
         }
@@ -88,7 +89,7 @@
      * Called when the publish button is clicked.
      */
     onPublish: function() {
-        if (this.getForm().isValid()) {
+        if (this.down('form').getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
         }
