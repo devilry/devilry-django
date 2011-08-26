@@ -3,11 +3,10 @@
     border: false,
     frame: false,
     xtype: 'form',
-    //items: [{
-        //xtype: 'checkboxfield',
-        //boxLabel: 'Approved',
-        //id: 'approved-checkbox'
-    //}],
+    layout: {
+        type: 'hbox',
+        align: 'stretch'
+    },
 
     /**
      * Called by the grade-editor main window just before calling
@@ -17,33 +16,39 @@
      *      current assignment.
      */
     initializeEditor: function(config) {
-        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
-
         this.editorConfig = Ext.JSON.decode(config.config);
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: this.editorConfig.fieldlabel
         });
-        this.add(this.checkbox);
 
-        // This opens a new window. Just to show how to load classes in a grade editor.
         Ext.require('devilry.asminimalaspossible_gradeeditor.DummyWindow');
         this.add({
-            xtype: 'button',
-            text: 'click me',
-            listeners: {
-                scope: this,
-                click: function() {
-                    var win = Ext.create('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
-                        message: 'Just to show how to do loading of classes from draft editor!',
-                        buttonLabel: 'Hello world!',
-                        listeners: {
-                            scope: this,
-                            gotSomeValue: this.onGotSomeValue
-                        }
-                    });
-                    win.show();
+            xtype: 'container',
+            flex: 3,
+            items: [this.checkbox, {
+                // This button opens a new window. Just to show how to load classes in a grade editor.
+                xtype: 'button',
+                text: 'click me',
+                listeners: {
+                    scope: this,
+                    click: function() {
+                        var win = Ext.create('devilry.asminimalaspossible_gradeeditor.DummyWindow', {
+                            message: 'Just to show how to do loading of classes from draft editor!',
+                            buttonLabel: 'Hello world!',
+                            listeners: {
+                                scope: this,
+                                gotSomeValue: this.onGotSomeValue
+                            }
+                        });
+                        win.show();
+                    }
                 }
-            }
+            }]
+        });
+        this.add({
+            xtype: 'box',
+            flex: 1,
+            html: '<section class="helpsection">This is the help for this draft editor.</section>'
         });
     },
 
