@@ -1,7 +1,8 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinesonsinglegrouplisting',
-    cls: 'widget-deadlinesonsinglegrouplisting',
+    cls: 'widget-deadlinesonsinglegrouplisting selectable-grid',
+    sortableColumns: false,
     requires: [
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
@@ -36,14 +37,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     },
 
     initComponent: function() {
-        if(this.enableDeadlineCreation) {
-            this.addCreateNewDeadlineButton();
-        }
         this.store = this.createDeadlineStore();
         Ext.apply(this, {
             columns: [{
                 header: 'Deadline',
                 dataIndex: 'deadline',
+                menuDisabled: true,
                 width: 150,
                 renderer: function(value, metaData, deadlinerecord) {
                     return this.rowTpl.apply(deadlinerecord.data);
@@ -51,19 +50,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             }, {
                 header: 'Text',
                 dataIndex: 'text',
+                menuDisabled: true,
                 flex: 2
             }, {
                 header: 'Deliveries',
+                menuDisabled: true,
                 dataIndex: 'number_of_deliveries',
                 width: 85
-            }],
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: false
             }]
         });
+
+        this.dockedItems = [{
+            xtype: 'pagingtoolbar',
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: false
+        }];
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
+        }
 
         this.callParent(arguments);
         if(this.assignmentgroup_recordcontainer.record) {
@@ -121,10 +126,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
      * @private
      * */
     addCreateNewDeadlineButton: function() {
-        Ext.apply(this, {
-            tbar: ['->', {
+        Ext.Array.insert(this.dockedItems, 0, [{
+            xtype: 'toolbar',
+            ui: 'footer',
+            dock: 'bottom',
+            items: ['->', {
                 xtype: 'button',
-                text: 'Create new deadline',
+                text: 'Create deadline',
                 iconCls: 'icon-add-32',
                 scale: 'large',
                 listeners: {
@@ -132,7 +140,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
                     click: this.onCreateNewDeadline
                 }
             }]
-        });
+        }]);
     },
 
     /**
