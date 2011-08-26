@@ -149,7 +149,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.setBody({
             xtype: 'component',
             cls: 'no-feedback-editable',
-            html: '<p>No feedback</p><p class="unimportant">Click to create feedback</p>',
+            html: '<p class="no-feedback-message">No feedback</p><p class="click-create-create-feedback-message">Click to create feedback</p>',
             listeners: {
                 render: function() {
                     this.getEl().addListener('mouseup', me.loadGradeEditor, me);

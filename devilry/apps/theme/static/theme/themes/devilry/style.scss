@@ -624,13 +624,18 @@ table.verticalinfotable {
                 padding: 40px;
                 text-align: center;
                 font-size: 2.0em;
+                .no-feedback-message {
+                    font-size: 1.5em;
+                }
             }
             .no-feedback-editable {
                 cursor: pointer;
                 border: 4px solid transparent;
                 &:hover {
-                    border: 4px solid $goodcolor_bg;
-                    background-color: $goodcolor_fg;
+                    font-weight: bold;
+                    background-color: $goodcolor_bg;
+                    color: $goodcolor_fg;
+                    border-radius: 20px;
                 }
             }
 
