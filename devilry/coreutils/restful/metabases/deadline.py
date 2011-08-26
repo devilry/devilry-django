@@ -11,5 +11,11 @@ class DeadlineExtjsModelMeta:
                     '    <ul class="useridlist"><tpl for="assignment_group__candidates__identifier"><li>{.}</li></tpl></ul>'
                     '    <h1>{deadline:date}</h1>'
                     '    <p><tpl if="assignment_group__name"> &ndash; {assignment_group__name}</tpl><p>'
+                    '    <section class="dl_valueimportant">'
+                    '        <section>'
+                    '            <h1>Deliveries</h1>'
+                    '            {number_of_deliveries}'
+                    '        </section>'
+                    '    </section>'
                    '</section>')
     combobox_displayfield = 'id'

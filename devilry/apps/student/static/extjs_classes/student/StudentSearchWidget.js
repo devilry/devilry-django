@@ -51,7 +51,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Deadlines',
+                title: 'Open deadlines',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.deadline,
                 alwaysAppliedFilters: [{
@@ -68,7 +68,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Assignment groups',
+                title: 'My groups',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
