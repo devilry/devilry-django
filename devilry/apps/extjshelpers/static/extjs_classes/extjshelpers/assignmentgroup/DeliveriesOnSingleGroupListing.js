@@ -16,6 +16,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
         '</tpl>'
     ),
 
+    helptext: '<section class="helpsection">' +
+        '   <p>Select a delivery from the list of all deliveries made by this group. The deliveries are grouped by deadline.</p>' +
+        '</section>',
+
     config: {
         /**
          * @cfg
@@ -58,7 +62,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
                 scope: this,
                 itemmouseup: this.onSelectDelivery
             },
-            dockedItems: [this.pagingtoolbar]
+            dockedItems: [this.pagingtoolbar, {
+                xtype: 'panel',
+                html: this.helptext,
+                dock: 'right',
+                width: 300
+            }]
         });
 
         this.store.addListener('load', this.onLoadStore, this);
