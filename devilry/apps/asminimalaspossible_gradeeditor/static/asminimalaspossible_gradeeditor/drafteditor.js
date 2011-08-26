@@ -109,8 +109,12 @@
      * @private
      * Used by onSaveDraft and onPublish to handle save-failures.
      */
-    onFailure: function() {
-        console.error('Failed!');
+    onFailure: function(records, operation) {
+        if(operation.error.status === 0) {
+            Ext.MessageBox.alert('Server error', 'Could not contact the server. Please try again.');
+        } else {
+            Ext.MessageBox.alert('Failed to save!', 'Please try again');
+        }
     },
 
     /**

@@ -233,9 +233,11 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
+            callback: function() {
+                me.draftButton.getEl().unmask();
+            },
             failure: onFailure,
             success: function(response) {
-                me.draftButton.getEl().unmask();
                 devilry.extjshelpers.NotificationManager.show({
                     title: 'Draft saved',
                     message: 'The feedback draft has been saved.'
@@ -255,6 +257,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
+            callback: function() {
+                me.publishButton.getEl().unmask();
+            },
             success: function(response) {
                 me.fireEvent('publishNewFeedback');
                 me.exit();
