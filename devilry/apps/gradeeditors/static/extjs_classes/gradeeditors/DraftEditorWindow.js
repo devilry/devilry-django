@@ -68,30 +68,32 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     },
 
     initComponentExtra: function() {
+        this.draftButton = Ext.widget('button', {
+            text: 'Save draft',
+            scale: 'large',
+            iconCls: 'icon-save-32',
+            listeners: {
+                scope: this,
+                click: this.onSaveDraft,
+            }
+        });
+
+        this.publishButton = Ext.widget('button', {
+            text: 'Publish',
+            scale: 'large',
+            iconCls: 'icon-add-32',
+            listeners: {
+                scope: this,
+                click: this.onPublish
+            }
+        });
+
         Ext.apply(this, {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
                 ui: 'footer',
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Save draft',
-                    scale: 'large',
-                    iconCls: 'icon-save-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onSaveDraft,
-                    }
-                }, {
-                    xtype: 'button',
-                    text: 'Publish',
-                    scale: 'large',
-                    iconCls: 'icon-add-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onPublish
-                    }
-                }]
+                items: ['->', this.draftButton, this.publishButton]
             }]
         });
     },
@@ -187,6 +189,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * Call the onPublish() method in the draft editor.
      */
     onPublish: function() {
+        this.publishButton.getEl().mask('');
         this.getDraftEditor().onPublish();
     },
 
@@ -195,6 +198,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * Call the onSaveDraft() method in the draft editor.
      */
     onSaveDraft: function() {
+        this.draftButton.getEl().mask('');
         this.getDraftEditor().onSaveDraft();
     },
 
@@ -226,10 +230,12 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
             failure: onFailure,
             success: function(response) {
+                me.draftButton.getEl().unmask();
                 devilry.extjshelpers.NotificationManager.show({
                     title: 'Draft saved',
                     message: 'The feedback draft has been saved.'
