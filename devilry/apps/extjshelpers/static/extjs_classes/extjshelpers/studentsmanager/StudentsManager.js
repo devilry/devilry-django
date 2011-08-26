@@ -74,11 +74,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 align: 'stretch'
             },
             items: [{
-                xtype: 'searchfield',
-                emptyText: 'Search...',
-                margin: 10,
-                flex: 0,
-            }, {
                 xtype: 'panel',
                 flex: 1,
                 layout: 'fit',
@@ -87,7 +82,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 items: [{
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
-                    assignmentid: this.assignmentid
+                    assignmentid: this.assignmentid,
+                    dockedItems: [{
+                        xtype: 'toolbar',
+                        dock: 'top',
+                        items: [{
+                            xtype: 'searchfield',
+                            width: 300,
+                            emptyText: 'Search...'
+                        }]
+                    }]
                 }],
 
                 dockedItems: [{

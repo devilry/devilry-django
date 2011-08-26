@@ -5,7 +5,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     sortableColumns: false,
 
     config: {
-        assignmentid: undefined
+        assignmentid: undefined,
+        dockedItems: []
     },
 
     mixins: {
@@ -92,8 +93,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
@@ -110,13 +111,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         });
 
         Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: true
-            }],
-
             //listeners: {
                 //scope: this,
                 //itemclick: function(grid, record) {
@@ -165,6 +159,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true
             }]
         });
+
+        this.dockedItems.push({
+            xtype: 'pagingtoolbar',
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: true
+        });
+
         this.callParent(arguments);
         this.store.load();
     },
