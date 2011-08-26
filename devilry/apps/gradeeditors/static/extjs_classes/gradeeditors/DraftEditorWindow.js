@@ -6,6 +6,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     height: 600,
     layout: 'fit',
     modal: true,
+    requires: [
+        'devilry.extjshelpers.NotificationManager'
+    ],
 
     config: {
         /**
@@ -225,7 +228,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     saveDraft: function(draftstring, onFailure) {
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
-            failure: onFailure
+            failure: onFailure,
+            success: function(response) {
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Draft saved',
+                    message: 'The feedback draft has been saved.'
+                });
+            },
         });
     },
 
@@ -243,6 +252,10 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             success: function(response) {
                 me.fireEvent('publishNewFeedback');
                 me.exit();
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Published',
+                    message: 'The feedback has been saved and published.'
+                });
             },
             failure: onFailure
         });
