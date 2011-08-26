@@ -37,7 +37,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     initComponent: function() {
         var tbarItems = [{
             xtype: 'button',
-            menu: [], // To get an arrow
             id: 'tooltip-deliveries',
             text: 'Deadlines',
             scale: 'large',
@@ -51,7 +50,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         if(this.canExamine) {
             var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
                 xtype: 'button',
-                menu: [], // To get an arrow
                 id: 'tooltip-uncorrected-groups',
                 text: 'To-do',
                 scale: 'large',
@@ -65,7 +63,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
 
             this.closeopenbtn = Ext.ComponentManager.create({
                 xtype: 'button',
-                menu: [], // To get an arrow
                 text: '',
                 scale: 'large',
                 enableToggle: true,
@@ -111,7 +108,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'To-do list (Open groups on this assignment)',
             height: 340,
-            width: 400,
+            width: 500,
             modal: true,
             layout: 'fit',
             items: {

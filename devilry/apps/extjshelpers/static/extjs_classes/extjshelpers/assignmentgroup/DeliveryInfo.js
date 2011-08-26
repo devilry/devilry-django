@@ -150,7 +150,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             text: 'Browse files',
             id: 'tooltip-browse-files',
             scale: 'large',
-            menu: [], // To get an arrow
             enableToggle: true,
             listeners: {
                 scope: this,
@@ -163,7 +162,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
         this.toolbar.add({
             xtype: 'button',
-            menu: [], // To get an arrow
             id: 'tooltip-other-deliveries',
             text: 'Other deliveries',
             scale: 'large',
