@@ -26,6 +26,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.core',
                   'devilry.apps.theme',
                   'devilry.apps.extjshelpers',
+                  'devilry.apps.developertools',
 
                   'devilry.apps.approved_gradeeditor',
                   'devilry.apps.manual_gradeeditor',
