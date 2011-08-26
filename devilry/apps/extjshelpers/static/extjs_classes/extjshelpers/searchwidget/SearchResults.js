@@ -48,6 +48,9 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
         filterconfig: undefined,
 
+        itemtpldata: {
+            is_student: undefined
+        }
     },
 
     constructor: function(config) {
@@ -121,10 +124,14 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     addRecord: function(record, index) {
         var searchresultitem = Ext.clone(this.resultitemConfig);
+        var data = {};
+        Ext.apply(data, record.data);
+        Ext.apply(data, this.itemtpldata);
         Ext.apply(searchresultitem, {
             xtype: 'searchresultitem',
-            recorddata: record.data,
-            recordindex: index
+            recorddata: data,
+            recordindex: index,
+            itemtpldata: this.itemtpldata
         });
         this.add(searchresultitem);
     },
