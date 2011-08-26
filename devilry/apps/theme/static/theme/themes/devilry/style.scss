@@ -651,19 +651,6 @@ table.verticalinfotable {
     color: $warningcolor_bg;
 }
 
-td.selectable-gridcell {
-    border: none !important;
-    .x-grid-cell-inner {
-        padding: 8px 4px 8px 4px !important;
-        border: 4px solid transparent !important;
-        cursor: pointer;
-        &:hover {
-            border: 4px solid $goodcolor_bg !important;
-            background-color: $goodcolor_fg;
-        }
-    }
-}
-
 
 .selectable-grid {
     tr.x-grid-row {
