@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentgrouptodolist',
-    cls: 'widget-assignmentgrouptodolist selectable-grid',
+    cls: 'widget-assignmentgrouptodolist',
     requires: [
         'devilry.extjshelpers.formfields.StoreSearchField'
     ],
@@ -85,9 +85,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 type: 'hbox',
                 align: 'stretch'
             },
+            border: false,
             items: [{
                 flex: 6,
                 xtype: 'grid',
+                cls: 'selectable-grid',
                 store: this.store,
                 frame: false,
                 border: false,
@@ -127,6 +129,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
+                ui: 'footer',
                 items: this.tbarItems
             }, {
                 xtype: 'pagingtoolbar',

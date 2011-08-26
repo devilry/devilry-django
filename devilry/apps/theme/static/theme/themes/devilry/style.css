@@ -492,6 +492,9 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
+.widget-assignmentgrouptodolist {
+  background: #fff !important; }
+
 .widget-assignmentgroupoverview .widget-deliveryinfo > .x-panel-body {
   padding: 20px; }
 .widget-assignmentgroupoverview .widget-assignmentgroupdetails {

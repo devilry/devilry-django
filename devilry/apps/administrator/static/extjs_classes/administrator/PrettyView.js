@@ -72,7 +72,6 @@ Ext.define('devilry.administrator.PrettyView', {
         this.setadminsbutton = Ext.create('Ext.button.Button', {
             text: 'Manage administrators',
             scale: 'large',
-            menu: [],
             enableToggle: true,
             listeners: {
                 scope: this,
@@ -85,7 +84,6 @@ Ext.define('devilry.administrator.PrettyView', {
             text: 'Delete',
             scale: 'large',
             enableToggle: true,
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -95,7 +93,6 @@ Ext.define('devilry.administrator.PrettyView', {
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
             enableToggle: true,
-            menu: [],
             scale: 'large',
             listeners: {
                 scope: this,
