@@ -103,11 +103,22 @@
      * Used by onSaveDraft and onPublish to handle save-failures.
      */
     onFailure: function(records, operation) {
+        var title = 'Failed to save!';
+        var msg = 'Please try again';
         if(operation.error.status === 0) {
-            Ext.MessageBox.alert('Server error', 'Could not contact the server. Please try again.');
-        } else {
-            Ext.MessageBox.alert('Failed to save!', 'Please try again');
+            title = 'Server error';
+            msg = 'Could not contact the server. Please try again.';
+        } else if(operation.error.status === 400) {
+            title = 'Failed to save!';
+            msg = operation.responseData.items.errormessages[0];
         }
+        Ext.MessageBox.show({
+            title: title,
+            msg: msg,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.WARNING,
+            closable: false
+        });
     },
 
     /**
