@@ -28,6 +28,8 @@ class AsMinimalAsPossible(JsonRegistryItem):
         is_approved = cls.decode_draftstring(draftstring)
         if not isinstance(is_approved, bool):
             raise DraftValidationError('The draft string must contain a single boolean value.')
+        ## Uncomment to see how validation errors work:
+        #raise DraftValidationError('Some error occurred.')
 
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
