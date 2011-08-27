@@ -4,8 +4,10 @@
     frame: false,
     xtype: 'form',
 
-    help: '<h1>TODO</h1>' +
-        '<p>Add some help here</p>',
+    help: '<h3>Is the assignment approved:</h3>' +
+        '<p>Mark the checkbox if the assignment is approved</p>' + 
+        '<h3>Enter feedback:</h3>'+
+        '<p>Here you enter a feedback to the student. What was good, what was bad etc..</p>',
     //helpwidth: 500,
     //helpheight: 300,
 

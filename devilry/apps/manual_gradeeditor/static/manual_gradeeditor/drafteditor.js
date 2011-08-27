@@ -3,6 +3,16 @@
     border: false,
     frame: false,
     xtype: 'form',
+    
+    help: '<h3>Is the assignment approved:</h3>' +
+        '<p>Mark the checkbox if the assignment is approved</p>' + 
+        '<h3>Enter points:</h3>'+
+        '<p>Here you have to select or enter the number of points earned in the assignment.</p>'+
+        '<h3>Enter grade:</h3>'+
+        '<p>This is where you enter the grade earned in the assignment.</p>'+
+        '<h3>Enter feedback:</h3>'+
+        '<p>Here you enter a feedback to the student. What was good, what was bad etc..</p>',
+
     //items: [{
         //xtype: 'checkboxfield',
         //boxLabel: 'Approved',
