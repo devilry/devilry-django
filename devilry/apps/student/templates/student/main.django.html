@@ -87,6 +87,12 @@
                 renderer: function(value) {
                     return rowTpl.apply(value);
                 }
+            },{
+                text: '#Deliveries',
+                menuDisabled: true,
+                hideAble: false,
+                flex: 5,
+                dataIndex: 'number_of_deliveries'
             }],
             listeners: {
                 scope: this,
