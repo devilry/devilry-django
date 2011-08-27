@@ -70,27 +70,97 @@ if delay_middleware:
     ]
 
 
-terminal_logging = True
-if terminal_logging:
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
-        #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
-    ]
 
 
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'level':'DEBUG',
-                'class':'logging.StreamHandler'
-            }
+
+#
+# Logging
+#
+
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+    'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
+    #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
+]
+
+
+logdir = join(this_dir, 'log')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[%(levelname)s %(asctime)s %(module)s] %(message)s'
         },
-        'loggers': {
-            'devilry.projects.dev.logexceptionsmiddleware': {
-                'handlers': ['console'],
-                'level': 'DEBUG'
-            }
-        }
+        'simple': {
+            'format': '[%(levelname)s] %(message)s'
+        },
+    },
+
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'formatter': 'simple',
+            'class': 'logging.StreamHandler'
+        },
+        'allButExceptionTracebacks': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': join(logdir, 'all-but-exceptiontracebacks.devilry.log'),
+        },
+        'dbfile': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': join(logdir, 'db.devilry.log')
+        },
+        'dbdebugfile': { # Shows the SQL statements
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': join(logdir, 'debug.db.devilry.log')
+        },
+        'requestfile': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': join(logdir, 'request.devilry.log')
+        },
+        'exceptionTracebacksFile': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': join(logdir, 'exception.devilry.log')
+        },
+    },
+    'loggers': {
+        'devilry.utils.logexceptionsmiddleware': {
+            'handlers': ['exceptionTracebacksFile'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'django.request': {
+            'handlers': ['allButExceptionTracebacks',
+                         'requestfile'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'django.db.backends': {
+            'handlers': ['allButExceptionTracebacks',
+                         'dbfile',
+                         'dbdebugfile'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'devilry.utils.devilry_email': {
+            'handlers': ['allButExceptionTracebacks', 'console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
     }
+}
