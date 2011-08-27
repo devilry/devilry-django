@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from devilry.apps.core.models import StaticFeedback
-from devilry.utils.devilry_email import send_email, NoEmailAddressException, SMTPException
+from devilry.utils.devilry_email import send_email
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
