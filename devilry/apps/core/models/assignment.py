@@ -256,7 +256,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`Period.start_time` and ``Period.end_time``.
         """
         super(Assignment, self).clean(*args, **kwargs)
-        if self.publishing_time != None and self.parentnode != None:
+        if self.publishing_time != None and self.parentnode_id != None:
             if self.publishing_time < self.parentnode.start_time  or \
                     self.publishing_time > self.parentnode.end_time:
                 raise ValidationError(
