@@ -2,12 +2,26 @@
     padding: 20,
     border: false,
     frame: false,
-    xtype: 'panel',
+    xtype: 'form',
+    //items: [{
+        //xtype: 'checkboxfield',
+        //boxLabel: 'Approved',
+        //id: 'approved-checkbox'
+    //}],
+
     layout: {
-        type: 'hbox',
+        type: 'vbox',
         align: 'stretch'
     },
 
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
+    defaults: {
+        margins: '0 0 10 0'
+    },
     /**
      * Called by the grade-editor main window just before calling
      * setDraftstring() for the first time.
@@ -16,6 +30,7 @@
      *      current assignment.
      */
     initializeEditor: function() {
+
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: 'Is the assignment approved?',
             flex: 0
@@ -33,32 +48,10 @@
             fieldLabel: 'Enter feedback',
             flex: 1
         });
-
-        this.add({
-            xtype: 'form',
-            border: false,
-            flex: 7,
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-
-            fieldDefaults: {
-                labelAlign: 'top',
-                labelWidth: 100,
-                labelStyle: 'font-weight:bold'
-            },
-            defaults: {
-                margins: '0 0 10 0'
-            },
-
-            items: [this.checkbox, this.grade, this.points, this.textarea]
-        });
-        this.add({
-            xtype: 'box',
-            flex: 3,
-            html: '<section class="helpsection">TODO: Write help for this plugin</section>'
-        });
+        this.add(this.checkbox);
+        this.add(this.points);
+        this.add(this.grade);
+        this.add(this.textarea);
     },
 
     /**
@@ -90,7 +83,7 @@
      * Called when the 'save draft' button is clicked.
      */
     onSaveDraft: function() {
-        if (this.down('form').getForm().isValid()) {
+        if (this.getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraft(draft, this.onFailure);
         }
@@ -100,7 +93,7 @@
      * Called when the publish button is clicked.
      */
     onPublish: function() {
-        if (this.down('form').getForm().isValid()) {
+        if (this.getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
         }

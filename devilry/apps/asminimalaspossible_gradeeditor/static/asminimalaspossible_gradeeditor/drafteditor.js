@@ -72,7 +72,7 @@
      * Called when the 'save draft' button is clicked.
      */
     onSaveDraft: function() {
-        if (this.down('form').getForm().isValid()) {
+        if (this.getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraft(draft, this.onFailure);
         }
@@ -82,7 +82,7 @@
      * Called when the publish button is clicked.
      */
     onPublish: function() {
-        if (this.down('form').getForm().isValid()) {
+        if (this.getForm().isValid()) {
             var draft = this.createDraft();
             this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
         }
