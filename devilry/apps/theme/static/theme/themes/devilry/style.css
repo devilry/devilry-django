@@ -1019,7 +1019,6 @@ section.treeheading {
   padding: 1px 4px;
   white-space: nowrap; }
 
-<<<<<<< HEAD
 .group_is_corrected {
   border: 1px solid #88cc00;
   border-radius: 3px;
@@ -1037,13 +1036,12 @@ section.treeheading {
   font-weight: bold;
   padding: 1px 4px;
   white-space: nowrap; }
-=======
+
 .menuheader {
   font-weight: bold; }
 
 .menuheader:first-child {
   margin-top: 0; }
->>>>>>> 56d4307aaca846ce3a64de2ed94cad2bb0652bc2
 
 /**
  *

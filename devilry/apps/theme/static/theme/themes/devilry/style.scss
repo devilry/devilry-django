@@ -858,20 +858,19 @@ section.treeheading {
     @include warningInlineItem();
 }
 
-<<<<<<< HEAD
 .group_is_corrected {
     @include goodInlineItem();
 }
+
 .group_is_uncorrected {
     @include warningInlineItem();
-=======
+}
 
 .menuheader {
     font-weight:bold;
 }
 .menuheader:first-child {
     margin-top:0;
->>>>>>> 56d4307aaca846ce3a64de2ed94cad2bb0652bc2
 }
 
 
