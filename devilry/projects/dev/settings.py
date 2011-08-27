@@ -84,7 +84,7 @@ if delay_middleware:
 terminal_logging = True
 if terminal_logging:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        'devilry.projects.dev.logexceptionsmiddleware.TracebackLoggingMiddleware',
+        'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
         #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
     ]
 
