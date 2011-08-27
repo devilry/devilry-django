@@ -7,7 +7,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     layout: 'fit',
     modal: true,
     requires: [
-        'devilry.extjshelpers.NotificationManager'
+        'devilry.extjshelpers.NotificationManager',
+        'devilry.gradeeditors.FailureHandler'
     ],
 
     config: {
@@ -268,6 +269,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        console.log('pre onFailure');
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
@@ -292,6 +295,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraftAndPublish: function(draftstring, onFailure) {
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
