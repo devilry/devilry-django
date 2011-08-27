@@ -194,6 +194,17 @@ header {
       header > nav li.administrator-navitem a:hover {
         color: #ffeee5;
         background-color: #e64d00 !important; }
+    header > nav li.externallink-navitem a {
+      background-color: #222;
+      color: #fff;
+      border-radius: 6px 14px 0 0;
+      background-image: url(icons/16x16/external-link.png) !important;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      padding-left: 32px; }
+      header > nav li.externallink-navitem a:hover {
+        color: white;
+        background-color: #333333 !important; }
   header > nav.student {
     border-bottom: 10px solid #77b300; }
     header > nav.student li.student-navitem a {

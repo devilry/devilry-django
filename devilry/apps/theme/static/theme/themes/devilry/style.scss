@@ -221,6 +221,14 @@ header {
         li.administrator-navitem a {
             @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
         }
+        li.externallink-navitem a {
+            @include navitemlink(#444, #fff, #333);
+            border-radius: $radiussize_small $radiussize_big 0 0;
+            background-image: url(icons/16x16/external-link.png) !important;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            padding-left: 32px;
+        }
     }
 
     /* Color the bottom border of the header with the color of the current section. */
