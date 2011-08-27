@@ -1,8 +1,7 @@
 from datetime import datetime
-from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db.models import Count, Max
-from django.template.defaultfilters import filesizeformat
+import django.dispatch
 
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
@@ -14,8 +13,9 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.core.models import AssignmentGroup, Delivery
-from devilry.utils.devilry_email import send_email
 
+
+successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
 
 
 class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
@@ -108,44 +108,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     @classmethod
     def post_save(cls, user, delivery):
         if delivery.successful:
-            deadline = delivery.deadline
-            assignment_group = deadline.assignment_group
-            assignment = assignment_group.parentnode
-            period = assignment.parentnode
-            subject = period.parentnode
-            user_list = [candidate.student \
-                    for candidate in assignment_group.candidates.all()]
-            urlpath = reverse('student-show-assignmentgroup', kwargs=dict(assignmentgroupid=assignment_group.id))
-            url = '{domain}{prefix}{path}?deliveryid={deliveryid}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                                                          prefix = settings.DEVILRY_MAIN_PAGE,
-                                                                          path = urlpath,
-                                                                          deliveryid = delivery.id)
-
-            files = ''
-            for fm in delivery.filemetas.all():
-                files += ' - {0} ({1})\n'.format(fm.filename, filesizeformat(fm.size))
-
-            email_subject = 'Receipt for delivery on {0}'.format(assignment.get_path())
-            email_message = ('This is a receipt for your delivery.\n\n'
-                             'Subject: {subject}\n'
-                             'Period: {period}\n'
-                             'Assignment: {assignment}\n'
-                             'Deadline: {deadline}\n'
-                             'Delivery number: {deliverynumer}\n'
-                             'Time of delivery: {time_of_delivery}\n'
-                             'Files:\n{files}\n\n'
-                             'The delivery can be viewed at:\n'
-                             '{url}'.format(subject = subject.long_name,
-                                            period = period.long_name,
-                                            assignment = assignment.long_name,
-                                            deadline = deadline.deadline.isoformat(),
-                                            deliverynumer = delivery.number,
-                                            time_of_delivery = delivery.time_of_delivery.isoformat(),
-                                            files = files,
-                                            url = url))
-
-            send_email(user_list, email_subject, email_message)
-
+            successful_delivery_signal.send_robust(sender=delivery, delivery=delivery)
 
 
 @simplified_modelapi
