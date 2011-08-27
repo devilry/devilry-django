@@ -8,7 +8,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     ],
 
     suggested_windowsize: {
-        width: 600,
+        width: 750,
         height: 450
     },
 

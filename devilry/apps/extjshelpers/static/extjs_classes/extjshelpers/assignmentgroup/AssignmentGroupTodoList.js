@@ -1,9 +1,14 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
-    extend: 'Ext.grid.Panel',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentgrouptodolist',
-    cls: 'widget-assignmentgrouptodolist selectable-grid',
-    //hideHeaders: true, // Hide column header
-    rowTpl: Ext.create('Ext.XTemplate',
+    cls: 'widget-assignmentgrouptodolist',
+    requires: [
+        'devilry.extjshelpers.formfields.StoreSearchField'
+    ],
+    //frame: false,
+    //border: false,
+
+    studentsColTpl: Ext.create('Ext.XTemplate',
         '<section class="popuplistitem">',
         '    <tpl if="name">',
         '        {name}: ',
@@ -19,10 +24,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '</section>'
     ),
 
-    requires: [
-        'devilry.extjshelpers.formfields.StoreSearchField'
-    ],
-
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
         '<span class="deliveriescol">',
         '    <tpl if="number_of_deliveries &gt; 0">',
@@ -33,6 +34,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '   </tpl>',
         '</span>'
     ),
+
+    todohelptext: '<p>This is your to-do list on this assignment. It shows all <em>open</em> groups. An <em>open</em> group is a group that is still waiting for deliveries or feedback.</p>',
 
     config: {
         /**
@@ -50,17 +53,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         assignmentgroup_recordcontainer: undefined,
 
         pageSize: 7,
-        tbarExtra: undefined
+        toolbarExtra: undefined,
+
+        helpTpl: Ext.create('Ext.XTemplate',
+            '<section class="helpsection">{todohelptext}</section>'
+        )
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
+
 
     initComponent: function() {
         var me = this;
-
         this.tbarItems = [{
             xtype: 'storesearchfield',
             emptyText: 'Search...',
@@ -69,43 +76,64 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             width: 300,
             autoLoadStore: false
         }];
-        if(this.tbarExtra) {
-            Ext.Array.insert(this.tbarItems, 1, this.tbarExtra);
+        if(this.toolbarExtra) {
+            Ext.Array.insert(this.tbarItems, 1, this.toolbarExtra);
         }
 
         Ext.apply(this, {
-            columns: [{
-                header: 'Students',
-                dataIndex: 'id',
-                flex: 2,
-                renderer: function(value, metaData, grouprecord) {
-                    //console.log(grouprecord.data);
-                    var data = {};
-                    if(me.assignmentgroup_recordcontainer) {
-                        data.current_assignment_group_id = me.assignmentgroup_recordcontainer.record.data.id;
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            border: false,
+            items: [{
+                flex: 6,
+                xtype: 'grid',
+                cls: 'selectable-grid',
+                store: this.store,
+                frame: false,
+                border: false,
+                sortableColumns: false,
+                columns: [{
+                    header: 'Students',
+                    dataIndex: 'id',
+                    flex: 2,
+                    menuDisabled: true,
+                    renderer: function(value, metaData, grouprecord) {
+                        //console.log(grouprecord.data);
+                        var data = {};
+                        if(me.assignmentgroup_recordcontainer) {
+                            data.current_assignment_group_id = me.assignmentgroup_recordcontainer.record.data.id;
+                        }
+                        Ext.apply(data, grouprecord.data);
+                        return me.studentsColTpl.apply(data);
                     }
-                    Ext.apply(data, grouprecord.data);
-                    return this.rowTpl.apply(data);
+                }, {
+                    text: 'Group name', dataIndex: 'name', flex: 1, menuDisabled: true
+                }, {
+                    text: 'Deliveries', dataIndex: 'id', width: 70, menuDisabled: true,
+                    renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
+                }],
+
+                listeners: {
+                    scope: this,
+                    itemmouseup: this.onSelectGroup
                 }
             }, {
-                text: 'Group name', dataIndex: 'name', flex: 1
-            }, {
-                text: 'Deliveries', dataIndex: 'id', width: 70,
-                renderer: function(v, p, record) { return this.deliveriesColTpl.apply(record.data); }
+                xtype: 'box',
+                width: 300,
+                flex: 4,
+                html: this.helpTpl.apply({todohelptext: this.todohelptext})
             }],
-
-            listeners: {
-                scope: this,
-                itemmouseup: this.onSelectGroup
-            },
 
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
+                ui: 'footer',
                 items: this.tbarItems
             }, {
                 xtype: 'pagingtoolbar',
-                store: this.store,
+                store: me.store,
                 dock: 'bottom',
                 displayInfo: true
             }]

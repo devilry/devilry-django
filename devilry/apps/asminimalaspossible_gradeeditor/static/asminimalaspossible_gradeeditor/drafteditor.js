@@ -3,11 +3,12 @@
     border: false,
     frame: false,
     xtype: 'form',
-    //items: [{
-        //xtype: 'checkboxfield',
-        //boxLabel: 'Approved',
-        //id: 'approved-checkbox'
-    //}],
+
+    // These 3 settings are optional.
+    help: '<h1>Some useful help here</h1>' +
+        '<p>Help is never needed, since all users are really smart, and all of them knows the internals of how Devilry works...</p>',
+    helpwidth: 500,
+    helpheight: 300,
 
     /**
      * Called by the grade-editor main window just before calling
@@ -17,8 +18,6 @@
      *      current assignment.
      */
     initializeEditor: function(config) {
-        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
-
         this.editorConfig = Ext.JSON.decode(config.config);
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: this.editorConfig.fieldlabel
@@ -103,8 +102,23 @@
      * @private
      * Used by onSaveDraft and onPublish to handle save-failures.
      */
-    onFailure: function() {
-        console.error('Failed!');
+    onFailure: function(records, operation) {
+        var title = 'Failed to save!';
+        var msg = 'Please try again';
+        if(operation.error.status === 0) {
+            title = 'Server error';
+            msg = 'Could not contact the server. Please try again.';
+        } else if(operation.error.status === 400) {
+            title = 'Failed to save!';
+            msg = operation.responseData.items.errormessages[0];
+        }
+        Ext.MessageBox.show({
+            title: title,
+            msg: msg,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.WARNING,
+            closable: false
+        });
     },
 
     /**

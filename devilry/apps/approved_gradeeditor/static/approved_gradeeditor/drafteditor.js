@@ -3,11 +3,11 @@
     border: false,
     frame: false,
     xtype: 'form',
-    //items: [{
-        //xtype: 'checkboxfield',
-        //boxLabel: 'Approved',
-        //id: 'approved-checkbox'
-    //}],
+
+    help: '<h1>TODO</h1>' +
+        '<p>Add some help here</p>',
+    //helpwidth: 500,
+    //helpheight: 300,
 
     layout: {
         type: 'vbox',

@@ -127,7 +127,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Delivery',
+                title: 'Deliveries',
                 store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeliveryStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {

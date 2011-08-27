@@ -49,6 +49,10 @@ Ext.define('devilry.extjshelpers.SingleRecordView', {
         this.updateBody();
     },
 
+    getData: function(data) {
+        return data;
+    },
+
     /**
      * @private
      */
@@ -56,6 +60,7 @@ Ext.define('devilry.extjshelpers.SingleRecordView', {
         var data = {};
         Ext.apply(data, this.extradata);
         Ext.apply(data, this.singlerecordontainer.record.data);
+        data = this.getData(data);
         this.update(this.tpl.apply(data));
     }
 });

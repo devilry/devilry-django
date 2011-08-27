@@ -115,19 +115,6 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.callParent(arguments);
     },
 
-
-    /**
-     * @private
-     */
-    parseCandidateSpec: function(candidateSpec) {
-        var asArray = candidateSpec.split(/\s*:\s*/);
-        var candidate_id = asArray.length > 1? asArray[1]: null;
-        return {
-            username: asArray[0],
-            candidate_id: candidate_id
-        };
-    },
-
     /**
      * @private
      */
@@ -150,7 +137,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         }
         var asArray = groupSpec.split(/\s*,\s*/);
         Ext.Array.each(asArray, function(candidateSpec) {
-            groupSpecObj.fake_candidates.push(this.parseCandidateSpec(candidateSpec));
+            groupSpecObj.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
         }, this);
         return groupSpecObj;
     },

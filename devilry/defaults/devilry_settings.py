@@ -15,6 +15,7 @@ DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 #DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
+DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-documentation'
 
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000

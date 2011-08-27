@@ -140,8 +140,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
             text: 'Students',
-            enableToggle: true,
-            menu: [],
             scale: 'large',
             listeners: {
                 scope: this,
@@ -153,7 +151,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             text: 'Advanced options',
             enableToggle: true,
             scale: 'large',
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onAdvanced
@@ -163,7 +160,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
             scale: 'large',
-            //menu: [],
             listeners: {
                 scope: this,
                 click: this.onSelectGradeEditorBtn,
@@ -348,15 +344,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 isAdministrator: true
             },
             listeners: {
-                scope: this,
-                close: function() {
-                    this.studentsbutton.toggle(false);
-                }
+                scope: this
+                //close: function() {
+                    //this.studentsbutton.toggle(false);
+                //}
             }
         });
-        this.setSizeToCoverBody(studentswindow);
+        //this.setSizeToCoverBody(studentswindow);
         studentswindow.show();
-        this.alignToCoverBody(studentswindow);
+        //this.alignToCoverBody(studentswindow);
     },
 
 

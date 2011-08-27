@@ -56,10 +56,13 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'Show groups',
-                        clickFilter: 'type:group assignment:{id}'
+                        text: 'View',
+                        clickLinkTpl: 'assignment/{id}'
                     },
                     menuitems: [{
+                        text: 'Show groups',
+                        clickFilter: 'type:group assignment:{id}'
+                    }, {
                         text: 'Show deliveries',
                         clickFilter: 'type:delivery assignment:{id}'
                     }]

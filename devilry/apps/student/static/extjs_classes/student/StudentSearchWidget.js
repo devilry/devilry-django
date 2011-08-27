@@ -42,6 +42,9 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 title: 'Delivery',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeliveryStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
+                itemtpldata: {
+                    is_student: true
+                },
                 resultitemConfig: {
                     tpl: this.deliveryRowTpl,
                     defaultbutton: {
@@ -51,9 +54,12 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Deadlines',
+                title: 'Open deadlines',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.deadline,
+                itemtpldata: {
+                    is_student: true
+                },
                 alwaysAppliedFilters: [{
                     field: 'assignment_group__is_open',
                     comp: 'exact',
@@ -66,18 +72,21 @@ Ext.define('devilry.student.StudentSearchWidget', {
                         clickLinkTpl: this.urlPrefix + 'add-delivery/{id}'
                     }
                 }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignment groups',
-                store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
-                resultitemConfig: {
-                    tpl: this.assignmentgroupRowTpl,
-                    defaultbutton: {
-                        text: 'View',
-                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
-                    }
-                }
+            //}, {
+                //xtype: 'searchresults',
+                //title: 'My groups',
+                //store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
+                //filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
+                //itemtpldata: {
+                    //is_student: true
+                //},
+                //resultitemConfig: {
+                    //tpl: this.assignmentgroupRowTpl,
+                    //defaultbutton: {
+                        //text: 'View',
+                        //clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
+                    //}
+                //}
             }]
         });
         this.callParent(arguments);

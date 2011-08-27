@@ -60,17 +60,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
+        this.gridContextMenu = new Ext.menu.Menu({
+            items: this.getOnSingleMenuItems(),
+            listeners: {
+                scope: this,
+                hide: this.onGridContexMenuHide
+            }
+        });
+
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
                 align: 'stretch'
             },
             items: [{
-                xtype: 'searchfield',
-                emptyText: 'Search...',
-                margin: 10,
-                flex: 0,
-            }, {
                 xtype: 'panel',
                 flex: 1,
                 layout: 'fit',
@@ -79,7 +82,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 items: [{
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
-                    assignmentid: this.assignmentid
+                    assignmentid: this.assignmentid,
+                    dockedItems: [{
+                        xtype: 'toolbar',
+                        dock: 'top',
+                        items: [{
+                            xtype: 'searchfield',
+                            width: 300,
+                            emptyText: 'Search...'
+                        }]
+                    }]
                 }],
 
                 dockedItems: [{
@@ -97,6 +109,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
             //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+            this.down('studentsmanager_studentsgrid').on('itemcontextmenu', this.onGridContexMenu, this);
         }, this);
         this.loadGradeEditorConfigModel();
 
@@ -104,22 +117,45 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getToolbarItems: function() {
-        return ['->', {
-            xtype: 'button',
-            text: 'On single group',
+        var singleheader = {
+            xtype: 'box',
+            plain: true,
+            html:'<div class="menuheader">On single</div>'
+        };
+        var multiheader = {
+            xtype: 'box',
+            plain: true,
+            html:'<div class="menuheader">On multiple</div>'
+        };
+        var advanced = Ext.Array.merge(
+            [singleheader], this.getOnSingleMenuItems(),
+            [{xtype: 'box', height: 12}],
+            [multiheader], this.getOnManyMenuItems()
+        );
+
+        return [{
+            text: 'Help',
+            iconCls: 'icon-help-32',
             scale: 'large',
-            menu: this.getOnSingleMenuItems()
-        }, {
+            listeners: {
+                scope: this,
+                click: this.onHelp
+            }
+        }, '->', {
             xtype: 'button',
-            text: 'On many groups',
+            text: 'Advanced',
             scale: 'large',
-            menu: this.getOnManyMenuItems()
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                items: advanced 
+            }
         }, this.giveFeedbackButton];
     },
 
     getOnSingleMenuItems: function() {
         return [{
-            text: 'Open examiner interface',
+            text: 'Open in examiner interface',
             listeners: {
                 scope: this,
                 click: this.onOpenExaminerInterface
@@ -153,6 +189,46 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }];
     },
 
+    onHelp: function() {
+        var win = Ext.widget('window', {
+            title: 'Help',
+            modal: true,
+            width: 800,
+            height: 500,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'box',
+                autoScroll: true,
+                html: Ext.create('Ext.XTemplate',
+                    '<section class="helpsection">',
+                    '   <h1>Search</h1>',
+                    '   <p>Use the search box to search for more or less anything. Examples are candidate IDs and usernames of students and examiners.</p>',
+                    '   <h1>About each column</h1>',
+                    '   <h2>The first column (with no header)</h2>',
+                    '       <p>Contains notifications. Unless something is wrong, you will see <em>open</em> or <em>close</em>. When a group is open, students can add more deliveries. When a group is closed, it is not possible to add more deliveries.</p>',
+                    '   <h2>Students</h2>',
+                    '       <p>Usernames of all students on each group. If the assignment is <em>anonymous</em>, this column shows the <em>cadidate ID</em> instead of the username.</p>',
+                    '   <h2>Deliveries</h2>',
+                    '       <p>Number of deliveries</p>',
+                    '   <h2>Latest feedback</h2>',
+                    '       <h3>Points</h3>',
+                    '       <p>Number of points achieved by the group on this assignment. Points are used for statistics, and they are not available to students.</p>',
+                    '       <h3>Grade</h3>',
+                    '       <p>The grade achieved by the group on this assignment. A grade columns cell has 3 parts:</p><ul>',
+                    '           <li>It is either passed or failed. If the status of this has any consequence for the students, depends on if the assignment must be passed or not.</li>',
+                    '           <li>A textual representation of the points. The format of this text depends on the <em>grade editor</em> used on this assignment.</li>',
+                    '           <li>Type of delivery. This may be <em>electronic</em>, <em>non-electronic</em> or <em>From previous period</em>. The last is for groups marked as delivered in a previous period.</li>',
+                    '   <h2>Examiners</h2>',
+                    '       <p>Usernames of examiners.</p>',
+                    '   <h2>Group name</h2>',
+                    '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
+                    '</section>'
+                ).apply({})
+            }
+        }).show();
+    },
+
     /**
      * @private
      */
@@ -164,7 +240,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     noneSelected: function() {
-        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 0;
+        return this.getSelection().length == 0;
     },
 
     /**
@@ -178,13 +254,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     singleSelected: function() {
-        return this.down('studentsmanager_studentsgrid').selModel.getSelection().length == 1;
+        return this.getSelection().length == 1;
     },
 
     /**
      * @private
      */
     getSelection: function() {
+        if(this.contexSelectedItem) {
+            return [this.contexSelectedItem];
+        }
         return this.down('studentsmanager_studentsgrid').selModel.getSelection();
     },
 
@@ -222,6 +301,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }
         var record = this.getSelection()[0];
         window.open(Ext.String.format('../assignmentgroup/{0}', record.data.id), '_blank');
+    },
+
+    /**
+     * @private
+     */
+    onGridContexMenu: function(grid, record, index, item, ev) {
+        ev.stopEvent();
+        this.contexSelectedItem = record;
+        this.gridContextMenu.showAt(ev.xy);
+    },
+
+    /**
+     * @private
+     */
+    onGridContexMenuHide: function(grid, record, index, item, ev) {
+        this.contexSelectedItem = undefined;
     },
 
     

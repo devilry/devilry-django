@@ -62,6 +62,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
             items: [this.editform, {
                 xtype: 'panel',
                 frame: false,
+                autoScroll: true,
                 border: false,
                 bodyCls: 'editform-sidebar ' + extrabarCssCls,
                 flex: 5,

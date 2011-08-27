@@ -43,8 +43,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getToolbarItems: function() {
         var defaults = this.callParent();
-        defaults[0] = this.addStudentsButton;
-        Ext.Array.insert(defaults, 1, '->');
+        Ext.Array.insert(defaults, 2, [this.addStudentsButton]);
         return defaults;
     },
 
@@ -58,11 +57,19 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             //}
         //});
         menu.push({
-            text: 'Edit group details',
+            text: 'Change group members',
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
-                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
+                click: this.onChangeGroupMembers
+            }
+        });
+        menu.push({
+            text: 'Change group name',
+            iconCls: 'icon-edit-16',
+            listeners: {
+                scope: this,
+                click: this.onChangeGroupName
             }
         });
         return menu;

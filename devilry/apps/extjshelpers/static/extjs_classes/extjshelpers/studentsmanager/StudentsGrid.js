@@ -5,7 +5,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     sortableColumns: false,
 
     config: {
-        assignmentid: undefined
+        assignmentid: undefined,
+        dockedItems: []
     },
 
     mixins: {
@@ -92,8 +93,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
@@ -110,53 +111,62 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         });
 
         Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: true
-            }],
-
-            listeners: {
-                scope: this,
-                itemclick: function(grid, record) {
-                    if(grid.getSelectionModel().isSelected(record)) {
-                        grid.getSelectionModel().deselect(record);
-                    } else {
-                        grid.getSelectionModel().select(record, true);
-                    }
-                }
-            },
+            //listeners: {
+                //scope: this,
+                //itemclick: function(grid, record) {
+                    //if(grid.getSelectionModel().isSelected(record)) {
+                        //grid.getSelectionModel().deselect(record);
+                    //} else {
+                        //grid.getSelectionModel().select(record, true);
+                    //}
+                //}
+            //},
 
             columns: [{
                 text: '', dataIndex: 'id', width: 100,
+                menuDisabled: true,
                 renderer: this.formatInfoCol
             }, {
                 text: 'Students', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
                 text: 'Deliveries', dataIndex: 'id', flex: 2,
+                menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
+                menuDisabled: true,
                 columns: [{
                     text: 'Points',
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
+                    menuDisabled: true,
                     width: 70
                 }, {
                     text: 'Grade',
                     dataIndex: 'feedback__grade',
                     width: 150,
+                    menuDisabled: true,
                     renderer: this.formatGradeCol
                 }]
             }, {
                 text: 'Examiners', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatExaminersCol
             }, {
-                text: 'Group name', dataIndex: 'name', flex: 3
+                text: 'Group name', dataIndex: 'name', flex: 3,
+                menuDisabled: true
             }]
         });
+
+        this.dockedItems.push({
+            xtype: 'pagingtoolbar',
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: true
+        });
+
         this.callParent(arguments);
         this.store.load();
     },

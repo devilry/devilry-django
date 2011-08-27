@@ -32,9 +32,6 @@
                 '</tpl>'
             ]
         });
-        assignment_recordcontainer.addListener('setRecord', function() {
-            heading.update(assignment_recordcontainer.record.data);
-        });
 
         var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
             renderTo: 'content-main',
@@ -43,6 +40,11 @@
             assignmentid: {{ assignmentid }},
             assignmentgroupstore: assignmentgroupstore
             //assignmentgroupGraphstore: assignmentgroupGraphstore
+        });
+
+        assignment_recordcontainer.addListener('setRecord', function() {
+            heading.update(assignment_recordcontainer.record.data);
+            {#Ext.Function.defer(function() { assignmentview.onStudents(); }, 200);#}
         });
     });
 </script>

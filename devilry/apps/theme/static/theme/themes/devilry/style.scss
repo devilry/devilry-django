@@ -13,6 +13,7 @@ $warningcolor_fg: #FFEEE5;
 $errorcolor_bg: #B00;
 $errorcolor_hoverbg: #F00;
 $errorcolor_fg: #FFF0F0;
+$unimportant_fontcolor: #666;
 
 
 $studentcolor_bg: $goodcolor_bg;
@@ -36,13 +37,6 @@ body {
 }
 
 
-@mixin navitemlink($bg, $fg, $hoverbg) {
-    background-color: $bg;
-    color: $fg;
-    &:hover {
-        background-color: $hoverbg;
-    }
-}
 
 @mixin inlineList() {
     li {
@@ -99,6 +93,16 @@ body {
             list-style-type: disc !important;
             list-style-position: outside !important;
         }
+    }
+}
+
+
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: #222;
+    color: #fff;
+    &:hover {
+        color: $fg;
+        background-color: $hoverbg !important;
     }
 }
 
@@ -217,17 +221,34 @@ header {
         li.administrator-navitem a {
             @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
         }
+        li.externallink-navitem a {
+            @include navitemlink(#444, #fff, #333);
+            border-radius: $radiussize_small $radiussize_big 0 0;
+            background-image: url(icons/16x16/external-link.png) !important;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            padding-left: 32px;
+        }
     }
 
     /* Color the bottom border of the header with the color of the current section. */
     >nav.student {
         border-bottom: 10px solid $studentcolor_bg;
+        li.student-navitem a {
+            background-color: $studentcolor_bg;
+        }
     }
     >nav.examiner {
         border-bottom: 10px solid $examinercolor_bg;
+        li.examiner-navitem a {
+            background-color: $examinercolor_bg;
+        }
     }
     >nav.administrator {
         border-bottom: 10px solid $administratorcolor_bg;
+        li.administrator-navitem a {
+            background-color: $administratorcolor_bg;
+        }
     }
 }
 
@@ -295,31 +316,26 @@ header {
 }
 
 .multisearchresults {
-    width: ($mainwidth - 30px);
-    >.x-panel-body {
-        background-color: #fff;
-        border: 3px solid #111;
-        border-radius: 0 0 $radiussize_big $radiussize_small;
-        .searchresults {
-            margin: 20px;
-            .searchresultitem {
-                padding: 4px;
-                border: 4px solid transparent;
-                height: auto !important;
-                &:hover {
-                    //border: 4px solid $goodcolor_bg;
-                    background-color: #eee;
-                    //color: $goodcolor_fg !important;
-                }
+    .searchresults {
+        margin: 0;
+        .searchresultitem {
+            padding: 4px;
+            border: 4px solid transparent;
+            height: auto !important;
+            &:hover {
+                //border: 4px solid $goodcolor_bg;
+                background-color: #eee;
+                //color: $goodcolor_fg !important;
             }
-            .searchresultitem-even {
-                background-color: #f8f8f8;
-            }
+        }
+        .searchresultitem-even {
+            background-color: #f8f8f8;
         }
     }
 }
 .multisearchresults-floating {
-    //box-shadow: 0 1px 8px #888;
+    width: ($mainwidth - 30px);
+    //width: 500px;
 }
 .searchwidget-help {
     padding: 4px 15px 15px 15px !important;
@@ -359,9 +375,32 @@ section.popuplistitem {
     ul {
         @include inlineList();
     }
-    ul.useridlist {
-        li {
-            font-size: 1.2em;
+    //ul.useridlist {
+        //li {
+            //font-size: 1.2em;
+        //}
+    //}
+
+    line-height: 1.6em;
+
+    p.path {
+        font-size: 0.8em;
+        color: $unimportant_fontcolor;
+        font-weight: bold;
+    }
+
+    section.dl_valueimportant {
+        >section {
+            font-weight: bold;
+
+            h1 {
+                display: inline;
+                &:after {
+                    content: ": ";
+                }
+                font-size: 0.8em;
+                font-weight: normal;
+            }
         }
     }
 }
@@ -423,6 +462,7 @@ a.warning-button {
 .icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
 .icon-add-16 { background-image: url(icons/16x16/add.png) !important; }
 
+.icon-help-32 { background-image: url(icons/32x32/help.png) !important; }
 .icon-previous-32 { background-image: url(icons/32x32/previous.png) !important; }
 .icon-next-32 { background-image: url(icons/32x32/next.png) !important; }
 .icon-delete-32 { background-image: url(icons/32x32/delete.png) !important; }
@@ -465,10 +505,14 @@ a.warning-button {
 
 
 
+.helpbox {
+    background-color: #fff !important;
+}
 section.helpsection {
     @include commonSectionElements();
 
     background-color: #fff;
+    min-height: 128px; // Make sure background icon is not clipped
     background-image: url(icons/128x128/helpfade-rightdown.png);
     background-repeat: no-repeat;
     background-position: right top;
@@ -520,7 +564,7 @@ section.helpsection {
 
 .unimportant {
     font-size: 1.0em;
-    color: #444;
+    color: $unimportant_fontcolor;
 }
 .important {
     font-size: 1.1em;
@@ -560,6 +604,10 @@ table.verticalinfotable {
     }
 }
 
+.widget-assignmentgrouptodolist {
+    background: #fff !important;
+}
+
 
 .widget-assignmentgroupoverview {
     .widget-deliveryinfo {
@@ -591,13 +639,18 @@ table.verticalinfotable {
                 padding: 40px;
                 text-align: center;
                 font-size: 2.0em;
+                .no-feedback-message {
+                    font-size: 1.5em;
+                }
             }
             .no-feedback-editable {
                 cursor: pointer;
                 border: 4px solid transparent;
                 &:hover {
-                    border: 4px solid $goodcolor_bg;
-                    background-color: $goodcolor_fg;
+                    font-weight: bold;
+                    background-color: $goodcolor_bg;
+                    color: $goodcolor_fg;
+                    border-radius: 20px;
                 }
             }
 
@@ -618,19 +671,6 @@ table.verticalinfotable {
     color: $warningcolor_bg;
 }
 
-td.selectable-gridcell {
-    border: none !important;
-    .x-grid-cell-inner {
-        padding: 8px 4px 8px 4px !important;
-        border: 4px solid transparent !important;
-        cursor: pointer;
-        &:hover {
-            border: 4px solid $goodcolor_bg !important;
-            background-color: $goodcolor_fg;
-        }
-    }
-}
-
 
 .selectable-grid {
     tr.x-grid-row {
@@ -647,33 +687,22 @@ td.selectable-gridcell {
     }
 }
 
-
-section.extravisible {
+@mixin extravisibleBox($minHeight) {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 10px 10px 10px 158px !important;
+    padding: 10px 10px 10px ($minHeight + 40px) !important;
     background-position: 10px 10px;
-    min-height: 148px !important;
+    min-height: $minHeight !important;
     margin: 20px !important;
     box-shadow: 0 0 5px 5px #aaa;
-    
+}
+section.extravisible {
+    @include extravisibleBox(128px);
+}
+section.extravisible-small {
+    @include extravisibleBox(64px);
 }
 
-
-@mixin bigIconBox($icon) {
-    padding: 0px 0 0 148px;
-    min-height: 128px;
-    background-image: $icon;
-    background-repeat: no-repeat;
-    margin: 20px 0 20px 0;
-
-
-    p {
-        padding: 5px 0;
-        line-height: 1.6em !important;
-    }
-    @include commonSectionElements();
-}
 
 @mixin iconBox($category, $icon, $size) {
     section.#{$category} {
@@ -829,11 +858,20 @@ section.treeheading {
     @include warningInlineItem();
 }
 
+<<<<<<< HEAD
 .group_is_corrected {
     @include goodInlineItem();
 }
 .group_is_uncorrected {
     @include warningInlineItem();
+=======
+
+.menuheader {
+    font-weight:bold;
+}
+.menuheader:first-child {
+    margin-top:0;
+>>>>>>> 56d4307aaca846ce3a64de2ed94cad2bb0652bc2
 }
 
 

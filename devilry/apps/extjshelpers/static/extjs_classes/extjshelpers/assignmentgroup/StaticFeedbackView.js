@@ -16,29 +16,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '   </section>',
         '</tpl>',
 
-        '<tpl if="is_passing_grade">',
-        '    <section class="ok-small">',
-        '       <h1>Passing grade</h1>',
-        '       <p>The given grade is a passing grade.</p>',
-        '    </section>',
-        '</tpl>',
-        '<tpl if="!is_passing_grade">',
-        '    <section class="error-small">',
-        '       <h1>Failing grade</h1>',
-        '       <p>The given grade is <strong>not</strong> a passing grade.</p>',
-        '    </section>',
-        '</tpl>',
-
-        '<section class="info-small">',
+        '<section class="{gradecls}">',
         '   <h1>Grade</h1>',
-        '   <p><em>{grade}</em></p>',
+        '       <p>',
+        '       <tpl if="!is_passing_grade">',
+        '           The given grade, <strong>{grade}</strong>, is <strong>not</strong> a passing grade.',
+        '       </tpl>',
+        '       <tpl if="is_passing_grade">',
+        '           The given grade, <strong>{grade}</strong>, is a passing grade.',
+        '       </tpl>',
+        '       This feedback was published <em>{save_timestamp:date}</em>.',
+        '       </p>',
         '</section>',
-
-        '<section class="info-small">',
-        '   <h1>Feedback publish time</h1>',
-        '   <p>This feedback was published <em>{save_timestamp:date}</em></p>',
-        '</section>',
-
         '<section class="rendered_view">{rendered_view}<section>'
-    )
+    ),
+
+    
+    getData: function(data) {
+        data.gradecls = data.is_passing_grade? 'ok-small': 'error-small';
+        return data;
+    },
 });
