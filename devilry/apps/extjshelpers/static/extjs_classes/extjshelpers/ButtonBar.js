@@ -35,6 +35,7 @@ Ext.define('devilry.extjshelpers.ButtonBar', {
         if(this.loadedItems == this.items.items.length) {
             this.getEl().unmask();
             if(this.loadedWithRecords == 0) {
+                this.height = 'auto';
                 this.update(this.emptyHtml);
             };
         } else {

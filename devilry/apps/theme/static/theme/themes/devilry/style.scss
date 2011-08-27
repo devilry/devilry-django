@@ -679,25 +679,20 @@ table.verticalinfotable {
     }
 }
 
-section.no-permissions {
-    font-weight: bold;
-    background-color: $warningcolor_bg;
-    color: $warningcolor_fg;
-    border-radius: 20px;
-    font-size: 2.0em;
-    padding: 20px;
-}
-
-
-section.extravisible {
+@mixin extravisibleBox($minHeight) {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 10px 10px 10px 158px !important;
+    padding: 10px 10px 10px ($minHeight + 40px) !important;
     background-position: 10px 10px;
-    min-height: 148px !important;
+    min-height: $minHeight !important;
     margin: 20px !important;
     box-shadow: 0 0 5px 5px #aaa;
-    
+}
+section.extravisible {
+    @include extravisibleBox(128px);
+}
+section.extravisible-small {
+    @include extravisibleBox(64px);
 }
 
 

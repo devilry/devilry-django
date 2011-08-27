@@ -34,7 +34,7 @@
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             cls: 'dashboard-buttonbar',
-            emptyHtml: '<section class="no-permissions">You are not registered as administrator on anything.</section>',
+            emptyHtml: '<section class="warning extravisible"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
             items: [{
                 xtype: 'buttonbarbutton',
                 text: 'Node',
