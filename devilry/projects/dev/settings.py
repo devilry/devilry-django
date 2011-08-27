@@ -123,7 +123,7 @@ LOGGING = {
             'level': 'DEBUG',
             'formatter': 'verbose',
             'class': 'logging.FileHandler',
-            'filename': join(logdir, 'debug.db.devilry.log')
+            'filename': join(logdir, 'debug-containing-sqlstatements.db.devilry.log')
         },
         'requestfile': {
             'level': 'ERROR',
@@ -137,28 +137,34 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': join(logdir, 'exception.devilry.log')
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True # The traceback email includes an HTML attachment containing the full content of the debug Web page that would have been produced if DEBUG were True. 
+        }
     },
     'loggers': {
         'devilry.utils.logexceptionsmiddleware': {
-            'handlers': ['exceptionTracebacksFile'],
+            'handlers': ['exceptionTracebacksFile', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False
         },
         'django.request': {
             'handlers': ['allButExceptionTracebacks',
-                         'requestfile'],
+                         'requestfile', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False
         },
         'django.db.backends': {
             'handlers': ['allButExceptionTracebacks',
                          'dbfile',
-                         'dbdebugfile'],
+                         'dbdebugfile', # Not useful for production since SQL statement logging is disabled when DEBUG=False.
+                         'mail_admins'],
             'level': 'DEBUG',
             'propagate': False
         },
         'devilry.utils.devilry_email': {
-            'handlers': ['allButExceptionTracebacks', 'console'],
+            'handlers': ['allButExceptionTracebacks', 'console', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': False
         },
