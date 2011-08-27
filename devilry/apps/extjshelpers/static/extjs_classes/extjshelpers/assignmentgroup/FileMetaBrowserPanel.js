@@ -40,6 +40,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 xtype: 'grid',
                 sortableColumns: false,
                 store: this.filemetastore,
+                cls: 'selectable-grid',
                 columns: [{
                     header: 'File name',
                     menuDisabled: true,
