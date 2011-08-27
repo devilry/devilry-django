@@ -27,6 +27,9 @@ class Approved(JsonRegistryItem):
         if not isinstance(is_approved, bool):
             raise DraftValidationError('The draft string must contain a single boolean value.')
 
+        if feedback == '':
+            raise DraftValidationError('You have to enter a feedback-text')
+
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
         buf = json.loads(draftstring)
