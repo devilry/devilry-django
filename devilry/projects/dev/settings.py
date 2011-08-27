@@ -29,6 +29,7 @@ INSTALLED_APPS += [
                    'devilry.apps.manual_gradeeditor',
                    'devilry.apps.autograde_gradeeditor',
                    'devilry.apps.gradeform_gradeeditor',
+                   'devilry.apps.send_email_to_students',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
@@ -51,7 +52,8 @@ MANAGERS = ADMINS
 MEDIA_ROOT = join(this_dir, "filestore")
 ROOT_URLCONF = 'devilry.projects.dev.urls'
 
-DEVILRY_SEND_EMAIL_TO_USERS = False
+DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+DEVILRY_SEND_EMAIL_TO_USERS = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = join(this_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'

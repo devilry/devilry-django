@@ -38,6 +38,11 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
 
+## The urlscheme+domain where devilry is located.
+## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_MAIN_PAGE is the absolute URL to the devilry
+## instance. WARNING: must not end with /
+#DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
 ## Email addresses
 #DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example'
 #DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
