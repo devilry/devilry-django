@@ -5,12 +5,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     sortableColumns: false,
 
     config: {
-        assignmentid: undefined
+        assignmentid: undefined,
+        dockedItems: []
     },
 
     mixins: {
         canPerformActionsOnSelected: 'devilry.extjshelpers.GridPeformActionOnSelected'
     },
+
+    infoColTpl: Ext.create('Ext.XTemplate', 
+        '<section class="infocolumn">',
+        '    <div>',
+        '        <tpl if="is_open">',
+        '           <span class="group_is_open">Open</span>',
+        '        </tpl>',
+        '        <tpl if="!is_open">',
+        '           <span class="group_is_closed">Closed</span>',
+        '       </tpl>',
+        '    </div>',
+        '    <div>',
+        '        <tpl if="latest_deadline_id === null">',
+        '           <span class="has_no_deadlines">No deadlines</span>',
+        '        </tpl>',
+        '    </div>',
+        '</section>'
+    ),
 
     candidatesCol: Ext.create('Ext.XTemplate', 
         '<ul class="candidatescolumn">',
@@ -26,17 +45,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '       <li>{.}</li>',
         '    </tpl>',
         '</ul>'
-    ),
-
-    isOpenColTpl: Ext.create('Ext.XTemplate', 
-        '<span class="is_opencol">',
-        '    <tpl if="is_open">',
-        '       <span class="open">Open</span>',
-        '    </tpl>',
-        '    <tpl if="!is_open">',
-        '       <span class="closed">Closed</span>',
-        '   </tpl>',
-        '</span>'
     ),
 
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
@@ -64,11 +72,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     gradeColTpl: Ext.create('Ext.XTemplate', 
         '<section class="gradecolumn">',
         '   <tpl if="feedback">',
-        '        <div class="is_passing_grade">Passing grade?',
-        '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">yes</span></tpl>',
-        '           <tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">no</span></tpl>',
+        '        <div class="is_passing_grade">',
+        '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">Passed</span></tpl>',
+        '           <tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">Failed</span></tpl>',
+        '           : <span class="grade">{feedback__grade}</span>',
         '        </div>',
-        '        <div class="grade">Grade: {feedback__grade}</div>',
+        '        <div class="delivery_type">',
+        '            <tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
+        '            <tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
+        '            <tpl if="feedback__delivery__delivery_type == 2"><span class="alias">From previous period</span></tpl>',
+        '            <tpl if="feedback__delivery__delivery_type &gt; 2"><span class="unknown">Unknown delivery type</span></tpl>',
+        '       </div>',
         '   </tpl>',
         '    <tpl if="!feedback">',
         '        <div class="nofeedback">',
@@ -79,8 +93,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
@@ -97,48 +111,68 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         });
 
         Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: true
-            }],
+            //listeners: {
+                //scope: this,
+                //itemclick: function(grid, record) {
+                    //if(grid.getSelectionModel().isSelected(record)) {
+                        //grid.getSelectionModel().deselect(record);
+                    //} else {
+                        //grid.getSelectionModel().select(record, true);
+                    //}
+                //}
+            //},
 
             columns: [{
-                text: 'Open?', dataIndex: 'id', width: 60,
-                renderer: this.formatIsOpenCol
-            }, {
-                text: 'Group name', dataIndex: 'name', flex: 4
+                text: '', dataIndex: 'id', width: 100,
+                menuDisabled: true,
+                renderer: this.formatInfoCol
             }, {
                 text: 'Students', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 4,
-                renderer: this.formatExaminersCol
-            }, {
                 text: 'Deliveries', dataIndex: 'id', flex: 2,
+                menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
+                menuDisabled: true,
                 columns: [{
                     text: 'Points',
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
+                    menuDisabled: true,
                     width: 70
                 }, {
                     text: 'Grade',
                     dataIndex: 'feedback__grade',
                     width: 150,
+                    menuDisabled: true,
                     renderer: this.formatGradeCol
                 }]
+            }, {
+                text: 'Examiners', dataIndex: 'id', flex: 4,
+                menuDisabled: true,
+                renderer: this.formatExaminersCol
+            }, {
+                text: 'Group name', dataIndex: 'name', flex: 3,
+                menuDisabled: true
             }]
         });
+
+        this.dockedItems.push({
+            xtype: 'pagingtoolbar',
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: true
+        });
+
         this.callParent(arguments);
         this.store.load();
     },
 
-    formatIsOpenCol: function(value, p, record) {
-        return this.isOpenColTpl.apply(record.data);
+    formatInfoCol: function(value, p, record) {
+        return this.infoColTpl.apply(record.data);
     },
 
     formatCandidatesCol: function(value, p, record) {

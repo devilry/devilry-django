@@ -101,14 +101,20 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     search: function(value) {
+        this.showResults();
+        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
+            var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+                searchstring: value,
+                alwaysAppliedFilters: searchresults.alwaysAppliedFilters
+            });
+            searchresults.search(parsedSearch);
+        });
+
+        // Create a parsed search without any alwaysAppliedFilters for modifySearch() to use
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: value
         });
         this.currentParsedSearch = parsedSearch;
-        this.showResults();
-        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
-            searchresults.search(parsedSearch);
-        });
     },
 
     modifySearch: function(properties) {
@@ -125,7 +131,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         //var value = 'type:delivery assignment__short_name:week1';
         //var value = 'type:delivery group:'
         //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
-        //var value = '1100';
+        //var value = '5063';
         //this.setSearchValue(value);
     }
 });

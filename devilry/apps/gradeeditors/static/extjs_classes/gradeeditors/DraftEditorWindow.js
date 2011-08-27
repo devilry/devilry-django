@@ -6,6 +6,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     height: 400,
     layout: 'fit',
     modal: true,
+    requires: [
+        'devilry.extjshelpers.NotificationManager'
+    ],
 
     config: {
         /**
@@ -65,32 +68,59 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     },
 
     initComponentExtra: function() {
-        Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Save draft',
-                    scale: 'large',
-                    iconCls: 'icon-save-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onSaveDraft,
-                    }
-                }, {
-                    xtype: 'button',
-                    text: 'Publish',
-                    scale: 'large',
-                    iconCls: 'icon-add-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onPublish
-                    }
-                }]
-            }]
+        this.draftButton = Ext.widget('button', {
+            text: 'Save draft',
+            scale: 'large',
+            iconCls: 'icon-save-32',
+            listeners: {
+                scope: this,
+                click: this.onSaveDraft,
+            }
         });
+
+        this.publishButton = Ext.widget('button', {
+            text: 'Publish',
+            scale: 'large',
+            iconCls: 'icon-add-32',
+            listeners: {
+                scope: this,
+                click: this.onPublish
+            }
+        });
+
+        this.buttonBar = Ext.widget('toolbar', {
+            dock: 'bottom',
+            ui: 'footer',
+            items: ['->', this.draftButton, this.publishButton]
+        });
+
+        Ext.apply(this, {
+            dockedItems: [this.buttonBar]
+        });
+    },
+
+    /**
+     * @private
+     */
+    onHelp: function() {
+        var win = Ext.widget('window', {
+            title: 'Help',
+            modal: true,
+            width: this.getDraftEditor().helpwidth || 600,
+            height: this.getDraftEditor().helpheight || 500,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'box',
+                cls: 'helpbox',
+                autoScroll: true,
+                html: Ext.create('Ext.XTemplate',
+                    '<section class="helpsection">',
+                    '   {help}',
+                    '</section>'
+                ).apply({help: this.getDraftEditor().help})
+            }
+        }).show();
     },
 
     /**
@@ -107,6 +137,19 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onLoadDraftEditorSuccess: function() {
+
+        if(this.getDraftEditor().help) {
+            this.buttonBar.insert(0, {
+                text: 'Help',
+                iconCls: 'icon-help-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onHelp
+                }
+            });
+        }
+
         this.getDraftEditor().getEl().mask('Loading current draft');
 
         var store = Ext.create('Ext.data.Store', {
@@ -184,6 +227,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * Call the onPublish() method in the draft editor.
      */
     onPublish: function() {
+        this.publishButton.getEl().mask('');
         this.getDraftEditor().onPublish();
     },
 
@@ -192,6 +236,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * Call the onSaveDraft() method in the draft editor.
      */
     onSaveDraft: function() {
+        this.draftButton.getEl().mask('');
         this.getDraftEditor().onSaveDraft();
     },
 
@@ -223,9 +268,19 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
-            failure: onFailure
+            callback: function() {
+                me.draftButton.getEl().unmask();
+            },
+            failure: onFailure,
+            success: function(response) {
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Draft saved',
+                    message: 'The feedback draft has been saved.'
+                });
+            },
         });
     },
 
@@ -240,9 +295,16 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
+            callback: function() {
+                me.publishButton.getEl().unmask();
+            },
             success: function(response) {
                 me.fireEvent('publishNewFeedback');
                 me.exit();
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Published',
+                    message: 'The feedback has been saved and published.'
+                });
             },
             failure: onFailure
         });
@@ -254,18 +316,5 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      */
     getGradeEditorConfig: function() {
         return this.gradeeditor_config;
-    },
-
-    /**
-     * Change the size of the grade editor window. Useful when the default size is
-     * suboptimal for an editor.
-     *
-     * @param width New width.
-     * @param height Ne height.
-     * */
-    changeSize: function(width, height) {
-        this.setWidth(width);
-        this.setHeight(height);
-        this.center();
     }
 });

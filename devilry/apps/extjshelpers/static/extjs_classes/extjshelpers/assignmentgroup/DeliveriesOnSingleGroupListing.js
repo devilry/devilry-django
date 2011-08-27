@@ -16,6 +16,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
         '</tpl>'
     ),
 
+    helptext: '<section class="helpsection">' +
+        '   <p>Select a delivery from the list of all deliveries made by this group. The deliveries are grouped by deadline.</p>' +
+        '   <p>Deliveries are numbered by the order they are delivered. The first delivery has number <strong>1</strong>.</p>' +
+        '   <p>Deliveries are made on a specific deadline. Students can deliver after the deadline, as long as the group is open. However when a delivery was made after the deadline, it is shown by a message after the time of delivery.</p>' +
+        '</section>',
+
     config: {
         /**
          * @cfg
@@ -58,7 +64,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
                 scope: this,
                 itemmouseup: this.onSelectDelivery
             },
-            dockedItems: [this.pagingtoolbar]
+            dockedItems: [this.pagingtoolbar, {
+                xtype: 'panel',
+                html: this.helptext,
+                dock: 'right',
+                width: 300
+            }]
         });
 
         this.store.addListener('load', this.onLoadStore, this);

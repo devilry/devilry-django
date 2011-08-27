@@ -2,8 +2,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', 
     extend: 'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
     alias: 'widget.multicreatenewdeadlinewindow',
     title: 'Create deadline',
-    width: 500,
-    height: 400,
+    width: 700,
+    height: 450,
 
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditPanelBase',

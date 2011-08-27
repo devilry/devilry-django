@@ -10,6 +10,11 @@ $neutralcolor_fg: #E5F7FF;
 $warningcolor_bg: #CC4400;
 $warningcolor_hoverbg: #E64D00;
 $warningcolor_fg: #FFEEE5;
+$errorcolor_bg: #B00;
+$errorcolor_hoverbg: #F00;
+$errorcolor_fg: #FFF0F0;
+$unimportant_fontcolor: #666;
+
 
 $studentcolor_bg: $goodcolor_bg;
 $studentcolor_hoverbg: $goodcolor_hoverbg;
@@ -32,13 +37,6 @@ body {
 }
 
 
-@mixin navitemlink($bg, $fg, $hoverbg) {
-    background-color: $bg;
-    color: $fg;
-    &:hover {
-        background-color: $hoverbg;
-    }
-}
 
 @mixin inlineList() {
     li {
@@ -71,6 +69,9 @@ body {
 @mixin warningInlineItem() {
     @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
 }
+@mixin errorInlineItem() {
+    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
+}
 
 @mixin commonSectionElements() {
     strong {
@@ -92,6 +93,16 @@ body {
             list-style-type: disc !important;
             list-style-position: outside !important;
         }
+    }
+}
+
+
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: #222;
+    color: #fff;
+    &:hover {
+        color: $fg;
+        background-color: $hoverbg !important;
     }
 }
 
@@ -215,12 +226,21 @@ header {
     /* Color the bottom border of the header with the color of the current section. */
     >nav.student {
         border-bottom: 10px solid $studentcolor_bg;
+        li.student-navitem a {
+            background-color: $studentcolor_bg;
+        }
     }
     >nav.examiner {
         border-bottom: 10px solid $examinercolor_bg;
+        li.examiner-navitem a {
+            background-color: $examinercolor_bg;
+        }
     }
     >nav.administrator {
         border-bottom: 10px solid $administratorcolor_bg;
+        li.administrator-navitem a {
+            background-color: $administratorcolor_bg;
+        }
     }
 }
 
@@ -288,31 +308,26 @@ header {
 }
 
 .multisearchresults {
-    width: ($mainwidth - 30px);
-    >.x-panel-body {
-        background-color: #fff;
-        border: 3px solid #111;
-        border-radius: 0 0 $radiussize_big $radiussize_small;
-        .searchresults {
-            margin: 20px;
-            .searchresultitem {
-                padding: 4px;
-                border: 4px solid transparent;
-                height: auto !important;
-                &:hover {
-                    //border: 4px solid $goodcolor_bg;
-                    background-color: #eee;
-                    //color: $goodcolor_fg !important;
-                }
+    .searchresults {
+        margin: 0;
+        .searchresultitem {
+            padding: 4px;
+            border: 4px solid transparent;
+            height: auto !important;
+            &:hover {
+                //border: 4px solid $goodcolor_bg;
+                background-color: #eee;
+                //color: $goodcolor_fg !important;
             }
-            .searchresultitem-even {
-                background-color: #f8f8f8;
-            }
+        }
+        .searchresultitem-even {
+            background-color: #f8f8f8;
         }
     }
 }
 .multisearchresults-floating {
-    //box-shadow: 0 1px 8px #888;
+    width: ($mainwidth - 30px);
+    //width: 500px;
 }
 .searchwidget-help {
     padding: 4px 15px 15px 15px !important;
@@ -352,9 +367,32 @@ section.popuplistitem {
     ul {
         @include inlineList();
     }
-    ul.useridlist {
-        li {
-            font-size: 1.2em;
+    //ul.useridlist {
+        //li {
+            //font-size: 1.2em;
+        //}
+    //}
+
+    line-height: 1.6em;
+
+    p.path {
+        font-size: 0.8em;
+        color: $unimportant_fontcolor;
+        font-weight: bold;
+    }
+
+    section.dl_valueimportant {
+        >section {
+            font-weight: bold;
+
+            h1 {
+                display: inline;
+                &:after {
+                    content: ": ";
+                }
+                font-size: 0.8em;
+                font-weight: normal;
+            }
         }
     }
 }
@@ -409,12 +447,16 @@ a.warning-button {
  *
  */
 
+.icon-info-16 { }
 .icon-delete-16 { background-image: url(icons/16x16/delete.png) !important; }
 .icon-edit-16 { background-image: url(icons/16x16/edit.png) !important; }
 .icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
 .icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
 .icon-add-16 { background-image: url(icons/16x16/add.png) !important; }
 
+.icon-help-32 { background-image: url(icons/32x32/help.png) !important; }
+.icon-previous-32 { background-image: url(icons/32x32/previous.png) !important; }
+.icon-next-32 { background-image: url(icons/32x32/next.png) !important; }
 .icon-delete-32 { background-image: url(icons/32x32/delete.png) !important; }
 .icon-edit-32 { background-image: url(icons/32x32/edit.png) !important; }
 .icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
@@ -455,8 +497,18 @@ a.warning-button {
 
 
 
+.helpbox {
+    background-color: #fff !important;
+}
 section.helpsection {
     @include commonSectionElements();
+
+    background-color: #fff;
+    min-height: 128px; // Make sure background icon is not clipped
+    background-image: url(icons/128x128/helpfade-rightdown.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    padding: 20px;
 
     p {
         padding: 5px 0;
@@ -481,10 +533,17 @@ section.helpsection {
     }
 }
 
-.x-item-disabled { /* The overlay of disabled ExtJS forms. */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1.0 !important;
+//.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    //-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    //filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    //opacity: 1.0 !important;
+//}
+
+.x-mask {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+    opacity: 0.7 !important;
+    background-color: #000 !important;
 }
 
 
@@ -497,7 +556,7 @@ section.helpsection {
 
 .unimportant {
     font-size: 1.0em;
-    color: #444;
+    color: $unimportant_fontcolor;
 }
 .important {
     font-size: 1.1em;
@@ -537,6 +596,10 @@ table.verticalinfotable {
     }
 }
 
+.widget-assignmentgrouptodolist {
+    background: #fff !important;
+}
+
 
 .widget-assignmentgroupoverview {
     .widget-deliveryinfo {
@@ -568,13 +631,18 @@ table.verticalinfotable {
                 padding: 40px;
                 text-align: center;
                 font-size: 2.0em;
+                .no-feedback-message {
+                    font-size: 1.5em;
+                }
             }
             .no-feedback-editable {
                 cursor: pointer;
                 border: 4px solid transparent;
                 &:hover {
-                    border: 4px solid $goodcolor_bg;
-                    background-color: $goodcolor_fg;
+                    font-weight: bold;
+                    background-color: $goodcolor_bg;
+                    color: $goodcolor_fg;
+                    border-radius: 20px;
                 }
             }
 
@@ -593,19 +661,6 @@ table.verticalinfotable {
 .after-deadline {
     display: inline-block;
     color: $warningcolor_bg;
-}
-
-td.selectable-gridcell {
-    border: none !important;
-    .x-grid-cell-inner {
-        padding: 8px 4px 8px 4px !important;
-        border: 4px solid transparent !important;
-        cursor: pointer;
-        &:hover {
-            border: 4px solid $goodcolor_bg !important;
-            background-color: $goodcolor_fg;
-        }
-    }
 }
 
 
@@ -636,21 +691,6 @@ section.extravisible {
     
 }
 
-
-@mixin bigIconBox($icon) {
-    padding: 0px 0 0 148px;
-    min-height: 128px;
-    background-image: $icon;
-    background-repeat: no-repeat;
-    margin: 20px 0 20px 0;
-
-
-    p {
-        padding: 5px 0;
-        line-height: 1.6em !important;
-    }
-    @include commonSectionElements();
-}
 
 @mixin iconBox($category, $icon, $size) {
     section.#{$category} {
@@ -762,6 +802,12 @@ section.treeheading {
         td.x-grid-cell {
             vertical-align: middle !important;
         }
+        section.infocolumn {
+            line-height: 1.8em;
+            .has_no_deadlines {
+                @include errorInlineItem();
+            }
+        }
         .candidatescolumn, .examinerscolumn {
             @include inlineList();
         }   
@@ -772,22 +818,22 @@ section.treeheading {
             color: #aaa;
         }
         section.gradecolumn {
-            line-height: 1.6em;
-            .is_passing_grade {
-                .not_passing_grade {
-                    @include warningInlineItem();
-                }
-                .passing_grade {
-                    @include goodInlineItem();
-                }
+            line-height: 1.8em;
+            .not_passing_grade {
+                @include warningInlineItem();
             }
-        }
-        .is_opencol{
-            .open {
+            .passing_grade {
                 @include goodInlineItem();
             }
-            .closed {
-                @include warningInlineItem();
+            .delivery_type {
+                font-style: italic;
+                font-weight: bold !important;
+                .alias {
+                    @include neutralInlineItem();
+                }
+                .unknown {
+                    @include errorInlineItem();
+                }
             }
         }
     }
@@ -801,6 +847,12 @@ section.treeheading {
 }
 
 
+.menuheader {
+    font-weight:bold;
+}
+.menuheader:first-child {
+    margin-top:0;
+}
 
 
 

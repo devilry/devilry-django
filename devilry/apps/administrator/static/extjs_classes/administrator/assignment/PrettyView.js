@@ -7,10 +7,12 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.RestfulRegistryItem',
         'devilry.gradeeditors.ConfigEditorWindow',
-        'devilry.gradeeditors.GradeEditorSelectForm'
+        'devilry.gradeeditors.GradeEditorSelectForm',
+        'devilry.extjshelpers.NotificationManager'
     ],
 
     config: {
@@ -138,8 +140,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
             text: 'Students',
-            enableToggle: true,
-            menu: [],
             scale: 'large',
             listeners: {
                 scope: this,
@@ -151,7 +151,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             text: 'Advanced options',
             enableToggle: true,
             scale: 'large',
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onAdvanced
@@ -161,7 +160,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
             scale: 'large',
-            //menu: [],
             listeners: {
                 scope: this,
                 click: this.onSelectGradeEditorBtn,
@@ -308,7 +306,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             xtype: 'restfulsimplified_editpanel',
             model: this.modelname,
             editform: Ext.widget('administrator_assignmentadvancedform'),
-            record: this.record
+            record: this.record,
+            saveSuccessMessage: 'Advanced options saved'
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
             title: 'Advanced options',
@@ -321,12 +320,13 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 }
             }
         });
+        this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
+        this.alignToCoverBody(editwindow);
     },
 
     onStudents: function() {
-        var studentswindow = Ext.create('Ext.window.Window', {
+        var studentswindow = Ext.widget('maximizablewindow', {
             title: 'Students',
             width: 926,
             height: 500,
@@ -344,13 +344,38 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 isAdministrator: true
             },
             listeners: {
+                scope: this
+                //close: function() {
+                    //this.studentsbutton.toggle(false);
+                //}
+            }
+        });
+        //this.setSizeToCoverBody(studentswindow);
+        studentswindow.show();
+        //this.alignToCoverBody(studentswindow);
+    },
+
+
+    onEdit: function(button) {
+        var editpanel = Ext.ComponentManager.create({
+            xtype: 'restfulsimplified_editpanel',
+            model: this.modelname,
+            editform: Ext.widget('administrator_assignmentform'),
+            record: this.record,
+            saveSuccessMessage: 'Assignment successfully saved'
+        });
+        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            editpanel: editpanel,
+            prettyview: this,
+            listeners: {
                 scope: this,
                 close: function() {
-                    this.studentsbutton.toggle(false);
+                    button.toggle(false);
                 }
             }
         });
-        studentswindow.show();
-        studentswindow.alignTo(this.studentsbutton, 'bl', [0, 0]);
-    }
+        this.setSizeToCoverBody(editwindow);
+        editwindow.show();
+        this.alignToCoverBody(editwindow);
+    },
 });

@@ -3,6 +3,10 @@
  * Note that this class depends on createRecordFromStoreRecord(),
  * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines', {
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow'
+    ],
+
     /**
      * @private
      */
@@ -41,17 +45,24 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
         var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
         this.getEl().mask(msg);
 
-        var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
-        newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
-        newDeadlineRecord.save({
+        this.statics().createDeadline(assignmentGroupRecord, deadlineRecord, this.deadlinemodel, {
+            scope: this,
             failure: function() {
-                console.error('Failed to save record');
+                console.error('Failed to save deadline record');
             }
         });
 
         if(index == total) {
             this.loadFirstPage();
             this.getEl().unmask();
+        }
+    },
+
+    statics: {
+        createDeadline: function(assignmentGroupRecord, deadlineRecord, deadlinemodel, saveopt) {
+            var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, deadlinemodel);
+            newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
+            newDeadlineRecord.save(saveopt);
         }
     }
 });

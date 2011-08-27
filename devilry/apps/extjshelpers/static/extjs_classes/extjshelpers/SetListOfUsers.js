@@ -19,9 +19,9 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
         helptpl: Ext.create('Ext.XTemplate',
             '<section class="helpsection">',
             '   {helptext}',
-            '   <pre style="border: 1px solid #999; padding: 5px;">{example}</pre>',
+            '   <pre style="padding: 5px;">{example}</pre>',
             '</section>'
-        ),
+        )
     },
 
 
@@ -97,7 +97,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
                 usernames.push(username);
             }
         });
-        return usernames;
+        return Ext.Array.unique(usernames);
     },
 
     setValueFromArray: function(arrayOfUsernames) {

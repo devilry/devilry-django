@@ -33,7 +33,8 @@
         
 
         deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
-                
+        deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{"field":"assignment_group__is_open","comp":"exact","value":true}]);
+        
         deadlinestore.load();
         
         //var deadlinetpl = Ext.create('Ext.XTemplate',
@@ -60,20 +61,27 @@
             frameHeader: false,
             frame: false,
             border: false,
+            sortableColumns: false,
             columnLines: false,
             renderTo: 'dashtable',
             cls: 'selectable-grid',
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
             columns: [{
                 text: 'Subject',
+                menuDisabled: true,
+                hideable: false,
                 dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
                 flex: 20
             },{
                 text: 'Assignment',
+                menuDisabled: true,
+                hideable: false,
                 flex: 15,
                 dataIndex: 'assignment_group__parentnode__long_name'
             },{
                 text: 'Deadline',
+                menuDisabled: true,
+                hideable: false,
                 flex: 15,
                 dataIndex: 'deadline',
                 renderer: function(value) {
@@ -91,7 +99,6 @@
                 }
             }
         });
-        console.log(listView);
         
     });
 

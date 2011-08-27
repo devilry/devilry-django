@@ -13,7 +13,7 @@
     {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject,admins" }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,feedbackdelivery,assignment,period,subject,users" }};
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
@@ -53,28 +53,9 @@
         prettyview.addListener('loadmodel', function(record) {
             heading.update(record.data);
             {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
-            {# prettyview.onStudents(); #}
-        });
-
-        prettyview.addListener('edit', function(record, button) {
-            var editpanel = Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
-                model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-                editform: Ext.widget('administrator_assignmentform'),
-                record: record
-            });
-            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                editpanel: editpanel,
-                prettyview: prettyview,
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        button.toggle(false);
-                    }
-                }
-            });
-            editwindow.show();
-            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
+            {# Ext.Function.defer(function() { prettyview.onStudents(); }, 200); #}
+            {# Ext.Function.defer(function() { Ext.ComponentQuery.query('studentsmanager')[0].onPreviouslyPassed(); }, 1000); #}
+            {# Ext.Function.defer(function() { prettyview.onEdit(prettyview.editbutton); }, 200); #}
         });
     });
 </script>

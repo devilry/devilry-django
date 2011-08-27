@@ -2,7 +2,14 @@
 Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     extend: 'devilry.extjshelpers.RestfulSimplifiedEditPanelBase',
     alias: 'widget.restfulsimplified_editpanel',
-    requires: ['devilry.extjshelpers.RestSubmit'],
+    requires: [
+        'devilry.extjshelpers.RestSubmit',
+        'devilry.extjshelpers.NotificationManager'
+    ],
+
+    config: {
+        saveSuccessMessage: undefined
+    },
 
     constructor: function(config) {
         this.initConfig(config);
@@ -35,6 +42,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     onSaveSuccess: function(form, action) {
         var record = action.record;        
+        devilry.extjshelpers.NotificationManager.show({
+            title: 'Save successful',
+            message: this.saveSuccessMessage
+        });
         this.fireEvent('saveSucess', record);
     },
 

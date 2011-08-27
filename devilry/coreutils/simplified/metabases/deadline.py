@@ -26,7 +26,7 @@ class SimplifiedDeadlineMetaMixin(object):
                              assignment=['assignment_group__parentnode__id',
                                          'assignment_group__parentnode__short_name',
                                          'assignment_group__parentnode__long_name'],
-                             assignment_group=['assignment_group__name'],
+                             assignment_group=['assignment_group__name', 'assignment_group__is_open'],
                              assignment_group_users=['assignment_group__examiners__username',
                                                      'assignment_group__candidates__identifier']
                              )
@@ -43,6 +43,9 @@ class SimplifiedDeadlineMetaMixin(object):
                           FilterSpec('deadline'),
                           FilterSpec('assignment_group'),
                           FilterSpec('number_of_deliveries'),
+                          ForeignFilterSpec('assignment_group',  # Assignment
+                                            FilterSpec('is_open'),
+                                            FilterSpec('name')),
                           ForeignFilterSpec('assignment_group__parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
