@@ -31,7 +31,6 @@ Ext.define('devilry.extjshelpers.ButtonBar', {
     },
 
     updateMask: function() {
-        console.log(this.loadedItems);
         if(this.loadedItems == this.items.items.length) {
             this.getEl().unmask();
             if(this.loadedWithRecords == 0) {

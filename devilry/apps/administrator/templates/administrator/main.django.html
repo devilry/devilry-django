@@ -26,9 +26,9 @@
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }};
 
     var nodestore = {{ restfulapi.RestfulSimplifiedNode|extjs_store }};
+    var subjectnodestore = {{ restfulapi.RestfulSimplifiedNode|extjs_store }};
     var subjectstore = {{ restfulapi.RestfulSimplifiedSubject|extjs_store }};
     var periodstore = {{ restfulapi.RestfulSimplifiedPeriod|extjs_store }};
-    var assignmentstore = {{ restfulapi.RestfulSimplifiedAssignment|extjs_store }};
 
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.ButtonBar', {
@@ -58,7 +58,7 @@
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Subject',
-                store: subjectstore,
+                store: subjectnodestore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
@@ -78,7 +78,7 @@
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Period/Semester',
-                store: periodstore,
+                store: subjectstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
@@ -98,7 +98,7 @@
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Assignment',
-                store: assignmentstore,
+                store: periodstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
