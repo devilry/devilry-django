@@ -21,9 +21,21 @@ class Manual(JsonRegistryItem):
     def validate_draft(cls, draftstring, configstring):
         buf = json.loads(draftstring)
         is_approved = buf[0]
+        points = buf[1]
+        grade = buf[2]
+        feedback = buf[3]
 
         if not isinstance(is_approved, bool):
             raise DraftValidationError('The draft string must contain a boolean value.')
+
+        if not isinstance(points, int):
+            raise DraftValidationError('The points-field must contain a number')
+
+        if grade == '':
+            raise DraftValidationError('The grade-field cannot be empty')
+
+        if feedback == '':
+            raise DraftValidationError('The feedback-field cannot be empty')
 
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):

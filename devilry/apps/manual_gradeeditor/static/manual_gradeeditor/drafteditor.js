@@ -85,7 +85,7 @@
     onSaveDraft: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraft(draft, this.onFailure);
+            this.getMainWin().saveDraft(draft);
         }
     },
 
@@ -95,7 +95,7 @@
     onPublish: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
+            this.getMainWin().saveDraftAndPublish(draft);
         }
     },
 
@@ -105,14 +105,6 @@
      */
     getMainWin: function() {
         return this.up('gradedrafteditormainwin');
-    },
-
-    /**
-     * @private
-     * Used by onSaveDraft and onPublish to handle save-failures.
-     */
-    onFailure: function() {
-        console.error('Failed!');
     },
 
     /**
