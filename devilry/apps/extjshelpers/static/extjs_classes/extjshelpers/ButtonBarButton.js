@@ -3,6 +3,7 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
     extend: 'Ext.button.Button',
     alias: 'widget.buttonbarbutton',
     scale: 'large',
+    hidden: true,
 
     config: {
         /**
@@ -23,16 +24,23 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
          * @cfg
          * If defined, the handler is set to open this url.
          */
-        clickurl: undefined
+        clickurl: undefined,
+
+        /**
+         * @cfg
+         * The store to use to check if this button should be visible. The store will have it pageSize set to 1.
+         */
+        store: undefined
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
     
     initComponent: function() {
         var me = this;
+        this.loadStore();
         if(this.clickurl) {
             this.handler = function() {
                 window.location = me.clickurl;
@@ -51,6 +59,20 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
             },
         });
         this.callParent(arguments);
-    }
+    },
 
+    loadStore: function() {
+        this.store.proxy.extraParams.page = 1;
+        this.store.pageSize = 1;
+        this.store.load({
+            scope: this,
+            callback: function(records) {
+                if(this.store.totalCount) {
+                    this.show();
+                }
+                this.up('buttonbar').notifyStoreLoad(this.store.totalCount > 0);
+                //this.up('buttonbar').notifyStoreLoad(false);
+            }
+        });
+    }
 });

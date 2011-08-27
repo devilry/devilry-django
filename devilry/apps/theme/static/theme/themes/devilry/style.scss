@@ -221,6 +221,14 @@ header {
         li.administrator-navitem a {
             @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
         }
+        li.externallink-navitem a {
+            @include navitemlink(#444, #fff, #333);
+            border-radius: $radiussize_small $radiussize_big 0 0;
+            background-image: url(icons/16x16/external-link.png) !important;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            padding-left: 32px;
+        }
     }
 
     /* Color the bottom border of the header with the color of the current section. */
@@ -679,16 +687,20 @@ table.verticalinfotable {
     }
 }
 
-
-section.extravisible {
+@mixin extravisibleBox($minHeight) {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 10px 10px 10px 158px !important;
+    padding: 10px 10px 10px ($minHeight + 40px) !important;
     background-position: 10px 10px;
-    min-height: 148px !important;
+    min-height: $minHeight !important;
     margin: 20px !important;
     box-shadow: 0 0 5px 5px #aaa;
-    
+}
+section.extravisible {
+    @include extravisibleBox(128px);
+}
+section.extravisible-small {
+    @include extravisibleBox(64px);
 }
 
 
