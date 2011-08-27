@@ -554,6 +554,14 @@ table.verticalinfotable {
 .selectable-grid tr.x-grid-row .x-grid-cell-inner {
   padding: 8px; }
 
+section.no-permissions {
+  font-weight: bold;
+  background-color: #cc4400;
+  color: #ffeee5;
+  border-radius: 20px;
+  font-size: 2.0em;
+  padding: 20px; }
+
 section.extravisible {
   border-radius: 14px;
   padding: 10px 10px 10px 158px !important;
