@@ -1,14 +1,16 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
-
+from tempfile import TemporaryFile
 from devilry.apps.gradeeditors.restful import examiner as gradeeditors_restful
 from devilry.utils.module import dump_all_into_dict
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from ..core.models import (Assignment)
+from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 import zipfile
 import tarfile
-import os
+import os, glob
+import shutil
 import restful
 
 
@@ -48,60 +50,71 @@ class CompressedFileDownloadView(View):
 
     def _get_candidates_as_string(self, candidates):
         candidates_as_string = ""
+        size = len(candidates)-1
         for candidate in candidates:
             candidates_as_string += str(candidate)
-            candidates_as_string += "-"
+            if candidate == candidates[size]:
+                candidates_as_string += "_"
+            else:
+                candidates_as_string += "-"
         return candidates_as_string
             
     def get(self, request, assignmentid):
-        print "#", assignmentid, "#"
         assignment = get_object_or_404(Assignment, id=assignmentid)
-        root = os.getcwd()
-        print dir(assignment)
+        
+        basedir = os.getcwd()
+        os.mkdir("deliveries")
+        os.chdir(os.path.join(os.getcwd(), "deliveries"))
+        
+        zip_file_name = assignment.short_name + ".zip"
+        tempfile = TemporaryFile()
+        zip_file = zipfile.ZipFile(tempfile, 'w');        
+                
         for assignmentgroup in assignment.assignmentgroups.all():
-            print assignmentgroup
+            
             candidates = self._get_candidates_as_string(assignmentgroup.candidates.all())
             candidates += str(assignmentgroup.id)
             
             for deadline in assignmentgroup.deadlines.all():
+            
                 deadline_dir = os.getcwd()
-                deadline_dir_name = deadline.deadline.strftime("%d-%m-%Y")
+                deadline_dir_name = deadline.deadline.strftime("%d-%m-%Y_")
+                deadline_dir_name += str(assignmentgroup.id)
                 os.mkdir(deadline_dir_name)
-                print " ", deadline_dir_name
+                
                 os.chdir(os.path.join(os.getcwd(), deadline_dir_name))
                 os.mkdir(candidates)
+                
                 for delivery in deadline.deliveries.all():
                     delivery_dir = os.getcwd()
-                    print "  ", delivery
                     os.chdir(os.path.join(os.getcwd(), candidates))
                     os.mkdir(str(delivery.number))
+                    
                     for filemeta in delivery.filemetas.all():
                         filemeta_dir = os.getcwd()
                         os.chdir(os.path.join(os.getcwd(), str(delivery.number)))
                         file_content = filemeta.deliverystore.read_open(filemeta)
                         ut = open(filemeta.filename, 'w')
-                        ut.write(file_content.read())
+                        ut.write(file_content.read())                                            
                         ut.close()
                         os.chdir(filemeta_dir)
-                        print "   ", filemeta
-                    os.chdir(delivery_dir)
                         
+                    os.chdir(delivery_dir)                        
                 os.chdir(deadline_dir)
-        # delivery = get_object_or_404(Delivery, id=deliveryid)
-        # zip_file_name = str(delivery.delivered_by) + ".zip"
+        os.chdir(basedir)
 
-        # tempfile = TemporaryFile()
-        # zip_file = zipfile.ZipFile(tempfile, 'w');
+        for root, dirs, files in os.walk(os.path.join(os.getcwd(), "deliveries")):
+            for fn in files:
+                absolute_fn = os.path.join(root, fn)
+                relative_fn = absolute_fn[len(basedir)+len(os.sep):]
+                zip_file.write(absolute_fn, relative_fn)        
+        zip_file.close()
+        shutil.rmtree(os.path.join(os.getcwd(), "deliveries"))
 
-        # for filemeta in delivery.filemetas.all():
-            # file_content = filemeta.deliverystore.read_open(filemeta)
-            # zip_file.write(file_content.name, filemeta.filename)
-        # zip_file.close()
-
-        # tempfile.seek(0)
-        # response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
-                                # content_type="application/zip")
-        # response['Content-Disposition'] = "attachment; filename=%s" % \
-            # zip_file_name.encode("ascii", 'replace')
-        # response['Content-Length'] = stat(tempfile.name).st_size
-        return HttpResponse("Hei Verden")
+        tempfile.seek(0)
+        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
+                                content_type="application/zip")
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+            zip_file_name.encode("ascii", 'replace')
+        response['Content-Length'] = os.stat(tempfile.name).st_size
+        return response #HttpResponse("Hei Verden")
