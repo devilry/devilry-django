@@ -27,6 +27,12 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
         '           </ul>',
         '       </li>',
         '       <li><a href="#{idprefix}-escaping">Escaping</a></li>',
+        '       <li><a href="#{idprefix}-math">LaTeX math</a>',
+        '           <ul>',
+        '               <li><a href="#{idprefix}-inlinemath">Inline</a></li>',
+        '               <li><a href="#{idprefix}-blockmath">Block</a></li>',
+        '           </ul>',
+        '       </li>',
         '   </ul>',
 
 
@@ -65,7 +71,18 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
 
 
         '   <h2 id="{idprefix}-escaping">Escaping</h2>',
-        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with the backslash (\\). Markdown will ignore the character directly after a backslash.</p>'
+        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with the backslash (\\). Markdown will ignore the character directly after a backslash.</p>',
+
+        '   <h2 id="{idprefix}-math">LaTeX Math</h2>',
+        '   <p>We provide two methods for writing <a href="http://www.mathjax.org/">MathJax</a> compatible math. <strong>Note:</strong> You must escape <em>backslash</em> as <a href="#{idprefix}-escaping">described above</a>.</p>',
+
+        '   <h3 id="{idprefix}-inlinemath">Inline</h3>',
+        '   <p>For inline math, use <code>$math$your math here$/math$</code>. For example:</p>',
+        '   <pre>You know that $math$2^3 = 10$/math$ right?</pre>',
+
+        '   <h3 id="{idprefix}-blockmath">Block</h3>',
+        '   <p>For a block of math (a centered paragrath), use <code>$mathBlock$your math here$/mathBlock$</code>. For example:</p>',
+        '   <pre>$mathblock$\n^3/_7\n$/mathblock$</pre>'
     ),
 
     initComponent: function() {
