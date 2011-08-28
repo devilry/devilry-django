@@ -30,7 +30,7 @@
                     tpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
+                        clickLinkTpl: DASHBOARD_URL + 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
                     }
                 }
             }, {
@@ -42,7 +42,7 @@
                     tpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View/edit',
-                        clickLinkTpl: 'assignmentgroup/{id}'
+                        clickLinkTpl: DASHBOARD_URL + 'assignmentgroup/{id}'
                     },
                     menuitems: [{
                         text: 'Show deliveries',
@@ -58,7 +58,7 @@
                     tpl: '{{ restfulapi.RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View',
-                        clickLinkTpl: 'assignment/{id}'
+                        clickLinkTpl: DASHBOARD_URL + 'assignment/{id}'
                     },
                     menuitems: [{
                         text: 'Show groups',
