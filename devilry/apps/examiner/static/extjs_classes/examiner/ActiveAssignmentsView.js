@@ -12,6 +12,11 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     config: {
         model: undefined
     },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
     
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
@@ -22,7 +27,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             autoSync: true
         });
 
-        this.model.proxy.extraParams.filters = Ext.JSON.encode([{
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode__start_time',
             comp: '<',
             value: devilry.extjshelpers.DateTime.restfulNow()
@@ -31,6 +36,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
+        this.store.pageSize = 500; // A bit ugly, but we do not want to make it unlimited??
     },
 
     createBody: function() {
@@ -77,8 +83,8 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h1>Assignments</h1>'
-        })
+            html: '<h2>Assignment in an active period/semester</h2>'
+        });
         this.add(activeAssignmentsGrid);
     }
 
