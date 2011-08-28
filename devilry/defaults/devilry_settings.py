@@ -14,6 +14,7 @@ DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the se
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 #DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
+DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-documentation'
 
