@@ -17,6 +17,28 @@
     var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/student/';
 
     Ext.require('devilry.student.StudentSearchWidget');
+    Ext.require('devilry.extjshelpers.PermissionChecker');
+
+
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
+    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
+    assignmentgroup_permcheckstore.pageSize = 1;
+    
+    Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [assignmentgroup_permcheckstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not a student</h1><p>You are not registered as student on anything in Devilry.</p></section>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                }
+            }
+        });
+        assignmentgroup_permcheckstore.load();
+    });
+
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
             renderTo: 'searchwidget-container',
@@ -120,6 +142,7 @@ have permission to view as a <strong>student</strong>. You can, for example, sea
 related to subject, or search for a specific assignment.
 
 
+<div id="no-permissions-message"></div>
 <section>
     <h1>Assignments / Add deliveries</h1>
     <section id="dashtable"></section>
