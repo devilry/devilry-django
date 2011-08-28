@@ -4,6 +4,33 @@
 {% block headextra %}
 {{ block.super }}
 <script>
+    Ext.require('devilry.extjshelpers.PermissionChecker');
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
+    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
+    assignmentgroup_permcheckstore.pageSize = 1;
+
+    Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [assignmentgroup_permcheckstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an examiner</h1>' +
+                '<p>You are not registered as examiner on anything in Devilry. ' +
+                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
+                '</p></section>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.getDom('has-permission-section').style.display = 'block';
+                    Ext.getDom('searchsection').style.display = 'block';
+                }
+            }
+        });
+        assignmentgroup_permcheckstore.load();
+    });
+
     Ext.onReady(function() {
         var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
         
@@ -15,15 +42,10 @@
             autoSync: true
         });
 
-        //dashboard_assignment_store.proxy.extraParams.result_fieldgroups = Ext.JSON.encode(["subject"]);
-        
         dashboard_assignment_store.load();        
-        
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
             groupHeaderTpl: '{name}',
         });
-        
-        
         var listView = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
@@ -65,15 +87,16 @@
         });
     });
 
-
 </script>
 
 {% endblock %}
 
+{% block searchsectionstyle %}display: none;{% endblock %}
 
 {% block main %}
 {{ block.super }}
-<section>
+<div id="no-permissions-message"></div>
+<section id="has-permission-section" style="display: none">
     <h1>Assignments</h1>
     <section id="dashtable"></section>
 </section>
