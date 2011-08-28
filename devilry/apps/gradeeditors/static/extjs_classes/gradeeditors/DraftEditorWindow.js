@@ -2,13 +2,14 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditormainwin',
     title: 'Create feedback',
-    width: 500,
-    height: 400,
+    width: 800,
+    height: 600,
     layout: 'fit',
     modal: true,
     requires: [
         'devilry.extjshelpers.NotificationManager',
-        'devilry.gradeeditors.FailureHandler'
+        'devilry.gradeeditors.FailureHandler',
+        'devilry.markup.MarkdownFullEditor'
     ],
 
     config: {

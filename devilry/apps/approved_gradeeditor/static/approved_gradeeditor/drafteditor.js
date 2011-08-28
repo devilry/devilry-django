@@ -32,15 +32,19 @@
      *      current assignment.
      */
     initializeEditor: function() {
-
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: 'Is the assignment approved?',
             flex: 0
         });
-        this.textarea = Ext.widget('textareafield', {
-            fieldLabel: 'Enter feedback',
-            flex: 1
+        //this.textarea = Ext.widget('textareafield', {
+            //fieldLabel: 'Enter feedback',
+            //flex: 1
+        //});
+        this.textarea = Ext.widget('markdownfulleditor', {
+            flex: 1,
+            title: 'Enter feedback'
         });
+
         this.add(this.checkbox);
         this.add(this.textarea);
     },
