@@ -508,6 +508,9 @@ section.helpsection {
   background-color: #000 !important;
   width: 100% !important; }
 
+.x-window-maximized {
+  width: 100% !important; }
+
 /*
  *
  * General purpose style classes
