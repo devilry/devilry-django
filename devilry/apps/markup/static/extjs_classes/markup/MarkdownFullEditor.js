@@ -2,9 +2,11 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.markdownfulleditor',
     layout: 'fit',
+    requires: [
+        'devilry.extjshelpers.HelpWindow'
+    ],
 
     markdownHelp: Ext.create('Ext.XTemplate',
-        '<section class="helpsection">',
         '   <h1>Devilry-flavoured markdown</h1>',
         '   <p>Devilry uses a special configuration of a markup language named Markdown.</p>',
         '   <ul class="right_toc">',
@@ -63,9 +65,7 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
 
 
         '   <h2 id="{idprefix}-escaping">Escaping</h2>',
-        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with the backslash (\\). Markdown will ignore the character directly after a backslash.</p>',
-
-        '</section>'
+        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with the backslash (\\). Markdown will ignore the character directly after a backslash.</p>'
     ),
 
     initComponent: function() {
@@ -293,34 +293,11 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
      * @private
      */
     onHelp: function() {
-        var win = Ext.widget('window', {
+        Ext.widget('helpwindow', {
             title: 'Devilry-flavoured markdown',
-            modal: true,
             width: this.up('window').getWidth(),
             height: this.up('window').getHeight(),
-            layout: 'fit',
-            closable: false, // To easy to double click and close the editor
-            items: {
-                xtype: 'box',
-                cls: 'helpbox',
-                autoScroll: true,
-                html: this.markdownHelp.apply(idprefix=this.getId())
-            },
-            dockedItems: [{
-                xtype: 'toolbar',
-                ui: 'footer',
-                dock: 'bottom',
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Close help',
-                    scale: 'large',
-                    listeners: {
-                        click: function() {
-                            this.up('window').close();
-                        }
-                    }
-                }, '->']
-            }]
+            helptext: this.markdownHelp.apply(idprefix=this.getId())
         }).show();
     }
 });
