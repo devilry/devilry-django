@@ -8,7 +8,7 @@ Defaults for settings defined by Devilry.
 DEVILRY_MAIN_PAGE = ''
 
 # The default grade-plugin:
-DEVILRY_DEFAULT_GRADEEDITOR='asminimalaspossible'
+DEVILRY_DEFAULT_GRADEEDITOR='approved'
 
 DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
