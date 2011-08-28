@@ -1,7 +1,9 @@
 Ext.define('devilry.extjshelpers.PermissionChecker', {
     extend: 'Ext.Component',
+    hidden: true,
     config: {
-        stores: []
+        stores: [],
+        emptyHtml: undefined
     },
 
     constructor: function(config) {
@@ -23,6 +25,8 @@ Ext.define('devilry.extjshelpers.PermissionChecker', {
             this.fireEvent('allLoaded', this.loadedItems, this.loadedWithRecords);
             if(this.loadedWithRecords === 0) {
                 this.fireEvent('noPermission', this.loadedItems, this.loadedWithRecords);
+                this.update(this.emptyHtml);
+                this.show();
             } else {
                 this.fireEvent('hasPermission', this.loadedItems, this.loadedWithRecords);
             }
