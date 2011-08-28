@@ -107,17 +107,6 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onHelp: function() {
-        if(!this.helpwindow) {
-            this.helpwindow = Ext.widget('helpwindow', {
-                title: 'Help',
-                width: this.getWidth(),
-                height: this.getHeight(),
-                closeAction: 'hide',
-                //width: this.getDraftEditor().helpwidth || 600,
-                //height: this.getDraftEditor().helpheight || 500,
-                helptext: this.getDraftEditor().help
-            });
-        }
         this.helpwindow.show();
     },
 
@@ -135,6 +124,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onLoadDraftEditorSuccess: function() {
+        this.helpwindow = Ext.widget('helpwindow', {
+            title: 'Help',
+            closeAction: 'hide',
+            //width: this.getDraftEditor().helpwidth || 600,
+            //height: this.getDraftEditor().helpheight || 500,
+            helptext: this.getDraftEditor().help
+        });
 
         if(this.getDraftEditor().help) {
             this.buttonBar.insert(0, {
