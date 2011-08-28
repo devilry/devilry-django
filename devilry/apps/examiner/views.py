@@ -67,7 +67,15 @@ class CompressedFileDownloadView(View):
                 relative_fn = absolute_fn[len(basedir)+len(os.sep):]
                 zip_file.write(absolute_fn, relative_fn)
         zip_file.close()
-            
+
+    def _copy_file_from_deliverystore(self, filemeta):
+        file_content = filemeta.deliverystore.read_open(filemeta)
+        ut = open(filemeta.filename, 'wb')
+        for data in file_content:
+            ut.write(data)
+        ut.close()
+
+    #TODO use temporary directory
     def get(self, request, assignmentid):
         assignment = get_object_or_404(Assignment, id=assignmentid)
         
@@ -99,11 +107,8 @@ class CompressedFileDownloadView(View):
                     os.chdir(os.path.join(os.getcwd(), str(delivery.number)))
                     
                     for filemeta in delivery.filemetas.all():                        
-                        file_content = filemeta.deliverystore.read_open(filemeta)
-                        ut = open(filemeta.filename, 'wb')
-                        for data in file_content:
-                            ut.write(data)                                            
-                        ut.close()                        
+                        self._copy_file_from_deliverystore(filemeta)
+                        
                     os.chdir(delivery_dir)                        
                 os.chdir(deadline_dir)
         os.chdir(basedir)
