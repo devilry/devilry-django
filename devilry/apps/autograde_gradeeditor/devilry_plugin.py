@@ -31,32 +31,39 @@ class Manual(JsonRegistryItem):
     @classmethod
     def validate_config(cls, configstring):
         config = cls.decode_configstring(configstring)
-        cls.validate_dict(config, ConfigValidationError, {'maxpoints': int,
-                                                          'grades': list,
-                                                          'approvedlimit': int})
-
-
-        if config['approvedlimit'] > config['maxpoints']:
-            raise ConfigValidationError('The approvedlimit-value must be smaller than the maxpoints-value')
 
         if config['maxpoints'] < 0:
-            raise ConfigValidationError('maxpoints-value must be higher than 0')
+            raise ConfigValidationError('Maximum points must be a number higher than 0')
 
         if config['approvedlimit'] < 0:
-            raise ConfigValidationError('The approvedlimit-value must be higher than 0')
+            raise ConfigValidationError('Points to pass must be a number higher than 0')
+
+        if config['approvedlimit'] > config['maxpoints']:
+            raise ConfigValidationError('Maximum points must be smaller than points to pass')
+
+        if len(config['grades']) == 0:
+            raise ConfigValidationError('You have to enter at least one grade')
+
+        hasZeroGrade = False
 
         for grade in config['grades']:
             if grade[0] == '':
-                raise ConfigValidationError('grade-name cannot be empty')
+                raise ConfigValidationError('Grade-name cannot be empty')
 
             if grade[1] == '':
-                raise ConfigValidationError('grade-value cannot be empty')
+                raise ConfigValidationError('Grade-value cannot be empty')
 
             if int(grade[1]) > config['maxpoints']:
-                raise ConfigValidationError("grade-value cannot be higher than maxpoints, grade-value = '{}' , maxpoints = '{}' ".format(grade[1], config['maxpoints']))
+                raise ConfigValidationError("Grade-value cannot be higher than maxpoints, grade-value = '{}' , maxpoints = '{}' ".format(grade[1], config['maxpoints']))
 
             if grade[1] < 0:
-                raise ConfigValidationError('grade-value cannot be smaller than 0')
+                raise ConfigValidationError('Grade-value cannot be smaller than 0')
+
+            if grade[0] == 0:
+                hasZeroGrade = True
+
+        if not hasZeroGrade:
+            raise ConfigValidationError("You have to enter a grade with pointlimit 0")
 
 
 

@@ -4,6 +4,18 @@
     border: false,
     frame: false,
     xtype: 'form', // Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.
+    help: '<h3>Points to pass assignment:</h3>'+
+        '<p>This is where you enter the minimum number of points needed to pass this assignment.</p>'+
+        '<h3>Maximum number of points:</h3>'+
+        '<p>This is where you enter the maximum number of points one can get for this assignment.</p>'+
+        '<h3>Grades:</h3>'+
+        '<p>In this gradeeditor you can choose what grades and pointlimits you want for every grade. '+
+        'For instance, if you want to make an assignment where the grading is <em>Approved/Not approved</em> you '+
+        'can enter this:</p>'+
+        '<p>Approved: 30 </br>Not approved: 0</p>'+
+        '<p>and deliveries given 30 points or more will get the grade <em>Approved</em> '+
+        'and deliveries with 29 points or less will get the grade <em>Not approved</em>.</p>'+
+        '',
     
     layout: {
         type: 'vbox',
@@ -32,7 +44,7 @@
         var configobj = {
             maxpoints: 'Example: 100',
             approvedlimit: 'Example: 60',
-            grades: 'Example: approved: 60'
+            grades: 'Press help for example'
         };
 
         // Create and add the fields
@@ -77,7 +89,7 @@
                 approvedlimit: this.approvedlimitField.getValue(),
                 grades: this.parseTextToGradeList(this.gradeField.getValue()),
             });
-            this.getMainWin().saveConfig(config, this.onFailure);
+            this.getMainWin().saveConfig(config);
         }
     },
 
@@ -87,14 +99,6 @@
      */
     getMainWin: function() {
         return this.up('gradeconfigeditormainwin');
-    },
-
-    /**
-     * @private
-     * Used by onSave to handle save-failures.
-     */
-    onFailure: function() {
-        console.error('Failed!');
     },
 
     parseGradeValue: function(gradestring) {
