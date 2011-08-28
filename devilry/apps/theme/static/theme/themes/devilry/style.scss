@@ -858,6 +858,13 @@ section.treeheading {
     @include warningInlineItem();
 }
 
+.group_is_corrected {
+    @include goodInlineItem();
+}
+
+.group_is_uncorrected {
+    @include warningInlineItem();
+}
 
 .menuheader {
     font-weight:bold;

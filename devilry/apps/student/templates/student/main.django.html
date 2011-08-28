@@ -87,6 +87,12 @@
                 renderer: function(value) {
                     return rowTpl.apply(value);
                 }
+            },{
+                text: '#Deliveries',
+                menuDisabled: true,
+                hideAble: false,
+                flex: 5,
+                dataIndex: 'number_of_deliveries'
             }],
             listeners: {
                 scope: this,
@@ -115,7 +121,7 @@ related to subject, or search for a specific assignment.
 
 
 <section>
-    <h1>Active deadlines</h1>
+    <h1>Assignments / Add deliveries</h1>
     <section id="dashtable"></section>
 </section>
 {% endblock %}
