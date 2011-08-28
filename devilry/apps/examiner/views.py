@@ -58,6 +58,14 @@ class CompressedFileDownloadView(View):
             else:
                 candidates_as_string += "-"
         return candidates_as_string
+
+    def _add_directory_to_zipfile(self, zip_file, basedir):
+        for root, dirs, files in os.walk(os.path.join(os.getcwd(), "deliveries")):
+            for fn in files:
+                absolute_fn = os.path.join(root, fn)
+                relative_fn = absolute_fn[len(basedir)+len(os.sep):]
+                zip_file.write(absolute_fn, relative_fn)
+        zip_file.close()
             
     def get(self, request, assignmentid):
         assignment = get_object_or_404(Assignment, id=assignmentid)
@@ -103,12 +111,7 @@ class CompressedFileDownloadView(View):
                 os.chdir(deadline_dir)
         os.chdir(basedir)
 
-        for root, dirs, files in os.walk(os.path.join(os.getcwd(), "deliveries")):
-            for fn in files:
-                absolute_fn = os.path.join(root, fn)
-                relative_fn = absolute_fn[len(basedir)+len(os.sep):]
-                zip_file.write(absolute_fn, relative_fn)        
-        zip_file.close()
+        self._add_directory_to_zipfile(zip_file, basedir)
         shutil.rmtree(os.path.join(os.getcwd(), "deliveries"))
 
         tempfile.seek(0)
