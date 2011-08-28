@@ -615,12 +615,30 @@ section.helpsection {
     //opacity: 1.0 !important;
 //}
 
-.x-mask {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
-    opacity: 0.7 !important;
+@mixin overlayMask($opacity) {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100})" !important;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100}) !important;
+    opacity: $opacity !important;
     background-color: #000 !important;
     width: 100% !important;
+}
+
+.x-mask {
+    @include overlayMask(0.7);
+}
+.page-load-mask {
+    //width: 600px !important;
+    //height: 400px !important;
+    padding: 20px !important;
+    border-radius: 20px;
+    background-color: #000 !important;
+    border: none !important;
+    div {
+        background-color: transparent !important;
+        color: #666 !important;
+        border: none !important;
+        font-size: 1.2em !important;
+    }
 }
 .x-window-maximized {
     width: 100% !important;
@@ -766,7 +784,8 @@ table.verticalinfotable {
     background-position: 10px 10px;
     min-height: $minHeight !important;
     margin: 20px !important;
-    box-shadow: 0 0 5px 5px #aaa;
+    background-color: #fff;
+    box-shadow: 0 0 2px 2px #aaa;
 }
 section.extravisible {
     @include extravisibleBox(128px);

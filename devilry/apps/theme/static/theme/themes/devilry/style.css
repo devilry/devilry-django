@@ -508,6 +508,17 @@ section.helpsection {
   background-color: #000 !important;
   width: 100% !important; }
 
+.page-load-mask {
+  padding: 20px !important;
+  border-radius: 20px;
+  background-color: #000 !important;
+  border: none !important; }
+  .page-load-mask div {
+    background-color: transparent !important;
+    color: #666 !important;
+    border: none !important;
+    font-size: 1.2em !important; }
+
 .x-window-maximized {
   width: 100% !important; }
 
@@ -638,7 +649,8 @@ section.extravisible {
   background-position: 10px 10px;
   min-height: 128px !important;
   margin: 20px !important;
-  box-shadow: 0 0 5px 5px #aaa; }
+  background-color: #fff;
+  box-shadow: 0 0 2px 2px #aaa; }
 
 section.extravisible-small {
   border-radius: 14px;
@@ -646,7 +658,8 @@ section.extravisible-small {
   background-position: 10px 10px;
   min-height: 64px !important;
   margin: 20px !important;
-  box-shadow: 0 0 5px 5px #aaa; }
+  background-color: #fff;
+  box-shadow: 0 0 2px 2px #aaa; }
 
 section.ok-small {
   padding: 0px 0 0 84px;
