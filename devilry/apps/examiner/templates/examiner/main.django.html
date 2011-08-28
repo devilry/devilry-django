@@ -5,6 +5,7 @@
 {{ block.super }}
 <script>
     Ext.require('devilry.extjshelpers.PermissionChecker');
+    Ext.require('devilry.extjshelpers.DateTime');
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
     var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
     assignmentgroup_permcheckstore.pageSize = 1;
@@ -25,15 +26,15 @@
                 hasPermission: function() {
                     Ext.getDom('has-permission-section').style.display = 'block';
                     Ext.getDom('searchsection').style.display = 'block';
+                    createActiveAssignmentsView();
                 }
             }
         });
         assignmentgroup_permcheckstore.load();
     });
 
-    Ext.onReady(function() {
-        var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
-        
+    var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    function createActiveAssignmentsView() {
         var dashboard_assignment_store = Ext.create('Ext.data.Store', {
             model: dashboard_assignment_model,
             groupField: 'parentnode__parentnode__long_name',
@@ -42,16 +43,25 @@
             autoSync: true
         });
 
-        dashboard_assignment_store.load();        
+        dashboard_assignment_model.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode__start_time',
+            comp: '<',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'parentnode__end_time',
+            comp: '>',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }]);
+        //console.log(dashboard_assignment_model.proxy.extraParams.filters);
+
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
             groupHeaderTpl: '{name}',
         });
-        var listView = Ext.create('Ext.grid.Panel', {
+        var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
             border: false,
             sortableColumns: false,
-            renderTo: 'dashtable',
             cls: 'selectable-grid',
             store: dashboard_assignment_store,
             features: [groupingFeature],
@@ -85,7 +95,47 @@
                 }
             }
         });
-    });
+        var activeAssignmentsView = Ext.widget('container', {
+            hidden: true,
+            renderTo: 'activeassignments',
+            items: [{
+                xtype: 'box',
+                html: '<h1>Assignments</h1>'
+            }, activeAssignmentsGrid]
+        });
+
+        dashboard_assignment_store.load({
+            callback: function(records, operation, success) {
+                if(!success || records.length === 0) {
+                    var args = {};
+                    if(success) {
+                        args = {
+                            title: 'No active assignments',
+                            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box.",
+                            msgcls: 'info'
+                        }
+                    } else {
+                        args = {
+                            title: 'Error',
+                            msg: "Failed to load assignments. Try re-loading the page.",
+                            msgcls: 'error'
+                        }
+                    }
+                    Ext.widget('box', {
+                        renderTo: 'no-active-assignments-message',
+                        html: Ext.create('Ext.XTemplate',
+                            '<section class="{msgcls}-small extravisible-small">',
+                            '   <h1>{title}</h1>',
+                            '   <p>{msg}</p>',
+                            '</section>'
+                        ).apply(args)
+                    });
+                } else {
+                    activeAssignmentsView.show();
+                }
+            }
+        });
+    }
 
 </script>
 
@@ -96,8 +146,8 @@
 {% block main %}
 {{ block.super }}
 <div id="no-permissions-message"></div>
+<div id="no-active-assignments-message"></div>
 <section id="has-permission-section" style="display: none">
-    <h1>Assignments</h1>
-    <section id="dashtable"></section>
+    <section id="activeassignments"></section>
 </section>
 {% endblock %}

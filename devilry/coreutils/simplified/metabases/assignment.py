@@ -15,6 +15,8 @@ class SimplifiedAssignmentMetaMixin(object):
                              'publishing_time',
                              period=['parentnode__short_name',
                                      'parentnode__long_name',
+                                     'parentnode__start_time',
+                                     'parentnode__end_time',
                                      'parentnode__parentnode'],
                              subject=['parentnode__parentnode__short_name',
                                       'parentnode__parentnode__long_name'],
@@ -33,6 +35,8 @@ class SimplifiedAssignmentMetaMixin(object):
                           # Period
                           ForeignFilterSpec('parentnode',
                                             FilterSpec('parentnode'),
+                                            FilterSpec('start_time'),
+                                            FilterSpec('end_time'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
                           # Subject
