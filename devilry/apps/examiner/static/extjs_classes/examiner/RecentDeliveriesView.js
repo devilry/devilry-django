@@ -1,0 +1,111 @@
+Ext.define('devilry.examiner.RecentDeliveriesView', {
+    extend: 'devilry.extjshelpers.DashGrid',
+    requires: [
+        'devilry.extjshelpers.DateTime'
+    ],
+
+
+    config: {
+        model: undefined,
+        noRecordsMessage: {
+            title: 'No recent deliveries',
+            msg: "You are not examiner on any assignment groups with recent deliveries."
+        },
+    },
+
+    studentsRowTpl: Ext.create('Ext.XTemplate',
+        '<ul class="useridlist">',
+        '   <tpl for="deadline__assignment_group__candidates__identifier">',
+        '       <li>{.}</li>',
+        '   </tpl>',
+        '</ul>'
+    ),
+
+    assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '{deadline__assignment_group__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__short_name}'
+    ),
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+    
+    createStore: function() {
+        this.store = Ext.create('Ext.data.Store', {
+            model: this.model,
+            groupField: 'deadline__assignment_group__parentnode__parentnode__parentnode__long_name',
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
+
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'deadline__assignment_group__parentnode__parentnode__start_time',
+            comp: '<',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'deadline__assignment_group__parentnode__parentnode__end_time',
+            comp: '>',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }]);
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-time_of_delivery']);
+        this.store.pageSize = 5;
+    },
+
+    createBody: function() {
+        var me = this;
+        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            groupHeaderTpl: '{name}',
+        });
+        var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
+            frame: false,
+            frameHeader: false,
+            border: false,
+            sortableColumns: false,
+            cls: 'selectable-grid',
+            store: this.store,
+            features: [groupingFeature],
+            columns: [{
+                text: 'Assignment',
+                menuDisabled: true,
+                flex: 30,
+                dataIndex: 'deadline__assignment_group__parentnode__long_name',
+                renderer: function(value, meta, record) {
+                    return me.assignmentRowTpl.apply(record.data);
+                }
+            },{
+                text: 'Students',
+                menuDisabled: true,
+                dataIndex: 'id',
+                flex: 20,
+                renderer: function(value, meta, record) {
+                    return me.studentsRowTpl.apply(record.data);
+                }
+            },{
+                text: 'Time of delivery',
+                menuDisabled: true,
+                flex: 15,
+                dataIndex: 'time_of_delivery',
+                renderer: function(value) {
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '{.:date}'
+                    );
+                    return rowTpl.apply(value);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function(view, record) {
+                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    window.location = url;
+                }
+            }
+        });
+        this.add({
+            xtype: 'box',
+            html: '<h2>Recent deliveries</h2>'
+        });
+        this.add(activeAssignmentsGrid);
+    }
+});

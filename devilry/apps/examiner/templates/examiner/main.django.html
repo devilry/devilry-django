@@ -35,10 +35,15 @@
     });
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users,deadline,candidates" }}
     function createActiveAssignmentsView() {
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
             renderTo: 'activeassignments',
             model: dashboard_assignment_model
+        });
+        var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
+            renderTo: 'recent',
+            model: dashboard_delivery_model
         });
     }
 
@@ -54,5 +59,6 @@
 <div id="no-active-assignments-message"></div>
 <section id="has-permission-section" style="display: none">
     <section id="activeassignments"></section>
+    <section id="recent"></section>
 </section>
 {% endblock %}
