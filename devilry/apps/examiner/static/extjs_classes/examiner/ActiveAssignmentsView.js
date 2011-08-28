@@ -4,13 +4,13 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         'devilry.extjshelpers.DateTime'
     ],
 
-    noRecordsMessage: {
-        title: 'No active assignments',
-        msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
-    },
 
     config: {
-        model: undefined
+        model: undefined,
+        noRecordsMessage: {
+            title: 'No active assignments',
+            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
+        }
     },
 
     constructor: function(config) {
@@ -36,6 +36,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-publishing_time']);
         this.store.pageSize = 500; // A bit ugly, but we do not want to make it unlimited??
     },
 
@@ -83,7 +84,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h2>Assignment in an active period/semester</h2>'
+            html: '<h2>Assignments in an active period/semester</h2>'
         });
         this.add(activeAssignmentsGrid);
     }
