@@ -14,7 +14,7 @@
         {{ RestfulCls|extjs_combobox_model:"Search" }};
         {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
-    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/student/';
+    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/student/';
 
     Ext.require('devilry.student.StudentSearchWidget');
     Ext.require('devilry.extjshelpers.PermissionChecker');
