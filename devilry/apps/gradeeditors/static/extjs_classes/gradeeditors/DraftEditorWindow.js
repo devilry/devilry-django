@@ -270,7 +270,6 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
-        console.log('pre onFailure');
         onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(false, draftstring, {
