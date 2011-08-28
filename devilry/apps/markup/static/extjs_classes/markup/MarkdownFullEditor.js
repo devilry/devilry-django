@@ -7,10 +7,13 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
         Ext.apply(this, {
             dockedItems: [{
                 xtype: 'toolbar',
+                cls: 'edit-toolbar',
                 dock: 'top',
                 items: [{
                     xtype: 'button',
                     text: 'h1',
+                    cls: 'headbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onH1
@@ -18,6 +21,8 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
                 }, {
                     xtype: 'button',
                     text: 'h2',
+                    cls: 'headbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onH2
@@ -25,13 +30,17 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
                 }, {
                     xtype: 'button',
                     text: 'h3',
+                    cls: 'headbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onH3
                     }
-                }, {xtype: 'box', width: 10}, {
+                }, {xtype: 'box', width: 15}, {
                     xtype: 'button',
                     text: 'b',
+                    cls: 'bbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onBold
@@ -39,6 +48,8 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
                 }, {
                     xtype: 'button',
                     text: 'i',
+                    cls: 'ibtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onItalic
@@ -46,6 +57,8 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
                 }, {
                     xtype: 'button',
                     text: '{}',
+                    scale: 'medium',
+                    cls: 'codebtn',
                     listeners: {
                         scope: this,
                         click: this.onCode
@@ -53,36 +66,17 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
                 }, {
                     xtype: 'button',
                     text: 'a',
+                    cls: 'linkbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onUrl
                     }
-                }, {xtype: 'box', width: 10}, {
-                    xtype: 'button',
-                    text: '-',
-                    listeners: {
-                        scope: this,
-                        click: this.onBulletList
-                    }
-                }, {
-                    xtype: 'button',
-                    text: '1.',
-                    listeners: {
-                        scope: this,
-                        click: this.onNumberedList
-                    }
-                }, {
-                    xtype: 'button',
-                    text: '" "',
-                    listeners: {
-                        scope: this,
-                        click: this.onBlockQuote
-                    }
                 }, '->', {
                     xtype: 'button',
-                    text: '',
-                    iconCls: 'icon-help-32',
-                    scale: 'large',
+                    text: '?',
+                    cls: 'helpbtn',
+                    scale: 'medium',
                     listeners: {
                         scope: this,
                         click: this.onHelp

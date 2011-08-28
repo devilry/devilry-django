@@ -867,6 +867,32 @@ section.treeheading {
 }
 
 
+.edit-toolbar {
+    .x-btn {
+        min-width: 30px !important;
+        text-align: center;
+    }
+    .x-btn-inner {
+        //font-family: serif !important;
+        font-size: 1.2em !important;
+    }
+    .headbtn, .bbtn, .helpbtn {
+        .x-btn-inner {
+            font-weight: bold !important;
+        }
+    }
+    .ibtn .x-btn-inner {
+        font-style: italic !important;
+    }
+    .codebtn .x-btn-inner {
+        font-family: monospace !important;
+    }
+    .linkbtn .x-btn-inner {
+        text-decoration: underline;
+    }
+}
+
+
 
 /**
  *

@@ -1025,6 +1025,20 @@ section.treeheading {
 .menuheader:first-child {
   margin-top: 0; }
 
+.edit-toolbar .x-btn {
+  min-width: 30px !important;
+  text-align: center; }
+.edit-toolbar .x-btn-inner {
+  font-size: 1.2em !important; }
+.edit-toolbar .headbtn .x-btn-inner, .edit-toolbar .bbtn .x-btn-inner, .edit-toolbar .helpbtn .x-btn-inner {
+  font-weight: bold !important; }
+.edit-toolbar .ibtn .x-btn-inner {
+  font-style: italic !important; }
+.edit-toolbar .codebtn .x-btn-inner {
+  font-family: monospace !important; }
+.edit-toolbar .linkbtn .x-btn-inner {
+  text-decoration: underline; }
+
 /**
  *
  * Footer
