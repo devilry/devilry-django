@@ -34,8 +34,8 @@ class Manual(JsonRegistryItem):
         if grade == '':
             raise DraftValidationError('The grade-field cannot be empty')
 
-        if feedback == '':
-            raise DraftValidationError('The feedback-field cannot be empty')
+        if not isinstance(feedback, basestring):
+            raise DraftValidationError('The feedback-field must be a text-entry')
 
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):

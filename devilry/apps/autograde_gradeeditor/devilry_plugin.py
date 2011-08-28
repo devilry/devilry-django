@@ -59,7 +59,7 @@ class Manual(JsonRegistryItem):
             if grade[1] < 0:
                 raise ConfigValidationError('Grade-value cannot be smaller than 0')
 
-            if grade[0] == 0:
+            if int(grade[1]) == 0:
                 hasZeroGrade = True
 
         if not hasZeroGrade:
@@ -81,10 +81,7 @@ class Manual(JsonRegistryItem):
             raise DraftValidationError('The points-field must be a value between 0 and {}'.format(config['maxpoints']))
 
         if not isinstance(feedback, basestring):
-            raise DraftValidationError('The feedback-field must contain a feedback-text.')
-
-        if feedback == '':
-            raise DraftValidationError('The feedback-field must contain a feedback-text')
+            raise DraftValidationError('The feedback-field must be a text-entry')
 
 
     @classmethod
