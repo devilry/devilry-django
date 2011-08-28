@@ -33,21 +33,21 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
     },
 
     initComponentExtra: function() {
+        this.publishButton = Ext.widget('button', {
+            text: this.buttonText,
+            scale: 'large',
+            iconCls: this.buttonIcon,
+            listeners: {
+                scope: this,
+                click: this.onPublish
+            }
+        });
         Ext.apply(this, {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
                 ui: 'footer',
-                items: ['->', {
-                    xtype: 'button',
-                    text: this.buttonText,
-                    scale: 'large',
-                    iconCls: this.buttonIcon,
-                    listeners: {
-                        scope: this,
-                        click: this.onPublish
-                    }
-                }]
+                items: ['->', this.publishButton]
             }]
         });
     },
