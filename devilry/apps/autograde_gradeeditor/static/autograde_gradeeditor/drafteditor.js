@@ -39,7 +39,7 @@
             maxValue: this.editorConfig.maxpoints,
             flex: 0
         });
-        this.textarea = Ext.widget('textareafield', {
+        this.textarea = Ext.widget('markdownfulleditor', {
             fieldLabel: 'Enter feedback',
             flex: 1
         });

@@ -58,7 +58,7 @@
             minValue: 0,
             flex: 0
         });
-        this.textarea = Ext.widget('textareafield', {
+        this.textarea = Ext.widget('markdownfulleditor', {
             fieldLabel: 'Enter feedback',
             flex: 1
         });
