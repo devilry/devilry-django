@@ -11,9 +11,7 @@ class MainView(TemplateView):
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
-        for restclsname in restful.__all__:
-            context[restclsname] = getattr(restful, restclsname)
-        context['restfulclasses'] = [getattr(restful, restclsname) for restclsname in restful.__all__]
+        context['restfulapi'] = dump_all_into_dict(restful);
         return context
 
 

@@ -7,13 +7,13 @@
 
 {% block headextra %}
 <script>
-    {{ RestfulSimplifiedAssignment|extjs_combobox_model:"Search" }};
-    {{ RestfulSimplifiedAssignmentGroup|extjs_combobox_model:"Search" }};
-    {{ RestfulSimplifiedDelivery|extjs_combobox_model:"Search" }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_combobox_model:"Search" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_combobox_model:"Search" }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_combobox_model:"Search" }};
 
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:"Search" }};
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:"Search" }};
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:"Search" }};
+    var assignmentstore = {{ restfulapi.RestfulSimplifiedAssignment|extjs_store:"Search" }};
+    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"Search" }};
+    var deliverystore = {{ restfulapi.RestfulSimplifiedDelivery|extjs_store:"Search" }};
     var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/examiner/';
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
@@ -27,7 +27,7 @@
                 store: deliverystore,
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    tpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View',
                         clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
@@ -39,7 +39,7 @@
                 store: assignmentgroupstore,
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    tpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View/edit',
                         clickLinkTpl: 'assignmentgroup/{id}'
@@ -55,7 +55,7 @@
                 store: assignmentstore,
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    tpl: '{{ restfulapi.RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'View',
                         clickLinkTpl: 'assignment/{id}'

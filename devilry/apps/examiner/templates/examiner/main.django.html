@@ -5,7 +5,7 @@
 {{ block.super }}
 <script>
     Ext.onReady(function() {
-        var dashboard_assignment_model = {{ RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+        var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
         
         var dashboard_assignment_store = Ext.create('Ext.data.Store', {
             model: dashboard_assignment_model,
