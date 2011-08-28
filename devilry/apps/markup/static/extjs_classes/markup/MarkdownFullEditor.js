@@ -71,7 +71,8 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
 
 
         '   <h2 id="{idprefix}-escaping">Escaping</h2>',
-        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with the backslash (\\). Markdown will ignore the character directly after a backslash.</p>',
+        '   <p>If you want to use a special Markdown character in your document (such as displaying literal asterisks), you can escape the character with a backslash. Markdown will ignore the character directly after a backslash. Example:</p>',
+        '   <pre>This is how the &#92;_ (underscore) and &#92;* asterisks characters look.</pre>',
 
         '   <h2 id="{idprefix}-math">LaTeX Math</h2>',
         '   <p>We provide two methods for writing <a href="http://www.mathjax.org/">MathJax</a> compatible math. <strong>Note:</strong> You must escape <em>backslash</em> as <a href="#{idprefix}-escaping">described above</a>.</p>',
