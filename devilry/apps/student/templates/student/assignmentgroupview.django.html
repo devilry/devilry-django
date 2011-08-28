@@ -8,6 +8,7 @@
 
 {% block headextra %}
 {{ block.super }}
+{% include "markup/mathjaxheader.django.html" %}
 <script>
     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');

@@ -102,6 +102,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 isactive: isactive
             }
         });
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     },
 
     onLoadStaticfeedbackstore: function(store, records, successful) {
