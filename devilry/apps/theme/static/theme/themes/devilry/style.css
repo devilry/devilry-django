@@ -232,7 +232,7 @@ header {
     #mainwrapper #main a {
       font-size: 1.2em;
       font-weight: bold;
-      color: #0B5A9D; }
+      color: #0b5a9d; }
     #mainwrapper #main a:visited {
       color: #6E0840; }
     #mainwrapper #main dt {
@@ -435,14 +435,60 @@ section.helpsection {
   section.helpsection p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.helpsection pre, section.helpsection code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.helpsection code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.helpsection pre {
+    padding: 8px; }
   section.helpsection ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.helpsection h2 {
+    border-top: 5px solid #f8f8f8;
+    padding-top: 8px;
+    font-size: 2.0em;
+    margin: 36px 0 6px 0; }
+  section.helpsection h3 {
+    font-size: 1.5em;
+    margin: 16px 0 6px 0; }
   section.helpsection p {
     padding: 5px 0;
     line-height: 1.3em; }
+  section.helpsection ul.right_toc {
+    float: right;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0 0 20px 20px;
+    width: 150px; }
+    section.helpsection ul.right_toc li {
+      padding: 0 !important;
+      margin: 10px 0 !important;
+      list-style-type: none !important;
+      font-weight: bold !important; }
+      section.helpsection ul.right_toc li:first-child {
+        margin-top: 0 !important; }
+      section.helpsection ul.right_toc li:last-child {
+        margin-bottom: 0 !important; }
+      section.helpsection ul.right_toc li ul {
+        margin: 5px 0 5px 18px !important; }
+        section.helpsection ul.right_toc li ul li {
+          font-weight: normal !important;
+          list-style-type: square !important; }
+    section.helpsection ul.right_toc a {
+      text-decoration: none;
+      color: #0b5a9d; }
+    section.helpsection ul.right_toc a:visited {
+      color: #0b5a9d; }
+    section.helpsection ul.right_toc a:hover {
+      text-decoration: underline; }
 
 /**
  *
@@ -459,7 +505,8 @@ section.helpsection {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
   opacity: 0.7 !important;
-  background-color: #000 !important; }
+  background-color: #000 !important;
+  width: 100% !important; }
 
 /*
  *
@@ -544,11 +591,28 @@ table.verticalinfotable {
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
       padding: 5px 0;
       line-height: 1.2em; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
+      background-color: #f8f8f8;
+      border: 1px solid #eee; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
+      padding: 1px 4px;
+      color: #600;
+      white-space: nowrap; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre {
+      padding: 8px; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view ul li {
       padding: 5px 0;
       margin-left: 25px !important;
       list-style-type: disc !important;
       list-style-position: outside !important; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h2 {
+      border-top: 5px solid #f8f8f8;
+      padding-top: 8px;
+      font-size: 2.0em;
+      margin: 36px 0 6px 0; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h3 {
+      font-size: 1.5em;
+      margin: 16px 0 6px 0; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
       padding: 5px 0 !important;
       line-height: 1.6em !important; }
@@ -597,6 +661,15 @@ section.ok-small {
   section.ok-small p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.ok-small pre, section.ok-small code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.ok-small code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.ok-small pre {
+    padding: 8px; }
   section.ok-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -632,6 +705,15 @@ section.ok {
   section.ok p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.ok pre, section.ok code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.ok code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.ok pre {
+    padding: 8px; }
   section.ok ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -658,6 +740,15 @@ section.info-small {
   section.info-small p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.info-small pre, section.info-small code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.info-small code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.info-small pre {
+    padding: 8px; }
   section.info-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -693,6 +784,15 @@ section.info {
   section.info p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.info pre, section.info code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.info code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.info pre {
+    padding: 8px; }
   section.info ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -719,6 +819,15 @@ section.warning-small {
   section.warning-small p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.warning-small pre, section.warning-small code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.warning-small code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.warning-small pre {
+    padding: 8px; }
   section.warning-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -754,6 +863,15 @@ section.warning {
   section.warning p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.warning pre, section.warning code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.warning code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.warning pre {
+    padding: 8px; }
   section.warning ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -780,6 +898,15 @@ section.error-small {
   section.error-small p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.error-small pre, section.error-small code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.error-small code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.error-small pre {
+    padding: 8px; }
   section.error-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -815,6 +942,15 @@ section.error {
   section.error p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.error pre, section.error code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.error code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.error pre {
+    padding: 8px; }
   section.error ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -841,6 +977,15 @@ section.help-small {
   section.help-small p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.help-small pre, section.help-small code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.help-small code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.help-small pre {
+    padding: 8px; }
   section.help-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -876,6 +1021,15 @@ section.help {
   section.help p {
     padding: 5px 0;
     line-height: 1.2em; }
+  section.help pre, section.help code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.help code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.help pre {
+    padding: 8px; }
   section.help ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -898,14 +1052,11 @@ section.help {
 section h1 {
   font-size: 2.6em;
   margin: 20px 0 15px 0; }
-
 section h1:first-child {
   margin-top: 0; }
-
 section h2 {
   font-size: 2.0em;
   margin: 16px 0 6px 0; }
-
 section h3 {
   font-size: 1.5em;
   margin: 16px 0 6px 0; }
@@ -935,6 +1086,15 @@ section.treeheading {
 .x-message-box .x-window-body p {
   padding: 5px 0;
   line-height: 1.2em; }
+.x-message-box .x-window-body pre, .x-message-box .x-window-body code {
+  background-color: #f8f8f8;
+  border: 1px solid #eee; }
+.x-message-box .x-window-body code {
+  padding: 1px 4px;
+  color: #600;
+  white-space: nowrap; }
+.x-message-box .x-window-body pre {
+  padding: 8px; }
 .x-message-box .x-window-body ul li {
   padding: 5px 0;
   margin-left: 25px !important;
