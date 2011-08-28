@@ -11,6 +11,11 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         var rowTpl = Ext.create('Ext.XTemplate',
             '{.:date}'
         );
+
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{"field":"assignment_group__is_open","comp":"exact","value":true}]);
+        this.store.load();
+
         Ext.apply(this, {
             columns: [{
                 text: 'Subject',

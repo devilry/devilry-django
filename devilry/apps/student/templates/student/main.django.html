@@ -24,6 +24,9 @@
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
     var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
     assignmentgroup_permcheckstore.pageSize = 1;
+
+    var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
+    var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
     
     Ext.onReady(function() {
         Ext.getBody().mask("Loading page", 'page-load-mask');
@@ -34,11 +37,19 @@
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.create('devilry.student.AddDeliveriesGrid', {
+                        store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+                        renderTo: 'dashtable',
+                    });
+                    Ext.getDom('has-permission-section').style.display = 'block';
                 }
             }
         });
         assignmentgroup_permcheckstore.load();
     });
+
 
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
@@ -50,23 +61,7 @@
         });
         searchwidget.loadInitialValues();
         //searchwidget.focusOnSearchfield();
-        
-        var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
-        var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
-        
-
-        deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
-        deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{"field":"assignment_group__is_open","comp":"exact","value":true}]);
-        
-        deadlinestore.load();
-        
-        var listView = Ext.create('devilry.student.AddDeliveriesGrid', {
-            store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
-            renderTo: 'dashtable',
-        });
-        
     });
-
 </script>
 
 {% endblock %}
@@ -80,7 +75,7 @@ related to subject, or search for a specific assignment.
 
 
 <div id="no-permissions-message"></div>
-<section>
+<section id="has-permission-section" style="display: none">
     <h1>Assignments / Add deliveries</h1>
     <section id="dashtable"></section>
 </section>
