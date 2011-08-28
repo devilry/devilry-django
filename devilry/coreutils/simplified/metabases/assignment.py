@@ -20,8 +20,7 @@ class SimplifiedAssignmentMetaMixin(object):
                                       'parentnode__parentnode__long_name'],
                              pointfields=['anonymous',
                                           'must_pass',
-                                          'maxpoints',
-                                          'attempts'])
+                                          'maxpoints'])
     searchfields = FieldSpec('short_name',
                              'long_name',
                              'parentnode__short_name',
