@@ -5,22 +5,6 @@ Ext.define('devilry.extjshelpers.HelpWindow', {
     layout: 'fit',
     closable: false, // To easy to double click and close an undelying window
 
-    dockedItems: [{
-        xtype: 'toolbar',
-        ui: 'footer',
-        dock: 'bottom',
-        items: ['->', {
-            xtype: 'button',
-            text: 'Close help',
-            scale: 'large',
-            listeners: {
-                click: function() {
-                    this.up('window').close();
-                }
-            }
-        }, '->']
-    }],
-
     helptpl: Ext.create('Ext.XTemplate', '<section class="helpsection">{helptext}</section>'),
 
     initComponent: function() {
@@ -30,7 +14,23 @@ Ext.define('devilry.extjshelpers.HelpWindow', {
                 cls: 'helpbox',
                 autoScroll: true,
                 html: this.helptpl.apply({helptext:this.helptext})
-            }
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                ui: 'footer',
+                dock: 'bottom',
+                items: ['->', {
+                    xtype: 'button',
+                    text: 'Close help',
+                    scale: 'large',
+                    listeners: {
+                        scope: this,
+                        click: function() {
+                            this.close();
+                        }
+                    }
+                }, '->']
+            }],
         });
         this.callParent(arguments);
     }

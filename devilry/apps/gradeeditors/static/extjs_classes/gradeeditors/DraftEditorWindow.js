@@ -6,10 +6,12 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     height: 600,
     layout: 'fit',
     modal: true,
+    maximizable: true,
     requires: [
         'devilry.extjshelpers.NotificationManager',
         'devilry.gradeeditors.FailureHandler',
-        'devilry.markup.MarkdownFullEditor'
+        'devilry.markup.MarkdownFullEditor',
+        'devilry.extjshelpers.HelpWindow'
     ],
 
     config: {
@@ -105,24 +107,18 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onHelp: function() {
-        var win = Ext.widget('window', {
-            title: 'Help',
-            modal: true,
-            width: this.getDraftEditor().helpwidth || 600,
-            height: this.getDraftEditor().helpheight || 500,
-            maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'box',
-                cls: 'helpbox',
-                autoScroll: true,
-                html: Ext.create('Ext.XTemplate',
-                    '<section class="helpsection">',
-                    '   {help}',
-                    '</section>'
-                ).apply({help: this.getDraftEditor().help})
-            }
-        }).show();
+        if(!this.helpwindow) {
+            this.helpwindow = Ext.widget('helpwindow', {
+                title: 'Help',
+                width: this.getWidth(),
+                height: this.getHeight(),
+                closeAction: 'hide',
+                //width: this.getDraftEditor().helpwidth || 600,
+                //height: this.getDraftEditor().helpheight || 500,
+                helptext: this.getDraftEditor().help
+            });
+        }
+        this.helpwindow.show();
     },
 
     /**

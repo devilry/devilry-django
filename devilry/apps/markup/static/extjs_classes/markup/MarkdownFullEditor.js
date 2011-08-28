@@ -293,11 +293,15 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
      * @private
      */
     onHelp: function() {
-        Ext.widget('helpwindow', {
-            title: 'Devilry-flavoured markdown',
-            width: this.up('window').getWidth(),
-            height: this.up('window').getHeight(),
-            helptext: this.markdownHelp.apply(idprefix=this.getId())
-        }).show();
+        if(!this.helpwindow) {
+            this.helpwindow = Ext.widget('helpwindow', {
+                title: 'Devilry-flavoured markdown',
+                width: this.up('window').getWidth(),
+                height: this.up('window').getHeight(),
+                closeAction: 'hide',
+                helptext: this.markdownHelp.apply(idprefix=this.getId())
+            });
+        }
+        this.helpwindow.show();
     }
 });
