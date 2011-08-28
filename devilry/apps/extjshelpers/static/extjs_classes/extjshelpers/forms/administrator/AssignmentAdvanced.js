@@ -28,8 +28,8 @@ Ext.define('devilry.extjshelpers.forms.administrator.AssignmentAdvanced', {
         name: "must_pass",
         fieldLabel: 'Must pass?',
         //boxLabel: "Check this if the student is required to pass this this subject?",
-        xtype: 'checkbox'
-        //checked: true
+        xtype: 'checkbox',
+        checked: true
     }, {
         name: "anonymous",
         fieldLabel: "Anonymous?",
