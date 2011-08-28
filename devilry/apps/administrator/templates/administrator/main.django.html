@@ -18,6 +18,7 @@
     Ext.require('devilry.extjshelpers.forms.administrator.Subject');
     Ext.require('devilry.extjshelpers.forms.administrator.Period');
     Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
+    Ext.require('devilry.extjshelpers.PermissionChecker');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }};
@@ -31,10 +32,30 @@
     var periodstore = {{ restfulapi.RestfulSimplifiedPeriod|extjs_store }};
 
     Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+        
+
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [nodestore, subjectstore, periodstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                },
+                noPermission: function() {
+                    console.log('no perm');
+                },
+                hasPermission: function() {
+                    console.log('perm');
+                }
+            }
+        });
+
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             cls: 'dashboard-buttonbar',
-            emptyHtml: '<section class="warning extravisible"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
             items: [{
                 xtype: 'buttonbarbutton',
                 text: 'Node',
@@ -117,6 +138,7 @@
                 }
             }]
         });
+
         Ext.QuickTips.init();
     });
 </script>
@@ -131,6 +153,8 @@ related to anything that you have permission to view or edit as an
 <strong>administrator</strong>. Searching for a user will find any item related
 to that user, and searching for a subject will find anything related to that
 subject.</p>
+
+<div id="no-permissions-message"></div>
 
 <div id="createbuttonbar"></div>
 {% endblock %}
