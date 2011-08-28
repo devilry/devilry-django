@@ -8,6 +8,10 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         title: 'No active assignments',
         msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
     },
+
+    config: {
+        model: undefined
+    },
     
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
