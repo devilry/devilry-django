@@ -40,10 +40,16 @@
         Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [nodestore, subjectstore, periodstore],
             renderTo: 'no-permissions-message',
-            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1>' +
+                '<p>You are not registered as administrator on anything in Devilry. ' +
+                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
+                '</p></section>',
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.getDom('searchsection').style.display = 'block';
                 }
             }
         });
@@ -142,14 +148,11 @@
 
 {% endblock %}
 
+{% block searchsectionstyle %}display: none;{% endblock %}
+
 
 {% block main %}
 {{ block.super }}
-<p class='searchwidget-help'>In the box above, you can search for anything
-related to anything that you have permission to view or edit as an
-<strong>administrator</strong>. Searching for a user will find any item related
-to that user, and searching for a subject will find anything related to that
-subject.</p>
 
 <div id="no-permissions-message"></div>
 

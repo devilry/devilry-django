@@ -780,15 +780,15 @@ table.verticalinfotable {
 @mixin extravisibleBox($minHeight) {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 10px 10px 10px ($minHeight + 40px) !important;
+    padding: 10px 10px 10px ($minHeight + 30px) !important;
     background-position: 10px 10px;
     min-height: $minHeight !important;
     margin: 20px !important;
     background-color: #fff;
-    box-shadow: 0 0 2px 2px #aaa;
+    border: 1px solid #eee;
 }
 section.extravisible {
-    @include extravisibleBox(128px);
+    @include extravisibleBox(148px);
 }
 section.extravisible-small {
     @include extravisibleBox(64px);

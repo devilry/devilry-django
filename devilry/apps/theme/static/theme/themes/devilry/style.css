@@ -645,21 +645,21 @@ table.verticalinfotable {
 
 section.extravisible {
   border-radius: 14px;
-  padding: 10px 10px 10px 168px !important;
+  padding: 10px 10px 10px 178px !important;
   background-position: 10px 10px;
-  min-height: 128px !important;
+  min-height: 148px !important;
   margin: 20px !important;
   background-color: #fff;
-  box-shadow: 0 0 2px 2px #aaa; }
+  border: 1px solid #eee; }
 
 section.extravisible-small {
   border-radius: 14px;
-  padding: 10px 10px 10px 104px !important;
+  padding: 10px 10px 10px 94px !important;
   background-position: 10px 10px;
   min-height: 64px !important;
   margin: 20px !important;
   background-color: #fff;
-  box-shadow: 0 0 2px 2px #aaa; }
+  border: 1px solid #eee; }
 
 section.ok-small {
   padding: 0px 0 0 84px;

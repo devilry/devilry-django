@@ -10,4 +10,5 @@ def template_variables(request):
             'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
             'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
             'DEVILRY_HELP_URL': settings.DEVILRY_HELP_URL,
+            'DEVILRY_SYSTEM_ADMIN_EMAIL': settings.DEVILRY_SYSTEM_ADMIN_EMAIL,
             'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM}
