@@ -12,6 +12,7 @@ LOGIN_URL = '/authenticate/login'
 STATIC_URL = '/static/'
 STATIC_ROOT = 'devilry-static-files'
 DATABASES = {}
+EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.defaults.root_urlconf'
 
 

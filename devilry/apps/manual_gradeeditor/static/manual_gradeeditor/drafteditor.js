@@ -3,6 +3,20 @@
     border: false,
     frame: false,
     xtype: 'form',
+    
+    help: '<h3>Is the assignment approved:</h3>' +
+        '<p>Mark the checkbox if the assignment is approved</p>' + 
+        '<h3>Enter points:</h3>'+
+        '<p>Here you have to select or enter the number of points earned in the assignment.</p>'+
+        '<p>Any grade in Devilry is represented as a number, however this number is mainly for statistical purposes, '+
+        'and will not be visible to the students.</p>'+
+        '<h3>Enter grade:</h3>'+
+        '<p>This is where you enter the grade earned in the assignment.</p>'+
+        '<p>A grade is a very short text that students can view. Usually something like:</p>'+
+        '<p><em>A</em>, <em>Approved</em> or <em>7/10</em>.</p>'+
+        '<h3>Enter feedback:</h3>'+
+        '<p>Here you enter a feedback to the student. What was good, what was bad etc..</p>',
+
     //items: [{
         //xtype: 'checkboxfield',
         //boxLabel: 'Approved',
@@ -85,7 +99,7 @@
     onSaveDraft: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraft(draft, this.onFailure);
+            this.getMainWin().saveDraft(draft);
         }
     },
 
@@ -95,7 +109,7 @@
     onPublish: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
+            this.getMainWin().saveDraftAndPublish(draft);
         }
     },
 
@@ -105,14 +119,6 @@
      */
     getMainWin: function() {
         return this.up('gradedrafteditormainwin');
-    },
-
-    /**
-     * @private
-     * Used by onSaveDraft and onPublish to handle save-failures.
-     */
-    onFailure: function() {
-        console.error('Failed!');
     },
 
     /**

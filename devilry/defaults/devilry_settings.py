@@ -4,16 +4,17 @@ Defaults for settings defined by Devilry.
 
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
-# DEVILRY_MAIN_PAGE = '/django/devilry'
-DEVILRY_MAIN_PAGE = ''
+# DEVILRY_URLPATH_PREFIX = '/django/devilry'
+DEVILRY_URLPATH_PREFIX = ''
 
 # The default grade-plugin:
-DEVILRY_DEFAULT_GRADEEDITOR='asminimalaspossible'
+DEVILRY_DEFAULT_GRADEEDITOR='approved'
 
 DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 #DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
+DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-documentation'
 
@@ -37,6 +38,11 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## where they are located. Static files are located in the devilry/static/
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
+
+## The urlscheme+domain where devilry is located.
+## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_URLPATH_PREFIX is the absolute URL to the devilry
+## instance. WARNING: must not end with /
+#DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 ## Email addresses
 #DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example'

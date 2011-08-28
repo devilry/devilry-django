@@ -2,12 +2,16 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditormainwin',
     title: 'Create feedback',
-    width: 500,
-    height: 400,
+    width: 800,
+    height: 600,
     layout: 'fit',
     modal: true,
+    maximizable: true,
     requires: [
-        'devilry.extjshelpers.NotificationManager'
+        'devilry.extjshelpers.NotificationManager',
+        'devilry.gradeeditors.FailureHandler',
+        'devilry.markup.MarkdownFullEditor',
+        'devilry.extjshelpers.HelpWindow'
     ],
 
     config: {
@@ -103,24 +107,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onHelp: function() {
-        var win = Ext.widget('window', {
-            title: 'Help',
-            modal: true,
-            width: this.getDraftEditor().helpwidth || 600,
-            height: this.getDraftEditor().helpheight || 500,
-            maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'box',
-                cls: 'helpbox',
-                autoScroll: true,
-                html: Ext.create('Ext.XTemplate',
-                    '<section class="helpsection">',
-                    '   {help}',
-                    '</section>'
-                ).apply({help: this.getDraftEditor().help})
-            }
-        }).show();
+        this.helpwindow.show();
     },
 
     /**
@@ -137,6 +124,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     onLoadDraftEditorSuccess: function() {
+        this.helpwindow = Ext.widget('helpwindow', {
+            title: 'Help',
+            closeAction: 'hide',
+            //width: this.getDraftEditor().helpwidth || 600,
+            //height: this.getDraftEditor().helpheight || 500,
+            helptext: this.getDraftEditor().help
+        });
 
         if(this.getDraftEditor().help) {
             this.buttonBar.insert(0, {
@@ -160,11 +154,11 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
 
         });
 
-        store.proxy.extraParams.filters = Ext.JSON.encode({
+        store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
             comp: 'exact',
             value: this.deliveryid
-        });
+        }]);
         store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
         store.pageSize = 1;
         store.load({
@@ -268,6 +262,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
@@ -292,6 +287,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraftAndPublish: function(draftstring, onFailure) {
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),

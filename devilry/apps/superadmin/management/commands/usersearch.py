@@ -12,6 +12,11 @@ class Command(BaseCommand):
             dest='username_only',
             default=False,
             help='Only print usernames'),
+        make_option('--no-email',
+            action='store_true',
+            dest='noemail',
+            default=False,
+            help='Only match users without and email address.'),
         make_option('--superusers',
             action='store_true',
             dest='superusers',
@@ -34,6 +39,8 @@ class Command(BaseCommand):
             qry = qry.filter(is_superuser=True)
         if options['normalusers']:
             qry = qry.filter(is_superuser=False)
+        if options['noemail']:
+            qry = qry.filter(email='')
 
         for user in qry:
             if options['username_only']:

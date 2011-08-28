@@ -4,6 +4,7 @@
 
 {% block headextra %}
 {{ block.super }}
+{% include "markup/mathjaxheader.django.html" %}
 
 <script>
     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
@@ -20,8 +21,8 @@
 
 
 {% block main %}
-
 <section class="treeheading" id="content-heading"></section>
+{{ block.super }}
 <div id="content-main"></div>
 
 {% endblock %}

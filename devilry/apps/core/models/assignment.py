@@ -64,17 +64,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         The maximum number of points possible without scaling. This is set by
         the grade plugin.
 
-    .. attribute:: attempts
-
-        The number of attempts a student get on this assignment. This is
-        not a hard limit, but it makes the work of the examiners easier
-        because the system will close groups (leaving students unable to
-        deliver more attempts) when they have this many published
-        feedbacks. Examiners can open closed groups, and they are
-        notified when a group is automatically closed.
-
-        If this is None, closing of groups has to be handled manually.
-
     .. attribute:: must_pass
         
         Each student must get a passing grade on this assignment to get a
@@ -147,17 +136,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             help_text=_('If this field is set, the pointscale will '\
                 'automatically be set to the maximum number of points '\
                 'possible with the selected grade plugin.'))
-    attempts = models.PositiveIntegerField(default=None,
-            verbose_name=_("Attempts"),
-            null=True, blank=True,
-            help_text=_('The number of attempts a student get on this '
-                'assignment. This is not a hard limit, but it makes the '
-                'work of the examiners easier because the system will ' 
-                'close groups (leaving students unable to deliver more '
-                'attempts) when they have this many published feedbacks. '
-                'Examiners can open closed groups, and they are notified '
-                'when a group is automatically closed. Leave this '
-                'empty if you do not want to use this feature.'))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
                                                      help_text=_('Should feedbacks published by examiners be made '

@@ -1,5 +1,7 @@
-from django.db.models import Count, Max
 from datetime import datetime
+from django.conf import settings
+from django.db.models import Count, Max
+import django.dispatch
 
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
@@ -12,6 +14,8 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.core.models import AssignmentGroup, Delivery
 
+
+successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
 
 
 class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
@@ -101,6 +105,10 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
             if current.successful:
                 raise PermissionDenied()
 
+    @classmethod
+    def post_save(cls, user, delivery):
+        if delivery.successful:
+            successful_delivery_signal.send_robust(sender=delivery, delivery=delivery)
 
 
 @simplified_modelapi

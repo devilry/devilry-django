@@ -4,8 +4,10 @@
     frame: false,
     xtype: 'form',
 
-    help: '<h1>TODO</h1>' +
-        '<p>Add some help here</p>',
+    help: '<h3>Is the assignment approved:</h3>' +
+        '<p>Mark the checkbox if the assignment is approved</p>' + 
+        '<h3>Enter feedback:</h3>'+
+        '<p>Here you enter a feedback to the student. What was good, what was bad etc. For help on how to format the feedback text, click the question button in the upper right corner of the feedback editor.</p>',
     //helpwidth: 500,
     //helpheight: 300,
 
@@ -30,15 +32,19 @@
      *      current assignment.
      */
     initializeEditor: function() {
-
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: 'Is the assignment approved?',
             flex: 0
         });
-        this.textarea = Ext.widget('textareafield', {
-            fieldLabel: 'Enter feedback',
-            flex: 1
+        //this.textarea = Ext.widget('textareafield', {
+            //fieldLabel: 'Enter feedback',
+            //flex: 1
+        //});
+        this.textarea = Ext.widget('markdownfulleditor', {
+            flex: 1,
+            title: 'Enter feedback'
         });
+
         this.add(this.checkbox);
         this.add(this.textarea);
     },
@@ -70,7 +76,7 @@
     onSaveDraft: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraft(draft, this.onFailure);
+            this.getMainWin().saveDraft(draft);
         }
     },
 
@@ -80,7 +86,7 @@
     onPublish: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
+            this.getMainWin().saveDraftAndPublish(draft);
         }
     },
 
@@ -90,14 +96,6 @@
      */
     getMainWin: function() {
         return this.up('gradedrafteditormainwin');
-    },
-
-    /**
-     * @private
-     * Used by onSaveDraft and onPublish to handle save-failures.
-     */
-    onFailure: function() {
-        console.error('Failed!');
     },
 
     /**

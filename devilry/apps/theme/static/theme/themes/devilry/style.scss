@@ -14,6 +14,7 @@ $errorcolor_bg: #B00;
 $errorcolor_hoverbg: #F00;
 $errorcolor_fg: #FFF0F0;
 $unimportant_fontcolor: #666;
+$linkcolor: #0B5A9D;
 
 
 $studentcolor_bg: $goodcolor_bg;
@@ -38,11 +39,11 @@ body {
 
 
 
-@mixin inlineList() {
+@mixin inlineList($separator:", ") {
     li {
         display: inline; 
         &:after {
-            content: ", ";
+            content: $separator;
         }
         &:last-child:after {
             content: "";
@@ -86,6 +87,19 @@ body {
         line-height: 1.2em;
     }
 
+    pre, code {
+        background-color: #f8f8f8;;
+        border: 1px solid #eee;
+    }
+    code {
+        padding: 1px 4px;
+        color: #600;
+        white-space: nowrap;
+    }
+    pre {
+        padding: 8px;
+    }
+
     ul {
         li {
             padding: 5px 0;
@@ -93,6 +107,19 @@ body {
             list-style-type: disc !important;
             list-style-position: outside !important;
         }
+    }
+}
+
+@mixin commonHeaderElements() {
+    h2 {
+        border-top: 5px solid #f8f8f8;
+        padding-top: 8px;
+        font-size: 2.0em;
+        margin: 36px 0 6px 0;
+    }
+    h3 {
+        font-size: 1.5em;
+        margin: 16px 0 6px 0;
     }
 }
 
@@ -272,7 +299,7 @@ header {
         a {
             font-size: 1.2em;
             font-weight: bold;
-            color: #0B5A9D;
+            color: $linkcolor;
         }
         a:visited {
             color: #6E0840;
@@ -510,6 +537,7 @@ a.warning-button {
 }
 section.helpsection {
     @include commonSectionElements();
+    @include commonHeaderElements();
 
     background-color: #fff;
     min-height: 128px; // Make sure background icon is not clipped
@@ -521,6 +549,46 @@ section.helpsection {
     p {
         padding: 5px 0;
         line-height: 1.3em;
+    }
+
+    ul.right_toc {
+        float: right;
+        background-color: #f8f8f8;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 0 0 20px 20px;
+        width: 150px;
+        li {
+            &:first-child {
+                margin-top: 0 !important;
+            }
+            &:last-child {
+                margin-bottom: 0 !important;
+            }
+            padding: 0 !important;
+            margin: 10px 0 !important;
+            list-style-type: none !important;
+            font-weight: bold !important;
+            ul {
+                margin: 5px 0 5px 18px !important;
+                li {
+                    font-weight: normal !important;
+                    list-style-type: square !important;
+                }
+            }
+        }
+
+        a {
+            text-decoration: none;
+            color: $linkcolor;
+        }
+        a:visited {
+            color: $linkcolor;
+        }
+        a:hover{
+            text-decoration: underline;
+        }
     }
 }
 
@@ -547,11 +615,33 @@ section.helpsection {
     //opacity: 1.0 !important;
 //}
 
-.x-mask {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
-    opacity: 0.7 !important;
+@mixin overlayMask($opacity) {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100})" !important;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100}) !important;
+    opacity: $opacity !important;
     background-color: #000 !important;
+    width: 100% !important;
+}
+
+.x-mask {
+    @include overlayMask(0.7);
+}
+.page-load-mask {
+    //width: 600px !important;
+    //height: 400px !important;
+    padding: 20px !important;
+    border-radius: 20px;
+    background-color: #000 !important;
+    border: none !important;
+    div {
+        background-color: transparent !important;
+        color: #666 !important;
+        border: none !important;
+        font-size: 1.2em !important;
+    }
+}
+.x-window-maximized {
+    width: 100% !important;
 }
 
 
@@ -655,12 +745,12 @@ table.verticalinfotable {
             }
 
             section.rendered_view {
-                //margin: 0 20px 20px 20px;
                 @include commonSectionElements();
+                @include commonHeaderElements();
                 p {
                     padding: 5px 0 !important;
                     line-height: 1.6em !important;
-                }
+                }   
             }
         }
     }
@@ -690,14 +780,15 @@ table.verticalinfotable {
 @mixin extravisibleBox($minHeight) {
     //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 10px 10px 10px ($minHeight + 40px) !important;
+    padding: 10px 10px 10px ($minHeight + 30px) !important;
     background-position: 10px 10px;
     min-height: $minHeight !important;
     margin: 20px !important;
-    box-shadow: 0 0 5px 5px #aaa;
+    background-color: #fff;
+    border: 1px solid #eee;
 }
 section.extravisible {
-    @include extravisibleBox(128px);
+    @include extravisibleBox(148px);
 }
 section.extravisible-small {
     @include extravisibleBox(64px);
@@ -769,20 +860,22 @@ section.extravisible-small {
 }
 
 
-section h1 {
-    font-size: 2.6em;
-    margin: 20px 0 15px 0;
-}
-section h1:first-child {
-    margin-top: 0;
-}
-section h2 {
-    font-size: 2.0em;
-    margin: 16px 0 6px 0;
-}
-section h3 {
-    font-size: 1.5em;
-    margin: 16px 0 6px 0;
+section {
+    h1 {
+        font-size: 2.6em;
+        margin: 20px 0 15px 0;
+    }
+    h1:first-child {
+        margin-top: 0;
+    }
+    h2 {
+        font-size: 2.0em;
+        margin: 16px 0 6px 0;
+    }
+    h3 {
+        font-size: 1.5em;
+        margin: 16px 0 6px 0;
+    }
 }
 
 
@@ -874,6 +967,32 @@ section.treeheading {
 }
 
 
+.edit-toolbar {
+    .x-btn {
+        min-width: 30px !important;
+        text-align: center;
+    }
+    .x-btn-inner {
+        //font-family: serif !important;
+        font-size: 1.2em !important;
+    }
+    .headbtn, .bbtn, .helpbtn {
+        .x-btn-inner {
+            font-weight: bold !important;
+        }
+    }
+    .ibtn .x-btn-inner {
+        font-style: italic !important;
+    }
+    .codebtn .x-btn-inner {
+        font-family: monospace !important;
+    }
+    .linkbtn .x-btn-inner {
+        text-decoration: underline;
+    }
+}
+
+
 
 /**
  *
@@ -902,3 +1021,6 @@ footer {
         color: #D4D2CE;
     }
 }
+
+
+@import "../../pygments/tango"

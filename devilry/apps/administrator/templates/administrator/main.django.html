@@ -18,6 +18,7 @@
     Ext.require('devilry.extjshelpers.forms.administrator.Subject');
     Ext.require('devilry.extjshelpers.forms.administrator.Period');
     Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
+    Ext.require('devilry.extjshelpers.PermissionChecker');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }};
@@ -26,15 +27,36 @@
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }};
 
     var nodestore = {{ restfulapi.RestfulSimplifiedNode|extjs_store }};
-    var subjectnodestore = {{ restfulapi.RestfulSimplifiedNode|extjs_store }};
     var subjectstore = {{ restfulapi.RestfulSimplifiedSubject|extjs_store }};
     var periodstore = {{ restfulapi.RestfulSimplifiedPeriod|extjs_store }};
+    nodestore.pageSize = 1;
+    subjectstore.pageSize = 1;
+    periodstore.pageSize = 1;
+
 
     Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [nodestore, subjectstore, periodstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1>' +
+                '<p>You are not registered as administrator on anything in Devilry. ' +
+                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
+                '</p></section>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.getDom('searchsection').style.display = 'block';
+                }
+            }
+        });
+
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             cls: 'dashboard-buttonbar',
-            emptyHtml: '<section class="warning extravisible"><h1>You are not an administrator</h1><p>You are not registered as administrator on anything.</p></section>',
             items: [{
                 xtype: 'buttonbarbutton',
                 text: 'Node',
@@ -58,7 +80,7 @@
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Subject',
-                store: subjectnodestore,
+                store: nodestore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
@@ -117,20 +139,22 @@
                 }
             }]
         });
-        Ext.QuickTips.init();
+
+        nodestore.load();
+        subjectstore.load();
+        periodstore.load();
     });
 </script>
 
 {% endblock %}
 
+{% block searchsectionstyle %}display: none;{% endblock %}
+
 
 {% block main %}
 {{ block.super }}
-<p class='searchwidget-help'>In the box above, you can search for anything
-related to anything that you have permission to view or edit as an
-<strong>administrator</strong>. Searching for a user will find any item related
-to that user, and searching for a subject will find anything related to that
-subject.</p>
+
+<div id="no-permissions-message"></div>
 
 <div id="createbuttonbar"></div>
 {% endblock %}

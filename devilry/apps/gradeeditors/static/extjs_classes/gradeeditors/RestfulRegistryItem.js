@@ -12,7 +12,7 @@ Ext.define('devilry.gradeeditors.RestfulRegistryItem', {
     ],
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-        url: DevilrySettings.DEVILRY_MAIN_PAGE + '/gradeeditors/restfulgradeeditorconfig/',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/gradeeditors/restfulgradeeditorconfig/',
         reader: {
             type: 'json',
             root: 'items',

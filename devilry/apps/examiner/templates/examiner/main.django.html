@@ -1,79 +1,40 @@
 {% extends "examiner/base.django.html" %}
 {% load extjs %}
 
-
 {% block headextra %}
-
+{{ block.super }}
 <script>
+    Ext.require('devilry.extjshelpers.PermissionChecker');
+    Ext.require('devilry.extjshelpers.DateTime');
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
+    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
+    assignmentgroup_permcheckstore.pageSize = 1;
 
-    {% for RestfulCls in restfulclasses %}
-        {{ RestfulCls|extjs_combobox_model }}
-    {% endfor %}
-
-    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/examiner/';
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
-
-    Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
-    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
     Ext.onReady(function() {
-        var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
-            renderTo: 'searchwidget',
-            searchResultItems: [{
-                xtype: 'searchresults',
-                title: 'Deliveries',
-                store: deliverystore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'View',
-                        clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
-                    }
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [assignmentgroup_permcheckstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an examiner</h1>' +
+                '<p>You are not registered as examiner on anything in Devilry. ' +
+                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
+                '</p></section>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.getDom('has-permission-section').style.display = 'block';
+                    Ext.getDom('searchsection').style.display = 'block';
+                    createActiveAssignmentsView();
                 }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignment groups',
-                store: assignmentgroupstore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'View/edit',
-                        clickLinkTpl: 'assignmentgroup/{id}'
-                    },
-                    menuitems: [{
-                        text: 'Show deliveries',
-                        clickFilter: 'type:delivery group:{id}'
-                    }]
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignments',
-                store: assignmentstore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'View',
-                        clickLinkTpl: 'assignment/{id}'
-                    },
-                    menuitems: [{
-                        text: 'Show groups',
-                        clickFilter: 'type:group assignment:{id}'
-                    }, {
-                        text: 'Show deliveries',
-                        clickFilter: 'type:delivery assignment:{id}'
-                    }]
-                }
-            }]
+            }
         });
-        searchwidget.loadInitialValues();
-        searchwidget.focusOnSearchfield();
-        
-        var dashboard_assignment_model = {{ RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
-        
+        assignmentgroup_permcheckstore.load();
+    });
+
+    var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    function createActiveAssignmentsView() {
         var dashboard_assignment_store = Ext.create('Ext.data.Store', {
             model: dashboard_assignment_model,
             groupField: 'parentnode__parentnode__long_name',
@@ -82,21 +43,25 @@
             autoSync: true
         });
 
-        //dashboard_assignment_store.proxy.extraParams.result_fieldgroups = Ext.JSON.encode(["subject"]);
-        
-        dashboard_assignment_store.load();        
-        
+        dashboard_assignment_model.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode__start_time',
+            comp: '<',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'parentnode__end_time',
+            comp: '>',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }]);
+        //console.log(dashboard_assignment_model.proxy.extraParams.filters);
+
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
             groupHeaderTpl: '{name}',
         });
-        
-        
-        var listView = Ext.create('Ext.grid.Panel', {
+        var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
             border: false,
             sortableColumns: false,
-            renderTo: 'dashtable',
             cls: 'selectable-grid',
             store: dashboard_assignment_store,
             features: [groupingFeature],
@@ -130,29 +95,59 @@
                 }
             }
         });
-        
-        
-        
-        
-        
-        
-    });
+        var activeAssignmentsView = Ext.widget('container', {
+            hidden: true,
+            renderTo: 'activeassignments',
+            items: [{
+                xtype: 'box',
+                html: '<h1>Assignments</h1>'
+            }, activeAssignmentsGrid]
+        });
 
+        dashboard_assignment_store.load({
+            callback: function(records, operation, success) {
+                if(!success || records.length === 0) {
+                    var args = {};
+                    if(success) {
+                        args = {
+                            title: 'No active assignments',
+                            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box.",
+                            msgcls: 'info'
+                        }
+                    } else {
+                        args = {
+                            title: 'Error',
+                            msg: "Failed to load assignments. Try re-loading the page.",
+                            msgcls: 'error'
+                        }
+                    }
+                    Ext.widget('box', {
+                        renderTo: 'no-active-assignments-message',
+                        html: Ext.create('Ext.XTemplate',
+                            '<section class="{msgcls}-small extravisible-small">',
+                            '   <h1>{title}</h1>',
+                            '   <p>{msg}</p>',
+                            '</section>'
+                        ).apply(args)
+                    });
+                } else {
+                    activeAssignmentsView.show();
+                }
+            }
+        });
+    }
 
 </script>
 
 {% endblock %}
 
+{% block searchsectionstyle %}display: none;{% endblock %}
 
 {% block main %}
-<div id='searchwidget'></div>
-<p class='searchwidget-help'>In the box above, you can search for anything
-related to anything that you have permission to view or edit as an
-<strong>examiner</strong>. Searching for a user will find any item related to
-that user, and searching for a subject will find anything related to that
-subject.</p>
-<section>
-    <h1>Assignments</h1>
-    <section id="dashtable"></section>
+{{ block.super }}
+<div id="no-permissions-message"></div>
+<div id="no-active-assignments-message"></div>
+<section id="has-permission-section" style="display: none">
+    <section id="activeassignments"></section>
 </section>
 {% endblock %}
