@@ -3,10 +3,21 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
+
+    noRecordsMessage: {
+        title: 'No active assignments',
+        msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
     
     initComponent: function() {
         this.callParent(arguments);
         this.createStore();
+        this.loadStore();
     },
 
     createStore: function() {
@@ -27,22 +38,21 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
+    },
 
+    loadStore: function() {
         this.store.load({
             scope: this,
             callback: function(records, operation, success) {
                 if(!success || records.length === 0) {
                     var args = {};
                     if(success) {
-                        args = {
-                            title: 'No active assignments',
-                            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box.",
-                            msgcls: 'info'
-                        }
+                        Ext.apply(args, this.noRecordsMessage);
+                        Ext.apply(args, {msgcls: 'info'});
                     } else {
                         args = {
                             title: 'Error',
-                            msg: "Failed to load assignments. Try re-loading the page.",
+                            msg: "Failed to load. Try re-loading the page.",
                             msgcls: 'error'
                         }
                     }
