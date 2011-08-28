@@ -7,7 +7,7 @@
     help: '<h3>Is the assignment approved:</h3>' +
         '<p>Mark the checkbox if the assignment is approved</p>' + 
         '<h3>Enter feedback:</h3>'+
-        '<p>Here you enter a feedback to the student. What was good, what was bad etc..</p>',
+        '<p>Here you enter a feedback to the student. What was good, what was bad etc. For help on how to format the feedback text, click the question button in the upper right corner of the feedback editor.</p>',
     //helpwidth: 500,
     //helpheight: 300,
 
