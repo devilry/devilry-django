@@ -1,5 +1,5 @@
 Ext.define('devilry.examiner.ActiveAssignmentsView', {
-    extend: 'Ext.Container',
+    extend: 'devilry.extjshelpers.DashGrid',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
@@ -8,18 +8,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         title: 'No active assignments',
         msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
     },
-
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
     
-    initComponent: function() {
-        this.callParent(arguments);
-        this.createStore();
-        this.loadStore();
-    },
-
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
@@ -40,39 +29,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         }]);
     },
 
-    loadStore: function() {
-        this.store.load({
-            scope: this,
-            callback: function(records, operation, success) {
-                if(!success || records.length === 0) {
-                    var args = {};
-                    if(success) {
-                        Ext.apply(args, this.noRecordsMessage);
-                        Ext.apply(args, {msgcls: 'info'});
-                    } else {
-                        args = {
-                            title: 'Error',
-                            msg: "Failed to load. Try re-loading the page.",
-                            msgcls: 'error'
-                        }
-                    }
-                    Ext.widget('box', {
-                        renderTo: 'no-active-assignments-message',
-                        html: Ext.create('Ext.XTemplate',
-                            '<section class="{msgcls}-small extravisible-small">',
-                            '   <h1>{title}</h1>',
-                            '   <p>{msg}</p>',
-                            '</section>'
-                        ).apply(args)
-                    });
-                } else {
-                    this.createGrid();
-                }
-            }
-        });
-    },
-
-    createGrid: function() {
+    createBody: function() {
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
             groupHeaderTpl: '{name}',
         });
