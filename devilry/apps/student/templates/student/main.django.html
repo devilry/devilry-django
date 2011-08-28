@@ -18,6 +18,7 @@
 
     Ext.require('devilry.student.StudentSearchWidget');
     Ext.require('devilry.extjshelpers.PermissionChecker');
+    Ext.require('devilry.student.AddDeliveriesGrid');
 
 
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
@@ -59,73 +60,9 @@
         
         deadlinestore.load();
         
-        //var deadlinetpl = Ext.create('Ext.XTemplate',
-        //    '<tpl for=".">',
-        //        '<h1>{assignment_group__parentnode__long_name} &mdash; deadline: {deadline:date}</h1>',
-        //        '<h2>{assignment_group__parentnode__parentnode__parentnode__long_name}</h2>',
-                // '<h3>{assignment_group__parentnode__parentnode__long_name}</h3>',
-                // '<a href="{DEVILRY_MAIN_PAGE}/student/add-delivery/{id}">Deliver</a>',
-            // '</tpl>'
-        //);
-
-        //Ext.create('Ext.view.View', {
-          //  store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
-            //tpl: deadlinetpl,
-            //renderTo: 'dashtable'
-        //});
-        
-        var rowTpl = Ext.create('Ext.XTemplate',
-            '{.:date}'
-        );
-        
-        
-        var listView = Ext.create('Ext.grid.Panel', {
-            frameHeader: false,
-            frame: false,
-            border: false,
-            sortableColumns: false,
-            columnLines: false,
-            renderTo: 'dashtable',
-            cls: 'selectable-grid',
+        var listView = Ext.create('devilry.student.AddDeliveriesGrid', {
             store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
-            columns: [{
-                text: 'Subject',
-                menuDisabled: true,
-                hideable: false,
-                dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
-                flex: 20
-            },{
-                text: 'Assignment',
-                menuDisabled: true,
-                hideable: false,
-                flex: 15,
-                dataIndex: 'assignment_group__parentnode__long_name'
-            },{
-                text: 'Deadline',
-                menuDisabled: true,
-                hideable: false,
-                flex: 15,
-                dataIndex: 'deadline',
-                renderer: function(value) {
-                    return rowTpl.apply(value);
-                }
-            },{
-                text: '#Deliveries',
-                menuDisabled: true,
-                hideAble: false,
-                flex: 5,
-                dataIndex: 'number_of_deliveries'
-            }],
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
-                    window.location = url;
-                },
-                itemmouseenter: function(view, record, item) {
-                    //console.log(item);
-                }
-            }
+            renderTo: 'dashtable',
         });
         
     });
