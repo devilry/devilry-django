@@ -27,7 +27,8 @@ Ext.define('devilry.extjshelpers.DashGrid', {
                             msgcls: 'error'
                         }
                     }
-                    Ext.widget('box', {
+                    this.add({
+                        xtype: 'box',
                         renderTo: 'no-active-assignments-message',
                         html: Ext.create('Ext.XTemplate',
                             '<section class="{msgcls}-small extravisible-small">',
