@@ -1,4 +1,4 @@
-from tempfile import TemporaryFile
+from tempfile import TemporaryFile, NamedTemporaryFile
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseForbidden
@@ -125,7 +125,7 @@ class CompressedFileDownloadView(View):
         delivery = get_object_or_404(Delivery, id=deliveryid)
         zip_file_name = str(delivery.delivered_by) + ".zip"
 
-        tempfile = TemporaryFile()
+        tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for filemeta in delivery.filemetas.all():
