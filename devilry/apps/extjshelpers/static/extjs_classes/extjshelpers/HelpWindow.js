@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.HelpWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.helpwindow',
-    //modal: true,
+    modal: true,
     layout: 'fit',
     width: 800,
     height: 600,
