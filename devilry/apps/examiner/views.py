@@ -48,7 +48,7 @@ class AssignmentView(View):
                        
 class CompressedFileDownloadView(View):
 
-    def _get_candidates_as_string(self, candidates):
+    def _get_candidates_as_string(self, candidates, assignmentgroup_id):
         candidates_as_string = ""
         size = len(candidates)-1
         for candidate in candidates:
@@ -57,6 +57,7 @@ class CompressedFileDownloadView(View):
                 candidates_as_string += "_"
             else:
                 candidates_as_string += "-"
+        candidates_as_string += str(assignmentgroup_id)
         return candidates_as_string
 
     def _add_directory_to_zipfile(self, zip_file, basedir):
@@ -79,9 +80,7 @@ class CompressedFileDownloadView(View):
         zip_file = zipfile.ZipFile(tempfile, 'w');        
                 
         for assignmentgroup in assignment.assignmentgroups.all():
-            
-            candidates = self._get_candidates_as_string(assignmentgroup.candidates.all())
-            candidates += str(assignmentgroup.id)
+            candidates = self._get_candidates_as_string(assignmentgroup.candidates.all(), assignmentgroup.id)
             
             for deadline in assignmentgroup.deadlines.all():
             
@@ -97,16 +96,14 @@ class CompressedFileDownloadView(View):
                     delivery_dir = os.getcwd()
                     os.chdir(os.path.join(os.getcwd(), candidates))
                     os.mkdir(str(delivery.number))
+                    os.chdir(os.path.join(os.getcwd(), str(delivery.number)))
                     
-                    for filemeta in delivery.filemetas.all():
-                        filemeta_dir = os.getcwd()
-                        os.chdir(os.path.join(os.getcwd(), str(delivery.number)))
+                    for filemeta in delivery.filemetas.all():                        
                         file_content = filemeta.deliverystore.read_open(filemeta)
-                        ut = open(filemeta.filename, 'w')
-                        ut.write(file_content.read())                                            
-                        ut.close()
-                        os.chdir(filemeta_dir)
-                        
+                        ut = open(filemeta.filename, 'wb')
+                        for data in file_content:
+                            ut.write(data)                                            
+                        ut.close()                        
                     os.chdir(delivery_dir)                        
                 os.chdir(deadline_dir)
         os.chdir(basedir)
