@@ -3,12 +3,6 @@
     border: false,
     frame: false,
     xtype: 'form',
-    help: '<h3>Enter points:</h3>'+
-        '<p>Here you have to select or enter the number of points earned in the assignment.</p>'+
-        '<p>Any grade in Devilry is represented as a number, however this number is mainly for statistical purposes, '+
-        'and will not be visible to the students. In this assignments studens will be given their grade based on the number of points entered here.</p>'+
-        '<h3>Enter feedback:</h3>'+
-        '<p>Here you enter a feedback to the student. What was good, what was bad etc..</p>',
 
     layout: {
         type: 'vbox',
