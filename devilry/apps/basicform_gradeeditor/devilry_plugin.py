@@ -23,6 +23,7 @@ class Approved(JsonRegistryItem):
         config = cls.decode_configstring(configstring)
 
         form = config['formValues']
+        approvedLimit = config['approvedLimit']
 
         if len(form) == 0:
             raise ConfigValidationError('You have to specify at least one form-field')
@@ -38,16 +39,23 @@ class Approved(JsonRegistryItem):
                 raise ConfigValidationError('You have to specify fieldtype as either "number" or "check"')
 
             if entry[1] == '':
-                raise ConfigValidationError('You have to enter points as a number above 0')
+                raise ConfigValidationError('You have to enter points as a number 0 or higher')
 
             if int(entry[1])<0:
-                raise ConfigValidationError('You have to enter points as a number above 0')
+                raise ConfigValidationError('You have to enter points as a number 0 or higher')
 
             if not isinstance(entry[2], basestring):
                 raise ConfigValidationError('You have to enter the field-label as plain text')
 
             if entry[2] == '':
                 raise ConfigValidationError('You have to enter a field-label')
+
+        if not isinstance(approvedLimit, int):
+                raise ConfigValidationError('You have to enter points to pass as a number 0 or higher')
+
+        if approvedLimit < 0:
+                raise ConfigValidationError('You have to enter points to pass as a number 0 or higher')
+
 
 
     @classmethod
