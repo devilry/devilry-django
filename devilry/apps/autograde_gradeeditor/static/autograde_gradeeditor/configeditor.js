@@ -9,13 +9,23 @@
         '<h3>Maximum number of points:</h3>'+
         '<p>This is where you enter the maximum number of points one can get for this assignment.</p>'+
         '<h3>Grades:</h3>'+
-        '<p>In this gradeeditor you can choose what grades and pointlimits you want for every grade. '+
-        'For instance, if you want to make an assignment where the grading is <em>Approved/Not approved</em> you '+
+        '<p>In this gradeeditor you define your own grades, and the points needed to achieve every grade.</br>'+
+        'A grade is defined by a line like this:</p>'+
+        '<p>Approved:40</p><p>Where the grade is <em>Approved</em>, and you will need 30 or more points to get this grade.</p>'+
+        '<p>So if you want to make an assignment where the grading is <em>Approved/Not approved</em> you '+
         'can enter this:</p>'+
         '<p>Approved: 30 </br>Not approved: 0</p>'+
         '<p>and deliveries given 30 points or more will get the grade <em>Approved</em> '+
-        'and deliveries with 29 points or less will get the grade <em>Not approved</em>.</p>'+
-        '',
+        'and deliveries with 0-29 points will get the grade <em>Not approved</em>.</p>'+
+        '<p>You can enter as many grades as you want, so if you want grades A-F you can do that the same way:</p>'+
+        '<p>'+
+        'A : 50</br>'+
+        'B : 40</br>'+
+        'C : 30</br>'+
+        'D : 20</br>'+
+        'E : 10</br>'+
+        'F : 0</br>'+
+        '</p>',
     
     layout: {
         type: 'vbox',
