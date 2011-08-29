@@ -36,7 +36,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
-            groupField: 'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name',
+            groupField: 'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
             remoteFilter: true,
             remoteSort: true,
             autoSync: true
@@ -58,7 +58,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     createBody: function() {
         var me = this;
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{name}',
+            groupHeaderTpl: '{name:uppercase}',
         });
 
         var columns = [{
@@ -118,7 +118,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h2>Recent feedback</h2>'
+            html: '<h3>Recent feedback</h3>'
         });
         this.add(activeAssignmentsGrid);
     }
