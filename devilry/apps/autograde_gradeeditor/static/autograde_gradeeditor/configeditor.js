@@ -18,14 +18,9 @@
         '<p>and deliveries given 30 points or more will get the grade <em>Approved</em> '+
         'and deliveries with 0-29 points will get the grade <em>Not approved</em>.</p>'+
         '<p>You can enter as many grades as you want, so if you want grades A-F you can do that the same way:</p>'+
-        '<p>'+
-        'A : 50</br>'+
-        'B : 40</br>'+
-        'C : 30</br>'+
-        'D : 20</br>'+
-        'E : 10</br>'+
-        'F : 0</br>'+
-        '</p>',
+        '<pre>'+
+        'A : 50\nB : 40\nC : 30\nD : 20\nE : 10\nF : 0b'+
+        '</pre>',
     
     layout: {
         type: 'vbox',
