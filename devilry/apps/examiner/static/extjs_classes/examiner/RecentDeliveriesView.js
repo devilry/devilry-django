@@ -7,6 +7,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
     config: {
         model: undefined,
+        limit: 4,
         noRecordsMessage: {
             title: 'No recent deliveries',
             msg: "You are not examiner on any assignment groups with recent deliveries."
@@ -50,7 +51,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-time_of_delivery']);
-        this.store.pageSize = 5;
+        this.store.pageSize = this.limit;
     },
 
     createBody: function() {

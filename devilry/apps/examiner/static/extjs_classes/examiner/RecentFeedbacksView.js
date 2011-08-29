@@ -7,6 +7,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
 
     config: {
         model: undefined,
+        limit: 4,
         noRecordsMessage: {
             title: 'No recent feedback',
             msg: "You are not examiner on any assignment groups with recent feedback."
@@ -50,7 +51,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        this.store.pageSize = 5;
+        this.store.pageSize = this.limit;
     },
 
     createBody: function() {
