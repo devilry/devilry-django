@@ -18,6 +18,7 @@ INSTALLED_APPS += ['devilry.apps.asminimalaspossible_gradeeditor',
                    'devilry.apps.manual_gradeeditor',
                    'devilry.apps.autograde_gradeeditor',
                    'devilry.apps.gradeform_gradeeditor',
+                   'devilry.apps.basicform_gradeeditor',
                    'devilry.apps.send_email_to_students',
 
                    # Not apps, but here for the Django test system to discover them:
