@@ -1,4 +1,4 @@
-Ext.define('devilry.examiner.ActiveAssignmentsView', {
+Ext.define('devilry.examiner.RecentDeliveriesView', {
     extend: 'devilry.extjshelpers.DashGrid',
     requires: [
         'devilry.extjshelpers.DateTime'
@@ -8,10 +8,23 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: 'No active assignments',
-            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
-        }
+            title: 'No recent deliveries',
+            msg: "You are not examiner on any assignment groups with recent deliveries."
+        },
     },
+
+    studentsRowTpl: Ext.create('Ext.XTemplate',
+        '<ul class="useridlist">',
+        '   <tpl for="deadline__assignment_group__candidates__identifier">',
+        '       <li>{.}</li>',
+        '   </tpl>',
+        '</ul>'
+    ),
+
+    assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '{deadline__assignment_group__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__short_name}'
+    ),
 
     constructor: function(config) {
         this.initConfig(config);
@@ -21,26 +34,27 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
-            groupField: 'parentnode__parentnode__long_name',
+            groupField: 'deadline__assignment_group__parentnode__parentnode__parentnode__long_name',
             remoteFilter: true,
             remoteSort: true,
             autoSync: true
         });
 
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'parentnode__start_time',
+            field: 'deadline__assignment_group__parentnode__parentnode__start_time',
             comp: '<',
             value: devilry.extjshelpers.DateTime.restfulNow()
         }, {
-            field: 'parentnode__end_time',
+            field: 'deadline__assignment_group__parentnode__parentnode__end_time',
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
-        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-publishing_time']);
-        this.store.pageSize = 500; // A bit ugly, but we do not want to make it unlimited??
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-time_of_delivery']);
+        this.store.pageSize = 5;
     },
 
     createBody: function() {
+        var me = this;
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
             groupHeaderTpl: '{name}',
         });
@@ -55,18 +69,24 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             columns: [{
                 text: 'Assignment',
                 menuDisabled: true,
-                flex: 20,
-                dataIndex: 'long_name'
+                flex: 18,
+                dataIndex: 'deadline__assignment_group__parentnode__long_name',
+                renderer: function(value, meta, record) {
+                    return me.assignmentRowTpl.apply(record.data);
+                }
             },{
-                text: 'Period',
+                text: 'Students',
                 menuDisabled: true,
-                dataIndex: 'parentnode__long_name',
+                dataIndex: 'id',
                 flex: 20,
+                renderer: function(value, meta, record) {
+                    return me.studentsRowTpl.apply(record.data);
+                }
             },{
-                text: 'Published',
+                text: 'Time of delivery',
                 menuDisabled: true,
-                width: 150,
-                dataIndex: 'publishing_time',
+                width: 130,
+                dataIndex: 'time_of_delivery',
                 renderer: function(value) {
                     var rowTpl = Ext.create('Ext.XTemplate',
                         '{.:date}'
@@ -77,16 +97,20 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    var url = Ext.String.format(
+                        "{0}assignmentgroup/{1}?deliveryid={2}",
+                        DASHBOARD_URL,
+                        record.data.deadline__assignment_group,
+                        record.data.id
+                    );
                     window.location = url;
                 }
             }
         });
         this.add({
             xtype: 'box',
-            html: '<h2>Assignments in an active period/semester</h2>'
+            html: '<h2>Recent deliveries</h2>'
         });
         this.add(activeAssignmentsGrid);
     }
-
 });

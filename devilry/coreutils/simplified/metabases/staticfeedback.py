@@ -1,5 +1,5 @@
 from devilry.apps.core import models
-from devilry.simplified import FieldSpec, FilterSpec, FilterSpecs
+from devilry.simplified import FieldSpec, FilterSpec, FilterSpecs, ForeignFilterSpec
 
 
 
@@ -16,6 +16,7 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery',
                              'rendered_view',
                              #'delivery__deadline__assignment_group__examiners__username',
+                             candidates=['delivery__deadline__assignment_group__candidates__identifier'],
                              period=['delivery__deadline__assignment_group__parentnode__parentnode__id',
                                      'delivery__deadline__assignment_group__parentnode__parentnode__short_name',
                                      'delivery__deadline__assignment_group__parentnode__parentnode__long_name'],
@@ -25,6 +26,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              assignment=['delivery__deadline__assignment_group__parentnode__id',
                                          'delivery__deadline__assignment_group__parentnode__short_name',
                                          'delivery__deadline__assignment_group__parentnode__long_name'],
+                             assignment_group=['delivery__deadline__assignment_group',
+                                               'delivery__deadline__assignment_group__name'],
                              delivery=['delivery__time_of_delivery',
                                        'delivery__number',
                                        'delivery__delivered_by'])
@@ -38,5 +41,9 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__deadline__assignment_group__examiners__username',
                              )
     filters = FilterSpecs(FilterSpec('id'),
-                          FilterSpec('delivery'))
+                          FilterSpec('delivery'),
+                          ForeignFilterSpec('delivery__deadline__assignment_group__parentnode__parentnode',  # Period
+                                            FilterSpec('start_time'),
+                                            FilterSpec('end_time')),
+                         )
 

@@ -7,6 +7,10 @@ Ext.define('devilry.extjshelpers.DashGrid', {
         this.loadStore();
     },
 
+    config: {
+        noRecordsMessage: {}
+    },
+
     createStore: function() {
         throw "createStore must be implemented";
     },
