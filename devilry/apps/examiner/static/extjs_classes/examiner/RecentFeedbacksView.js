@@ -85,7 +85,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             },{
                 text: 'Feedback save time',
                 menuDisabled: true,
-                flex: 15,
+                width: 130,
                 dataIndex: 'save_timestamp',
                 renderer: function(value) {
                     var rowTpl = Ext.create('Ext.XTemplate',
@@ -97,7 +97,12 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    var url = Ext.String.format(
+                        "{0}assignmentgroup/{1}?deliveryid={2}",
+                        DASHBOARD_URL,
+                        record.data.delivery__deadline__assignment_group,
+                        record.data.delivery
+                    );
                     window.location = url;
                 }
             }

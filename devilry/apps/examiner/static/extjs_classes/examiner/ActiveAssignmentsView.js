@@ -55,7 +55,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             columns: [{
                 text: 'Assignment',
                 menuDisabled: true,
-                flex: 30,
+                flex: 20,
                 dataIndex: 'long_name'
             },{
                 text: 'Period',
@@ -65,7 +65,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             },{
                 text: 'Published',
                 menuDisabled: true,
-                flex: 15,
+                width: 150,
                 dataIndex: 'publishing_time',
                 renderer: function(value) {
                     var rowTpl = Ext.create('Ext.XTemplate',

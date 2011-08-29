@@ -69,7 +69,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             columns: [{
                 text: 'Assignment',
                 menuDisabled: true,
-                flex: 30,
+                flex: 18,
                 dataIndex: 'deadline__assignment_group__parentnode__long_name',
                 renderer: function(value, meta, record) {
                     return me.assignmentRowTpl.apply(record.data);
@@ -85,7 +85,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             },{
                 text: 'Time of delivery',
                 menuDisabled: true,
-                flex: 15,
+                width: 130,
                 dataIndex: 'time_of_delivery',
                 renderer: function(value) {
                     var rowTpl = Ext.create('Ext.XTemplate',
@@ -97,7 +97,12 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    var url = Ext.String.format(
+                        "{0}assignmentgroup/{1}?deliveryid={2}",
+                        DASHBOARD_URL,
+                        record.data.deadline__assignment_group,
+                        record.data.id
+                    );
                     window.location = url;
                 }
             }

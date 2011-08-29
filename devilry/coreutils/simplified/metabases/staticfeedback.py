@@ -26,6 +26,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              assignment=['delivery__deadline__assignment_group__parentnode__id',
                                          'delivery__deadline__assignment_group__parentnode__short_name',
                                          'delivery__deadline__assignment_group__parentnode__long_name'],
+                             assignment_group=['delivery__deadline__assignment_group',
+                                               'delivery__deadline__assignment_group__name'],
                              delivery=['delivery__time_of_delivery',
                                        'delivery__number',
                                        'delivery__delivered_by'])

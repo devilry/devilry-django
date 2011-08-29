@@ -45,12 +45,23 @@
             model: dashboard_assignment_model
         });
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
-            renderTo: 'recent',
-            model: dashboard_delivery_model
+            model: dashboard_delivery_model,
+            flex: 1
         });
-        var recentDeliveries = Ext.create('devilry.examiner.RecentFeedbacksView', {
-            renderTo: 'recentfeedback',
-            model: dashboard_feedback_model
+        var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
+            model: dashboard_feedback_model,
+            flex: 1
+        });
+        Ext.widget('container', {
+            renderTo: 'recent',
+            margin: {top: 30},
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            height: 330,
+            width: "100%",
+            items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
         });
     }
 
