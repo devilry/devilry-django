@@ -58,7 +58,6 @@ class CompressedFileDownloadView(View):
         candidates_as_string += "group-" + str(assignmentgroup_id)
         return candidates_as_string
 
-    #TODO use temporary directory
     def get(self, request, assignmentid):
         assignment = get_object_or_404(Assignment, id=assignmentid)
 
