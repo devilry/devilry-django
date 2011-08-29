@@ -5,8 +5,10 @@
 {{ block.super }}
 <script>
     Ext.require('devilry.extjshelpers.PermissionChecker');
-    Ext.require('devilry.extjshelpers.DateTime');
     Ext.require('devilry.examiner.ActiveAssignmentsView');
+    Ext.require('devilry.examiner.RecentDeliveriesView');
+    Ext.require('devilry.examiner.RecentFeedbacksView');
+
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
     var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
     assignmentgroup_permcheckstore.pageSize = 1;
@@ -35,7 +37,8 @@
     });
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
-    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users,deadline,candidates" }}
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,deadline,candidates" }}
+    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,deadline,candidates" }}
     function createActiveAssignmentsView() {
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
             renderTo: 'activeassignments',
@@ -44,6 +47,10 @@
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             renderTo: 'recent',
             model: dashboard_delivery_model
+        });
+        var recentDeliveries = Ext.create('devilry.examiner.RecentFeedbacksView', {
+            renderTo: 'recentfeedback',
+            model: dashboard_feedback_model
         });
     }
 
@@ -60,5 +67,6 @@
 <section id="has-permission-section" style="display: none">
     <section id="activeassignments"></section>
     <section id="recent"></section>
+    <section id="recentfeedback"></section>
 </section>
 {% endblock %}
