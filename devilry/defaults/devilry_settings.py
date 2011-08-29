@@ -21,7 +21,7 @@ DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-document
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000
 
-DEVILRY_SEND_EMAIL_TO_USERS = False
+DEVILRY_SEND_EMAIL_TO_USERS = True
 DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
 DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
                   "Please do not respond to this email."
@@ -39,11 +39,3 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
 
-## The urlscheme+domain where devilry is located.
-## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_URLPATH_PREFIX is the absolute URL to the devilry
-## instance. WARNING: must not end with /
-#DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
-
-## Email addresses
-#DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example'
-#DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
