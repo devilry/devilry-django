@@ -29,7 +29,7 @@ def login(request):
                 if user.is_active:
                     auth.login(request, user)
                     next = form.cleaned_data.get('next') or \
-                            settings.DEVILRY_MAIN_PAGE or '/'
+                            settings.DEVILRY_URLPATH_PREFIX or '/'
                     return http.HttpResponseRedirect(next)
                 else:
                     return http.HttpResponseForbidden("Acount is not active")

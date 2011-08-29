@@ -23,7 +23,7 @@ def on_new_staticfeedback(sender, **kwargs):
 
     urlpath = reverse('student-show-assignmentgroup', kwargs=dict(assignmentgroupid=assignment_group.id))
     url = '{domain}{prefix}{path}?deliveryid={deliveryid}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                                                  prefix = settings.DEVILRY_MAIN_PAGE,
+                                                                  prefix = settings.DEVILRY_URLPATH_PREFIX,
                                                                   path = urlpath,
                                                                   deliveryid = delivery.id)
     email_subject = 'New feedback - {0}'.format(assignment.get_path())
@@ -57,7 +57,7 @@ def on_new_successful_delivery(sender, delivery, **kwargs):
             for candidate in assignment_group.candidates.all()]
     urlpath = reverse('student-show-assignmentgroup', kwargs=dict(assignmentgroupid=assignment_group.id))
     url = '{domain}{prefix}{path}?deliveryid={deliveryid}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                                                  prefix = settings.DEVILRY_MAIN_PAGE,
+                                                                  prefix = settings.DEVILRY_URLPATH_PREFIX,
                                                                   path = urlpath,
                                                                   deliveryid = delivery.id)
 

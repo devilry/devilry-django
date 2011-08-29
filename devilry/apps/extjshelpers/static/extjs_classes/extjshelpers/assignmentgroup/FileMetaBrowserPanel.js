@@ -67,7 +67,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 }],
                     listeners: {
                     itemclick: function(self, record) {
-                        var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/filedownload/" + record.data.id;
+                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.data.id;
                         window.open(url, 'download');
                     }
                 }
@@ -80,7 +80,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 text: 'Download all files (.zip)',
                 listeners: {
                     click: function(view, record, item) {
-                        var url = DevilrySettings.DEVILRY_MAIN_PAGE + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
+                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
                         window.open(url, 'download');
                     }
                 }

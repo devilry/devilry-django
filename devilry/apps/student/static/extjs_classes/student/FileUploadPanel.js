@@ -38,7 +38,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         '       <h1>Success</h1>',
         '       <p>Delivery created.',
         '           <tpl if="deadline">',
-        '               <a href="{DEVILRY_MAIN_PAGE}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
         '           </tpl>',
         '       </p>',
         '   </section>',
@@ -130,7 +130,7 @@ Ext.define('devilry.student.FileUploadPanel', {
             initialhelptext: this.initialhelptext,
             deliverysuccessful: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
-            DEVILRY_MAIN_PAGE: DevilrySettings.DEVILRY_MAIN_PAGE,
+            DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX,
             deadline: (this.deadline_recordcontainer.record? this.deadline_recordcontainer.record.data: null)
         });
     },
@@ -191,7 +191,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         var form = this.getForm();
         var url = Ext.String.format(
             '{0}/student/add-delivery/fileupload/{1}',
-            DevilrySettings.DEVILRY_MAIN_PAGE, this.deadlineid
+            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deadlineid
         );
         if(form.isValid()){
             form.submit({

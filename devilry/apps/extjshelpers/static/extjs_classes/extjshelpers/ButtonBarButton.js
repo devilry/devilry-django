@@ -62,17 +62,12 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
     },
 
     loadStore: function() {
-        this.store.proxy.extraParams.page = 1;
-        this.store.pageSize = 1;
-        this.store.load({
-            scope: this,
-            callback: function(records) {
-                if(this.store.totalCount) {
-                    this.show();
-                }
-                this.up('buttonbar').notifyStoreLoad(this.store.totalCount > 0);
-                //this.up('buttonbar').notifyStoreLoad(false);
+        this.store.on('load', function(store, records) {
+            if(this.store.totalCount) {
+                this.show();
             }
-        });
+            this.up('buttonbar').notifyStoreLoad(this.store.totalCount > 0);
+            //this.up('buttonbar').notifyStoreLoad(false);
+        }, this);
     }
 });

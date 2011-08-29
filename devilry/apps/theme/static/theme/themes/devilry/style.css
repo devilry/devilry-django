@@ -508,6 +508,17 @@ section.helpsection {
   background-color: #000 !important;
   width: 100% !important; }
 
+.page-load-mask {
+  padding: 20px !important;
+  border-radius: 20px;
+  background-color: #000 !important;
+  border: none !important; }
+  .page-load-mask div {
+    background-color: transparent !important;
+    color: #666 !important;
+    border: none !important;
+    font-size: 1.2em !important; }
+
 .x-window-maximized {
   width: 100% !important; }
 
@@ -634,19 +645,21 @@ table.verticalinfotable {
 
 section.extravisible {
   border-radius: 14px;
-  padding: 10px 10px 10px 168px !important;
+  padding: 10px 10px 10px 178px !important;
   background-position: 10px 10px;
-  min-height: 128px !important;
+  min-height: 148px !important;
   margin: 20px !important;
-  box-shadow: 0 0 5px 5px #aaa; }
+  background-color: #fff;
+  border: 1px solid #eee; }
 
 section.extravisible-small {
   border-radius: 14px;
-  padding: 10px 10px 10px 104px !important;
+  padding: 10px 10px 10px 94px !important;
   background-position: 10px 10px;
   min-height: 64px !important;
   margin: 20px !important;
-  box-shadow: 0 0 5px 5px #aaa; }
+  background-color: #fff;
+  border: 1px solid #eee; }
 
 section.ok-small {
   padding: 0px 0 0 84px;

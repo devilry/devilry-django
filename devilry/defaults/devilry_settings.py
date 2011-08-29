@@ -4,11 +4,11 @@ Defaults for settings defined by Devilry.
 
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
-# DEVILRY_MAIN_PAGE = '/django/devilry'
-DEVILRY_MAIN_PAGE = ''
+# DEVILRY_URLPATH_PREFIX = '/django/devilry'
+DEVILRY_URLPATH_PREFIX = ''
 
 # The default grade-plugin:
-DEVILRY_DEFAULT_GRADEEDITOR='asminimalaspossible'
+DEVILRY_DEFAULT_GRADEEDITOR='approved'
 
 DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
@@ -40,7 +40,7 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 #DEVILRY_STATIC_ROOT = '/path/to/static'
 
 ## The urlscheme+domain where devilry is located.
-## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_MAIN_PAGE is the absolute URL to the devilry
+## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_URLPATH_PREFIX is the absolute URL to the devilry
 ## instance. WARNING: must not end with /
 #DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 

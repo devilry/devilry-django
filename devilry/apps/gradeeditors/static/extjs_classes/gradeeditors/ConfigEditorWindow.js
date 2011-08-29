@@ -7,7 +7,8 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     layout: 'fit',
     modal: true,
     requires: [
-        'devilry.gradeeditors.FailureHandler'
+        'devilry.gradeeditors.FailureHandler',
+        'devilry.extjshelpers.HelpWindow'
     ],
 
     config: {
@@ -98,25 +99,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
      * @private
      */
     onHelp: function() {
-        console.log('onHelp');
-        var win = Ext.widget('window', {
-            title: 'Help',
-            modal: true,
-            width: this.getConfigEditor().helpwidth || 600,
-            height: this.getConfigEditor().helpheight || 500,
-            maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'box',
-                cls: 'helpbox',
-                autoScroll: true,
-                html: Ext.create('Ext.XTemplate',
-                    '<section class="helpsection">',
-                    '   {help}',
-                    '</section>'
-                ).apply({help: this.getConfigEditor().help})
-            }
-        }).show();
+        this.helpwindow.show();
     },
 
     /**
@@ -124,6 +107,12 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
      */
     initializeEditor: function() {
         if(this.getConfigEditor().help) {
+            this.helpwindow = Ext.widget('helpwindow', {
+                title: 'Help',
+                closeAction: 'hide',
+                helptext: this.getConfigEditor().help
+            });
+
             this.buttonBar.insert(0, {
                 text: 'Help',
                 iconCls: 'icon-help-32',

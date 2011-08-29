@@ -154,11 +154,11 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
 
         });
 
-        store.proxy.extraParams.filters = Ext.JSON.encode({
+        store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
             comp: 'exact',
             value: this.deliveryid
-        });
+        }]);
         store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
         store.pageSize = 1;
         store.load({
