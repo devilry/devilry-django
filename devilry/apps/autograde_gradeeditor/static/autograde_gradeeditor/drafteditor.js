@@ -57,7 +57,6 @@
      */
     setDraftstring: function(draftstring) {
         if(draftstring != undefined) {
-        //} else{
             var buf = Ext.JSON.decode(draftstring);
             this.points.setValue(buf.points);
             this.textarea.setValue(buf.feedback);
