@@ -99,10 +99,6 @@ LOGGING = {
     },
 
     'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'logging.NullHandler'
-        },
         'console': {
             'level': 'DEBUG',
             'formatter': 'simple',
