@@ -69,8 +69,8 @@
     });
 
 
-    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,deadline" }}
-    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,deadline" }}
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }}
+    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }}
     function createGrids() {
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: dashboard_delivery_model,

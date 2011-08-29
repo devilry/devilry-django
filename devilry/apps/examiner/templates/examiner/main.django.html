@@ -37,8 +37,8 @@
     });
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
-    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,deadline,candidates" }}
-    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,deadline,candidates" }}
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,candidates" }}
+    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,candidates" }}
     function createActiveAssignmentsView() {
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
             renderTo: 'activeassignments',
