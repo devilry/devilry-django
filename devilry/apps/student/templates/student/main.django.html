@@ -48,6 +48,7 @@
                     });
                     Ext.getDom('has-permission-section').style.display = 'block';
                     Ext.getDom('searchsection').style.display = 'block';
+                    createGrids();
                 }
             }
         });
@@ -66,6 +67,35 @@
         searchwidget.loadInitialValues();
         //searchwidget.focusOnSearchfield();
     });
+
+
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,deadline" }}
+    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,deadline" }}
+    function createGrids() {
+        var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
+            model: dashboard_delivery_model,
+            //limit: 3,
+            showStudentsCol: false,
+            flex: 1
+        });
+        var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
+            model: dashboard_feedback_model,
+            //limit: 3,
+            showStudentsCol: false,
+            flex: 1
+        });
+        Ext.widget('container', {
+            renderTo: 'recent',
+            margin: {top: 30},
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            height: 330,
+            width: "100%",
+            items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
+        });
+    }
 </script>
 
 {% endblock %}
@@ -85,5 +115,7 @@
 <section id="has-permission-section" style="display: none">
     <h1>Assignments / Add deliveries</h1>
     <section id="dashtable"></section>
+
+    <section id="recent"></section>
 </section>
 {% endblock %}

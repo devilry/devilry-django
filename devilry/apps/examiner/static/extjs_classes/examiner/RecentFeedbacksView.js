@@ -8,9 +8,10 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     config: {
         model: undefined,
         limit: 4,
+        showStudentsCol: true,
         noRecordsMessage: {
             title: 'No recent feedback',
-            msg: "You are not examiner on any assignment groups with recent feedback."
+            msg: "You are not registered on any assignment groups with recent feedback."
         },
     },
 
@@ -59,23 +60,29 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
             groupHeaderTpl: '{name}',
         });
-        var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
-            frame: false,
-            frameHeader: false,
-            border: false,
-            sortableColumns: false,
-            cls: 'selectable-grid',
-            store: this.store,
-            features: [groupingFeature],
-            columns: [{
-                text: 'Assignment',
-                menuDisabled: true,
-                flex: 30,
-                dataIndex: 'id',
-                renderer: function(value, meta, record) {
-                    return me.assignmentRowTpl.apply(record.data);
-                }
-            },{
+
+        var columns = [{
+            text: 'Assignment',
+            menuDisabled: true,
+            flex: 30,
+            dataIndex: 'id',
+            renderer: function(value, meta, record) {
+                return me.assignmentRowTpl.apply(record.data);
+            }
+        }, {
+            text: 'Feedback save time',
+            menuDisabled: true,
+            width: 130,
+            dataIndex: 'save_timestamp',
+            renderer: function(value) {
+                var rowTpl = Ext.create('Ext.XTemplate',
+                    '{.:date}'
+                );
+                return rowTpl.apply(value);
+            }
+        }];
+        if(this.showStudentsCol) {
+            Ext.Array.insert(columns, 1, [{
                 text: 'Students',
                 menuDisabled: true,
                 dataIndex: 'id',
@@ -83,18 +90,19 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
                 renderer: function(value, meta, record) {
                     return me.studentsRowTpl.apply(record.data);
                 }
-            },{
-                text: 'Feedback save time',
-                menuDisabled: true,
-                width: 130,
-                dataIndex: 'save_timestamp',
-                renderer: function(value) {
-                    var rowTpl = Ext.create('Ext.XTemplate',
-                        '{.:date}'
-                    );
-                    return rowTpl.apply(value);
-                }
-            }],
+            }]);
+        };
+
+        var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
+            frame: false,
+            hideHeaders: true,
+            frameHeader: false,
+            border: false,
+            sortableColumns: false,
+            cls: 'selectable-grid',
+            store: this.store,
+            features: [groupingFeature],
+            columns: columns,
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
