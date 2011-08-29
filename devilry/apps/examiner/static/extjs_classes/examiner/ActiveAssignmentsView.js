@@ -9,7 +9,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         model: undefined,
         noRecordsMessage: {
             title: 'No active assignments',
-            msg: "You are not examiner on any assignments in an active period/semester. You can find inactive assignments using the search box."
+            msg: "You are not registered on any assignments in an active period/semester. You can find inactive assignments using the search box."
         }
     },
 

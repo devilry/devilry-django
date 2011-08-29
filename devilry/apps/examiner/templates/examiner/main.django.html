@@ -46,10 +46,12 @@
         });
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: dashboard_delivery_model,
+            //limit: 3,
             flex: 1
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: dashboard_feedback_model,
+            //limit: 3,
             flex: 1
         });
         Ext.widget('container', {
@@ -78,6 +80,5 @@
 <section id="has-permission-section" style="display: none">
     <section id="activeassignments"></section>
     <section id="recent"></section>
-    <section id="recentfeedback"></section>
 </section>
 {% endblock %}
