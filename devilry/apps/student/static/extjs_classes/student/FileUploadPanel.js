@@ -17,13 +17,13 @@ Ext.define('devilry.student.FileUploadPanel', {
          * @cfg
          * Id of the deadline.
          */
-        deadlineid: undefined,
+        assignmentgroupid: undefined,
 
         /**
          * @cfg
          * Only used to display "Click to view" link. (optional)
          */
-        deadline_recordcontainer: undefined,
+        agroup_recordcontainer: undefined,
 
         /**
          * @cfg
@@ -37,8 +37,8 @@ Ext.define('devilry.student.FileUploadPanel', {
         '   <section class="ok">',
         '       <h1>Success</h1>',
         '       <p>Delivery created.',
-        '           <tpl if="deadline">',
-        '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '           <tpl if="agroup">',
+        '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{agroup.id}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
         '           </tpl>',
         '       </p>',
         '   </section>',
@@ -125,13 +125,14 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     updateInfoBox: function(finished) {
+        console.log(this.agroup_recordcontainer.record)
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
             deliverysuccessful: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX,
-            deadline: (this.deadline_recordcontainer.record? this.deadline_recordcontainer.record.data: null)
+            agroup: (this.agroup_recordcontainer.record? this.agroup_recordcontainer.record.data: null)
         });
     },
 
@@ -143,10 +144,11 @@ Ext.define('devilry.student.FileUploadPanel', {
     createInitialDelivery: function() {
         this.getEl().mask('Initializing delivery...');
         var delivery = Ext.create(this.deliverymodelname, {
-            deadline: this.deadlineid,
+            //deadline: this.assignmentgroupid,
             id: null,
             successful: false
         });
+        console.log(delivery);
         delivery.save({
             scope: this,
             success: this.onCreateDeliverySuccess,
@@ -191,7 +193,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         var form = this.getForm();
         var url = Ext.String.format(
             '{0}/student/add-delivery/fileupload/{1}',
-            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deadlineid
+            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.assignmentgroupid
         );
         if(form.isValid()){
             form.submit({
