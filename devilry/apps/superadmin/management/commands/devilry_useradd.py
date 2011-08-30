@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from optparse import make_option
 
-from usermod import UserModCommand
+from devilry_usermod import UserModCommand
 
 
 class Command(UserModCommand):
