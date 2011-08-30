@@ -17,6 +17,12 @@ Ext.define('devilry.student.FileUploadPanel', {
          * @cfg
          * Id of the deadline.
          */
+        deadlineid: undefined,
+
+        /**
+         * @cfg
+         * Id of the assignment group.
+         */
         assignmentgroupid: undefined,
 
         /**
@@ -144,11 +150,10 @@ Ext.define('devilry.student.FileUploadPanel', {
     createInitialDelivery: function() {
         this.getEl().mask('Initializing delivery...');
         var delivery = Ext.create(this.deliverymodelname, {
-            //deadline: this.assignmentgroupid,
+            deadline: this.deadlineid,
             id: null,
             successful: false
         });
-        console.log(delivery);
         delivery.save({
             scope: this,
             success: this.onCreateDeliverySuccess,

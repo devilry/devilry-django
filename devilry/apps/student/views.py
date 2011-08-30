@@ -32,12 +32,14 @@ class MainView(TemplateView):
 
 class AddDeliveryView(View):
     def get(self, request, assignmentgroupid):
+        assignmentgroup = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
                        'assignmentgroupid': assignmentgroupid,
+                       'deadlineid': assignmentgroup.get_active_deadline().id,
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment,
                        'RestfulSimplifiedAssignmentGroup': RestfulSimplifiedAssignmentGroup}
                       )
