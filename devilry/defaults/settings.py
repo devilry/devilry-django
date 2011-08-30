@@ -39,7 +39,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.administrator',
                   'devilry.apps.superadmin',
                   'devilry.apps.authenticate',
-                  'devilry.apps.gradeeditors']
+                  'devilry.apps.gradeeditors',
+                  'devilry.apps.send_email_to_students']
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.debug",
