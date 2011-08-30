@@ -26,7 +26,11 @@
         ';;</pre></p><p>'+
         '\nBut here you type <em>check</em> to specify that you want a numberfield, and <em>42</em> is the number of points one will get if the examiner checks the checkbox! And '+
         '<em>Is part 1.1 approved?</em> is the information shown to the examiner for this field.'+
-        '</p>',
+        '</p>'+
+        '<h3>Points to pass</h3>'+
+        '<p>In this field you simply enter how many points in total a student needs to pass the assignment. The points earned in the fields you define above will be summed up and tested '+
+        'against this number.</p>',
+        
     
     layout: {
         type: 'vbox',
@@ -58,16 +62,16 @@
         this.add(this.formArea);
         
         this.approvedLimitField = Ext.widget('numberfield', {
-            fieldLabel: 'Points to pass assignment',
+            fieldLabel: 'Points to pass',
             flex: 0,
-            emptyText: configobj.approvedlimit
+            minValue: 0
         });
         this.add(this.approvedLimitField);
         
         if(config.config) {
             configobj = Ext.JSON.decode(config.config);
             this.formArea.setValue(this.parseFormToText(configobj.formValues));
-            this.approvedLimitField.setValue(configobj.approvedLimit)
+            this.approvedLimitField.setValue(configobj.approvedLimit);
         }
         
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
