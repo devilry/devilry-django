@@ -12,8 +12,8 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             '{.:date}'
         );
 
-        this.store.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
-        this.store.proxy.extraParams.filters = Ext.JSON.encode([{"field":"assignment_group__is_open","comp":"exact","value":true}]);
+        //this.store.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{"field":"is_open","comp":"exact","value":true}]);
         this.store.load();
 
         Ext.apply(this, {
@@ -21,22 +21,22 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 text: 'Subject',
                 menuDisabled: true,
                 hideable: false,
-                dataIndex: 'assignment_group__parentnode__parentnode__parentnode__long_name',
+                dataIndex: 'parentnode__parentnode__parentnode__long_name',
                 flex: 20
             },{
                 text: 'Assignment',
                 menuDisabled: true,
                 hideable: false,
                 flex: 15,
-                dataIndex: 'assignment_group__parentnode__long_name'
+                dataIndex: 'parentnode__long_name'
             },{
                 text: 'Deadline',
                 menuDisabled: true,
                 hideable: false,
                 flex: 15,
-                dataIndex: 'deadline',
+                dataIndex: 'id',
                 renderer: function(value) {
-                    return rowTpl.apply(value);
+                    return "DEADLINE";
                 }
             },{
                 text: '#Deliveries',
@@ -49,6 +49,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 scope: this,
                 itemmouseup: function(view, record) {
                     var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
+                    console.log(record.data.id);
                     window.location = url;
                 },
                 itemmouseenter: function(view, record, item) {
