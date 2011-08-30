@@ -66,7 +66,8 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
             if(this.store.totalCount || this.is_superuser) {
                 this.show();
             }
-            this.up('buttonbar').notifyStoreLoad(this.store.totalCount > 0);
+            hasRecords = (this.store.totalCount > 0 || this.is_superuser);
+            this.up('buttonbar').notifyStoreLoad(hasRecords);
             //this.up('buttonbar').notifyStoreLoad(false);
         }, this);
     }
