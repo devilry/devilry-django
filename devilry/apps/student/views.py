@@ -19,7 +19,7 @@ import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
                      RestfulSimplifiedDeadline,
                      RestfulSimplifiedStaticFeedback,
-                     RestfulSimplifiedAssignment)
+                     RestfulSimplifiedAssignment, RestfulSimplifiedAssignmentGroup)
 
 class MainView(TemplateView):
     template_name='student/main.django.html'
@@ -31,14 +31,15 @@ class MainView(TemplateView):
 
 
 class AddDeliveryView(View):
-    def get(self, request, deadlineid):
+    def get(self, request, assignmentgroupid):
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
-                       'deadlineid': deadlineid,
-                       'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
+                       'assignmentgroupid': assignmentgroupid,
+                       'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment,
+                       'RestfulSimplifiedAssignmentGroup': RestfulSimplifiedAssignmentGroup}
                       )
 
 class ShowDeliveryView(View):
@@ -52,9 +53,10 @@ class ShowDeliveryView(View):
                       )
 
 class FileUploadView(View):
-    def post(self, request, deadlineid):
+    def post(self, request, assignmentgroupid):
+        assignment_group_obj = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
+        deadlineid = assignment_group_obj.get_active_deadline().id
         deadline_obj = get_object_or_404(Deadline, id=deadlineid)
-        assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
         logged_in_user = request.user
         deliveryid = request.POST['deliveryid']
 
