@@ -51,7 +51,7 @@
                     Ext.getBody().unmask();
                     if(is_superuser || loadedWithRecords > 0) {
                         Ext.getDom('searchsection').style.display = 'block';
-                        //createActiveAssignmentsView();
+                        createActiveAssignmentsView();
                     }
                 }
             }
@@ -150,6 +150,7 @@
     });
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+
     function createActiveAssignmentsView() {
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
             renderTo: 'activeassignments',
