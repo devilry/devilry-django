@@ -21,7 +21,10 @@
 
         Ext.create('devilry.student.DeadlineTitle', {
             renderTo: 'content-heading',
-            singlerecordontainer: agroup_recordcontainer
+            singlerecordontainer: agroup_recordcontainer,
+            extradata: {
+                latest_deadline: new Date({{ deadline_timestamp_milliseconds}})
+            }
         });
 
         ag_model.load({{assignmentgroupid}}, {

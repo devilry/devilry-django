@@ -8,6 +8,7 @@ import zipfile
 import tarfile
 from os import stat
 from mimetypes import guess_type
+from time import mktime
 import json
 from ..core.models import (Delivery, FileMeta,
                            Deadline, AssignmentGroup,
@@ -33,13 +34,19 @@ class MainView(TemplateView):
 class AddDeliveryView(View):
     def get(self, request, assignmentgroupid):
         assignmentgroup = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
+        deadline = assignmentgroup.get_active_deadline()
+        #deadline.deadline
+        print deadline.deadline
+        deadline_timestamp_milliseconds = mktime(deadline.deadline.timetuple()) + (deadline.deadline.microsecond/1000000)
+        deadline_timestamp_milliseconds *= 1000
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
                        'assignmentgroupid': assignmentgroupid,
-                       'deadlineid': assignmentgroup.get_active_deadline().id,
+                       'deadlineid': deadline.id,
+                       'deadline_timestamp_milliseconds': deadline_timestamp_milliseconds,
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment,
                        'RestfulSimplifiedAssignmentGroup': RestfulSimplifiedAssignmentGroup}
                       )

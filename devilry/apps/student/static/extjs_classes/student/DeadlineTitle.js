@@ -6,7 +6,7 @@ Ext.define('devilry.student.DeadlineTitle', {
     tpl: Ext.create('Ext.XTemplate',
         '<h1>{parentnode__parentnode__parentnode__long_name}</h1>',
         '<h2>{parentnode__parentnode__long_name}</h2>',
-        '<h3>{parentnode__long_name} &mdash; deadline: DEADLINE </h3>',
+        '<h3>{parentnode__long_name} &mdash; deadline: {latest_deadline:date}</h3>',
         '<tpl if="name">',
         '   {name}: ',
         '</tpl>',
