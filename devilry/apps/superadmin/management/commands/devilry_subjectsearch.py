@@ -4,9 +4,11 @@ from optparse import make_option
 from devilry.apps.core.models import Subject
 
 
-class Command(BaseCommand):
+class NodeSearchBase(BaseCommand):
+    nodecls = None
     args = '[search|empty for all]'
-    help = 'Search for a subject by short_name. Matches any part of the short_name.'
+    attrs=['short_name', 'long_name']
+
     option_list = BaseCommand.option_list + (
         make_option('--short_name-only',
             action='store_true',
@@ -15,23 +17,36 @@ class Command(BaseCommand):
             help='Only print short name (one line per short_name)'),
     )
 
+    def _print_details(self, record):
+        print self.get_short(record)
+        for attrname in self.attrs:
+            print '   {attrname}: {attr}'.format(attrname=attrname,
+                                                 attr=getattr(record, attrname))
+        print '   admins:'
+        for admin in record.admins.all():
+            print '        - {0}'.format(admin)
+
+
+    def show_search_results(self, options, qry):
+        for record in qry:
+            if options['short_name_only']:
+                print self.get_short(record)
+            else:
+                self._print_details(record)
+
     def handle(self, *args, **options):
         if len(args) == 1:
-            qry = Subject.objects.filter(short_name__icontains=args[0])
+            qry = self.get_qry(args[0])
         else:
-            qry = Subject.objects.all()
+            qry = self.nodecls.objects.all()
+        self.show_search_results(options, qry)
 
-        for subject in qry:
-            if options['short_name_only']:
-                print subject.short_name
-            else:
-                self._print_subject_details(subject)
+    def get_qry(self, term):
+        return self.nodecls.objects.filter(short_name__icontains=term)
 
-    def _print_subject_details(self, subject):
-        print '{0}:'.format(subject.short_name)
-        for attrname in ('short_name', 'long_name'):
-            print '   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=getattr(subject, attrname))
-        print '   admins:'
-        for admin in subject.admins.all():
-            print '        - {0}'.format(admin)
+    def get_short(self, record):
+        return record.short_name
+
+class Command(NodeSearchBase):
+    help = 'Search for a subject by short_name. Matches any part of the short_name.'
+    nodecls = Subject
