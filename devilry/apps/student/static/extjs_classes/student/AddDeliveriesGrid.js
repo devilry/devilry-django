@@ -13,7 +13,12 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         );
 
         //this.store.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
-        this.store.proxy.extraParams.filters = Ext.JSON.encode([{"field":"is_open","comp":"exact","value":true}]);
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            "field": "is_open",
+            "comp": "exact",
+            "value": true
+        }]);
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-latest_deadline_deadline']);
         this.store.load();
 
         Ext.apply(this, {
@@ -34,9 +39,12 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 menuDisabled: true,
                 hideable: false,
                 flex: 15,
-                dataIndex: 'id',
+                dataIndex: 'latest_deadline_deadline',
                 renderer: function(value) {
-                    return "DEADLINE";
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '{.:date}'
+                    );
+                return rowTpl.apply(value);
                 }
             },{
                 text: '#Deliveries',
