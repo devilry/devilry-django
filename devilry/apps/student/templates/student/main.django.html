@@ -26,7 +26,16 @@
     assignmentgroup_permcheckstore.pageSize = 1;
 
     var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
-    var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};        
+    var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
+
+    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+    var ag_store = Ext.create('Ext.data.Store', {
+        model: ag_model,
+        id: 'devilry.apps.student.AddDeliveriesStore',
+        remoteFilter: true,
+        remoteSort: true,
+        autoSync: true
+    });
     
     Ext.onReady(function() {
         Ext.getBody().mask("Loading page", 'page-load-mask');
@@ -43,7 +52,7 @@
                 },
                 hasPermission: function() {
                     Ext.create('devilry.student.AddDeliveriesGrid', {
-                        store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStore'),
+                        store: ag_store,
                         renderTo: 'dashtable',
                     });
                     Ext.getDom('has-permission-section').style.display = 'block';

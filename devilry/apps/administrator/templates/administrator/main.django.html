@@ -33,9 +33,11 @@
     subjectstore.pageSize = 1;
     periodstore.pageSize = 1;
 
+    var is_superuser = {{ user.is_superuser|lower }};
 
     Ext.onReady(function() {
         Ext.getBody().mask("Loading page", 'page-load-mask');
+
 
         Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [nodestore, subjectstore, periodstore],
@@ -45,11 +47,12 @@
                 'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
                 '</p></section>',
             listeners: {
-                allLoaded: function() {
+                allLoaded: function(loadedItems, loadedWithRecords) {
                     Ext.getBody().unmask();
-                },
-                hasPermission: function() {
-                    Ext.getDom('searchsection').style.display = 'block';
+                    if(is_superuser || loadedWithRecords > 0) {
+                        Ext.getDom('searchsection').style.display = 'block';
+                        createActiveAssignmentsView();
+                    }
                 }
             }
         });
@@ -59,6 +62,7 @@
             cls: 'dashboard-buttonbar',
             items: [{
                 xtype: 'buttonbarbutton',
+                is_superuser: is_superuser,
                 text: 'Node',
                 store: nodestore,
                 iconCls: 'icon-add-32',
@@ -144,6 +148,15 @@
         subjectstore.load();
         periodstore.load();
     });
+
+    var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+
+    function createActiveAssignmentsView() {
+        var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
+            renderTo: 'activeassignments',
+            model: dashboard_assignment_model
+        });
+    }
 </script>
 
 {% endblock %}
@@ -155,6 +168,6 @@
 {{ block.super }}
 
 <div id="no-permissions-message"></div>
-
 <div id="createbuttonbar"></div>
+<section id="activeassignments"></section>
 {% endblock %}

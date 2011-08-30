@@ -51,12 +51,8 @@ DATABASES["default"] = {
 #DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 ## Email addresses
-#DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example'
+#DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 #DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
-
-## Email addresses
-#DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example'
-#DEVILRY_SYSTEM_ADMIN_EMAIL ='devilry-support@example.com'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_HOST = 'smtp.example.com'
