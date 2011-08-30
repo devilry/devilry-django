@@ -63,7 +63,7 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
 
     loadStore: function() {
         this.store.on('load', function(store, records) {
-            if(this.store.totalCount) {
+            if(this.store.totalCount || this.is_superuser) {
                 this.show();
             }
             this.up('buttonbar').notifyStoreLoad(this.store.totalCount > 0);
