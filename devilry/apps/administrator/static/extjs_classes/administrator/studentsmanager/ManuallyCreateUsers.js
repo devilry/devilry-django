@@ -23,7 +23,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     helptext:
         '<section class="helpsection">' +
         //'   <h1>Help</h1>' +
-        '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box on the right hand side.</p>' +
+        '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box.</p>' +
         '   <h2>Common usage examples</h2>' +
         '   <h3>Individual deliveries</h3>' +
         '   <p>Very often, an assignment requires <strong>individual</strong> deliveries and feedback. In this case, each <em>assignment group</em> should contain a single student. In this case, the input box should contain something similar to this:</p>' +
