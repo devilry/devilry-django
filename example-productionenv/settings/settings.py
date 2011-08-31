@@ -39,3 +39,21 @@ DATABASES["default"] = {
 #    'HOST': '', # Set to empty string for localhost.
 #    'PORT': '', # Set to empty string for default.
 #}
+
+
+#################################
+## THESE SETTINGS MUST BE SET
+#################################
+
+## The urlscheme+domain where devilry is located.
+## DEVILRY_SCHEME_AND_DOMAIN+DEVILRY_URLPATH_PREFIX is the absolute URL to the devilry
+## instance. WARNING: must not end with /
+#DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+## Email addresses
+#DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
+#DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.example.com'
+#EMAIL_PORT = 25

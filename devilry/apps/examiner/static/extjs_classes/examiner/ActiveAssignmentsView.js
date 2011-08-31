@@ -10,7 +10,8 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         noRecordsMessage: {
             title: 'No active assignments',
             msg: "You are not registered on any assignments in an active period/semester. You can find inactive assignments using the search box."
-        }
+        },
+        pageSize: 30
     },
 
     constructor: function(config) {
@@ -37,7 +38,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-publishing_time']);
-        this.store.pageSize = 500; // A bit ugly, but we do not want to make it unlimited??
+        this.store.pageSize = this.pageSize
     },
 
     createBody: function() {

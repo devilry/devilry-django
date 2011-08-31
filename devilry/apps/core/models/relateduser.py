@@ -25,8 +25,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(admins=user_obj) | \
-                Q(period__admins=user_obj) | \
+        return Q(period__admins=user_obj) | \
                 Q(period__parentnode__admins=user_obj) | \
                 Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 

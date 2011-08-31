@@ -100,6 +100,8 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
         :rtype: a django queryset
         """
         return cls._meta.model.published_where_is_examiner(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                                                                          latest_deadline_id=Max('deadlines__id'),
+                                                                          latest_deadline_deadline=Max('deadlines__deadline'),
                                                                           number_of_deliveries=Count('deadlines__deliveries'))
 
 

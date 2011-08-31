@@ -59,11 +59,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         to the maximum number of points possible with the selected grade
         plugin.
 
-    .. attribute:: maxpoints
-
-        The maximum number of points possible without scaling. This is set by
-        the grade plugin.
-
     .. attribute:: must_pass
         
         Each student must get a passing grade on this assignment to get a
@@ -128,9 +123,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'with the approved/notapproved plugin). If you want both '
                 'to count for maximum 40 points, you set this field to 40 '
                 'on both assignments.'))
-    maxpoints = models.PositiveIntegerField(default=0,
-            help_text=_('The maximum number of points possible without '\
-                'scaling.'))
+    #maxpoints = models.PositiveIntegerField(default=0,
+            #help_text=_('The maximum number of points possible without '\
+                #'scaling.'))
     autoscale = models.BooleanField(default=True,
             verbose_name=_("Autoscale"),
             help_text=_('If this field is set, the pointscale will '\
