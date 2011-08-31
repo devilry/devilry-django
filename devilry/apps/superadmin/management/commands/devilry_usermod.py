@@ -68,4 +68,6 @@ class Command(UserModCommand):
         else:
             for key, value in kw.iteritems():
                 setattr(user, key, value)
+            if user.password == '':
+                user.set_unusable_password()
             self.save_user(user, verbosity)
