@@ -49,6 +49,14 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
        A DateTimeField containing the etag for this object.
 
+    .. attribute:: relatedstudents
+
+        A django.db.models.ForeignKey_ that points to the related students for this period.
+   
+    .. attribute:: relatedexaminers
+
+        A django.db.models.ForeignKey_ that points to the related examiners for this period.
+   
     """
     class Meta:
         app_label = 'core'
