@@ -32,6 +32,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.approved_gradeeditor',
                   'devilry.apps.manual_gradeeditor',
                   'devilry.apps.autograde_gradeeditor',
+                  'devilry.apps.basicform_gradeeditor',
 
                   'devilry.apps.markup',
                   'devilry.apps.student',
