@@ -131,7 +131,6 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     updateInfoBox: function(finished) {
-        console.log(this.agroup_recordcontainer.record)
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
