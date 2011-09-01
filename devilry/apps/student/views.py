@@ -35,8 +35,6 @@ class AddDeliveryView(View):
     def get(self, request, assignmentgroupid):
         assignmentgroup = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
         deadline = assignmentgroup.get_active_deadline()
-        #deadline.deadline
-        print deadline.deadline
         deadline_timestamp_milliseconds = mktime(deadline.deadline.timetuple()) + (deadline.deadline.microsecond/1000000)
         deadline_timestamp_milliseconds *= 1000
         return render(request, 'student/add-delivery.django.html',
@@ -112,7 +110,6 @@ class FileDownloadView(View):
 
     def get(self, request, filemetaid):    
         filemeta = get_object_or_404(FileMeta, id=filemetaid)
-        #print filemeta
         assignment_group = filemeta.delivery.deadline.assignment_group
         if not (assignment_group.is_candidate(request.user) \
                     or assignment_group.is_examiner(request.user) \
