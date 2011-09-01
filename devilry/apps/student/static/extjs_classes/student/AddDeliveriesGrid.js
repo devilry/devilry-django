@@ -57,7 +57,6 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 scope: this,
                 itemmouseup: function(view, record) {
                     var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
-                    console.log(record.data.id);
                     window.location = url;
                 },
                 itemmouseenter: function(view, record, item) {
