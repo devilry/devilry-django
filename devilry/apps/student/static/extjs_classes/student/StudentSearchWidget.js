@@ -69,7 +69,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
                     tpl: this.deadlineRowTpl,
                     defaultbutton: {
                         text: 'Deliver',
-                        clickLinkTpl: this.urlPrefix + 'add-delivery/{id}'
+                        clickLinkTpl: this.urlPrefix + 'add-delivery/{assignment_group}'
                     }
                 }
             //}, {
