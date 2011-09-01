@@ -50,7 +50,7 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
     #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
 ]
 
-logdir = join(this_dir, 'log')
+logdir = join(PARENT_DIR, 'log')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

@@ -1,0 +1,41 @@
+from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth.models import User
+from optparse import make_option
+
+from devilry_usermod import UserModCommand
+
+
+class Command(UserModCommand):
+    help = 'Add users from standard in.'
+    option_list = BaseCommand.option_list + (
+        make_option('--emailsuffix',
+            dest='emailsuffix',
+            default=None,
+            help='Email suffix set for all users. Example: {username}@example.com'),
+    )
+
+    def handle(self, *args, **options):
+        import sys
+        usernames = sys.stdin.read().split()
+        users_created_count = 0
+        verbosity = int(options.get('verbosity', '1'))
+        emailsuffix = options['emailsuffix']
+        
+        for username in usernames:
+            try:
+                User.objects.get(username=username)
+            except User.DoesNotExist:
+                email = None
+                if emailsuffix != None:
+                    try:
+                        email = emailsuffix.format(username=username)
+                    except KeyError:
+                        print "Error: emailsuffix must contain '{username}'"
+                        sys.exit()
+                user = User(username=username, email=email)
+                user.set_unusable_password()
+                self.save_user(user, verbosity)
+                users_created_count += 1
+        if verbosity > 0:
+            print "Added %d users." % users_created_count
+            print "%s users already existed." % (len(usernames) - users_created_count)
