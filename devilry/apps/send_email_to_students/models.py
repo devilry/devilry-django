@@ -27,6 +27,14 @@ def on_new_staticfeedback(sender, **kwargs):
                                                                   path = urlpath,
                                                                   deliveryid = delivery.id)
     email_subject = 'New feedback - {0}'.format(assignment.get_path())
+
+    # Make sure the values that may contain non-ascii characters are utf-8
+    unicode_kw = dict(subject = subject.long_name,
+                      period = period.long_name,
+                      assignment = assignment.long_name)
+    for key, value in unicode_kw.iteritems():
+        unicode_kw[key] = value.encode('utf-8')
+
     email_message = ('One of your deliveries has new feedback.\n\n'
                      'Subject: {subject}\n'
                      'Period: {period}\n'
@@ -34,12 +42,10 @@ def on_new_staticfeedback(sender, **kwargs):
                      'Deadline: {deadline}\n'
                      'Delivery number: {delivery}\n\n'
                      'The feedback can be viewed at:\n'
-                     '{url}'.format(subject = subject.long_name,
-                                    period = period.long_name,
-                                    assignment = assignment.long_name,
-                                    deadline = deadline.deadline.isoformat(),
+                     '{url}'.format(deadline = deadline.deadline.isoformat(),
                                     delivery = delivery.number,
-                                    url = url))
+                                    url = url,
+                                    **unicode_kw))
     send_email(user_list, email_subject, email_message)
 
 post_save.connect(on_new_staticfeedback,
