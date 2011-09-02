@@ -46,6 +46,7 @@ docs/restfulapi/
 */bin/django_*.py.wsgi
 */bin/seleniumrc
 */bin/python
+*/bin/*-script.py
 */develop-eggs
 */dist
 */downloads
@@ -56,3 +57,4 @@ docs/restfulapi/
 */example-productionenv/bin/
 devilry.egg-info/
 productionenv/
+*.exe
