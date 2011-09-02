@@ -31,6 +31,7 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 
 
+## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
 ## These 3 can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
 DEVILRY_STUDENT_NO_PERMISSION_MSG = 'You are not registered as a student on anything in Devilry. If this is wrong, please contact the system administrator.'
 DEVILRY_EXAMINER_NO_PERMISSION_MSG = 'You are not registered as an examiner on anything in Devilry. If this is wrong, please contact the system administrator.'
