@@ -30,6 +30,13 @@ DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStor
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 
+
+## These 3 can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
+DEVILRY_STUDENT_NO_PERMISSION_MSG = 'You are not registered as a student on anything in Devilry. If this is wrong, please contact the system administrator.'
+DEVILRY_EXAMINER_NO_PERMISSION_MSG = 'You are not registered as an examiner on anything in Devilry. If this is wrong, please contact the system administrator.'
+DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = 'You are not registered as an administrator on anything in Devilry. If this is wrong, please contact the system administrator.'
+
+
 #################################################
 # Settings without a default value
 #################################################
@@ -38,4 +45,4 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## where they are located. Static files are located in the devilry/static/
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
-
+#DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'

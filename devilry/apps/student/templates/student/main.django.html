@@ -43,9 +43,7 @@
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<section class="info-small extravisible-small"><h1>You are not a student</h1>' +
-                '<p>You are not registered as student on anything in Devilry. ' +
-                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
-                '</p></section>',
+                '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();

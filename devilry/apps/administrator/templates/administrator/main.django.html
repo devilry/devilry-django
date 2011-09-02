@@ -43,9 +43,7 @@
             stores: [nodestore, subjectstore, periodstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1>' +
-                '<p>You are not registered as administrator on anything in Devilry. ' +
-                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
-                '</p></section>',
+                '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function(loadedItems, loadedWithRecords) {
                     Ext.getBody().unmask();
