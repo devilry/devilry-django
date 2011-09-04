@@ -26,7 +26,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
 
     operationErrorTpl: Ext.create('Ext.XTemplate',
         '{msg}. ',
-        'Error details: {status} {statusText}.'
+        'Error details: ',
+        '<tpl if="status === 0">',
+        '    Could not contact the Devilry server.',
+        '</tpl>',
+        '<tpl if="status !== 0">',
+        '    {status} {statusText}.',
+        '</tpl>'
     ),
 
     constructor: function(config) {
