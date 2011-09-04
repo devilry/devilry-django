@@ -28,7 +28,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '{msg}. ',
         'Error details: ',
         '<tpl if="status === 0">',
-        '    Could not contact the Devilry server.',
+        '    Could not connect to the Devilry server.',
         '</tpl>',
         '<tpl if="status !== 0">',
         '    {status} {statusText}.',
@@ -166,7 +166,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
             });
         }
         this.addIfItems(this.log.warning, 'warning', 'Warnings');
-        this.addIfItems(this.log.success, 'ok', 'Details about each successful save');
+        this.addIfItems(this.log.success, 'info', 'Details about each successful save');
         this.show();
         this.down('panel').getComponent(0).expand();
     }
