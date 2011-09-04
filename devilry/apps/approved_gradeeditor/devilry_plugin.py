@@ -20,22 +20,16 @@ class Approved(JsonRegistryItem):
 
     @classmethod
     def validate_draft(cls, draftstring, configstring):
-        buf = json.loads(draftstring)
-        is_approved = buf[0]
-        feedback = buf[1]
+        draft = json.loads(draftstring)
+        cls.validate_dict(draft, DraftValidationError, {'approved': bool,
+                                                        'feedback': basestring})
+        cls.validate_gradeeditor_key(draft, 'approved')
 
-        if not isinstance(is_approved, bool):
-            raise DraftValidationError('The draft string must contain a single boolean value.')
-
-        if not isinstance(feedback, basestring):
-            raise DraftValidationError('Feedback-text must be a text-entry')
 
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
-        buf = json.loads(draftstring)
-        is_approved = buf[0]
-        feedback = buf[1]
-
+        draft = json.loads(draftstring)
+        is_approved = draft['approved']
         if is_approved:
             grade = 'approved'
         else:
@@ -43,6 +37,6 @@ class Approved(JsonRegistryItem):
         return dict(is_passing_grade=is_approved,
                     grade=grade,
                     points=int(is_approved),
-                    rendered_view=markdown_full(feedback))
+                    rendered_view=markdown_full(draft['feedback']))
 
 gradeeditor_registry.register(Approved)

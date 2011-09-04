@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from optparse import make_option
 
 from devilry_usermod import UserModCommand
-
+import sys
 
 class Command(UserModCommand):
     help = 'Add users from standard in.'
@@ -15,7 +15,7 @@ class Command(UserModCommand):
     )
 
     def handle(self, *args, **options):
-        import sys
+        print "Reading users from stdin..."
         usernames = sys.stdin.read().split()
         users_created_count = 0
         verbosity = int(options.get('verbosity', '1'))
@@ -33,6 +33,7 @@ class Command(UserModCommand):
                         print "Error: emailsuffix must contain '{username}'"
                         sys.exit()
                 user = User(username=username, email=email)
+                print "Create user:%s with email %s" % (username, email)
                 user.set_unusable_password()
                 self.save_user(user, verbosity)
                 users_created_count += 1

@@ -18,6 +18,12 @@ class BasicForm(JsonRegistryItem):
     def validate_draft(cls, draftstring, configstring):
         draft = json.loads(draftstring)
         config = json.loads(configstring)
+
+        cls.validate_dict(draft, DraftValidationError, {'values': list,
+                                                        'feedback': basestring})
+        cls.validate_gradeeditor_key(draft, 'basicform')
+
+        gradeeditor = draft['gradeeditor']
         draftval = draft['values']
         confval = config['formValues']
 

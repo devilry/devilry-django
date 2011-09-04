@@ -50,6 +50,22 @@
     },
 
     /**
+     * @private
+     */
+    parseDraftString: function(draftstring) {
+        try {
+            var buf = Ext.JSON.decode(draftstring);
+        } catch(e) {
+            // The current draft string is not JSON, proceed as if no draft string
+            return;
+        }
+        if(buf.gradeeditor && buf.gradeeditor.id === 'approved') {
+            this.checkbox.setValue(buf.approved);
+            this.textarea.setValue(buf.feedback);
+        }
+    },
+
+    /**
      * Called by the grade-editor main window to set the current draft. Used
      * both on initialization and when selecting a draft from history (rolling
      * back to a previous draft).
@@ -61,11 +77,7 @@
         if(draftstring === undefined) {
             this.checkbox.setValue(true);
         } else {
-            var buf = Ext.JSON.decode(draftstring);
-            var approved = buf[0];
-            var feedback = buf[1];
-            this.checkbox.setValue(approved);
-            this.textarea.setValue(feedback);
+            this.parseDraftString(draftstring);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -106,9 +118,14 @@
         var approved = this.checkbox.getValue();
         var feedback = this.textarea.getValue();
         var retval = new Array();
-        retval[0] = approved
-        retval[1] = feedback
-        var draft = Ext.JSON.encode(retval);
+        var draft = Ext.JSON.encode({
+            gradeeditor: {
+                id: 'approved',
+                version: '1.0'
+            },
+            approved: approved,
+            feedback: feedback
+        });
         return draft;
     }
 }

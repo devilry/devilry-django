@@ -63,6 +63,25 @@
     },
 
     /**
+     * @private
+     */
+    parseDraftString: function(draftstring) {
+        try {
+            var buf = Ext.JSON.decode(draftstring);
+        } catch(e) {
+            // The current draft string is not JSON, proceed as if no draft string
+            return;
+        }
+        if(buf.gradeeditor && buf.gradeeditor.id === 'basicform') {
+            var i=0;
+            for (i=0; i<buf.values.length; i++) {
+                this.draftfields[i].setValue(buf.values[i]);
+            }
+            this.feedback.setValue(buf.feedback);
+        }
+    },
+
+    /**
      * Called by the grade-editor main window to set the current draft. Used
      * both on initialization and when selecting a draft from history (rolling
      * back to a previous draft).
@@ -72,12 +91,7 @@
      */
     setDraftstring: function(draftstring) {
         if(draftstring != undefined) {
-            var buf = Ext.JSON.decode(draftstring);
-            var i=0;
-            for (i=0; i<buf.values.length; i++) {
-                this.draftfields[i].setValue(buf.values[i]);
-            }
-            this.feedback.setValue(buf.feedback);
+            this.parseDraftString(draftstring);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -122,7 +136,14 @@
             values[i] = this.draftfields[i].getValue();
         }
         
-        var retval = {values: values, feedback: feedback}
+        var retval = {
+            gradeeditor: {
+                id: 'basicform',
+                version: '1.0'
+            },
+            values: values,
+            feedback: feedback
+        };
 
         var draft = Ext.JSON.encode(retval);
         return draft;

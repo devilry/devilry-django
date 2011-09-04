@@ -10,10 +10,10 @@
 {% block headextra %}
 
 <script>
-    {% for RestfulCls in restfulapi.values %}
-        {{ RestfulCls|extjs_combobox_model:"Search" }};
-        {{ RestfulCls|extjs_store:"Search" }};
-    {% endfor %}
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_combobox_model:"Search" }};
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_store:"Search" }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_combobox_model:"Search" }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_store:"Search" }};
     var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/student/';
 
     Ext.require('devilry.student.StudentSearchWidget');
@@ -43,9 +43,7 @@
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<section class="info-small extravisible-small"><h1>You are not a student</h1>' +
-                '<p>You are not registered as student on anything in Devilry. ' +
-                'If this is wrong, please contact the system administrator at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a>.' +
-                '</p></section>',
+                '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();

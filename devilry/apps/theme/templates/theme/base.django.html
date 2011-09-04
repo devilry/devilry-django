@@ -5,6 +5,7 @@
         <title>
             {% block title %}{{ page_title|default:"Devilry" }}{% endblock %}
         </title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" >
 
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/style.css"
             type="text/css" media="screen" charset="utf-8"/>
@@ -44,6 +45,18 @@
             Ext.onReady(function() {
                 Ext.QuickTips.init();
             });
+
+            if(Ext.isIE) {
+                Ext.onReady(function() {
+                    var win = Ext.MessageBox.show({
+                        title: 'Unsupported browser',
+                        msg: 'Devilry has several knows issues with your current browser (Internet Explorer). Please use Google Chrome, Firefox, Opera or Safari.',
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.WARNING,
+                        closable: false
+                    });
+                });
+            }
         </script>
         <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 

@@ -12,8 +12,8 @@ DEVILRY_DEFAULT_GRADEEDITOR='approved'
 
 DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
-#DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
-DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
+DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
+#DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
 DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-documentation'
@@ -30,6 +30,14 @@ DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStor
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 
+
+## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
+## These 3 can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
+DEVILRY_STUDENT_NO_PERMISSION_MSG = 'You are not registered as a student on anything in Devilry. If this is wrong, please contact the system administrator.'
+DEVILRY_EXAMINER_NO_PERMISSION_MSG = 'You are not registered as an examiner on anything in Devilry. If this is wrong, please contact the system administrator.'
+DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = 'You are not registered as an administrator on anything in Devilry. If this is wrong, please contact the system administrator.'
+
+
 #################################################
 # Settings without a default value
 #################################################
@@ -38,4 +46,4 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## where they are located. Static files are located in the devilry/static/
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
-
+#DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'

@@ -40,11 +40,18 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 hideable: false,
                 flex: 15,
                 dataIndex: 'latest_deadline_deadline',
-                renderer: function(value) {
-                    var rowTpl = Ext.create('Ext.XTemplate',
-                        '{.:date}'
-                    );
-                return rowTpl.apply(value);
+                renderer: function(value, m, record) {
+                    try {
+                        var rowTpl = Ext.create('Ext.XTemplate',
+                            '{latest_deadline_deadline:date}'
+                        );
+                        return rowTpl.apply(record.data);
+                    } catch(e) {
+                        var rowTpl = Ext.create('Ext.XTemplate',
+                            '{latest_deadline_deadline}'
+                        );
+                        return rowTpl.apply(record.data);
+                    }
                 }
             },{
                 text: '#Deliveries',
@@ -57,7 +64,6 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 scope: this,
                 itemmouseup: function(view, record) {
                     var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
-                    console.log(record.data.id);
                     window.location = url;
                 },
                 itemmouseenter: function(view, record, item) {
