@@ -24,6 +24,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '</tpl>'
     ),
 
+    operationErrorTpl: Ext.create('Ext.XTemplate',
+        '{msg}. ',
+        'Error details: {status} {statusText}.'
+    ),
+
     constructor: function(config) {
         this.callParent([config]);
     },
@@ -84,6 +89,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         this.addToLog('error', record, msg);
     },
 
+    addErrorFromOperation: function(record, msg, operation) {
+        var fullMsg = this.operationErrorTpl.apply({
+            msg: msg,
+            status: operation.error.status,
+            statusText: operation.error.statusText
+        });
+        this.addToLog('error', record, fullMsg);
+    },
+
     addWarning: function(record, msg) {
         this.addToLog('warning', record, msg);
     },
@@ -125,8 +139,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         }
     },
 
-    finish: function(resultMsg) {
+    finish: function(resultMsg, successMsg) {
         this.addIfItems(this.log.error, 'error', 'Errors');
+        if(successMsg && this.log.error.length === 0) {
+            this.down('panel').add({
+                xtype: 'panel',
+                title: successMsg.title,
+                html: successMsg.html,
+                bodyPadding: 10,
+                flex: 1
+            });
+        }
         if(resultMsg) {
             this.down('panel').add({
                 xtype: 'panel',
