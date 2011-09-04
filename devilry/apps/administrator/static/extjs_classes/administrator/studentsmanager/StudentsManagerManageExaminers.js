@@ -18,7 +18,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     successSetExaminerTpl: Ext.create('Ext.XTemplate',
         'Examiners set successfully to: <tpl for="examiners">',
         '   {.}<tpl if="xindex &lt; xcount">, </tpl>',
-        '</tpl>.'
+        '</tpl>'
     ),
 
     errorSetExaminerTpl: Ext.create('Ext.XTemplate',
@@ -240,6 +240,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             return;
         }
 
+        this.progressWindow.start('Clear examiners');
+        this._finishedSettingExaminersCount = 0;
         Ext.MessageBox.show({
             title: 'Confirm clear examiners?',
             msg: 'Are you sure you want to clear examiners on all the selected groups?',
