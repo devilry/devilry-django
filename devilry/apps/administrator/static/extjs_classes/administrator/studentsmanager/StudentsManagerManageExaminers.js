@@ -286,18 +286,18 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             scope: this,
             callback: function(records, operation, success) {
                 if(success) {
+                    var msg = this.successSetExaminerTpl.apply({
+                        msg: 'Examiners set successfully to',
+                        examiners: usernames
+                    });
+                    this.progressWindow.addSuccess(record, msg);
+                } else {
                     var msg = Ext.String.format(
                         'Failed to set examiners: {0} {1}',
                         operation.error.status,
                         operation.error.statusText
                     );
                     this.progressWindow.addError(record, msg);
-                } else {
-                    var msg = this.successSetExaminerTpl.apply({
-                        msg: 'Examiners set successfully to',
-                        examiners: usernames
-                    });
-                    this.progressWindow.addSuccess(record, msg);
                 }
 
                 this._finishedSettingExaminersCount ++;
