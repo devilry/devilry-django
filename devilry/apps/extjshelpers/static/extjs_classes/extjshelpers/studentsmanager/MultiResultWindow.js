@@ -12,10 +12,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '<tpl for="log">',
         '    <section class="{parent.csscls}-small">',
         '        <h1>',
-        '            <tpl if="record.data.name">',
-        '               {record.data.name} -',
+        '            <tpl if="assgnmentGroupRecord.data.name">',
+        '               {assgnmentGroupRecord.data.name} -',
         '            </tpl>',
-        '            <tpl for="record.data.candidates__identifier">',
+        '            <tpl for="assgnmentGroupRecord.data.candidates__identifier">',
         '               {.}<tpl if="xindex &lt; xcount">, </tpl>',
         '            </tpl>',
         '        </h1>',
@@ -82,34 +82,34 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         this.callParent(arguments);
     },
 
-    addToLog: function(level, record, msg) {
+    addToLog: function(level, assgnmentGroupRecord, msg) {
         var logitem = {
-            record: record,
+            assgnmentGroupRecord: assgnmentGroupRecord,
             msg: msg
         }
         this.log[level].push(logitem);
         //console.log(logitem);
     },
 
-    addError: function(record, msg) {
-        this.addToLog('error', record, msg);
+    addError: function(assgnmentGroupRecord, msg) {
+        this.addToLog('error', assgnmentGroupRecord, msg);
     },
 
-    addErrorFromOperation: function(record, msg, operation) {
+    addErrorFromOperation: function(assgnmentGroupRecord, msg, operation) {
         var fullMsg = this.operationErrorTpl.apply({
             msg: msg,
             status: operation.error.status,
             statusText: operation.error.statusText
         });
-        this.addToLog('error', record, fullMsg);
+        this.addToLog('error', assgnmentGroupRecord, fullMsg);
     },
 
-    addWarning: function(record, msg) {
-        this.addToLog('warning', record, msg);
+    addWarning: function(assgnmentGroupRecord, msg) {
+        this.addToLog('warning', assgnmentGroupRecord, msg);
     },
 
-    addSuccess: function(record, msg) {
-        this.addToLog('success', record, msg);
+    addSuccess: function(assgnmentGroupRecord, msg) {
+        this.addToLog('success', assgnmentGroupRecord, msg);
     },
 
 
