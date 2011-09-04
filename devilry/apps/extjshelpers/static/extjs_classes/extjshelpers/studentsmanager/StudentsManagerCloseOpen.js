@@ -34,6 +34,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
             scope: this,
             fn: function(btn) {
                 if(btn == 'yes') {
+                    this.progressWindow.start('Open/close groups');
+                    this._finishedSettingOpenCloseGroupCount = 0;
                     this.down('studentsmanager_studentsgrid').performActionOnSelected({
                         scope: this,
                         callback: this.openOrCloseGroup,
@@ -48,22 +50,43 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
     /**
      * @private
      */
-    openOrCloseGroup: function(record, index, total, is_open) {
-        var msg = Ext.String.format('Closing group {0}/{1}', index, total);
+    openOrCloseGroup: function(record, index, totalSelectedGroups, is_open) {
+        var msg = Ext.String.format('{0} group {1}/{2}',
+            (is_open? 'Opening': 'Closing'),
+            index, totalSelectedGroups
+        );
         this.getEl().mask(msg);
 
         var editRecord = this.createRecordFromStoreRecord(record);
         editRecord.data.is_open = is_open;
         editRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
+            scope: this,
+            callback: function(r, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(record, Ext.String.format('Group successfully {0}.', (is_open? 'opened': 'closed')));
+                } else {
+                    this.progressWindow.addErrorFromOperation(
+                        record,
+                        Ext.String.format('Failed to {0} group.', (is_open? 'open': 'close')),
+                        operation
+                    );
+                }
+
+                this._finishedSettingOpenCloseGroupCount ++;
+                if(this._finishedSettingOpenCloseGroupCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish(null, {
+                        title: 'Success',
+                        html: Ext.String.format(
+                            '<section class="info"><h1>Success</h1>Successfully {0} {1} groups.</section>',
+                            (is_open? 'opened': 'closed'),
+                            totalSelectedGroups
+                        )
+                    });
+                }
             }
         });
-
-        if(index == total) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-        }
     },
 
 });
