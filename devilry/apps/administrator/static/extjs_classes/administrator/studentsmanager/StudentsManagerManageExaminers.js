@@ -12,6 +12,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         '</tpl>',
         '</ul>'
     ),
+
+    successSetExaminerTpl: Ext.create('Ext.XTemplate',
+        '{msg}: <tpl for="examiners">',
+        '   {.}<tpl if="xindex &lt; xcount">, </tpl>',
+        '</tpl>.'
+    ),
     
     /**
      * @private
@@ -253,6 +259,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      */
     setExaminersOnSelected: function(setlistofusersobj, usernames, append) {
         setlistofusersobj.up('window').close();
+        this.progressWindow.start('');
+        this._finishedSettingExaminersCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminers,
@@ -275,14 +283,30 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         var editRecord = this.createRecordFromStoreRecord(record);
         editRecord.data.fake_examiners = usernames;
         editRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
+            scope: this,
+            callback: function(records, operation, success) {
+                if(success) {
+                    var msg = Ext.String.format(
+                        'Failed to set examiners: {0} {1}',
+                        operation.error.status,
+                        operation.error.statusText
+                    );
+                    this.progressWindow.addError(record, msg);
+                } else {
+                    var msg = this.successSetExaminerTpl.apply({
+                        msg: 'Examiners set successfully to',
+                        examiners: usernames
+                    });
+                    this.progressWindow.addSuccess(record, msg);
+                }
+
+                this._finishedSettingExaminersCount ++;
+                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish();
+                }
             }
         });
-
-        if(index == totalSelectedGroups) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-        }
     }
 });
