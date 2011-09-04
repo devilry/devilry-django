@@ -7,14 +7,14 @@ from devilry.apps.markup.parse_markdown import markdown_full
 
 
 
-class Manual(JsonRegistryItem):
+class Autograde(JsonRegistryItem):
     """
     Serves as a minimal example of a grade editor, and as a well suited grade
     editor for use in test cases.
     """
     gradeeditorid = 'autograde'
     title = 'Automatic grading'
-    description = 'A gradeeditor where the examiner sets the number of points earned, and the grade is automatically set.'
+    description = 'A gradeeditor where the examiner sets the number of points earned, and the grade is automatically set, using values given by an admin.'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/autograde_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/autograde_gradeeditor/drafteditor.js'
 
@@ -71,18 +71,16 @@ class Manual(JsonRegistryItem):
     @classmethod
     def validate_draft(cls, draftstring, configstring):
         config = cls.decode_configstring(configstring)
-        buf = json.loads(draftstring)
-        points = buf['points']
-        feedback = buf['feedback']
+        draft = json.loads(draftstring)
+        points = draft['points']
+        feedback = draft['feedback']
 
-        if not isinstance(points, int):
-            raise DraftValidationError('The points-field must contain a number.')
+        cls.validate_dict(draft, DraftValidationError, {'points': int,
+                                                        'feedback': basestring})
+        cls.validate_gradeeditor_key(draft, 'autograde')
 
         if points > config['maxpoints'] or points < 0:
             raise DraftValidationError('The points-field must be a value between 0 and {}'.format(config['maxpoints']))
-
-        if not isinstance(feedback, basestring):
-            raise DraftValidationError('The feedback-field must be a text-entry')
 
 
     @classmethod
@@ -103,4 +101,4 @@ class Manual(JsonRegistryItem):
                     points=points,
                     rendered_view=markdown_full(feedback))
 
-gradeeditor_registry.register(Manual)
+gradeeditor_registry.register(Autograde)
