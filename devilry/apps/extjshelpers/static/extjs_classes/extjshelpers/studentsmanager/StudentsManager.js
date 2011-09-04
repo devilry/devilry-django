@@ -12,7 +12,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow',
-        'devilry.extjshelpers.studentsmanager.ProgressAndResultWindow'
+        'devilry.extjshelpers.studentsmanager.MultiResultWindow'
     ],
 
     mixins: {
@@ -45,7 +45,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
 
-        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.ProgressAndResultWindow');
+        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow');
     },
 
     initComponent: function() {

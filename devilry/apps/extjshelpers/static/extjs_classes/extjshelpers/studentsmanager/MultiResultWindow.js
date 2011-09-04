@@ -1,4 +1,4 @@
-Ext.define('devilry.extjshelpers.studentsmanager.ProgressAndResultWindow', {
+Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     extend: 'Ext.window.Window',
     layout: 'fit',
     closeAction: 'hide',
