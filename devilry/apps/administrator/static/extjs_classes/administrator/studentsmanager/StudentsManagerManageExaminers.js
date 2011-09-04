@@ -150,12 +150,16 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onSetExaminers: function(append) {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
         }
+        var helptext = '<p>The username of a single examiner on each line.' +
+            (append? '': '<strong> Current examiners will be replaced</strong>.') +
+            '</p><p>Example:</p>';
         var win = Ext.widget('window', {
-            title: 'Select examiners',
+            title: (append? 'Add examiners': 'Replace examiners') + ' - select examiners',
             modal: true,
             width: 500,
             height: 400,
@@ -165,7 +169,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
                 xtype: 'setlistofusers',
                 //usernames: ['donald', 'scrooge'],
                 usernames: [],
-                helptext: '<p>The username of a single examiner on each line. Example:</p>',
+                helptext: helptext,
                 listeners: {
                     scope: this,
                     saveClicked: function(setlistofusersobj, usernames) {
@@ -206,7 +210,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onAddExaminers: function() {
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.onSetExaminers(true);
     },
 
