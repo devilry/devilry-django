@@ -11,7 +11,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow',
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
-        'devilry.gradeeditors.EditManyDraftEditorWindow'
+        'devilry.gradeeditors.EditManyDraftEditorWindow',
+        'devilry.extjshelpers.studentsmanager.ProgressAndResultWindow'
     ],
 
     mixins: {
@@ -43,6 +44,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
+
+        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.ProgressAndResultWindow');
     },
 
     initComponent: function() {
@@ -108,7 +111,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-            //this.up('window').addListener('show', this.onOneGroupForEachRelatedStudent, this);
+            //this.up('window').addListener('show', function() {
+                //Ext.defer(this.onReplaceExaminers, 1000, this);
+            //}, this);
             this.down('studentsmanager_studentsgrid').on('itemcontextmenu', this.onGridContexMenu, this);
         }, this);
         this.loadGradeEditorConfigModel();
