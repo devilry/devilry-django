@@ -31,6 +31,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
      * @private
      */
     addDeadlineToSelected: function(record) {
+        this.progressWindow.start('Add deadline');
+        this._finishedSavingGroupCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.addDeadline,
@@ -41,18 +43,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
     /**
      * @private
      */
-    addDeadline: function(assignmentGroupRecord, index, total, deadlineRecord) {
-        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
+    addDeadline: function(assignmentGroupRecord, index, totalSelectedGroups, deadlineRecord) {
+        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
         this.statics().createDeadline(assignmentGroupRecord, deadlineRecord, this.deadlinemodel, {
             scope: this,
-            failure: function() {
-                console.error('Failed to save deadline record');
+            callback: function(r, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(assignmentGroupRecord, 'Deadline successfully created.');
+                } else {
+                    this.progressWindow.addErrorFromOperation(
+                        assignmentGroupRecord, 'Failed to create deadline', operation
+                    );
+                }
+
+                this._finishedSavingGroupCount ++;
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish();
+                }
             }
         });
 
-        if(index == total) {
+        if(index == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
         }
