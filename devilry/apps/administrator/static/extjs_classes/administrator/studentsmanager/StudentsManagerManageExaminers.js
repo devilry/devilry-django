@@ -86,7 +86,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     randomDistributeExaminersOnSelected: function(setlistofusersobj, examiners) {
         setlistofusersobj.up('window').close();
         this.progressWindow.start('Change examiners');
-        this._finishedSettingExaminersCount = 0;
+        this._finishedSavingGroupCount = 0;
 
         this._randomDistributeTmp = {
             remainingExaminers: Ext.Array.clone(examiners),
@@ -157,7 +157,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             scope: this,
             callback: function(r, operation) {
                 this.setExaminerRecordCallback(record, operation, [examiner], totalSelectedGroups);
-                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
                     this.progressWindow.finish({
                         title: 'Result of random distribution of examiners',
                         html: this.getRandomDistributeResults()
@@ -252,7 +252,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         }
 
         this.progressWindow.start('Clear examiners');
-        this._finishedSettingExaminersCount = 0;
+        this._finishedSavingGroupCount = 0;
         Ext.MessageBox.show({
             title: 'Confirm clear examiners?',
             msg: 'Are you sure you want to clear examiners on all the selected groups?',
@@ -278,7 +278,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     setExaminersOnSelected: function(setlistofusersobj, usernames, append) {
         setlistofusersobj.up('window').close();
         this.progressWindow.start('Change examiners');
-        this._finishedSettingExaminersCount = 0;
+        this._finishedSavingGroupCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminers,
@@ -304,7 +304,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             scope: this,
             callback: function(r, operation) {
                 this.setExaminerRecordCallback(record, operation, usernames, totalSelectedGroups);
-                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
                     this.progressWindow.finish();
                 }
             }
@@ -329,8 +329,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             this.progressWindow.addError(record, msg);
         }
 
-        this._finishedSettingExaminersCount ++;
-        if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+        this._finishedSavingGroupCount ++;
+        if(this._finishedSavingGroupCount == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
         }

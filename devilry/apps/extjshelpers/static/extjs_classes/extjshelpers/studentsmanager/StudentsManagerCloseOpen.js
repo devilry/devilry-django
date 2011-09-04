@@ -35,7 +35,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
             fn: function(btn) {
                 if(btn == 'yes') {
                     this.progressWindow.start('Open/close groups');
-                    this._finishedSettingOpenCloseGroupCount = 0;
+                    this._finishedSavingGroupCount = 0;
                     this.down('studentsmanager_studentsgrid').performActionOnSelected({
                         scope: this,
                         callback: this.openOrCloseGroup,
@@ -72,8 +72,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
                     );
                 }
 
-                this._finishedSettingOpenCloseGroupCount ++;
-                if(this._finishedSettingOpenCloseGroupCount == totalSelectedGroups) {
+                this._finishedSavingGroupCount ++;
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
                     this.loadFirstPage();
                     this.getEl().unmask();
                     this.progressWindow.finish(null, {
