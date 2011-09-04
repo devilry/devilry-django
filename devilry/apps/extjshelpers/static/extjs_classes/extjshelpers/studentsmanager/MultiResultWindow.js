@@ -62,7 +62,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
                 ui: 'footer',
                 items: ['->', {
                     xtype: 'button',
-                    text: 'Close',
+                    text: 'Close this window',
                     scale: 'large',
                     listeners: {
                         scope: this,
