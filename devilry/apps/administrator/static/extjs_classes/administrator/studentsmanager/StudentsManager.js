@@ -43,7 +43,39 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getToolbarItems: function() {
         var defaults = this.callParent();
-        Ext.Array.insert(defaults, 2, [this.addStudentsButton]);
+        Ext.Array.insert(defaults, 2, [this.addStudentsButton, {
+            xtype: 'button',
+            text: 'Set examiners',
+            scale: 'large',
+            menu: [{
+                text: 'Replace',
+                iconCls: 'icon-edit-16',
+                listeners: {
+                    scope: this,
+                    click: this.onReplaceExaminers
+                }
+            }, {
+                text: 'Add',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    scope: this,
+                    click: this.onAddExaminers
+                }
+            }, {
+                text: 'Random distribute',
+                listeners: {
+                    scope: this,
+                    click: this.onRandomDistributeExaminers
+                }
+            }, {
+                text: 'Clear',
+                iconCls: 'icon-delete-16',
+                listeners: {
+                    scope: this,
+                    click: this.onClearExaminers
+                }
+            }]
+        }]);
         return defaults;
     },
 
@@ -83,37 +115,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 scope: this,
                 click: this.onPreviouslyPassed
             }
-        });
-        menu.push({
-            text: 'Change examiners',
-            menu: [{
-                text: 'Replace',
-                iconCls: 'icon-edit-16',
-                listeners: {
-                    scope: this,
-                    click: this.onReplaceExaminers
-                }
-            }, {
-                text: 'Add',
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onAddExaminers
-                }
-            }, {
-                text: 'Random distribute',
-                listeners: {
-                    scope: this,
-                    click: this.onRandomDistributeExaminers
-                }
-            }, {
-                text: 'Clear',
-                iconCls: 'icon-delete-16',
-                listeners: {
-                    scope: this,
-                    click: this.onClearExaminers
-                }
-            }]
         });
         menu.push({
             text: 'Delete',
