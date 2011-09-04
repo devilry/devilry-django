@@ -162,7 +162,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onSetExaminers: function(append) {
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -291,27 +291,34 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         editRecord.save({
             scope: this,
             callback: function(r, operation) {
-                if(operation.success) {
-                    var msg = this.successSetExaminerTpl.apply({
-                        examiners: usernames
-                    });
-                    this.progressWindow.addSuccess(record, msg);
-                } else {
-                    var msg = this.errorSetExaminerTpl.apply({
-                        examiners: usernames,
-                        status: operation.error.status,
-                        statusText: operation.error.statusText
-                    });
-                    this.progressWindow.addError(record, msg);
-                }
-
-                this._finishedSettingExaminersCount ++;
-                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
-                    this.loadFirstPage();
-                    this.getEl().unmask();
-                    this.progressWindow.finish();
-                }
+                this.setExaminerRecordCallback(record, operation, usernames, totalSelectedGroups);
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    setExaminerRecordCallback: function(record, operation, usernames, totalSelectedGroups) {
+        if(operation.success) {
+            var msg = this.successSetExaminerTpl.apply({
+                examiners: usernames
+            });
+            this.progressWindow.addSuccess(record, msg);
+        } else {
+            var msg = this.errorSetExaminerTpl.apply({
+                examiners: usernames,
+                status: operation.error.status,
+                statusText: operation.error.statusText
+            });
+            this.progressWindow.addError(record, msg);
+        }
+
+        this._finishedSettingExaminersCount ++;
+        if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+            this.loadFirstPage();
+            this.getEl().unmask();
+            this.progressWindow.finish();
+        }
     }
 });
