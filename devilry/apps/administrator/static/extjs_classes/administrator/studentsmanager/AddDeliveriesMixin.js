@@ -165,6 +165,8 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
      */
     prevPassedOnPublishFeedback: function(feedbackdraftModelName, draftstring) {
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.progressWindow.start('Mark as delivered in a previous period');
+        this._finishedSavingGroupCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.createPreviouslyPassedDelivery,
@@ -182,6 +184,11 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
         var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_ALIAS);
         delivery.save({
             scope: this,
+            failure: function() {
+                this.progressWindow.addErrorFromOperation(
+                    groupRecord, 'Failed to create delivery', operation
+                );
+            },
             success: function(record) {
                 groupRecord.data.latest_delivery_id = record.data.id;
                 this.giveFeedbackToSelected(groupRecord, index, total, feedbackdraftModelName, draftstring);
