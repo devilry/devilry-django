@@ -123,13 +123,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         this.down('panel').removeAll();
     },
 
-    createMsgHtmlList: function(log) {
-        Ext.each(log, function(logitem, index) {
-            
-        }, this);
-    },
-
-    addIfItems: function(log, csscls, title) {
+    /**
+     * @private
+     */
+    _addIfItems: function(log, csscls, title) {
         if(log.length > 0) {
             var container = Ext.widget('panel', {
                 title: title,
@@ -146,7 +143,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     },
 
     finish: function(resultMsg, successMsg) {
-        this.addIfItems(this.log.error, 'error', 'Errors');
+        this._addIfItems(this.log.error, 'error', 'Errors');
         if(successMsg && this.log.error.length === 0) {
             this.down('panel').add({
                 xtype: 'panel',
@@ -165,8 +162,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
                 flex: 1
             });
         }
-        this.addIfItems(this.log.warning, 'warning', 'Warnings');
-        this.addIfItems(this.log.success, 'info', 'Details about each successful save');
+        this._addIfItems(this.log.warning, 'warning', 'Warnings');
+        this._addIfItems(this.log.success, 'info', 'Details about each successful save');
         this.show();
         this.down('panel').getComponent(0).expand();
     }
