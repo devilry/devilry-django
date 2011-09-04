@@ -68,6 +68,25 @@
         this.add(this.textarea);
     },
 
+
+    /**
+     *  @private
+     */
+    parseDraftString: function(draftstring) {
+        try {
+            var draft = Ext.JSON.decode(draftstring);
+        } catch(e) {
+            //draftstring is not JSON, proceed as if no draftstring.
+            return;
+        }
+        if(draft.gradeeditor && draft.gradeeditor.id === 'manual') {
+            this.checkbox.setValue(draft.approved);
+            this.points.setValue(draft.points);
+            this.grade.setValue(draft.grade);
+            this.textarea.setValue(draft.feedback);
+        }
+    },
+
     /**
      * Called by the grade-editor main window to set the current draft. Used
      * both on initialization and when selecting a draft from history (rolling
@@ -77,18 +96,8 @@
      *      drafts have been saved yet.
      */
     setDraftstring: function(draftstring) {
-        if(draftstring === undefined) {
-            this.checkbox.setValue(true);
-        } else {
-            var buf = Ext.JSON.decode(draftstring);
-            var approved = buf[0];
-            var points = buf[1];
-            var grade = buf[2];
-            var feedback = buf[3];
-            this.checkbox.setValue(approved);
-            this.points.setValue(points);
-            this.grade.setValue(grade);
-            this.textarea.setValue(feedback);
+        if(draftstring != undefined) {
+            this.parseDraftString(draftstring);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -130,11 +139,18 @@
         var points = this.points.getValue();
         var grade = this.grade.getValue();
         var feedback = this.textarea.getValue();
-        var retval = new Array();
-        retval[0] = approved;
-        retval[1] = points;
-        retval[2] = grade;
-        retval[3] = feedback;
+        
+        var retval = {
+            gradeeditor: {
+                id: 'manual',
+                version: '1.0'
+            },
+            approved: approved,
+            points: points,
+            grade: grade,
+            feedback: feedback
+        };
+
         var draft = Ext.JSON.encode(retval);
         return draft;
     }
