@@ -12,6 +12,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '<tpl for="log">',
         '    <section class="{parent.csscls}-small">',
         '        <h1>',
+        '            <tpl if="record.data.name">',
+        '               {record.data.name} -',
+        '            </tpl>',
         '            <tpl for="record.data.candidates__identifier">',
         '               {.}<tpl if="xindex &lt; xcount">, </tpl>',
         '            </tpl>',
@@ -22,11 +25,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     ),
 
     constructor: function(config) {
-        this.log = {
-            error: [],
-            warning: [],
-            success: []
-        };
         this.callParent([config]);
     },
 
@@ -96,7 +94,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
 
 
     start: function(title) {
+        this.log = {
+            error: [],
+            warning: [],
+            success: []
+        };
         this.setTitle(title);
+        this.down('panel').removeAll();
     },
 
     createMsgHtmlList: function(log) {
@@ -124,7 +128,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     finish: function() {
         this.addIfItems(this.log.error, 'error', 'Errors');
         this.addIfItems(this.log.warning, 'warning', 'Warnings');
-        this.addIfItems(this.log.success, 'ok', 'Success');
+        this.addIfItems(this.log.success, 'ok', 'Successful');
         this.show();
     }
 });

@@ -14,9 +14,15 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     ),
 
     successSetExaminerTpl: Ext.create('Ext.XTemplate',
-        '{msg}: <tpl for="examiners">',
+        'Examiners set successfully to: <tpl for="examiners">',
         '   {.}<tpl if="xindex &lt; xcount">, </tpl>',
         '</tpl>.'
+    ),
+
+    errorSetExaminerTpl: Ext.create('Ext.XTemplate',
+        'Failed to set examiners: <tpl for="examiners">',
+        '   {.}<tpl if="xindex &lt; xcount">, </tpl>',
+        '</tpl>. Error details: {status} {statusText}.'
     ),
     
     /**
@@ -284,19 +290,18 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         editRecord.data.fake_examiners = usernames;
         editRecord.save({
             scope: this,
-            callback: function(records, operation, success) {
-                if(success) {
+            callback: function(r, operation) {
+                if(operation.success) {
                     var msg = this.successSetExaminerTpl.apply({
-                        msg: 'Examiners set successfully to',
                         examiners: usernames
                     });
                     this.progressWindow.addSuccess(record, msg);
                 } else {
-                    var msg = Ext.String.format(
-                        'Failed to set examiners: {0} {1}',
-                        operation.error.status,
-                        operation.error.statusText
-                    );
+                    var msg = this.errorSetExaminerTpl.apply({
+                        examiners: usernames,
+                        status: operation.error.status,
+                        statusText: operation.error.statusText
+                    });
                     this.progressWindow.addError(record, msg);
                 }
 
