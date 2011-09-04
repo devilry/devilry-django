@@ -126,7 +126,7 @@ class JsonRegistryItem(RegistryItem):
             if not key in valuedict:
                 raise exceptioncls('{0} is required.'.format(key))
             if not isinstance(valuedict[key], typecls):
-                raise exceptioncls('{0} must be of type: {1}.'.format(key, typecls))
+                raise exceptioncls('{0} must be of type: {1}.'.format(key, str(typecls)[7:-2]))
 
 
 
