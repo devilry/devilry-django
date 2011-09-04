@@ -125,10 +125,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         }
     },
 
-    finish: function() {
+    finish: function(resultMsg) {
         this.addIfItems(this.log.error, 'error', 'Errors');
+        if(resultMsg) {
+            this.down('panel').add({
+                xtype: 'panel',
+                title: resultMsg.title,
+                html: resultMsg.html,
+                bodyPadding: 10,
+                flex: 1
+            });
+        }
         this.addIfItems(this.log.warning, 'warning', 'Warnings');
-        this.addIfItems(this.log.success, 'ok', 'Successful');
+        this.addIfItems(this.log.success, 'ok', 'Details about each successful save');
         this.show();
+        this.down('panel').getComponent(0).expand();
     }
 });

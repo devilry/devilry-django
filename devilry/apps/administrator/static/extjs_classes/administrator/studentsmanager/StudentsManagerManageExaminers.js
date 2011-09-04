@@ -5,12 +5,14 @@
 Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers', {
 
     randomDistResultTpl: Ext.create('Ext.XTemplate',
-        '<p>The selected examiners got the following number of groups:</p>',
-        '<ul>',
-        '<tpl for="result">',
-        '   <li><strong>{examiner}</strong>: {groups.length}</li>',
-        '</tpl>',
-        '</ul>'
+        '<section class="info">',
+        '    <p>The selected examiners got the following number of groups:</p>',
+        '    <ul>',
+        '    <tpl for="result">',
+        '       <li><strong>{examiner}</strong>: {groups.length}</li>',
+        '    </tpl>',
+        '    </ul>',
+        '</section>'
     ),
 
     successSetExaminerTpl: Ext.create('Ext.XTemplate',
@@ -29,6 +31,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onRandomDistributeExaminers: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -71,6 +74,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      */
     randomDistributeExaminersOnSelected: function(setlistofusersobj, examiners) {
         setlistofusersobj.up('window').close();
+        this.progressWindow.start('Change examiners');
+        this._finishedSettingExaminersCount = 0;
 
         this._randomDistributeTmp = {
             remainingExaminers: Ext.Array.clone(examiners),
@@ -112,8 +117,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     /**
      * @private
      */
-    showRandomDistributeResults: function() {
-        //console.log(this._randomDistributeTmp.result);
+    getRandomDistributeResults: function() {
         var resultArray = [];
         Ext.each(this._randomDistributeTmp.allExaminers, function(examiner, index) {
             resultArray.push({
@@ -121,13 +125,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
                 groups: this._randomDistributeTmp.result[examiner]
             });
         }, this);
-
-        Ext.MessageBox.show({
-            title: 'Random distribution of examiners complete',
-            msg: this.randomDistResultTpl.apply({result: resultArray}),
-            buttons: Ext.Msg.OK,
-            scope: this
-        });
+        return this.randomDistResultTpl.apply({result: resultArray});
     },
 
 
@@ -145,16 +143,17 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
 
         editRecord.data.fake_examiners = [examiner];
         editRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
+            scope: this,
+            callback: function(r, operation) {
+                this.setExaminerRecordCallback(record, operation, [examiner], totalSelectedGroups);
+                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+                    this.progressWindow.finish({
+                        title: 'Result of random distribution of examiners',
+                        html: this.getRandomDistributeResults()
+                    });
+                }
             }
         });
-
-        if(index == totalSelectedGroups) {
-            this.loadFirstPage();
-            this.getEl().unmask();
-            this.showRandomDistributeResults();
-        }
     },
 
 
@@ -162,7 +161,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onSetExaminers: function(append) {
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
@@ -265,7 +264,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      */
     setExaminersOnSelected: function(setlistofusersobj, usernames, append) {
         setlistofusersobj.up('window').close();
-        this.progressWindow.start('');
+        this.progressWindow.start('Change examiners');
         this._finishedSettingExaminersCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
@@ -292,6 +291,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             scope: this,
             callback: function(r, operation) {
                 this.setExaminerRecordCallback(record, operation, usernames, totalSelectedGroups);
+                if(this._finishedSettingExaminersCount == totalSelectedGroups) {
+                    this.progressWindow.finish();
+                }
             }
         });
     },
@@ -318,7 +320,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         if(this._finishedSettingExaminersCount == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
-            this.progressWindow.finish();
         }
     }
 });
