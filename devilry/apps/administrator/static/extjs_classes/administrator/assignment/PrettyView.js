@@ -139,7 +139,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         }
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
-            text: 'Students',
+            text: 'Manage assignment groups (students)',
             scale: 'large',
             listeners: {
                 scope: this,
@@ -327,11 +327,12 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     onStudents: function() {
         var studentswindow = Ext.widget('maximizablewindow', {
-            title: 'Students',
+            title: 'Manage assignment groups (students)',
             width: 926,
             height: 500,
             layout: 'fit',
             maximizable: true,
+            maximized: true,
             modal: true,
             items: {
                 xtype: 'administrator_studentsmanager',
