@@ -79,8 +79,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
                         title: 'Selected groups with no deliveries',
                         msg: 'One or more of the selected groups have no deliveries. You can only give feedback to groups with deliveries. Please review your selection and try again.',
                         buttons: Ext.Msg.OK,
-                        icon: Ext.Msg.ERROR,
-                        scope: this
+                        icon: Ext.Msg.ERROR
                     });
                 } else {
                     Ext.each(groupRecords, function(groupRecord, index) {

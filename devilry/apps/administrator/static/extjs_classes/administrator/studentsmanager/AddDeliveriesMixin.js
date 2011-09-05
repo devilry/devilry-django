@@ -167,11 +167,55 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.progressWindow.start('Mark as delivered in a previous period');
         this._finishedSavingGroupCount = 0;
-        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+        //this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            //scope: this,
+            //callback: this.createPreviouslyPassedDelivery,
+            //extraArgs: [feedbackdraftModelName, draftstring]
+        //});
+
+        this.down('studentsmanager_studentsgrid').gatherSelectedRecordsInArray({
             scope: this,
-            callback: this.createPreviouslyPassedDelivery,
-            extraArgs: [feedbackdraftModelName, draftstring]
+            callback: function(groupRecords) {
+                if(this.anyGroupHaveDeliveries(groupRecords)) {
+                    Ext.MessageBox.show({
+                        title: 'Selected groups that have deliveries',
+                        msg: '<p>One or more of the selected groups have deliveries.</p><p>This usually means that they have made a delivery that should be corrected instead of marking the assignment as corrected in a previous period.</p><p>Click <em>yes</em> to continue, or click <em>no</em> to cancel this operation.</p>',
+                        buttons: Ext.Msg.YESNO,
+                        icon: Ext.Msg.WARNING,
+                        scope: this,
+                        fn: function(btn) {
+                            if(btn == 'yes') {
+                                this.createPreviouslyPassedDeliveries(groupRecords, feedbackdraftModelName, draftstring);
+                            }
+                        }
+                    });
+                } else {
+                    this.createPreviouslyPassedDeliveries(groupRecords, feedbackdraftModelName, draftstring);
+                }
+            },
         });
+    },
+
+    /**
+     * @private
+     */
+    createPreviouslyPassedDeliveries: function(groupRecords, feedbackdraftModelName, draftstring) {
+        Ext.each(groupRecords, function(groupRecord, index) {
+            this.createPreviouslyPassedDelivery(groupRecord, index, groupRecords.length, feedbackdraftModelName, draftstring);
+        }, this);
+    },
+
+    /**
+     * @private
+     */
+    anyGroupHaveDeliveries: function(groupRecords) {
+        for(i=0; i<groupRecords.length; i++) {
+            var groupRecord = groupRecords[i];
+            if(groupRecord.data.number_of_deliveries > 0) {
+                return true;
+            }
+        }
+        return false;
     },
 
     /**
