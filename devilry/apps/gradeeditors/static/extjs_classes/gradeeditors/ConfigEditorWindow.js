@@ -2,8 +2,8 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradeconfigeditormainwin',
     title: 'Edit grade editor config',
-    width: 500,
-    height: 400,
+    width: 800,
+    height: 600,
     layout: 'fit',
     modal: true,
     requires: [
