@@ -207,7 +207,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton],
+            relatedButtons: [this.studentsbutton, {
+                xtype: 'button',
+                scale: 'large',
+                text: 'Download all deliveries',
+                listeners: {
+                    scope: this,
+                    click: this.onDownload
+                }
+            }],
             extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
         });
         this.callParent(arguments);
@@ -412,4 +420,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         editwindow.show();
         this.alignToCoverBody(editwindow);
     },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.objectid);
+    }
 });
