@@ -71,11 +71,37 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.progressWindow.start('Give feedback to many');
         this._finishedSavingGroupCount = 0;
-        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+        this.down('studentsmanager_studentsgrid').gatherSelectedRecordsInArray({
             scope: this,
-            callback: this.giveFeedbackToSelected,
-            extraArgs: [feedbackdraftModelName, draftstring]
+            callback: function(groupRecords) {
+                if(this.anyGroupHaveNoDeliveries(groupRecords)) {
+                    Ext.MessageBox.show({
+                        title: 'Selected groups with no deliveries',
+                        msg: 'One or more of the selected groups have no deliveries. You can only give feedback to groups with deliveries. Please review your selection and try again.',
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR,
+                        scope: this
+                    });
+                } else {
+                    Ext.each(groupRecords, function(groupRecord, index) {
+                        this.giveFeedbackToSelected(groupRecord, index, groupRecords.length, feedbackdraftModelName, draftstring);
+                    }, this);
+                }
+            },
         });
+    },
+
+    /**
+     * @private
+     */
+    anyGroupHaveNoDeliveries: function(groupRecords) {
+        for(i=0; i<groupRecords.length; i++) {
+            var groupRecord = groupRecords[i];
+            if(groupRecord.data.number_of_deliveries == 0) {
+                return true;
+            }
+        }
+        return false;
     },
 
     /**
