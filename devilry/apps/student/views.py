@@ -131,6 +131,12 @@ class CompressedFileDownloadView(View):
 
     def get(self, request, deliveryid):
         delivery = get_object_or_404(Delivery, id=deliveryid)
+        assignment_group = delivery.deadline.assignment_group
+        if not (assignment_group.is_candidate(request.user) \
+                    or assignment_group.is_examiner(request.user) \
+                    or request.user.is_superuser \
+                    or assignment_group.parentnode.is_admin(request.user)):
+            return HttpResponseForbidden("Forbidden")
         zip_file_name = str(delivery.delivered_by) + ".zip"
 
         tempfile = NamedTemporaryFile()
@@ -149,24 +155,25 @@ class CompressedFileDownloadView(View):
         response['Content-Length'] = stat(tempfile.name).st_size
         return response
 
-class TarFileDownloadView(View):
+# TODO: Check permissions
+#class TarFileDownloadView(View):
 
-    def get(self, request, deliveryid):
-        delivery = get_object_or_404(Delivery, id=deliveryid)
-        tar_file_name = str(request.user) + ".tar.gz"
+    #def get(self, request, deliveryid):
+        #delivery = get_object_or_404(Delivery, id=deliveryid)
+        #tar_file_name = str(request.user) + ".tar.gz"
 
-        tempfile = TemporaryFile()
-        tar_file = tarfile.open(tempfile.name, 'w');
+        #tempfile = TemporaryFile()
+        #tar_file = tarfile.open(tempfile.name, 'w');
 
-        for filemeta in delivery.filemetas.all():
-            file_content = filemeta.deliverystore.read_open(filemeta)
-            tar_file.write(file_content.name, filemeta.filename)
-        tar_file.close()
+        #for filemeta in delivery.filemetas.all():
+            #file_content = filemeta.deliverystore.read_open(filemeta)
+            #tar_file.write(file_content.name, filemeta.filename)
+        #tar_file.close()
 
-        tempfile.seek(0)
-        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
-                                content_type=guess_type(tar_file_name))
-        response['Content-Disposition'] = "attachment; filename=%s" % \
-            tar_file_name.encode("ascii", 'replace')
-        response['Content-Length'] = stat(tempfile.name).st_size
-        return response        
+        #tempfile.seek(0)
+        #response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
+                                #content_type=guess_type(tar_file_name))
+        #response['Content-Disposition'] = "attachment; filename=%s" % \
+            #tar_file_name.encode("ascii", 'replace')
+        #response['Content-Length'] = stat(tempfile.name).st_size
+        #return response        
