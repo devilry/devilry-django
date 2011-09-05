@@ -3,22 +3,28 @@
     border: false,
     frame: false,
     xtype: 'form', // Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.
-    help: '<h2>Introduction:</h2><p>'+
-        'In this gradeeditor you can create your own form for correcting assignments. You can do this by adding various fields in the textbox.'+
+    help: '<h1>Introduction:</h1><p>'+
+        'In this gradeeditor you define a set of fields that your examiners fill in when they give feeback to students.'+
+        '<h2>Points required to pass</h2>'+
+        '<p>Fill in the number of points in total a student needs to pass the assignment. The points earned in the fields you define (see below) will be summed up and tested '+
+        'against this number.</p>' +
+        '<h2>Specify fields</h2>' +
         '\nFields are structured like this:</p><p>'+
         '<pre>fieldtype : points\n'+
         'fieldlabel\n'+
         ';;\n</pre></p><p>'+
         '\nThere are two different types of fields:'+
-        '</p><h3>Numberfield:</h3><p>'+
+        '</p>' +
+        '<h3>Field type: numberfield</h3><p>'+
         'A numberfield is a field where an examiner sets the number of points earned in this part of the assignment. A numberfield is defined like this:'+
         '</p><p>'+
         '<pre>number : 42\n'+
         'Enter number of points for part 1.1:\n'+
         ';;\n</pre></p><p>'+
         '\nIn this case <em>number</em> specifies that you want a numberfield, <em>42</em> is the maximum number of points one can achieve in this part of the assignment, and '+
-        '<em>Enter number of points for part 1.1:</em> is the information shown to the examiner for this field.</p>'+
-        '<h3>Checkbox:</h3><p>'+
+        '<em>Enter number of points for part 1.1:</em> is the information shown to the examiner for this field.'+
+        '</p>'+
+        '<h3>Field type: checkbox</h3><p>'+
         'A checkbox is ideal for <em>Approved/Not approved</em> scenarios, since its either checked or not! A checkbox is defined much like the numberfield:'+
         '</p><p>'+
         '<pre>check : 42\n'+
@@ -26,10 +32,20 @@
         ';;</pre></p><p>'+
         '\nBut here you type <em>check</em> to specify that you want a numberfield, and <em>42</em> is the number of points one will get if the examiner checks the checkbox! And '+
         '<em>Is part 1.1 approved?</em> is the information shown to the examiner for this field.'+
-        '</p>'+
-        '<h3>Points to pass</h3>'+
-        '<p>In this field you simply enter how many points in total a student needs to pass the assignment. The points earned in the fields you define above will be summed up and tested '+
-        'against this number.</p>',
+        '</p>' +
+        '<h3>Complete example</h3>' +
+        '<pre>'+
+        'number : 8\n' +
+        'Rate the solution to question 1 on a scale from 0 to 8\n' +
+        ';;\n' +
+        'check : 20\n' +
+        'Is question 2 approved (20 points)?\n' +
+        ';;\n' +
+        'number : 30\n' +
+        'Rate the overall quality of the solutions presented by the student on a scale from 0 to 30\n' +
+        ';;\n' +
+        '</pre>',
+
         
     
     layout: {
@@ -62,7 +78,7 @@
         this.add(this.formArea);
         
         this.approvedLimitField = Ext.widget('numberfield', {
-            fieldLabel: 'Points to pass',
+            fieldLabel: 'Points required to pass',
             flex: 0,
             minValue: 0
         });
