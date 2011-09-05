@@ -22,6 +22,14 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
+        '    <tpl if="totalAssignmentGroups == 0">',
+        '        <section class="error">',
+        '            <h1>No assignment groups</h1>',
+        '            <p>',
+        '               Students have to be organized in <em>assignment groups</em> before they can add any deliveries. A students belongs to a group even when they deliver individual deliveries. Students that is not in any assignment group do not even see the assignment. Please choose <span class="menuref">Manage assignment groups</span> to bring up the assignment group manager, and select <span class="menuref">Create groups</span>.',
+        '            </p>',
+        '        </section>',
+        '    </tpl>',
         '    <tpl if="missingGradeEditorConfig">',
         '        <section class="error">',
         '            <h1>Missing grade editor config</h1>',
@@ -85,7 +93,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '        </section>',
         '    </tpl>',
         '    <tpl if="anonymous">',
-        '        <section class="ok">',
+        '        <section class="info">',
         '            <h1>Anonymous</h1>',
         '            <p>',
         '                The assignment <em>is anonymous</em>. This means that examiners ',
@@ -98,7 +106,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '        </section>',
         '    </tpl>',
         '    <tpl if="!anonymous">',
-        '        <section class="warning">',
+        '        <section class="info">',
         '            <h1>Not anonymous</h1>',
         '            <p>',
         '                The assignment is <em>not</em> anonymous. This means that examiners ',
@@ -123,7 +131,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         return {
             published: record.data.publishing_time < Ext.Date.now(),
             missingGradeEditorConfig: this.missingGradeEditorConfig,
-            graderegistryitem: this.gradeeditor_registryitem_recordcontainer.record
+            graderegistryitem: this.gradeeditor_registryitem_recordcontainer.record,
+            totalAssignmentGroups: this.assignmentgroupstore.totalCount
         };
     },
 
@@ -205,7 +214,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onLoadRecord: function() {
-        console.log(this.record.data);
+        this.checkStudents();
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
@@ -216,6 +225,24 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                     assignment: this.record.data.id
                 });
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
+            }
+        });
+    },
+
+    checkStudents: function() {
+        // Load a single records to get totalCount
+        this.assignmentgroupstore.pageSize = 1;
+        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.objectid
+        }]);
+        this.assignmentgroupstore.load({
+            scope: this,
+            callback: function(records, operation, success) {
+                if(success) {
+                    this.refreshBody();
+                }
             }
         });
     },
@@ -350,10 +377,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 isAdministrator: true
             },
             listeners: {
-                scope: this
-                //close: function() {
-                    //this.studentsbutton.toggle(false);
-                //}
+                scope: this,
+                close: function() {
+                    this.refreshBody();
+                }
             }
         });
         //this.setSizeToCoverBody(studentswindow);
