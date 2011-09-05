@@ -28,6 +28,14 @@ Ext.define('devilry.examiner.AssignmentView', {
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
+               text: 'Download all deliveries',
+               listeners: {
+                   scope: this,
+                   click: this.onDownload
+               }
+            }, {
+               xtype: 'button',
+               scale: 'large',
                text: 'Manage assignment groups (students)',
                listeners: {
                    scope: this,
@@ -133,5 +141,9 @@ Ext.define('devilry.examiner.AssignmentView', {
             }
         });
         studentswindow.show();
+    },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.assignmentid);
     }
 });
