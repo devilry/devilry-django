@@ -1076,30 +1076,30 @@ section h2 {
 section h3 {
   font-size: 1.5em;
   margin: 16px 0 6px 0; }
-section strong {
-  font-weight: bold; }
-section em {
-  font-style: italic; }
-section p {
-  padding: 5px 0;
-  line-height: 1.2em; }
-section pre, section code {
-  background-color: #f8f8f8;
-  border: 1px solid #eee; }
-section code {
-  padding: 1px 4px;
-  color: #600;
-  white-space: nowrap; }
-section pre {
-  padding: 8px; }
-section ul li {
-  padding: 5px 0;
-  margin-left: 25px !important;
-  list-style-type: disc !important;
-  list-style-position: outside !important; }
 
 section.gradeeditorselector {
   padding: 8px !important; }
+  section.gradeeditorselector strong {
+    font-weight: bold; }
+  section.gradeeditorselector em {
+    font-style: italic; }
+  section.gradeeditorselector p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.gradeeditorselector pre, section.gradeeditorselector code {
+    background-color: #f8f8f8;
+    border: 1px solid #eee; }
+  section.gradeeditorselector code {
+    padding: 1px 4px;
+    color: #600;
+    white-space: nowrap; }
+  section.gradeeditorselector pre {
+    padding: 8px; }
+  section.gradeeditorselector ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
 
 section.treeheading {
   margin-bottom: 30px; }

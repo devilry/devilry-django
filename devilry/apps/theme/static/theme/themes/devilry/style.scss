@@ -876,12 +876,11 @@ section {
         font-size: 1.5em;
         margin: 16px 0 6px 0;
     }
-
-    @include commonSectionElements();
 }
 
 section.gradeeditorselector {
     padding: 8px !important;
+    @include commonSectionElements();
 }
 
 
