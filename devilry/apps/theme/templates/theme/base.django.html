@@ -85,7 +85,7 @@
                     <span id='authenticated-user-info'>
                         {{ user.username }}
                     </span>
-                    | <a id='logout-link' href='{% url logout %}'>Log out</a>
+                    | <a id='logout-link' href='{{ DEVILRY_LOGOUT_URL }}'>Log out</a>
                 {% else %}
                     <a id='logout-link' href='{% url login %}'>Log in</a>
                 {% endif %}
