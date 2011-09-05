@@ -36,7 +36,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '            <p>',
         '                The selected grade editor, <em>{graderegistryitem.data.title}</em>, requires',
         '                configuration. Examiners will not be able to give feedback ',
-        '                without a configuration.',
+        '                without a configuration, however students will be able to add deliveries.',
         '                Choose <span class="menuref">Grade editor &rarr; Configure current grade editor</span> in the toolbar to create a configuration.',
         '            </p>',
         '        </section>',
