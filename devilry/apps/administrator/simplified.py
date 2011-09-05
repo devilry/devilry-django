@@ -308,6 +308,13 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         cls._parse_examiners_as_list_of_usernames(obj)
         cls._parse_candidates_as_list_of_dicts(obj)
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given assignmentgroup contains no deliveries.
+        """
+        return models.Delivery.objects.filter(deadline__assignment_group=obj).count() == 0
+
 
 @simplified_modelapi
 class SimplifiedDelivery(SimplifiedModelApi):
