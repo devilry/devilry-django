@@ -46,17 +46,8 @@ class AssignmentView(View):
                        
 class CompressedFileDownloadView(View):
 
-    def _get_candidates_as_string(self, candidates, assignmentgroup_id):
-        candidates_as_string = ""
-        size = len(candidates)-1
-        for candidate in candidates:
-            candidates_as_string += str(candidate)
-            if candidate == candidates[size]:
-                candidates_as_string += "_"
-            else:
-                candidates_as_string += "-"
-        candidates_as_string += "group-" + str(assignmentgroup_id)
-        return candidates_as_string
+    def _get_candidates_as_string(self, assignmentgroup):
+        return '-'.join([candidate.identifier for candidate in assignmentgroup.candidates.all()])
 
     def get(self, request, assignmentid):
         assignment = get_object_or_404(Assignment, id=assignmentid)
@@ -76,17 +67,16 @@ class CompressedFileDownloadView(View):
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for assignmentgroup in self._create_assignment_group_qry(request, assignment):
-            candidates = self._get_candidates_as_string(assignmentgroup.candidates.all(), assignmentgroup.id)
-            groupmembers = '-'.join([candidate.identifier for candidate in assignmentgroup.candidates.all()])
+            candidates = self._get_candidates_as_string(assignmentgroup)
 
             for deadline in assignmentgroup.deadlines.all():
                 for delivery in deadline.deliveries.all():
                     for filemeta in delivery.filemetas.all():
                         file_content = filemeta.deliverystore.read_open(filemeta)
-                        filenametpl = '{zip_rootdir_name}/group-{groupid}_{groupmembers}/deadline-{deadline}/delivery-{delivery_number}/{filename}'
+                        filenametpl = '{zip_rootdir_name}/group-{groupid}_{candidates}/deadline-{deadline}/delivery-{delivery_number}/{filename}'
                         filename = filenametpl.format(zip_rootdir_name=zip_rootdir_name,
                                                       groupid=assignmentgroup.id,
-                                                      groupmembers=groupmembers,
+                                                      candidates=candidates,
                                                       deadline=deadline.deadline.strftime("%d-%m-%Y"),
                                                       delivery_number=delivery.number,
                                                       filename = filemeta.filename)
