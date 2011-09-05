@@ -339,7 +339,8 @@ class SimplifiedDelivery(SimplifiedModelApi):
     def pre_full_clean(cls, user, obj):
         obj.time_of_delivery = datetime.now()
         obj.delivered_by = None # None marks this as delivered by an administrator
-        obj._set_number()
+        if obj.id == None:
+            obj.number = 0
 
     @classmethod
     def write_authorize(cls, user, obj):

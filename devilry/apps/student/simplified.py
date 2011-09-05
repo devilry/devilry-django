@@ -87,7 +87,8 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
         obj.time_of_delivery = datetime.now()
         candidate = obj.deadline.assignment_group.candidates.get(student=user)
         obj.delivered_by = candidate
-        obj._set_number()
+        if obj.id == None:
+            obj.number = 0
 
     @classmethod
     def write_authorize(cls, user, obj):
