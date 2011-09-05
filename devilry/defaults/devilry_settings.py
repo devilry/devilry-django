@@ -16,7 +16,7 @@ DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 #DEVILRY_EXTJS_URL = 'http://cdn.sencha.io/ext-4.0.2a'
 DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
-DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki/User-documentation'
+DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki'
 
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000
