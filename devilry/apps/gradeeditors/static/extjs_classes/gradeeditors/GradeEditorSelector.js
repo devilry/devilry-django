@@ -11,7 +11,7 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
 
     listConfig: {
         getInnerTpl: function() {
-            return '<div class="important">{title}</div><div class="unimportant">{description}</div>';
+            return '<section class="gradeeditorselector"><div class="important">{title}</div><div class="unimportant">{description}</div></section>';
         }
     },
 

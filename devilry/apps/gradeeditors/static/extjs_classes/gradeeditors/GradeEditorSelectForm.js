@@ -5,11 +5,11 @@ Ext.define('devilry.gradeeditors.GradeEditorSelectForm', {
     requires: ['devilry.gradeeditors.GradeEditorSelector'],
 
     suggested_windowsize: {
-        width: 500,
-        height: 430
+        width: 900,
+        height: 600
     },
 
-    flex: 1.5,
+    flex: 0.8,
 
     layout: {
         type: 'vbox',

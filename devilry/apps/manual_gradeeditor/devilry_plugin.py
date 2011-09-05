@@ -10,7 +10,7 @@ from devilry.apps.markup.parse_markdown import markdown_full
 class Manual(JsonRegistryItem):
     gradeeditorid = 'manual'
     title = 'Manual'
-    description = 'A simple gradeeditor where an examiner kan set grade, points and a feedbacktext. Note that this editor is a FALLBACK if none of the other editors fit your needs.'
+    description = 'A simple gradeeditor where an examiner kan set grade, points and an optional feedback text. Note that this editor is a <strong>fallback</strong> if none of the other editors fit your needs.'
     config_editor_url = None
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/manual_gradeeditor/drafteditor.js'
 

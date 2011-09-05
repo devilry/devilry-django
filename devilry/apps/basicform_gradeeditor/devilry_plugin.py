@@ -9,8 +9,8 @@ from devilry.apps.markup.parse_markdown import markdown_full
 
 class BasicForm(JsonRegistryItem):
     gradeeditorid = 'basicform'
-    title = 'Basicform Editor'
-    description = 'An editor where admin can set up different fields for feedback for different parts of an assignment'
+    title = 'Simple schema/form'
+    description = '<p>You set up a very simple schema. This schema may contain multiple input fields. An input field is a text (<em>I.E: "Question 2.3"</em>) and corresponding input field (number-input or checkbox). You may choose the number of points required to pass the assignment.</p><p>Examiners fill out this schema and an optional feedback text. A numeric grade (I.E.: <em>64/100</em>) is calculated from their input.</p>'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/basicform_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/basicform_gradeeditor/drafteditor.js'
 
@@ -59,7 +59,6 @@ class BasicForm(JsonRegistryItem):
 
             if not isinstance(entry[0], basestring):
                 raise ConfigValidationError('You have to specify fieldtype as either "number" or "check"')
-
             if entry[0] != 'number' and entry[0] != 'check':
                 raise ConfigValidationError('You have to specify fieldtype as either "number" or "check"')
 
