@@ -121,7 +121,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             iconCls: 'icon-delete-16',
             listeners: {
                 scope: this,
-                click: function() { Ext.MessageBox.alert('Not available yet', 'Coming soon') }
+                click: this.onDeleteGroups
             }
         });
         return menu;
