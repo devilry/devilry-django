@@ -36,9 +36,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '    <tpl if="graderegistryitem">',
         '        <section class="info">',
         '            <h1>Grade editor: {graderegistryitem.data.title}</h1>',
+        '            <strong>About the grade editor:</strong>',
         '            <p>',
-        '               <strong>About:</strong> {graderegistryitem.data.description}',
+        '                {graderegistryitem.data.description}',
         '            </p>',
+        '            <strong>Why grade editors?</strong>',
         '            <p>',
         '                To make it easy for examiners to create all the information related ',
         '                to a grade, Devilry use <em>grade editors</em>. Grade editors give examiners ',
@@ -203,6 +205,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onLoadRecord: function() {
+        console.log(this.record.data);
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
