@@ -11,15 +11,15 @@
         '<h3>Grades:</h3>'+
         '<p>In this gradeeditor you define your own grades, and the points needed to achieve every grade.\n'+
         'A grade is defined by a line like this:</p>'+
-        '<p>Approved:40</p><p>Where the grade is <em>Approved</em>, and you will need 30 or more points to get this grade.</p>'+
+        '<pre>Approved:40</pre><p>Where the grade is <em>Approved</em>, and you will need 30 or more points to get this grade.</p>'+
         '<p>So if you want to make an assignment where the grading is <em>Approved/Not approved</em> you '+
         'can enter this:</p>'+
-        '<p>Approved: 30 \nNot approved: 0</p>'+
+        '<pre>Approved: 30\nNot approved: 0</pre>'+
         '<p>and deliveries given 30 points or more will get the grade <em>Approved</em> '+
         'and deliveries with 0-29 points will get the grade <em>Not approved</em>.</p>'+
         '<p>You can enter as many grades as you want, so if you want grades A-F you can do that the same way:</p>'+
         '<pre>'+
-        'A : 50\nB : 40\nC : 30\nD : 20\nE : 10\nF : 0b'+
+        'A : 50\nB : 40\nC : 30\nD : 20\nE : 10\nF : 0'+
         '</pre>',
     
     layout: {
