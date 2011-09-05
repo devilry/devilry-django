@@ -320,6 +320,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             editpanel: editpanel,
             onSaveSuccess: function(record) {
                 me.gradeeditorconfig_recordcontainer.setRecord(record);
+                window.location.href = window.location.href; // TODO: Make so this hack is not needed.
                 this.close();
             }
         });
