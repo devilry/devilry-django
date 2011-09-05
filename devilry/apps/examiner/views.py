@@ -5,7 +5,7 @@ from devilry.apps.gradeeditors.restful import examiner as gradeeditors_restful
 from devilry.utils.module import dump_all_into_dict
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404
-from ..core.models import (Assignment)
+from ..core.models import (Assignment, AssignmentGroup)
 from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 import zipfile
 import tarfile
@@ -60,41 +60,41 @@ class CompressedFileDownloadView(View):
 
     def get(self, request, assignmentid):
         assignment = get_object_or_404(Assignment, id=assignmentid)
+        zip_rootdir_name = assignment.get_path()
+        zip_file_name = zip_rootdir_name + ".zip"
+        ziptempfile = self._create_zip(request, assignment, zip_rootdir_name)
 
-        zip_file_name = assignment.short_name + ".zip"
+        response = HttpResponse(FileWrapperWithExplicitClose(ziptempfile),
+                                content_type="application/zip")
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+                zip_file_name.encode("ascii", 'replace')
+        response['Content-Length'] = os.stat(ziptempfile.name).st_size
+        return response
+
+    def _create_zip(self, request, assignment, zip_rootdir_name):
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
-        basedir = "deliveries" + os.sep
-        path = basedir
-                
-        for assignmentgroup in assignment.assignmentgroups.all():
+        for assignmentgroup in self._create_assignment_group_qry(request, assignment):
             candidates = self._get_candidates_as_string(assignmentgroup.candidates.all(), assignmentgroup.id)
+            groupmembers = '-'.join([candidate.identifier for candidate in assignmentgroup.candidates.all()])
 
             for deadline in assignmentgroup.deadlines.all():
-                deadline_dir_name = deadline.deadline.strftime("%d-%m-%Y_")
-                deadline_dir_name += "group-" + str(assignmentgroup.id)
-                path += deadline_dir_name + os.sep
-                path += candidates + os.sep
-                deadline_root = path
-
                 for delivery in deadline.deliveries.all():
-                    path += str(delivery.number) + os.sep
-                    delivery_root = path
-
                     for filemeta in delivery.filemetas.all():
-                        path += filemeta.filename
                         file_content = filemeta.deliverystore.read_open(filemeta)
-                        zip_file.writestr(path, file_content.read())
-                        path = delivery_root
-                    path = deadline_root
-                path = basedir
+                        filenametpl = '{zip_rootdir_name}/group-{groupid}_{groupmembers}/deadline-{deadline}/delivery-{delivery_number}/{filename}'
+                        filename = filenametpl.format(zip_rootdir_name=zip_rootdir_name,
+                                                      groupid=assignmentgroup.id,
+                                                      groupmembers=groupmembers,
+                                                      deadline=deadline.deadline.strftime("%d-%m-%Y"),
+                                                      delivery_number=delivery.number,
+                                                      filename = filemeta.filename)
+                        zip_file.writestr(filename, file_content.read())
         zip_file.close()
 
         tempfile.seek(0)
-        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
-                                content_type="application/zip")
-        response['Content-Disposition'] = "attachment; filename=%s" % \
-            zip_file_name.encode("ascii", 'replace')
-        response['Content-Length'] = os.stat(tempfile.name).st_size
-        return response
+        return tempfile
+
+    def _create_assignment_group_qry(self, request, assignment):
+        return AssignmentGroup.published_where_is_examiner(request.user, old=False).filter(parentnode=assignment)
