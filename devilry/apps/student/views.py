@@ -33,8 +33,12 @@ class MainView(TemplateView):
 
 class AddDeliveryView(View):
     def get(self, request, assignmentgroupid):
-        assignmentgroup = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
-        deadline = assignmentgroup.get_active_deadline()
+        assignment_group = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
+        logged_in_user = request.user
+        if not assignment_group.can_save(logged_in_user):
+            if not assignment_group.is_candidate(logged_in_user):
+                return HttpResponseForbidden()
+        deadline = assignment_group.get_active_deadline()
         deadline_timestamp_milliseconds = mktime(deadline.deadline.timetuple()) + (deadline.deadline.microsecond/1000000)
         deadline_timestamp_milliseconds *= 1000
         return render(request, 'student/add-delivery.django.html',
