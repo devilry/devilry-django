@@ -51,7 +51,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     initComponent: function() {
         this.giveFeedbackButton = Ext.widget('button', {
             scale: 'large',
-            text: 'Give feedback to many',
+            text: 'Give feedback to selected',
             listeners: {
                 scope: this,
                 click: this.onGiveFeedbackToSelected,
