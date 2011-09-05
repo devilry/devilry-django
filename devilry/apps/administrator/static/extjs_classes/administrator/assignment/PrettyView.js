@@ -243,6 +243,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.gradeeditormenu.getEl().unmask();
         if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
             this.configuregradeeditorbutton.enable();
+        } else {
+            this.configuregradeeditorbutton.disable();
         }
     },
 
