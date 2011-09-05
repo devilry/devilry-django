@@ -116,6 +116,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             layout: 'fit',
             maximizable: true,
             modal: true,
+            maximized: true,
             items: {
                 xtype: 'studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
