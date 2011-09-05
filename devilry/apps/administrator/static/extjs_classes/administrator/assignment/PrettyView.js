@@ -59,7 +59,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '        </section>',
         '    </tpl>',
         '    <tpl if="published">',
-        '        <section class="ok">',
+        '        <section class="info">',
         '            <h1>Published</h1>',
         '            <p>',
         '               The assignment is currently visible to students and examiners. ',
