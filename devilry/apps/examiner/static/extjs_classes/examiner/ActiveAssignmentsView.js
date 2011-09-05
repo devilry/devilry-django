@@ -22,7 +22,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
-            groupField: 'parentnode__parentnode__long_name',
+            //groupField: 'parentnode__parentnode__long_name',
             remoteFilter: true,
             remoteSort: true,
             autoSync: true
@@ -42,9 +42,9 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     },
 
     createBody: function() {
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{name}',
-        });
+        //var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            //groupHeaderTpl: '{name}',
+        //});
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
@@ -52,17 +52,22 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             sortableColumns: false,
             cls: 'selectable-grid',
             store: this.store,
-            features: [groupingFeature],
+            //features: [groupingFeature],
             columns: [{
-                text: 'Assignment',
+                text: 'Subject',
                 menuDisabled: true,
+                dataIndex: 'parentnode__parentnode__long_name',
                 flex: 20,
-                dataIndex: 'long_name'
             },{
                 text: 'Period',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
                 flex: 20,
+            },{
+                text: 'Assignment',
+                menuDisabled: true,
+                flex: 20,
+                dataIndex: 'long_name'
             },{
                 text: 'Published',
                 menuDisabled: true,
