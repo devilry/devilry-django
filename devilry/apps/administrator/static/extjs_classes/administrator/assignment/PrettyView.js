@@ -77,6 +77,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                This assignment is currently <em>not visible</em> to students or examiners. ',
         '                The assignment will become visible to students and examiners ',
         '                <strong>{publishing_time:date}</strong>.',
+        '                You may change the publishing time by selecting the <span class="menuref">Edit</span> button in the toolbar.',
         '             </p>',
         '        </section>',
         '    </tpl>',
