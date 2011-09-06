@@ -25,6 +25,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     ),
 
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
+        '<section class="popuplistitem">',
         '<span class="deliveriescol">',
         '    <tpl if="number_of_deliveries &gt; 0">',
         '       {number_of_deliveries}',
@@ -32,7 +33,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '    <tpl if="number_of_deliveries == 0">',
         '       <span class="nodeliveries">0</div>',
         '   </tpl>',
-        '</span>'
+        '</span>',
+        '</section>'
     ),
 
     todohelptext: '<p>This is your to-do list on this assignment. It shows all <em>open</em> groups. An <em>open</em> group is a group that is still waiting for deliveries or feedback.</p>',
@@ -108,8 +110,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                         Ext.apply(data, grouprecord.data);
                         return me.studentsColTpl.apply(data);
                     }
-                }, {
-                    text: 'Group name', dataIndex: 'name', flex: 1, menuDisabled: true
                 }, {
                     text: 'Deliveries', dataIndex: 'id', width: 70, menuDisabled: true,
                     renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
