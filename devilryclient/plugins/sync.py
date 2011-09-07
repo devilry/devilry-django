@@ -5,7 +5,7 @@ import sys
 import ConfigParser
 from os.path import join, dirname, sep, exists
 from os import rename
-from devilryclient.restfulclient.restfulfactory import RestfulFactory
+from devilryrestfullib.restfulfactory import RestfulFactory
 from devilryclient.utils import logging_startup, findconffolder, create_folder, deadline_format, is_late, get_metadata, save_metadata
 
 
