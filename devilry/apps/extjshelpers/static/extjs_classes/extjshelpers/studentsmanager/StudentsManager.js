@@ -71,6 +71,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
+        var me = this;
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -91,8 +92,34 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         dock: 'top',
                         items: [{
                             xtype: 'searchfield',
-                            width: 300,
+                            width: 500,
                             emptyText: 'Search...'
+                        }, {
+                            xtype: 'button',
+                            text: 'x',
+                            handler: function() { me.setFilter(''); }
+                        }, {
+                            xtype: 'button',
+                            text: 'Filter',
+                            menu: [{
+                                text: 'Open',
+                                handler: function() { me.setFilter('is_open:yes'); }
+                            }, {
+                                text: 'Closed',
+                                handler: function() { me.setFilter('is_open:no'); }
+                            }, '-', {
+                                text: 'Passing grade',
+                                handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
+                            }, {
+                                text: 'Failing grade',
+                                handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
+                            }, '-', {
+                                text: 'Have deliveries',
+                                handler: function() { me.setFilter('number_of_deliveries:>:0'); }
+                            }, {
+                                text: 'No deliveries',
+                                handler: function() { me.setFilter('number_of_deliveries:0'); }
+                            }]
                         }]
                     }]
                 }],
@@ -356,6 +383,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             callback: function(records, operation, success) {
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    setFilter: function(filterstr) {
+        var searchfield = this.down('searchfield');
+        searchfield.setValue(filterstr);
     },
 
     /**
