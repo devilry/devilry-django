@@ -114,13 +114,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                                 text: 'Failing grade',
                                 handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
                             }, '-', {
-                                text: 'Have deliveries',
+                                text: 'Has deliveries',
                                 handler: function() { me.setFilter('number_of_deliveries:>:0'); }
                             }, {
                                 text: 'No deliveries',
                                 handler: function() { me.setFilter('number_of_deliveries:0'); }
                             }, '-', {
-                                text: 'Have feedback',
+                                text: 'Has feedback',
                                 handler: function() { me.setFilter('feedback:>=:0'); }
                             }, {
                                 text: 'No feedback',
