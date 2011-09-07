@@ -78,6 +78,15 @@ class ModelRestfulView(RestfulView):
                                   'send GET data as a querystring? In that case, add '
                                   'getdata_in_qrystring=1 to your querystring.'.format(e)))
 
+    def _parse_extjs_sort(self, sortlist):
+        orderby = []
+        for sortitem in sortlist:
+            fieldname = sortitem['property']
+            if sortitem.get('direction', 'ASC') == 'DESC':
+                fieldname = '-' + fieldname
+            orderby.append(fieldname)
+        return orderby
+
     def crud_search(self, request):
         """ Maps to the ``search`` method of the simplified class. """
         try:
@@ -88,6 +97,11 @@ class ModelRestfulView(RestfulView):
         form = self.__class__.SearchForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            if 'sort' in cleaned_data:
+                sort = cleaned_data['sort']
+                del cleaned_data['sort']
+                if sort and self.use_extjshacks:
+                    cleaned_data['orderby'] = self._parse_extjs_sort(sort)
             try:
                 qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
             except SimplifiedException, e:
