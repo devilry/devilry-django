@@ -119,6 +119,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                             }, {
                                 text: 'No deliveries',
                                 handler: function() { me.setFilter('number_of_deliveries:0'); }
+                            }, '-', {
+                                text: 'Have feedback',
+                                handler: function() { me.setFilter('feedback:>=:0'); }
+                            }, {
+                                text: 'No feedback',
+                                handler: function() { me.setFilter('feedback:none'); }
                             }]
                         }]
                     }]
