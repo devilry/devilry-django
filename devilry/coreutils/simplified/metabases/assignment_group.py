@@ -1,6 +1,7 @@
 from devilry.apps.core import models
 from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
-                                ForeignFilterSpec, boolConverter, intConverter)
+                                ForeignFilterSpec, boolConverter, intConverter,
+                                intOrNoneConverter, dateTimeConverter)
 
 
 
@@ -57,7 +58,20 @@ class SimplifiedAssignmentGroupMetaMixin(object):
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
                           FilterSpec('is_open', type_converter=boolConverter),
+                          FilterSpec('latest_deadline_deadline', type_converter=dateTimeConverter),
                           FilterSpec('number_of_deliveries', type_converter=intConverter),
+
+                          # Feedback
+                          FilterSpec('feedback', type_converter=intOrNoneConverter),
+                          FilterSpec('feedback__points', type_converter=intConverter),
+                          FilterSpec('feedback__is_passing_grade', type_converter=boolConverter),
+                          FilterSpec('feedback__grade'),
+
+                          # Latest delivery
+                          FilterSpec('feedback__delivery__number', type_converter=intConverter),
+                          FilterSpec('feedback__delivery__time_of_delivery', type_converter=dateTimeConverter),
+                          FilterSpec('feedback__delivery__delivery_type', type_converter=intConverter),
+
                           ForeignFilterSpec('parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
