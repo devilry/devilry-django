@@ -123,7 +123,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             //},
 
             columns: [{
-                text: '', dataIndex: 'id', width: 100,
+                text: '', dataIndex: 'is_open', width: 100,
                 menuDisabled: true,
                 renderer: this.formatInfoCol
             }, {
