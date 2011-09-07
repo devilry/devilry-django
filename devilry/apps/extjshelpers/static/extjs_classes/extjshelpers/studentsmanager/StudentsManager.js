@@ -342,15 +342,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     search: function(searchstring) {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            searchstring: searchstring
+            searchstring: searchstring,
+            alwaysAppliedFilters: [{
+                field: 'parentnode',
+                comp: 'exact',
+                value: this.assignmentid
+            }]
         });
         var extraParams = this.assignmentgroupstore.proxy.extraParams;
         this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.assignmentid
-        }]);
         this.assignmentgroupstore.loadPage(1, {
             scope: this,
             callback: function(records, operation, success) {
