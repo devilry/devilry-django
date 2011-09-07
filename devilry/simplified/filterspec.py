@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from django.db.models import Q
 
 from exceptions import FilterValidationError
@@ -37,6 +38,8 @@ def intOrNoneConverter(value):
     if isinstance(value, basestring) and value.lower() in ('none', 'null'):
         return None
     return int(value)
+def dateTimeConverter(value):
+    return datetime.strptime(str(value), '%Y-%m-%dT%H:%M:%S')
 
 
 class FilterSpec(object):
