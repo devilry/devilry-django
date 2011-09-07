@@ -4,7 +4,7 @@ from qryresultwrapper import QryResultWrapper
 from fieldspec import FieldSpec
 from modelapi import simplified_modelapi, SimplifiedModelApi, UnsupportedCrudsMethod
 from filterspec import (FilterSpecs, FilterSpec, ForeignFilterSpec,
-                        PatternFilterSpec)
+                        PatternFilterSpec, boolConverter, intConverter)
 
 
 __all__ = ('SimplifiedException', 'PermissionDenied', 'InvalidNumberOfResults',
