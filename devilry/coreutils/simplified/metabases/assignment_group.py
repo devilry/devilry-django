@@ -1,5 +1,6 @@
 from devilry.apps.core import models
-from devilry.simplified import FieldSpec, FilterSpec, FilterSpecs, ForeignFilterSpec
+from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
+                                ForeignFilterSpec, boolConverter, intConverter)
 
 
 
@@ -55,7 +56,8 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              )
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
-                          FilterSpec('is_open'),
+                          FilterSpec('is_open', type_converter=boolConverter),
+                          FilterSpec('number_of_deliveries', type_converter=intConverter),
                           ForeignFilterSpec('parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
