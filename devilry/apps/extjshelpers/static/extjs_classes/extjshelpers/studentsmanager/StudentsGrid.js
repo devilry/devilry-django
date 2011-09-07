@@ -2,7 +2,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsmanager_studentsgrid',
     cls: 'widget-studentsmanager_studentsgrid',
-    sortableColumns: false,
+    sortableColumns: true,
 
     config: {
         assignmentid: undefined,
@@ -131,7 +131,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Deliveries', dataIndex: 'id', flex: 2,
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
