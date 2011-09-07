@@ -31,7 +31,10 @@ def _in_both(lstA, lstB):
 def nullConverter(value):
     return value
 def boolConverter(value):
-    return value.lower() in ('1', 'true', 'yes')
+    if isinstance(value, bool):
+        return value
+    else:
+        return value.lower() in ('1', 'true', 'yes')
 def intConverter(value):
     return int(value)
 def intOrNoneConverter(value):
