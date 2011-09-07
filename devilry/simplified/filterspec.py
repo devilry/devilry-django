@@ -33,6 +33,10 @@ def boolConverter(value):
     return value.lower() in ('1', 'true', 'yes')
 def intConverter(value):
     return int(value)
+def intOrNoneConverter(value):
+    if isinstance(value, basestring) and value.lower() in ('none', 'null'):
+        return None
+    return int(value)
 
 
 class FilterSpec(object):
