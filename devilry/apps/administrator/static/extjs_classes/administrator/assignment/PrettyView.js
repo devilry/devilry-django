@@ -236,7 +236,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
-        this.onStudents();
     },
 
     checkStudents: function() {
