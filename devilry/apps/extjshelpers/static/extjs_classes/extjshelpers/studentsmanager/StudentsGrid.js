@@ -4,6 +4,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     cls: 'widget-studentsmanager_studentsgrid',
     sortableColumns: true,
 
+    requires: [
+        'devilry.extjshelpers.GridSelectionModel'
+    ],
+
     config: {
         assignmentid: undefined,
         dockedItems: []
@@ -106,8 +110,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         }]);
 
 
-        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
-            checkOnly: true
+        this.selModel = Ext.create('devilry.extjshelpers.GridSelectionModel', {
+            checkOnly: false
         });
 
         Ext.apply(this, {
