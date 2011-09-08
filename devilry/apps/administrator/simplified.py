@@ -2,9 +2,10 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
-from ...simplified import (SimplifiedModelApi, simplified_modelapi,
-                           PermissionDenied, FieldSpec,
-                           FilterSpecs, FilterSpec, PatternFilterSpec)
+from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
+                                PermissionDenied, FieldSpec,
+                                FilterSpecs, FilterSpec, PatternFilterSpec,
+                                stringOrNoneConverter)
 from ..core import models
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedPeriodMetaMixin,
@@ -244,7 +245,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec(users=['candidates__student__username']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
-        filters = FilterSpecs(FilterSpec('candidates__student__username')) + SimplifiedAssignmentGroupMetaMixin.filters
+        filters = SimplifiedAssignmentGroupMetaMixin.filters + \
+                FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
+                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter))
 
 
     @classmethod
