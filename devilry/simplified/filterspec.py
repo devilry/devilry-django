@@ -34,13 +34,17 @@ def boolConverter(value):
     if isinstance(value, bool):
         return value
     else:
-        return value.lower() in ('1', 'true', 'yes')
+        return value.lower() == 'yes'
 def intConverter(value):
     return int(value)
 def intOrNoneConverter(value):
-    if isinstance(value, basestring) and value.lower() in ('none', 'null'):
+    if isinstance(value, basestring) and value.lower() == 'none':
         return None
     return int(value)
+def stringOrNoneConverter(value):
+    if isinstance(value, basestring) and value.lower() == 'none':
+        return None
+    return value
 def dateTimeConverter(value):
     return datetime.strptime(str(value), '%Y-%m-%dT%H:%M:%S')
 
