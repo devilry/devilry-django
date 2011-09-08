@@ -100,8 +100,11 @@ class ModelRestfulView(RestfulView):
             if 'sort' in cleaned_data:
                 sort = cleaned_data['sort']
                 del cleaned_data['sort']
-                if sort and self.use_extjshacks:
-                    cleaned_data['orderby'] = self._parse_extjs_sort(sort)
+                if not cleaned_data.get('orderby'):
+                    if sort and self.use_extjshacks:
+                        orderby = self._parse_extjs_sort(sort)
+                        cleaned_data['orderby'] = orderby
+
             try:
                 qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
             except SimplifiedException, e:
