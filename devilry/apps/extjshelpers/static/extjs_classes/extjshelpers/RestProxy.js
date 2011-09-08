@@ -90,6 +90,12 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         });
     },
 
+    setDevilryResultFieldgroups: function(fieldgroups) {
+        if(Ext.typeOf(fieldgroups) !== 'array') {
+            throw "setDevilryResultFieldgroups(): fieldgroups must be an array";
+        }
+        this.extraParams.result_fieldgroups = Ext.JSON.encode(fieldgroups);
+    },
     setDevilryFilters: function(filters) {
         if(Ext.typeOf(filters) !== 'array') {
             throw "setDevilryFilters(): filters must be an array";
