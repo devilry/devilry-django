@@ -1,6 +1,9 @@
 Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     extend: 'devilry.extjshelpers.studentsmanager.StudentsManager',
     alias: 'widget.administrator_studentsmanager',
+    requires: [
+        'devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignment'
+    ],
 
     mixins: {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
@@ -28,6 +31,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 listeners: {
                     scope: this,
                     click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Import from another assignment',
+                listeners: {
+                    scope: this,
+                    click: this.onImportFromAnotherAssignmentInCurrentPeriod
                 }
             }, {
                 text: 'Manually',

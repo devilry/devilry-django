@@ -82,14 +82,10 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         var candidates = this.statics().getCandidateInfoFromGroupRecord(record);
 
         var candidatestrings = [];
+        var statics = this.statics();
         Ext.each(candidates, function(candidate, index) {
-            if(candidate.candidate_id == undefined || candidate.candidate_id == "candidate-id missing") {
-                candidatestrings.push(candidate.username);
-            } else {
-                candidatestrings.push(Ext.String.format('{0}:{1}', candidate.username, candidate.candidate_id));
-            }
+            candidatestrings.push(statics.formatCandidateInfoAsString(candidate));
         });
-
 
         var win = Ext.widget('window', {
             title: 'Select members',
@@ -214,6 +210,43 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         });
     },
 
+    
+    onImportFromAnotherAssignmentInCurrentPeriod: function() {
+        Ext.widget('window', {
+            title: 'Import from another assignment in the current Period',
+            layout: 'fit',
+            width: 830,
+            height: 600,
+            modal: true,
+            items: {
+                xtype: 'importgroupsfromanotherassignment',
+                periodid: this.periodid,
+                listeners: {
+                    scope: this,
+                    next: this.importFromAnotherAssignmentInCurrentPeriod
+                }
+            }
+        }).show();
+    },
+
+    importFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
+        importPanel.up('window').close();
+        var statics = this.statics();
+        var groups = [];
+        Ext.each(assignmentGroupRecords, function(record, index) {
+            var candidates = statics.getCandidateInfoFromGroupRecord(record);
+            var groupString = '';
+            Ext.each(candidates, function(candidate, index) {
+                var candidateString = statics.formatCandidateInfoAsString(candidate);
+                if(index != candidates.length-1)
+                    candidateString += ', ';
+                groupString += candidateString;
+            });
+            groups.push(groupString);
+        });
+        this.showManuallyCreateUsersWindow(groups);
+    },
+
     statics: {
         getCandidateInfoFromGroupRecord: function(record) {
             var candidates = [];
@@ -225,6 +258,14 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 candidates.push(candidate);
             });
             return candidates;
+        },
+
+        formatCandidateInfoAsString: function(candidate) {
+            if(candidate.candidate_id == undefined || candidate.candidate_id == "candidate-id missing") {
+                return candidate.username;
+            } else {
+                return Ext.String.format('{0}:{1}', candidate.username, candidate.candidate_id);
+            }
         },
 
         parseCandidateSpec: function(candidateSpec) {
