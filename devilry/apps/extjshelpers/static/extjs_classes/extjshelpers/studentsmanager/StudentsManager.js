@@ -134,6 +134,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
 
     getFilters: function() {
+        var me = this;
         return [{
             text: 'Open',
             handler: function() { me.setFilter('is_open:yes'); }
