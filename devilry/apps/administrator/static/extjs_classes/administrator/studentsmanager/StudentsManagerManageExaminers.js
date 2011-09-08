@@ -334,5 +334,81 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             this.loadFirstPage();
             this.getEl().unmask();
         }
+    },
+
+
+    onImportExaminersFromAnotherAssignmentInCurrentPeriod: function() {
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        Ext.widget('window', {
+            title: 'Import examiners from another assignment in the current Period',
+            layout: 'fit',
+            width: 830,
+            height: 600,
+            modal: true,
+            items: {
+                xtype: 'importgroupsfromanotherassignment',
+                periodid: this.periodid,
+                help: '<section class="helpsection">Select the assignment you wish to import examiners from. When you click next, every assignemnt group in the current assignment with <strong>exactly</strong> the same members as in the selected assignment, will have their examiners copied into the current assignment.</section>',
+                listeners: {
+                    scope: this,
+                    next: this.importExaminersFromAnotherAssignmentInCurrentPeriod
+                }
+            }
+        }).show();
+    },
+
+    /**
+     * @private
+     */
+    importExaminersFromAnotherAssignmentInCurrentPeriod: function(importPanel, otherGroupRecords) {
+        importPanel.up('window').close();
+        this.progressWindow.start('Copy examiners from another assignment');
+        this.down('studentsmanager_studentsgrid').gatherSelectedRecordsInArray({
+            scope: this,
+            callback: function(currentGroupRecords) {
+                var matchingRecordPairs = this.findGroupsWithSameStudents(currentGroupRecords, otherGroupRecords);
+                this.copyExaminersFromOtherGroups(matchingRecordPairs);
+            }
+        });
+    },
+
+    findGroupsWithSameStudents: function(currentGroupRecords, otherGroupRecords) {
+        var matchingRecordPairs = [];
+        Ext.each(currentGroupRecords, function(currentRecord, index) {
+            var currentUsernames = currentRecord.data.candidates__student__username;
+            var matchFound = false;
+            this.getEl().mask(Ext.String.format('Finding groups with the same students {0}/{1}...', index, currentGroupRecords.length));
+            Ext.each(otherGroupRecords, function(otherRecord, index) {
+                var otherUsernames = otherRecord.data.candidates__student__username;
+                if(currentUsernames.length === otherUsernames.length) {
+                    var difference = Ext.Array.difference(currentUsernames, otherUsernames);
+                    if(difference.length === 0) {
+                        //console.log(otherUsernames, '===', currentUsernames);
+                        matchingRecordPairs.push({
+                            current: currentRecord,
+                            other: otherRecord
+                        });
+                        matchFound = true;
+                        return false; // break
+                    }
+                }
+            }, this);
+            if(!matchFound) {
+                this.progressWindow.addWarning(currentRecord, 'Group not found in the other assignment.');
+            }
+        }, this);
+        return matchingRecordPairs;
+    },
+
+
+    copyExaminersFromOtherGroups: function(matchingRecordPairs) {
+        this._finishedSavingGroupCount = 0;
+        Ext.each(matchingRecordPairs, function(recordPair, index) {
+            this.setExaminers(recordPair.current, index, matchingRecordPairs.length, recordPair.other.data.examiners__username, false);
+        }, this);
     }
 });

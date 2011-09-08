@@ -211,7 +211,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
     },
 
     
-    onImportFromAnotherAssignmentInCurrentPeriod: function() {
+    onImportGroupsFromAnotherAssignmentInCurrentPeriod: function() {
         Ext.widget('window', {
             title: 'Import from another assignment in the current Period',
             layout: 'fit',
@@ -221,15 +221,16 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'importgroupsfromanotherassignment',
                 periodid: this.periodid,
+                help: '<section class="helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
                 listeners: {
                     scope: this,
-                    next: this.importFromAnotherAssignmentInCurrentPeriod
+                    next: this.importGroupsFromAnotherAssignmentInCurrentPeriod
                 }
             }
         }).show();
     },
 
-    importFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
+    importGroupsFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
         importPanel.up('window').close();
         var statics = this.statics();
         var groups = [];

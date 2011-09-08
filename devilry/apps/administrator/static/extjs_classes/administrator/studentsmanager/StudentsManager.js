@@ -36,7 +36,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 text: 'Import from another assignment',
                 listeners: {
                     scope: this,
-                    click: this.onImportFromAnotherAssignmentInCurrentPeriod
+                    click: this.onImportGroupsFromAnotherAssignmentInCurrentPeriod
                 }
             }, {
                 text: 'Manually',
@@ -75,6 +75,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 listeners: {
                     scope: this,
                     click: this.onRandomDistributeExaminers
+                }
+            }, {
+                text: 'From another assignment',
+                listeners: {
+                    scope: this,
+                    click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
                 }
             }, {
                 text: 'Clear',

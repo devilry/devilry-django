@@ -144,10 +144,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
-            //this.up('window').addListener('show', function() {
+            this.up('window').addListener('show', function() {
                 //Ext.defer(this.onReplaceExaminers, 1000, this);
                 //Ext.defer(this.onRandomDistributeExaminers, 1000, this);
-            //}, this);
+                Ext.defer(this.onImportExaminersFromAnotherAssignmentInCurrentPeriod, 1000, this);
+            }, this);
             this.down('studentsmanager_studentsgrid').on('itemcontextmenu', this.onGridContexMenu, this);
         }, this);
         this.loadGradeEditorConfigModel();

@@ -2,9 +2,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignme
     extend: 'Ext.panel.Panel',
     alias: 'widget.importgroupsfromanotherassignment',
 
-    help: '<section class="helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
-
     config: {
+        help: undefined,
         periodid: undefined
     },
     constructor: function(config) {
