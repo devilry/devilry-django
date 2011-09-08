@@ -77,7 +77,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                     click: this.onRandomDistributeExaminers
                 }
             }, {
-                text: 'From another assignment',
+                text: 'Copy from another assignment',
                 listeners: {
                     scope: this,
                     click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
