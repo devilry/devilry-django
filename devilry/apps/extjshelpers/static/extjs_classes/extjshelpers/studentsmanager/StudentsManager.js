@@ -101,31 +101,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         }, {
                             xtype: 'button',
                             text: 'Filter',
-                            menu: [{
-                                text: 'Open',
-                                handler: function() { me.setFilter('is_open:yes'); }
-                            }, {
-                                text: 'Closed',
-                                handler: function() { me.setFilter('is_open:no'); }
-                            }, '-', {
-                                text: 'Passing grade',
-                                handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
-                            }, {
-                                text: 'Failing grade',
-                                handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
-                            }, '-', {
-                                text: 'Has deliveries',
-                                handler: function() { me.setFilter('number_of_deliveries:>:0'); }
-                            }, {
-                                text: 'No deliveries',
-                                handler: function() { me.setFilter('number_of_deliveries:0'); }
-                            }, '-', {
-                                text: 'Has feedback',
-                                handler: function() { me.setFilter('feedback:>=:0'); }
-                            }, {
-                                text: 'No feedback',
-                                handler: function() { me.setFilter('feedback:none'); }
-                            }]
+                            menu: this.getFilters()
                         }]
                     }]
                 }],
@@ -154,6 +130,35 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.loadGradeEditorConfigModel();
 
         this.loadFirstPage();
+    },
+
+
+    getFilters: function() {
+        return [{
+            text: 'Open',
+            handler: function() { me.setFilter('is_open:yes'); }
+        }, {
+            text: 'Closed',
+            handler: function() { me.setFilter('is_open:no'); }
+        }, '-', {
+            text: 'Passing grade',
+            handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
+        }, {
+            text: 'Failing grade',
+            handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
+        }, '-', {
+            text: 'Has deliveries',
+            handler: function() { me.setFilter('number_of_deliveries:>:0'); }
+        }, {
+            text: 'No deliveries',
+            handler: function() { me.setFilter('number_of_deliveries:0'); }
+        }, '-', {
+            text: 'Has feedback',
+            handler: function() { me.setFilter('feedback:>=:0'); }
+        }, {
+            text: 'No feedback',
+            handler: function() { me.setFilter('feedback:none'); }
+        }];
     },
 
     getToolbarItems: function() {

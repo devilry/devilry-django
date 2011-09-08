@@ -94,6 +94,20 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         return defaults;
     },
 
+    getFilters: function() {
+        var defaultFilters = this.callParent();
+        var me = this;
+        var adminFilters = ['-', {
+            text: 'Has no students',
+            handler: function() { me.setFilter('candidates__student__username:none'); }
+        }, {
+            text: 'Has no examiners',
+            handler: function() { me.setFilter('examiners__username:none'); }
+        }];
+        Ext.Array.insert(adminFilters, 0, defaultFilters);
+        return adminFilters;
+    },
+
     getOnSingleMenuItems: function() {
         var menu = this.callParent();
         //menu.push({
