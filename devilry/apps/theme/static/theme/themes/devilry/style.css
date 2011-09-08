@@ -1237,10 +1237,11 @@ section.treeheading {
   padding: 1px 4px;
   white-space: nowrap; }
 
-.menuheader {
+.widget-menuheader {
+  margin-top: 8px;
   font-weight: bold; }
 
-.menuheader:first-child {
+.widget-menuheader:first-child {
   margin-top: 0; }
 
 .edit-toolbar .x-btn {

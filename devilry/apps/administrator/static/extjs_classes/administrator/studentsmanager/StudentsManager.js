@@ -97,7 +97,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getFilters: function() {
         var defaultFilters = this.callParent();
         var me = this;
-        var adminFilters = ['-', {
+        var adminFilters = [{xtype: 'menuheader', html: 'Missing users'}, {
             text: 'Has no students',
             handler: function() { me.setFilter('candidates__student__username:none'); }
         }, {

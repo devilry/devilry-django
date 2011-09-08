@@ -964,10 +964,11 @@ section.treeheading {
     @include warningInlineItem();
 }
 
-.menuheader {
+.widget-menuheader {
+    margin-top: 8px;
     font-weight:bold;
 }
-.menuheader:first-child {
+.widget-menuheader:first-child {
     margin-top:0;
 }
 

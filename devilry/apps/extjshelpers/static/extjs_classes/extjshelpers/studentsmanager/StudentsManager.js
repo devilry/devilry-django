@@ -12,7 +12,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow',
-        'devilry.extjshelpers.studentsmanager.MultiResultWindow'
+        'devilry.extjshelpers.studentsmanager.MultiResultWindow',
+        'devilry.extjshelpers.MenuHeader'
     ],
 
     mixins: {
@@ -101,7 +102,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         }, {
                             xtype: 'button',
                             text: 'Filter',
-                            menu: this.getFilters()
+                            menu: {
+                                xtype: 'menu',
+                                plain: true,
+                                items: this.getFilters()
+                            }
                         }]
                     }]
                 }],
@@ -135,48 +140,47 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getFilters: function() {
         var me = this;
-        return [{
+        return [{xtype: 'menuheader', html: 'Open/closed'}, {
             text: 'Open',
             handler: function() { me.setFilter('is_open:yes'); }
         }, {
             text: 'Closed',
             handler: function() { me.setFilter('is_open:no'); }
-        }, '-', {
+        }, {xtype: 'menuheader', html: 'Grade'}, {
             text: 'Passing grade',
             handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
         }, {
             text: 'Failing grade',
             handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
-        }, '-', {
+        }, {xtype: 'menuheader', html: 'Deliveries'}, {
             text: 'Has deliveries',
             handler: function() { me.setFilter('number_of_deliveries:>:0'); }
         }, {
             text: 'No deliveries',
             handler: function() { me.setFilter('number_of_deliveries:0'); }
-        }, '-', {
+        }, {xtype: 'menuheader', html: 'Feedback'}, {
             text: 'Has feedback',
             handler: function() { me.setFilter('feedback:>=:0'); }
         }, {
             text: 'No feedback',
             handler: function() { me.setFilter('feedback:none'); }
+        }, {xtype: 'menuheader', html: 'Delivery type'}, {
+            text: 'Electronic',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:0'); }
+        }, {
+            text: 'Non-electronic',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:1'); }
+        }, {
+            text: 'From previous period',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
         }];
     },
 
     getToolbarItems: function() {
-        var singleheader = {
-            xtype: 'box',
-            plain: true,
-            html:'<div class="menuheader">On single</div>'
-        };
-        var multiheader = {
-            xtype: 'box',
-            plain: true,
-            html:'<div class="menuheader">On multiple</div>'
-        };
         var advanced = Ext.Array.merge(
-            [singleheader], this.getOnSingleMenuItems(),
+            [{xtype: 'menuheader', html: 'On single'}], this.getOnSingleMenuItems(),
             [{xtype: 'box', height: 12}],
-            [multiheader], this.getOnManyMenuItems()
+            [{xtype: 'menuheader', html: 'On multiple'}], this.getOnManyMenuItems()
         );
 
         return [{
