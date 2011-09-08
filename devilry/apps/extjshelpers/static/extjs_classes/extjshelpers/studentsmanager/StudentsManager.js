@@ -384,6 +384,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
         var extraParams = this.assignmentgroupstore.proxy.extraParams;
         this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        this.assignmentgroupstore.proxy.extraParams.orderby = Ext.JSON.encode([]);
         this.assignmentgroupstore.loadPage(1, {
             scope: this,
             callback: function(records, operation, success) {
