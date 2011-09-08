@@ -47,6 +47,26 @@ Ext.define('devilry.extjshelpers.RestProxy', {
     extend: 'Ext.data.proxy.Rest',
     alias: 'proxy.devilryrestproxy',
 
+    constructor: function(config) {
+        Ext.apply(this, {
+            reader: {
+                type: 'json',
+                root: 'items',
+                totalProperty: 'total'
+            },
+            writer: {
+                type: 'json'
+           }
+        });
+
+        this.callParent([config]);
+
+        if(!this.extraParams) {
+            this.extraParams = {};
+        }
+        this.extraParams.getdata_in_qrystring = true;
+    },
+
     /**
      * Overrides error handling. Adds error information to the ``operation`` parameter.
      *
@@ -68,5 +88,18 @@ Ext.define('devilry.extjshelpers.RestProxy', {
             status: response.status,
             statusText: response.statusText
         });
+    },
+
+    setDevilryFilters: function(filters) {
+        if(Ext.typeOf(filters) !== 'array') {
+            throw "setDevilryFilters(): filters must be an array";
+        }
+        this.extraParams.filters = Ext.JSON.encode(filters);
+    },
+    setDevilryOrderby: function(orderby) {
+        if(Ext.typeOf(filters) !== 'array') {
+            throw "setDevilryOrderby(): orderby must be an array";
+        }
+        this.extraParams.orderby = Ext.JSON.encode(orderby);
     }
 });
