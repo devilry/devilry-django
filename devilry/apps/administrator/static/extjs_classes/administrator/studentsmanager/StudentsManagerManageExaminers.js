@@ -352,7 +352,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             items: {
                 xtype: 'importgroupsfromanotherassignment',
                 periodid: this.periodid,
-                help: '<section class="helpsection">Select the assignment you wish to import examiners from. When you click next, every assignemnt group in the current assignment with <strong>exactly</strong> the same members as in the selected assignment, will have their examiners copied into the current assignment.</section>',
+                help: '<section class="helpsection">Select the assignment you wish to import examiners from. When you click next, every selected assignemnt group in the current assignment with <strong>exactly</strong> the same members as in the selected assignment, will have their examiners copied into the current assignment.</section>',
                 listeners: {
                     scope: this,
                     next: this.importExaminersFromAnotherAssignmentInCurrentPeriod
