@@ -56,7 +56,7 @@ class ModelRestfulView(RestfulView):
                 else:
                     id = self._meta.simplified.update(self.request.user, instance.pk, **form.cleaned_data)
             except PermissionDenied, e:
-                return ForbiddenSerializableResult()
+                return ForbiddenSerializableResult(e)
             except InvalidUsername, e:
                 return InvalidUsernameSerializableResult(e.username)
 
@@ -135,7 +135,7 @@ class ModelRestfulView(RestfulView):
             try:
                 data = self._meta.simplified.read(self.request.user, id, **cleaned_data)
             except PermissionDenied, e:
-                return ForbiddenSerializableResult()
+                return ForbiddenSerializableResult(e)
             data = self.extjswrapshortcut(data)
             return SerializableResult(data)
         else:
@@ -151,7 +151,7 @@ class ModelRestfulView(RestfulView):
         try:
             instance = self._meta.simplified._meta.model.objects.get(pk=id)
         except self._meta.simplified._meta.model.DoesNotExist, e:
-            return ForbiddenSerializableResult()
+            return ForbiddenSerializableResult(e)
         return self._create_or_replace(instance)
 
     def crud_delete(self, request, id):
@@ -159,7 +159,7 @@ class ModelRestfulView(RestfulView):
         try:
             self._meta.simplified.delete(request.user, id)
         except PermissionDenied, e:
-            return ForbiddenSerializableResult()
+            return ForbiddenSerializableResult(e)
         else:
             data = self.extjswrapshortcut(dict(id=id))
             return SerializableResult(data)

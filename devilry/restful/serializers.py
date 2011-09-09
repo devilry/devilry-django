@@ -17,8 +17,12 @@ class ErrorMsgSerializableResult(SerializableResult):
                                                          httpresponsecls=httpresponsecls)
 
 class ForbiddenSerializableResult(ErrorMsgSerializableResult):
-    def __init__(self):
-        super(ForbiddenSerializableResult, self).__init__('Forbidden',
+    def __init__(self, exception):
+        if exception.message:
+            errormessage = exception.message
+        else:
+            errormessage = 'Forbidden'
+        super(ForbiddenSerializableResult, self).__init__(errormessage,
                                                           HttpResponseForbidden)
 
 class InvalidUsernameSerializableResult(ErrorMsgSerializableResult):
