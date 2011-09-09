@@ -53,17 +53,5 @@ class Candidate(models.Model, Etag):
 
     #TODO delete this?
     def save(self, *args, **kwargs):
-        """Validate the assignment.
-
-        Always call this before save()! Read about validation here:
-        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
-
-        Raises ValidationError if:
-
-            - candidate id is empty on anonymous assignment.
-
-        """
-        # Only if object doesn't yet exist in the database
-        if not self.pk:
-            self.update_identifier(self.assignment_group.parentnode.anonymous)
+        self.update_identifier(self.assignment_group.parentnode.anonymous)
         super(Candidate, self).save(*args, **kwargs)
