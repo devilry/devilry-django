@@ -107,5 +107,32 @@ Ext.define('devilry.extjshelpers.RestProxy', {
             throw "setDevilryOrderby(): orderby must be an array";
         }
         this.extraParams.orderby = Ext.JSON.encode(orderby);
+    },
+
+    statics: {
+        formatHtmlErrorMessage: function(operation) {
+            var tpl = Ext.create('Ext.XTemplate', 
+                '<section class="errormessages">',
+                '<tpl if="httperror">{httperror.status} {httperror.statusText}</tpl>',
+                '<tpl for="errormessages">',
+                '   <p>{.}</p>',
+                '</tpl>',
+                '</section>'
+            );
+            if(operation.responseData && operation.responseData.errormessages) {
+                return tpl.apply({errormessages: operation.responseData.errormessages});
+            } else {
+                return tpl.apply({httperror: operation.error});
+            }
+        },
+
+        showErrorMessagePopup: function(operation, title) {
+            Ext.MessageBox.show({
+                title: title,
+                msg: devilry.extjshelpers.RestProxy.formatHtmlErrorMessage(operation),
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+        }
     }
 });
