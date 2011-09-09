@@ -297,7 +297,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
             for candidate in obj.candidates.all():
                 if not candidate.student.username in new_candidates_usernames:
                     if models.Delivery.objects.filter(deadline__assignment_group=obj, delivered_by=candidate).count() != 0:
-                        raise PermissionDenied('You can not remove {0} from the group. Candidates that have made a delivery can not be removed.')
+                        raise PermissionDenied('You can not remove {0} from the group. Candidates that have made a delivery can not be removed.'.format(candidate.student.username))
                     to_delete.append(candidate)
             for candidate in to_delete:
                 candidate.delete()
