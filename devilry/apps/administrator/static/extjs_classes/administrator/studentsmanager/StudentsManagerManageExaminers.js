@@ -24,18 +24,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     errorSetExaminerTpl: Ext.create('Ext.XTemplate',
         'Failed to set examiners: <tpl for="examiners">',
         '   {.}<tpl if="xindex &lt; xcount">, </tpl>',
-        '</tpl>. Error details:',
-        '<tpl if="status === 403">',
-        '   {status} {statusText}. This is ususall caused by an <strong>invalid username</strong>.',
-        '</tpl>',
-        '<tpl if="status !== 403">',
-        '   <tpl if="status === 0">',
-        '       Could not contact the Devilry server.',
-        '   </tpl>',
-        '   <tpl if="status !== 0">',
-        '       {status} {statusText}.',
-        '   </tpl>',
-        '</tpl>'
+        '</tpl>. Error details: {errorDetails}'
     ),
     
     /**
@@ -323,8 +312,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         } else {
             var msg = this.errorSetExaminerTpl.apply({
                 examiners: usernames,
-                status: operation.error.status,
-                statusText: operation.error.statusText
+                errorDetails: devilry.extjshelpers.RestProxy.formatHtmlErrorMessage(operation)
             });
             this.progressWindow.addError(record, msg);
         }
