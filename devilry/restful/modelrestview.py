@@ -1,10 +1,11 @@
 from django.http import HttpResponseBadRequest, HttpResponse
 
-from ..simplified import PermissionDenied, SimplifiedException
+from ..simplified import PermissionDenied, SimplifiedException, InvalidUsername
 from restview import RestfulView, extjswrap
 from serializers import (serializers, SerializableResult,
                          ErrorMsgSerializableResult,
-                         ForbiddenSerializableResult)
+                         ForbiddenSerializableResult,
+                         InvalidUsernameSerializableResult)
 from readform import ReadForm
 
 
@@ -54,8 +55,10 @@ class ModelRestfulView(RestfulView):
                     id = self._meta.simplified.create(self.request.user, **form.cleaned_data)
                 else:
                     id = self._meta.simplified.update(self.request.user, instance.pk, **form.cleaned_data)
-            except PermissionDenied:
+            except PermissionDenied, e:
                 return ForbiddenSerializableResult()
+            except InvalidUsername, e:
+                return InvalidUsernameSerializableResult(e.username)
 
             data['id'] = id
             result = self.extjswrapshortcut(data)

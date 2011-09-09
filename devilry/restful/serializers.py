@@ -21,6 +21,11 @@ class ForbiddenSerializableResult(ErrorMsgSerializableResult):
         super(ForbiddenSerializableResult, self).__init__('Forbidden',
                                                           HttpResponseForbidden)
 
+class InvalidUsernameSerializableResult(ErrorMsgSerializableResult):
+    def __init__(self, username):
+        super(InvalidUsernameSerializableResult, self).__init__('Invalid username: {0}'.format(username),
+                                                                HttpResponseBadRequest)
+
 
 class SerializerRegistryItem(object):
     def __init__(self, serializer, deserializer):
