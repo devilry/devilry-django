@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
 from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
-                                PermissionDenied, FieldSpec,
+                                PermissionDenied, InvalidUsername, FieldSpec,
                                 FilterSpecs, FilterSpec, PatternFilterSpec,
                                 stringOrNoneConverter)
 from ..core import models
@@ -297,7 +297,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
                 try:
                     user = User.objects.get(username=candidatespec['username'])
                 except User.DoesNotExist:
-                    raise PermissionDenied()
+                    raise InvalidUsername(candidatespec['username'])
                 else:
                     candidatekwargs = dict(student = user,
                                            candidate_id = candidatespec.get('candidate_id', None))
