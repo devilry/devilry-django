@@ -1,7 +1,8 @@
 /** The group management methods for StudentsManager. */
 Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', {
     requires: [
-        'devilry.administrator.studentsmanager.ManuallyCreateUsers'
+        'devilry.administrator.studentsmanager.ManuallyCreateUsers',
+        'devilry.extjshelpers.RestProxy'
     ],
 
     /**
@@ -130,14 +131,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         setlistofusersobj.getEl().mask("Changing group members");
         editRecord.save({
             scope: this,
-            failure: function() {
+            failure: function(records, operation) {
                 setlistofusersobj.getEl().unmask();
-                Ext.MessageBox.show({
-                    title: 'Failed to change group members',
-                    msg: 'This is normally caused by invalid usernames.',
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.ERROR
-                });
+                devilry.extjshelpers.RestProxy.showErrorMessagePopup(operation, 'Failed to change group members');
             },
             success: function() {
                 setlistofusersobj.up('window').close();
