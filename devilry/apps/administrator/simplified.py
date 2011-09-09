@@ -30,7 +30,7 @@ def _convert_list_of_usernames_to_userobjects(usernames):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise PermissionDenied()
+            raise InvalidUsername(username)
         users.append(user)
     return users
 
