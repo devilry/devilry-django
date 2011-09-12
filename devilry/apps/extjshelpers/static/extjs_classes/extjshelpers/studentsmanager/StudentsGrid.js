@@ -131,9 +131,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatInfoCol
             }, {
-                text: 'Students', dataIndex: 'id', flex: 4,
+                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
                 menuDisabled: true,
-                sortable: false,
                 renderer: this.formatCandidatesCol
             }, {
                 text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
@@ -159,9 +158,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 4,
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 4,
                 menuDisabled: true,
-                sortable: false,
                 renderer: this.formatExaminersCol
             }, {
                 text: 'Group name', dataIndex: 'name', flex: 3,
