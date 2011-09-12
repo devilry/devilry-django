@@ -77,7 +77,7 @@ class CompressedFileDownloadView(View):
                         filename = filenametpl.format(zip_rootdir_name=zip_rootdir_name,
                                                       groupid=assignmentgroup.id,
                                                       candidates=candidates,
-                                                      deadline=deadline.deadline.strftime("%Y-%m-%d"),
+                                                      deadline=deadline.deadline.strftime("%Y-%m-%dT%H_%M_%S"),
                                                       delivery_number="%.3d" % delivery.number,
                                                       filename = filemeta.filename.encode('utf-8'))
                         zip_file.writestr(filename, file_content.read())
