@@ -14,7 +14,9 @@ from abstract_is_candidate import AbstractIsCandidate
 from candidate import Candidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+
+import deliverytypes
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -76,10 +78,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
        A DateTimeField containing the etag for this object.
 
     """
-    TYPE_ONLY_ELECTRONIC = 0
-    TYPE_MIXED = 1
-    TYPE_NO_ELECTRONIC = 2
-    
     class Meta:
         app_label = 'core'
         verbose_name = _('Assignment')
@@ -137,11 +135,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                  'avalable to the students immediately? If not, an '
                                                                  'administrator have to publish feedbacks '
                                                                  'manually.'))
-    delivery_types = models.PositiveIntegerField(default=TYPE_ONLY_ELECTRONIC,
-            verbose_name = _("Type of deliveries"),
-            help_text=_('This option controls if this assignment accepts only '
-                        'electronic deliveries, or accepts other kinds as well.'))
-    
+    delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
+                                                 choices=deliverytypes.as_choices_tuple(),
+                                                 help_text='This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.')
+
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
