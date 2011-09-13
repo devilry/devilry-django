@@ -13,6 +13,7 @@ class SimplifiedAssignmentMetaMixin(object):
                              'short_name',
                              'long_name',
                              'publishing_time',
+                             'delivery_types',
                              period=['parentnode__short_name',
                                      'parentnode__long_name',
                                      'parentnode__start_time',

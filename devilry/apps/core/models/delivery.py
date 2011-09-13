@@ -8,6 +8,9 @@ from django.db.models import Q, Max
 from deadline import Deadline
 from filemeta import FileMeta
 from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
+import deliverytypes
+
+
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
@@ -60,11 +63,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     #DELIVERY_NOT_CORRECTED = 0
     #DELIVERY_CORRECTED = 1
 
-    TYPE_ELECTRONIC = 0
-    TYPE_NON_ELECTRONIC = 1
-    TYPE_ALIAS = 2
-
-    delivery_type = models.PositiveIntegerField(default=TYPE_ELECTRONIC,
+    delivery_type = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                 verbose_name = "Type of delivery",
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
@@ -84,7 +83,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
 
-    # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
+    # Only used when this is aliasing an earlier delivery, delivery_type == ALIAS
     alias_delivery = models.OneToOneField("Delivery", blank=True, null=True,
                                           help_text='Links to another delivery. Used when delivery_type is Alias.')
 

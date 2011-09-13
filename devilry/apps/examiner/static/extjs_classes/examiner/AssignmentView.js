@@ -130,6 +130,7 @@ Ext.define('devilry.examiner.AssignmentView', {
                 xtype: 'studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
                 assignmentid: this.assignmentid,
+                assignmentrecord: this.assignment_recordcontainer.record,
                 deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
                 gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
                 isAdministrator: false
