@@ -120,7 +120,7 @@
         for (i=0; i<gradestring.length; i++) {
             var grade = gradestring[i] + "";
             var gradearray = grade.split(',');
-            retval = retval+gradearray[0]+" : "+gradearray[1] +'\n'+gradearray[2]+'\n;;\n';
+            retval = retval+gradearray[0]+" : "+gradearray[1] +'\n'+gradearray[2]+'\n;;\n\n';
         }
 
         return retval;
@@ -132,11 +132,12 @@
         var resultArray = [];
         var i=0;
         for (i=0; i<asArray.length; i++) {
-            var split = asArray[i].split('\n');
+            var split = Ext.String.trim(asArray[i]);
+            split = split.split('\n');
             var grade = split[0];
             grade = Ext.String.trim(grade);
             grade = grade.split(/\s*:\s*/, 2);
-
+            
             if (grade != '') {
                 var label = "";
                 var j=0;
