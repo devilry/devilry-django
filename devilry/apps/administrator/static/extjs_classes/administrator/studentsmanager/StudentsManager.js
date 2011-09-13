@@ -8,8 +8,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     mixins: {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
         createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
-        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin',
-        addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin'
     },
 
     //config: {
@@ -126,17 +125,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onChangeGroupName
             }
         });
-
-        if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
-            menu.push({
-                text: 'Add non-electronic delivery',
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onAddNonElectronicDelivery
-                }
-            });
-        }
         return menu;
     },
 

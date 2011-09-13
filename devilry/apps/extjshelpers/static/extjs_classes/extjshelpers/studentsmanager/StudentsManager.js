@@ -19,7 +19,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     mixins: {
         createFeedback: 'devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
         manageDeadlines: 'devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines',
-        closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen'
+        closeOpen: 'devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen',
+        addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
     config: {
@@ -205,13 +206,26 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getOnSingleMenuItems: function() {
-        return [{
+        menu = [{
             text: 'Open in examiner interface',
             listeners: {
                 scope: this,
                 click: this.onOpenExaminerInterface
             }
         }];
+
+        if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
+            menu.push({
+                text: 'Add non-electronic delivery',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    scope: this,
+                    click: this.onAddNonElectronicDelivery
+                }
+            });
+        }
+
+        return menu;
     },
 
     getOnManyMenuItems: function() {
