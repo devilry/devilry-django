@@ -32,6 +32,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         gradeeditor_config_model: undefined,
         deadlinemodel: undefined,
         assignmentid: undefined,
+        assignmentrecord: undefined,
         assignmentgroupstore: undefined,
 
         periodid: undefined

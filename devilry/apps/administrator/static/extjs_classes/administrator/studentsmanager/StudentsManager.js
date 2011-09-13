@@ -110,13 +110,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getOnSingleMenuItems: function() {
         var menu = this.callParent();
-        //menu.push({
-            //text: 'Create dummy delivery',
-            //listeners: {
-                //scope: this,
-                //click: this.onCreateDummyDelivery
-            //}
-        //});
         menu.push({
             text: 'Change group members',
             iconCls: 'icon-edit-16',
@@ -133,6 +126,16 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onChangeGroupName
             }
         });
+
+        if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
+            menu.push({
+                text: 'Add non-electronic delivery',
+                listeners: {
+                    scope: this,
+                    click: this.onAddNonElectronicDelivery
+                }
+            });
+        }
         return menu;
     },
 

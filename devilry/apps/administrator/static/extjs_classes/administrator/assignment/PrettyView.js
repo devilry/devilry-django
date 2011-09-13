@@ -381,6 +381,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 assignmentgroupstore: this.assignmentgroupstore,
                 assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
                 assignmentid: this.objectid,
+                assignmentrecord: this.record,
                 periodid: this.record.data.parentnode,
                 deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
                 gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
