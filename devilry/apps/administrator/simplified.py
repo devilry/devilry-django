@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
@@ -15,6 +14,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedDeliveryMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
+from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
 
@@ -360,10 +360,7 @@ class SimplifiedDelivery(SimplifiedModelApi):
 
     @classmethod
     def pre_full_clean(cls, user, obj):
-        obj.time_of_delivery = datetime.now()
-        obj.delivered_by = None # None marks this as delivered by an administrator
-        if obj.id == None:
-            obj.number = 0
+        ExaminerSimplifiedDelivery.examiner_pre_full_clean(user, obj)
 
     @classmethod
     def write_authorize(cls, user, obj):
@@ -376,8 +373,7 @@ class SimplifiedDelivery(SimplifiedModelApi):
         """
         if not obj.deadline.assignment_group.can_save(user):
             raise PermissionDenied()
-        if obj.delivered_by != None:
-            raise PermissionDenied()
+        ExaminerSimplifiedDelivery.write_authorize_examinercommon(user, obj)
 
     @classmethod
     def read_authorize(cls, user, obj):

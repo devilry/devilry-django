@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Count, Max
 
 from ...simplified import SimplifiedModelApi, simplified_modelapi, PermissionDenied, FieldSpec
@@ -120,12 +121,44 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
             raise PermissionDenied() # We only allow update
 
 
+
 @simplified_modelapi
 class SimplifiedDelivery(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Examiner can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'create', 'update', 'delete']
+        editablefields = ('successful', 'deadline', 'delivery_type', 'alias_delivery')
+
+    @classmethod
+    def write_authorize_examinercommon(cls, user, obj):
+        """ Used by this class and the corresponding class in apps.administrator.simplified. """
+        if obj.delivered_by != None:
+            raise PermissionDenied()
+
+    @classmethod
+    def examiner_pre_full_clean(cls, user, obj):
+        obj.time_of_delivery = datetime.now()
+        obj.delivered_by = None # None marks this as delivered by an administrator
+        if obj.id == None:
+            obj.number = 0
+
+    @classmethod
+    def pre_full_clean(cls, user, obj):
+        cls.examiner_pre_full_clean(user, obj)
+
+    @classmethod
+    def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A object of the type this method is used in.
+        :throws PermissionDenied:
+        """
+        if not models.AssignmentGroup.published_where_is_examiner(user).filter(id=obj.deadline.assignment_group.id):
+            raise PermissionDenied()
+        cls.write_authorize_examinercommon(user, obj)
 
 
 @simplified_modelapi
