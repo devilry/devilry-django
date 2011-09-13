@@ -130,6 +130,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
             menu.push({
                 text: 'Add non-electronic delivery',
+                iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
                     click: this.onAddNonElectronicDelivery
