@@ -176,8 +176,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # Get all candidates on assignmentgroups for this assignment
         candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
         for cand in candidates: 
-            cand.update_identifier(self.anonymous)
-            cand.save()
+            cand.save(anonymous=self.anonymous)
 
     #TODO delete this?
     #def save(self, *args, **kwargs):
