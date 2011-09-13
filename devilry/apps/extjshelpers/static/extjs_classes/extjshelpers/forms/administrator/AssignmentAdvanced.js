@@ -8,18 +8,18 @@ Ext.define('devilry.extjshelpers.forms.administrator.AssignmentAdvanced', {
         height: 450
     },
 
-    flex: 2.5,
+    flex: 6,
 
     layout: {
         type: 'vbox',
         align: 'stretch'
     },
 
-    //fieldDefaults: {
-        //labelAlign: 'top',
-        //labelWidth: 100,
-        //labelStyle: 'font-weight:bold'
-    //},
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
     defaults: {
         margins: '0 0 10 0'
     },
@@ -34,6 +34,22 @@ Ext.define('devilry.extjshelpers.forms.administrator.AssignmentAdvanced', {
         name: "anonymous",
         fieldLabel: "Anonymous?",
         xtype: 'checkbox'
+    }, {
+        name: "delivery_types",
+        fieldLabel: "How to students add deliveries?",
+        xtype: 'combobox',
+        queryMode: 'local',
+        valueField: 'value',
+        displayField: 'label',
+        forceSelection: true,
+        editable: false,
+        store: Ext.create('Ext.data.Store', {
+            fields: ['value', 'label'],
+            data : [
+                {value:0, label:"Electronically using devilry"},
+                {value:1, label:"Non-electronic (hand in on paper, oral examination, ...)"}
+            ]
+        })
     }],
 
     help: [
