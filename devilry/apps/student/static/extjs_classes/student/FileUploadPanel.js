@@ -59,7 +59,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         '              <li>{.}</li>',
         '          </tpl>',
         '          </ul>',
-        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or upload more files.</p>',
+        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
         '      </section>',
         '   </tpl>',
         '   <tpl if="filenames.length == 0">',
@@ -106,7 +106,7 @@ Ext.define('devilry.student.FileUploadPanel', {
                 msgTarget: 'side',
                 allowBlank: true,
                 emptyText: 'Select file...',
-                buttonText: 'Browse...',
+                buttonText: 'Add new file',
                 buttonConfig: {
                     scale: 'large'
                 },

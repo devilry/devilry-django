@@ -2,7 +2,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsmanager_studentsgrid',
     cls: 'widget-studentsmanager_studentsgrid',
-    sortableColumns: false,
+    sortableColumns: true,
+
+    requires: [
+        'devilry.extjshelpers.GridSelectionModel'
+    ],
 
     config: {
         assignmentid: undefined,
@@ -106,8 +110,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         }]);
 
 
-        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
-            checkOnly: true
+        this.selModel = Ext.create('devilry.extjshelpers.GridSelectionModel', {
+            checkOnly: false
         });
 
         Ext.apply(this, {
@@ -123,35 +127,38 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             //},
 
             columns: [{
-                text: '', dataIndex: 'id', width: 100,
+                text: '', dataIndex: 'is_open', width: 100,
                 menuDisabled: true,
                 renderer: this.formatInfoCol
             }, {
-                text: 'Students', dataIndex: 'id', flex: 4,
+                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
                 menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Deliveries', dataIndex: 'id', flex: 2,
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
                 menuDisabled: true,
+                sortable: false,
                 columns: [{
                     text: 'Points',
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
                     menuDisabled: true,
+                    sortable: true,
                     width: 70
                 }, {
                     text: 'Grade',
                     dataIndex: 'feedback__grade',
                     width: 150,
                     menuDisabled: true,
+                    sortable: true,
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 4,
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 4,
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
             }, {

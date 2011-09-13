@@ -1,7 +1,8 @@
 /** The group management methods for StudentsManager. */
 Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', {
     requires: [
-        'devilry.administrator.studentsmanager.ManuallyCreateUsers'
+        'devilry.administrator.studentsmanager.ManuallyCreateUsers',
+        'devilry.extjshelpers.RestProxy'
     ],
 
     /**
@@ -82,14 +83,10 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         var candidates = this.statics().getCandidateInfoFromGroupRecord(record);
 
         var candidatestrings = [];
+        var statics = this.statics();
         Ext.each(candidates, function(candidate, index) {
-            if(candidate.candidate_id == undefined || candidate.candidate_id == "candidate-id missing") {
-                candidatestrings.push(candidate.username);
-            } else {
-                candidatestrings.push(Ext.String.format('{0}:{1}', candidate.username, candidate.candidate_id));
-            }
+            candidatestrings.push(statics.formatCandidateInfoAsString(candidate));
         });
-
 
         var win = Ext.widget('window', {
             title: 'Select members',
@@ -134,14 +131,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         setlistofusersobj.getEl().mask("Changing group members");
         editRecord.save({
             scope: this,
-            failure: function() {
+            failure: function(records, operation) {
                 setlistofusersobj.getEl().unmask();
-                Ext.MessageBox.show({
-                    title: 'Failed to change group members',
-                    msg: 'This is normally caused by invalid usernames.',
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.ERROR
-                });
+                devilry.extjshelpers.RestProxy.showErrorMessagePopup(operation, 'Failed to change group members');
             },
             success: function() {
                 setlistofusersobj.up('window').close();
@@ -214,6 +206,44 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         });
     },
 
+    
+    onImportGroupsFromAnotherAssignmentInCurrentPeriod: function() {
+        Ext.widget('window', {
+            title: 'Import from another assignment in the current Period',
+            layout: 'fit',
+            width: 830,
+            height: 600,
+            modal: true,
+            items: {
+                xtype: 'importgroupsfromanotherassignment',
+                periodid: this.periodid,
+                help: '<section class="helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
+                listeners: {
+                    scope: this,
+                    next: this.importGroupsFromAnotherAssignmentInCurrentPeriod
+                }
+            }
+        }).show();
+    },
+
+    importGroupsFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
+        importPanel.up('window').close();
+        var statics = this.statics();
+        var groups = [];
+        Ext.each(assignmentGroupRecords, function(record, index) {
+            var candidates = statics.getCandidateInfoFromGroupRecord(record);
+            var groupString = '';
+            Ext.each(candidates, function(candidate, index) {
+                var candidateString = statics.formatCandidateInfoAsString(candidate);
+                if(index != candidates.length-1)
+                    candidateString += ', ';
+                groupString += candidateString;
+            });
+            groups.push(groupString);
+        });
+        this.showManuallyCreateUsersWindow(groups);
+    },
+
     statics: {
         getCandidateInfoFromGroupRecord: function(record) {
             var candidates = [];
@@ -225,6 +255,14 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 candidates.push(candidate);
             });
             return candidates;
+        },
+
+        formatCandidateInfoAsString: function(candidate) {
+            if(candidate.candidate_id == undefined || candidate.candidate_id == "candidate-id missing") {
+                return candidate.username;
+            } else {
+                return Ext.String.format('{0}:{1}', candidate.username, candidate.candidate_id);
+            }
         },
 
         parseCandidateSpec: function(candidateSpec) {

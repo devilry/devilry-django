@@ -11,9 +11,8 @@ urlpatterns = patterns('devilry.apps.examiner',
                            login_required(AssignmentGroupView.as_view()), name='examiner-agroup-view'),
                        url(r'^assignment/(?P<assignmentid>\d+)$',
                            login_required(AssignmentView.as_view()), name='examiner-assignment-view'),
-                       #url(r'^assignment/compressedfiledownload/(?P<assignmentid>\d+)$',
-                           #login_required(CompressedFileDownloadView.as_view()),
-                           #name='compressed-file-download')
+                       url(r'^assignment/compressedfiledownload/(?P<assignmentid>\d+)$',
+                           login_required(CompressedFileDownloadView.as_view()))
                       )
 
 urlpatterns += examiner_restful

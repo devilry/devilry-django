@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from django.db.models import Q
 
 from exceptions import FilterValidationError
@@ -27,18 +28,41 @@ def _in_both(lstA, lstB):
     return None
 
 
+def nullConverter(value):
+    return value
+def boolConverter(value):
+    if isinstance(value, bool):
+        return value
+    else:
+        return value.lower() == 'yes'
+def intConverter(value):
+    return int(value)
+def intOrNoneConverter(value):
+    if isinstance(value, basestring) and value.lower() == 'none':
+        return None
+    return int(value)
+def stringOrNoneConverter(value):
+    if isinstance(value, basestring) and value.lower() == 'none':
+        return None
+    return value
+def dateTimeConverter(value):
+    return datetime.strptime(str(value), '%Y-%m-%dT%H:%M:%S')
+
 
 class FilterSpec(object):
     """ Specifies that a specific field can be filtered, and what *comp* it can
     use. """
-    def __init__(self, fieldname, supported_comp=('exact', 'iexact',
-                                                 '<', '>', '<=', '>=',
-                                                 'contains', 'icontains',
-                                                 'startswith', 'endswith')):
+    def __init__(self, fieldname,
+                 supported_comp=('exact', 'iexact',
+                                 '<', '>', '<=', '>=',
+                                 'contains', 'icontains',
+                                 'startswith', 'endswith'),
+                 type_converter=nullConverter):
         """
         :param fieldname: The field to allow filtering on.
         :param supported_comp: The allowed *comp* for this field.
         """
+        self.type_converter = type_converter
         self.fieldname = fieldname
         for comp in supported_comp:
             if not comp in COMP_TO_DJANGO_MAP:
@@ -60,9 +84,14 @@ class FilterSpec(object):
                 return None
             if not comp in self.supported_comp:
                 raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
+            try:
+                value = self.type_converter(value)
+            except ValueError, e:
+                raise FilterValidationError('Value has invalid type for field {0}: {1}'.format(fieldname, value))
             djangocomp = COMP_TO_DJANGO_MAP[comp]
             filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
             qryparam = {filterfieldname: value}
+            #print qryparam
             return Q(**qryparam)
 
     def aslist(self):

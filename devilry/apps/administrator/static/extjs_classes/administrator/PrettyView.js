@@ -6,7 +6,8 @@ Ext.define('devilry.administrator.PrettyView', {
 
     requires: [
         'devilry.extjshelpers.SetListOfUsers',
-        'devilry.extjshelpers.NotificationManager'
+        'devilry.extjshelpers.NotificationManager',
+        'devilry.extjshelpers.RestProxy'
     ],
 
     config: {
@@ -278,14 +279,9 @@ Ext.define('devilry.administrator.PrettyView', {
                     message: 'Updated adminstrators.'
                 });
             },
-            failure: function() {
+            failure: function(record, operation) {
                 setlistofusersobj.getEl().unmask();
-                Ext.MessageBox.show({
-                    title:'Error',
-                    msg: 'An error occurred. This is most likely caused by an <strong>invalid username</strong>. Please review the usernames and try again.',
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.ERROR
-                });
+                devilry.extjshelpers.RestProxy.showErrorMessagePopup(operation, 'Failed to change administrators');
             }
         });
     },

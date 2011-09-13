@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 
 from restful import administrator_restful
 from views import (MainView, RestfulSimplifiedView,
-                   RestfulSimplifiedViewWithGradeEditors)
+                   RestfulSimplifiedViewWithGradeEditors,
+                   AdminCompressedFileDownloadView)
 
 urlpatterns = patterns('devilry.apps.administrator',
                        url(r'^$',
@@ -18,6 +19,8 @@ urlpatterns = patterns('devilry.apps.administrator',
                        RestfulSimplifiedViewWithGradeEditors.as_url('assignment',
                                                                     'administrator/assignment.django.html'),
                        RestfulSimplifiedViewWithGradeEditors.as_url('assignmentgroup',
-                                                                    'administrator/assignmentgroupview.django.html')
+                                                                    'administrator/assignmentgroupview.django.html'),
+                       url(r'^assignment/compressedfiledownload/(?P<assignmentid>\d+)$',
+                           login_required(AdminCompressedFileDownloadView.as_view()))
                       )
 urlpatterns += administrator_restful

@@ -1,10 +1,11 @@
 from django.http import HttpResponseBadRequest, HttpResponse
 
-from ..simplified import PermissionDenied, SimplifiedException
+from ..simplified import PermissionDenied, SimplifiedException, InvalidUsername
 from restview import RestfulView, extjswrap
 from serializers import (serializers, SerializableResult,
                          ErrorMsgSerializableResult,
-                         ForbiddenSerializableResult)
+                         ForbiddenSerializableResult,
+                         InvalidUsernameSerializableResult)
 from readform import ReadForm
 
 
@@ -54,8 +55,10 @@ class ModelRestfulView(RestfulView):
                     id = self._meta.simplified.create(self.request.user, **form.cleaned_data)
                 else:
                     id = self._meta.simplified.update(self.request.user, instance.pk, **form.cleaned_data)
-            except PermissionDenied:
-                return ForbiddenSerializableResult()
+            except PermissionDenied, e:
+                return ForbiddenSerializableResult(e)
+            except InvalidUsername, e:
+                return InvalidUsernameSerializableResult(e.username)
 
             data['id'] = id
             result = self.extjswrapshortcut(data)
@@ -78,6 +81,15 @@ class ModelRestfulView(RestfulView):
                                   'send GET data as a querystring? In that case, add '
                                   'getdata_in_qrystring=1 to your querystring.'.format(e)))
 
+    def _parse_extjs_sort(self, sortlist):
+        orderby = []
+        for sortitem in sortlist:
+            fieldname = sortitem['property']
+            if sortitem.get('direction', 'ASC') == 'DESC':
+                fieldname = '-' + fieldname
+            orderby.append(fieldname)
+        return orderby
+
     def crud_search(self, request):
         """ Maps to the ``search`` method of the simplified class. """
         try:
@@ -88,6 +100,14 @@ class ModelRestfulView(RestfulView):
         form = self.__class__.SearchForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            if 'sort' in cleaned_data:
+                sort = cleaned_data['sort']
+                del cleaned_data['sort']
+                if not cleaned_data.get('orderby'):
+                    if sort and self.use_extjshacks:
+                        orderby = self._parse_extjs_sort(sort)
+                        cleaned_data['orderby'] = orderby
+
             try:
                 qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
             except SimplifiedException, e:
@@ -115,7 +135,7 @@ class ModelRestfulView(RestfulView):
             try:
                 data = self._meta.simplified.read(self.request.user, id, **cleaned_data)
             except PermissionDenied, e:
-                return ForbiddenSerializableResult()
+                return ForbiddenSerializableResult(e)
             data = self.extjswrapshortcut(data)
             return SerializableResult(data)
         else:
@@ -131,7 +151,7 @@ class ModelRestfulView(RestfulView):
         try:
             instance = self._meta.simplified._meta.model.objects.get(pk=id)
         except self._meta.simplified._meta.model.DoesNotExist, e:
-            return ForbiddenSerializableResult()
+            return ForbiddenSerializableResult(e)
         return self._create_or_replace(instance)
 
     def crud_delete(self, request, id):
@@ -139,7 +159,7 @@ class ModelRestfulView(RestfulView):
         try:
             self._meta.simplified.delete(request.user, id)
         except PermissionDenied, e:
-            return ForbiddenSerializableResult()
+            return ForbiddenSerializableResult(e)
         else:
             data = self.extjswrapshortcut(dict(id=id))
             return SerializableResult(data)

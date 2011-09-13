@@ -2,9 +2,10 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
-from ...simplified import (SimplifiedModelApi, simplified_modelapi,
-                           PermissionDenied, FieldSpec,
-                           FilterSpecs, FilterSpec, PatternFilterSpec)
+from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
+                                PermissionDenied, InvalidUsername, FieldSpec,
+                                FilterSpecs, FilterSpec, PatternFilterSpec,
+                                stringOrNoneConverter)
 from ..core import models
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedPeriodMetaMixin,
@@ -29,7 +30,7 @@ def _convert_list_of_usernames_to_userobjects(usernames):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise PermissionDenied()
+            raise InvalidUsername(username)
         users.append(user)
     return users
 
@@ -244,7 +245,9 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec(users=['candidates__student__username']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
-        filters = FilterSpecs(FilterSpec('candidates__student__username')) + SimplifiedAssignmentGroupMetaMixin.filters
+        filters = SimplifiedAssignmentGroupMetaMixin.filters + \
+                FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
+                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter))
 
 
     @classmethod
@@ -289,18 +292,38 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         given candidates are added (I.E.: All current candidates are replaced).
         """
         if hasattr(obj, 'fake_candidates') and obj.fake_candidates != None:
-            candidateskwargs = []
+            new_candidates_usernames = [candidatespec['username'] for candidatespec in obj.fake_candidates]
+            to_delete = []
+            for candidate in obj.candidates.all():
+                if not candidate.student.username in new_candidates_usernames:
+                    if models.Delivery.objects.filter(deadline__assignment_group=obj, delivered_by=candidate).count() != 0:
+                        raise PermissionDenied('You can not remove {0} from the group. Candidates that have made a delivery can not be removed.'.format(candidate.student.username))
+                    to_delete.append(candidate)
+            for candidate in to_delete:
+                candidate.delete()
+
+            create_kwargs = []
+            update_candidates = []
             for candidatespec in obj.fake_candidates:
+                username = candidatespec['username']
                 try:
-                    user = User.objects.get(username=candidatespec['username'])
+                    user = User.objects.get(username=username)
                 except User.DoesNotExist:
-                    raise PermissionDenied()
+                    raise InvalidUsername(username)
                 else:
-                    candidatekwargs = dict(student = user,
-                                           candidate_id = candidatespec.get('candidate_id', None))
-                    candidateskwargs.append(candidatekwargs)
-            models.Candidate.objects.filter(assignment_group=obj).delete() # Clear current candidates
-            for candidatekwargs in candidateskwargs:
+                    candidate_id = candidatespec.get('candidate_id', None)
+                    try:
+                        candiate = obj.candidates.get(student__username=username)
+                    except models.Candidate.DoesNotExist:
+                        candidatekwargs = dict(student = user,
+                                               candidate_id = candidate_id)
+                        create_kwargs.append(candidatekwargs)
+                    else:
+                        update_candidates.append((candiate, candidate_id))
+            for candidate, candidate_id in update_candidates:
+                candidate.candidate_id = candidate_id
+                candidate.save()
+            for candidatekwargs in create_kwargs:
                 obj.candidates.create(**candidatekwargs)
 
     @classmethod

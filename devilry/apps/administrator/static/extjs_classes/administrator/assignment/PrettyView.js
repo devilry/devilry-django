@@ -77,6 +77,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                This assignment is currently <em>not visible</em> to students or examiners. ',
         '                The assignment will become visible to students and examiners ',
         '                <strong>{publishing_time:date}</strong>.',
+        '                You may change the publishing time by selecting the <span class="menuref">Edit</span> button in the toolbar.',
         '             </p>',
         '        </section>',
         '    </tpl>',
@@ -207,7 +208,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton],
+            relatedButtons: [this.studentsbutton, {
+                xtype: 'button',
+                scale: 'large',
+                text: 'Download all deliveries',
+                listeners: {
+                    scope: this,
+                    click: this.onDownload
+                }
+            }],
             extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
         });
         this.callParent(arguments);
@@ -412,4 +421,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         editwindow.show();
         this.alignToCoverBody(editwindow);
     },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.objectid);
+    }
 });

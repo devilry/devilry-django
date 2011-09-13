@@ -24,6 +24,8 @@
     var assignmentgroupPrevApprovedStore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PrevApproved" }};
     {% endcomment %}
 
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users;ImportFromPrevAssignment" }};
+
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.forms.administrator.Assignment');

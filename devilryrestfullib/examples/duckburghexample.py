@@ -1,11 +1,11 @@
-from devilryclient.restfulclient import (login,
-                                         RestfulFactory,
-                                         RestfulError,
-                                         HttpResponseNotFound,
-                                         HttpResponseBadRequest,
-                                         HttpResponseUnauthorized,
-                                         HttpResponseForbidden,
-                                         JsonDecodeError)
+from devilryrestfullib import (login,
+                               RestfulFactory,
+                               RestfulError,
+                               HttpResponseNotFound,
+                               HttpResponseBadRequest,
+                               HttpResponseUnauthorized,
+                               HttpResponseForbidden,
+                               JsonDecodeError)
 
 
 # may be something like http://devilry.myorganzation.com/some/subpath/ in production

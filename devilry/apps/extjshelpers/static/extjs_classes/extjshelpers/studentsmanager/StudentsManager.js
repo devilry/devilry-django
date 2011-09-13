@@ -12,7 +12,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow',
-        'devilry.extjshelpers.studentsmanager.MultiResultWindow'
+        'devilry.extjshelpers.studentsmanager.MultiResultWindow',
+        'devilry.extjshelpers.MenuHeader'
     ],
 
     mixins: {
@@ -71,6 +72,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         });
 
+        var me = this;
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -91,8 +93,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                         dock: 'top',
                         items: [{
                             xtype: 'searchfield',
-                            width: 300,
+                            width: 500,
                             emptyText: 'Search...'
+                        }, {
+                            xtype: 'button',
+                            text: 'x',
+                            handler: function() { me.setFilter(''); }
+                        }, {
+                            xtype: 'button',
+                            text: 'Filter',
+                            menu: {
+                                xtype: 'menu',
+                                plain: true,
+                                items: this.getFilters()
+                            }
                         }]
                     }]
                 }],
@@ -114,6 +128,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             //this.up('window').addListener('show', function() {
                 //Ext.defer(this.onReplaceExaminers, 1000, this);
                 //Ext.defer(this.onRandomDistributeExaminers, 1000, this);
+                //Ext.defer(this.onImportExaminersFromAnotherAssignmentInCurrentPeriod, 1000, this);
             //}, this);
             this.down('studentsmanager_studentsgrid').on('itemcontextmenu', this.onGridContexMenu, this);
         }, this);
@@ -122,21 +137,50 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.loadFirstPage();
     },
 
+
+    getFilters: function() {
+        var me = this;
+        return [{xtype: 'menuheader', html: 'Open/closed'}, {
+            text: 'Open',
+            handler: function() { me.setFilter('is_open:yes'); }
+        }, {
+            text: 'Closed',
+            handler: function() { me.setFilter('is_open:no'); }
+        }, {xtype: 'menuheader', html: 'Grade'}, {
+            text: 'Passing grade',
+            handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
+        }, {
+            text: 'Failing grade',
+            handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
+        }, {xtype: 'menuheader', html: 'Deliveries'}, {
+            text: 'Has deliveries',
+            handler: function() { me.setFilter('number_of_deliveries:>:0'); }
+        }, {
+            text: 'No deliveries',
+            handler: function() { me.setFilter('number_of_deliveries:0'); }
+        }, {xtype: 'menuheader', html: 'Feedback'}, {
+            text: 'Has feedback',
+            handler: function() { me.setFilter('feedback:>=:0'); }
+        }, {
+            text: 'No feedback',
+            handler: function() { me.setFilter('feedback:none'); }
+        }, {xtype: 'menuheader', html: 'Delivery type'}, {
+            text: 'Electronic',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:0'); }
+        }, {
+            text: 'Non-electronic',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:1'); }
+        }, {
+            text: 'From previous period',
+            handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
+        }];
+    },
+
     getToolbarItems: function() {
-        var singleheader = {
-            xtype: 'box',
-            plain: true,
-            html:'<div class="menuheader">On single</div>'
-        };
-        var multiheader = {
-            xtype: 'box',
-            plain: true,
-            html:'<div class="menuheader">On multiple</div>'
-        };
         var advanced = Ext.Array.merge(
-            [singleheader], this.getOnSingleMenuItems(),
+            [{xtype: 'menuheader', html: 'On single'}], this.getOnSingleMenuItems(),
             [{xtype: 'box', height: 12}],
-            [multiheader], this.getOnManyMenuItems()
+            [{xtype: 'menuheader', html: 'On multiple'}], this.getOnManyMenuItems()
         );
 
         return [{
@@ -342,20 +386,29 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     search: function(searchstring) {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            searchstring: searchstring
+            searchstring: searchstring,
+            alwaysAppliedFilters: [{
+                field: 'parentnode',
+                comp: 'exact',
+                value: this.assignmentid
+            }]
         });
         var extraParams = this.assignmentgroupstore.proxy.extraParams;
         this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.assignmentid
-        }]);
+        this.assignmentgroupstore.proxy.extraParams.orderby = Ext.JSON.encode([]);
         this.assignmentgroupstore.loadPage(1, {
             scope: this,
             callback: function(records, operation, success) {
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    setFilter: function(filterstr) {
+        var searchfield = this.down('searchfield');
+        searchfield.setValue(filterstr);
     },
 
     /**

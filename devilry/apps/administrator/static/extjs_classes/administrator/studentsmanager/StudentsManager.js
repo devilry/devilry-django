@@ -1,6 +1,9 @@
 Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     extend: 'devilry.extjshelpers.studentsmanager.StudentsManager',
     alias: 'widget.administrator_studentsmanager',
+    requires: [
+        'devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignment'
+    ],
 
     mixins: {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
@@ -28,6 +31,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 listeners: {
                     scope: this,
                     click: this.onOneGroupForEachRelatedStudent
+                }
+            }, {
+                text: 'Import from another assignment',
+                listeners: {
+                    scope: this,
+                    click: this.onImportGroupsFromAnotherAssignmentInCurrentPeriod
                 }
             }, {
                 text: 'Manually',
@@ -68,6 +77,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                     click: this.onRandomDistributeExaminers
                 }
             }, {
+                text: 'Copy from another assignment',
+                listeners: {
+                    scope: this,
+                    click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
+                }
+            }, {
                 text: 'Clear',
                 iconCls: 'icon-delete-16',
                 listeners: {
@@ -77,6 +92,20 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             }]
         }]);
         return defaults;
+    },
+
+    getFilters: function() {
+        var defaultFilters = this.callParent();
+        var me = this;
+        var adminFilters = [{xtype: 'menuheader', html: 'Missing users'}, {
+            text: 'Has no students',
+            handler: function() { me.setFilter('candidates__student__username:none'); }
+        }, {
+            text: 'Has no examiners',
+            handler: function() { me.setFilter('examiners__username:none'); }
+        }];
+        Ext.Array.insert(adminFilters, 0, defaultFilters);
+        return adminFilters;
     },
 
     getOnSingleMenuItems: function() {

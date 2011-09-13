@@ -52,7 +52,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         The current :ref:`DeliveryStore <devilry.apps.core.deliverystore>`.
         *Class variable*.
     """
-    delivery = models.ForeignKey("Delivery", related_name='filemetas')
+    delivery = models.ForeignKey("core.Delivery", related_name='filemetas')
     filename = models.CharField(max_length=255, help_text=_('Name of the file.'))
     size = models.IntegerField(help_text=_('Size of the file in bytes.'))
 

@@ -876,12 +876,11 @@ section {
         font-size: 1.5em;
         margin: 16px 0 6px 0;
     }
-
-    @include commonSectionElements();
 }
 
 section.gradeeditorselector {
     padding: 8px !important;
+    @include commonSectionElements();
 }
 
 
@@ -965,10 +964,11 @@ section.treeheading {
     @include warningInlineItem();
 }
 
-.menuheader {
+.widget-menuheader {
+    margin-top: 8px;
     font-weight:bold;
 }
-.menuheader:first-child {
+.widget-menuheader:first-child {
     margin-top:0;
 }
 

@@ -39,15 +39,30 @@ MEDIA_ROOT = join(this_dir, "filestore")
 ROOT_URLCONF = 'devilry.projects.dev.urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
+DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
+
+
+##
+## Email
+##
 DEVILRY_SEND_EMAIL_TO_USERS = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = join(this_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 
-DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
-DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
+## If you want to test with a "real" smtp server instead of the file backend, see:
+##     https://docs.djangoproject.com/en/dev/topics/email/#testing-email-sending
+## In short, uncomment the settings below and run the built in smtpd server in python:
+##      python -m smtpd -n -c DebuggingServer localhost:1025
+## The smtpd server prints emails to stdout.
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'localhost'
+#EMAIL_PORT = 1025
+
 
 #
 # The if's below is just to make it easy to toggle these settings on and off during development

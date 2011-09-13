@@ -1,5 +1,5 @@
-//Ext.Date.defaultFormat = 'Y-m-d H:i:s';
-Ext.Date.defaultFormat = 'M j, Y - H:i:s';
+Ext.Date.defaultFormat = 'Y-m-d H:i:s';
+//Ext.Date.defaultFormat = 'M j, Y - H:i:s';
 
 // Can be used in format strings!:
 //

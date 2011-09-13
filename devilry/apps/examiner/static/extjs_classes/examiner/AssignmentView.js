@@ -28,7 +28,15 @@ Ext.define('devilry.examiner.AssignmentView', {
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
-               text: 'Complete overview of students',
+               text: 'Download all deliveries',
+               listeners: {
+                   scope: this,
+                   click: this.onDownload
+               }
+            }, {
+               xtype: 'button',
+               scale: 'large',
+               text: 'Manage assignment groups (students)',
                listeners: {
                    scope: this,
                    click: this.onStudents
@@ -38,7 +46,8 @@ Ext.define('devilry.examiner.AssignmentView', {
             helpTpl: Ext.create('Ext.XTemplate',
                 '<section class="helpsection">',
                 '   {todohelptext}',
-                '   <p>Choose <span class="menuref">Complete overview of students</span> to view all groups, and to give feedback to multiple groups.</p>',
+                '   <p>Choose <span class="menuref">Manage assignment groups (students)</span> to view all groups, and to give feedback to multiple groups.</p>',
+                '   <p>You may want to <span class="menuref">Download all deliveries</span> as a zip file instead of downloading the delivery for each group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.</p>',
                 '</section>'
             ),
 
@@ -133,5 +142,9 @@ Ext.define('devilry.examiner.AssignmentView', {
             }
         });
         studentswindow.show();
+    },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.assignmentid);
     }
 });
