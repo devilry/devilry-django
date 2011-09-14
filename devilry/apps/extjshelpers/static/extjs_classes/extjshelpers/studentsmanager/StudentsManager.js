@@ -51,9 +51,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow');
     },
 
+
     initComponent: function() {
-        this.giveFeedbackButton = Ext.widget('button', {
-            scale: 'large',
+        this.giveFeedbackToSelectedArgs = {
             text: 'Give feedback to selected',
             listeners: {
                 scope: this,
@@ -64,15 +64,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     }
                 }
             }
-        });
-
-        this.gridContextMenu = new Ext.menu.Menu({
-            items: this.getOnSingleMenuItems(),
-            listeners: {
-                scope: this,
-                hide: this.onGridContexMenuHide
-            }
-        });
+        };
+        this.giveFeedbackButton = Ext.widget('button', Ext.Object.merge({
+            scale: 'large',
+        }, this.giveFeedbackToSelectedArgs));
 
         var me = this;
         Ext.apply(this, {
@@ -180,9 +175,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getToolbarItems: function() {
         var advanced = Ext.Array.merge(
-            [{xtype: 'menuheader', html: 'On single'}], this.getOnSingleMenuItems(),
+            [{xtype: 'menuheader', html: 'On single group'}], this.getOnSingleMenuItems(),
             [{xtype: 'box', height: 12}],
-            [{xtype: 'menuheader', html: 'On multiple'}], this.getOnManyMenuItems()
+            [{xtype: 'menuheader', html: 'On one or more group'}], this.getOnManyMenuItems()
         );
 
         return [{
@@ -326,9 +321,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     getSelection: function() {
-        if(this.contexSelectedItem) {
-            return [this.contexSelectedItem];
-        }
+        //if(this.contexSelectedItem) {
+            //return [this.contexSelectedItem];
+        //}
         return this.down('studentsmanager_studentsgrid').selModel.getSelection();
     },
 
@@ -373,16 +368,52 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     onGridContexMenu: function(grid, record, index, item, ev) {
         ev.stopEvent();
-        this.contexSelectedItem = record;
-        this.gridContextMenu.showAt(ev.xy);
+        var items;
+        if(this.noneSelected()) {
+            items = [{xtype: 'menuheader', html: 'Select at least one group'}];
+        } else {
+            items = this.getGridContextMenuItems();
+        }
+        var gridContextMenu = new Ext.menu.Menu({
+            plain: true,
+            items: items
+            //listeners: {
+                //scope: this,
+                //hide: this.onGridContexMenuHide
+                //}
+        });
+        gridContextMenu.showAt(ev.xy);
     },
 
     /**
      * @private
      */
-    onGridContexMenuHide: function(grid, record, index, item, ev) {
-        this.contexSelectedItem = undefined;
+    getGridContextMenuItems: function() {
+        if(this.singleSelected()) {
+            return this.getContexMenuSingleSelectItems();
+        } else {
+            return this.getContexMenuManySelectItems();
+        }
     },
+
+    getContexMenuManySelectItems: function() {
+        return Ext.Array.merge([this.giveFeedbackToSelectedArgs], this.getOnManyMenuItems());
+    },
+
+    getContexMenuSingleSelectItems: function() {
+        return Ext.Array.merge(
+            [{xtype: 'menuheader', html: 'On single group'}], this.getOnSingleMenuItems(),
+            [{xtype: 'box', height: 12}],
+            [{xtype: 'menuheader', html: 'On one or more group'}], this.getContexMenuManySelectItems()
+        );
+    },
+
+    /**
+     * @private
+     */
+    //onGridContexMenuHide: function(grid, record, index, item, ev) {
+        //this.contexSelectedItem = undefined;
+    //},
 
     
     /**

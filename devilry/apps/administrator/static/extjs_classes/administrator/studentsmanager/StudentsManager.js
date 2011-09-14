@@ -55,42 +55,54 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             xtype: 'button',
             text: 'Set examiners',
             scale: 'large',
-            menu: [{
-                text: 'Replace',
-                iconCls: 'icon-edit-16',
-                listeners: {
-                    scope: this,
-                    click: this.onReplaceExaminers
-                }
-            }, {
-                text: 'Add',
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onAddExaminers
-                }
-            }, {
-                text: 'Random distribute',
-                listeners: {
-                    scope: this,
-                    click: this.onRandomDistributeExaminers
-                }
-            }, {
-                text: 'Copy from another assignment',
-                listeners: {
-                    scope: this,
-                    click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
-                }
-            }, {
-                text: 'Clear',
-                iconCls: 'icon-delete-16',
-                listeners: {
-                    scope: this,
-                    click: this.onClearExaminers
-                }
-            }]
+            menu: this.getSetExaminersMenuItems()
         }]);
         return defaults;
+    },
+
+    getSetExaminersMenuItems: function() {
+        return [{
+            text: 'Replace',
+            iconCls: 'icon-edit-16',
+            listeners: {
+                scope: this,
+                click: this.onReplaceExaminers
+            }
+        }, {
+            text: 'Add',
+            iconCls: 'icon-add-16',
+            listeners: {
+                scope: this,
+                click: this.onAddExaminers
+            }
+        }, {
+            text: 'Random distribute',
+            listeners: {
+                scope: this,
+                click: this.onRandomDistributeExaminers
+            }
+        }, {
+            text: 'Copy from another assignment',
+            listeners: {
+                scope: this,
+                click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
+            }
+        }, {
+            text: 'Clear',
+            iconCls: 'icon-delete-16',
+            listeners: {
+                scope: this,
+                click: this.onClearExaminers
+            }
+        }];
+    },
+
+    getContexMenuManySelectItems: function() {
+        var defaultItems = this.callParent();
+        return Ext.Array.merge(defaultItems, [{
+            text: 'Set examiners',
+            menu: this.getSetExaminersMenuItems()
+        }]);
     },
 
     getFilters: function() {
