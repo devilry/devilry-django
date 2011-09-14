@@ -241,9 +241,6 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
     },
 
 
-    /**
-     * @private
-     */
     createDeliveryRecord: function(groupRecord, deliveryType) {
         var modelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedDelivery', this.role);
         return Ext.create(modelname, {
