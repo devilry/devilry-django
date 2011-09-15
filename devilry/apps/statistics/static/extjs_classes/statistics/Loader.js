@@ -32,9 +32,9 @@ Ext.define('devilry.statistics.Loader', {
                     Ext.each(grouprecord.data.candidates__student__username, function(username, index) {
                         var student;
                         if(this.studentsMap[username]) {
-                            student = this.students[this.studentsMap[username]];
+                            student = this.students[this.studentsMap[username].index];
                         } else {
-                            this.studentsMap[username] = this.students.length;
+                            this.studentsMap[username] = {index: this.students.length};
                             student = {};
                             student.username = username;
                             this.students.push(student);
@@ -42,21 +42,27 @@ Ext.define('devilry.statistics.Loader', {
 
                         var assignment_ident = grouprecord.data.parentnode__short_name;
                         var pointdataIndex = assignment_ident + '_points';
+                        var scaledPointdataIndex = assignment_ident + '_scaledPoints';
                         var passingdataIndex = assignment_ident + '_is_passing_grade';
                         student[pointdataIndex] = grouprecord.data.feedback__points;
+                        student[scaledPointdataIndex] = grouprecord.data.feedback__points;
                         student[passingdataIndex] = grouprecord.data.feedback__is_passing_grade;
 
                         if(!Ext.Array.contains(this.fields, pointdataIndex)) {
                             this.fields.push(pointdataIndex);
+                            this.fields.push(scaledPointdataIndex);
                             this.fields.push(passingdataIndex);
-                            //this.columns.push({dataIndex: pointdataIndex, header: pointdataIndex});
-                            //this.columns.push({dataIndex: passingdataIndex, header: passingdataIndex});
                             this.columns.push({
                                 text: assignment_ident,
-                                columns: [
-                                    {dataIndex: pointdataIndex, text: 'Points'},
-                                    {dataIndex: passingdataIndex, text: 'Is passing grade'}
-                                ]
+                                columns: [{
+                                    dataIndex: scaledPointdataIndex,
+                                    text: 'Points',
+                                    sortable: true
+                                }, {
+                                    dataIndex: passingdataIndex,
+                                    text: 'Is passing grade',
+                                    sortable: true
+                                }]
                             });
                         }
                     }, this);
