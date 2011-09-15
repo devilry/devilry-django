@@ -339,3 +339,8 @@ class AssignmentGroupTag(models.Model):
     """ An AssignmentGroup can be tagged with zero or more tags using this class. """
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags')
     tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')
+
+    class Meta:
+        app_label = 'core'
+        ordering = ['tag']
+        unique_together = ('assignment_group', 'tag')
