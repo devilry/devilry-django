@@ -20,6 +20,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 xtype: 'manuallycreateusers',
                 deadlinemodel: this.deadlinemodel,
                 assignmentid: this.assignmentid,
+                suggestedDeadline: this.guessDeadlineFromCurrentlyLoadedGroups(),
                 initialLines: initialLines
             },
             listeners: {
@@ -30,6 +31,23 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             }
         });
         win.show();
+    },
+
+    /**
+     * @private
+     *
+     * Pick the latest deadline on the last group in the current view. The idea
+     * is to get the last created group, however we do not load the last page,
+     * so this is a balance of efficiency and convenience.
+     */
+    guessDeadlineFromCurrentlyLoadedGroups: function() {
+        var groupRecords = this.assignmentgroupstore.data.items;
+        if(groupRecords.length > 0) {
+            var lastLoadedGroup = groupRecords[groupRecords.length-1];
+            return lastLoadedGroup.data.latest_deadline_deadline;
+        } else {
+            return undefined;
+        }
     },
 
     /**

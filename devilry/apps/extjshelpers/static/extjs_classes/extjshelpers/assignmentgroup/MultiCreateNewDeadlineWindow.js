@@ -18,6 +18,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', 
          */
         deadlinemodel: undefined,
 
+        suggestedDeadline: undefined,
         deadlineRecord: undefined
     },
 
@@ -27,7 +28,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', 
     },
     
     initComponent: function() {
-
+        if(this.suggestedDeadline && !this.deadlineRecord) {
+            this.deadlineRecord = Ext.create(this.deadlinemodel, {
+                deadline: this.suggestedDeadline
+            });
+        }
         Ext.apply(this, {
             editpanel: Ext.widget('restfulsimplified_editpanel_base', {
                 model: this.deadlinemodel,

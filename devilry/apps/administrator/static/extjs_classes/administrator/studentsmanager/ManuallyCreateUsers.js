@@ -17,7 +17,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         initialLines: undefined,
 
         assignmentid: undefined,
-        deadlinemodel: undefined
+        deadlinemodel: undefined,
+        suggestedDeadline: undefined
     },
 
     helptext:
@@ -321,6 +322,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             width: this.up('window').getWidth(),
             height: this.up('window').getHeight(),
             deadlinemodel: this.deadlinemodel,
+            suggestedDeadline: this.suggestedDeadline,
             deadlineRecord: this.deadlineRecord,
             onSaveSuccess: function(record) {
                 this.close();
