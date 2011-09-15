@@ -106,7 +106,7 @@ header {
   /*}*/
   /**
    *
-   * Header userinfo/logout
+   * Header userinfo/loginout
    *
    */
   /**
@@ -149,12 +149,12 @@ header {
     padding-left: 20px;
     color: #ccc;
     font-size: 0.8em; }
-  header > #authenticated-user-bar > a#logout-link {
+  header > #authenticated-user-bar > a.loginout-link {
     color: #fff;
     font-weight: bold; }
-  header > #authenticated-user-bar > a#logout-link:visited {
+  header > #authenticated-user-bar > a.loginout-link:visited {
     color: #fff; }
-  header > #authenticated-user-bar > a#logout-link:hover {
+  header > #authenticated-user-bar > a.loginout-link:hover {
     color: #fff; }
   header > nav {
     margin-top: 20px; }

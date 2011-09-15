@@ -186,7 +186,7 @@ header {
 
     /**
      *
-     * Header userinfo/logout
+     * Header userinfo/loginout
      *
      */
     >#authenticated-user-bar {
@@ -195,14 +195,14 @@ header {
         color: #ccc;
         font-size: 0.8em;
     }
-    >#authenticated-user-bar>a#logout-link {
+    >#authenticated-user-bar>a.loginout-link {
         color: #fff;
         font-weight: bold;
     }
-    >#authenticated-user-bar>a#logout-link:visited {
+    >#authenticated-user-bar>a.loginout-link:visited {
         color: #fff;
     }
-    >#authenticated-user-bar>a#logout-link:hover {
+    >#authenticated-user-bar>a.loginout-link:hover {
         color: #fff;
     }
 
