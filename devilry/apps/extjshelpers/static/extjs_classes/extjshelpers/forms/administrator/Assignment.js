@@ -8,11 +8,11 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     ],
 
     suggested_windowsize: {
-        width: 750,
-        height: 450
+        width: 850,
+        height: 490
     },
 
-    flex: 6,
+    flex: 5,
 
     layout: {
         type: 'vbox',
@@ -63,6 +63,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
         displayField: 'label',
         forceSelection: true,
         editable: false,
+        value: 0,
         store: Ext.create('Ext.data.Store', {
             fields: ['value', 'label'],
             data : [
