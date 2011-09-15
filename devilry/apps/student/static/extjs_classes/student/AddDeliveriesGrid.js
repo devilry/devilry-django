@@ -17,6 +17,10 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             "field": "is_open",
             "comp": "exact",
             "value": true
+        }, {
+            field: 'parentnode__delivery_types',
+            comp: 'exact',
+            value: 0 // ELECTRONIC deliveries
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-latest_deadline_deadline']);
         this.store.load();
