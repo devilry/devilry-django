@@ -278,6 +278,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 '           <li>Type of delivery. This may be <em>electronic</em>, <em>non-electronic</em> or <em>From previous period</em>. The last is for groups marked as delivered in a previous period.</li>',
                 '   <h2>Examiners</h2>',
                 '       <p>Usernames of examiners.</p>',
+                '   <h2>Active deadline</h2>',
+                '       <p>The deadline that students deliver on. Always the <em>latest</em> deadline.</p>',
                 '   <h2>Group name</h2>',
                 '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
                 '</section>'
