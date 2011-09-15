@@ -79,6 +79,8 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                                             FilterSpec('long_name')),
                           ForeignFilterSpec('parentnode__parentnode',  # Period
                                             FilterSpec('parentnode'),
+                                            FilterSpec('start_time'),
+                                            FilterSpec('end_time'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
                           ForeignFilterSpec('parentnode__parentnode__parentnode',  # Subject
