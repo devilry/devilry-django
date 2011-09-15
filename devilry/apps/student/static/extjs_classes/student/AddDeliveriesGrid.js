@@ -6,6 +6,9 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
     sortableColumns: false,
     columnLines: false,
     cls: 'selectable-grid',
+    requires: [
+        'devilry.extjshelpers.DateTime'
+    ],
 
     initComponent: function() {
         var rowTpl = Ext.create('Ext.XTemplate',
@@ -21,6 +24,14 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             field: 'parentnode__delivery_types',
             comp: 'exact',
             value: 0 // ELECTRONIC deliveries
+        }, {
+            field: 'parentnode__parentnode__start_time',
+            comp: '<',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'parentnode__parentnode__end_time',
+            comp: '>',
+            value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-latest_deadline_deadline']);
         this.store.load();
