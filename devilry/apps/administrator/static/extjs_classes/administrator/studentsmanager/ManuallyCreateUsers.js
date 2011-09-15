@@ -321,6 +321,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             width: this.up('window').getWidth(),
             height: this.up('window').getHeight(),
             deadlinemodel: this.deadlinemodel,
+            deadlineRecord: this.deadlineRecord,
             onSaveSuccess: function(record) {
                 this.close();
                 me.deadlineRecord = record;
