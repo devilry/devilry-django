@@ -243,11 +243,15 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         editablefields = ('id', 'name', 'is_open', 'parentnode')
         fake_editablefields = ('fake_examiners', 'fake_candidates', 'fake_tags')
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(users=['candidates__student__username']) + \
+        resultfields = \
+                FieldSpec(users=['candidates__student__username'],
+                          tags=['tags__tag']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
+        searchfields = FieldSpec('tags__tag', 'candidates__student__username') + SimplifiedAssignmentGroupMetaMixin.searchfields
         filters = SimplifiedAssignmentGroupMetaMixin.filters + \
                 FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
-                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter))
+                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter),
+                            FilterSpec('tags__tag', type_converter=stringOrNoneConverter))
 
 
     @classmethod
@@ -280,7 +284,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     def _set_tags_from_fake_tags(cls, obj):
         """  """
         if hasattr(obj, 'fake_tags') and obj.fake_tags != None:
-            obj.tags.clear()
+            models.AssignmentGroupTag.objects.filter(assignment_group=obj).delete()
             for tag in obj.fake_tags:
                 obj.tags.create(tag=tag)
 
