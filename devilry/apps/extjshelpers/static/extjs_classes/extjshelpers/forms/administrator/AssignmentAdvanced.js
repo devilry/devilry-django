@@ -34,22 +34,6 @@ Ext.define('devilry.extjshelpers.forms.administrator.AssignmentAdvanced', {
         name: "anonymous",
         fieldLabel: "Anonymous?",
         xtype: 'checkbox'
-    }, {
-        name: "delivery_types",
-        fieldLabel: "How to students add deliveries?",
-        xtype: 'combobox',
-        queryMode: 'local',
-        valueField: 'value',
-        displayField: 'label',
-        forceSelection: true,
-        editable: false,
-        store: Ext.create('Ext.data.Store', {
-            fields: ['value', 'label'],
-            data : [
-                {value:0, label:"Electronically using devilry"},
-                {value:1, label:"Non-electronic (hand in on paper, oral examination, ...)"}
-            ]
-        })
     }],
 
     help: [
