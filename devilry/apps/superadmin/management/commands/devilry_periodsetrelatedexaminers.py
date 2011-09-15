@@ -1,18 +1,16 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from optparse import make_option
 
-from devilry_usermod import UserModCommand
 from devilry.apps.core.models import Subject, Period
 import sys
 
-class BaseCommand(UserModCommand):
+
+class RelatedBaseCommand(BaseCommand):
     args = '<subject short name> <period short name>'
 
     def get_course_and_period(self, args):
         """ Get the course and period from args """
         if len(args) != 2:
-            raise CommandError('Course and period is required. See --help.')
+            raise CommandError('Subject and period is required. See --help.')
         course_short_name = args[0]
         period_short_name = args[1]
         # Get the course and period
@@ -29,23 +27,18 @@ class BaseCommand(UserModCommand):
         """ Add the users read from stdin to the given relatedmanager
         """
         self.verbosity = int(options.get('verbosity', '1'))
-        self.related_users_count = 0
-        usernames = sys.stdin.read().split()
-        # clear current values
-        relatedmanager.filter(period=self.period).delete()
-        for username in usernames:
-            try:
-                User.objects.get(username=username)
-                relatedmanager.create(period=self.period, username=username)
-                self.related_users_count += 1
-                if self.verbosity > 1:
-                    print "Added %s %s" % (self.user_type, username)
-            except User.DoesNotExist:
-                pass
+        lines = sys.stdin.readlines()
+        relatedmanager.filter(period=self.period).delete() # clear current values
+        for userspec in lines:
+            userspec = userspec.strip()
+            relatedmanager.create(period=self.period, username=userspec)
+            if self.verbosity > 1:
+                print "Added %s %s" % (self.user_type, userspec)
         if self.verbosity > 0:
-            print "Added %d related %ss to %s" % (self.related_users_count, self.user_type, "%s.%s" % (args[0], args[1]))
+            print "Added {0} related {1}s to {2}".format(len(lines), self.user_type, "%s.%s" % (args[0], args[1]))
             
-class Command(BaseCommand):
+
+class Command(RelatedBaseCommand):
     help = 'Set related examiners on a period. Usernames are read from stdin, one username on each line.'
     user_type = "examiner"
 
