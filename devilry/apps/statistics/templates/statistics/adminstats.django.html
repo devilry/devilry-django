@@ -10,7 +10,7 @@
     var period_model = {{ RestfulSimplifiedPeriod|extjs_model }};
     var assignment_model = {{ RestfulSimplifiedAssignment|extjs_model }};
     var assignment_store = {{ RestfulSimplifiedAssignment|extjs_store }};
-    var assignmentgroup_model = {{ RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users" }};
+    var assignmentgroup_model = {{ RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users,feedback" }};
     var assignmentgroup_store = {{ RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     
@@ -22,15 +22,36 @@
             listeners: {
                 loaded: function(loader) {
                     Ext.getBody().unmask();
-                    console.log(loader.assignments);
+                    console.log(loader.students);
+                    console.log(loader.columns);
+
+                    var store = Ext.create('Ext.data.Store', {
+                        fields: loader.fields,
+                        data: {'items': loader.students},
+                        proxy: {
+                            type: 'memory',
+                            reader: {
+                                type: 'json',
+                                root: 'items'
+                            }
+                        }
+                    });
+
+                    Ext.create('Ext.panel.Panel', {
+                        layout: 'fit',
+                        items: [{
+                            xtype: 'grid',
+                            store: store,
+                            columns: loader.columns,
+                            //width: 800,
+                            //height: 600,
+                            renderTo: Ext.getBody()
+                        }]
+                    });
                 }
             }
         });
     });
 </script>
 
-{% endblock %}
-
-
-{% block body %}
 {% endblock %}
