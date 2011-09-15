@@ -11,12 +11,15 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
     """
     Base class for :cls:`RelatedExaminer` and cls:`RelatedStudent`.
 
+    This is used to generate AssignmentGroups and
+
     .. attribute:: username
 
-        A username. Max 30 characters, a-z, A-Z, and _.
+        One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
+        For RelatedExaminer, only a single username is allowed.
     """
-    username = models.SlugField(max_length=30,
-                                help_text='A username. Max 30 characters, a-z, A-Z, and _')
+    username = models.CharField(max_length=200,
+                                help_text='One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed.')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
