@@ -49,9 +49,15 @@ Ext.define('devilry.statistics.Loader', {
                         if(!Ext.Array.contains(this.fields, pointdataIndex)) {
                             this.fields.push(pointdataIndex);
                             this.fields.push(passingdataIndex);
-                            this.columns.push({dataIndex: pointdataIndex, header: pointdataIndex});
-                            this.columns.push({dataIndex: passingdataIndex, header: passingdataIndex});
-                            this.columns.push({dataIndex: passingdataIndex, header: passingdataIndex});
+                            //this.columns.push({dataIndex: pointdataIndex, header: pointdataIndex});
+                            //this.columns.push({dataIndex: passingdataIndex, header: passingdataIndex});
+                            this.columns.push({
+                                text: assignment_ident,
+                                columns: [
+                                    {dataIndex: pointdataIndex, text: 'Points'},
+                                    {dataIndex: passingdataIndex, text: 'Is passing grade'}
+                                ]
+                            });
                         }
                     }, this);
                 }, this);
