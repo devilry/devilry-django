@@ -241,7 +241,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         editablefields = ('id', 'name', 'is_open', 'parentnode')
-        fake_editablefields = ('fake_examiners', 'fake_candidates')
+        fake_editablefields = ('fake_examiners', 'fake_candidates', 'fake_tags')
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec(users=['candidates__student__username']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
@@ -275,6 +275,14 @@ class SimplifiedAssignmentGroup(CanSaveBase):
             obj.examiners.clear()
             for user in users:
                 obj.examiners.add(user)
+
+    @classmethod
+    def _set_tags_from_fake_tags(cls, obj):
+        """  """
+        if hasattr(obj, 'fake_tags') and obj.fake_tags != None:
+            obj.tags.clear()
+            for tag in obj.fake_tags:
+                obj.tags.create(tag=tag)
 
     @classmethod
     def _parse_candidates_as_list_of_dicts(cls, obj):
@@ -330,6 +338,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     def post_save(cls, user, obj):
         cls._parse_examiners_as_list_of_usernames(obj)
         cls._parse_candidates_as_list_of_dicts(obj)
+        cls._set_tags_from_fake_tags(obj)
 
     @classmethod
     def is_empty(cls, obj):
