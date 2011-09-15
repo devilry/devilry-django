@@ -13,7 +13,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.extjshelpers.SetListOfUsers',
         'devilry.gradeeditors.EditManyDraftEditorWindow',
         'devilry.extjshelpers.studentsmanager.MultiResultWindow',
-        'devilry.extjshelpers.MenuHeader'
+        'devilry.extjshelpers.MenuHeader',
+        'devilry.extjshelpers.HelpWindow'
     ],
 
     mixins: {
@@ -250,44 +251,38 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     onHelp: function() {
-        var win = Ext.widget('window', {
+        Ext.widget('helpwindow', {
             title: 'Help',
-            modal: true,
-            width: 800,
-            height: 500,
             maximizable: true,
-            layout: 'fit',
-            items: {
-                xtype: 'box',
-                autoScroll: true,
-                html: Ext.create('Ext.XTemplate',
-                    '<section class="helpsection">',
-                    '   <h1>Guides</h1>',
-                    '   <p>This is a complex view that supports a huge amount of different workflows. Please visit the <a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">primary help section</a> for guides and more help.</p>',
-                    '   <h1>Search</h1>',
-                    '   <p>Use the search box to search for more or less anything. Examples are candidate IDs and usernames of students and examiners.</p>',
-                    '   <h1>About each column</h1>',
-                    '   <h2>The first column (with no header)</h2>',
-                    '       <p>Contains notifications. Unless something is wrong, you will see <em>open</em> or <em>close</em>. When a group is open, students can add more deliveries. When a group is closed, it is not possible to add more deliveries.</p>',
-                    '   <h2>Students</h2>',
-                    '       <p>Usernames of all students on each group. If the assignment is <em>anonymous</em>, this column shows the <em>cadidate ID</em> instead of the username.</p>',
-                    '   <h2>Deliveries</h2>',
-                    '       <p>Number of deliveries</p>',
-                    '   <h2>Latest feedback</h2>',
-                    '       <h3>Points</h3>',
-                    '       <p>Number of points achieved by the group on this assignment. Points are used for statistics, and they are not available to students.</p>',
-                    '       <h3>Grade</h3>',
-                    '       <p>The grade achieved by the group on this assignment. A grade columns cell has 3 parts:</p><ul>',
-                    '           <li>It is either passed or failed. If the status of this has any consequence for the students, depends on if the assignment must be passed or not.</li>',
-                    '           <li>A textual representation of the points. The format of this text depends on the <em>grade editor</em> used on this assignment.</li>',
-                    '           <li>Type of delivery. This may be <em>electronic</em>, <em>non-electronic</em> or <em>From previous period</em>. The last is for groups marked as delivered in a previous period.</li>',
-                    '   <h2>Examiners</h2>',
-                    '       <p>Usernames of examiners.</p>',
-                    '   <h2>Group name</h2>',
-                    '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
-                    '</section>'
-                ).apply({DevilrySettings: DevilrySettings})
-            }
+            maximized: true,
+            helptpl: Ext.create('Ext.XTemplate',
+                '<section class="helpsection">',
+                '   <h1>Guides</h1>',
+                '   <p>This is a complex view that supports a huge amount of different workflows. Please visit the <a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">primary help section</a> for guides and more help.</p>',
+                '   <h1>Search</h1>',
+                '   <p>Use the search box to search for more or less anything. Examples are candidate IDs and usernames of students and examiners.</p>',
+                '   <h1>About each column</h1>',
+                '   <h2>The first column (with no header)</h2>',
+                '       <p>Contains notifications. Unless something is wrong, you will see <em>open</em> or <em>close</em>. When a group is open, students can add more deliveries. When a group is closed, it is not possible to add more deliveries.</p>',
+                '   <h2>Students</h2>',
+                '       <p>Usernames of all students on each group. If the assignment is <em>anonymous</em>, this column shows the <em>cadidate ID</em> instead of the username.</p>',
+                '   <h2>Deliveries</h2>',
+                '       <p>Number of deliveries</p>',
+                '   <h2>Latest feedback</h2>',
+                '       <h3>Points</h3>',
+                '       <p>Number of points achieved by the group on this assignment. Points are used for statistics, and they are not available to students.</p>',
+                '       <h3>Grade</h3>',
+                '       <p>The grade achieved by the group on this assignment. A grade columns cell has 3 parts:</p><ul>',
+                '           <li>It is either passed or failed. If the status of this has any consequence for the students, depends on if the assignment must be passed or not.</li>',
+                '           <li>A textual representation of the points. The format of this text depends on the <em>grade editor</em> used on this assignment.</li>',
+                '           <li>Type of delivery. This may be <em>electronic</em>, <em>non-electronic</em> or <em>From previous period</em>. The last is for groups marked as delivered in a previous period.</li>',
+                '   <h2>Examiners</h2>',
+                '       <p>Usernames of examiners.</p>',
+                '   <h2>Group name</h2>',
+                '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
+                '</section>'
+            ),
+            helpdata: {DevilrySettings: DevilrySettings}
         }).show();
     },
 
