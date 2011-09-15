@@ -32,6 +32,7 @@ class SimplifiedAssignmentMetaMixin(object):
     filters = FilterSpecs(FilterSpec('parentnode'),
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
+                          FilterSpec('delivery_types'),
                           # Period
                           ForeignFilterSpec('parentnode',
                                             FilterSpec('parentnode'),

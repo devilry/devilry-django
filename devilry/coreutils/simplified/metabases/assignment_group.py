@@ -73,6 +73,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                           FilterSpec('feedback__delivery__delivery_type', type_converter=intConverter),
 
                           ForeignFilterSpec('parentnode',  # Assignment
+                                            FilterSpec('delivery_types'),
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
