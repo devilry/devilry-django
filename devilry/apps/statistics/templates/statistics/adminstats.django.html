@@ -18,7 +18,14 @@
     Ext.require('devilry.statistics.Loader');
     Ext.onReady(function() {
         Ext.getBody().mask("Loading page", 'page-load-mask');
-        Ext.create('devilry.statistics.Loader', {{ periodid }});
+        Ext.create('devilry.statistics.Loader', {{ periodid }}, {
+            listeners: {
+                loaded: function(loader) {
+                    Ext.getBody().unmask();
+                    console.log(loader.assignments);
+                }
+            }
+        });
     });
 </script>
 
