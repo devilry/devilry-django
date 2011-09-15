@@ -262,6 +262,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 autoScroll: true,
                 html: Ext.create('Ext.XTemplate',
                     '<section class="helpsection">',
+                    '   <h1>Guides</h1>',
+                    '   <p>This is a complex view that supports a huge amount of different workflows. Please visit the <a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">primary help section</a> for guides and more help.</p>',
                     '   <h1>Search</h1>',
                     '   <p>Use the search box to search for more or less anything. Examples are candidate IDs and usernames of students and examiners.</p>',
                     '   <h1>About each column</h1>',
@@ -284,7 +286,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     '   <h2>Group name</h2>',
                     '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
                     '</section>'
-                ).apply({})
+                ).apply({DevilrySettings: DevilrySettings})
             }
         }).show();
     },
