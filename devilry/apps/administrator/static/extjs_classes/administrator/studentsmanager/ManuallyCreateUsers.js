@@ -128,13 +128,24 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             name: null,
             is_open: true,
             fake_candidates: [],
-            fake_examiners: []
+            fake_examiners: [],
+            fake_tags: []
         };
 
         var nameSplit = groupSpec.split(/\s*::\s*/);
         if(nameSplit.length > 1) {
             groupSpecObj.name = nameSplit[0];
             groupSpec = nameSplit[1];
+        }
+        var tagSplit = groupSpec.split(/\s*\(\s*/);
+        if(tagSplit.length > 1) {
+            groupSpec = tagSplit[0];
+            var tagsString = tagSplit[1];
+            tagsString = tagsString.replace(/\)/, "");
+            var tags = tagsString.split(/\s*,\s*/);
+            if(tags.length > 0) {
+                groupSpecObj.fake_tags = tags;
+            }
         }
         var asArray = groupSpec.split(/\s*,\s*/);
         Ext.Array.each(asArray, function(candidateSpec) {

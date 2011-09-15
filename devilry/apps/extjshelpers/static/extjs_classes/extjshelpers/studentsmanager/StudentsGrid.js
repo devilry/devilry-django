@@ -51,6 +51,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '</ul>'
     ),
 
+    tagsColTpl: Ext.create('Ext.XTemplate', 
+        '<ul class="tagscolumn">',
+        '    <tpl for="tags__tag">',
+        '       <li>{.}</li>',
+        '    </tpl>',
+        '</ul>'
+    ),
+
     activeDeadlineColTpl: Ext.create('Ext.XTemplate', 
         '<span class="activedeadlinecol">{latest_deadline_deadline}</span>'
     ),
@@ -166,6 +174,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
             }, {
+                text: 'Tags', dataIndex: 'tags__tag', flex: 4,
+                menuDisabled: true,
+                renderer: this.formatTagsCol
+            }, {
                 text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
                 menuDisabled: true,
                 renderer: this.formatActiveDeadlineCol
@@ -212,5 +224,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     formatActiveDeadlineCol: function(value, p, record) {
         return this.activeDeadlineColTpl.apply(record.data);
+    },
+
+    formatTagsCol: function(value, p, record) {
+        return this.tagsColTpl.apply(record.data);
     }
 });
