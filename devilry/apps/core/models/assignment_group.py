@@ -45,6 +45,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         A django ``RelatedManager`` that holds the :class:`deadlines <devilry.apps.core.models.Deadline>`
         on this group.
 
+    .. attribute:: tags
+
+        A django ``RelatedManager`` that holds the :class:`tags <devilry.apps.core.models.AssignmentGroupTag>`
+        on this group.
+
     .. attribute:: status
 
         **Cached field**: This status is a cached value of the status on the last
@@ -100,7 +105,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     .. attribute:: CORRECTED_AND_PUBLISHED
 
         The numberic value corresponding to :attr:`status` *corrected and published*.
-
     """
     status_mapping = (
         _("No deliveries"),
@@ -329,3 +333,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
+
+
+class AssignmentGroupTag(models.Model):
+    """ An AssignmentGroup can be tagged with zero or more tags using this class. """
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags')
+    tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')

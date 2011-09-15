@@ -7,7 +7,7 @@ from subject import Subject
 from period import Period
 from relateduser import RelatedExaminer, RelatedStudent
 from assignment import Assignment
-from assignment_group import AssignmentGroup
+from assignment_group import AssignmentGroup, AssignmentGroupTag
 from delivery import Delivery
 from deadline import Deadline
 from candidate import Candidate
@@ -16,5 +16,5 @@ from filemeta import FileMeta
 
 __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer',
-           'RelatedStudent', "Assignment", "AssignmentGroup", "Delivery",
+           'RelatedStudent', "Assignment", "AssignmentGroup", "AssignmentGroupTag", "Delivery",
            "Deadline", "Candidate", "StaticFeedback", "FileMeta")
