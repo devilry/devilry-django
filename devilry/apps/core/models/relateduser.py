@@ -1,5 +1,7 @@
+import re
 from django.db import models
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 from period import Period
 from node import Node
@@ -18,6 +20,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
         One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
         For RelatedExaminer, only a single username is allowed.
     """
+    usersandtags_patt = r'((?:\w+\s*,\s*)*\w+)\s*\(((?:\w+\s*,\s*)*\w+)\)$'
     username = models.CharField(max_length=200,
                                 help_text='One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed.')
 
@@ -32,6 +35,11 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
                 Q(period__parentnode__admins=user_obj) | \
                 Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
+    def clean(self, *args, **kwargs):
+        super(RelatedUserBase, self).clean(*args, **kwargs)
+        if not self.patt.match(self.username):
+            raise ValidationError('Invaid related user.')
+
     def __unicode__(self):
         return '{0}:{1}'.format(self.period, self.username)
 
@@ -42,6 +50,7 @@ class RelatedExaminer(RelatedUserBase):
 
         A django.db.models.ForeignKey_ that points to the `Period`_.
     """
+    patt = re.compile('^' + RelatedUserBase.usersandtags_patt)
     period = models.ForeignKey(Period, related_name='relatedexaminers',
                                help_text='The related period.')
 
@@ -52,5 +61,6 @@ class RelatedStudent(RelatedUserBase):
 
         A django.db.models.ForeignKey_ that points to the `Period`_.
     """
+    patt = re.compile(r'^(?:(.+?)\s*::\s*)?' + RelatedUserBase.usersandtags_patt)
     period = models.ForeignKey(Period, related_name='relatedstudents',
                                help_text='The related period.')
