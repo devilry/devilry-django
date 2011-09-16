@@ -1,5 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
+import sys
+from django.core.management.base import BaseCommand
 
 from devilry.apps.core.models import Subject
 
@@ -20,8 +21,13 @@ class NodeSearchBase(BaseCommand):
     def _print_details(self, record):
         print self.get_short(record)
         for attrname in self.attrs:
+            attr = getattr(record, attrname)
+            try:
+                attr = attr.encode(sys.stdout.encoding)
+            except:
+                attr = attr.encode('ascii', 'replace')
             print '   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=getattr(record, attrname))
+                                                 attr=attr)
         print '   admins:'
         for admin in record.admins.all():
             print '        - {0}'.format(admin)
