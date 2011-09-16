@@ -15,18 +15,18 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     This is used to generate AssignmentGroups and
 
-    .. attribute:: username
+    .. attribute:: userspec
 
         One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
         For RelatedExaminer, only a single username is allowed.
     """
     usersandtags_patt = r'((?:\w+\s*,\s*)*\w+)\s*\(((?:\w+\s*,\s*)*\w+)\)$'
-    username = models.CharField(max_length=200,
+    userspec = models.CharField(max_length=200,
                                 help_text='One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed.')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
-        unique_together = ('period', 'username')
+        unique_together = ('period', 'userspec')
         app_label = 'core'
 
     @classmethod
@@ -37,11 +37,11 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     def clean(self, *args, **kwargs):
         super(RelatedUserBase, self).clean(*args, **kwargs)
-        if not self.patt.match(self.username):
+        if not self.patt.match(self.userspec):
             raise ValidationError('Invaid related user.')
 
     def __unicode__(self):
-        return '{0}:{1}'.format(self.period, self.username)
+        return '{0}:{1}'.format(self.period, self.userspec)
 
 
 class RelatedExaminer(RelatedUserBase):
