@@ -41,7 +41,7 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
 
     relatedUserRecordsToArray: function(relatedUsers) {
         return Ext.Array.map(relatedUsers, function(relatedUser) {
-            return Ext.String.trim(relatedUser.data.username);
+            return Ext.String.trim(relatedUser.data.userspec);
         }, this);
     },
 
