@@ -17,12 +17,12 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     .. attribute:: userspec
 
-        One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
-        For RelatedExaminer, only a single username is allowed.
+        One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
+        For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
     """
     usersandtags_patt = r'((?:\w+\s*,\s*)*\w+)\s*\(((?:\w+\s*,\s*)*\w+)\)$'
     userspec = models.CharField(max_length=200,
-                                help_text='One or more usernames followed by optional tags. Format: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed.')
+                                help_text='One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
