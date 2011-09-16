@@ -197,11 +197,11 @@ class RelatedUsersBase(SimplifiedModelApi):
 
 class RelatedUsersMetaBase:
     methods = ['create', 'read', 'update', 'delete', 'search']
-    resultfields = FieldSpec('id', 'username', 'period')
-    searchfields = FieldSpec('username')
-    editablefields = ('username', 'period')
+    resultfields = FieldSpec('id', 'userspec', 'period')
+    searchfields = FieldSpec('userspec')
+    editablefields = ('userspec', 'period')
     filters = FilterSpecs(FilterSpec('period'),
-                          FilterSpec('username'))
+                          FilterSpec('userspec'))
 
 @simplified_modelapi
 class SimplifiedRelatedExaminer(RelatedUsersBase):
