@@ -137,18 +137,11 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             groupSpecObj.name = nameSplit[0];
             groupSpec = nameSplit[1];
         }
-        var tagSplit = groupSpec.split(/\s*\(\s*/);
-        if(tagSplit.length > 1) {
-            groupSpec = tagSplit[0];
-            var tagsString = tagSplit[1];
-            tagsString = tagsString.replace(/\)/, "");
-            var tags = tagsString.split(/\s*,\s*/);
-            if(tags.length > 0) {
-                groupSpecObj.fake_tags = tags;
-            }
-        }
-        var asArray = groupSpec.split(/\s*,\s*/);
-        Ext.Array.each(asArray, function(candidateSpec) {
+
+        var usernamesAndTags = this.statics().parseUsernamesAndTags(groupSpec);
+        groupSpecObj.fake_tags = usernamesAndTags.tags;
+
+        Ext.Array.each(usernamesAndTags.usernames, function(candidateSpec) {
             groupSpecObj.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
         }, this);
         return groupSpecObj;
@@ -342,5 +335,23 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             }
         });
         createDeadlineWindow.show();
-    }
+    },
+
+
+    statics: {
+        parseUsernamesAndTags: function(rawstr) {
+            var tags = [];
+            var tagSplit = rawstr.split(/\s*\(\s*/);
+            if(tagSplit.length > 1) {
+                rawstr = tagSplit[0];
+                var tagsString = tagSplit[1];
+                tagsString = tagsString.replace(/\)/, "");
+                tags = tagsString.split(/\s*,\s*/);
+            }
+            return {
+                usernames: rawstr.split(/\s*,\s*/),
+                tags: tags
+            };
+        }
+    },
 });

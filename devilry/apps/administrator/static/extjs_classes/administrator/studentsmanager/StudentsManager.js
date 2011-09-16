@@ -88,6 +88,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
             }
         }, {
+            text: 'Match tagged examiners to equally tagged groups',
+            listeners: {
+                scope: this,
+                click: this.onSetExaminersFromTags
+            }
+        }, {
             text: 'Clear',
             iconCls: 'icon-delete-16',
             listeners: {
