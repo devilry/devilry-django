@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.core.exceptions import ValidationError
 
-from devilry.apps.core.models import Subject, Period
+from devilry.apps.core.models import Subject, Period, RelatedExaminer
 import sys
 
 
@@ -23,19 +24,27 @@ class RelatedBaseCommand(BaseCommand):
         except Period.DoesNotExist, e:
             raise CommandError('Period with short name %s does not exist.' % period_short_name)
 
-    def add_users(self, relatedmanager, args, options):
+    def add_users(self, modelcls, args, options):
         """ Add the users read from stdin to the given relatedmanager
         """
         self.verbosity = int(options.get('verbosity', '1'))
         lines = sys.stdin.readlines()
-        relatedmanager.filter(period=self.period).delete() # clear current values
+        modelcls.objects.filter(period=self.period).delete() # clear current values
+        #relatedmanager.filter(period=self.period).delete() # clear current values
         for userspec in lines:
             userspec = userspec.strip()
-            relatedmanager.create(period=self.period, username=userspec)
+            rel = modelcls(period=self.period, username=userspec)
+            try:
+                rel.clean()
+            except ValidationError, e:
+                raise CommandError('Invalid user spec: "{0}": {1}'.format(userspec.encode(sys.stdout.encoding), e.messages[0]))
+            rel.save()
             if self.verbosity > 1:
-                print "Added %s %s" % (self.user_type, userspec)
+                print "Added {0}: \"{1}\"".format(self.user_type, userspec.encode(sys.stdout.encoding))
         if self.verbosity > 0:
-            print "Added {0} related {1}s to {2}".format(len(lines), self.user_type, "%s.%s" % (args[0], args[1]))
+            print "Added {0} related {1}s to {2}.{3}".format(len(lines),
+                                                             self.user_type,
+                                                             args[0], args[1])
             
 
 class Command(RelatedBaseCommand):
@@ -44,4 +53,4 @@ class Command(RelatedBaseCommand):
 
     def handle(self, *args, **options):
         self.get_course_and_period(args)
-        self.add_users(self.period.relatedexaminers, args, options)
+        self.add_users(RelatedExaminer, args, options)
