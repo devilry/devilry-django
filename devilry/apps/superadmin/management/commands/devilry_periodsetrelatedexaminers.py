@@ -33,7 +33,7 @@ class RelatedBaseCommand(BaseCommand):
         #relatedmanager.filter(period=self.period).delete() # clear current values
         for userspec in lines:
             userspec = userspec.strip()
-            rel = modelcls(period=self.period, username=userspec)
+            rel = modelcls(period=self.period, userspec=userspec)
             try:
                 rel.clean()
             except ValidationError, e:
