@@ -118,12 +118,13 @@ Ext.define('devilry.examiner.AssignmentView', {
     },
 
     onStudents: function(button) {
+        this.hide();
         var studentswindow = Ext.create('Ext.window.Window', {
             title: 'Students',
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
             modal: true,
             maximized: true,
             items: {
@@ -138,6 +139,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             listeners: {
                 scope: this,
                 close: function() {
+                    this.show();
                     this.loadTodoList();
                 }
             }
