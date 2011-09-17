@@ -375,7 +375,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
             maximized: true,
             modal: true,
             items: {
