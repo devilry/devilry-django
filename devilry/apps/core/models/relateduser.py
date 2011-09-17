@@ -20,7 +20,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
         One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN).
         For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
     """
-    usersandtags_patt = r'((?:\w+\s*,\s*)*\w+)\s*\(((?:\w+\s*,\s*)*\w+)\)$'
+    usersandtags_patt = r'((?:\w+\s*,\s*)*\w+)\s*(?:\(((?:\w+\s*,\s*)*\w+)\))?$'
     userspec = models.CharField(max_length=200,
                                 help_text='One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.')
 
