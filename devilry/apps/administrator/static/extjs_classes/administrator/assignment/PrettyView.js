@@ -369,6 +369,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onStudents: function() {
+        this.hide();
         var studentswindow = Ext.widget('maximizablewindow', {
             title: 'Manage assignment groups (students)',
             width: 926,
@@ -391,6 +392,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 close: function() {
+                    this.show();
                     this.refreshBody();
                 }
             }
