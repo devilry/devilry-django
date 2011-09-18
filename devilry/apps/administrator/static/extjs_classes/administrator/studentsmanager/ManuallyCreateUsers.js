@@ -50,7 +50,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '       <li>Group name is identified by two colons at the end of the name, and must be placed at the beginning of the line.</li>' +
         '       <li>A group name or at least one username is required for each group.</li>' +
         '       <li>An optional <em>candidate-id</em> for a candidate is denoted by a colon and the <em>candidate-id</em> after the username.</li>' +
-        '       <li>A an optional comma-separated list of tags surrounded by parentheses.</li>',
+        '       <li>A an optional comma-separated list of tags surrounded by parentheses.</li>' +
         '   </ul>' +
         '</section>',
 
