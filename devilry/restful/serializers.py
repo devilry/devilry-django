@@ -2,11 +2,12 @@ from functools import wraps
 import json
 from django.db.models.query import ValuesQuerySet
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseForbidden
+from devilry.defaults.encoding import CHARSET
 
 
 class SerializableResult(object):
     """ Stores Python objects for serialization with :class:`devilry.simplified.serializers.SerializerRegistry`. """
-    def __init__(self, result, httpresponsecls=HttpResponse, encoding='utf-8'):
+    def __init__(self, result, httpresponsecls=HttpResponse, encoding=CHARSET):
         self.result = result
         self.httpresponsecls = httpresponsecls
         self.encoding = encoding
@@ -73,7 +74,7 @@ def serialize(f):
         if not comformat in serializers:
             return HttpResponseBadRequest(
                 "Bad request: %s" % comformat,
-                format='text/plain; encoding=utf-8')
+                format='text/plain; encoding={0}'.format(CHARSET))
         self.comformat = comformat
         result = f(self, request, *args, **kwargs) # returns a SerializableResult object
         return serializers.create_response(result, comformat)
