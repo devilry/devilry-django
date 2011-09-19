@@ -1,18 +1,17 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from optparse import make_option
+from django.core.exceptions import ValidationError
 
-from devilry_usermod import UserModCommand
-from devilry.apps.core.models import Subject, Period
+from devilry.apps.core.models import Subject, Period, RelatedExaminer
 import sys
 
-class BaseCommand(UserModCommand):
+
+class RelatedBaseCommand(BaseCommand):
     args = '<subject short name> <period short name>'
 
     def get_course_and_period(self, args):
         """ Get the course and period from args """
         if len(args) != 2:
-            raise CommandError('Course and period is required. See --help.')
+            raise CommandError('Subject and period is required. See --help.')
         course_short_name = args[0]
         period_short_name = args[1]
         # Get the course and period
@@ -25,30 +24,33 @@ class BaseCommand(UserModCommand):
         except Period.DoesNotExist, e:
             raise CommandError('Period with short name %s does not exist.' % period_short_name)
 
-    def add_users(self, relatedmanager, args, options):
+    def add_users(self, modelcls, args, options):
         """ Add the users read from stdin to the given relatedmanager
         """
         self.verbosity = int(options.get('verbosity', '1'))
-        self.related_users_count = 0
-        usernames = sys.stdin.read().split()
-        # clear current values
-        relatedmanager.filter(period=self.period).delete()
-        for username in usernames:
+        lines = sys.stdin.readlines()
+        modelcls.objects.filter(period=self.period).delete() # clear current values
+        #relatedmanager.filter(period=self.period).delete() # clear current values
+        for userspec in lines:
+            userspec = userspec.strip()
+            rel = modelcls(period=self.period, userspec=userspec)
             try:
-                User.objects.get(username=username)
-                relatedmanager.create(period=self.period, username=username)
-                self.related_users_count += 1
-                if self.verbosity > 1:
-                    print "Added %s %s" % (self.user_type, username)
-            except User.DoesNotExist:
-                pass
+                rel.clean()
+            except ValidationError, e:
+                raise CommandError('Invalid user spec: "{0}": {1}'.format(userspec.encode(sys.stdout.encoding), e.messages[0]))
+            rel.save()
+            if self.verbosity > 1:
+                print "Added {0}: \"{1}\"".format(self.user_type, userspec.encode(sys.stdout.encoding))
         if self.verbosity > 0:
-            print "Added %d related %ss to %s" % (self.related_users_count, self.user_type, "%s.%s" % (args[0], args[1]))
+            print "Added {0} related {1}s to {2}.{3}".format(len(lines),
+                                                             self.user_type,
+                                                             args[0], args[1])
             
-class Command(BaseCommand):
+
+class Command(RelatedBaseCommand):
     help = 'Set related examiners on a period. Usernames are read from stdin, one username on each line.'
     user_type = "examiner"
 
     def handle(self, *args, **options):
         self.get_course_and_period(args)
-        self.add_users(self.period.relatedexaminers, args, options)
+        self.add_users(RelatedExaminer, args, options)

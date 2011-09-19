@@ -56,17 +56,10 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 flex: 15,
                 dataIndex: 'latest_deadline_deadline',
                 renderer: function(value, m, record) {
-                    try {
-                        var rowTpl = Ext.create('Ext.XTemplate',
-                            '{latest_deadline_deadline:date}'
-                        );
-                        return rowTpl.apply(record.data);
-                    } catch(e) {
-                        var rowTpl = Ext.create('Ext.XTemplate',
-                            '{latest_deadline_deadline}'
-                        );
-                        return rowTpl.apply(record.data);
-                    }
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '{latest_deadline_deadline}'
+                    );
+                    return rowTpl.apply(record.data);
                 }
             },{
                 text: '#Deliveries',

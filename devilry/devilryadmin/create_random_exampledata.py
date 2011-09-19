@@ -342,10 +342,10 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
-def add_relatedusers(related, usernames):
-    for username in usernames:
+def add_relatedusers(related, userspecs):
+    for userspec in userspecs:
         try:
-            related.create(username=username)
+            related.create(userspec=userspec)
         except IntegrityError:
             pass # We can not add duplicates
 

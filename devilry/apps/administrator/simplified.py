@@ -197,11 +197,11 @@ class RelatedUsersBase(SimplifiedModelApi):
 
 class RelatedUsersMetaBase:
     methods = ['create', 'read', 'update', 'delete', 'search']
-    resultfields = FieldSpec('id', 'username', 'period')
-    searchfields = FieldSpec('username')
-    editablefields = ('username', 'period')
+    resultfields = FieldSpec('id', 'userspec', 'period')
+    searchfields = FieldSpec('userspec')
+    editablefields = ('userspec', 'period')
     filters = FilterSpecs(FilterSpec('period'),
-                          FilterSpec('username'))
+                          FilterSpec('userspec'))
 
 @simplified_modelapi
 class SimplifiedRelatedExaminer(RelatedUsersBase):
@@ -241,13 +241,17 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         editablefields = ('id', 'name', 'is_open', 'parentnode')
-        fake_editablefields = ('fake_examiners', 'fake_candidates')
+        fake_editablefields = ('fake_examiners', 'fake_candidates', 'fake_tags')
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(users=['candidates__student__username']) + \
+        resultfields = \
+                FieldSpec(users=['candidates__student__username'],
+                          tags=['tags__tag']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
+        searchfields = FieldSpec('tags__tag', 'candidates__student__username') + SimplifiedAssignmentGroupMetaMixin.searchfields
         filters = SimplifiedAssignmentGroupMetaMixin.filters + \
                 FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
-                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter))
+                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter),
+                            FilterSpec('tags__tag', type_converter=stringOrNoneConverter))
 
 
     @classmethod
@@ -275,6 +279,14 @@ class SimplifiedAssignmentGroup(CanSaveBase):
             obj.examiners.clear()
             for user in users:
                 obj.examiners.add(user)
+
+    @classmethod
+    def _set_tags_from_fake_tags(cls, obj):
+        """  """
+        if hasattr(obj, 'fake_tags') and obj.fake_tags != None:
+            models.AssignmentGroupTag.objects.filter(assignment_group=obj).delete()
+            for tag in obj.fake_tags:
+                obj.tags.create(tag=tag)
 
     @classmethod
     def _parse_candidates_as_list_of_dicts(cls, obj):
@@ -330,6 +342,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     def post_save(cls, user, obj):
         cls._parse_examiners_as_list_of_usernames(obj)
         cls._parse_candidates_as_list_of_dicts(obj)
+        cls._set_tags_from_fake_tags(obj)
 
     @classmethod
     def is_empty(cls, obj):

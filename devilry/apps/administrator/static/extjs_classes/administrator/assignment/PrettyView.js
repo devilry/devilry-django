@@ -236,6 +236,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
+        //this.onStudents();
     },
 
     checkStudents: function() {
@@ -368,12 +369,13 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onStudents: function() {
+        this.hide();
         var studentswindow = Ext.widget('maximizablewindow', {
             title: 'Manage assignment groups (students)',
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
             maximized: true,
             modal: true,
             items: {
@@ -390,6 +392,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 close: function() {
+                    this.show();
                     this.refreshBody();
                 }
             }

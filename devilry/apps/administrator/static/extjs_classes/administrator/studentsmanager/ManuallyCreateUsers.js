@@ -17,7 +17,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         initialLines: undefined,
 
         assignmentid: undefined,
-        deadlinemodel: undefined
+        deadlinemodel: undefined,
+        suggestedDeadline: undefined
     },
 
     helptext:
@@ -49,6 +50,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '       <li>Group name is identified by two colons at the end of the name, and must be placed at the beginning of the line.</li>' +
         '       <li>A group name or at least one username is required for each group.</li>' +
         '       <li>An optional <em>candidate-id</em> for a candidate is denoted by a colon and the <em>candidate-id</em> after the username.</li>' +
+        '       <li>A an optional comma-separated list of tags surrounded by parentheses.</li>' +
         '   </ul>' +
         '</section>',
 
@@ -127,7 +129,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             name: null,
             is_open: true,
             fake_candidates: [],
-            fake_examiners: []
+            fake_examiners: [],
+            fake_tags: []
         };
 
         var nameSplit = groupSpec.split(/\s*::\s*/);
@@ -135,8 +138,11 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             groupSpecObj.name = nameSplit[0];
             groupSpec = nameSplit[1];
         }
-        var asArray = groupSpec.split(/\s*,\s*/);
-        Ext.Array.each(asArray, function(candidateSpec) {
+
+        var usernamesAndTags = this.statics().parseUsernamesAndTags(groupSpec);
+        groupSpecObj.fake_tags = usernamesAndTags.tags;
+
+        Ext.Array.each(usernamesAndTags.usernames, function(candidateSpec) {
             groupSpecObj.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
         }, this);
         return groupSpecObj;
@@ -321,6 +327,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             width: this.up('window').getWidth(),
             height: this.up('window').getHeight(),
             deadlinemodel: this.deadlinemodel,
+            suggestedDeadline: this.suggestedDeadline,
+            deadlineRecord: this.deadlineRecord,
             onSaveSuccess: function(record) {
                 this.close();
                 me.deadlineRecord = record;
@@ -328,5 +336,23 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             }
         });
         createDeadlineWindow.show();
-    }
+    },
+
+
+    statics: {
+        parseUsernamesAndTags: function(rawstr) {
+            var tags = [];
+            var tagSplit = rawstr.split(/\s*\(\s*/);
+            if(tagSplit.length > 1) {
+                rawstr = tagSplit[0];
+                var tagsString = tagSplit[1];
+                tagsString = tagsString.replace(/\)/, "");
+                tags = tagsString.split(/\s*,\s*/);
+            }
+            return {
+                usernames: rawstr.split(/\s*,\s*/),
+                tags: tags
+            };
+        }
+    },
 });
