@@ -743,17 +743,17 @@ table.verticalinfotable {
                     border-radius: 20px;
                 }
             }
-
-            section.rendered_view {
-                @include commonSectionElements();
-                @include commonHeaderElements();
-                p {
-                    padding: 5px 0 !important;
-                    line-height: 1.6em !important;
-                }   
-            }
         }
     }
+}
+
+section.rendered_view {
+    @include commonSectionElements();
+    @include commonHeaderElements();
+    p {
+        padding: 5px 0 !important;
+        line-height: 1.6em !important;
+    }   
 }
 
 .after-deadline {
