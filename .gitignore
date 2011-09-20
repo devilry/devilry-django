@@ -58,3 +58,4 @@ docs/restfulapi/
 devilry.egg-info/
 productionenv/
 *.exe
+devilry_all_uncompiled.js
