@@ -598,38 +598,39 @@ table.verticalinfotable {
         background-color: #77b300;
         color: #f7ffe5;
         border-radius: 20px; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view strong {
-      font-weight: bold; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view em {
-      font-style: italic; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
-      padding: 5px 0;
-      line-height: 1.2em; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
-      background-color: #f8f8f8;
-      border: 1px solid #eee; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
-      padding: 1px 4px;
-      color: #600;
-      white-space: nowrap; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre {
-      padding: 8px; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view ul li {
-      padding: 5px 0;
-      margin-left: 25px !important;
-      list-style-type: disc !important;
-      list-style-position: outside !important; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h2 {
-      border-top: 5px solid #f8f8f8;
-      padding-top: 8px;
-      font-size: 2.0em;
-      margin: 36px 0 6px 0; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h3 {
-      font-size: 1.5em;
-      margin: 16px 0 6px 0; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
-      padding: 5px 0 !important;
-      line-height: 1.6em !important; }
+
+section.rendered_view strong {
+  font-weight: bold; }
+section.rendered_view em {
+  font-style: italic; }
+section.rendered_view p {
+  padding: 5px 0;
+  line-height: 1.2em; }
+section.rendered_view pre, section.rendered_view code {
+  background-color: #f8f8f8;
+  border: 1px solid #eee; }
+section.rendered_view code {
+  padding: 1px 4px;
+  color: #600;
+  white-space: nowrap; }
+section.rendered_view pre {
+  padding: 8px; }
+section.rendered_view ul li {
+  padding: 5px 0;
+  margin-left: 25px !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important; }
+section.rendered_view h2 {
+  border-top: 5px solid #f8f8f8;
+  padding-top: 8px;
+  font-size: 2.0em;
+  margin: 36px 0 6px 0; }
+section.rendered_view h3 {
+  font-size: 1.5em;
+  margin: 16px 0 6px 0; }
+section.rendered_view p {
+  padding: 5px 0 !important;
+  line-height: 1.6em !important; }
 
 .after-deadline {
   display: inline-block;

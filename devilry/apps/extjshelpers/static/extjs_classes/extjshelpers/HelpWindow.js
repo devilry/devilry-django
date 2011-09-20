@@ -33,7 +33,7 @@ Ext.define('devilry.extjshelpers.HelpWindow', {
                         }
                     }
                 }, '->']
-            }],
+            }]
         });
         this.callParent(arguments);
     }
