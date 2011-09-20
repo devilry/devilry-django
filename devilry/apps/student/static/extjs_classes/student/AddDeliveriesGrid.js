@@ -1,5 +1,6 @@
 Ext.define('devilry.student.AddDeliveriesGrid', {
     extend: 'Ext.grid.Panel',
+    hideHeaders: true,
     frameHeader: false,
     frame: false,
     border: false,
@@ -57,7 +58,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 dataIndex: 'latest_deadline_deadline',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
-                        '{latest_deadline_deadline}'
+                        '<em style="font-style:italic">Deadline:</em> {latest_deadline_deadline}'
                     );
                     return rowTpl.apply(record.data);
                 }
@@ -66,7 +67,13 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 menuDisabled: true,
                 hideAble: false,
                 flex: 5,
-                dataIndex: 'number_of_deliveries'
+                dataIndex: 'number_of_deliveries',
+                renderer: function(value, m, record) {
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '<em style="font-style:italic">Deliveries:</em> {number_of_deliveries}'
+                    );
+                    return rowTpl.apply(record.data);
+                }
             }],
             listeners: {
                 scope: this,
