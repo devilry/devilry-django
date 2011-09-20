@@ -9,7 +9,7 @@
 {% block headextra %}
 {{ block.super }}
 
-<script>
+<script type="text/javascript">
     Ext.require('devilry.administrator.DefaultCreateWindow');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
@@ -19,6 +19,7 @@
     Ext.require('devilry.extjshelpers.forms.administrator.Period');
     Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
     Ext.require('devilry.extjshelpers.PermissionChecker');
+    Ext.require('devilry.examiner.ActiveAssignmentsView');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }};
