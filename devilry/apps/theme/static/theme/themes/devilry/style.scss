@@ -111,13 +111,24 @@ body {
 }
 
 @mixin commonHeaderElements() {
+    h1 {
+        font-size: 2.6em;
+        margin: 20px 0 15px 0;
+    }
+    h1:first-child {
+        margin-top: 0;
+    }
     h2 {
+        font-size: 2.0em;
+        margin: 16px 0 6px 0;
         border-top: 5px solid #f8f8f8;
         padding-top: 8px;
         font-size: 2.0em;
         margin: 36px 0 6px 0;
     }
     h3 {
+        font-size: 1.5em;
+        margin: 16px 0 6px 0;
         font-size: 1.5em;
         margin: 16px 0 6px 0;
     }
@@ -747,7 +758,7 @@ table.verticalinfotable {
     }
 }
 
-section.rendered_view {
+.rendered_view {
     @include commonSectionElements();
     @include commonHeaderElements();
     p {
