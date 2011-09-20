@@ -8,11 +8,6 @@
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/style.css"
             type="text/css" media="screen" charset="utf-8"/>
 
-        {% if debug %}
-        {% endif %}
-
-
-
         <!-- ** ExtJS ** -->
         <link rel="stylesheet" type="text/css"
                 {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
@@ -25,7 +20,7 @@
             // Path to the blank image should point to a valid location on your server
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
             Ext.Loader.setConfig({
-                enabled:true,
+                enabled: {% if debug %}true{% else %}false{% endif %},
                 paths: {
                     'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes'
                 }
@@ -62,6 +57,10 @@
             {% endcomment %}
 
         </script>
+
+        {% if not debug %}
+            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
+        {% endif %}
 
         {% block headextra %}{% endblock %}
     </head>
