@@ -150,7 +150,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             text: 'Browse files',
             id: 'tooltip-browse-files',
             scale: 'large',
-            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.showFileMetaBrowserWindow,
@@ -165,7 +164,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             id: 'tooltip-other-deliveries',
             text: 'Other deliveries',
             scale: 'large',
-            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onOtherDeliveries
@@ -208,9 +206,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             }
         });
         deliveriesWindow.show();
-        if(button) {
-            deliveriesWindow.alignTo(button, 'bl', [0, 0]);
-        }
     },
 
     /**
@@ -229,15 +224,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 border: false,
                 filemetastore: this.filemetastore,
                 deliveryid: this.delivery_recordcontainer.record.data.id
-            }],
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
-            }
+            }]
         });
         fileBrowser.show();
-        fileBrowser.alignTo(button, 'bl', [0, 0]);
     }
 });

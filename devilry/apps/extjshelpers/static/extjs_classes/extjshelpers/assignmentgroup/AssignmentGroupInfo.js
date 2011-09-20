@@ -40,7 +40,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
             id: 'tooltip-deliveries',
             text: 'Deadlines',
             scale: 'large',
-            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onDeadlines
@@ -53,7 +52,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 id: 'tooltip-uncorrected-groups',
                 text: 'To-do',
                 scale: 'large',
-                enableToggle: true,
                 listeners: {
                     scope: this,
                     click: this.onTodo
@@ -65,7 +63,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 xtype: 'button',
                 text: '',
                 scale: 'large',
-                enableToggle: true,
                 listeners: {
                     scope: this,
                     click: this.onCloseOrOpenGroup
@@ -131,16 +128,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                     '   <p>Choose <span class="menuref">Go to assignment</span> to show the assignment where you have access to all groups, and information about the assignment.</p>',
                     '</div>'
                 ),
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
             }
         });
         groupsWindow.show();
-        groupsWindow.alignTo(button, 'bl', [0, 0]);
     },
 
     /**
@@ -193,10 +183,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                         }
                     });
                 }
-                button.toggle(false);
             }
         });
-        win.alignTo(button, 'bl', [0, 0]);
     },
 
     /**
@@ -228,10 +216,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                         }
                     });
                 }
-                button.toggle(false);
             }
         });
-        win.alignTo(button, 'bl', [0, 0]);
     },
 
     /**
@@ -252,15 +238,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 deliverymodel: this.deliverymodel,
                 deadlinemodel: this.deadlinemodel,
                 enableDeadlineCreation: this.canExamine
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
             }
         });
         deadlinesWindow.show();
-        deadlinesWindow.alignTo(button, 'bl', [0, 0]);
     }
 });
