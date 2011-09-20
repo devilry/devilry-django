@@ -1,13 +1,23 @@
 {% extends "examiner/base.django.html" %}
 {% load extjs %}
 
+{% block loadmask %}
+<script type="text/javascript">
+    Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+    });
+</script>
+{% endblock %}
+
 {% block headextra %}
 {{ block.super }}
 <script>
-    Ext.require('devilry.extjshelpers.PermissionChecker');
-    Ext.require('devilry.examiner.ActiveAssignmentsView');
-    Ext.require('devilry.examiner.RecentDeliveriesView');
-    Ext.require('devilry.examiner.RecentFeedbacksView');
+    Ext.require([
+        'devilry.extjshelpers.PermissionChecker',
+        'devilry.examiner.ActiveAssignmentsView',
+        'devilry.examiner.RecentDeliveriesView',
+        'devilry.examiner.RecentFeedbacksView'
+    ]);
 
 
 
@@ -67,7 +77,7 @@
     }
 
     Ext.onReady(function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
+        //console.log('hei');
         createPermissionChecker();
         assignmentgroup_permcheckstore.load();
     });
