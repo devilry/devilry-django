@@ -155,7 +155,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 scope: this,
                 click: this.showFileMetaBrowserWindow,
                 render: function() {
-                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                    //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
                 }
             }
         });
