@@ -43,7 +43,7 @@
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not a student</h1>' +
-                '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></section>',
+                '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></div>',
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();
@@ -116,13 +116,13 @@
     <p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
     have permission to view as a <strong>student</strong>. You can, for example, search for the name of a subject to find anything
     related to subject, or search for a specific assignment.</p>
-</section>
+</div>
 
 <div id="no-permissions-message"></div>
 <div class="section" id="has-permission-section" style="display: none">
     <h2>Assignments / Add deliveries</h2>
-    <div class="section" id="dashtable"></section>
+    <div class="section" id="dashtable"></div>
 
-    <div class="section" id="recent"></section>
-</section>
+    <div class="section" id="recent"></div>
+</div>
 {% endblock %}

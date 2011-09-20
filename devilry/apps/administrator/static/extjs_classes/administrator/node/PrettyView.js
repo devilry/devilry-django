@@ -9,6 +9,6 @@ Ext.define('devilry.administrator.node.PrettyView', {
         '        A Node is a place to organise top-level administrators (administrators responsible for more than one subject).',
         '        Nodes are organised in a tree. This is very flexible, and can be used to emulate most administrative hierarchies.',
         '    </p>',
-        '</section>'
+        '</div>'
     )
 });

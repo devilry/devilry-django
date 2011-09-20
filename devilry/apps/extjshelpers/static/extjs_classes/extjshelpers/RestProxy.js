@@ -117,7 +117,7 @@ Ext.define('devilry.extjshelpers.RestProxy', {
                 '<tpl for="errormessages">',
                 '   <p>{.}</p>',
                 '</tpl>',
-                '</section>'
+                '</div>'
             );
             if(operation.responseData && operation.responseData.errormessages) {
                 return tpl.apply({errormessages: operation.responseData.errormessages});

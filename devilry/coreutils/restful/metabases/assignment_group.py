@@ -11,5 +11,5 @@ class AssignmentGroupExtjsModelMeta:
                     '       <h1><ul class="useridlist"><tpl for="candidates__identifier"><li>{.}</li></tpl></ul></h1>'
                     '   </tpl>'
                     '   <p><tpl if="name">{name}</tpl><p>'
-                   '</section>')
+                   '</div>')
     combobox_displayfield = 'id'

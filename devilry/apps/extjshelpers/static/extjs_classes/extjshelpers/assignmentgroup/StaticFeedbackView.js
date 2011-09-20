@@ -13,7 +13,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       one feedback in the toolbar above. Unless there is something ',
         '       wrong with the latest feedback, you should not have to ',
         '       read this feedback',
-        '   </section>',
+        '   </div>',
         '</tpl>',
 
         '<div class="section {gradecls}">',
@@ -27,7 +27,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       </tpl>',
         '       This feedback was published <em>{save_timestamp:date}</em>.',
         '       </p>',
-        '</section>',
+        '</div>',
         '<div class="section rendered_view">{rendered_view}<div class="section">'
     ),
 

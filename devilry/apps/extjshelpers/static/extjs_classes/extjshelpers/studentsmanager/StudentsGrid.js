@@ -32,7 +32,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '           <span class="has_no_deadlines">No deadlines</span>',
         '        </tpl>',
         '    </div>',
-        '</section>'
+        '</div>'
     ),
 
     candidatesCol: Ext.create('Ext.XTemplate', 
@@ -105,7 +105,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '           No feedback',
         '        </div>',
         '    </tpl>',
-        '</section>'
+        '</div>'
     ),
 
     constructor: function(config) {

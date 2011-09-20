@@ -17,7 +17,7 @@ class DeadlineExtjsModelMeta:
                     '       <div class="section">'
                     '           <h1>Deliveries</h1>'
                     '           {number_of_deliveries}'
-                    '       </section>'
-                    '   </section>'
-                   '</section>')
+                    '       </div>'
+                    '   </div>'
+                   '</div>')
     combobox_displayfield = 'id'

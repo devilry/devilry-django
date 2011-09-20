@@ -111,7 +111,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
                 help += Ext.String.format('<p>{0}</p>', helpobj.text);
             }
         });
-        return help + '</section>';
+        return help + '</div>';
     },
 
     onSave: function() {

@@ -9,5 +9,5 @@ class AssignmentExtjsModelMeta:
                             '{parentnode__short_name}'
                     '   </p>'
                     '   <h1>{long_name:ellipsis(40)}</h1>'
-                    '</section>')
+                    '</div>')
     combobox_displayfield = 'short_name'

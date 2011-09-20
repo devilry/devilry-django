@@ -38,7 +38,7 @@ Ext.define('devilry.extjshelpers.DashGrid', {
                             '<div class="section {msgcls}-small extravisible-small">',
                             '   <h1>{title}</h1>',
                             '   <p>{msg}</p>',
-                            '</section>'
+                            '</div>'
                         ).apply(args)
                     });
                 } else {

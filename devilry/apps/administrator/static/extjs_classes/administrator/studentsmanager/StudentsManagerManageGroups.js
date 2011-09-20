@@ -128,7 +128,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                     '       <p>One username on each line. Example</p>',
                     '       <pre style="padding: 5px;">bob\nalice\neve\ndave</pre>',
                     '   </tpl>',
-                    '</section>'
+                    '</div>'
                 ),
                 listeners: {
                     scope: this,
@@ -235,7 +235,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'importgroupsfromanotherassignment',
                 periodid: this.periodid,
-                help: '<div class="section helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
+                help: '<div class="section helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</div>',
                 listeners: {
                     scope: this,
                     next: this.importGroupsFromAnotherAssignmentInCurrentPeriod

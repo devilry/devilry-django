@@ -32,7 +32,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
         combobox_displayfield = 'short_name'
         combobox_tpl = ('<div class="section popuplistitem">'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
-                        '</section>')
+                        '</div>')
 
 
 @administrator_restful.register
@@ -63,7 +63,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
         combobox_tpl = ('<div class="section popuplistitem">'
                         '    <p class="path">{parentnode__short_name}</p>'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
-                        '</section>')
+                        '</div>')
         combobox_displayfield = 'short_name'
 
 

@@ -15,7 +15,7 @@ Ext.define('devilry.administrator.period.PrettyView', {
         '               feedback they have given to students. ',
         '               Students can still view all their deliveries and feedback.',
         '           </p>',
-        '       </section>',
+        '       </div>',
         '   </tpl>',
         '   <tpl if="starttime_in_future">',
         '       <div class="section warning">',
@@ -25,7 +25,7 @@ Ext.define('devilry.administrator.period.PrettyView', {
         '               can not access the period until its <strong>start time</strong>, which is ',
         '               <strong>{start_time:date}</strong>',
         '           </p>',
-        '       </section>',
+        '       </div>',
         '   </tpl>',
         '   <tpl if="is_active">',
         '       <div class="section ok">',
@@ -36,9 +36,9 @@ Ext.define('devilry.administrator.period.PrettyView', {
         '               will not have access to any data related to the period, including the ',
         '               feedback they have given to students.',
         '           </p>',
-        '       </section>',
+        '       </div>',
         '   </tpl>',
-        '</section>'
+        '</div>'
     ),
 
     getExtraBodyData: function(record) {

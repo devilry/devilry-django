@@ -20,7 +20,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '            </tpl>',
         '        </h1>',
         '        {msg}',
-        '    </section>',
+        '    </div>',
         '</tpl>'
     ),
 

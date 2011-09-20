@@ -117,7 +117,7 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
                     '       <li>Create a feedback for the new <em>fake</em> delivery using the grade editor configured for this assignment.</li>' +
                     '   </ul>' +
                     '   <p>Click <em>next</em> to create the feedback. The feedback you select will be applied to each selected group.</p>' +
-                    '</section>'
+                    '</div>'
             },
 
             dockedItems: [{

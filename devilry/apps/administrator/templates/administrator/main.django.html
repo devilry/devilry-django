@@ -44,7 +44,7 @@
             stores: [nodestore, subjectstore, periodstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an administrator</h1>' +
-                '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></section>',
+                '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></div>',
             listeners: {
                 allLoaded: function(loadedItems, loadedWithRecords) {
                     Ext.getBody().unmask();
@@ -168,5 +168,5 @@
 
 <div id="no-permissions-message"></div>
 <div id="createbuttonbar"></div>
-<div class="section" id="activeassignments"></section>
+<div class="section" id="activeassignments"></div>
 {% endblock %}

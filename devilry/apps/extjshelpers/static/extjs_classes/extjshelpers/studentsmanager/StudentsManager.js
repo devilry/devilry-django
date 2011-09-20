@@ -282,7 +282,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 '       <p>The deadline that students deliver on. Always the <em>latest</em> deadline.</p>',
                 '   <h2>Group name</h2>',
                 '       <p>The name of the group. Group names are usually used for project assignments where each project has a specific name.</p>',
-                '</section>'
+                '</div>'
             ),
             helpdata: {DevilrySettings: DevilrySettings}
         }).show();

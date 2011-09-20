@@ -8,6 +8,6 @@ Ext.define('devilry.administrator.subject.PrettyView', {
         '    <p>',
         '        A subject is usually a course or seminar. A subject contains periods, which are usually semesters.',
         '    </p>',
-        '</section>'
+        '</div>'
     )
 });

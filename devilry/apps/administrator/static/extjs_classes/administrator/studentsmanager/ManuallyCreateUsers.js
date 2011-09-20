@@ -52,7 +52,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '       <li>An optional <em>candidate-id</em> for a candidate is denoted by a colon and the <em>candidate-id</em> after the username.</li>' +
         '       <li>A an optional comma-separated list of tags surrounded by parentheses.</li>' +
         '   </ul>' +
-        '</section>',
+        '</div>',
 
     constructor: function(config) {
         this.initConfig(config);

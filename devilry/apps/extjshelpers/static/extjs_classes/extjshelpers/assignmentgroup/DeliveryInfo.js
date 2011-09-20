@@ -48,7 +48,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '        <div class="section warning-small">',
         '           <h1>After deadline</h1>',
         '           <p>This delivery was made <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="!islatestDelivery">',
         '        <div class="section warning-small">',
@@ -60,12 +60,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '               </tpl>',
         '               Choose <span class="menuref">Other deliveries</span> in the toolbar to view other deliveries.',
         '           </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <div class="section info-small">',
         '       <h1>Delivery number {number}</h1>',
         '       <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">Browse files</span> in the toolbar to download the delivered files.</p>',
-        '    </section>',
+        '    </div>',
         '</tpl>'
     ),
 

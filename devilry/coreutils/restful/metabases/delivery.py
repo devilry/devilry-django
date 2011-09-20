@@ -15,7 +15,7 @@ class DeliveryExtjsModelMeta:
                     '      <div class="section">'
                     '          <h1>Delivery number</h1>'
                     '          {number}<tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>'
-                    '      </section>'
-                    '   </section>'
-                    '</section>')
+                    '      </div>'
+                    '   </div>'
+                    '</div>')
     combobox_displayfield = 'id'

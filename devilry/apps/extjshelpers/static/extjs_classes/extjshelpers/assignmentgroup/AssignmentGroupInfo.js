@@ -129,7 +129,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                     '<div class="section helpsection">',
                     '   {todohelptext}',
                     '   <p>Choose <span class="menuref">Go to assignment</span> to show the assignment where you have access to all groups, and information about the assignment.</p>',
-                    '</section>'
+                    '</div>'
                 ),
             },
             listeners: {

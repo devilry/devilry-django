@@ -20,7 +20,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
             '<div class="section helpsection">',
             '   {helptext}',
             '   <pre style="padding: 5px;">{example}</pre>',
-            '</section>'
+            '</div>'
         )
     },
 

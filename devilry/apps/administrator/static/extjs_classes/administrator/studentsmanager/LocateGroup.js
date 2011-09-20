@@ -16,7 +16,7 @@ Ext.define('devilry.administrator.studentsmanager.LocateGroup', {
         '    <tpl if="id == current_assignment_group_id">',
         '        &mdash; <strong>(currently selected)</strong>',
         '    </tpl>',
-        '</section>'
+        '</div>'
     ),
 
     requires: [

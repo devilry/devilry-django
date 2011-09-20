@@ -19,7 +19,7 @@
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
             emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
-                '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></section>',
+                '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
             listeners: {
                 allLoaded: function() {
                     Ext.getBody().unmask();
@@ -76,7 +76,7 @@
 <div id="no-permissions-message"></div>
 <div id="no-active-assignments-message"></div>
 <div class="section" id="has-permission-section" style="display: none">
-    <div class="section" id="activeassignments"></section>
-    <div class="section" id="recent"></section>
-</section>
+    <div class="section" id="activeassignments"></div>
+    <div class="section" id="recent"></div>
+</div>
 {% endblock %}
