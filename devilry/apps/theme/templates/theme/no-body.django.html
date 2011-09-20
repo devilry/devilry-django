@@ -19,6 +19,7 @@
                 href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
 
         <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
         <script type="text/javascript">
             // Path to the blank image should point to a valid location on your server
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
@@ -60,7 +61,6 @@
             {% endcomment %}
 
         </script>
-        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 
         {% block headextra %}{% endblock %}
     </head>
