@@ -9,10 +9,6 @@
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/style.css"
             type="text/css" media="screen" charset="utf-8"/>
 
-        <!--[if lt IE 9]>
-            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-
         {% if debug %}
         {% endif %}
 
@@ -23,8 +19,8 @@
                 {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
                 href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
 
-        <script src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
-        <script>
+        <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
+        <script type="text/javascript">
             // Path to the blank image should point to a valid location on your server
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
             Ext.Loader.setConfig({
@@ -50,6 +46,7 @@
                 Ext.QuickTips.init();
             });
 
+            {% comment %}
             if(Ext.isIE) {
                 Ext.onReady(function() {
                     var win = Ext.MessageBox.show({
@@ -61,10 +58,16 @@
                     });
                 });
             }
+            {% endcomment %}
+
         </script>
-        <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 
         {% block headextra %}{% endblock %}
+
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
     </head>
 
     <body>
