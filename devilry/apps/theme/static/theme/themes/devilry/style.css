@@ -286,7 +286,8 @@ body {
   .popuplistitem h1, .popuplistitem h2, .popuplistitem h3, .popuplistitem h4 {
     margin: 0; }
   .popuplistitem h1 {
-    font-size: 1.2em; }
+    font-size: 1.2em !important;
+    margin: 0 !important; }
   .popuplistitem h2 {
     font-size: 1.1em; }
   .popuplistitem h3 {

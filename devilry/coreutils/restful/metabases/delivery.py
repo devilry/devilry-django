@@ -11,10 +11,11 @@ class DeliveryExtjsModelMeta:
                     '   <tpl if="!is_student">'
                     '       <ul class="useridlist"><tpl for="deadline__assignment_group__candidates__identifier"><li>{.}</li></tpl></ul>'
                     '   </tpl>'
+                    '   <tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>'
                     '   <div class="section dl_valueimportant">'
                     '      <div class="section">'
                     '          <h1>Delivery number</h1>'
-                    '          {number}<tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>'
+                    '          {number}'
                     '      </div>'
                     '   </div>'
                     '</div>')
