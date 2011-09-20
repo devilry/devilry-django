@@ -3,6 +3,7 @@ from django.conf import settings
 
 from devilry.apps.gradeeditors import (gradeeditor_registry, JsonRegistryItem,
                                        DraftValidationError, ConfigValidationError)
+from devilry.defaults.encoding import CHARSET
 
 
 
@@ -41,7 +42,7 @@ class AsMinimalAsPossible(JsonRegistryItem):
         return dict(is_passing_grade=is_approved,
                     grade=grade,
                     points=int(is_approved),
-                    rendered_view='Your grade is: {0}'.format(grade))
+                    rendered_view='Your grade is: {0}'.format(grade.encode(CHARSET)))
 
 
 gradeeditor_registry.register(AsMinimalAsPossible)

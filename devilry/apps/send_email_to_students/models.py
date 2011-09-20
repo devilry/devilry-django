@@ -6,6 +6,7 @@ from django.template.defaultfilters import filesizeformat
 from devilry.apps.core.models import StaticFeedback
 from devilry.utils.devilry_email import send_email
 from devilry.apps.student.simplified import successful_delivery_signal
+from devilry.defaults.encoding import CHARSET
 
 
 def on_new_staticfeedback(sender, **kwargs):
@@ -33,7 +34,7 @@ def on_new_staticfeedback(sender, **kwargs):
                       period = period.long_name,
                       assignment = assignment.long_name)
     for key, value in unicode_kw.iteritems():
-        unicode_kw[key] = value.encode('utf-8')
+        unicode_kw[key] = value.encode(CHARSET)
 
     email_message = ('One of your deliveries has new feedback.\n\n'
                      'Subject: {subject}\n'

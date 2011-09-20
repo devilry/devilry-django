@@ -46,6 +46,16 @@ class ModelRestfulView(RestfulView):
         return [self.__class__.filter_resultitem(itemdct) \
                 for itemdct in qryresultwrapper]
 
+
+    def extra_create_or_replace_responsedata(self, obj_id):
+        """ If this does not return ``None``, the return-value is added to the
+        ``extra_responsedata`` attribute of the data returned on ``create()`` or
+        ``update()``.
+
+        :param obj_id: The id of the object changed by the create or update call.
+        """
+        return None
+
     def _create_or_replace(self, instance=None):
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
         form = self.__class__.EditForm(data, instance=instance)
@@ -61,6 +71,9 @@ class ModelRestfulView(RestfulView):
                 return InvalidUsernameSerializableResult(e.username)
 
             data['id'] = id
+            extra = self.extra_create_or_replace_responsedata(id)
+            if extra != None:
+                data['extra_responsedata'] = extra
             result = self.extjswrapshortcut(data)
             if instance == None:
                 return SerializableResult(result, httpresponsecls=HttpResponseCreated)

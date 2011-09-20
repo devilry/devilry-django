@@ -9,6 +9,7 @@ from django.db.models import fields
 
 from devilry.simplified import SimplifiedModelApi
 from devilry.simplified.utils import get_field_from_fieldname, get_clspath
+from devilry.defaults.encoding import CHARSET
 
 
 
@@ -225,7 +226,7 @@ class Page(object):
         return join(directory, self.filename)
 
     def write_to_dir(self, directory):
-        open(self.get_filepath(directory), 'wb').write(unicode(self).encode('utf-8'))
+        open(self.get_filepath(directory), 'wb').write(unicode(self).encode(CHARSET))
 
 
 
@@ -319,7 +320,7 @@ class IndexPage(object):
         return self.TPL.format(**self.__dict__)
 
     def write(self, filepath):
-        open(filepath, 'wb').write(unicode(self).encode('utf-8'))
+        open(filepath, 'wb').write(unicode(self).encode(CHARSET))
 
 
 

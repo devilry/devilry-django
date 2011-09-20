@@ -88,13 +88,13 @@ class FeedbackDraft(models.Model):
 
     def save(self, *args, **kwargs):
         if self.published:
-            _tmp_staticfeedback = self._to_staticfeedback()
+            _tmp_staticfeedback = self.to_staticfeedback()
             _tmp_staticfeedback.full_clean()
             _tmp_staticfeedback.save()
             self.staticfeedback = _tmp_staticfeedback # Note: We use _tmp_staticfeedback because if we need a variable in which to store the staticfeedback while we save it. We can not just save self.staticfeedback() because that would just create create a copy without actually setting self.staticfeedback to the newly saved value.
         super(FeedbackDraft, self).save(*args, **kwargs)
 
-    def _to_staticfeedback(self):
+    def to_staticfeedback(self):
         """ Return a staticfeedback generated from self. """
         config = self._get_config()
         gradeeditor = config._get_gradeeditor()
