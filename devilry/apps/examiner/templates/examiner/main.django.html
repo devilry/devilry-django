@@ -9,30 +9,7 @@
     Ext.require('devilry.examiner.RecentDeliveriesView');
     Ext.require('devilry.examiner.RecentFeedbacksView');
 
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
-    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
-    assignmentgroup_permcheckstore.pageSize = 1;
 
-    Ext.onReady(function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
-        Ext.create('devilry.extjshelpers.PermissionChecker', {
-            stores: [assignmentgroup_permcheckstore],
-            renderTo: 'no-permissions-message',
-            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
-                '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
-            listeners: {
-                allLoaded: function() {
-                    Ext.getBody().unmask();
-                },
-                hasPermission: function() {
-                    Ext.getDom('has-permission-section').style.display = 'block';
-                    Ext.getDom('searchsection').style.display = 'block';
-                    createActiveAssignmentsView();
-                }
-            }
-        });
-        assignmentgroup_permcheckstore.load();
-    });
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,candidates" }}
@@ -65,6 +42,35 @@
         });
     }
 
+
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
+    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
+    assignmentgroup_permcheckstore.pageSize = 1;
+
+    function createPermissionChecker() {
+        Ext.create('devilry.extjshelpers.PermissionChecker', {
+            stores: [assignmentgroup_permcheckstore],
+            renderTo: 'no-permissions-message',
+            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
+                '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
+            listeners: {
+                allLoaded: function() {
+                    Ext.getBody().unmask();
+                },
+                hasPermission: function() {
+                    Ext.getDom('has-permission-section').style.display = 'block';
+                    Ext.getDom('searchsection').style.display = 'block';
+                    createActiveAssignmentsView();
+                }
+            }
+        });
+    }
+
+    Ext.onReady(function() {
+        Ext.getBody().mask("Loading page", 'page-load-mask');
+        createPermissionChecker();
+        assignmentgroup_permcheckstore.load();
+    });
 </script>
 
 {% endblock %}
