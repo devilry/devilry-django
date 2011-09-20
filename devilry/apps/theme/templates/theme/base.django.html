@@ -1,6 +1,6 @@
 {% extends "theme/no-body.django.html" %}
 {% block body %}
-    <header>
+    <div class="header">
         <div id="heading">
             <h1>Devilry</h1>
             <a href="http://devilry.org" id="projectlink">http://devilry.org</a>
@@ -25,15 +25,15 @@
             {% endif %}
         </div>
 
-        <nav class="{% block nav-class %}{% endblock %}">
+        <div class="nav {% block nav-class %}{% endblock %}">
             <ul>
                 <li class="student-navitem"><a href="{% url student %}">Student</a></li>
                 <li class="examiner-navitem"><a href="{% url examiner %}">Examiner</a></li>
                 <li class="administrator-navitem"><a href="{% url administrator %}">Administrator</a></li>
                 <li class="externallink-navitem"><a href="{{ DEVILRY_HELP_URL }}" target="_blank">Help</a></li>
             </ul>
-        </nav>
-    </header>
+        </div>
+    </div>
 
     <div id="mainwrapper">
         <div id="main">
@@ -41,8 +41,8 @@
         </div>
     </div>
 
-    <footer>
+    <div class="footer">
         <a href='http://devilry.org'>Devilry</a> is an open source
         general purpose delivery system.
-    </footer>
+    </div>
 {% endblock %}

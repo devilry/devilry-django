@@ -87,7 +87,7 @@ body {
   background-color: #fff;
   color: #222; }
 
-header {
+.header {
   background-color: #000;
   color: #fff;
   /**
@@ -115,20 +115,20 @@ header {
    *
    */
   /* Color the bottom border of the header with the color of the current section. */ }
-  header > #heading {
+  .header > #heading {
     float: right; }
-  header > #heading > h1 {
+  .header > #heading > h1 {
     font-size: 2.0em;
     padding: 20px 20px 5px 20px;
     text-align: right; }
-  header > #heading > a#projectlink {
+  .header > #heading > a#projectlink {
     display: block;
     margin: 0 20px 5px 20px;
     text-decoration: none;
     font-size: 0.8em;
     text-align: right;
     color: #a00; }
-  header > #version {
+  .header > #version {
     /*margin: 0 20px 5px 20px;*/
     top: 24px;
     left: 35%;
@@ -142,30 +142,30 @@ header {
     position: absolute;
     color: #444;
     font-family: "Arial Black", sans-serif; }
-  header > #version span.codename {
+  .header > #version span.codename {
     font-style: italic; }
-  header > #authenticated-user-bar {
+  .header > #authenticated-user-bar {
     padding-top: 20px;
     padding-left: 20px;
     color: #ccc;
     font-size: 0.8em; }
-  header > #authenticated-user-bar > a.loginout-link {
+  .header > #authenticated-user-bar > a.loginout-link {
     color: #fff;
     font-weight: bold; }
-  header > #authenticated-user-bar > a.loginout-link:visited {
+  .header > #authenticated-user-bar > a.loginout-link:visited {
     color: #fff; }
-  header > #authenticated-user-bar > a.loginout-link:hover {
+  .header > #authenticated-user-bar > a.loginout-link:hover {
     color: #fff; }
-  header > nav {
+  .header > .nav {
     margin-top: 20px; }
-    header > nav ul {
+    .header > .nav ul {
       margin: 0 0 0 20px;
       padding: 0; }
-    header > nav li {
+    .header > .nav li {
       display: inline-block;
       margin: 0 10px 0 0;
       padding: 0; }
-    header > nav li a {
+    .header > .nav li a {
       text-decoration: none;
       display: block;
       margin-left: 0;
@@ -176,25 +176,25 @@ header {
       color: #08C;
       border-radius: 14px 6px 0 0;
       font-weight: bold; }
-    header > nav li.student-navitem a {
+    .header > .nav li.student-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.student-navitem a:hover {
+      .header > .nav li.student-navitem a:hover {
         color: #f7ffe5;
         background-color: #88cc00 !important; }
-    header > nav li.examiner-navitem a {
+    .header > .nav li.examiner-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.examiner-navitem a:hover {
+      .header > .nav li.examiner-navitem a:hover {
         color: #e5f7ff;
         background-color: #0088cc !important; }
-    header > nav li.administrator-navitem a {
+    .header > .nav li.administrator-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.administrator-navitem a:hover {
+      .header > .nav li.administrator-navitem a:hover {
         color: #ffeee5;
         background-color: #e64d00 !important; }
-    header > nav li.externallink-navitem a {
+    .header > .nav li.externallink-navitem a {
       background-color: #222;
       color: #fff;
       border-radius: 6px 14px 0 0;
@@ -202,20 +202,20 @@ header {
       background-repeat: no-repeat;
       background-position: 10px center;
       padding-left: 32px; }
-      header > nav li.externallink-navitem a:hover {
+      .header > .nav li.externallink-navitem a:hover {
         color: white;
         background-color: #333333 !important; }
-  header > nav.student {
+  .header > .student {
     border-bottom: 10px solid #77b300; }
-    header > nav.student li.student-navitem a {
+    .header > .student li.student-navitem a {
       background-color: #77b300; }
-  header > nav.examiner {
+  .header > .examiner {
     border-bottom: 10px solid #0077b3; }
-    header > nav.examiner li.examiner-navitem a {
+    .header > .examiner li.examiner-navitem a {
       background-color: #0077b3; }
-  header > nav.administrator {
+  .header > .administrator {
     border-bottom: 10px solid #cc4400; }
-    header > nav.administrator li.administrator-navitem a {
+    .header > .administrator li.administrator-navitem a {
       background-color: #cc4400; }
 
 /**
@@ -1282,7 +1282,7 @@ div.section h3 {
  * Footer
  *
  */
-footer {
+.footer {
   text-align: right;
   clear: both;
   padding: 20px;
@@ -1292,11 +1292,11 @@ footer {
   color: #D4D2CE;
   border-top-color: 1px solid #ECEBE9;
   background-color: #fff; }
-  footer a {
+  .footer a {
     color: #D4D2CE; }
-  footer a:hover {
+  .footer a:hover {
     color: #776B5F; }
-  footer a:visited {
+  .footer a:visited {
     color: #D4D2CE; }
 
 .codehilite .hll {
