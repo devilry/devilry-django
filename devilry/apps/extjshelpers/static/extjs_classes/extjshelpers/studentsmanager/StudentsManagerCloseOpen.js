@@ -79,7 +79,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
                     this.progressWindow.finish(null, {
                         title: 'Success',
                         html: Ext.String.format(
-                            '<section class="info"><h1>Success</h1>Successfully {0} {1} groups.</section>',
+                            '<div class="section info"><h1>Success</h1>Successfully {0} {1} groups.</section>',
                             (is_open? 'opened': 'closed'),
                             totalSelectedGroups
                         )

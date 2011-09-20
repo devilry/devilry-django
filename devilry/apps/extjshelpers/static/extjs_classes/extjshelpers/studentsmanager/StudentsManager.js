@@ -256,7 +256,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             maximizable: true,
             maximized: true,
             helptpl: Ext.create('Ext.XTemplate',
-                '<section class="helpsection">',
+                '<div class="section helpsection">',
                 '   <h1>Guides</h1>',
                 '   <p>This is a complex view that supports a huge amount of different workflows. Please visit the <a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">primary help section</a> for guides and more help.</p>',
                 '   <h1>Search</h1>',

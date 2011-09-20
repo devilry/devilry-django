@@ -43,7 +43,7 @@
         Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [nodestore, subjectstore, periodstore],
             renderTo: 'no-permissions-message',
-            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an administrator</h1>' +
+            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an administrator</h1>' +
                 '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function(loadedItems, loadedWithRecords) {
@@ -168,5 +168,5 @@
 
 <div id="no-permissions-message"></div>
 <div id="createbuttonbar"></div>
-<section id="activeassignments"></section>
+<div class="section" id="activeassignments"></section>
 {% endblock %}

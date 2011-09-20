@@ -4,7 +4,7 @@ Base template for single-object views (I.E.: Those that take a specific ID).
 {% endcomment %}
 
 {% block main %}
-    <section class="treeheading" id="content-heading"></section>
+    <div class="section treeheading" id="content-heading"></section>
     {{ block.super }} {# The search box #}
     <div id="content-main"></div>
 {% endblock %}

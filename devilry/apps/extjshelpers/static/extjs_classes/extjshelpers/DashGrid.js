@@ -35,7 +35,7 @@ Ext.define('devilry.extjshelpers.DashGrid', {
                         xtype: 'box',
                         renderTo: 'no-active-assignments-message',
                         html: Ext.create('Ext.XTemplate',
-                            '<section class="{msgcls}-small extravisible-small">',
+                            '<div class="section {msgcls}-small extravisible-small">',
                             '   <h1>{title}</h1>',
                             '   <p>{msg}</p>',
                             '</section>'

@@ -8,7 +8,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     ],
 
     randomDistResultTpl: Ext.create('Ext.XTemplate',
-        '<section class="info">',
+        '<div class="section info">',
         '    <p>The selected examiners got the following number of groups:</p>',
         '    <ul>',
         '    <tpl for="result">',
@@ -347,7 +347,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             items: {
                 xtype: 'importgroupsfromanotherassignment',
                 periodid: this.periodid,
-                help: '<section class="helpsection">Select the assignment you wish to import examiners from. When you click next, every selected assignemnt group in the current assignment with <strong>exactly</strong> the same members as in the selected assignment, will have their examiners copied into the current assignment.</section>',
+                help: '<div class="section helpsection">Select the assignment you wish to import examiners from. When you click next, every selected assignemnt group in the current assignment with <strong>exactly</strong> the same members as in the selected assignment, will have their examiners copied into the current assignment.</section>',
                 listeners: {
                     scope: this,
                     next: this.importExaminersFromAnotherAssignmentInCurrentPeriod

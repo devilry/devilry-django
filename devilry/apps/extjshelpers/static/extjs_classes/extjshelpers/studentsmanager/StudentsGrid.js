@@ -18,7 +18,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     infoColTpl: Ext.create('Ext.XTemplate', 
-        '<section class="infocolumn">',
+        '<div class="section infocolumn">',
         '    <div>',
         '        <tpl if="is_open">',
         '           <span class="group_is_open">Open</span>',
@@ -86,7 +86,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
-        '<section class="gradecolumn">',
+        '<div class="section gradecolumn">',
         '   <tpl if="feedback">',
         '        <div class="is_passing_grade">',
         '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">Passed</span></tpl>',

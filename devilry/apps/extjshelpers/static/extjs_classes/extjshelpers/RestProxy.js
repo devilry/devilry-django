@@ -112,7 +112,7 @@ Ext.define('devilry.extjshelpers.RestProxy', {
     statics: {
         formatHtmlErrorMessage: function(operation) {
             var tpl = Ext.create('Ext.XTemplate', 
-                '<section class="errormessages">',
+                '<div class="section errormessages">',
                 '<tpl if="httperror">{httperror.status} {httperror.statusText}</tpl>',
                 '<tpl for="errormessages">',
                 '   <p>{.}</p>',

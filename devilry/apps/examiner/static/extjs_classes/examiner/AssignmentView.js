@@ -44,7 +44,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             }],
             
             helpTpl: Ext.create('Ext.XTemplate',
-                '<section class="helpsection">',
+                '<div class="section helpsection">',
                 '   {todohelptext}',
                 '   <p>Choose <span class="menuref">Manage assignment groups (students)</span> to view all groups, and to give feedback to multiple groups.</p>',
                 '   <p>You may want to <span class="menuref">Download all deliveries</span> as a zip file instead of downloading the delivery for each group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.</p>',

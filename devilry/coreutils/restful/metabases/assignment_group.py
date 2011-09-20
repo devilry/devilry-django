@@ -1,7 +1,7 @@
 class AssignmentGroupExtjsModelMeta:
     """ Metadata for AssignmentGroup javascript. """
     combobox_fieldgroups = ['assignment', 'period', 'subject', 'users']
-    combobox_tpl = ('<section class="popuplistitem">'
+    combobox_tpl = ('<div class="section popuplistitem">'
                     '   <p class="path">'
                            '{parentnode__parentnode__parentnode__short_name:ellipsis(60)}.'
                            '{parentnode__parentnode__short_name:ellipsis(60)}.'

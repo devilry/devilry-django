@@ -110,7 +110,7 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
                 frame: false,
                 border: false,
                 html:
-                    '<section class="helpsection">' +
+                    '<div class="section helpsection">' +
                     '   <p>Marking a group as delivered in a previoud period/semester, does the following:</p>' +
                     '   <ul>' +
                     '       <li>Create a new <em>empty</em> delivery that is marked as imported from a previous semester. This is done automatically.</li>' +

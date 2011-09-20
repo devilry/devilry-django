@@ -18,7 +18,7 @@
         Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
-            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not an examiner</h1>' +
+            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
                 '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function() {
@@ -75,8 +75,8 @@
 {{ block.super }}
 <div id="no-permissions-message"></div>
 <div id="no-active-assignments-message"></div>
-<section id="has-permission-section" style="display: none">
-    <section id="activeassignments"></section>
-    <section id="recent"></section>
+<div class="section" id="has-permission-section" style="display: none">
+    <div class="section" id="activeassignments"></section>
+    <div class="section" id="recent"></section>
 </section>
 {% endblock %}

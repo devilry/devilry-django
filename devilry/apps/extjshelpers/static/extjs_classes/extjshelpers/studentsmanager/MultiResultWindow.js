@@ -10,7 +10,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
 
     logTpl: Ext.create('Ext.XTemplate',
         '<tpl for="log">',
-        '    <section class="{parent.csscls}-small">',
+        '    <div class="section {parent.csscls}-small">',
         '        <h1>',
         '            <tpl if="assgnmentGroupRecord.data.name">',
         '               {assgnmentGroupRecord.data.name} -',

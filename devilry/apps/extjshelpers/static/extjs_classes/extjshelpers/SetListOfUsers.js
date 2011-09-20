@@ -17,7 +17,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
         helptext: '<p>One username on each line. Example:</p>',
 
         helptpl: Ext.create('Ext.XTemplate',
-            '<section class="helpsection">',
+            '<div class="section helpsection">',
             '   {helptext}',
             '   <pre style="padding: 5px;">{example}</pre>',
             '</section>'

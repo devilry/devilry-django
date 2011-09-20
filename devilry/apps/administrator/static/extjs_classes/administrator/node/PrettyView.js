@@ -3,7 +3,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
     alias: 'widget.administrator_nodeprettyview',
 
     bodyTpl: Ext.create('Ext.XTemplate',
-        '<section class="help">',
+        '<div class="section help">',
         '    <h1>What is a node?</h1>',
         '    <p>',
         '        A Node is a place to organise top-level administrators (administrators responsible for more than one subject).',

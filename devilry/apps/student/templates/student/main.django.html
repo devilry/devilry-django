@@ -42,7 +42,7 @@
         Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [assignmentgroup_permcheckstore],
             renderTo: 'no-permissions-message',
-            emptyHtml: '<section class="info-small extravisible-small"><h1>You are not a student</h1>' +
+            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not a student</h1>' +
                 '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></section>',
             listeners: {
                 allLoaded: function() {
@@ -111,7 +111,7 @@
 {% block main %}
 
 
-<section id="searchsection" style="display: none">
+<div class="section" id="searchsection" style="display: none">
     <div id='searchwidget-container'></div>
     <p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
     have permission to view as a <strong>student</strong>. You can, for example, search for the name of a subject to find anything
@@ -119,10 +119,10 @@
 </section>
 
 <div id="no-permissions-message"></div>
-<section id="has-permission-section" style="display: none">
+<div class="section" id="has-permission-section" style="display: none">
     <h2>Assignments / Add deliveries</h2>
-    <section id="dashtable"></section>
+    <div class="section" id="dashtable"></section>
 
-    <section id="recent"></section>
+    <div class="section" id="recent"></section>
 </section>
 {% endblock %}

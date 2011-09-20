@@ -5,7 +5,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
 
     tpl: Ext.create('Ext.XTemplate',
         '<tpl if="!isactive">',
-        '   <section class="warning-small">',
+        '   <div class="section warning-small">',
         '       <h1>This is not the active feedback</h1>',
         '       When an examiner publish a feedback, the feedback is ',
         '       stored forever. When an examiner needs to modify a feedback, ',
@@ -16,7 +16,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '   </section>',
         '</tpl>',
 
-        '<section class="{gradecls}">',
+        '<div class="section {gradecls}">',
         '   <h1>Grade</h1>',
         '       <p>',
         '       <tpl if="!is_passing_grade">',
@@ -28,7 +28,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       This feedback was published <em>{save_timestamp:date}</em>.',
         '       </p>',
         '</section>',
-        '<section class="rendered_view">{rendered_view}<section>'
+        '<div class="section rendered_view">{rendered_view}<div class="section">'
     ),
 
     

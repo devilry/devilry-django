@@ -118,7 +118,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 usernames: candidatestrings,
                 anonymous: record.data.parentnode__anonymous,
                 helptpl: Ext.create('Ext.XTemplate',
-                    '<section class="helpsection">',
+                    '<div class="section helpsection">',
                     '   <tpl if="anonymous">',
                     '       <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by a single colon. Note that <em>candidate ID</em> does not have to be a number.</p>',
                     '       <p>Example:</p>',
@@ -235,7 +235,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'importgroupsfromanotherassignment',
                 periodid: this.periodid,
-                help: '<section class="helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
+                help: '<div class="section helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</section>',
                 listeners: {
                     scope: this,
                     next: this.importGroupsFromAnotherAssignmentInCurrentPeriod

@@ -22,7 +22,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     },
 
     helptext:
-        '<section class="helpsection">' +
+        '<div class="section helpsection">' +
         //'   <h1>Help</h1>' +
         '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box.</p>' +
         '   <h2>Common usage examples</h2>' +

@@ -30,7 +30,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
 
     class ExtjsModelMeta:
         combobox_displayfield = 'short_name'
-        combobox_tpl = ('<section class="popuplistitem">'
+        combobox_tpl = ('<div class="section popuplistitem">'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
                         '</section>')
 
@@ -60,7 +60,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
     class ExtjsModelMeta:
         """ Metadata for javascript. """
         combobox_fieldgroups = ['subject']
-        combobox_tpl = ('<section class="popuplistitem">'
+        combobox_tpl = ('<div class="section popuplistitem">'
                         '    <p class="path">{parentnode__short_name}</p>'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
                         '</section>')
