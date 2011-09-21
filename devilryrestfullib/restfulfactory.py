@@ -37,7 +37,10 @@ def call_restful_method(url, crudsmethod, logincookie, restful_method_kwargs):
         response = urllib2.urlopen(req)
     except urllib2.HTTPError, e:
         errordata = e.read()
-        errmsg = json.loads(errordata)
+        try:
+            errmsg = json.loads(errordata)
+        except ValueError, e:
+            raise ValueError('{0}. HTTP response was: {1}'.format(e, errordata))
         if e.code == 400:
             raise HttpResponseBadRequest(errmsg)
         elif e.code == 401:
