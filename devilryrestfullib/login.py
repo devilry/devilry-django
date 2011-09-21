@@ -45,6 +45,7 @@ def login(url, **logindata):
             cookie = SimpleCookie()
             cookie.load(setcookie)
             cookieout = cookie.output().replace("Set-Cookie: ", "")
+            cookieout = cookieout.replace('\r', '').replace('\n', '; ')
             return cookieout
     else:
         raise LoginError("Login to %s failed with the following message: %s %s (%s)" % (
