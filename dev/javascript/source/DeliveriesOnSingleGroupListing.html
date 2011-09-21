@@ -33,6 +33,12 @@
         '&lt;/tpl&gt;'
     ),
 
+    helptext: '&lt;div class=&quot;section helpsection&quot;&gt;' +
+        '   &lt;p&gt;Select a delivery from the list of all deliveries made by this group. The deliveries are grouped by deadline.&lt;/p&gt;' +
+        '   &lt;p&gt;Deliveries are numbered by the order they are delivered. The first delivery has number &lt;strong&gt;1&lt;/strong&gt;.&lt;/p&gt;' +
+        '   &lt;p&gt;Deliveries are made on a specific deadline. Students can deliver after the deadline, as long as the group is open. However when a delivery was made after the deadline, it is shown by a message after the time of delivery.&lt;/p&gt;' +
+        '&lt;/div&gt;',
+
     config: {
 <span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-delivery_recordcontainer'>        /**
 </span>         * @cfg
@@ -75,7 +81,12 @@
                 scope: this,
                 itemmouseup: this.onSelectDelivery
             },
-            dockedItems: [this.pagingtoolbar]
+            dockedItems: [this.pagingtoolbar, {
+                xtype: 'panel',
+                html: this.helptext,
+                dock: 'right',
+                width: 300
+            }]
         });
 
         this.store.addListener('load', this.onLoadStore, this);

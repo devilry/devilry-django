@@ -46,19 +46,21 @@
           <div class="body">
             
   <h1>Source code for devilry.simplified</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedException</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedException</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">InvalidUsername</span><span class="p">,</span>
                         <span class="n">InvalidNumberOfResults</span><span class="p">,</span> <span class="n">FilterValidationError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">qryresultwrapper</span> <span class="kn">import</span> <span class="n">QryResultWrapper</span>
 <span class="kn">from</span> <span class="nn">fieldspec</span> <span class="kn">import</span> <span class="n">FieldSpec</span>
 <span class="kn">from</span> <span class="nn">modelapi</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">UnsupportedCrudsMethod</span>
 <span class="kn">from</span> <span class="nn">filterspec</span> <span class="kn">import</span> <span class="p">(</span><span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span><span class="p">,</span>
-                        <span class="n">PatternFilterSpec</span><span class="p">)</span>
+                        <span class="n">PatternFilterSpec</span><span class="p">,</span> <span class="n">boolConverter</span><span class="p">,</span> <span class="n">intConverter</span><span class="p">,</span>
+                        <span class="n">intOrNoneConverter</span><span class="p">,</span> <span class="n">dateTimeConverter</span><span class="p">,</span> <span class="n">stringOrNoneConverter</span><span class="p">)</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SimplifiedException&#39;</span><span class="p">,</span> <span class="s">&#39;PermissionDenied&#39;</span><span class="p">,</span> <span class="s">&#39;InvalidNumberOfResults&#39;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SimplifiedException&#39;</span><span class="p">,</span> <span class="s">&#39;PermissionDenied&#39;</span><span class="p">,</span> <span class="s">&#39;InvalidNumberOfResults&#39;</span><span class="p">,</span> <span class="s">&#39;InvalidUsername&#39;</span><span class="p">,</span>
            <span class="s">&#39;FilterValidationError&#39;</span><span class="p">,</span> <span class="s">&#39;QryResultWrapper&#39;</span><span class="p">,</span> <span class="s">&#39;FieldSpec&#39;</span><span class="p">,</span>
            <span class="s">&#39;simplified_modelapi&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedModelApi&#39;</span><span class="p">,</span> <span class="s">&#39;FilterSpecs&#39;</span><span class="p">,</span> <span class="s">&#39;FilterSpec&#39;</span><span class="p">,</span>
-           <span class="s">&#39;ForeignFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;PatternFilterSpec&#39;</span><span class="p">)</span>
+           <span class="s">&#39;ForeignFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;PatternFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;boolConverter&#39;</span><span class="p">,</span> <span class="s">&#39;intConverter&#39;</span><span class="p">,</span>
+           <span class="s">&#39;intOrNoneConverter&#39;</span><span class="p">,</span> <span class="s">&#39;dateTimeConverter&#39;</span><span class="p">,</span> <span class="s">&#39;stringOrNoneConverter&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>

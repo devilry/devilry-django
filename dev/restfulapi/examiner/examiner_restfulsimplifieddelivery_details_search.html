@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
     <link rel="up" title="Examiner" href="index.html" />
-    <link rel="next" title="GET /examiner/restfulsimplifiedstaticfeedback/id" href="examiner_restfulsimplifiedstaticfeedback_details_read.html" />
+    <link rel="next" title="DELETE /examiner/restfulsimplifieddelivery/id" href="examiner_restfulsimplifieddelivery_details_delete.html" />
     <link rel="prev" title="GET /examiner/restfulsimplifieddelivery/id" href="examiner_restfulsimplifieddelivery_details_read.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifiedstaticfeedback_details_read.html" title="GET /examiner/restfulsimplifiedstaticfeedback/id"
+          <a href="examiner_restfulsimplifieddelivery_details_delete.html" title="DELETE /examiner/restfulsimplifieddelivery/id"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="examiner_restfulsimplifieddelivery_details_read.html" title="GET /examiner/restfulsimplifieddelivery/id"
@@ -78,8 +78,8 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
                   <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-number&quot;</span><span class="p">,</span> <span class="s2">&quot;time_of_delivery&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;successful&quot;</span><span class="p">,</span> <span class="s2">&quot;delivery_type&quot;</span><span class="p">,</span> <span class="s2">&quot;alias_delivery&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
@@ -221,8 +221,8 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
@@ -302,6 +302,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
+<dt>deadline__assignment_group__parentnode__parentnode__end_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>deadline__assignment_group__parentnode__parentnode__long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -370,6 +382,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
 <dt>Type</dt>
 <dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__parentnode__parentnode__start_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
@@ -528,6 +552,26 @@ results of the search. The following group names are available:</p>
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
 <dd>Integer</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__parentnode__parentnode__start_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__parentnode__parentnode__end_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 </dl>
 </dd>
 <dt>deadline__assignment_group__parentnode__parentnode__short_name</dt>
@@ -838,8 +882,8 @@ request parameter.</p>
   <p class="topless"><a href="examiner_restfulsimplifieddelivery_details_read.html"
                         title="previous chapter">GET /examiner/restfulsimplifieddelivery/id</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="examiner_restfulsimplifiedstaticfeedback_details_read.html"
-                        title="next chapter">GET /examiner/restfulsimplifiedstaticfeedback/id</a></p>
+  <p class="topless"><a href="examiner_restfulsimplifieddelivery_details_delete.html"
+                        title="next chapter">DELETE /examiner/restfulsimplifieddelivery/id</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/restfulapi/examiner/examiner_restfulsimplifieddelivery_details_search.txt"
@@ -872,7 +916,7 @@ request parameter.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifiedstaticfeedback_details_read.html" title="GET /examiner/restfulsimplifiedstaticfeedback/id"
+          <a href="examiner_restfulsimplifieddelivery_details_delete.html" title="DELETE /examiner/restfulsimplifieddelivery/id"
              >next</a> |</li>
         <li class="right" >
           <a href="examiner_restfulsimplifieddelivery_details_read.html" title="GET /examiner/restfulsimplifieddelivery/id"

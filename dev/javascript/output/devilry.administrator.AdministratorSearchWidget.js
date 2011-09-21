@@ -1,168 +1,162 @@
 Ext.data.JsonP.devilry_administrator_AdministratorSearchWidget({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget",
+  "allMixins": [
 
   ],
   "doc": "<p>SearchWidget used in every page in the entire administrator interface.</p>\n\n<p>Enables users to search for everything (like the dashboard) or just within\nthe current item.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "AdministratorSearchWidget.html",
-  "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
     "devilry.extjshelpers.searchwidget.SearchWidget"
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-assignmentRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Assignment rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-assignmentRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 37,
         "inheritable": false,
         "alias": null,
         "name": "assignmentRowTpl",
+        "linenr": 37,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-assignmentgroupRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for AssignmentGroup rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-assignmentgroupRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 43,
         "inheritable": false,
         "alias": null,
         "name": "assignmentgroupRowTpl",
+        "linenr": 43,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-deliveryRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Delivery rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-deliveryRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 49,
         "inheritable": false,
         "alias": null,
         "name": "deliveryRowTpl",
+        "linenr": 49,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-nodeRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Node rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-nodeRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 19,
         "inheritable": false,
         "alias": null,
         "name": "nodeRowTpl",
+        "linenr": 19,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-periodRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Period rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-periodRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 31,
         "inheritable": false,
         "alias": null,
         "name": "periodRowTpl",
+        "linenr": 31,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "SearchWidget.html#devilry-extjshelpers-searchwidget-SearchWidget-cfg-searchResultItems",
         "owner": "devilry.extjshelpers.searchwidget.SearchWidget",
         "doc": "<p>The <a href=\"#/api/devilry.extjshelpers.searchwidget.SearchResults\" rel=\"devilry.extjshelpers.searchwidget.SearchResults\" class=\"docClass\">devilry.extjshelpers.searchwidget.SearchResults</a>, use\nwhen searching.</p>\n",
         "html_filename": "SearchWidget.html",
-        "href": "SearchWidget.html#devilry-extjshelpers-searchwidget-SearchWidget-cfg-searchResultItems",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 34,
         "inheritable": false,
         "alias": null,
         "name": "searchResultItems",
+        "linenr": 34,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-subjectRowTpl",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Subject rows.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-subjectRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 25,
         "inheritable": false,
         "alias": null,
         "name": "subjectRowTpl",
+        "linenr": 25,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-urlPrefix",
         "owner": "devilry.administrator.AdministratorSearchWidget",
         "doc": "<p>Url prefix. Should be the absolute URL path to /administrator/.</p>\n",
         "html_filename": "AdministratorSearchWidget.html",
-        "href": "AdministratorSearchWidget.html#devilry-administrator-AdministratorSearchWidget-cfg-urlPrefix",
-        "tagname": "cfg",
-        "shortDoc": "Url prefix. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 13,
         "inheritable": false,
         "alias": null,
         "name": "urlPrefix",
+        "shortDoc": "Url prefix. ...",
+        "linenr": 13,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
         "deprecated": null
       }
@@ -170,15 +164,6 @@ Ext.data.JsonP.devilry_administrator_AdministratorSearchWidget({
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -188,31 +173,46 @@ Ext.data.JsonP.devilry_administrator_AdministratorSearchWidget({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.administrator.AdministratorSearchWidget",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "devilry.extjshelpers.searchwidget.SearchWidget",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/AdministratorSearchWidget.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "devilry.extjshelpers.searchwidget.SearchWidget",
+  "docauthor": null
 });

@@ -1,83 +1,77 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetails({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "AssignmentGroupDetails.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetails",
+  "allMixins": [
 
   ],
   "doc": "<p>AssignmentGroup details panel.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "AssignmentGroupDetails.html",
-  "href": "AssignmentGroupDetails.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetails",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
     "devilry.extjshelpers.SingleRecordView"
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "Object",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-extradata",
         "owner": "devilry.extjshelpers.SingleRecordView",
         "doc": "<p>Extra data for the <code>tpl</code>. Applied before the data in\n<code>singlerecordontainer</code>, so any shared attributed with\n<code>singlerecordontainer.data</code> will use the attribute in\n<code>singlerecordontainer.data</code>.</p>\n",
         "html_filename": "SingleRecordView.html",
-        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-extradata",
-        "tagname": "cfg",
-        "shortDoc": "Extra data for the tpl. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 22,
         "inheritable": false,
         "alias": null,
         "name": "extradata",
+        "shortDoc": "Extra data for the tpl. ...",
+        "linenr": 22,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-singlerecordontainer",
         "owner": "devilry.extjshelpers.SingleRecordView",
         "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> which contains data for the <code>tpl</code>.</p>\n",
         "html_filename": "SingleRecordView.html",
-        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-singlerecordontainer",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 10,
         "inheritable": false,
         "alias": null,
         "name": "singlerecordontainer",
+        "linenr": 10,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-tpl",
         "owner": "devilry.extjshelpers.SingleRecordView",
         "doc": "<p>An <code>Ext.XTemplate</code> which takes the record in <code>singlerecordontainer.record.data</code> as input.</p>\n",
         "html_filename": "SingleRecordView.html",
-        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-tpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 16,
         "inheritable": false,
         "alias": null,
         "name": "tpl",
+        "linenr": 16,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
         "deprecated": null
       }
@@ -85,15 +79,6 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetails({
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -103,31 +88,46 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetails({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails",
+  "linenr": 1,
   "xtypes": [
     "assignmentgroupdetails"
   ],
-  "extends": "devilry.extjshelpers.SingleRecordView",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupDetails.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "devilry.extjshelpers.SingleRecordView",
+  "docauthor": null
 });

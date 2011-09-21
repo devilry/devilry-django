@@ -1,117 +1,111 @@
 Ext.data.JsonP.devilry_student_StudentSearchWidget({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget",
+  "allMixins": [
 
   ],
   "doc": "<p>SearchWidget used in every page in the entire student interface.</p>\n\n<p>Enables users to search for everything (like the dashboard) or just within\nthe current item.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StudentSearchWidget.html",
-  "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
     "devilry.extjshelpers.searchwidget.SearchWidget"
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "String",
+        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-assignmentgroupRowTpl",
         "owner": "devilry.student.StudentSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for AssignmentGroup rows.</p>\n",
         "html_filename": "StudentSearchWidget.html",
-        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-assignmentgroupRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 19,
         "inheritable": false,
         "alias": null,
         "name": "assignmentgroupRowTpl",
+        "linenr": 19,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/student/static/extjs_classes/student/StudentSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-deadlineRowTpl",
         "owner": "devilry.student.StudentSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Deadline rows.</p>\n",
         "html_filename": "StudentSearchWidget.html",
-        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-deadlineRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 25,
         "inheritable": false,
         "alias": null,
         "name": "deadlineRowTpl",
+        "linenr": 25,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/student/static/extjs_classes/student/StudentSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-deliveryRowTpl",
         "owner": "devilry.student.StudentSearchWidget",
         "doc": "<p><code>Ext.XTemplate</code> for Delivery rows.</p>\n",
         "html_filename": "StudentSearchWidget.html",
-        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-deliveryRowTpl",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 31,
         "inheritable": false,
         "alias": null,
         "name": "deliveryRowTpl",
+        "linenr": 31,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/student/static/extjs_classes/student/StudentSearchWidget.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "SearchWidget.html#devilry-extjshelpers-searchwidget-SearchWidget-cfg-searchResultItems",
         "owner": "devilry.extjshelpers.searchwidget.SearchWidget",
         "doc": "<p>The <a href=\"#/api/devilry.extjshelpers.searchwidget.SearchResults\" rel=\"devilry.extjshelpers.searchwidget.SearchResults\" class=\"docClass\">devilry.extjshelpers.searchwidget.SearchResults</a>, use\nwhen searching.</p>\n",
         "html_filename": "SearchWidget.html",
-        "href": "SearchWidget.html#devilry-extjshelpers-searchwidget-SearchWidget-cfg-searchResultItems",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 34,
         "inheritable": false,
         "alias": null,
         "name": "searchResultItems",
+        "linenr": 34,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js",
         "deprecated": null
       },
       {
         "type": "String",
+        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-urlPrefix",
         "owner": "devilry.student.StudentSearchWidget",
         "doc": "<p>Url prefix. Should be the absolute URL path to /student/.</p>\n",
         "html_filename": "StudentSearchWidget.html",
-        "href": "StudentSearchWidget.html#devilry-student-StudentSearchWidget-cfg-urlPrefix",
-        "tagname": "cfg",
-        "shortDoc": "Url prefix. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 13,
         "inheritable": false,
         "alias": null,
         "name": "urlPrefix",
+        "shortDoc": "Url prefix. ...",
+        "linenr": 13,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/student/static/extjs_classes/student/StudentSearchWidget.js",
         "deprecated": null
       }
@@ -119,15 +113,6 @@ Ext.data.JsonP.devilry_student_StudentSearchWidget({
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -137,31 +122,46 @@ Ext.data.JsonP.devilry_student_StudentSearchWidget({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.student.StudentSearchWidget",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "devilry.extjshelpers.searchwidget.SearchWidget",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/student/static/extjs_classes/student/StudentSearchWidget.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "devilry.extjshelpers.searchwidget.SearchWidget",
+  "docauthor": null
 });

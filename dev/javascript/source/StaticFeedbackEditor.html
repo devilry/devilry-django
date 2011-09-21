@@ -58,7 +58,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'Edit feedback',
             //iconCls: 'icon-edit-32',
-            hidden: true,
+            hidden: false,
             scale: 'large',
             listeners: {
                 scope: this,
@@ -134,11 +134,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 this.delivery_recordcontainer.record &amp;&amp;
                 this.registryitem_recordcontainer.record &amp;&amp;
                 this.assignmentgroup_recordcontainer.record) {
-            if(this.assignmentgroup_recordcontainer.record.data.is_open) {
-                this.createButton.show();
-            } else {
-                this.createButton.hide();
-            }
+            //if(this.assignmentgroup_recordcontainer.record.data.is_open) {
+                //this.createButton.show();
+            //} else {
+                //this.createButton.hide();
+            //}
         }
     },
 
@@ -166,7 +166,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.setBody({
             xtype: 'component',
             cls: 'no-feedback-editable',
-            html: '&lt;p&gt;No feedback&lt;/p&gt;&lt;p class=&quot;unimportant&quot;&gt;Click to create feedback&lt;/p&gt;',
+            html: '&lt;p class=&quot;no-feedback-message&quot;&gt;No feedback&lt;/p&gt;&lt;p class=&quot;click-create-create-feedback-message&quot;&gt;Click to create feedback&lt;/p&gt;',
             listeners: {
                 render: function() {
                     this.getEl().addListener('mouseup', me.loadGradeEditor, me);

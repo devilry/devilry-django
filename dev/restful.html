@@ -272,6 +272,22 @@ keyword arguments, and other things.</p>
 <dd><p>Maps to the <tt class="docutils literal"><span class="pre">update</span></tt> method of the simplified class.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.extra_create_or_replace_responsedata">
+<tt class="descname">extra_create_or_replace_responsedata</tt><big>(</big><em>obj_id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.extra_create_or_replace_responsedata" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this does not return <tt class="xref docutils literal"><span class="pre">None</span></tt>, the return-value is added to the
+<tt class="docutils literal"><span class="pre">extra_responsedata</span></tt> attribute of the data returned on <tt class="docutils literal"><span class="pre">create()</span></tt> or
+<tt class="docutils literal"><span class="pre">update()</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj_id</strong> &#8211; The id of the object changed by the create or update call.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">

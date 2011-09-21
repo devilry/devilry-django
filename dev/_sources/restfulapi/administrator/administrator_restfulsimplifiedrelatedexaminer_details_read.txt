@@ -55,7 +55,7 @@ Example
 
     {
         id: 15,
-        username: "My example value",
+        userspec: "My example value",
         period: 15
     }
 
@@ -75,11 +75,11 @@ The result always contains the following fields:
             Type
                 Integer
     
-        username
+        userspec
             Actual location of the field:
                 :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
             About the field:
-                A username. Max 30 characters, a-z, A-Z, and _
+                One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
             Type
                 String
     

@@ -210,6 +210,13 @@ specified in the <em>exact_number_of_results</em> parameter.</p>
 </dd></dl>
 
 <dl class="exception">
+<dt id="devilry.simplified.InvalidUsername">
+<em class="property">exception </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">InvalidUsername</tt><big>(</big><em>username</em><big>)</big><a class="headerlink" href="#devilry.simplified.InvalidUsername" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.exceptions.SimplifiedException</span></tt></p>
+<p>Raised when trying to set an invalid username.</p>
+</dd></dl>
+
+<dl class="exception">
 <dt id="devilry.simplified.FilterValidationError">
 <em class="property">exception </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterValidationError</tt><a class="headerlink" href="#devilry.simplified.FilterValidationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.exceptions.SimplifiedException</span></tt></p>
@@ -700,7 +707,7 @@ filterspecs.</td>
 
 <dl class="class">
 <dt id="devilry.simplified.FilterSpec">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpec</tt><big>(</big><em>fieldname</em>, <em>supported_comp=('exact'</em>, <em>'iexact'</em>, <em>'&lt;'</em>, <em>'&gt;'</em>, <em>'&lt;='</em>, <em>'&gt;='</em>, <em>'contains'</em>, <em>'icontains'</em>, <em>'startswith'</em>, <em>'endswith')</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpec" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpec</tt><big>(</big><em>fieldname</em>, <em>supported_comp=('exact'</em>, <em>'iexact'</em>, <em>'&lt;'</em>, <em>'&gt;'</em>, <em>'&lt;='</em>, <em>'&gt;='</em>, <em>'contains'</em>, <em>'icontains'</em>, <em>'startswith'</em>, <em>'endswith')</em>, <em>type_converter=&lt;function nullConverter at 0x108af8ed8&gt;</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Specifies that a specific field can be filtered, and what <em>comp</em> it can
 use.</p>

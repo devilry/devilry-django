@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
+    extend: 'Ext.window.Window',
+    layout: 'fit',
+    closeAction: 'hide',
+    closable: false,
+    width: 800,
+    height: 600,
+    modal: true,
+    maximizable: true,
+
+    logTpl: Ext.create('Ext.XTemplate',
+        '&lt;tpl for=&quot;log&quot;&gt;',
+        '    &lt;div class=&quot;section {parent.csscls}-small&quot;&gt;',
+        '        &lt;h1&gt;',
+        '            &lt;tpl if=&quot;assgnmentGroupRecord.data.name&quot;&gt;',
+        '               {assgnmentGroupRecord.data.name} -',
+        '            &lt;/tpl&gt;',
+        '            &lt;tpl for=&quot;assgnmentGroupRecord.data.candidates__identifier&quot;&gt;',
+        '               {.}&lt;tpl if=&quot;xindex &amp;lt; xcount&quot;&gt;, &lt;/tpl&gt;',
+        '            &lt;/tpl&gt;',
+        '        &lt;/h1&gt;',
+        '        {msg}',
+        '    &lt;/div&gt;',
+        '&lt;/tpl&gt;'
+    ),
+
+    operationErrorTpl: Ext.create('Ext.XTemplate',
+        '{msg}. ',
+        'Error details: ',
+        '&lt;tpl if=&quot;status === 0&quot;&gt;',
+        '    Could not connect to the Devilry server.',
+        '&lt;/tpl&gt;',
+        '&lt;tpl if=&quot;status !== 0&quot;&gt;',
+        '    {status} {statusText}.',
+        '&lt;/tpl&gt;'
+    ),
+
+    constructor: function(config) {
+        this.callParent([config]);
+    },
+
+    initComponent: function() {
+        this.errorcontainer = Ext.widget('panel', {
+            title: 'Errors',
+            bodyPadding: 10
+        });
+        this.warningcontainer = Ext.widget('panel', {
+            title: 'Warnings',
+            bodyPadding: 10
+        });
+        this.successcontainer = Ext.widget('panel', {
+            title: 'Successful',
+            bodyPadding: 10
+        });
+        Ext.apply(this, {
+            items: {
+                xtype: 'panel',
+                border: false,
+                layout: 'accordion'
+                //layout: {
+                    //type: 'vbox',
+                    //align: 'stretch'
+                //}
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: ['-&gt;', {
+                    xtype: 'button',
+                    text: 'Close this window',
+                    scale: 'large',
+                    listeners: {
+                        scope: this,
+                        click: function() {
+                            this.close();
+                        }
+                    }
+                }, '-&gt;']
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    addToLog: function(level, assgnmentGroupRecord, msg) {
+        var logitem = {
+            assgnmentGroupRecord: assgnmentGroupRecord,
+            msg: msg
+        }
+        this.log[level].push(logitem);
+        //console.log(logitem);
+    },
+
+    addError: function(assgnmentGroupRecord, msg) {
+        this.addToLog('error', assgnmentGroupRecord, msg);
+    },
+
+    addErrorFromOperation: function(assgnmentGroupRecord, msg, operation) {
+        var fullMsg = this.operationErrorTpl.apply({
+            msg: msg,
+            status: operation.error.status,
+            statusText: operation.error.statusText
+        });
+        this.addToLog('error', assgnmentGroupRecord, fullMsg);
+    },
+
+    addWarning: function(assgnmentGroupRecord, msg) {
+        this.addToLog('warning', assgnmentGroupRecord, msg);
+    },
+
+    addSuccess: function(assgnmentGroupRecord, msg) {
+        this.addToLog('success', assgnmentGroupRecord, msg);
+    },
+
+
+    start: function(title) {
+        this.log = {
+            error: [],
+            warning: [],
+            success: []
+        };
+        this.setTitle(title);
+        this.down('panel').removeAll();
+    },
+
+<span id='global-method-_addIfItems'>    /**
+</span>     * @private
+     */
+    _addIfItems: function(log, csscls, title) {
+        if(log.length &gt; 0) {
+            var container = Ext.widget('panel', {
+                title: title,
+                bodyPadding: 10,
+                flex: 1,
+                autoScroll: true,
+                html: this.logTpl.apply({
+                    csscls: csscls,
+                    log: log
+                })
+            });
+            this.down('panel').add(container);
+        }
+    },
+
+    finish: function(resultMsg, successMsg) {
+        this._addIfItems(this.log.error, 'error', 'Errors');
+        if(successMsg &amp;&amp; this.log.error.length === 0) {
+            this.down('panel').add({
+                xtype: 'panel',
+                title: successMsg.title,
+                html: successMsg.html,
+                bodyPadding: 10,
+                flex: 1
+            });
+        }
+        if(resultMsg) {
+            this.down('panel').add({
+                xtype: 'panel',
+                title: resultMsg.title,
+                html: resultMsg.html,
+                bodyPadding: 10,
+                flex: 1
+            });
+        }
+        this._addIfItems(this.log.warning, 'warning', 'Warnings');
+        this._addIfItems(this.log.success, 'info', 'Details about each successful save');
+        this.show();
+        this.down('panel').getComponent(0).expand();
+    }
+});
+</pre>
+</body>
+</html>

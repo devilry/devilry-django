@@ -23,7 +23,8 @@
 
     requires: [
         'devilry.extjshelpers.SetListOfUsers',
-        'devilry.extjshelpers.NotificationManager'
+        'devilry.extjshelpers.NotificationManager',
+        'devilry.extjshelpers.RestProxy'
     ],
 
     config: {
@@ -89,7 +90,6 @@
         this.setadminsbutton = Ext.create('Ext.button.Button', {
             text: 'Manage administrators',
             scale: 'large',
-            menu: [],
             enableToggle: true,
             listeners: {
                 scope: this,
@@ -102,7 +102,6 @@
             text: 'Delete',
             scale: 'large',
             enableToggle: true,
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -112,7 +111,6 @@
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
             enableToggle: true,
-            menu: [],
             scale: 'large',
             listeners: {
                 scope: this,
@@ -298,14 +296,9 @@
                     message: 'Updated adminstrators.'
                 });
             },
-            failure: function() {
+            failure: function(record, operation) {
                 setlistofusersobj.getEl().unmask();
-                Ext.MessageBox.show({
-                    title:'Error',
-                    msg: 'An error occurred. This is most likely caused by an &lt;strong&gt;invalid username&lt;/strong&gt;. Please review the usernames and try again.',
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.ERROR
-                });
+                devilry.extjshelpers.RestProxy.showErrorMessagePopup(operation, 'Failed to change administrators');
             }
         });
     },

@@ -78,10 +78,10 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_delivery_id&quot;</span><span class="p">,</span> <span class="s2">&quot;number_of_deliveries&quot;</span><span class="p">],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__number&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_delivery_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;number_of_deliveries&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -211,15 +211,99 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__number&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>assignment groups can be filtered on the following <em>fields</em>:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt>feedback</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__delivery__delivery_type</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__delivery__number</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The delivery-number within this assignment-group. This number is automatically incremented within each AssignmentGroup, starting from 1. Always unique within the assignment-group.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__delivery__time_of_delivery</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Holds the date and time the Delivery was uploaded.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__grade</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The rendered grade, such as &#8220;A&#8221; or &#8220;approved&#8221;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__is_passing_grade</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Is this a passing grade?</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>feedback__points</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Number of points given on this feedback.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -244,6 +328,30 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
+<dt>latest_deadline_deadline</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">Generated</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">query</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Generated from a query.</dd>
+<dt>Type</dt>
+<dd>unknown</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>number_of_deliveries</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">Generated</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">query</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Generated from a query.</dd>
+<dt>Type</dt>
+<dd>unknown</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -254,6 +362,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>Integer</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>parentnode__delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
 <dt>parentnode__long_name</dt>
@@ -276,6 +396,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
 <dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>parentnode__parentnode__end_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
@@ -348,6 +480,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
 <dt>Type</dt>
 <dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>parentnode__parentnode__start_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
@@ -445,6 +589,26 @@ results of the search. The following group names are available:</p>
 <dd>String</dd>
 </dl>
 </dd>
+<dt>parentnode__anonymous</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Specifies if this assignment is anonymous.</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+</dl>
+</dd>
+<dt>parentnode__publishing_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The time when the assignment is to be published (visible to students and examiners).</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</dd>
 </dl>
 </div></blockquote>
 </dd>
@@ -480,16 +644,6 @@ results of the search. The following group names are available:</p>
 <dd>Is this a passing grade?</dd>
 <dt>Type</dt>
 <dd>Boolean</dd>
-</dl>
-</dd>
-<dt>feedback__rendered_view</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.</dd>
-<dt>Type</dt>
-<dd>String</dd>
 </dl>
 </dd>
 </dl>
@@ -579,6 +733,23 @@ results of the search. The following group names are available:</p>
 </dl>
 </div></blockquote>
 </dd>
+<dt>feedback_rendered_view</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>feedback__rendered_view</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
 <dt>subject</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
@@ -641,6 +812,8 @@ example is generated from a non-varying dataset.</em></p>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">latest_delivery_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
+          <span class="nx">latest_deadline_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
+          <span class="nx">latest_deadline_deadline</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
           <span class="nx">number_of_deliveries</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span> <span class="p">},</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
@@ -649,6 +822,8 @@ example is generated from a non-varying dataset.</em></p>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">latest_delivery_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
+          <span class="nx">latest_deadline_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
+          <span class="nx">latest_deadline_deadline</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
           <span class="nx">number_of_deliveries</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span> <span class="p">},</span>
         <span class="p">...</span>
     <span class="p">]</span>
@@ -726,6 +901,26 @@ the <em>value</em> for that field. The result always contains the following fiel
 </dl>
 </dd>
 <dt>latest_delivery_id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">Generated</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">query</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Generated from a query.</dd>
+<dt>Type</dt>
+<dd>unknown</dd>
+</dl>
+</dd>
+<dt>latest_deadline_id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">Generated</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">query</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Generated from a query.</dd>
+<dt>Type</dt>
+<dd>unknown</dd>
+</dl>
+</dd>
+<dt>latest_deadline_deadline</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><tt class="xref py py-class docutils literal"><span class="pre">Generated</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">query</span></tt></dd>

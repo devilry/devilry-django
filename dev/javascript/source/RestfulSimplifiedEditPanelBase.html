@@ -79,6 +79,7 @@
             items: [this.editform, {
                 xtype: 'panel',
                 frame: false,
+                autoScroll: true,
                 border: false,
                 bodyCls: 'editform-sidebar ' + extrabarCssCls,
                 flex: 5,
@@ -116,7 +117,7 @@
         if(!this.editform.help) {
             return '';
         }
-        var help = '&lt;section class=&quot;helpsection&quot;&gt;';
+        var help = '&lt;div class=&quot;section helpsection&quot;&gt;';
         var me = this;
         var state = this.record == undefined? 'new': 'existing';
         Ext.Array.each(this.editform.help, function(helpobj) {
@@ -127,7 +128,7 @@
                 help += Ext.String.format('&lt;p&gt;{0}&lt;/p&gt;', helpobj.text);
             }
         });
-        return help + '&lt;/section&gt;';
+        return help + '&lt;/div&gt;';
     },
 
     onSave: function() {

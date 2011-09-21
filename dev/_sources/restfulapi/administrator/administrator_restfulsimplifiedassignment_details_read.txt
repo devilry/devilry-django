@@ -90,6 +90,22 @@ resulting data. The following group names are available:
                 Type
                     String
         
+            parentnode__start_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
+            parentnode__end_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
             parentnode__parentnode
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
@@ -117,22 +133,6 @@ resulting data. The following group names are available:
                     Each student must get a passing grade on this assignment to get a passing grade on the period.
                 Type
                     Boolean
-        
-            maxpoints
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    The maximum number of points possible without scaling.
-                Type
-                    Integer
-        
-            attempts
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.
-                Type
-                    Integer
         
 
     subject
@@ -178,7 +178,8 @@ Example
         parentnode: 15,
         short_name: "my_example001_value",
         long_name: "My example value",
-        publishing_time: "2010-02-22 22:32:10"
+        publishing_time: "2010-02-22 22:32:10",
+        delivery_types: 20
     }
 
 Success response details
@@ -228,6 +229,14 @@ The result always contains the following fields:
                 The time when the assignment is to be published (visible to students and examiners).
             Type
                 DateTime string (YYYY-MM-DD hh:mm:ss)
+    
+        delivery_types
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+            Type
+                Integer
     
 
 

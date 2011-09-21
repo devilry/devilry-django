@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "SearchStringParser.html#devilry-extjshelpers-SearchStringParser",
+  "allMixins": [
 
   ],
   "doc": "<p>Parses values from a string into plain values and filters which is\ncompatible with our RESTful filters.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "SearchStringParser.html",
-  "href": "SearchStringParser.html#devilry-extjshelpers-SearchStringParser",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.SearchStringParser",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SearchStringParser.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

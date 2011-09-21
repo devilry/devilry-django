@@ -64,6 +64,26 @@ Ext.define('devilry.extjshelpers.RestProxy', {
     extend: 'Ext.data.proxy.Rest',
     alias: 'proxy.devilryrestproxy',
 
+    constructor: function(config) {
+        Ext.apply(this, {
+            reader: {
+                type: 'json',
+                root: 'items',
+                totalProperty: 'total'
+            },
+            writer: {
+                type: 'json'
+           }
+        });
+
+        this.callParent([config]);
+
+        if(!this.extraParams) {
+            this.extraParams = {};
+        }
+        this.extraParams.getdata_in_qrystring = true;
+    },
+
 <span id='devilry-extjshelpers-RestProxy-method-setException'>    /**
 </span>     * Overrides error handling. Adds error information to the ``operation`` parameter.
      *
@@ -85,6 +105,52 @@ Ext.define('devilry.extjshelpers.RestProxy', {
             status: response.status,
             statusText: response.statusText
         });
+    },
+
+    setDevilryResultFieldgroups: function(fieldgroups) {
+        if(Ext.typeOf(fieldgroups) !== 'array') {
+            throw &quot;setDevilryResultFieldgroups(): fieldgroups must be an array&quot;;
+        }
+        this.extraParams.result_fieldgroups = Ext.JSON.encode(fieldgroups);
+    },
+    setDevilryFilters: function(filters) {
+        if(Ext.typeOf(filters) !== 'array') {
+            throw &quot;setDevilryFilters(): filters must be an array&quot;;
+        }
+        this.extraParams.filters = Ext.JSON.encode(filters);
+    },
+    setDevilryOrderby: function(orderby) {
+        if(Ext.typeOf(filters) !== 'array') {
+            throw &quot;setDevilryOrderby(): orderby must be an array&quot;;
+        }
+        this.extraParams.orderby = Ext.JSON.encode(orderby);
+    },
+
+    statics: {
+        formatHtmlErrorMessage: function(operation) {
+            var tpl = Ext.create('Ext.XTemplate', 
+                '&lt;div class=&quot;section errormessages&quot;&gt;',
+                '&lt;tpl if=&quot;httperror&quot;&gt;{httperror.status} {httperror.statusText}&lt;/tpl&gt;',
+                '&lt;tpl for=&quot;errormessages&quot;&gt;',
+                '   &lt;p&gt;{.}&lt;/p&gt;',
+                '&lt;/tpl&gt;',
+                '&lt;/div&gt;'
+            );
+            if(operation.responseData &amp;&amp; operation.responseData.errormessages) {
+                return tpl.apply({errormessages: operation.responseData.errormessages});
+            } else {
+                return tpl.apply({httperror: operation.error});
+            }
+        },
+
+        showErrorMessagePopup: function(operation, title) {
+            Ext.MessageBox.show({
+                title: title,
+                msg: devilry.extjshelpers.RestProxy.formatHtmlErrorMessage(operation),
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+        }
     }
 });
 </pre>

@@ -54,11 +54,9 @@
     initComponent: function() {
         var tbarItems = [{
             xtype: 'button',
-            menu: [], // To get an arrow
             id: 'tooltip-deliveries',
             text: 'Deadlines',
             scale: 'large',
-            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onDeadlines
@@ -68,24 +66,20 @@
         if(this.canExamine) {
             var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
                 xtype: 'button',
-                menu: [], // To get an arrow
                 id: 'tooltip-uncorrected-groups',
                 text: 'To-do',
                 scale: 'large',
-                enableToggle: true,
                 listeners: {
                     scope: this,
-                    click: this.onUncorrectedGroups
+                    click: this.onTodo
                 }
             });
             Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
 
             this.closeopenbtn = Ext.ComponentManager.create({
                 xtype: 'button',
-                menu: [], // To get an arrow
                 text: '',
                 scale: 'large',
-                enableToggle: true,
                 listeners: {
                     scope: this,
                     click: this.onCloseOrOpenGroup
@@ -121,30 +115,49 @@
         this.closeopenbtn.setText(this.assignmentgroup_recordcontainer.record.data.is_open? 'Close group': 'Open group');
     },
 
-<span id='global-method-onUncorrectedGroups'>    /**
+<span id='global-method-onTodo'>    /**
 </span>     * @private
      */
-    onUncorrectedGroups: function(button) {
+    onTodo: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'To-do list (Open groups on this assignment)',
-            height: 340,
-            width: 400,
+            height: 370,
+            width: 750,
             modal: true,
             layout: 'fit',
             items: {
                 xtype: 'assignmentgrouptodolist',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                store: this.assignmentgroupstore
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
+                store: this.assignmentgroupstore,
+                toolbarExtra: ['-&gt;', {
+                    xtype: 'button',
+                    scale: 'large',
+                    text: 'Go to assignment',
+                    listeners: {
+                        scope: this,
+                        click: this.onGoToAssignmentsView
+                    }
+                }],
+
+                helpTpl: Ext.create('Ext.XTemplate',
+                    '&lt;div class=&quot;section helpsection&quot;&gt;',
+                    '   {todohelptext}',
+                    '   &lt;p&gt;Choose &lt;span class=&quot;menuref&quot;&gt;Go to assignment&lt;/span&gt; to show the assignment where you have access to all groups, and information about the assignment.&lt;/p&gt;',
+                    '&lt;/div&gt;'
+                ),
             }
         });
         groupsWindow.show();
-        groupsWindow.alignTo(button, 'bl', [0, 0]);
+    },
+
+<span id='global-method-onGoToAssignmentsView'>    /**
+</span>     * @private
+     */
+    onGoToAssignmentsView: function() {
+        var url = Ext.String.format('../assignment/{0}',
+            this.assignmentgroup_recordcontainer.record.data.parentnode
+        );
+        window.location.href = url;
     },
 
 <span id='global-method-onCloseOrOpenGroup'>    /**
@@ -187,10 +200,8 @@
                         }
                     });
                 }
-                button.toggle(false);
             }
         });
-        win.alignTo(button, 'bl', [0, 0]);
     },
 
 <span id='global-method-onCloseGroup'>    /**
@@ -222,10 +233,8 @@
                         }
                     });
                 }
-                button.toggle(false);
             }
         });
-        win.alignTo(button, 'bl', [0, 0]);
     },
 
 <span id='global-method-onDeadlines'>    /**
@@ -246,16 +255,9 @@
                 deliverymodel: this.deliverymodel,
                 deadlinemodel: this.deadlinemodel,
                 enableDeadlineCreation: this.canExamine
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
             }
         });
         deadlinesWindow.show();
-        deadlinesWindow.alignTo(button, 'bl', [0, 0]);
     }
 });
 </pre>

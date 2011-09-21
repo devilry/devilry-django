@@ -23,6 +23,9 @@ Examiner
     examiner_restfulsimplifieddeadline_details_update
     examiner_restfulsimplifieddelivery_details_read
     examiner_restfulsimplifieddelivery_details_search
+    examiner_restfulsimplifieddelivery_details_delete
+    examiner_restfulsimplifieddelivery_details_create
+    examiner_restfulsimplifieddelivery_details_update
     examiner_restfulsimplifiedstaticfeedback_details_read
     examiner_restfulsimplifiedstaticfeedback_details_search
     examiner_restfulsimplifiedstaticfeedback_details_create
@@ -212,6 +215,21 @@ Delivery
     <tr>
         <th><a href="examiner_restfulsimplifieddelivery_details_read.html">GET&nbsp;/examiner/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Delivery.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifieddelivery_details_delete.html">DELETE&nbsp;/examiner/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Delete a Delivery.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifieddelivery_details_create.html">POST&nbsp;/examiner/restfulsimplifieddelivery/</a></th>
+        <td>Create a Delivery.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifieddelivery_details_update.html">PUT&nbsp;/examiner/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Update a Delivery.</td>
     </tr>
         </tbody>
     </table>

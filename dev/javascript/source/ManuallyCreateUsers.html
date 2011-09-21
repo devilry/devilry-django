@@ -33,17 +33,15 @@
          */
         initialLines: undefined,
 
-<span id='global-cfg-assignmentid'>        /**
-</span>         * @cfg
-         * 
-         */
-        assignmentid: undefined
+        assignmentid: undefined,
+        deadlinemodel: undefined,
+        suggestedDeadline: undefined
     },
 
     helptext:
-        '&lt;section class=&quot;helpsection&quot;&gt;' +
+        '&lt;div class=&quot;section helpsection&quot;&gt;' +
         //'   &lt;h1&gt;Help&lt;/h1&gt;' +
-        '   &lt;p&gt;Students are organized in &lt;em&gt;assignment groups&lt;/em&gt;. You should specify &lt;strong&gt;one&lt;/strong&gt; &lt;em&gt;assignment group&lt;/em&gt; on each line in the input box on the right hand side.&lt;/p&gt;' +
+        '   &lt;p&gt;Students are organized in &lt;em&gt;assignment groups&lt;/em&gt;. You should specify &lt;strong&gt;one&lt;/strong&gt; &lt;em&gt;assignment group&lt;/em&gt; on each line in the input box.&lt;/p&gt;' +
         '   &lt;h2&gt;Common usage examples&lt;/h2&gt;' +
         '   &lt;h3&gt;Individual deliveries&lt;/h3&gt;' +
         '   &lt;p&gt;Very often, an assignment requires &lt;strong&gt;individual&lt;/strong&gt; deliveries and feedback. In this case, each &lt;em&gt;assignment group&lt;/em&gt; should contain a single student. In this case, the input box should contain something similar to this:&lt;/p&gt;' +
@@ -69,8 +67,9 @@
         '       &lt;li&gt;Group name is identified by two colons at the end of the name, and must be placed at the beginning of the line.&lt;/li&gt;' +
         '       &lt;li&gt;A group name or at least one username is required for each group.&lt;/li&gt;' +
         '       &lt;li&gt;An optional &lt;em&gt;candidate-id&lt;/em&gt; for a candidate is denoted by a colon and the &lt;em&gt;candidate-id&lt;/em&gt; after the username.&lt;/li&gt;' +
+        '       &lt;li&gt;A an optional comma-separated list of tags surrounded by parentheses.&lt;/li&gt;' +
         '   &lt;/ul&gt;' +
-        '&lt;/section&gt;',
+        '&lt;/div&gt;',
 
     constructor: function(config) {
         this.initConfig(config);
@@ -78,6 +77,8 @@
     },
 
     initComponent: function() {
+        this.assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
+
         var currentValue = &quot;&quot;;
         if(this.initialLines) {
             Ext.each(this.initialLines, function(line, index) {
@@ -120,8 +121,9 @@
                 ui: 'footer',
                 items: ['-&gt;', {
                     xtype: 'button',
+                    iconCls: 'icon-next-32',
                     scale: 'large',
-                    text: 'Create assignment groups',
+                    text: 'Select deadline',
                     listeners: {
                         scope: this,
                         click: this.onCreate
@@ -130,19 +132,6 @@
             }]
         });
         this.callParent(arguments);
-    },
-
-
-<span id='global-method-parseCandidateSpec'>    /**
-</span>     * @private
-     */
-    parseCandidateSpec: function(candidateSpec) {
-        var asArray = candidateSpec.split(/\s*:\s*/);
-        var candidate_id = asArray.length &gt; 1? asArray[1]: null;
-        return {
-            username: asArray[0],
-            candidate_id: candidate_id
-        };
     },
 
 <span id='global-method-parseGroupSpec'>    /**
@@ -157,7 +146,8 @@
             name: null,
             is_open: true,
             fake_candidates: [],
-            fake_examiners: []
+            fake_examiners: [],
+            fake_tags: []
         };
 
         var nameSplit = groupSpec.split(/\s*::\s*/);
@@ -165,9 +155,12 @@
             groupSpecObj.name = nameSplit[0];
             groupSpec = nameSplit[1];
         }
-        var asArray = groupSpec.split(/\s*,\s*/);
-        Ext.Array.each(asArray, function(candidateSpec) {
-            groupSpecObj.fake_candidates.push(this.parseCandidateSpec(candidateSpec));
+
+        var usernamesAndTags = this.statics().parseUsernamesAndTags(groupSpec);
+        groupSpecObj.fake_tags = usernamesAndTags.tags;
+
+        Ext.Array.each(usernamesAndTags.usernames, function(candidateSpec) {
+            groupSpecObj.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
         }, this);
         return groupSpecObj;
     },
@@ -192,41 +185,69 @@
 </span>     * @private
      */
     createAll: function(parsedArray) {
-        this.userinput.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
-        var assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
-        var finishedCounter = 0;
-        var unsuccessful = [];
+        this.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
+        this.finishedCounter = 0;
+        this.unsuccessful = [];
+        this.parsedArray = parsedArray;
         Ext.Array.each(parsedArray, function(groupSpecObj) {
-            var completeGroupSpecObj = {
-                parentnode: this.assignmentid
-            };
-            Ext.apply(completeGroupSpecObj, groupSpecObj);
-            var group = Ext.create(assignmentGroupModelCls, completeGroupSpecObj);
-            group.save({
-                scope: this,
-                success: function() {
-                    finishedCounter ++;
-                    this.userinput.getEl().mask(
-                        Ext.String.format('Finished saving {0}/{1} groups',
-                        finishedCounter, parsedArray.length,
-                        parsedArray.length));
-                    if(finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
-                    }
-                },
-                failure: function() {
-                    finishedCounter ++;
-                    unsuccessful.push(groupSpecObj);
-                    this.userinput.getEl().mask(
-                        Ext.String.format('Finished saving {0}/{1} groups',
-                        finishedCounter, parsedArray.length,
-                        parsedArray.length));
-                    if(finishedCounter == parsedArray.length) {
-                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
-                    }
-                }
-            });
+            this.createGroup(groupSpecObj);
         }, this);
+    },
+
+<span id='global-method-createGroup'>    /**
+</span>     * @private
+     */
+    createGroup: function(groupSpecObj) {
+        var completeGroupSpecObj = {
+            parentnode: this.assignmentid
+        };
+        Ext.apply(completeGroupSpecObj, groupSpecObj);
+        var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
+        group.save({
+            scope: this,
+            success: this.createDeadline,
+            failure: function() {
+                this.finishedCounter ++;
+                this.unsuccessful.push(groupSpecObj);
+                this.getEl().mask(
+                    Ext.String.format('Finished saving {0}/{1} groups',
+                        this.finishedCounter, this.parsedArray.length, this.parsedArray.length
+                    )
+                );
+                if(this.finishedCounter == this.parsedArray.length) {
+                    this.onFinishedSavingAll();
+                }
+            }
+        });
+    },
+
+<span id='global-method-createDeadline'>    /**
+</span>     * @private
+     */
+    createDeadline: function(assignmentGroupRecord) {
+        devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines.createDeadline(
+            assignmentGroupRecord, this.deadlineRecord, this.deadlinemodel, {
+                scope: this,
+                failure: function() {
+                    console.error('Failed to save deadline record');
+                },
+                success: this.onCreateDeadlineSuccess
+            }
+        );
+    },
+
+<span id='global-method-onCreateDeadlineSuccess'>    /**
+</span>     * @private
+     */
+    onCreateDeadlineSuccess: function(record) {
+        this.finishedCounter ++;
+        this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
+            this.finishedCounter, this.parsedArray.length,
+            this.parsedArray.length
+        ));
+        if(this.finishedCounter == this.parsedArray.length) {
+            this.onFinishedSavingAll();
+        }
     },
 
 <span id='global-method-groupSpecObjToString'>    /**
@@ -263,23 +284,23 @@
 <span id='global-method-onFinishedSavingAll'>    /**
 </span>     * @private
      */
-    onFinishedSavingAll: function(unsuccessful, totalCount) {
-        this.userinput.getEl().unmask();
-        if(unsuccessful.length == 0) {
-            this.onSuccess(totalCount);
+    onFinishedSavingAll: function() {
+        this.getEl().unmask();
+        if(this.unsuccessful.length == 0) {
+            this.onSuccess();
         } else {
-            this.onFailure(unsuccessful, totalCount);
+            this.onFailure();
         }
     },
 
 <span id='global-method-onSuccess'>    /**
 </span>     * @private
      */
-    onSuccess: function(totalCount) {
+    onSuccess: function() {
         var me = this;
         Ext.MessageBox.show({
             title: 'Success',
-            msg: Ext.String.format('Created {0} assignment groups.', totalCount),
+            msg: Ext.String.format('Created {0} assignment groups.', this.finishedCounter),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.INFO,
             fn: function() {
@@ -292,15 +313,13 @@
 <span id='global-method-onFailure'>    /**
 </span>     * @private
      */
-    onFailure: function(unsuccessful, totalCount) {
-        //console.log(totalCount);
-        //console.log(unsuccessful);
-        this.userinput.setValue(this.groupSpecObjArrayToString(unsuccessful));
+    onFailure: function() {
+        this.userinput.setValue(this.groupSpecObjArrayToString(this.unsuccessful));
         Ext.MessageBox.show({
             title: 'Error',
             msg: Ext.String.format(
                 'Failed to create {0} of {1} assignment groups. This is usually caused by invalid usernames. The groups with errors have been re-added to the input box.',
-                unsuccessful.length, totalCount),
+                this.unsuccessful.length, this.finishedCounter),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR
         });
@@ -310,11 +329,49 @@
 </span>     * @private
      */
     onCreate: function() {
-        this.userinput.getEl().mask('Parsing input');
+        this.getEl().mask('Parsing input');
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
-        //console.log(parsedArray);
-        this.createAll(parsedArray);
-    }
+        this.getEl().unmask();
+        this.selectDeadline(parsedArray);
+    },
+
+<span id='global-method-selectDeadline'>    /**
+</span>     * @private
+     */
+    selectDeadline: function(parsedArray) {
+        var me = this;
+        var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
+            width: this.up('window').getWidth(),
+            height: this.up('window').getHeight(),
+            deadlinemodel: this.deadlinemodel,
+            suggestedDeadline: this.suggestedDeadline,
+            deadlineRecord: this.deadlineRecord,
+            onSaveSuccess: function(record) {
+                this.close();
+                me.deadlineRecord = record;
+                me.createAll(parsedArray);
+            }
+        });
+        createDeadlineWindow.show();
+    },
+
+
+    statics: {
+        parseUsernamesAndTags: function(rawstr) {
+            var tags = [];
+            var tagSplit = rawstr.split(/\s*\(\s*/);
+            if(tagSplit.length &gt; 1) {
+                rawstr = tagSplit[0];
+                var tagsString = tagSplit[1];
+                tagsString = tagsString.replace(/\)/, &quot;&quot;);
+                tags = tagsString.split(/\s*,\s*/);
+            }
+            return {
+                usernames: rawstr.split(/\s*,\s*/),
+                tags: tags
+            };
+        }
+    },
 });
 </pre>
 </body>

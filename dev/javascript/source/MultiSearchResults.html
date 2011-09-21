@@ -23,11 +23,12 @@
  * Integrates with {@link devilry.extjshelpers.searchwidget.MultiSearchField}.
  * */
 Ext.define('devilry.extjshelpers.searchwidget.MultiSearchResults', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.window.Window',
     alias: 'widget.multisearchresults',
     id: 'floating-searchresult',
-    floating: true,
     cls: 'multisearchresults multisearchresults-floating',
+    closeAction: 'hide',
+    plain: true,
     
     config: {
         searchWidget: undefined

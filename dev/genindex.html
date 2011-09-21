@@ -89,7 +89,6 @@
     <dt><a href="core.models.html#devilry.apps.core.models.AssignmentGroup">AssignmentGroup (class in devilry.apps.core.models)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.assignmentgroups">assignmentgroups (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Period.assignments">assignments (devilry.apps.core.models.model_utils.Period attribute)</a></dt>
-    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.attempts">attempts (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.autoscale">autoscale (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.AssignmentGroup.AWAITING_CORRECTION">AWAITING_CORRECTION (devilry.apps.core.models.model_utils.AssignmentGroup attribute)</a></dt>
 </dl></td>
@@ -132,6 +131,7 @@
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.create">(devilry.apps.administrator.simplified.SimplifiedPeriod class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.create">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.create">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.create">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.create">(devilry.apps.examiner.simplified.SimplifiedStaticFeedback class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.create">(devilry.apps.student.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta.create">(devilry.apps.student.simplified.SimplifiedFileMeta class method)</a></dt>
@@ -198,6 +198,7 @@
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.delete">(devilry.apps.administrator.simplified.SimplifiedStaticFeedback class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.delete">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.delete">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.delete">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="restful.html#devilry.restful.RestfulView.delete">(devilry.restful.RestfulView method)</a></dt>
       <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.delete">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
   </dl></dd>
@@ -247,14 +248,15 @@
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.examiners_publish_feedbacks_directly">examiners_publish_feedbacks_directly (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.exists">exists() (devilry.apps.core.deliverystore.DeliveryStoreInterface method)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model">extjs_combobox_model() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
+    <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_foreignkeys">extjs_foreignkeys() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_foreignkeys">extjs_foreignkeys() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_form_items">extjs_form_items() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_model">extjs_model() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname">extjs_modelname() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.extjs_restful_modelapi">extjs_restful_modelapi() (in module devilry.apps.extjshelpers)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_store">extjs_store() (in module devilry.apps.extjshelpers.templatetags.extjs)</a></dt>
+    <dt><a href="restful.html#devilry.restful.ModelRestfulView.extra_create_or_replace_responsedata">extra_create_or_replace_responsedata() (devilry.restful.ModelRestfulView method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -347,6 +349,7 @@
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Candidate.identifier">identifier (devilry.apps.core.models.model_utils.Candidate attribute)</a></dt>
     <dt><a href="simplified.html#devilry.simplified.InvalidNumberOfResults">InvalidNumberOfResults</a></dt>
+    <dt><a href="simplified.html#devilry.simplified.InvalidUsername">InvalidUsername</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.Period.is_active">is_active() (devilry.apps.core.models.Period method)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.is_empty">is_empty() (devilry.apps.administrator.simplified.SimplifiedAssignment class method)</a></dt>
     <dd><dl>
@@ -377,9 +380,9 @@
   </dl></dd>
     <dt><a href="core.models.html#devilry.apps.core.models.AssignmentGroup.is_examiner">is_examiner() (devilry.apps.core.models.AssignmentGroup method)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.AssignmentGroup.is_open">is_open (devilry.apps.core.models.model_utils.AssignmentGroup attribute)</a></dt>
-    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.StaticFeedback.is_passing_grade">is_passing_grade (devilry.apps.core.models.model_utils.StaticFeedback attribute)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.StaticFeedback.is_passing_grade">is_passing_grade (devilry.apps.core.models.model_utils.StaticFeedback attribute)</a></dt>
     <dt><a href="utils.delivery_collection.html#devilry.utils.delivery_collection.iter_archive_assignmentgroups">iter_archive_assignmentgroups() (in module devilry.utils.delivery_collection)</a></dt>
     <dt><a href="utils.delivery_collection.html#devilry.utils.delivery_collection.iter_archive_deliveries">iter_archive_deliveries() (in module devilry.utils.delivery_collection)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.Node.iter_childnodes">iter_childnodes() (devilry.apps.core.models.Node method)</a></dt>
@@ -413,7 +416,6 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.maxpoints">maxpoints (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.MemoryDeliveryStore">MemoryDeliveryStore (class in devilry.apps.core.deliverystore)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.Meta.model">model (devilry.apps.administrator.simplified.SimplifiedAssignment.Meta attribute)</a></dt>
     <dd><dl>
@@ -450,9 +452,9 @@
       <dt><a href="coreutils.simplified.metabases.html#devilry.coreutils.simplified.metabases.SimplifiedStaticFeedbackMetaMixin.model">(devilry.coreutils.simplified.metabases.SimplifiedStaticFeedbackMetaMixin attribute)</a></dt>
       <dt><a href="coreutils.simplified.metabases.html#devilry.coreutils.simplified.metabases.SimplifiedSubjectMetaMixin.model">(devilry.coreutils.simplified.metabases.SimplifiedSubjectMetaMixin attribute)</a></dt>
   </dl></dd>
+    <dt><a href="simplified.html#devilry.simplified.utils.modelinstance_to_dict">modelinstance_to_dict() (in module devilry.simplified.utils)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="simplified.html#devilry.simplified.utils.modelinstance_to_dict">modelinstance_to_dict() (in module devilry.simplified.utils)</a></dt>
     <dt><a href="restful.html#devilry.restful.ModelRestfulView">ModelRestfulView (class in devilry.restful)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.must_pass">must_pass (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
 </dl></td>
@@ -518,7 +520,6 @@
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignment.post_save">(devilry.apps.student.simplified.SimplifiedAssignment class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup.post_save">(devilry.apps.student.simplified.SimplifiedAssignmentGroup class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDeadline.post_save">(devilry.apps.student.simplified.SimplifiedDeadline class method)</a></dt>
-      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.post_save">(devilry.apps.student.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta.post_save">(devilry.apps.student.simplified.SimplifiedFileMeta class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod.post_save">(devilry.apps.student.simplified.SimplifiedPeriod class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedStaticFeedback.post_save">(devilry.apps.student.simplified.SimplifiedStaticFeedback class method)</a></dt>
@@ -537,7 +538,6 @@
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignment.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedAssignment class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedAssignmentGroup class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
-      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedFileMeta class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedPeriod.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedPeriod class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedSubject.pre_full_clean">(devilry.apps.examiner.simplified.SimplifiedSubject class method)</a></dt>
@@ -642,11 +642,13 @@
   </dl></dd>
     <dt><a href="apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry">Registry (class in devilry.apps.gradeeditors.registry)</a></dt>
     <dt><a href="apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem">RegistryItem (class in devilry.apps.gradeeditors.registry)</a></dt>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Period.relatedexaminers">relatedexaminers (devilry.apps.core.models.model_utils.Period attribute)</a></dt>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Period.relatedstudents">relatedstudents (devilry.apps.core.models.model_utils.Period attribute)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.remove">remove() (devilry.apps.core.deliverystore.DeliveryStoreInterface method)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.StaticFeedback.rendered_view">rendered_view (devilry.apps.core.models.model_utils.StaticFeedback attribute)</a></dt>
-    <dt><a href="restful.html#devilry.restful.restful_api">restful_api() (in module devilry.restful)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="restful.html#devilry.restful.restful_api">restful_api() (in module devilry.restful)</a></dt>
     <dt><a href="restful.html#devilry.restful.restful_modelapi">restful_modelapi() (in module devilry.restful)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel">restfulcls_to_extjscomboboxmodel() (in module devilry.apps.extjshelpers.modelintegration)</a></dt>
     <dt><a href="extjshelpers.html#devilry.apps.extjshelpers.formintegration.restfulcls_to_extjsformitems">restfulcls_to_extjsformitems() (in module devilry.apps.extjshelpers.formintegration)</a></dt>
@@ -818,11 +820,12 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.AssignmentGroup.tags">tags (devilry.apps.core.models.model_utils.AssignmentGroup attribute)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin">TestDeliveryStoreMixin (class in devilry.apps.core.testhelpers)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Deadline.text">text (devilry.apps.core.models.model_utils.Deadline attribute)</a></dt>
-    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Delivery.time_of_delivery">time_of_delivery (devilry.apps.core.models.model_utils.Delivery attribute)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Delivery.time_of_delivery">time_of_delivery (devilry.apps.core.models.model_utils.Delivery attribute)</a></dt>
     <dt><a href="apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem.title">title (devilry.apps.gradeeditors.registry.RegistryItem attribute)</a></dt>
     <dt><a href="simplified.html#devilry.simplified.QryResultWrapper.total">total (devilry.simplified.QryResultWrapper attribute)</a></dt>
 </dl></td>
@@ -840,6 +843,7 @@
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.update">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.update">(devilry.apps.examiner.simplified.SimplifiedAssignmentGroup class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.update">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.update">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.update">(devilry.apps.student.simplified.SimplifiedDelivery class method)</a></dt>
       <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.update">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
   </dl></dd>
@@ -868,9 +872,9 @@
     <dt><a href="core.models.html#devilry.apps.core.models.AbstractIsAdmin.where_is_admin">where_is_admin() (devilry.apps.core.models.AbstractIsAdmin class method)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.AbstractIsAdmin.where_is_admin_or_superadmin">where_is_admin_or_superadmin() (devilry.apps.core.models.AbstractIsAdmin class method)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.AssignmentGroup.where_is_candidate">where_is_candidate() (devilry.apps.core.models.AssignmentGroup class method)</a></dt>
+    <dt><a href="core.models.html#devilry.apps.core.models.AbstractIsExaminer.where_is_examiner">where_is_examiner() (devilry.apps.core.models.AbstractIsExaminer class method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="core.models.html#devilry.apps.core.models.AbstractIsExaminer.where_is_examiner">where_is_examiner() (devilry.apps.core.models.AbstractIsExaminer class method)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.write_authorize">write_authorize() (devilry.apps.administrator.simplified.SimplifiedAssignment class method)</a></dt>
     <dd><dl>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.write_authorize">(devilry.apps.administrator.simplified.SimplifiedAssignmentGroup class method)</a></dt>
@@ -899,6 +903,7 @@
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedSubject.write_authorize">(devilry.apps.student.simplified.SimplifiedSubject class method)</a></dt>
       <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.write_authorize">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
   </dl></dd>
+    <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.write_authorize_examinercommon">write_authorize_examinercommon() (devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.write_open">write_open() (devilry.apps.core.deliverystore.DeliveryStoreInterface method)</a></dt>
 </dl></td>
 </tr></table>

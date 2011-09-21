@@ -32,10 +32,10 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"<=", value:"My example value"},
-                      {field:"parentnode", comp:"<=", value:15},
-                      {field:"parentnode__long_name", comp:"<=", value:"My example value"}],
-        orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time"],
+        filters: [{field:"delivery_types", comp:"iexact", value:20},
+                      {field:"long_name", comp:"endswith", value:"My example value"},
+                      {field:"parentnode", comp:"contains", value:15}],
+        orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time", "delivery_types"],
         start: 10,
         limit: 100
     }
@@ -129,12 +129,22 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"<=", value:"My example value"},
-         {field:"parentnode", comp:"<=", value:15},
-         {field:"parentnode__long_name", comp:"<=", value:"My example value"}]
+        [{field:"delivery_types", comp:"iexact", value:20},
+         {field:"long_name", comp:"endswith", value:"My example value"},
+         {field:"parentnode", comp:"contains", value:15}]
 
 Assignments can be filtered on the following *fields*:
 
+
+    delivery_types
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     long_name
         Actual location of the field:
@@ -155,6 +165,16 @@ Assignments can be filtered on the following *fields*:
             Integer
         Supported comparison operators:
             ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    parentnode__end_time
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Start time and end time defines when the period is active.
+        Type
+            DateTime string (YYYY-MM-DD hh:mm:ss)
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     parentnode__long_name
         Actual location of the field:
@@ -213,6 +233,16 @@ Assignments can be filtered on the following *fields*:
             Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
         Type
             String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    parentnode__start_time
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Start time and end time defines when the period is active.
+        Type
+            DateTime string (YYYY-MM-DD hh:mm:ss)
         Supported comparison operators:
             ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
@@ -279,22 +309,6 @@ results of the search. The following group names are available:
                 Type
                     Boolean
         
-            maxpoints
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    The maximum number of points possible without scaling.
-                Type
-                    Integer
-        
-            attempts
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.
-                Type
-                    Integer
-        
 
     period
         *Expands to the following fields:*
@@ -314,6 +328,22 @@ results of the search. The following group names are available:
                     A longer name, more descriptive than "Short name". This is the name visible to students.
                 Type
                     String
+        
+            parentnode__start_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
+            parentnode__end_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
         
             parentnode__parentnode
                 Actual location of the field:
@@ -378,12 +408,14 @@ example is generated from a non-varying dataset.*
               parentnode: 15,
               short_name: "my_example001_value",
               long_name: "My example value",
-              publishing_time: "2010-02-22 22:32:10" },
+              publishing_time: "2010-02-22 22:32:10",
+              delivery_types: 20 },
             { id: 15,
               parentnode: 15,
               short_name: "my_example001_value",
               long_name: "My example value",
-              publishing_time: "2010-02-22 22:32:10" },
+              publishing_time: "2010-02-22 22:32:10",
+              delivery_types: 20 },
             ...
         ]
     }
@@ -438,6 +470,14 @@ the *value* for that field. The result always contains the following fields:
                 The time when the assignment is to be published (visible to students and examiners).
             Type
                 DateTime string (YYYY-MM-DD hh:mm:ss)
+    
+        delivery_types
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+            Type
+                Integer
     
 
 

@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"period", comp:"contains", value:15},
-                      {field:"username", comp:"<", value:"My example value"}],
-        orderby: ["id", "-username", "period"],
+        filters: [{field:"period", comp:"iexact", value:15},
+                      {field:"userspec", comp:"contains", value:"My example value"}],
+        orderby: ["id", "-userspec", "period"],
         start: 10,
         limit: 100
     }
@@ -58,11 +58,11 @@ resulting in a list of words. Every *word* in the list is searched for
 *case-insensitive* matches within the following fields:
 
     
-        username
+        userspec
             Actual location of the field:
                 :class:`devilry.apps.core.models.relateduser.RelatedStudent`
             About the field:
-                A username. Max 30 characters, a-z, A-Z, and _
+                One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
             Type
                 String
     
@@ -88,8 +88,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"period", comp:"contains", value:15},
-         {field:"username", comp:"<", value:"My example value"}]
+        [{field:"period", comp:"iexact", value:15},
+         {field:"userspec", comp:"contains", value:"My example value"}]
 
 related students can be filtered on the following *fields*:
 
@@ -104,11 +104,11 @@ related students can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
-    username
+    userspec
         Actual location of the field:
             :class:`devilry.apps.core.models.relateduser.RelatedStudent`
         About the field:
-            A username. Max 30 characters, a-z, A-Z, and _
+            One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
         Type
             String
         Supported comparison operators:
@@ -173,10 +173,10 @@ example is generated from a non-varying dataset.*
         total: 20,
         items: [
             { id: 15,
-              username: "My example value",
+              userspec: "My example value",
               period: 15 },
             { id: 15,
-              username: "My example value",
+              userspec: "My example value",
               period: 15 },
             ...
         ]
@@ -201,11 +201,11 @@ the *value* for that field. The result always contains the following fields:
             Type
                 Integer
     
-        username
+        userspec
             Actual location of the field:
                 :class:`devilry.apps.core.models.relateduser.RelatedStudent`
             About the field:
-                A username. Max 30 characters, a-z, A-Z, and _
+                One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.
             Type
                 String
     

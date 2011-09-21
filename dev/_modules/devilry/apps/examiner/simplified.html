@@ -46,6 +46,7 @@
           <div class="body">
             
   <h1>Source code for devilry.apps.examiner.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span><span class="p">,</span> <span class="n">Max</span>
 
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span>
@@ -148,6 +149,8 @@
 <span class="sd">        :rtype: a django queryset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">latest_delivery_id</span><span class="o">=</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;deadlines__deliveries__id&#39;</span><span class="p">),</span>
+                                                                          <span class="n">latest_deadline_id</span><span class="o">=</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;deadlines__id&#39;</span><span class="p">),</span>
+                                                                          <span class="n">latest_deadline_deadline</span><span class="o">=</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;deadlines__deadline&#39;</span><span class="p">),</span>
                                                                           <span class="n">number_of_deliveries</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;deadlines__deliveries&#39;</span><span class="p">))</span>
 
 </div>
@@ -165,13 +168,45 @@
         <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span> <span class="c"># We only allow update</span>
 
+
 </div></div>
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedDelivery"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedDelivery</span><span class="p">(</span><span class="n">PublishedWhereIsExaminerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDelivery.Meta"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Examiner can use on a Delivery object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;successful&#39;</span><span class="p">,</span> <span class="s">&#39;deadline&#39;</span><span class="p">,</span> <span class="s">&#39;delivery_type&#39;</span><span class="p">,</span> <span class="s">&#39;alias_delivery&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedDelivery.write_authorize_examinercommon"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.write_authorize_examinercommon">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize_examinercommon</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used by this class and the corresponding class in apps.administrator.simplified. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivered_by</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">examiner_pre_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">delivered_by</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># None marks this as delivered by an administrator</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pre_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">examiner_pre_full_clean</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedDelivery.write_authorize"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given ``user`` can save changes to the given</span>
+<span class="sd">        ``obj``, and raise ``PermissionDenied`` if not.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :param obj: A object of the type this method is used in.</span>
+<span class="sd">        :throws PermissionDenied:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">models</span><span class="o">.</span><span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">write_authorize_examinercommon</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>

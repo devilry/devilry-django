@@ -38,24 +38,34 @@
     },
 
     bodyTpl: Ext.create('Ext.XTemplate',
-        '&lt;section&gt;',
+        '&lt;div class=&quot;section&quot;&gt;',
+        '    &lt;tpl if=&quot;totalAssignmentGroups == 0&quot;&gt;',
+        '        &lt;div class=&quot;section error&quot;&gt;',
+        '            &lt;h1&gt;No assignment groups&lt;/h1&gt;',
+        '            &lt;p&gt;',
+        '               Students have to be organized in &lt;em&gt;assignment groups&lt;/em&gt; before they can add any deliveries. A students belongs to a group even when they deliver individual deliveries. Students that is not in any assignment group do not even see the assignment. Please choose &lt;span class=&quot;menuref&quot;&gt;Manage assignment groups&lt;/span&gt; to bring up the assignment group manager, and select &lt;span class=&quot;menuref&quot;&gt;Create groups&lt;/span&gt;.',
+        '            &lt;/p&gt;',
+        '        &lt;/div&gt;',
+        '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;missingGradeEditorConfig&quot;&gt;',
-        '        &lt;section class=&quot;error&quot;&gt;',
+        '        &lt;div class=&quot;section error&quot;&gt;',
         '            &lt;h1&gt;Missing grade editor config&lt;/h1&gt;',
         '            &lt;p&gt;',
         '                The selected grade editor, &lt;em&gt;{graderegistryitem.data.title}&lt;/em&gt;, requires',
         '                configuration. Examiners will not be able to give feedback ',
-        '                without a configuration.',
+        '                without a configuration, however students will be able to add deliveries.',
         '                Choose &lt;span class=&quot;menuref&quot;&gt;Grade editor &amp;rarr; Configure current grade editor&lt;/span&gt; in the toolbar to create a configuration.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;graderegistryitem&quot;&gt;',
-        '        &lt;section class=&quot;info&quot;&gt;',
+        '        &lt;div class=&quot;section info&quot;&gt;',
         '            &lt;h1&gt;Grade editor: {graderegistryitem.data.title}&lt;/h1&gt;',
+        '            &lt;strong&gt;About the grade editor:&lt;/strong&gt;',
         '            &lt;p&gt;',
-        '               &lt;strong&gt;About:&lt;/strong&gt; {graderegistryitem.data.description}',
+        '                {graderegistryitem.data.description}',
         '            &lt;/p&gt;',
+        '            &lt;strong&gt;Why grade editors?&lt;/strong&gt;',
         '            &lt;p&gt;',
         '                To make it easy for examiners to create all the information related ',
         '                to a grade, Devilry use &lt;em&gt;grade editors&lt;/em&gt;. Grade editors give examiners ',
@@ -63,10 +73,10 @@
         '                Select &lt;span class=&quot;menuref&quot;&gt;Grade editor&lt;/span&gt; in the toolbar to ',
         '                change or configure the grade editor.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;published&quot;&gt;',
-        '        &lt;section class=&quot;ok&quot;&gt;',
+        '        &lt;div class=&quot;section info&quot;&gt;',
         '            &lt;h1&gt;Published&lt;/h1&gt;',
         '            &lt;p&gt;',
         '               The assignment is currently visible to students and examiners. ',
@@ -75,20 +85,21 @@
         '               in the toolbar, however since it is already published, this may lead ',
         '               to confusion among students and examiners.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;!published&quot;&gt;',
-        '        &lt;section class=&quot;warning&quot;&gt;',
+        '        &lt;div class=&quot;section warning&quot;&gt;',
         '             &lt;h1&gt;Not published&lt;/h1&gt;',
         '             &lt;p&gt;',
         '                This assignment is currently &lt;em&gt;not visible&lt;/em&gt; to students or examiners. ',
         '                The assignment will become visible to students and examiners ',
         '                &lt;strong&gt;{publishing_time:date}&lt;/strong&gt;.',
+        '                You may change the publishing time by selecting the &lt;span class=&quot;menuref&quot;&gt;Edit&lt;/span&gt; button in the toolbar.',
         '             &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;must_pass&quot;&gt;',
-        '        &lt;section class=&quot;info&quot;&gt;',
+        '        &lt;div class=&quot;section info&quot;&gt;',
         '            &lt;h1&gt;Must pass&lt;/h1&gt;',
         '            &lt;p&gt;',
         '                Each students are &lt;em&gt;required&lt;/em&gt; to get a passsing grade ',
@@ -97,10 +108,10 @@
         '                Select &lt;span class=&quot;menuref&quot;&gt;Advanced options&lt;/span&gt; ',
         '                in the toolbar to change this setting.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;anonymous&quot;&gt;',
-        '        &lt;section class=&quot;ok&quot;&gt;',
+        '        &lt;div class=&quot;section info&quot;&gt;',
         '            &lt;h1&gt;Anonymous&lt;/h1&gt;',
         '            &lt;p&gt;',
         '                The assignment &lt;em&gt;is anonymous&lt;/em&gt;. This means that examiners ',
@@ -110,10 +121,10 @@
         '                Select &lt;span class=&quot;menuref&quot;&gt;Advanced options&lt;/span&gt; ',
         '                in the toolbar to change this setting.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;!anonymous&quot;&gt;',
-        '        &lt;section class=&quot;warning&quot;&gt;',
+        '        &lt;div class=&quot;section info&quot;&gt;',
         '            &lt;h1&gt;Not anonymous&lt;/h1&gt;',
         '            &lt;p&gt;',
         '                The assignment is &lt;em&gt;not&lt;/em&gt; anonymous. This means that examiners ',
@@ -124,9 +135,9 @@
         '                Select &lt;span class=&quot;menuref&quot;&gt;Advanced options&lt;/span&gt; ',
         '                in the toolbar to change this setting.',
         '            &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
-        '&lt;/section&gt;'
+        '&lt;/div&gt;'
     ),
 
     constructor: function(config) {
@@ -138,7 +149,8 @@
         return {
             published: record.data.publishing_time &lt; Ext.Date.now(),
             missingGradeEditorConfig: this.missingGradeEditorConfig,
-            graderegistryitem: this.gradeeditor_registryitem_recordcontainer.record
+            graderegistryitem: this.gradeeditor_registryitem_recordcontainer.record,
+            totalAssignmentGroups: this.assignmentgroupstore.totalCount
         };
     },
 
@@ -156,9 +168,7 @@
         }
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
-            text: 'Students',
-            enableToggle: true,
-            menu: [],
+            text: 'Manage assignment groups (students)',
             scale: 'large',
             listeners: {
                 scope: this,
@@ -170,7 +180,6 @@
             text: 'Advanced options',
             enableToggle: true,
             scale: 'large',
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onAdvanced
@@ -180,7 +189,6 @@
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
             scale: 'large',
-            //menu: [],
             listeners: {
                 scope: this,
                 click: this.onSelectGradeEditorBtn,
@@ -217,13 +225,22 @@
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton],
+            relatedButtons: [this.studentsbutton, {
+                xtype: 'button',
+                scale: 'large',
+                text: 'Download all deliveries',
+                listeners: {
+                    scope: this,
+                    click: this.onDownload
+                }
+            }],
             extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
         });
         this.callParent(arguments);
     },
 
     onLoadRecord: function() {
+        this.checkStudents();
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
@@ -234,6 +251,25 @@
                     assignment: this.record.data.id
                 });
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
+            }
+        });
+        //this.onStudents();
+    },
+
+    checkStudents: function() {
+        // Load a single records to get totalCount
+        this.assignmentgroupstore.pageSize = 1;
+        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.objectid
+        }]);
+        this.assignmentgroupstore.load({
+            scope: this,
+            callback: function(records, operation, success) {
+                if(success) {
+                    this.refreshBody();
+                }
             }
         });
     },
@@ -264,6 +300,8 @@
         this.gradeeditormenu.getEl().unmask();
         if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
             this.configuregradeeditorbutton.enable();
+        } else {
+            this.configuregradeeditorbutton.disable();
         }
     },
 
@@ -309,6 +347,7 @@
             editpanel: editpanel,
             onSaveSuccess: function(record) {
                 me.gradeeditorconfig_recordcontainer.setRecord(record);
+                window.location.href = window.location.href; // TODO: Make so this hack is not needed.
                 this.close();
             }
         });
@@ -347,18 +386,21 @@
     },
 
     onStudents: function() {
+        this.hide();
         var studentswindow = Ext.widget('maximizablewindow', {
-            title: 'Students',
+            title: 'Manage assignment groups (students)',
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
+            maximized: true,
             modal: true,
             items: {
                 xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
                 assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
                 assignmentid: this.objectid,
+                assignmentrecord: this.record,
                 periodid: this.record.data.parentnode,
                 deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
                 gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
@@ -367,13 +409,14 @@
             listeners: {
                 scope: this,
                 close: function() {
-                    this.studentsbutton.toggle(false);
+                    this.show();
+                    this.refreshBody();
                 }
             }
         });
-        this.setSizeToCoverBody(studentswindow);
+        //this.setSizeToCoverBody(studentswindow);
         studentswindow.show();
-        this.alignToCoverBody(studentswindow);
+        //this.alignToCoverBody(studentswindow);
     },
 
 
@@ -399,6 +442,10 @@
         editwindow.show();
         this.alignToCoverBody(editwindow);
     },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.objectid);
+    }
 });
 </pre>
 </body>

@@ -1,49 +1,43 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveriesOnSingleGroupListing({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "DeliveriesOnSingleGroupListing.html#devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing",
+  "allMixins": [
 
   ],
   "doc": "<p>List deliveries on a single group, grouped by deadline.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "DeliveriesOnSingleGroupListing.html",
-  "href": "DeliveriesOnSingleGroupListing.html#devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "Object",
+        "href": "DeliveriesOnSingleGroupListing.html#devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-delivery_recordcontainer",
         "owner": "devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing",
         "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> for Delivery.\nThe record is changed when a user selects a delivery.</p>\n",
         "html_filename": "DeliveriesOnSingleGroupListing.html",
-        "href": "DeliveriesOnSingleGroupListing.html#devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-delivery_recordcontainer",
-        "tagname": "cfg",
-        "shortDoc": "A devilry.extjshelpers.SingleRecordContainer for Delivery. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 20,
         "inheritable": false,
         "alias": null,
         "name": "delivery_recordcontainer",
+        "shortDoc": "A devilry.extjshelpers.SingleRecordContainer for Delivery. ...",
+        "linenr": 26,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesOnSingleGroupListing.js",
         "deprecated": null
       }
@@ -51,15 +45,6 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveriesOnSingleGroupListi
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -69,31 +54,46 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveriesOnSingleGroupListi
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing",
+  "linenr": 1,
   "xtypes": [
     "deliveriesonsinglegrouplisting"
   ],
-  "extends": "Ext.grid.Panel",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesOnSingleGroupListing.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.grid.Panel",
+  "docauthor": null
 });

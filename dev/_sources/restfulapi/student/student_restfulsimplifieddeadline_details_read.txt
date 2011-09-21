@@ -98,6 +98,14 @@ resulting data. The following group names are available:
                 Type
                     String
         
+            assignment_group__is_open
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    If this is checked, the group can add deliveries.
+                Type
+                    Boolean
+        
 
     assignment_group_users
         *Expands to the following fields:*

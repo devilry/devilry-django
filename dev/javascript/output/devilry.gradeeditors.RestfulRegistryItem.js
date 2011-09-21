@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_gradeeditors_RestfulRegistryItem({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "RestfulRegistryItem.html#devilry-gradeeditors-RestfulRegistryItem",
+  "allMixins": [
 
   ],
   "doc": "<p>Restful API for gradeeditor RegistryItems</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "RestfulRegistryItem.html",
-  "href": "RestfulRegistryItem.html#devilry-gradeeditors-RestfulRegistryItem",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_gradeeditors_RestfulRegistryItem({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_gradeeditors_RestfulRegistryItem({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.gradeeditors.RestfulRegistryItem",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.data.Model",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/gradeeditors/static/extjs_classes/gradeeditors/RestfulRegistryItem.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.data.Model",
+  "docauthor": null
 });

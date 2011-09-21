@@ -62,13 +62,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     tpl: Ext.create('Ext.XTemplate',
         '&lt;tpl if=&quot;time_of_delivery&quot;&gt;', // If time_of_delivery is false, the record is not loaded yet
         '    &lt;tpl if=&quot;time_of_delivery &amp;gt; deadline__deadline&quot;&gt;',
-        '        &lt;section class=&quot;warning-small&quot;&gt;',
+        '        &lt;div class=&quot;section warning-small&quot;&gt;',
         '           &lt;h1&gt;After deadline&lt;/h1&gt;',
         '           &lt;p&gt;This delivery was made &lt;strong&gt;after&lt;/strong&gt; the deadline (&lt;em&gt;{deadline__deadline:date}&lt;/em&gt;).&lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
         '    &lt;tpl if=&quot;!islatestDelivery&quot;&gt;',
-        '        &lt;section class=&quot;warning-small&quot;&gt;',
+        '        &lt;div class=&quot;section warning-small&quot;&gt;',
         '           &lt;h1&gt;Not the latest delivery&lt;/h1&gt;',
         '           &lt;p&gt;',
         '               One or more deliveries has been made &lt;strong&gt;after&lt;/strong&gt; the one you are currently viewing. &lt;em&gt;Normally&lt;/em&gt; the latest delivery is corrected.',
@@ -77,12 +77,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '               &lt;/tpl&gt;',
         '               Choose &lt;span class=&quot;menuref&quot;&gt;Other deliveries&lt;/span&gt; in the toolbar to view other deliveries.',
         '           &lt;/p&gt;',
-        '        &lt;/section&gt;',
+        '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
-        '    &lt;section class=&quot;info-small&quot;&gt;',
+        '    &lt;div class=&quot;section info-small&quot;&gt;',
         '       &lt;h1&gt;Delivery number {number}&lt;/h1&gt;',
         '       &lt;p&gt;This delivery was made &lt;em&gt;{time_of_delivery:date}&lt;/em&gt;. Choose &lt;span class=&quot;menuref&quot;&gt;Browse files&lt;/span&gt; in the toolbar to download the delivered files.&lt;/p&gt;',
-        '    &lt;/section&gt;',
+        '    &lt;/div&gt;',
         '&lt;/tpl&gt;'
     ),
 
@@ -167,24 +167,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             text: 'Browse files',
             id: 'tooltip-browse-files',
             scale: 'large',
-            menu: [], // To get an arrow
-            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.showFileMetaBrowserWindow,
                 render: function() {
-                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                    //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
                 }
             }
         });
 
         this.toolbar.add({
             xtype: 'button',
-            menu: [], // To get an arrow
             id: 'tooltip-other-deliveries',
             text: 'Other deliveries',
             scale: 'large',
-            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onOtherDeliveries
@@ -215,7 +211,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         var deliveriesWindow = Ext.create('Ext.window.Window', {
             title: 'Deliveries by this group',
             height: 500,
-            width: 400,
+            width: 750,
             modal: true,
             layout: 'fit',
             closeAction: 'hide',
@@ -227,9 +223,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             }
         });
         deliveriesWindow.show();
-        if(button) {
-            deliveriesWindow.alignTo(button, 'bl', [0, 0]);
-        }
     },
 
 <span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-method-showFileMetaBrowserWindow'>    /**
@@ -248,16 +241,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 border: false,
                 filemetastore: this.filemetastore,
                 deliveryid: this.delivery_recordcontainer.record.data.id
-            }],
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
-            }
+            }]
         });
         fileBrowser.show();
-        fileBrowser.alignTo(button, 'bl', [0, 0]);
     }
 });
 </pre>

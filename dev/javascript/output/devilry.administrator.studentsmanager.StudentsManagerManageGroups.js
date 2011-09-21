@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageGroups({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StudentsManagerManageGroups.html#devilry-administrator-studentsmanager-StudentsManagerManageGroups",
+  "allMixins": [
 
   ],
   "doc": "<p>The group management methods for StudentsManager.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StudentsManagerManageGroups.html",
-  "href": "StudentsManagerManageGroups.html#devilry-administrator-studentsmanager-StudentsManagerManageGroups",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageGroups
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageGroups
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.administrator.studentsmanager.StudentsManagerManageGroups",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

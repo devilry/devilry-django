@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.gradeform_gradeeditor.booleanwindow', {
+    extend: 'Ext.window.Window',
+
+    width: 200,
+    height: 200,
+    modal: true,
+    layout: 'fit',
+
+    config: {
+<span id='global-cfg-message'>        /**
+</span>         * @cfg
+         * A message to show. (required)
+         */
+        message: undefined,
+
+<span id='global-cfg-buttonLabel'>        /**
+</span>         * @cfg
+         * Label of the toolbar button. (required)
+         */
+        buttonLabel: undefined
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+
+        this.addEvents(
+<span id='global-property-gotSomeValue'>            /**
+</span>             * @param stuff A message.
+             */
+            &quot;gotSomeValue&quot;
+        );
+    },
+
+    initComponent: function() {
+        Ext.apply(this, {
+            items: [{
+                xtype: 'panel',
+                html: this.message
+            }],
+            
+            bbar: [{
+                xtype: 'button',
+                text: this.buttonLabel,
+                listeners: {
+                    scope: this,
+                    click: this.onClickButton
+                }
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    onClickButton: function() {
+        this.fireEvent('gotSomeValue', 'Hello world!');
+    }
+});
+</pre>
+</body>
+</html>

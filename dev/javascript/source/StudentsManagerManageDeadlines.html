@@ -20,6 +20,10 @@
  * Note that this class depends on createRecordFromStoreRecord(),
  * onSelectNone() and loadFirstPage() from StudentsManager to be available. */
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines', {
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow'
+    ],
+
 <span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines-method-onAddDeadline'>    /**
 </span>     * @private
      */
@@ -44,6 +48,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
 </span>     * @private
      */
     addDeadlineToSelected: function(record) {
+        this.progressWindow.start('Add deadline');
+        this._finishedSavingGroupCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.addDeadline,
@@ -54,21 +60,41 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
 <span id='devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines-method-addDeadline'>    /**
 </span>     * @private
      */
-    addDeadline: function(assignmentGroupRecord, index, total, deadlineRecord) {
-        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, total);
+    addDeadline: function(assignmentGroupRecord, index, totalSelectedGroups, deadlineRecord) {
+        var msg = Ext.String.format('Adding deadline to group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
-        var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, this.deadlinemodel);
-        newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
-        newDeadlineRecord.save({
-            failure: function() {
-                console.error('Failed to save record');
+        this.statics().createDeadline(assignmentGroupRecord, deadlineRecord, this.deadlinemodel, {
+            scope: this,
+            callback: function(r, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(assignmentGroupRecord, 'Deadline successfully created.');
+                } else {
+                    this.progressWindow.addErrorFromOperation(
+                        assignmentGroupRecord, 'Failed to create deadline', operation
+                    );
+                }
+
+                this._finishedSavingGroupCount ++;
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish();
+                }
             }
         });
 
-        if(index == total) {
+        if(index == totalSelectedGroups) {
             this.loadFirstPage();
             this.getEl().unmask();
+        }
+    },
+
+    statics: {
+        createDeadline: function(assignmentGroupRecord, deadlineRecord, deadlinemodel, saveopt) {
+            var newDeadlineRecord = Ext.ModelManager.create(deadlineRecord.data, deadlinemodel);
+            newDeadlineRecord.data.assignment_group = assignmentGroupRecord.data.id;
+            newDeadlineRecord.save(saveopt);
         }
     }
 });

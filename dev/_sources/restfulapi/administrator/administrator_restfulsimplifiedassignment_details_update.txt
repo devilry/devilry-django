@@ -30,10 +30,9 @@ Example
         short_name: "my_example001_value",
         publishing_time: "2010-02-22 22:32:10",
         parentnode: 15,
+        delivery_types: 20,
         long_name: "My example value",
-        attempts: 20,
-        anonymous: true,
-        maxpoints: 20
+        anonymous: true
     }
 
 
@@ -99,6 +98,17 @@ Type
     Integer
 
 
+delivery_types
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.Assignment`
+About the field:
+    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+Type
+    Integer
+
+
 long_name
 --------------------------------------------------
 
@@ -110,17 +120,6 @@ Type
     String
 
 
-attempts
---------------------------------------------------
-
-Actual location of the field:
-    :class:`devilry.apps.core.models.Assignment`
-About the field:
-    The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.
-Type
-    Integer
-
-
 anonymous
 --------------------------------------------------
 
@@ -130,17 +129,6 @@ About the field:
     Specifies if this assignment is anonymous.
 Type
     Boolean
-
-
-maxpoints
---------------------------------------------------
-
-Actual location of the field:
-    :class:`devilry.apps.core.models.Assignment`
-About the field:
-    The maximum number of points possible without scaling.
-Type
-    Integer
 
 
 
@@ -164,10 +152,9 @@ Example
         short_name: "my_example001_value",
         publishing_time: "2010-02-22 22:32:10",
         parentnode: 15,
+        delivery_types: 20,
         long_name: "My example value",
-        attempts: 20,
         anonymous: true,
-        maxpoints: 20,
         id: 15
     }
 

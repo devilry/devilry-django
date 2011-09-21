@@ -25,18 +25,18 @@
         height: 450
     },
 
-    flex: 2.5,
+    flex: 6,
 
     layout: {
         type: 'vbox',
         align: 'stretch'
     },
 
-    //fieldDefaults: {
-        //labelAlign: 'top',
-        //labelWidth: 100,
-        //labelStyle: 'font-weight:bold'
-    //},
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
     defaults: {
         margins: '0 0 10 0'
     },
@@ -51,17 +51,11 @@
         name: &quot;anonymous&quot;,
         fieldLabel: &quot;Anonymous?&quot;,
         xtype: 'checkbox'
-    }, {
-        name: &quot;attempts&quot;,
-        fieldLabel: &quot;Attempts&quot;,
-        xtype: 'textfield'
     }],
 
     help: [
         'If you check &lt;strong&gt;must pass&lt;/strong&gt;, any student registered on a group on this assignment is &lt;em&gt;required&lt;/em&gt; to pass this assignment to get a passing grade on this period.',
-        'If you check &lt;strong&gt;anonymous&lt;/strong&gt;, examiners see a &lt;em&gt;candidate-id&lt;/em&gt; instead of a username. A candidate-id must be set for each student. Normally students can see who their examiner is, however when &lt;em&gt;anonymous&lt;/em&gt; is checked students do not get any information about their examiner(s).',
-        'When &lt;strong&gt;attempts&lt;/strong&gt; is set to something other than &lt;em&gt;0&lt;/em&gt;, examiners is asked to create new deadlines for students as long as they have failed to get a passing grade &lt;em&gt;attempts&lt;/em&gt; times. When a student has failed to get a passing grade &lt;em&gt;attempts&lt;/em&gt; times, their group is automatically closed, which means they get a failing grade on the assignment.',
-        'Note that &lt;strong&gt;attempts&lt;/strong&gt; is just a hint that is used to make the job of the examiners easier. Examiners can re-open closed groups if needed, and they can manually close groups even when they have not failed &lt;em&gt;attempts&lt;/em&gt; times.'
+        'If you check &lt;strong&gt;anonymous&lt;/strong&gt;, examiners see a &lt;em&gt;candidate-id&lt;/em&gt; instead of a username. A candidate-id must be set for each student. Normally students can see who their examiner is, however when &lt;em&gt;anonymous&lt;/em&gt; is checked students do not get any information about their examiner(s).'
     ]
 });
 </pre>

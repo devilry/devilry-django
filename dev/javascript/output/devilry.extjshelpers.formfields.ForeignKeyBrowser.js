@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_formfields_ForeignKeyBrowser({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "ForeignKeyBrowser.html#devilry-extjshelpers-formfields-ForeignKeyBrowser",
+  "allMixins": [
 
   ],
   "doc": "<p>Popup window used by <a href=\"#/api/devilry.extjshelpers.formfields.ForeignKeySelector\" rel=\"devilry.extjshelpers.formfields.ForeignKeySelector\" class=\"docClass\">devilry.extjshelpers.formfields.ForeignKeySelector</a></p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "ForeignKeyBrowser.html",
-  "href": "ForeignKeyBrowser.html#devilry-extjshelpers-formfields-ForeignKeyBrowser",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_formfields_ForeignKeyBrowser({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_formfields_ForeignKeyBrowser({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.formfields.ForeignKeyBrowser",
+  "linenr": 1,
   "xtypes": [
     "foreignkeybrowser"
   ],
-  "extends": "Ext.grid.Panel",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/formfields/ForeignKeyBrowser.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.grid.Panel",
+  "docauthor": null
 });

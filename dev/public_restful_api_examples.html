@@ -53,14 +53,14 @@
 <h2>Duckburgh<a class="headerlink" href="#duckburgh" title="Permalink to this headline">¶</a></h2>
 <p>Shows how to use more or less any aspect of the API, except for <em>filters</em>. See
 the <a class="reference internal" href="#restful-ifi-schenario"><em>IFI scenario</em></a> for <em>filter</em> examples.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilryclient.restfulclient</span> <span class="kn">import</span> <span class="p">(</span><span class="n">login</span><span class="p">,</span>
-                                         <span class="n">RestfulFactory</span><span class="p">,</span>
-                                         <span class="n">RestfulError</span><span class="p">,</span>
-                                         <span class="n">HttpResponseNotFound</span><span class="p">,</span>
-                                         <span class="n">HttpResponseBadRequest</span><span class="p">,</span>
-                                         <span class="n">HttpResponseUnauthorized</span><span class="p">,</span>
-                                         <span class="n">HttpResponseForbidden</span><span class="p">,</span>
-                                         <span class="n">JsonDecodeError</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilryrestfullib</span> <span class="kn">import</span> <span class="p">(</span><span class="n">login</span><span class="p">,</span>
+                               <span class="n">RestfulFactory</span><span class="p">,</span>
+                               <span class="n">RestfulError</span><span class="p">,</span>
+                               <span class="n">HttpResponseNotFound</span><span class="p">,</span>
+                               <span class="n">HttpResponseBadRequest</span><span class="p">,</span>
+                               <span class="n">HttpResponseUnauthorized</span><span class="p">,</span>
+                               <span class="n">HttpResponseForbidden</span><span class="p">,</span>
+                               <span class="n">JsonDecodeError</span><span class="p">)</span>
 
 
 <span class="c"># may be something like http://devilry.myorganzation.com/some/subpath/ in production</span>
@@ -176,14 +176,14 @@ the <a class="reference internal" href="#restful-ifi-schenario"><em>IFI scenario
 <span id="restful-ifi-schenario"></span><h2>IFI scenario<a class="headerlink" href="#ifi-scenario" title="Permalink to this headline">¶</a></h2>
 <p>Another example, this one using a structure that should be familiar to people
 from University of Oslo. Furthermore, this example shows how to use <strong>filters</strong>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilryclient.restfulclient</span> <span class="kn">import</span> <span class="p">(</span><span class="n">login</span><span class="p">,</span>
-                                         <span class="n">RestfulFactory</span><span class="p">,</span>
-                                         <span class="n">RestfulError</span><span class="p">,</span>
-                                         <span class="n">HttpResponseNotFound</span><span class="p">,</span>
-                                         <span class="n">HttpResponseBadRequest</span><span class="p">,</span>
-                                         <span class="n">HttpResponseUnauthorized</span><span class="p">,</span>
-                                         <span class="n">HttpResponseForbidden</span><span class="p">,</span>
-                                         <span class="n">JsonDecodeError</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilryrestfullib</span> <span class="kn">import</span> <span class="p">(</span><span class="n">login</span><span class="p">,</span>
+                               <span class="n">RestfulFactory</span><span class="p">,</span>
+                               <span class="n">RestfulError</span><span class="p">,</span>
+                               <span class="n">HttpResponseNotFound</span><span class="p">,</span>
+                               <span class="n">HttpResponseBadRequest</span><span class="p">,</span>
+                               <span class="n">HttpResponseUnauthorized</span><span class="p">,</span>
+                               <span class="n">HttpResponseForbidden</span><span class="p">,</span>
+                               <span class="n">JsonDecodeError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">uiodata</span> <span class="kn">import</span> <span class="n">subjects</span>
 
 <span class="c"># may be something like http://devilry.myorganzation.com/some/subpath/ in production</span>

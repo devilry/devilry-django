@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_ButtonBar({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "ButtonBar.html#devilry-extjshelpers-ButtonBar",
+  "allMixins": [
 
   ],
   "doc": "<p>A button bar containing <a href=\"#/api/devilry.extjshelpers.ButtonBarButton\" rel=\"devilry.extjshelpers.ButtonBarButton\" class=\"docClass\">devilry.extjshelpers.ButtonBarButton</a> many.</p>\n\n<p>Add buttons as items to the container.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "ButtonBar.html",
-  "href": "ButtonBar.html#devilry-extjshelpers-ButtonBar",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_ButtonBar({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_ButtonBar({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.ButtonBar",
+  "linenr": 1,
   "xtypes": [
-
+    "buttonbar"
   ],
-  "extends": "Ext.container.Container",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/ButtonBar.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.container.Container",
+  "docauthor": null
 });

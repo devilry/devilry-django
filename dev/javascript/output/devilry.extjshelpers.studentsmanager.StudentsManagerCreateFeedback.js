@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerCreateFeedback({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StudentsManagerCreateFeedback.html#devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback",
+  "allMixins": [
 
   ],
   "doc": "<p>The feedback creation methods for StudentsManager.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StudentsManagerCreateFeedback.html",
-  "href": "StudentsManagerCreateFeedback.html#devilry-extjshelpers-studentsmanager-StudentsManagerCreateFeedback",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerCreateFeedbac
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerCreateFeedbac
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/studentsmanager/StudentsManagerCreateFeedback.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

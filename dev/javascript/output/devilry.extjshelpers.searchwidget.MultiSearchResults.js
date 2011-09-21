@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_searchwidget_MultiSearchResults({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "MultiSearchResults.html#devilry-extjshelpers-searchwidget-MultiSearchResults",
+  "allMixins": [
 
   ],
   "doc": "<p>Search results for many results, each result shown in a\n<a href=\"#/api/devilry.extjshelpers.searchwidget.SearchResults\" rel=\"devilry.extjshelpers.searchwidget.SearchResults\" class=\"docClass\">devilry.extjshelpers.searchwidget.SearchResults</a>. Integrates with devilry.extjshelpers.searchwidget.MultiSearchField.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "MultiSearchResults.html",
-  "href": "MultiSearchResults.html#devilry-extjshelpers-searchwidget-MultiSearchResults",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_searchwidget_MultiSearchResults({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_searchwidget_MultiSearchResults({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.searchwidget.MultiSearchResults",
+  "linenr": 1,
   "xtypes": [
     "multisearchresults"
   ],
-  "extends": "Ext.panel.Panel",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/MultiSearchResults.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.window.Window",
+  "docauthor": null
 });

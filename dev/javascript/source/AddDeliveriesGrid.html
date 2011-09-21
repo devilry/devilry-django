@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.student.AddDeliveriesGrid', {
+    extend: 'Ext.grid.Panel',
+    hideHeaders: true,
+    frameHeader: false,
+    frame: false,
+    border: false,
+    sortableColumns: false,
+    columnLines: false,
+    cls: 'selectable-grid',
+    requires: [
+        'devilry.extjshelpers.DateTime'
+    ],
+
+    initComponent: function() {
+        var rowTpl = Ext.create('Ext.XTemplate',
+            '{.:date}'
+        );
+
+        //this.store.proxy.extraParams.orderby = Ext.JSON.encode([&quot;deadline&quot;]);
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            &quot;field&quot;: &quot;is_open&quot;,
+            &quot;comp&quot;: &quot;exact&quot;,
+            &quot;value&quot;: true
+        }, {
+            field: 'parentnode__delivery_types',
+            comp: 'exact',
+            value: 0 // ELECTRONIC deliveries
+        }, {
+            field: 'parentnode__parentnode__start_time',
+            comp: '&lt;',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'parentnode__parentnode__end_time',
+            comp: '&gt;',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }]);
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-latest_deadline_deadline']);
+        this.store.load();
+
+        Ext.apply(this, {
+            columns: [{
+                text: 'Subject',
+                menuDisabled: true,
+                hideable: false,
+                dataIndex: 'parentnode__parentnode__parentnode__long_name',
+                flex: 20
+            },{
+                text: 'Assignment',
+                menuDisabled: true,
+                hideable: false,
+                flex: 15,
+                dataIndex: 'parentnode__long_name'
+            },{
+                text: 'Deadline',
+                menuDisabled: true,
+                hideable: false,
+                flex: 15,
+                dataIndex: 'latest_deadline_deadline',
+                renderer: function(value, m, record) {
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '&lt;em style=&quot;font-style:italic&quot;&gt;Deadline:&lt;/em&gt; {latest_deadline_deadline}'
+                    );
+                    return rowTpl.apply(record.data);
+                }
+            },{
+                text: '#Deliveries',
+                menuDisabled: true,
+                hideAble: false,
+                flex: 5,
+                dataIndex: 'number_of_deliveries',
+                renderer: function(value, m, record) {
+                    var rowTpl = Ext.create('Ext.XTemplate',
+                        '&lt;em style=&quot;font-style:italic&quot;&gt;Deliveries:&lt;/em&gt; {number_of_deliveries}'
+                    );
+                    return rowTpl.apply(record.data);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function(view, record) {
+                    var url = DASHBOARD_URL + &quot;add-delivery/&quot; + record.data.id;
+                    window.location = url;
+                },
+                itemmouseenter: function(view, record, item) {
+                    //console.log(item);
+                }
+            }
+        });
+        this.callParent(arguments);
+    }
+});
+</pre>
+</body>
+</html>

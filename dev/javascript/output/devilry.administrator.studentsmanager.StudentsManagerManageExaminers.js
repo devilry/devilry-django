@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageExaminers({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StudentsManagerManageExaminers.html#devilry-administrator-studentsmanager-StudentsManagerManageExaminers",
+  "allMixins": [
 
   ],
   "doc": "<p>The examiner management methods for StudentsManager.</p>\n\n<p>Note that this class depends on createRecordFromStoreRecord(),\nonSelectNone() and loadFirstPage() from StudentsManager to be available.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StudentsManagerManageExaminers.html",
-  "href": "StudentsManagerManageExaminers.html#devilry-administrator-studentsmanager-StudentsManagerManageExaminers",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageExamin
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_administrator_studentsmanager_StudentsManagerManageExamin
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.administrator.studentsmanager.StudentsManagerManageExaminers",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

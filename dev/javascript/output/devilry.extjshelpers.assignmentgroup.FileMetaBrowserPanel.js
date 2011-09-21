@@ -1,66 +1,60 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_FileMetaBrowserPanel({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel",
+  "allMixins": [
 
   ],
   "doc": "<p>Panel to browse FileMeta.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "FileMetaBrowserPanel.html",
-  "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "Object",
+        "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel-cfg-deliveryid",
         "owner": "devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel",
         "doc": "<p>Id of the delivery in which the filemetas belong.</p>\n",
         "html_filename": "FileMetaBrowserPanel.html",
-        "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel-cfg-deliveryid",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 20,
         "inheritable": false,
         "alias": null,
         "name": "deliveryid",
+        "linenr": 20,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel-cfg-filemetastore",
         "owner": "devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel",
         "doc": "<p>FileMeta <code>Ext.data.Store</code>. (Required).\n<em>Note</em> that <code>filemetastore.proxy.extraParams</code> is changed by this\nclass.</p>\n",
         "html_filename": "FileMetaBrowserPanel.html",
-        "href": "FileMetaBrowserPanel.html#devilry-extjshelpers-assignmentgroup-FileMetaBrowserPanel-cfg-filemetastore",
-        "tagname": "cfg",
-        "shortDoc": "FileMeta Ext.data.Store. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 11,
         "inheritable": false,
         "alias": null,
         "name": "filemetastore",
+        "shortDoc": "FileMeta Ext.data.Store. ...",
+        "linenr": 11,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js",
         "deprecated": null
       }
@@ -68,15 +62,6 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_FileMetaBrowserPanel({
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -86,31 +71,46 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_FileMetaBrowserPanel({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 2,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel",
+  "linenr": 2,
   "xtypes": [
     "filemetabrowserpanel"
   ],
-  "extends": "Ext.panel.Panel",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.panel.Panel",
+  "docauthor": null
 });

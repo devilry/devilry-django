@@ -68,7 +68,7 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">POST</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiedrelatedexaminer</span><span class="o">/</span>
 
 <span class="p">{</span>
-    <span class="nx">username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
     <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -78,13 +78,13 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.</p>
-<div class="section" id="username">
-<h4>username<a class="headerlink" href="#username" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="userspec">
+<h4>userspec<a class="headerlink" href="#userspec" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
 <dt>Actual location of the field:</dt>
 <dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt></dd>
 <dt>About the field:</dt>
-<dd>A username. Max 30 characters, a-z, A-Z, and _</dd>
+<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
 <dt>Type</dt>
 <dd>String</dd>
 </dl>
@@ -111,7 +111,7 @@ request body as shown in the example above.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="mi">201</span> <span class="nx">CREATED</span>
 
 <span class="p">{</span>
-    <span class="nx">username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
     <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
@@ -145,7 +145,7 @@ have been changed due to logic performed on the server before saving.</p>
 <li><a class="reference internal" href="#request">Request</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
 <li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
-<li><a class="reference internal" href="#username">username</a></li>
+<li><a class="reference internal" href="#userspec">userspec</a></li>
 <li><a class="reference internal" href="#period">period</a></li>
 </ul>
 </li>

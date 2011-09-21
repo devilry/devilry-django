@@ -149,6 +149,17 @@
             <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;Could not decode config string as JSON.&#39;</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate_gradeeditor_key</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftdct</span><span class="p">,</span> <span class="n">expectedid</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;gradeeditor&#39;</span> <span class="ow">in</span> <span class="n">draftdct</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;The draftdct must contain the &quot;gradeeditor&quot; key.&#39;</span><span class="p">)</span>
+        <span class="n">gradeeditor</span> <span class="o">=</span> <span class="n">draftdct</span><span class="p">[</span><span class="s">&#39;gradeeditor&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">gradeeditor</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s">&#39;version&#39;</span> <span class="ow">in</span> <span class="n">gradeeditor</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;The gradeeditor key must contain an object with id and version as keys.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gradeeditor</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">expectedid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;The gradeeditor id must be &quot;{0}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expectedid</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">gradeeditor</span>
+
+    <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="JsonRegistryItem.validate_dict"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.JsonRegistryItem.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">valuedict</span><span class="p">,</span> <span class="n">exceptioncls</span><span class="p">,</span> <span class="n">typedict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate that each key in ``typedict`` is in ``valuedict``, and that</span>
@@ -157,11 +168,13 @@
 
 <span class="sd">        Raise ``exceptioncls`` with an error message if any validation fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valuedict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;The draft string must contain a json map/object/dict.&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">typecls</span> <span class="ow">in</span> <span class="n">typedict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valuedict</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">exceptioncls</span><span class="p">(</span><span class="s">&#39;{0} is required.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valuedict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">typecls</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">exceptioncls</span><span class="p">(</span><span class="s">&#39;{0} must be of type: {1}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">typecls</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">exceptioncls</span><span class="p">(</span><span class="s">&#39;{0} must be of type: {1}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">typecls</span><span class="p">)[</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]))</span>
 
 
 

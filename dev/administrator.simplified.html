@@ -1192,6 +1192,12 @@ is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefield
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedAssignmentGroup.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the given assignmentgroup contains no deliveries.</p>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the given object.</p>
@@ -1259,13 +1265,6 @@ that assignment is not anonymous.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">

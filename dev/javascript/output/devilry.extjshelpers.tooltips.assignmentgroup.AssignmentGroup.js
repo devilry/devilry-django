@@ -1,49 +1,58 @@
 Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_AssignmentGroup({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "AssignmentGroup.html#devilry-extjshelpers-tooltips-assignmentgroup-AssignmentGroup",
+  "allMixins": [
 
   ],
   "doc": "<p>Tooltip classes for Assignmentgroup.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "AssignmentGroup.html",
-  "href": "AssignmentGroup.html#devilry-extjshelpers-tooltips-assignmentgroup-AssignmentGroup",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
     "method": [
       {
+        "href": "AssignmentGroup.html#devilry-extjshelpers-tooltips-assignmentgroup-AssignmentGroup-method-animateAndShowAll",
+        "owner": "devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup",
         "params": [
 
         ],
-        "owner": "devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup",
         "doc": "<p>Animate all tooltips as a wizard.</p>\n",
         "html_filename": "AssignmentGroup.html",
-        "href": "AssignmentGroup.html#devilry-extjshelpers-tooltips-assignmentgroup-AssignmentGroup-method-animateAndShowAll",
-        "tagname": "method",
-        "shortDoc": "Animate all tooltips as a wizard. ...",
         "protected": false,
+        "tagname": "method",
         "static": false,
-        "private": false,
-        "linenr": 32,
-        "inheritable": false,
-        "alias": null,
-        "name": "animateAndShowAll",
         "return": {
           "type": "void",
           "doc": "\n"
         },
+        "private": false,
+        "inheritable": false,
+        "alias": null,
+        "name": "animateAndShowAll",
+        "shortDoc": "Animate all tooltips as a wizard. ...",
+        "linenr": 32,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/tooltips/assignmentgroup/AssignmentGroup.js",
         "deprecated": null
       }
@@ -51,21 +60,25 @@ Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_AssignmentGroup({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -75,31 +88,18 @@ Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_AssignmentGroup({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/tooltips/assignmentgroup/AssignmentGroup.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

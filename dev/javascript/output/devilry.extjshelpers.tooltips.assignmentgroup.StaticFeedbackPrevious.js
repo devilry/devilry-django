@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_StaticFeedbackPrevious({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StaticFeedbackPrevious.html#devilry-extjshelpers-tooltips-assignmentgroup-StaticFeedbackPrevious",
+  "allMixins": [
 
   ],
   "doc": "<p>Tooltip for previous button</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StaticFeedbackPrevious.html",
-  "href": "StaticFeedbackPrevious.html#devilry-extjshelpers-tooltips-assignmentgroup-StaticFeedbackPrevious",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_StaticFeedbackPrevi
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_tooltips_assignmentgroup_StaticFeedbackPrevi
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.tooltips.assignmentgroup.StaticFeedbackPrevious",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "devilry.extjshelpers.tooltips.assignmentgroup.CommonConfig",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/tooltips/assignmentgroup/StaticFeedbackPrevious.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "devilry.extjshelpers.tooltips.assignmentgroup.CommonConfig",
+  "docauthor": null
 });

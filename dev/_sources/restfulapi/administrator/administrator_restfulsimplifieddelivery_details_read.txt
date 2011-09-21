@@ -118,6 +118,22 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
+            deadline__assignment_group__parentnode__parentnode__start_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
+            deadline__assignment_group__parentnode__parentnode__end_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Start time and end time defines when the period is active.
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
             deadline__assignment_group__parentnode__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`

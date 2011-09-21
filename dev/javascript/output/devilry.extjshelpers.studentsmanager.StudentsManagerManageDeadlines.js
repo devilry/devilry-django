@@ -1,24 +1,33 @@
 Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerManageDeadlines({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "StudentsManagerManageDeadlines.html#devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines",
+  "allMixins": [
 
   ],
   "doc": "<p>The deadline management methods for StudentsManager.</p>\n\n<p>Note that this class depends on createRecordFromStoreRecord(),\nonSelectNone() and loadFirstPage() from StudentsManager to be available.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "StudentsManagerManageDeadlines.html",
-  "href": "StudentsManagerManageDeadlines.html#devilry-extjshelpers-studentsmanager-StudentsManagerManageDeadlines",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -28,21 +37,25 @@ Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerManageDeadlin
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -52,31 +65,18 @@ Ext.data.JsonP.devilry_extjshelpers_studentsmanager_StudentsManagerManageDeadlin
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines",
+  "linenr": 1,
   "xtypes": [
 
   ],
-  "extends": "Ext.Base",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/studentsmanager/StudentsManagerManageDeadlines.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.Base",
+  "docauthor": null
 });

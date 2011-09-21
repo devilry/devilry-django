@@ -1,49 +1,43 @@
 Ext.data.JsonP.devilry_extjshelpers_searchwidget_SearchResultItem({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "SearchResultItem.html#devilry-extjshelpers-searchwidget-SearchResultItem",
+  "allMixins": [
 
   ],
   "doc": "<p>A search result item (a single row in the search result).</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "SearchResultItem.html",
-  "href": "SearchResultItem.html#devilry-extjshelpers-searchwidget-SearchResultItem",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
 
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "Object",
+        "href": "SearchResultItem.html#devilry-extjshelpers-searchwidget-SearchResultItem-cfg-tpl",
         "owner": "devilry.extjshelpers.searchwidget.SearchResultItem",
         "doc": "<p><code>Ext.XTemplate</code> formatting template for the text content. <em>Required</em>.</p>\n",
         "html_filename": "SearchResultItem.html",
-        "href": "SearchResultItem.html#devilry-extjshelpers-searchwidget-SearchResultItem-cfg-tpl",
-        "tagname": "cfg",
-        "shortDoc": "Ext.XTemplate formatting template for the text content. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 11,
         "inheritable": false,
         "alias": null,
         "name": "tpl",
+        "shortDoc": "Ext.XTemplate formatting template for the text content. ...",
+        "linenr": 11,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResultItem.js",
         "deprecated": null
       }
@@ -51,15 +45,6 @@ Ext.data.JsonP.devilry_extjshelpers_searchwidget_SearchResultItem({
     "event": [
 
     ],
-    "css_mixin": [
-
-    ]
-  },
-  "alternateClassNames": [
-
-  ],
-  "author": null,
-  "statics": {
     "property": [
 
     ],
@@ -69,31 +54,46 @@ Ext.data.JsonP.devilry_extjshelpers_searchwidget_SearchResultItem({
     "css_var": [
 
     ],
+    "css_mixin": [
+
+    ]
+  },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
+  "alternateClassNames": [
+
+  ],
+  "statics": {
     "cfg": [
 
     ],
     "event": [
 
     ],
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.extjshelpers.searchwidget.SearchResultItem",
+  "linenr": 1,
   "xtypes": [
     "searchresultitem"
   ],
-  "extends": "Ext.container.Container",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResultItem.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "Ext.container.Container",
+  "docauthor": null
 });

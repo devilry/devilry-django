@@ -33,7 +33,7 @@ Another example, this one uses the optional *result_fieldgroups* parameter.
     GET /student/restfulsimplifiedassignmentgroup/id
 
     {
-        result_fieldgroups: ["users", "assignment", "feedback", "period", "feedbackdelivery", "subject"]
+        result_fieldgroups: ["users", "assignment", "feedback", "period", "feedbackdelivery", "feedback_rendered_view", "subject"]
     }
 
 
@@ -98,6 +98,22 @@ resulting data. The following group names are available:
                 Type
                     String
         
+            parentnode__anonymous
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    Specifies if this assignment is anonymous.
+                Type
+                    Boolean
+        
+            parentnode__publishing_time
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    The time when the assignment is to be published (visible to students and examiners).
+                Type
+                    DateTime string (YYYY-MM-DD hh:mm:ss)
+        
 
     feedback
         *Expands to the following fields:*
@@ -125,14 +141,6 @@ resulting data. The following group names are available:
                     Is this a passing grade?
                 Type
                     Boolean
-        
-            feedback__rendered_view
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.StaticFeedback`
-                About the field:
-                    A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.
-                Type
-                    String
         
 
     period
@@ -199,6 +207,18 @@ resulting data. The following group names are available:
                     Integer
         
 
+    feedback_rendered_view
+        *Expands to the following fields:*
+        
+            feedback__rendered_view
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.StaticFeedback`
+                About the field:
+                    A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.
+                Type
+                    String
+        
+
     subject
         *Expands to the following fields:*
         
@@ -253,6 +273,8 @@ Example
         parentnode: 15,
         feedback: 15,
         latest_delivery_id: No example-value available for this field,
+        latest_deadline_id: No example-value available for this field,
+        latest_deadline_deadline: No example-value available for this field,
         number_of_deliveries: No example-value available for this field
     }
 
@@ -313,6 +335,22 @@ The result always contains the following fields:
                 Integer
     
         latest_delivery_id
+            Actual location of the field:
+                :class:`Generated from a query`
+            About the field:
+                Generated from a query.
+            Type
+                unknown
+    
+        latest_deadline_id
+            Actual location of the field:
+                :class:`Generated from a query`
+            About the field:
+                Generated from a query.
+            Type
+                unknown
+    
+        latest_deadline_deadline
             Actual location of the field:
                 :class:`Generated from a query`
             About the field:

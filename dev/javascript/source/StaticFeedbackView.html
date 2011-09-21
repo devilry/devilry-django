@@ -22,7 +22,7 @@
 
     tpl: Ext.create('Ext.XTemplate',
         '&lt;tpl if=&quot;!isactive&quot;&gt;',
-        '   &lt;section class=&quot;warning-small&quot;&gt;',
+        '   &lt;div class=&quot;section warning-small&quot;&gt;',
         '       &lt;h1&gt;This is not the active feedback&lt;/h1&gt;',
         '       When an examiner publish a feedback, the feedback is ',
         '       stored forever. When an examiner needs to modify a feedback, ',
@@ -30,34 +30,29 @@
         '       one feedback in the toolbar above. Unless there is something ',
         '       wrong with the latest feedback, you should not have to ',
         '       read this feedback',
-        '   &lt;/section&gt;',
+        '   &lt;/div&gt;',
         '&lt;/tpl&gt;',
 
-        '&lt;tpl if=&quot;is_passing_grade&quot;&gt;',
-        '    &lt;section class=&quot;ok-small&quot;&gt;',
-        '       &lt;h1&gt;Passing grade&lt;/h1&gt;',
-        '       &lt;p&gt;The given grade is a passing grade.&lt;/p&gt;',
-        '    &lt;/section&gt;',
-        '&lt;/tpl&gt;',
-        '&lt;tpl if=&quot;!is_passing_grade&quot;&gt;',
-        '    &lt;section class=&quot;error-small&quot;&gt;',
-        '       &lt;h1&gt;Failing grade&lt;/h1&gt;',
-        '       &lt;p&gt;The given grade is &lt;strong&gt;not&lt;/strong&gt; a passing grade.&lt;/p&gt;',
-        '    &lt;/section&gt;',
-        '&lt;/tpl&gt;',
-
-        '&lt;section class=&quot;info-small&quot;&gt;',
+        '&lt;div class=&quot;section {gradecls}&quot;&gt;',
         '   &lt;h1&gt;Grade&lt;/h1&gt;',
-        '   &lt;p&gt;&lt;em&gt;{grade}&lt;/em&gt;&lt;/p&gt;',
-        '&lt;/section&gt;',
+        '       &lt;p&gt;',
+        '       &lt;tpl if=&quot;!is_passing_grade&quot;&gt;',
+        '           The given grade, &lt;strong&gt;{grade}&lt;/strong&gt;, is &lt;strong&gt;not&lt;/strong&gt; a passing grade.',
+        '       &lt;/tpl&gt;',
+        '       &lt;tpl if=&quot;is_passing_grade&quot;&gt;',
+        '           The given grade, &lt;strong&gt;{grade}&lt;/strong&gt;, is a passing grade.',
+        '       &lt;/tpl&gt;',
+        '       This feedback was published &lt;em&gt;{save_timestamp:date}&lt;/em&gt;.',
+        '       &lt;/p&gt;',
+        '&lt;/div&gt;',
+        '&lt;div class=&quot;section rendered_view&quot;&gt;{rendered_view}&lt;div class=&quot;section&quot;&gt;'
+    ),
 
-        '&lt;section class=&quot;info-small&quot;&gt;',
-        '   &lt;h1&gt;Feedback publish time&lt;/h1&gt;',
-        '   &lt;p&gt;This feedback was published &lt;em&gt;{save_timestamp:date}&lt;/em&gt;&lt;/p&gt;',
-        '&lt;/section&gt;',
-
-        '&lt;section class=&quot;rendered_view&quot;&gt;{rendered_view}&lt;section&gt;'
-    )
+    
+    getData: function(data) {
+        data.gradecls = data.is_passing_grade? 'ok-small': 'error-small';
+        return data;
+    },
 });
 </pre>
 </body>

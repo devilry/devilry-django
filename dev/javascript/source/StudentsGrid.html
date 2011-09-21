@@ -19,15 +19,38 @@
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsmanager_studentsgrid',
     cls: 'widget-studentsmanager_studentsgrid',
-    sortableColumns: false,
+    sortableColumns: true,
+
+    requires: [
+        'devilry.extjshelpers.GridSelectionModel'
+    ],
 
     config: {
-        assignmentid: undefined
+        assignmentid: undefined,
+        dockedItems: []
     },
 
     mixins: {
         canPerformActionsOnSelected: 'devilry.extjshelpers.GridPeformActionOnSelected'
     },
+
+    infoColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;div class=&quot;section infocolumn&quot;&gt;',
+        '    &lt;div&gt;',
+        '        &lt;tpl if=&quot;is_open&quot;&gt;',
+        '           &lt;span class=&quot;group_is_open&quot;&gt;Open&lt;/span&gt;',
+        '        &lt;/tpl&gt;',
+        '        &lt;tpl if=&quot;!is_open&quot;&gt;',
+        '           &lt;span class=&quot;group_is_closed&quot;&gt;Closed&lt;/span&gt;',
+        '       &lt;/tpl&gt;',
+        '    &lt;/div&gt;',
+        '    &lt;div&gt;',
+        '        &lt;tpl if=&quot;latest_deadline_id === null&quot;&gt;',
+        '           &lt;span class=&quot;has_no_deadlines&quot;&gt;No deadlines&lt;/span&gt;',
+        '        &lt;/tpl&gt;',
+        '    &lt;/div&gt;',
+        '&lt;/div&gt;'
+    ),
 
     candidatesCol: Ext.create('Ext.XTemplate', 
         '&lt;ul class=&quot;candidatescolumn&quot;&gt;',
@@ -45,15 +68,16 @@
         '&lt;/ul&gt;'
     ),
 
-    isOpenColTpl: Ext.create('Ext.XTemplate', 
-        '&lt;span class=&quot;is_opencol&quot;&gt;',
-        '    &lt;tpl if=&quot;is_open&quot;&gt;',
-        '       &lt;span class=&quot;open&quot;&gt;Open&lt;/span&gt;',
+    tagsColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;ul class=&quot;tagscolumn&quot;&gt;',
+        '    &lt;tpl for=&quot;tags__tag&quot;&gt;',
+        '       &lt;li&gt;{.}&lt;/li&gt;',
         '    &lt;/tpl&gt;',
-        '    &lt;tpl if=&quot;!is_open&quot;&gt;',
-        '       &lt;span class=&quot;closed&quot;&gt;Closed&lt;/span&gt;',
-        '   &lt;/tpl&gt;',
-        '&lt;/span&gt;'
+        '&lt;/ul&gt;'
+    ),
+
+    activeDeadlineColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;span class=&quot;activedeadlinecol&quot;&gt;{latest_deadline_deadline}&lt;/span&gt;'
     ),
 
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
@@ -79,7 +103,7 @@
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
-        '&lt;section class=&quot;gradecolumn&quot;&gt;',
+        '&lt;div class=&quot;section gradecolumn&quot;&gt;',
         '   &lt;tpl if=&quot;feedback&quot;&gt;',
         '        &lt;div class=&quot;is_passing_grade&quot;&gt;',
         '           &lt;tpl if=&quot;feedback__is_passing_grade&quot;&gt;&lt;span class=&quot;passing_grade&quot;&gt;Passed&lt;/span&gt;&lt;/tpl&gt;',
@@ -98,12 +122,12 @@
         '           No feedback',
         '        &lt;/div&gt;',
         '    &lt;/tpl&gt;',
-        '&lt;/section&gt;'
+        '&lt;/div&gt;'
     ),
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
@@ -115,58 +139,84 @@
         }]);
 
 
-        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
-            checkOnly: true,
-            listeners: {
-                click: function() {
-                    console.log('hei');
-                }
-            }
+        this.selModel = Ext.create('devilry.extjshelpers.GridSelectionModel', {
+            checkOnly: false
         });
 
         Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: true
-            }],
+            //listeners: {
+                //scope: this,
+                //itemclick: function(grid, record) {
+                    //if(grid.getSelectionModel().isSelected(record)) {
+                        //grid.getSelectionModel().deselect(record);
+                    //} else {
+                        //grid.getSelectionModel().select(record, true);
+                    //}
+                //}
+            //},
 
             columns: [{
-                text: 'Open?', dataIndex: 'id', width: 60,
-                renderer: this.formatIsOpenCol
+                text: '', dataIndex: 'is_open', width: 100,
+                menuDisabled: true,
+                renderer: this.formatInfoCol
             }, {
-                text: 'Group name', dataIndex: 'name', flex: 4
-            }, {
-                text: 'Students', dataIndex: 'id', flex: 4,
+                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
+                menuDisabled: true,
                 renderer: this.formatCandidatesCol
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 4,
-                renderer: this.formatExaminersCol
-            }, {
-                text: 'Deliveries', dataIndex: 'id', flex: 2,
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
+                menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }, {
                 text: 'Latest feedback',
+                menuDisabled: true,
+                sortable: false,
                 columns: [{
                     text: 'Points',
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
+                    menuDisabled: true,
+                    sortable: true,
                     width: 70
                 }, {
                     text: 'Grade',
                     dataIndex: 'feedback__grade',
                     width: 150,
+                    menuDisabled: true,
+                    sortable: true,
                     renderer: this.formatGradeCol
                 }]
+            }, {
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 4,
+                menuDisabled: true,
+                renderer: this.formatExaminersCol
+            }, {
+                text: 'Tags', dataIndex: 'tags__tag', flex: 4,
+                menuDisabled: true,
+                renderer: this.formatTagsCol
+            }, {
+                text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
+                menuDisabled: true,
+                renderer: this.formatActiveDeadlineCol
+            }, {
+                text: 'Group name', dataIndex: 'name', flex: 3,
+                menuDisabled: true
             }]
         });
+
+        this.dockedItems.push({
+            xtype: 'pagingtoolbar',
+            store: this.store,
+            dock: 'bottom',
+            displayInfo: true
+        });
+
         this.callParent(arguments);
         this.store.load();
     },
 
-    formatIsOpenCol: function(value, p, record) {
-        return this.isOpenColTpl.apply(record.data);
+    formatInfoCol: function(value, p, record) {
+        return this.infoColTpl.apply(record.data);
     },
 
     formatCandidatesCol: function(value, p, record) {
@@ -187,6 +237,14 @@
 
     formatGradeCol: function(value, p, record) {
         return this.gradeColTpl.apply(record.data);
+    },
+
+    formatActiveDeadlineCol: function(value, p, record) {
+        return this.activeDeadlineColTpl.apply(record.data);
+    },
+
+    formatTagsCol: function(value, p, record) {
+        return this.tagsColTpl.apply(record.data);
     }
 });
 </pre>

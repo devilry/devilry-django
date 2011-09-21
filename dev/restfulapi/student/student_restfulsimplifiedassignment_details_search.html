@@ -78,10 +78,10 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="s2">&quot;publishing_time&quot;</span><span class="p">],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;delivery_types&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="s2">&quot;publishing_time&quot;</span><span class="p">,</span> <span class="s2">&quot;delivery_types&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -181,15 +181,27 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;delivery_types&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>Assignments can be filtered on the following <em>fields</em>:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt>delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -212,6 +224,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>Integer</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>parentnode__end_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
 <dt>parentnode__long_name</dt>
@@ -286,6 +310,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
+<dt>parentnode__start_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -352,26 +388,6 @@ results of the search. The following group names are available:</p>
 <dd>Boolean</dd>
 </dl>
 </dd>
-<dt>maxpoints</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>The maximum number of points possible without scaling.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
-</dl>
-</dd>
-<dt>attempts</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
-</dl>
-</dd>
 </dl>
 </div></blockquote>
 </dd>
@@ -397,6 +413,26 @@ results of the search. The following group names are available:</p>
 <dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
 <dt>Type</dt>
 <dd>String</dd>
+</dl>
+</dd>
+<dt>parentnode__start_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</dd>
+<dt>parentnode__end_time</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 </dl>
 </dd>
 <dt>parentnode__parentnode</dt>
@@ -461,12 +497,14 @@ example is generated from a non-varying dataset.</em></p>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
           <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-          <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span> <span class="p">},</span>
+          <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+          <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span> <span class="p">},</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
           <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-          <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span> <span class="p">},</span>
+          <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+          <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span> <span class="p">},</span>
         <span class="p">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -530,6 +568,16 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd>The time when the assignment is to be published (visible to students and examiners).</dd>
 <dt>Type</dt>
 <dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</dd>
+<dt>delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
 </dl>
 </dd>
 </dl>

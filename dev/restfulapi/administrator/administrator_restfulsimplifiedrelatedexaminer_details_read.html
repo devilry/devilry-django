@@ -88,7 +88,7 @@ this id in response from a search.</p>
 
 <span class="p">{</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
-    <span class="nx">username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
     <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -111,12 +111,12 @@ The result always contains the following fields:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>username</dt>
+<dt>userspec</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt></dd>
 <dt>About the field:</dt>
-<dd>A username. Max 30 characters, a-z, A-Z, and _</dd>
+<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
 <dt>Type</dt>
 <dd>String</dd>
 </dl>

@@ -19,10 +19,19 @@
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditormainwin',
     title: 'Create feedback',
-    width: 500,
-    height: 400,
+    width: 800,
+    height: 600,
     layout: 'fit',
     modal: true,
+    maximizable: true,
+    requires: [
+        'devilry.extjshelpers.NotificationManager',
+        'devilry.gradeeditors.FailureHandler',
+        'devilry.markup.MarkdownFullEditor',
+        'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
+        'devilry.extjshelpers.HelpWindow'
+    ],
 
     config: {
 <span id='global-cfg-deliveryid'>        /**
@@ -82,32 +91,52 @@
     },
 
     initComponentExtra: function() {
-        Ext.apply(this, {
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: ['-&gt;', {
-                    xtype: 'button',
-                    text: 'Save draft',
-                    scale: 'large',
-                    iconCls: 'icon-save-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onSaveDraft,
-                    }
-                }, {
-                    xtype: 'button',
-                    text: 'Publish',
-                    scale: 'large',
-                    iconCls: 'icon-add-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onPublish
-                    }
-                }]
-            }]
+        this.previewButton = Ext.widget('button', {
+            text: 'Show preview',
+            scale: 'large',
+            //iconCls: 'icon-save-32',
+            listeners: {
+                scope: this,
+                click: this.onPreview,
+            }
         });
+
+        this.draftButton = Ext.widget('button', {
+            text: 'Save draft',
+            scale: 'large',
+            iconCls: 'icon-save-32',
+            listeners: {
+                scope: this,
+                click: this.onSaveDraft,
+            }
+        });
+
+        this.publishButton = Ext.widget('button', {
+            text: 'Publish',
+            scale: 'large',
+            iconCls: 'icon-add-32',
+            listeners: {
+                scope: this,
+                click: this.onPublish
+            }
+        });
+
+        this.buttonBar = Ext.widget('toolbar', {
+            dock: 'bottom',
+            ui: 'footer',
+            items: ['-&gt;', this.previewButton, this.draftButton, {xtype:'box', width: 20}, this.publishButton]
+        });
+
+        Ext.apply(this, {
+            dockedItems: [this.buttonBar]
+        });
+    },
+
+<span id='global-method-onHelp'>    /**
+</span>     * @private
+     */
+    onHelp: function() {
+        this.helpwindow.show();
     },
 
 <span id='global-method-getSimplifiedFeedbackDraftModelName'>    /**
@@ -124,6 +153,26 @@
 </span>     * @private
      */
     onLoadDraftEditorSuccess: function() {
+        this.helpwindow = Ext.widget('helpwindow', {
+            title: 'Help',
+            closeAction: 'hide',
+            //width: this.getDraftEditor().helpwidth || 600,
+            //height: this.getDraftEditor().helpheight || 500,
+            helptext: this.getDraftEditor().help
+        });
+
+        if(this.getDraftEditor().help) {
+            this.buttonBar.insert(0, {
+                text: 'Help',
+                iconCls: 'icon-help-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onHelp
+                }
+            });
+        }
+
         this.getDraftEditor().getEl().mask('Loading current draft');
 
         var store = Ext.create('Ext.data.Store', {
@@ -134,11 +183,11 @@
 
         });
 
-        store.proxy.extraParams.filters = Ext.JSON.encode({
+        store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
             comp: 'exact',
             value: this.deliveryid
-        });
+        }]);
         store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
         store.pageSize = 1;
         store.load({
@@ -201,6 +250,7 @@
      * Call the onPublish() method in the draft editor.
      */
     onPublish: function() {
+        this.publishButton.getEl().mask('');
         this.getDraftEditor().onPublish();
     },
 
@@ -209,6 +259,18 @@
      * Call the onSaveDraft() method in the draft editor.
      */
     onSaveDraft: function() {
+        this.draftButton.getEl().mask('');
+        this.getDraftEditor().onSaveDraft();
+    },
+
+<span id='global-method-onPreview'>    /**
+</span>     * @private
+     * Save draft and show preview. Does the same as onSaveDraft(), however a
+     * preview is shown after the draft has been saved.
+     */
+    onPreview: function() {
+        this.previewButton.getEl().mask('');
+        this._tmp_showpreview = true;
         this.getDraftEditor().onSaveDraft();
     },
 
@@ -240,10 +302,66 @@
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        var showpreview = this._tmp_showpreview;
+        this._tmp_showpreview = false; // Reset the show preview (if we dont, any subsequent draft save after a preview will show a preview).
+
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
+        var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
-            failure: onFailure
+            callback: function() {
+                me.draftButton.getEl().unmask();
+                me.previewButton.getEl().unmask();
+            },
+            failure: onFailure,
+            success: function(response) {
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Draft saved',
+                    message: 'The feedback draft has been saved.'
+                });
+                if(showpreview) {
+                    me.showPreview(response.raw.extra_responsedata);
+                }
+            },
         });
+    },
+
+    showPreview: function(fake_staticfeedback) {
+        var fake_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        fake_recordcontainer.setRecord({data: fake_staticfeedback});
+        Ext.widget('window', {
+            width: this.width,
+            height: this.height,
+            modal: true,
+            layout: 'fit',
+            closable: false, // To easy to double click and close an undelying window
+            items: [{
+                xtype: 'panel',
+                autoScroll: true,
+                items: [{
+                    xtype: 'staticfeedbackview',
+                    padding: 20,
+                    singlerecordontainer: fake_recordcontainer
+                }]
+            }],
+            dockedItems: [{
+                xtype: 'toolbar',
+                ui: 'footer',
+                dock: 'bottom',
+                items: ['-&gt;', {
+                    xtype: 'button',
+                    text: 'Close preview',
+                    scale: 'large',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                        }
+                    }
+                }, '-&gt;']
+            }]
+        }).show();
+
+        MathJax.Hub.Queue([&quot;Typeset&quot;, MathJax.Hub]);
     },
 
 <span id='global-method-saveDraftAndPublish'>    /**
@@ -254,12 +372,20 @@
      *    editor that ``saveDraft`` was called from.
      */
     saveDraftAndPublish: function(draftstring, onFailure) {
+        onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
+            callback: function() {
+                me.publishButton.getEl().unmask();
+            },
             success: function(response) {
                 me.fireEvent('publishNewFeedback');
                 me.exit();
+                devilry.extjshelpers.NotificationManager.show({
+                    title: 'Published',
+                    message: 'The feedback has been saved and published.'
+                });
             },
             failure: onFailure
         });
@@ -271,19 +397,6 @@
      */
     getGradeEditorConfig: function() {
         return this.gradeeditor_config;
-    },
-
-<span id='global-method-changeSize'>    /**
-</span>     * Change the size of the grade editor window. Useful when the default size is
-     * suboptimal for an editor.
-     *
-     * @param width New width.
-     * @param height Ne height.
-     * */
-    changeSize: function(width, height) {
-        this.setWidth(width);
-        this.setHeight(height);
-        this.center();
     }
 });
 </pre>

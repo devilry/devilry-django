@@ -21,7 +21,7 @@
     cls: 'widget-locategroup selectable-grid',
 
     rowTpl: Ext.create('Ext.XTemplate',
-        '&lt;section class=&quot;popuplistitem&quot;&gt;',
+        '&lt;div class=&quot;section popuplistitem&quot;&gt;',
         '    &lt;tpl if=&quot;name&quot;&gt;',
         '        {name}: ',
         '    &lt;/tpl&gt;',
@@ -33,7 +33,7 @@
         '    &lt;tpl if=&quot;id == current_assignment_group_id&quot;&gt;',
         '        &amp;mdash; &lt;strong&gt;(currently selected)&lt;/strong&gt;',
         '    &lt;/tpl&gt;',
-        '&lt;/section&gt;'
+        '&lt;/div&gt;'
     ),
 
     requires: [

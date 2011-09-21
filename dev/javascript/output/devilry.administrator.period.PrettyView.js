@@ -1,183 +1,151 @@
 Ext.data.JsonP.devilry_administrator_period_PrettyView({
-  "subclasses": [
+  "mixedInto": [
+
+  ],
+  "href": "PrettyView4.html#devilry-administrator-period-PrettyView",
+  "allMixins": [
 
   ],
   "doc": "<p>PrettyView for an period.</p>\n",
-  "docauthor": null,
   "singleton": false,
   "html_filename": "PrettyView4.html",
-  "href": "PrettyView4.html#devilry-administrator-period-PrettyView",
   "code_type": "ext_define",
+  "subclasses": [
+
+  ],
   "superclasses": [
     "devilry.administrator.PrettyView"
   ],
+  "protected": false,
   "tagname": "class",
   "mixins": [
 
   ],
-  "protected": false,
-  "static": false,
-  "component": false,
   "members": {
-    "property": [
-
-    ],
-    "method": [
-      {
-        "params": [
-          {
-            "type": "Object",
-            "doc": "\n",
-            "name": "record",
-            "optional": false
-          }
-        ],
-        "owner": "devilry.administrator.PrettyView",
-        "doc": "<p>Set record. Triggers the loadmodel event.</p>\n",
-        "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-method-setRecord",
-        "tagname": "method",
-        "shortDoc": "Set record. ...",
-        "protected": false,
-        "static": false,
-        "private": false,
-        "linenr": 175,
-        "inheritable": false,
-        "alias": null,
-        "name": "setRecord",
-        "return": {
-          "type": "void",
-          "doc": "\n"
-        },
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
-        "deprecated": null
-      }
-    ],
-    "css_var": [
-
-    ],
     "cfg": [
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>Optional list of menuitems for plugin actions.</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 44,
         "inheritable": false,
         "alias": null,
         "name": "",
+        "linenr": 45,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-bodyTpl",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>A <code>Ext.XTemplate</code> object for the body of this view. (Required).</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-bodyTpl",
-        "tagname": "cfg",
-        "shortDoc": "A Ext.XTemplate object for the body of this view. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 25,
         "inheritable": false,
         "alias": null,
         "name": "bodyTpl",
+        "shortDoc": "A Ext.XTemplate object for the body of this view. ...",
+        "linenr": 26,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-dashboardUrl",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>The url to the dashboard. (Required). Used after delete to return to\nthe dashboard.</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-dashboardUrl",
-        "tagname": "cfg",
-        "shortDoc": "The url to the dashboard. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 37,
         "inheritable": false,
         "alias": null,
         "name": "dashboardUrl",
+        "shortDoc": "The url to the dashboard. ...",
+        "linenr": 38,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-modelname",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>The name of the <code>Ext.data.Model</code> to present in the body. (Required).</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-modelname",
-        "tagname": "cfg",
-        "shortDoc": "The name of the Ext.data.Model to present in the body. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 13,
         "inheritable": false,
         "alias": null,
         "name": "modelname",
+        "shortDoc": "The name of the Ext.data.Model to present in the body. ...",
+        "linenr": 14,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-objectid",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>Unique ID of the object to load from the model. (Required).</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-objectid",
-        "tagname": "cfg",
-        "shortDoc": "Unique ID of the object to load from the model. ...",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 19,
         "inheritable": false,
         "alias": null,
         "name": "objectid",
+        "shortDoc": "Unique ID of the object to load from the model. ...",
+        "linenr": 20,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
         "type": "Object",
+        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-relatedButtons",
         "owner": "devilry.administrator.PrettyView",
         "doc": "<p>Optional list of buttons for related actions.</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-cfg-relatedButtons",
-        "tagname": "cfg",
         "protected": false,
+        "tagname": "cfg",
         "static": false,
         "private": false,
-        "linenr": 31,
         "inheritable": false,
         "alias": null,
         "name": "relatedButtons",
+        "linenr": 32,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       }
     ],
     "event": [
       {
+        "href": "PrettyView.html#devilry-administrator-PrettyView-event-edit",
+        "owner": "devilry.administrator.PrettyView",
         "params": [
           {
             "type": "Ext.model.Model",
             "doc": "<p>The record to edit.</p>\n",
-            "name": "record",
-            "optional": false
+            "optional": false,
+            "name": "record"
           },
           {
             "type": "Object",
             "doc": "<p>The edit button.</p>\n",
-            "name": "button",
-            "optional": false
+            "optional": false,
+            "name": "button"
           },
           {
             "type": "Object",
@@ -186,29 +154,29 @@ Ext.data.JsonP.devilry_administrator_period_PrettyView({
             "name": "options"
           }
         ],
-        "owner": "devilry.administrator.PrettyView",
         "doc": "<p>Fired when the edit button is clicked.</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-event-edit",
-        "tagname": "event",
-        "shortDoc": "Fired when the edit button is clicked. ...",
         "protected": false,
+        "tagname": "event",
         "static": false,
         "private": false,
-        "linenr": 60,
         "inheritable": false,
         "alias": null,
         "name": "edit",
+        "shortDoc": "Fired when the edit button is clicked. ...",
+        "linenr": 61,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       },
       {
+        "href": "PrettyView.html#devilry-administrator-PrettyView-event-loadmodel",
+        "owner": "devilry.administrator.PrettyView",
         "params": [
           {
             "type": "Ext.model.Model",
             "doc": "<p>The loaded record.</p>\n",
-            "name": "record",
-            "optional": false
+            "optional": false,
+            "name": "record"
           },
           {
             "type": "Object",
@@ -217,32 +185,77 @@ Ext.data.JsonP.devilry_administrator_period_PrettyView({
             "name": "options"
           }
         ],
-        "owner": "devilry.administrator.PrettyView",
         "doc": "<p>Fired when the model record is loaded successfully.</p>\n",
         "html_filename": "PrettyView.html",
-        "href": "PrettyView.html#devilry-administrator-PrettyView-event-loadmodel",
-        "tagname": "event",
-        "shortDoc": "Fired when the model record is loaded successfully. ...",
         "protected": false,
+        "tagname": "event",
         "static": false,
         "private": false,
-        "linenr": 53,
         "inheritable": false,
         "alias": null,
         "name": "loadmodel",
+        "shortDoc": "Fired when the model record is loaded successfully. ...",
+        "linenr": 54,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
         "deprecated": null
       }
+    ],
+    "property": [
+
+    ],
+    "method": [
+      {
+        "href": "PrettyView.html#devilry-administrator-PrettyView-method-setRecord",
+        "owner": "devilry.administrator.PrettyView",
+        "params": [
+          {
+            "type": "Object",
+            "doc": "\n",
+            "optional": false,
+            "name": "record"
+          }
+        ],
+        "doc": "<p>Set record. Triggers the loadmodel event.</p>\n",
+        "html_filename": "PrettyView.html",
+        "protected": false,
+        "tagname": "method",
+        "static": false,
+        "return": {
+          "type": "void",
+          "doc": "\n"
+        },
+        "private": false,
+        "inheritable": false,
+        "alias": null,
+        "name": "setRecord",
+        "shortDoc": "Set record. ...",
+        "linenr": 173,
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/PrettyView.js",
+        "deprecated": null
+      }
+    ],
+    "css_var": [
+
     ],
     "css_mixin": [
 
     ]
   },
+  "static": false,
+  "author": null,
+  "private": false,
+  "inheritable": false,
+  "alias": null,
   "alternateClassNames": [
 
   ],
-  "author": null,
   "statics": {
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
     "property": [
 
     ],
@@ -252,31 +265,18 @@ Ext.data.JsonP.devilry_administrator_period_PrettyView({
     "css_var": [
 
     ],
-    "cfg": [
-
-    ],
-    "event": [
-
-    ],
     "css_mixin": [
 
     ]
   },
-  "private": false,
-  "mixedInto": [
-
-  ],
-  "linenr": 1,
-  "inheritable": false,
-  "alias": null,
   "name": "devilry.administrator.period.PrettyView",
+  "linenr": 1,
   "xtypes": [
     "administrator_periodprettyview"
   ],
-  "extends": "devilry.administrator.PrettyView",
-  "allMixins": [
-
-  ],
+  "component": false,
   "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/period/PrettyView.js",
-  "deprecated": null
+  "deprecated": null,
+  "extends": "devilry.administrator.PrettyView",
+  "docauthor": null
 });

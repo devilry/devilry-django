@@ -72,10 +72,9 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
     <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
     <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
     <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-    <span class="nx">attempts</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="nx">maxpoints</span><span class="o">:</span> <span class="mi">20</span>
+    <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -128,6 +127,17 @@ request body as shown in the example above.</p>
 <dd>Integer</dd>
 </dl>
 </div>
+<div class="section" id="delivery-types">
+<h4>delivery_types<a class="headerlink" href="#delivery-types" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
 <div class="section" id="long-name">
 <h4>long_name<a class="headerlink" href="#long-name" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
@@ -139,17 +149,6 @@ request body as shown in the example above.</p>
 <dd>String</dd>
 </dl>
 </div>
-<div class="section" id="attempts">
-<h4>attempts<a class="headerlink" href="#attempts" title="Permalink to this headline">¶</a></h4>
-<dl class="docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
-</dl>
-</div>
 <div class="section" id="anonymous">
 <h4>anonymous<a class="headerlink" href="#anonymous" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
@@ -159,17 +158,6 @@ request body as shown in the example above.</p>
 <dd>Specifies if this assignment is anonymous.</dd>
 <dt>Type</dt>
 <dd>Boolean</dd>
-</dl>
-</div>
-<div class="section" id="maxpoints">
-<h4>maxpoints<a class="headerlink" href="#maxpoints" title="Permalink to this headline">¶</a></h4>
-<dl class="docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>The maximum number of points possible without scaling.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
 </dl>
 </div>
 </div>
@@ -187,10 +175,9 @@ request body as shown in the example above.</p>
     <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
     <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
     <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-    <span class="nx">attempts</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="nx">maxpoints</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -227,10 +214,9 @@ have been changed due to logic performed on the server before saving.</p>
 <li><a class="reference internal" href="#short-name">short_name</a></li>
 <li><a class="reference internal" href="#publishing-time">publishing_time</a></li>
 <li><a class="reference internal" href="#parentnode">parentnode</a></li>
+<li><a class="reference internal" href="#delivery-types">delivery_types</a></li>
 <li><a class="reference internal" href="#long-name">long_name</a></li>
-<li><a class="reference internal" href="#attempts">attempts</a></li>
 <li><a class="reference internal" href="#anonymous">anonymous</a></li>
-<li><a class="reference internal" href="#maxpoints">maxpoints</a></li>
 </ul>
 </li>
 </ul>

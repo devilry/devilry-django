@@ -137,7 +137,7 @@
 
         var label = this.middleLabelTpl.apply({
             total: this.store.getTotalCount(),
-            from: from,
+            from: from + 1,
             to: from + visibleOnCurrentPage,
             //records: records, // Enable if we need it anywhere
             firstRecord: records.length == 0? undefined: records[0],
