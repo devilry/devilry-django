@@ -14,7 +14,7 @@ devilry_url = sys.argv[1]
 username = sys.argv[2]
 subject_short_name = sys.argv[3]
 period_short_name = sys.argv[4]
-password = getpass()
+password = getpass() # Ask user to input password
 #password = 'test'
 
 
