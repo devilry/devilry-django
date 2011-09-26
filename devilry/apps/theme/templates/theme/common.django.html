@@ -56,7 +56,10 @@
         {% endif %}
 
         <script type="text/javascript">
-            {% block imports %}{% endblock %}
+            {% block imports %}
+                Ext.require('devilry.extjshelpers.page.Header');
+                Ext.require('devilry.extjshelpers.page.Footer');
+            {% endblock %}
             {% block appjs %}{% endblock %}
             Ext.onReady(function() {
                 {% block onready %}{% endblock %}

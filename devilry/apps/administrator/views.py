@@ -11,7 +11,7 @@ import restful
 
 
 class MainView(TemplateView):
-    template_name='administrator/main.django.html'
+    template_name='administrator/main.django.js'
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
