@@ -1,4 +1,4 @@
-{% extends "administrator/base.django.html" %}
+{% extends "administrator/base.django.js" %}
 {% load extjs %}
 
 
@@ -6,10 +6,8 @@
     searchwidget.focusOnSearchfield();
 {% endblock %}
 
-{% block headextra2 %}
-{{ block.super }}
-
-<script type="text/javascript">
+{% block imports %}
+    {{ block.super }}
     Ext.require('devilry.administrator.DefaultCreateWindow');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
@@ -20,7 +18,11 @@
     Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
     Ext.require('devilry.extjshelpers.PermissionChecker');
     Ext.require('devilry.examiner.ActiveAssignmentsView');
+{% endblock %}
 
+
+{% block appjs %}
+    {{ block.super }}
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }};
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model }};
@@ -33,132 +35,147 @@
     nodestore.pageSize = 1;
     subjectstore.pageSize = 1;
     periodstore.pageSize = 1;
-
     var is_superuser = {{ user.is_superuser|lower }};
 
-    Ext.onReady(function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
+    var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    function createActiveAssignmentsView() {
+        //var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
+            //model: dashboard_assignment_model
+        //});
+    }
+{% endblock %}
+
+{% block onready %}
+    {{ block.super }}
+    Ext.getBody().mask("Loading page", 'page-load-mask');
 
 
-        Ext.create('devilry.extjshelpers.PermissionChecker', {
-            stores: [nodestore, subjectstore, periodstore],
-            renderTo: 'no-permissions-message',
-            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an administrator</h1>' +
-                '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></div>',
-            listeners: {
-                allLoaded: function(loadedItems, loadedWithRecords) {
-                    Ext.getBody().unmask();
-                    if(is_superuser || loadedWithRecords > 0) {
-                        Ext.getDom('searchsection').style.display = 'block';
-                        createActiveAssignmentsView();
-                    }
+    var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
+        stores: [nodestore, subjectstore, periodstore],
+        //renderTo: 'no-permissions-message',
+        emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an administrator</h1>' +
+            '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></div>',
+        listeners: {
+            allLoaded: function(loadedItems, loadedWithRecords) {
+                Ext.getBody().unmask();
+                if(is_superuser || loadedWithRecords > 0) {
+                    //Ext.getDom('searchsection').style.display = 'block';
+                    createActiveAssignmentsView();
                 }
             }
-        });
-
-        Ext.create('devilry.extjshelpers.ButtonBar', {
-            renderTo: 'createbuttonbar',
-            cls: 'dashboard-buttonbar',
-            items: [{
-                xtype: 'buttonbarbutton',
-                is_superuser: is_superuser,
-                text: 'Node',
-                store: nodestore,
-                iconCls: 'icon-add-32',
-                tooltipCfg: {
-                    title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
-                    body: 'A Node is a place to organise top-level administrators.'
-                },
-                handler: function() {
-                    Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new node',
-                        editpanel: Ext.ComponentManager.create({
-                            xtype: 'restfulsimplified_editpanel',
-                            model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
-                            editform: Ext.widget('administrator_nodeform')
-                        }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'node/{id}')
-                    }).show();
-                }
-            }, {
-                xtype: 'buttonbarbutton',
-                text: 'Subject',
-                store: nodestore,
-                iconCls: 'icon-add-32',
-                tooltipCfg: {
-                    title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
-                    body: 'A Subject is often also called a course.'
-                },
-                handler: function() {
-                    Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new subject',
-                        editpanel: Ext.ComponentManager.create({
-                            xtype: 'restfulsimplified_editpanel',
-                            model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                            editform: Ext.widget('administrator_subjectform')
-                        }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'subject/{id}')
-                    }).show();
-                }
-            }, {
-                xtype: 'buttonbarbutton',
-                text: 'Period/Semester',
-                store: subjectstore,
-                iconCls: 'icon-add-32',
-                tooltipCfg: {
-                    title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
-                    body: 'A Period is a limited period in time, such as a semester.'
-                },
-                handler: function() {
-                    Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new period',
-                        editpanel: Ext.ComponentManager.create({
-                            xtype: 'restfulsimplified_editpanel',
-                            model: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
-                            editform: Ext.widget('administrator_periodform')
-                        }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'period/{id}')
-                    }).show();
-                }
-            }, {
-                xtype: 'buttonbarbutton',
-                text: 'Assignment',
-                store: periodstore,
-                iconCls: 'icon-add-32',
-                tooltipCfg: {
-                    title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
-                    body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
-                },
-                handler: function() {
-                    Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new assignment',
-                        editpanel: Ext.ComponentManager.create({
-                            xtype: 'restfulsimplified_editpanel',
-                            model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-                            editform: Ext.widget('administrator_assignmentform')
-                        }),
-                        successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/{id}')
-                    }).show();
-                }
-            }]
-        });
-
-        nodestore.load();
-        subjectstore.load();
-        periodstore.load();
+        }
     });
 
-    var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    var buttonbar = Ext.create('devilry.extjshelpers.ButtonBar', {
+        //renderTo: 'createbuttonbar',
+        cls: 'dashboard-buttonbar',
+        items: [{
+            xtype: 'buttonbarbutton',
+            is_superuser: is_superuser,
+            text: 'Node',
+            store: nodestore,
+            iconCls: 'icon-add-32',
+            tooltipCfg: {
+                title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
+                body: 'A Node is a place to organise top-level administrators.'
+            },
+            handler: function() {
+                Ext.create('devilry.administrator.DefaultCreateWindow', {
+                    title: 'Create new node',
+                    editpanel: Ext.ComponentManager.create({
+                        xtype: 'restfulsimplified_editpanel',
+                        model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
+                        editform: Ext.widget('administrator_nodeform')
+                    }),
+                    successUrlTpl: Ext.create('Ext.XTemplate', 'node/{id}')
+                }).show();
+            }
+        }, {
+            xtype: 'buttonbarbutton',
+            text: 'Subject',
+            store: nodestore,
+            iconCls: 'icon-add-32',
+            tooltipCfg: {
+                title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
+                body: 'A Subject is often also called a course.'
+            },
+            handler: function() {
+                Ext.create('devilry.administrator.DefaultCreateWindow', {
+                    title: 'Create new subject',
+                    editpanel: Ext.ComponentManager.create({
+                        xtype: 'restfulsimplified_editpanel',
+                        model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                        editform: Ext.widget('administrator_subjectform')
+                    }),
+                    successUrlTpl: Ext.create('Ext.XTemplate', 'subject/{id}')
+                }).show();
+            }
+        }, {
+            xtype: 'buttonbarbutton',
+            text: 'Period/Semester',
+            store: subjectstore,
+            iconCls: 'icon-add-32',
+            tooltipCfg: {
+                title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
+                body: 'A Period is a limited period in time, such as a semester.'
+            },
+            handler: function() {
+                Ext.create('devilry.administrator.DefaultCreateWindow', {
+                    title: 'Create new period',
+                    editpanel: Ext.ComponentManager.create({
+                        xtype: 'restfulsimplified_editpanel',
+                        model: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+                        editform: Ext.widget('administrator_periodform')
+                    }),
+                    successUrlTpl: Ext.create('Ext.XTemplate', 'period/{id}')
+                }).show();
+            }
+        }, {
+            xtype: 'buttonbarbutton',
+            text: 'Assignment',
+            store: periodstore,
+            iconCls: 'icon-add-32',
+            tooltipCfg: {
+                title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
+                body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
+            },
+            handler: function() {
+                Ext.create('devilry.administrator.DefaultCreateWindow', {
+                    title: 'Create new assignment',
+                    editpanel: Ext.ComponentManager.create({
+                        xtype: 'restfulsimplified_editpanel',
+                        model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+                        editform: Ext.widget('administrator_assignmentform')
+                    }),
+                    successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/{id}')
+                }).show();
+            }
+        }]
+    });
 
-    function createActiveAssignmentsView() {
-        var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
-            renderTo: 'activeassignments',
-            model: dashboard_assignment_model
-        });
-    }
-</script>
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'panel',
+            border: false,
+            items: [permchecker, buttonbar]
+        }]
+    });
 
+    nodestore.load();
+    subjectstore.load();
+    periodstore.load();
 {% endblock %}
+
+
 
 {% block searchsectionstyle %}display: none;{% endblock %}
 

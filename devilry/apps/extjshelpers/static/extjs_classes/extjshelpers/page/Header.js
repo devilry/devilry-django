@@ -6,5 +6,50 @@ Ext.define('devilry.extjshelpers.page.Header', {
     //height: 70,
     autoHeight: true,
 
-    html: '<div class="section"><h1>Devilry</h1></div>'
+    bodyTpl: Ext.create('Ext.XTemplate',
+        '<div class="header">',
+        '    <div id="heading">',
+        '        <h1>Devilry</h1>',
+        '        <a href="http://devilry.org" id="projectlink">http://devilry.org</a>',
+        '    </div>',
+        '    <div id="authenticated-user-bar">',
+        '        <tpl if="DevilryUser.is_authenticated">',
+        '            <span id="authenticated-user-info">',
+        '                {DevilryUser.username}',
+        '            </span>',
+        '            | <a class="loginout-link" href="{DevilrySettings.DEVILRY_LOGOUT_URL}">Log out</a>',
+        '        </tpl>',
+        '        <tpl if="!DevilryUser.is_authenticated">',
+        '            <a class="loginout-link" href="{DevilrySettings.DEVILRY_LOGIN_URL}">Log in</a>',
+        '        </tpl>',
+        '    </div>',
+        //'    <div class="nav {% block nav-class %}{% endblock %}">',
+        '    <div class="nav {navclass}">',
+        '        <ul>',
+        '            <li class="student-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/student/">Student</a></li>',
+        '            <li class="examiner-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/examiner/">Examiner</a></li>',
+        '            <li class="administrator-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/administrator/">Administrator</a></li>',
+        '            <li class="externallink-navitem"><a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">Help</a></li>',
+        '        </ul>',
+        '    </div>',
+        '</div>'
+    ),
+
+    config: {
+        navclass: ''
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+
+    initComponent: function() {
+        this.html = this.bodyTpl.apply({
+            navclass: this.navclass,
+            DevilrySettings: DevilrySettings,
+            DevilryUser: DevilryUser
+        });
+        this.callParent(arguments);
+    }
 });

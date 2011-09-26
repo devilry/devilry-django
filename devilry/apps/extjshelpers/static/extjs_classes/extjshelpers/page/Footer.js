@@ -9,5 +9,5 @@ Ext.define('devilry.extjshelpers.page.Footer', {
         '<div class="footer">',
         '   <a href="http://devilry.org">Devilry</a> is an open source general purpose delivery system.',
         '</div>'
-    ).apply()
+    ).apply({})
 });
