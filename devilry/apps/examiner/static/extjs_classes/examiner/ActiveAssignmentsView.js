@@ -4,14 +4,18 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         'devilry.extjshelpers.DateTime'
     ],
 
-
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
     config: {
         model: undefined,
         noRecordsMessage: {
             title: 'No active assignments',
             msg: "You are not registered on any assignments in an active period/semester. You can find inactive assignments using the search box."
         },
-        pageSize: 30
+        pageSize: 30,
+        dashboard_url: undefined
     },
 
     constructor: function(config) {
@@ -50,8 +54,10 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             frameHeader: false,
             border: false,
             sortableColumns: false,
+            autoScroll: true,
             cls: 'selectable-grid',
             store: this.store,
+            flex: 1,
             //features: [groupingFeature],
             columns: [{
                 text: 'Subject',
@@ -83,14 +89,14 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    var url = this.dashboard_url + "assignment/" + record.data.id
                     window.location = url;
                 }
             }
         });
         this.add({
             xtype: 'box',
-            html: '<h2>Assignments in an active period/semester</h2>'
+            html: '<div class="section"><h2>Assignments in an active period/semester</h2></div>'
         });
         this.add(activeAssignmentsGrid);
     }

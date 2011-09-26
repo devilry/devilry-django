@@ -3,7 +3,7 @@ Ext.define('devilry.extjshelpers.page.Footer', {
     alias: 'widget.pagefooter',
     border: false,
     margins: '0 0 0 0',
-    autoHeight: true,
+    height: 30,
 
     html: Ext.create('Ext.XTemplate',
         '<div class="footer">',

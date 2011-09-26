@@ -167,36 +167,6 @@ body {
 
     /**
      *
-     * Version
-     *
-     *
-     */
-    >#version {
-        /*margin: 0 20px 5px 20px;*/
-        top: 24px;
-        left: 35%;
-        -webkit-transform: rotate(10deg);
-        -moz-transform: rotate(10deg);
-        transform: rotate(10deg);
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: bold;
-        text-align: right;
-        position: absolute;
-        color: #444;
-        font-family: "Arial Black", sans-serif;
-    }
-    /*>#version>span.number {*/
-        /*font-weight: bold;*/
-    /*}*/
-    >#version span.codename {
-        font-style: italic;
-    }
-
-
-
-    /**
-     *
      * Header userinfo/loginout
      *
      */
@@ -1021,7 +991,7 @@ div.section {
 .footer {
 	text-align: right;
 	clear: both;
-	padding: 20px;
+	padding-top: 5px;
 	text-align: center;
 	border-top-style: solid;
 	border-top-width: 1px;
