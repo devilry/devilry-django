@@ -3,8 +3,8 @@ Ext.define('devilry.extjshelpers.page.Header', {
     alias: 'widget.pageheader',
     border: false,
     margins: '0 0 0 0',
-    //height: 70,
-    autoHeight: true,
+    height: 125,
+    //autoHeight: true,
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="header">',

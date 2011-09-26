@@ -271,30 +271,30 @@ body {
  *
  */
 
-#mainwrapper {
-    background-color: #f8f8f8;
-    #main {
-        width: $mainwidth;
-        padding: 30px 0 30px 0;
-        margin: 0 auto 0 auto;
-        a {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: $linkcolor;
-        }
-        a:visited {
-            color: #6E0840;
-        }
+//#mainwrapper {
+    //background-color: #f8f8f8;
+    //#main {
+        //width: $mainwidth;
+        //padding: 30px 0 30px 0;
+        //margin: 0 auto 0 auto;
+        //a {
+            //font-size: 1.2em;
+            //font-weight: bold;
+            //color: $linkcolor;
+        //}
+        //a:visited {
+            //color: #6E0840;
+        //}
 
-        dt {
-            padding-top: 6px;
-            font-weight: bold;
-        }
-        dd {
-            margin-left: 15px;
-        }
-    }
-}
+        //dt {
+            //padding-top: 6px;
+            //font-weight: bold;
+        //}
+        //dd {
+            //margin-left: 15px;
+        //}
+    //}
+//}
 
 
 
@@ -315,17 +315,27 @@ body {
 
 
 .widget-searchwidget {
+    border-color: #aaa;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 4px 5px 4px 5px !important;
     .widget-searchfield {
-        width: $mainwidth !important;
+        //width: $mainwidth !important;
         font-size: 24px;
-        padding: 4px 15px 4px 15px !important;
-        border-radius: 20px;
+        //padding: 4px 15px 4px 15px !important;
+        padding: 0 !important;
+        margin: 5px 0 0 0 !important;
+        color: #aaa !important;
+        //border-radius: 20px 0 0 20px;
+        border: none !important;
+        background: none !important;
     }
 }
 
 .multisearchresults {
     .searchresults {
-        margin: 0;
+        //margin: 0;
         .searchresultitem {
             padding: 4px;
             border: 4px solid transparent;
@@ -340,10 +350,6 @@ body {
             background-color: #f8f8f8;
         }
     }
-}
-.multisearchresults-floating {
-    width: ($mainwidth - 30px);
-    //width: 500px;
 }
 .searchwidget-help {
     padding: 4px 15px 15px 15px !important;

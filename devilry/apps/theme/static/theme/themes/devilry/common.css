@@ -198,24 +198,6 @@ body {
  * Main (dynamic) content
  *
  */
-#mainwrapper {
-  background-color: #f8f8f8; }
-  #mainwrapper #main {
-    width: 930px;
-    padding: 30px 0 30px 0;
-    margin: 0 auto 0 auto; }
-    #mainwrapper #main a {
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #0b5a9d; }
-    #mainwrapper #main a:visited {
-      color: #6E0840; }
-    #mainwrapper #main dt {
-      padding-top: 6px;
-      font-weight: bold; }
-    #mainwrapper #main dd {
-      margin-left: 15px; }
-
 /**
  *
  * SearchWidget
@@ -228,25 +210,28 @@ body {
   padding: 4px 10px 4px 10px !important;
   border-radius: 8px; }
 
-.widget-searchwidget .widget-searchfield {
-  width: 930px !important;
-  font-size: 24px;
-  padding: 4px 15px 4px 15px !important;
-  border-radius: 20px; }
+.widget-searchwidget {
+  border-color: #aaa;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 4px 5px 4px 5px !important; }
+  .widget-searchwidget .widget-searchfield {
+    font-size: 24px;
+    padding: 0 !important;
+    margin: 5px 0 0 0 !important;
+    color: #aaa !important;
+    border: none !important;
+    background: none !important; }
 
-.multisearchresults .searchresults {
-  margin: 0; }
-  .multisearchresults .searchresults .searchresultitem {
-    padding: 4px;
-    border: 4px solid transparent;
-    height: auto !important; }
-    .multisearchresults .searchresults .searchresultitem:hover {
-      background-color: #eee; }
-  .multisearchresults .searchresults .searchresultitem-even {
-    background-color: #f8f8f8; }
-
-.multisearchresults-floating {
-  width: 900px; }
+.multisearchresults .searchresults .searchresultitem {
+  padding: 4px;
+  border: 4px solid transparent;
+  height: auto !important; }
+  .multisearchresults .searchresults .searchresultitem:hover {
+    background-color: #eee; }
+.multisearchresults .searchresults .searchresultitem-even {
+  background-color: #f8f8f8; }
 
 .searchwidget-help {
   padding: 4px 15px 15px 15px !important;
