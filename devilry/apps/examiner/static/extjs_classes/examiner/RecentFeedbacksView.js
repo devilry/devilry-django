@@ -13,6 +13,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             title: 'No recent feedback',
             msg: "You are not registered on any assignment groups with recent feedback."
         },
+        dashboard_url: undefined
     },
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
@@ -97,6 +98,8 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             frame: false,
             hideHeaders: true,
             frameHeader: false,
+            autoScroll: true,
+            flex: 1,
             border: false,
             sortableColumns: false,
             cls: 'selectable-grid',
@@ -108,7 +111,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
                 itemmouseup: function(view, record) {
                     var url = Ext.String.format(
                         "{0}assignmentgroup/{1}?deliveryid={2}",
-                        DASHBOARD_URL,
+                        this.dashboard_url,
                         record.data.delivery__deadline__assignment_group,
                         record.data.delivery
                     );
@@ -118,7 +121,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h3>Recent feedback</h3>'
+            html: '<div class="section"><h3>Recent feedback</h3></div>'
         });
         this.add(activeAssignmentsGrid);
     }

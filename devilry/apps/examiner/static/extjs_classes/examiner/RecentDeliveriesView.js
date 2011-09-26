@@ -13,6 +13,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             title: 'No recent deliveries',
             msg: "You are not registered on any assignment groups with recent deliveries."
         },
+        dashboard_url: undefined
     },
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
@@ -100,6 +101,8 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             frameHeader: false,
             border: false,
             sortableColumns: false,
+            autoScroll: true,
+            flex: 1,
             cls: 'selectable-grid',
             store: this.store,
             features: [groupingFeature],
@@ -109,7 +112,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
                 itemmouseup: function(view, record) {
                     var url = Ext.String.format(
                         "{0}assignmentgroup/{1}?deliveryid={2}",
-                        DASHBOARD_URL,
+                        this.dashboard_url,
                         record.data.deadline__assignment_group,
                         record.data.id
                     );
@@ -119,7 +122,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h3>Recent deliveries</h3>'
+            html: '<div class="section"><h3>Recent deliveries</h3></div>'
         });
         this.add(activeAssignmentsGrid);
     }

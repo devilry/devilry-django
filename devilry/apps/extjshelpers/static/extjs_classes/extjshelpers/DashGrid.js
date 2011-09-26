@@ -1,6 +1,11 @@
 Ext.define('devilry.extjshelpers.DashGrid', {
     extend: 'Ext.Container',
 
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+
     initComponent: function() {
         this.callParent(arguments);
         this.createStore();

@@ -1,55 +1,50 @@
-{% extends "examiner/base.django.html" %}
+{% extends "examiner/base.django.js" %}
 {% load extjs %}
 
-{% block loadmask %}
-<script type="text/javascript">
-    Ext.onReady(function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
-    });
-</script>
-{% endblock %}
-
-{% block headextra %}
-{{ block.super }}
-<script>
+{% block imports %}
+    {{ block.super }}
     Ext.require([
         'devilry.extjshelpers.PermissionChecker',
         'devilry.examiner.ActiveAssignmentsView',
         'devilry.examiner.RecentDeliveriesView',
         'devilry.examiner.RecentFeedbacksView'
     ]);
+{% endblock %}
 
-
+{% block appjs %}
+    {{ block.super }}
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group,candidates" }}
     var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group,candidates" }}
     function createActiveAssignmentsView() {
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
-            renderTo: 'activeassignments',
-            model: dashboard_assignment_model
+            model: dashboard_assignment_model,
+            dashboard_url: DASHBOARD_URL,
+            flex: 1
         });
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: dashboard_delivery_model,
-            //limit: 3,
+            dashboard_url: DASHBOARD_URL,
             flex: 1
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: dashboard_feedback_model,
-            //limit: 3,
+            dashboard_url: DASHBOARD_URL,
             flex: 1
         });
-        Ext.widget('container', {
-            renderTo: 'recent',
-            margin: {top: 30},
+        
+        Ext.getCmp('assignmentcontainer').add([activeAssignmentsView, {
+            xtype: 'container',
+            margin: {top: 10},
+            flex: 1,
             layout: {
                 type: 'hbox',
                 align: 'stretch'
             },
-            height: 330,
             width: "100%",
             items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
-        });
+        }]);
     }
 
 
@@ -58,9 +53,8 @@
     assignmentgroup_permcheckstore.pageSize = 1;
 
     function createPermissionChecker() {
-        Ext.create('devilry.extjshelpers.PermissionChecker', {
+        return Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [assignmentgroup_permcheckstore],
-            renderTo: 'no-permissions-message',
             emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
                 '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
             listeners: {
@@ -68,25 +62,57 @@
                     Ext.getBody().unmask();
                 },
                 hasPermission: function() {
-                    Ext.getDom('has-permission-section').style.display = 'block';
-                    Ext.getDom('searchsection').style.display = 'block';
+                    //Ext.getDom('has-permission-section').style.display = 'block';
+                    //Ext.getDom('searchsection').style.display = 'block';
+                    //createActiveAssignmentsView();
                     createActiveAssignmentsView();
                 }
             }
         });
     }
-
-    Ext.onReady(function() {
-        //console.log('hei');
-        createPermissionChecker();
-        assignmentgroup_permcheckstore.load();
-    });
-</script>
-
 {% endblock %}
 
-{% block searchsectionstyle %}display: none;{% endblock %}
 
+{% block onready %}
+    {{ block.super }}
+    var permchecker = createPermissionChecker();
+    assignmentgroup_permcheckstore.load();
+
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'container',
+            border: false,
+            padding: {left: 20, right: 20},
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [searchwidget, {xtype:'box', height: 20}, permchecker, {
+                xtype: 'panel',
+                flex: 1,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                border: false,
+                id: 'assignmentcontainer'
+            }]
+        }]
+    });
+{% endblock %}
+
+
+{% comment %}
 {% block main %}
 {{ block.super }}
 <div id="no-permissions-message"></div>
@@ -96,3 +122,4 @@
     <div class="section" id="recent"></div>
 </div>
 {% endblock %}
+{% endcomment %}

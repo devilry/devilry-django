@@ -4,10 +4,6 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         'devilry.extjshelpers.DateTime'
     ],
 
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
     config: {
         model: undefined,
         noRecordsMessage: {
