@@ -2,6 +2,16 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
     extend: 'devilry.extjshelpers.ButtonBar',
     cls: 'dashboard-buttonbar',
 
+    requires: [
+        'devilry.extjshelpers.forms.administrator.Node',
+        'devilry.extjshelpers.forms.administrator.Subject',
+        'devilry.extjshelpers.forms.administrator.Period',
+        'devilry.extjshelpers.forms.administrator.Assignment',
+        'devilry.administrator.DefaultCreateWindow',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel',
+        'devilry.extjshelpers.ButtonBarButton'
+    ],
+
     config: {
         node_modelname: undefined,
         subject_modelname: undefined,
@@ -19,6 +29,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
     },
 
     initComponent: function() {
+        var me = this;
         Ext.apply(this, {
             items: [{
                 xtype: 'buttonbarbutton',
@@ -35,7 +46,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: this.node_modelname,
+                            model: me.node_modelname,
                             editform: Ext.widget('administrator_nodeform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'node/{id}')
@@ -55,7 +66,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                         title: 'Create new subject',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: this.subject_modelname,
+                            model: me.subject_modelname,
                             editform: Ext.widget('administrator_subjectform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'subject/{id}')
@@ -75,7 +86,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                         title: 'Create new period',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: this.period_modelname,
+                            model: me.period_modelname,
                             editform: Ext.widget('administrator_periodform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'period/{id}')
@@ -95,7 +106,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                         title: 'Create new assignment',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: this.assignment_modelname,
+                            model: me.assignment_modelname,
                             editform: Ext.widget('administrator_assignmentform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/{id}')
