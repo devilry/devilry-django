@@ -13,8 +13,6 @@
 
 {% block onready %}
     {{ block.super }}
-    Ext.getBody().mask("Loading page", 'page-load-mask');
-
     var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
         //renderTo: 'searchwidget-container',
         hidden: true,

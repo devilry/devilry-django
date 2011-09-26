@@ -62,7 +62,9 @@
             {% endblock %}
             {% block appjs %}{% endblock %}
             Ext.onReady(function() {
-                {% block onready %}{% endblock %}
+                {% block onready %}
+                    Ext.getBody().mask("Loading page", 'page-load-mask');
+                {% endblock %}
             });
         </script>
     </head>
