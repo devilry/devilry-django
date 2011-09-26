@@ -33,17 +33,3 @@
     });
     searchwidget.loadInitialValues();
 {% endblock %}
-
-
-{% comment %}
-{% block body2 %}
-<div class="section" id="searchsection" style="{% block searchsectionstyle %}{% endblock %}">
-    <div id='searchwidget-container'></div>
-    <p class='searchwidget-help'>In the box above, you can search for anything
-    related to anything that you have permission to view or edit as an
-    <strong>administrator</strong>. Searching for a user will find any item related
-    to that user, and searching for a subject will find anything related to that
-    subject.</p>
-</div>
-{% endblock %}
-{% endcomment %}
