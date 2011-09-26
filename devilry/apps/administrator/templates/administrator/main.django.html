@@ -8,14 +8,6 @@
 
 {% block imports %}
     {{ block.super }}
-    Ext.require('devilry.administrator.DefaultCreateWindow');
-    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.ButtonBarButton');
-    Ext.require('devilry.extjshelpers.ButtonBar');
-    Ext.require('devilry.extjshelpers.forms.administrator.Node');
-    Ext.require('devilry.extjshelpers.forms.administrator.Subject');
-    Ext.require('devilry.extjshelpers.forms.administrator.Period');
-    Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
     Ext.require('devilry.extjshelpers.PermissionChecker');
     Ext.require('devilry.examiner.ActiveAssignmentsView');
     Ext.require('devilry.administrator.DashboardButtonBar');
@@ -41,7 +33,6 @@
 
 {% block onready %}
     {{ block.super }}
-    Ext.getBody().mask("Loading page", 'page-load-mask');
 
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
@@ -95,7 +86,7 @@
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [permchecker, buttonbar, {
+            items: [searchwidget, permchecker, buttonbar, {
                 xtype: 'panel',
                 flex: 1,
                 layout: 'fit',
