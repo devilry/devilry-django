@@ -22,6 +22,7 @@
 
     var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
         //renderTo: 'searchwidget-container',
+        hidden: true,
         urlPrefix: DASHBOARD_URL,
         nodeRowTpl: '{{ restfulapi.RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
         subjectRowTpl: '{{ restfulapi.RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',

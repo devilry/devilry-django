@@ -2,10 +2,6 @@
 {% load extjs %}
 
 
-{% block post-searchwidget-javascript %}
-    searchwidget.focusOnSearchfield();
-{% endblock %}
-
 {% block imports %}
     {{ block.super }}
     Ext.require('devilry.extjshelpers.PermissionChecker');
@@ -51,6 +47,7 @@
                         dashboard_url: DASHBOARD_URL
                     });
                     Ext.getCmp('active-assignments').add(activeAssignmentsView);
+                    searchwidget.show();
                 }
             }
         }
@@ -99,17 +96,4 @@
     nodestore.load();
     subjectstore.load();
     periodstore.load();
-{% endblock %}
-
-
-
-{% block searchsectionstyle %}display: none;{% endblock %}
-
-
-{% block body2 %}
-{{ block.super }}
-
-<div id="no-permissions-message"></div>
-<div id="createbuttonbar"></div>
-<div class="section" id="activeassignments"></div>
 {% endblock %}
