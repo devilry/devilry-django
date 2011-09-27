@@ -835,11 +835,12 @@ table.verticalinfotable {
 
     .#{$category}-small { // The normal heading styles are to massive for -small
         h1 {
-            font-size: 1.6em;
-            margin: 10px 0 5px 0;
+            font-size: 1.6em !important;
+            margin: 10px 0 5px 0 !important;
+            padding: 0 !important;
         }
         h1:first-child {
-            margin-top: 0;
+            margin-top: 0 !important;
         }
         h2 {
             font-size: 1.3em;
