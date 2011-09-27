@@ -64,6 +64,10 @@ Ext.define('devilry.student.StudentSearchWidget', {
                     field: 'assignment_group__is_open',
                     comp: 'exact',
                     value: true
+                }, {
+                    field: 'assignment_group__parentnode__delivery_types',
+                    comp: 'exact',
+                    value: 0 // Electronic deliveries
                 }],
                 resultitemConfig: {
                     tpl: this.deadlineRowTpl,
