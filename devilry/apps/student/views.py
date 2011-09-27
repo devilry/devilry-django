@@ -23,7 +23,7 @@ from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
                      RestfulSimplifiedAssignment, RestfulSimplifiedAssignmentGroup)
 
 class MainView(TemplateView):
-    template_name='student/main.django.html'
+    template_name='student/main.django.js'
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
