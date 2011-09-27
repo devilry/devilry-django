@@ -25,6 +25,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     ),
 
     assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
         '{deadline__assignment_group__parentnode__parentnode__short_name}.',
         '{deadline__assignment_group__parentnode__short_name}'
     ),
@@ -58,9 +59,6 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
     createBody: function() {
         var me = this;
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{name:uppercase}',
-        });
 
         var columns = [{
             text: 'Assignment',
@@ -105,7 +103,6 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             flex: 1,
             cls: 'selectable-grid',
             store: this.store,
-            features: [groupingFeature],
             columns: columns,
             listeners: {
                 scope: this,

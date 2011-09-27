@@ -21,6 +21,7 @@
         var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
             model: dashboard_assignment_model,
             dashboard_url: DASHBOARD_URL,
+            minHeight: 140,
             flex: 1
         });
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
@@ -37,11 +38,11 @@
         Ext.getCmp('assignmentcontainer').add([activeAssignmentsView, {
             xtype: 'container',
             margin: {top: 10},
-            flex: 1,
             layout: {
                 type: 'hbox',
                 align: 'stretch'
             },
+            height: 200,
             items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
         }]);
     }

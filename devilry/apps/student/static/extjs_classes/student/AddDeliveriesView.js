@@ -73,7 +73,7 @@ Ext.define('devilry.student.AddDeliveriesView', {
                 text: 'Deadline',
                 menuDisabled: true,
                 hideable: false,
-                flex: 15,
+                width: 180,
                 dataIndex: 'latest_deadline_deadline',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
@@ -85,7 +85,7 @@ Ext.define('devilry.student.AddDeliveriesView', {
                 text: '#Deliveries',
                 menuDisabled: true,
                 hideAble: false,
-                flex: 5,
+                width: 100,
                 dataIndex: 'number_of_deliveries',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',

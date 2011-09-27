@@ -30,9 +30,10 @@
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }}
     var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }}
     function createGrids() {
-        var activeAssignmentsView = Ext.create('devilry.student.AddDeliveriesView', {
+        var addDeliveriesView = Ext.create('devilry.student.AddDeliveriesView', {
             store: ag_store,
             dashboard_url: DASHBOARD_URL,
+            minHeight: 140,
             flex: 1
         });
 
@@ -48,16 +49,15 @@
             dashboard_url: DASHBOARD_URL,
             flex: 1
         });
-        Ext.getCmp('assignmentcontainer').add([activeAssignmentsView, {
+        Ext.getCmp('assignmentcontainer').add([addDeliveriesView, {
             xtype: 'container',
-            flex: 1,
             margin: {top: 10},
             layout: {
                 type: 'hbox',
                 align: 'stretch'
             },
-            height: 330,
-            width: "100%",
+            height: 200,
+            width: 800, // Needed to avoid layout issue in FF3.6
             items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
         }]);
     }

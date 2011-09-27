@@ -25,6 +25,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     ),
 
     assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '{delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
         '{delivery__deadline__assignment_group__parentnode__parentnode__short_name}.',
         '{delivery__deadline__assignment_group__parentnode__short_name}'
     ),
@@ -37,7 +38,6 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
-            groupField: 'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
             remoteFilter: true,
             remoteSort: true,
             autoSync: true
@@ -58,9 +58,6 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
 
     createBody: function() {
         var me = this;
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{name:uppercase}',
-        });
 
         var columns = [{
             text: 'Assignment',
@@ -104,7 +101,6 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             sortableColumns: false,
             cls: 'selectable-grid',
             store: this.store,
-            features: [groupingFeature],
             columns: columns,
             listeners: {
                 scope: this,
