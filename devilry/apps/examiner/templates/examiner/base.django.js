@@ -18,7 +18,6 @@
     var assignmentstore = {{ restfulapi.RestfulSimplifiedAssignment|extjs_store:"Search" }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"Search" }};
     var deliverystore = {{ restfulapi.RestfulSimplifiedDelivery|extjs_store:"Search" }};
-    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/examiner/';
 {% endblock %}
 
 {% block onready %}

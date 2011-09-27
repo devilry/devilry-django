@@ -59,26 +59,25 @@
 
 
     function createPermissionChecker() {
-        return Ext.create('devilry.extjshelpers.PermissionChecker', {
-            stores: [assignmentgroup_permcheckstore],
-            emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
-                '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
-            listeners: {
-                allLoaded: function() {
-                    Ext.getBody().unmask();
-                },
-                hasPermission: function() {
-                    //Ext.getDom('has-permission-section').style.display = 'block';
-                    //Ext.getDom('searchsection').style.display = 'block';
-                    //createActiveAssignmentsView();
-                    searchwidget.show();
-                    createActiveAssignmentsView();
-                }
-            }
-        });
     }
 
-    var permchecker = createPermissionChecker();
+    var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
+        stores: [assignmentgroup_permcheckstore],
+        emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an examiner</h1>' +
+            '<p>{{ DEVILRY_EXAMINER_NO_PERMISSION_MSG }}</p></div>',
+        listeners: {
+            allLoaded: function() {
+                Ext.getBody().unmask();
+            },
+            hasPermission: function() {
+                //Ext.getDom('has-permission-section').style.display = 'block';
+                //Ext.getDom('searchsection').style.display = 'block';
+                //createActiveAssignmentsView();
+                searchwidget.show();
+                createActiveAssignmentsView();
+            }
+        }
+    });
     assignmentgroup_permcheckstore.load();
 
     Ext.create('Ext.container.Viewport', {
