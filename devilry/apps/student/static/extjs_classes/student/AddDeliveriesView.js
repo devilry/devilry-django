@@ -1,4 +1,4 @@
-Ext.define('devilry.student.AddDeliveriesGrid', {
+Ext.define('devilry.student.AddDeliveriesView', {
     extend: 'devilry.extjshelpers.DashGrid',
 
     requires: [
