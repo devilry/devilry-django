@@ -38,6 +38,8 @@ Ext.define('devilry.extjshelpers.DashGrid', {
                     }
                     this.add({
                         xtype: 'box',
+                        autoScroll: true,
+                        flex: 1,
                         html: Ext.create('Ext.XTemplate',
                             '<div class="section {msgcls}-small extravisible-small">',
                             '   <h1>{title}</h1>',
