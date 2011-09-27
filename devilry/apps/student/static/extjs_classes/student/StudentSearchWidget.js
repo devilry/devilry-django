@@ -39,7 +39,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
         Ext.apply(this, {
             searchResultItems: [{
                 xtype: 'searchresults',
-                title: 'Delivery',
+                title: 'Deliveries',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeliveryStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 itemtpldata: {
@@ -76,21 +76,21 @@ Ext.define('devilry.student.StudentSearchWidget', {
                         clickLinkTpl: this.urlPrefix + 'add-delivery/{assignment_group}'
                     }
                 }
-            //}, {
-                //xtype: 'searchresults',
-                //title: 'My groups',
-                //store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
-                //filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
-                //itemtpldata: {
-                    //is_student: true
-                //},
-                //resultitemConfig: {
-                    //tpl: this.assignmentgroupRowTpl,
-                    //defaultbutton: {
-                        //text: 'View',
-                        //clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
-                    //}
-                //}
+            }, {
+                xtype: 'searchresults',
+                title: 'Assignments',
+                store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
+                itemtpldata: {
+                    is_student: true
+                },
+                resultitemConfig: {
+                    tpl: this.assignmentgroupRowTpl,
+                    defaultbutton: {
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
+                    }
+                }
             }]
         });
         this.callParent(arguments);
