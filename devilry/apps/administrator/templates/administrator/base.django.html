@@ -8,12 +8,13 @@
 
 {% block headextra %}
 <script>
+    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/administrator/';
+
+    {% comment %}
     {% for RestfulCls in restfulapi.values %}
         {{ RestfulCls|extjs_combobox_model:"Search" }};
         {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
-
-    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/administrator/';
 
     Ext.require('devilry.administrator.AdministratorSearchWidget');
     Ext.onReady(function() {
@@ -30,10 +31,12 @@
         searchwidget.loadInitialValues();
         {% block post-searchwidget-javascript %}{% endblock %}
     });
+    {% endcomment %}
 </script>
 {% endblock %}
 
 {% block main %}
+{% comment %}
 <div class="section" id="searchsection" style="{% block searchsectionstyle %}{% endblock %}">
     <div id='searchwidget-container'></div>
     <p class='searchwidget-help'>In the box above, you can search for anything
@@ -42,4 +45,5 @@
     to that user, and searching for a subject will find anything related to that
     subject.</p>
 </div>
+{% endcomment %}
 {% endblock %}
