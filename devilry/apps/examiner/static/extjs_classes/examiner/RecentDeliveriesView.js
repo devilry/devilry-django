@@ -17,7 +17,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     },
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
-        '<ul class="useridlist">',
+        '<ul class="commaSeparatedList">',
         '   <tpl for="deadline__assignment_group__candidates__identifier">',
         '       <li>{.}</li>',
         '   </tpl>',

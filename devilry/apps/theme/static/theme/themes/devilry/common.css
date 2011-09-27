@@ -1126,6 +1126,13 @@ div.section h3 {
   list-style-type: disc !important;
   list-style-position: outside !important; }
 
+.commaSeparatedList li {
+  display: inline; }
+  .commaSeparatedList li:after {
+    content: ", "; }
+  .commaSeparatedList li:last-child:after {
+    content: ""; }
+
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
 .studentsmanager .widget-studentsmanager_studentsgrid .infocolumn {

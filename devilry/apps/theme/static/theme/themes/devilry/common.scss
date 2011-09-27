@@ -896,6 +896,10 @@ div.section {
 }
 
 
+.commaSeparatedList {
+    @include inlineList();
+}
+
 .studentsmanager {
     .widget-studentsmanager_studentsgrid {
         td.x-grid-cell {
