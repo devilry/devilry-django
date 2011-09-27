@@ -1,22 +1,26 @@
 Ext.define('devilry.student.AddDeliveriesGrid', {
-    extend: 'Ext.grid.Panel',
-    hideHeaders: true,
-    frameHeader: false,
-    frame: false,
-    border: false,
-    sortableColumns: false,
-    columnLines: false,
-    cls: 'selectable-grid',
+    extend: 'devilry.extjshelpers.DashGrid',
+
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
 
-    initComponent: function() {
-        var rowTpl = Ext.create('Ext.XTemplate',
-            '{.:date}'
-        );
+    config: {
+        store: undefined,
+        model: undefined,
+        noRecordsMessage: {
+            title: 'No active electronic assignments',
+            msg: "You are not expected to make any electronic deliveries at this time. This may be because none of your subjects/courses uses Devilry for electronic deliveries, or because all your published assignments have been corrected."
+        },
+        dashboard_url: undefined
+    },
 
-        //this.store.proxy.extraParams.orderby = Ext.JSON.encode(["deadline"]);
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+
+    createStore: function() {
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             "field": "is_open",
             "comp": "exact",
@@ -35,9 +39,24 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-latest_deadline_deadline']);
-        this.store.load();
+    },
 
-        Ext.apply(this, {
+    createBody: function() {
+        var rowTpl = Ext.create('Ext.XTemplate',
+            '{.:date}'
+        );
+
+        var grid = Ext.create('Ext.grid.Panel', {
+            frame: false,
+            hideHeaders: true,
+            frameHeader: false,
+            autoScroll: true,
+            flex: 1,
+            border: false,
+            sortableColumns: false,
+            cls: 'selectable-grid',
+            store: this.store,
+        
             columns: [{
                 text: 'Subject',
                 menuDisabled: true,
@@ -78,7 +97,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "add-delivery/" + record.data.id;
+                    var url = this.dashboard_url + "add-delivery/" + record.data.id;
                     window.location = url;
                 },
                 itemmouseenter: function(view, record, item) {
@@ -86,6 +105,9 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 }
             }
         });
-        this.callParent(arguments);
+        this.add([{
+            xtype: 'box',
+            html: '<div class="section"><h3>Assignments / Add deliveries</h3></div>'
+        }, grid]);
     }
 });

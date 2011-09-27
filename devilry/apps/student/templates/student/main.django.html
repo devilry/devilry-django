@@ -1,4 +1,4 @@
-{% extends "examiner/base.django.js" %}
+{% extends "student/base.django.js" %}
 {% load extjs %}
 
 {% block imports %}
@@ -32,31 +32,23 @@
     function createGrids() {
         var activeAssignmentsView = Ext.create('devilry.student.AddDeliveriesGrid', {
             store: ag_store,
+            dashboard_url: DASHBOARD_URL,
             flex: 1
         });
 
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: dashboard_delivery_model,
             showStudentsCol: false,
+            dashboard_url: DASHBOARD_URL,
             flex: 1
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: dashboard_feedback_model,
             showStudentsCol: false,
+            dashboard_url: DASHBOARD_URL,
             flex: 1
         });
-        Ext.getCmp('assignmentcontainer').add([{
-            xtype: 'container',
-            flex: 1,
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            items: [{
-                xtype: 'box',
-                html: '<div class="section"><h2>Active assignments</h2></div>'
-            }, activeAssignmentsView]
-        }, {
+        Ext.getCmp('assignmentcontainer').add([activeAssignmentsView, {
             xtype: 'container',
             flex: 1,
             margin: {top: 10},
