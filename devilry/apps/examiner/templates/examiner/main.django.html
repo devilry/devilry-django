@@ -42,7 +42,6 @@
                 type: 'hbox',
                 align: 'stretch'
             },
-            width: "100%",
             items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
         }]);
     }
@@ -101,9 +100,10 @@
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [searchwidget, {xtype:'box', height: 20}, permchecker, {
+            items: [searchwidget, permchecker, {xtype:'box', height: 20}, {
                 xtype: 'panel',
                 flex: 1,
+                autoScroll: true,
                 layout: {
                     type: 'vbox',
                     align: 'stretch'
