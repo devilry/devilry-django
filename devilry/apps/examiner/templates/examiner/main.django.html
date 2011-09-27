@@ -52,6 +52,13 @@
     var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
     assignmentgroup_permcheckstore.pageSize = 1;
 
+{% endblock %}
+
+
+{% block onready %}
+    {{ block.super }}
+
+
     function createPermissionChecker() {
         return Ext.create('devilry.extjshelpers.PermissionChecker', {
             stores: [assignmentgroup_permcheckstore],
@@ -65,16 +72,13 @@
                     //Ext.getDom('has-permission-section').style.display = 'block';
                     //Ext.getDom('searchsection').style.display = 'block';
                     //createActiveAssignmentsView();
+                    searchwidget.show();
                     createActiveAssignmentsView();
                 }
             }
         });
     }
-{% endblock %}
 
-
-{% block onready %}
-    {{ block.super }}
     var permchecker = createPermissionChecker();
     assignmentgroup_permcheckstore.load();
 
@@ -110,16 +114,3 @@
         }]
     });
 {% endblock %}
-
-
-{% comment %}
-{% block main %}
-{{ block.super }}
-<div id="no-permissions-message"></div>
-<div id="no-active-assignments-message"></div>
-<div class="section" id="has-permission-section" style="display: none">
-    <div class="section" id="activeassignments"></div>
-    <div class="section" id="recent"></div>
-</div>
-{% endblock %}
-{% endcomment %}

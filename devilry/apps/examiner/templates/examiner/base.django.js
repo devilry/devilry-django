@@ -24,6 +24,7 @@
 {% block onready %}
     {{ block.super }}
     var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
+        hidden: true,
         searchResultItems: [{
             xtype: 'searchresults',
             title: 'Deliveries',
@@ -73,6 +74,5 @@
             }
         }]
     });
-    searchwidget.loadInitialValues();
 
 {% endblock %}
