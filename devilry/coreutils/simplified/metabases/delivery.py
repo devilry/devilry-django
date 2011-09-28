@@ -50,6 +50,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              'deadline__assignment_group__parentnode__parentnode__parentnode__long_name')
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('deadline'),
+                          FilterSpec('delivery_type'),
                           FilterSpec('time_of_delivery'),
                           ForeignFilterSpec('deadline',
                                             FilterSpec('deadline'),
