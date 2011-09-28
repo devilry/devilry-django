@@ -52,6 +52,10 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             field: 'deadline__assignment_group__parentnode__parentnode__end_time',
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'delivery_type',
+            comp: 'exact',
+            value: 0
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-time_of_delivery']);
         this.store.pageSize = this.limit;
