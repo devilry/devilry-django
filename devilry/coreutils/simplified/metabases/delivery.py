@@ -23,6 +23,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              assignment_group_users=['deadline__assignment_group__examiners__username',
                                                      'deadline__assignment_group__candidates__identifier'],
                              assignment=['deadline__assignment_group__parentnode',
+                                         'deadline__assignment_group__parentnode__delivery_types',
                                          'deadline__assignment_group__parentnode__short_name',
                                          'deadline__assignment_group__parentnode__long_name'],
                              period=['deadline__assignment_group__parentnode__parentnode',
@@ -58,6 +59,7 @@ class SimplifiedDeliveryMetaMixin(object):
                                             FilterSpec('name')),
                           ForeignFilterSpec('deadline__assignment_group__parentnode',  # Assignment
                                             FilterSpec('parentnode'),
+                                            FilterSpec('delivery_types'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
                           ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode',  # Period
