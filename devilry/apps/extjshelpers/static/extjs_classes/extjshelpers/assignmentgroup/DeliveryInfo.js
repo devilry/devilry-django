@@ -157,19 +157,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         Ext.apply(data, delivery);
         this.update(data);
 
-        this.toolbar.add({
-            xtype: 'button',
-            text: 'Browse files',
-            id: 'tooltip-browse-files',
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.showFileMetaBrowserWindow,
-                render: function() {
-                    //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+        if(delivery.delivery_type == 0) {
+            this.toolbar.add({
+                xtype: 'button',
+                text: 'Browse files',
+                id: 'tooltip-browse-files',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.showFileMetaBrowserWindow,
+                    render: function() {
+                        //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                    }
                 }
-            }
-        });
+            });
+        }
 
         this.toolbar.add({
             xtype: 'button',
