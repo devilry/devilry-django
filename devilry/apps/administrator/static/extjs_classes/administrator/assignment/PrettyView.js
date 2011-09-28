@@ -120,6 +120,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '            </p>',
         '        </div>',
         '    </tpl>',
+        '    <tpl if="delivery_types == 1">',
+        '        <div class="section info">',
+        '            <h1>Non-electronic deliveries</h1>',
+        '            <p>',
+        '               This assignment does not use Devilry for deliveries, only for feedback.',
+        '               You may choose to use Devilry for electronic deliveries on this assignment using the <span class="menuref">Edit</span> button in the toolbar.',
+        '            </p>',
+        '        </div>',
+        '    </tpl>',
         '</div>'
     ),
 
