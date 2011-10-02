@@ -91,41 +91,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignme
     },
 
     onNext: function() {
-        assignmentGroupModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupImportFromPrevAssignment');
-        var assignmentGroupStore = Ext.create('Ext.data.Store', {
-            model: assignmentGroupModel,
-            proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-                url: assignmentGroupModel.proxy.url
-            })
-        });
-        assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users']);
-
         var assignmentid = this.down('form').getForm().getValues().assignment;
-        assignmentGroupStore.proxy.setDevilryFilters([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: assignmentid
-        }]);
-
-        assignmentGroupStore.pageSize = 1;
         this.getEl().mask('Loading assignment groups...');
-        assignmentGroupStore.load({
+        devilry.administrator.studentsmanager.StudentsManager.getAllGroupsInAssignment(assignmentid, {
             scope: this,
             callback: function(records, op, success) {
                 if(!success) {
                     this.loadAssignmentGroupStoreFailed();
                 }
-                assignmentGroupStore.pageSize = assignmentGroupStore.totalCount;
-                assignmentGroupStore.load({
-                    scope: this,
-                    callback: function(records, op, success) {
-                        if(!success) {
-                            this.loadAssignmentGroupStoreFailed();
-                        }
-                        this.getEl().unmask();
-                        this.fireEvent('next', this, records);
-                    }
-                });
+                this.getEl().unmask();
+                this.fireEvent('next', this, records);
             }
         });
     },

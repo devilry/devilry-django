@@ -164,5 +164,42 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             }
         });
         return menu;
+    },
+
+
+    statics: {
+        getAllGroupsInAssignment: function(assignmentid, action) {
+            assignmentGroupModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupImportFromPrevAssignment');
+            var assignmentGroupStore = Ext.create('Ext.data.Store', {
+                model: assignmentGroupModel,
+                proxy: Ext.create('devilry.extjshelpers.RestProxy', {
+                    url: assignmentGroupModel.proxy.url
+                })
+            });
+            assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users']);
+
+            assignmentGroupStore.proxy.setDevilryFilters([{
+                field: 'parentnode',
+                comp: 'exact',
+                value: assignmentid
+            }]);
+
+            assignmentGroupStore.pageSize = 1;
+            assignmentGroupStore.load({
+                scope: this,
+                callback: function(records, op, success) {
+                    if(!success) {
+                        this.loadAssignmentGroupStoreFailed();
+                    }
+                    assignmentGroupStore.pageSize = assignmentGroupStore.totalCount;
+                    assignmentGroupStore.load({
+                        scope: this,
+                        callback: function(records, op, success) {
+                            Ext.bind(action.callback, action.scope, action.extraArgs, true)(records, op, success);
+                        }
+                    });
+                }
+            });
+        }
     }
 });
