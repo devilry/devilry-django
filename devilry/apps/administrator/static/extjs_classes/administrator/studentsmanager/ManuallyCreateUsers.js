@@ -16,7 +16,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
          */
         initialLines: undefined,
 
-        assignmentid: undefined,
+        assignmentrecord: undefined,
         deadlinemodel: undefined,
         suggestedDeadline: undefined
     },
@@ -182,7 +182,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      */
     createGroup: function(groupSpecObj) {
         var completeGroupSpecObj = {
-            parentnode: this.assignmentid
+            parentnode: this.assignmentrecord.data.id
         };
         Ext.apply(completeGroupSpecObj, groupSpecObj);
         var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
@@ -332,7 +332,21 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             onSaveSuccess: function(record) {
                 this.close();
                 me.deadlineRecord = record;
-                me.createAll(parsedArray);
+                var publishing_time = me.assignmentrecord.data.publishing_time;
+                var period_end_time = me.assignmentrecord.data.parentnode__end_time;
+                if(record.data.deadline <= publishing_time || record.data.deadline >= period_end_time) {
+                    var error = Ext.create('Ext.XTemplate',
+                        'Deadline must be between {publishing_time:date} and {period_end_time:date}.'
+                    ).apply({publishing_time: publishing_time, period_end_time: period_end_time});
+                    Ext.MessageBox.show({
+                        title: 'Error',
+                        msg: error,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                } else {
+                    me.createAll(parsedArray);
+                }
             }
         });
         createDeadlineWindow.show();

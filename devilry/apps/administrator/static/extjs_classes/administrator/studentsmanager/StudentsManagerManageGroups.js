@@ -19,7 +19,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'manuallycreateusers',
                 deadlinemodel: this.deadlinemodel,
-                assignmentid: this.assignmentid,
+                assignmentrecord: this.assignmentrecord,
                 suggestedDeadline: this.guessDeadlineFromCurrentlyLoadedGroups(),
                 initialLines: initialLines
             },
