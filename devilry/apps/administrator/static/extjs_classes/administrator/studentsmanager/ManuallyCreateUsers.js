@@ -367,69 +367,77 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             var diff = Ext.Array.difference(parsedArray, cleanedParsedArray);
             var me = this;
             if(diff.length > 0) {
-                var msg = Ext.create('Ext.XTemplate',
-                    '<div class="section helpsection">',
-                    '<p>The groups listed below contains at least one student that already has a group on this assignment. If you choose <em>Next</em>, these groups will be ignored. Choose <em>Cancel</em> to return to the <em>Create assignment groups</em> window.</p>',
-                    '<ul>',
-                    '   <tpl for="diff"><li>',
-                    '       <tpl if="name">',
-                    '           {name}:: ',
-                    '       </tpl>',
-                    '       <tpl for="fake_candidates">',
-                    '           {username}<tpl if="candidate_id">{candidate_id}</tpl><tpl if="xindex &lt; xcount">, </tpl>',
-                    '       </tpl>',
-                    '       <tpl if="fake_tags.length &gt; 0">',
-                    '          (<tpl for="fake_tags">',
-                    '              {.}<tpl if="xindex &lt; xcount">, </tpl>',
-                    '          </tpl>)',
-                    '       </tpl>',
-                    '   </tpl></li>',
-                    '</ul></div>'
-                ).apply({diff: diff});
-                Ext.widget('window', {
-                    width: 500,
-                    height: 400,
-                    modal: true,
-                    title: 'Confirm clear duplicates',
-                    layout: 'fit',
-                    items: {
-                        xtype: 'panel',
-                        border: false,
-                        html: msg
-                    },
-                    dockedItems: [{
-                        xtype: 'toolbar',
-                        dock: 'bottom',
-                        ui: 'footer',
-                        items: [{
-                            xtype: 'button',
-                            scale: 'large',
-                            text: 'Cancel',
-                            listeners: {
-                                click: function() {
-                                    this.up('window').close();
-                                }
-                            }
-                        }, '->', {
-                            xtype: 'button',
-                            iconCls: 'icon-next-32',
-                            scale: 'large',
-                            text: 'Next',
-                            listeners: {
-                                click: function() {
-                                    this.up('window').close();
-                                    me.selectDeadline(cleanedParsedArray);
-                                }
-                            }
-                        }]
-                    }]
-                }).show();
+                this.showClearedDuplicatesInfoWindow(cleanedParsedArray, diff);
             } else {
                 this.selectDeadline(parsedArray);
             }
         } else {
             this.selectDeadline(parsedArray);
         }
+    },
+
+    /**
+     * @private
+     */
+    showClearedDuplicatesInfoWindow: function(cleanedParsedArray, diff) {
+        var me = this;
+        var msg = Ext.create('Ext.XTemplate',
+            '<div class="section helpsection">',
+            '<p>The groups listed below contains at least one student that already has a group on this assignment. If you choose <em>Next</em>, these groups will be ignored. Choose <em>Cancel</em> to return to the <em>Create assignment groups</em> window.</p>',
+            '<ul>',
+            '   <tpl for="diff"><li>',
+            '       <tpl if="name">',
+            '           {name}:: ',
+            '       </tpl>',
+            '       <tpl for="fake_candidates">',
+            '           {username}<tpl if="candidate_id">{candidate_id}</tpl><tpl if="xindex &lt; xcount">, </tpl>',
+            '       </tpl>',
+            '       <tpl if="fake_tags.length &gt; 0">',
+            '          (<tpl for="fake_tags">',
+            '              {.}<tpl if="xindex &lt; xcount">, </tpl>',
+            '          </tpl>)',
+            '       </tpl>',
+            '   </tpl></li>',
+            '</ul></div>'
+        ).apply({diff: diff});
+        Ext.widget('window', {
+            width: 500,
+            height: 400,
+            modal: true,
+            title: 'Confirm clear duplicates',
+            layout: 'fit',
+            items: {
+                xtype: 'panel',
+                border: false,
+                html: msg
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: [{
+                    xtype: 'button',
+                    scale: 'large',
+                    text: 'Cancel',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                        }
+                    }
+                }, '->', {
+                    xtype: 'button',
+                    iconCls: 'icon-next-32',
+                    scale: 'large',
+                    text: 'Next',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                            me.selectDeadline(cleanedParsedArray);
+                        }
+                    }
+                }]
+            }]
+        }).show();
     },
 
     /**
