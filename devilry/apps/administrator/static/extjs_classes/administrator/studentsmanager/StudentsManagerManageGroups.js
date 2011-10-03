@@ -8,7 +8,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
     /**
      * @private
      */
-    showManuallyCreateUsersWindow: function(initialLines) {
+    showCreateGroupsInBulkWindow: function(initialLines, currentGroupRecords) {
         var win = Ext.widget('window', {
             title: 'Create assignment groups',
             modal: true,
@@ -21,6 +21,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 deadlinemodel: this.deadlinemodel,
                 assignmentrecord: this.assignmentrecord,
                 suggestedDeadline: this.guessDeadlineFromCurrentlyLoadedGroups(),
+                currentGroupRecords: currentGroupRecords,
                 initialLines: initialLines
             },
             listeners: {
@@ -31,6 +32,24 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             }
         });
         win.show();
+    },
+
+    /**
+     * @private
+     */
+    createManyGroupsInBulk: function(initialLines) {
+        this.getEl().mask('Loading current assignment groups...');
+        devilry.administrator.studentsmanager.StudentsManager.getAllGroupsInAssignment(this.assignmentid, {
+            scope: this,
+            callback: function(records, op, success) {
+                this.getEl().unmask();
+                if(success) {
+                    this.showCreateGroupsInBulkWindow(initialLines, records);
+                } else {
+                    Ext.MessageBox.alert('Failed to load current assignment groups. Please try again.');
+                }
+            }
+        });
     },
 
     /**
@@ -54,7 +73,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
      * @private
      */
     onManuallyCreateUsers: function() {
-        this.showManuallyCreateUsersWindow();
+        this.createManyGroupsInBulk();
     },
 
     /**
@@ -72,7 +91,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
      * @private
      */
     createOneGroupForEachRelatedStudent: function(relatedStudents) {
-        this.showManuallyCreateUsersWindow(this.relatedUserRecordsToArray(relatedStudents));
+        this.createManyGroupsInBulk(this.relatedUserRecordsToArray(relatedStudents));
     },
 
 
@@ -259,7 +278,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             });
             groups.push(groupString);
         });
-        this.showManuallyCreateUsersWindow(groups);
+        this.createManyGroupsInBulk(groups);
     },
 
     statics: {

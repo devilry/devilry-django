@@ -16,6 +16,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
          */
         initialLines: undefined,
 
+        currentGroupRecords: undefined,
         assignmentrecord: undefined,
         deadlinemodel: undefined,
         suggestedDeadline: undefined
@@ -25,6 +26,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '<div class="section helpsection">' +
         //'   <h1>Help</h1>' +
         '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box.</p>' +
+        '   <p>Check <strong>Clear duplicates</strong> to ignore any assignment groups that contains students that already has an assignment group on this assignment.</p>' +
         '   <h2>Common usage examples</h2>' +
         '   <h3>Individual deliveries</h3>' +
         '   <p>Very often, an assignment requires <strong>individual</strong> deliveries and feedback. In this case, each <em>assignment group</em> should contain a single student. In this case, the input box should contain something similar to this:</p>' +
@@ -76,9 +78,13 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             labelWidth: 100,
             labelStyle: 'font-weight:bold',
             emptyText: 'Read the text on your right hand side for help...',
-            flex: 10, // Take up all remaining vertical space
-            margin: 10,
+            flex: 10,
             value: currentValue
+        });
+
+        this.clearDupsCheck = Ext.widget('checkbox', {
+            boxLabel: "Clear duplicates?",
+            checked: true
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         //this.userinput.setValue('dewey\nlouie:401');
@@ -90,7 +96,17 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 align: 'stretch'
             },
 
-            items: [this.userinput, {
+            items: [{
+                margin: 10,
+                flex: 10,
+                xtype: 'panel',
+                border: false,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [this.userinput, this.clearDupsCheck],
+            }, {
                 flex: 10,
                 xtype: 'box',
                 padding: 20,
@@ -172,9 +188,39 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.finishedCounter = 0;
         this.unsuccessful = [];
         this.parsedArray = parsedArray;
-        Ext.Array.each(parsedArray, function(groupSpecObj) {
+        Ext.Array.each(this.parsedArray, function(groupSpecObj) {
             this.createGroup(groupSpecObj);
         }, this);
+    },
+
+    /**
+     * @private
+     */
+    clearDuplicates: function(parsedArray) {
+        var current_usernames = []
+        Ext.each(this.currentGroupRecords, function(groupRecord) {
+            var group_usernames = groupRecord.data.candidates__student__username;
+            current_usernames = Ext.Array.merge(current_usernames, group_usernames);
+        });
+
+        var uniqueGroupSpecObjs = [];
+        var new_usernames = [];
+        Ext.Array.each(parsedArray, function(groupSpecObj) {
+            var dups = false;
+            Ext.Array.each(groupSpecObj.fake_candidates, function(candidate) {
+                if(Ext.Array.contains(current_usernames, candidate.username) || Ext.Array.contains(new_usernames, candidate.username)) {
+                    dups = true;
+                }
+            }, this);
+            if(!dups) {
+                Ext.Array.each(groupSpecObj.fake_candidates, function(candidate) {
+                    new_usernames.push(candidate.username);
+                });
+                uniqueGroupSpecObjs.push(groupSpecObj);
+            }
+        }, this);
+
+        return uniqueGroupSpecObjs;
     },
 
     /**
@@ -315,7 +361,75 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.getEl().mask('Parsing input');
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
         this.getEl().unmask();
-        this.selectDeadline(parsedArray);
+        var clearDuplicates = this.clearDupsCheck.getValue();
+        if(clearDuplicates) {
+            cleanedParsedArray = this.clearDuplicates(parsedArray);
+            var diff = Ext.Array.difference(parsedArray, cleanedParsedArray);
+            var me = this;
+            if(diff.length > 0) {
+                var msg = Ext.create('Ext.XTemplate',
+                    '<div class="section helpsection">',
+                    '<p>The groups listed below contains at least one student that already has a group on this assignment. If you choose <em>Next</em>, these groups will be ignored. Choose <em>Cancel</em> to return to the <em>Create assignment groups</em> window.</p>',
+                    '<ul>',
+                    '   <tpl for="diff"><li>',
+                    '       <tpl if="name">',
+                    '           {name}:: ',
+                    '       </tpl>',
+                    '       <tpl for="fake_candidates">',
+                    '           {username}<tpl if="candidate_id">{candidate_id}</tpl><tpl if="xindex &lt; xcount">, </tpl>',
+                    '       </tpl>',
+                    '       <tpl if="fake_tags.length &gt; 0">',
+                    '          (<tpl for="fake_tags">',
+                    '              {.}<tpl if="xindex &lt; xcount">, </tpl>',
+                    '          </tpl>)',
+                    '       </tpl>',
+                    '   </tpl></li>',
+                    '</ul></div>'
+                ).apply({diff: diff});
+                Ext.widget('window', {
+                    width: 500,
+                    height: 400,
+                    modal: true,
+                    title: 'Confirm clear duplicates',
+                    layout: 'fit',
+                    items: {
+                        xtype: 'panel',
+                        border: false,
+                        html: msg
+                    },
+                    dockedItems: [{
+                        xtype: 'toolbar',
+                        dock: 'bottom',
+                        ui: 'footer',
+                        items: [{
+                            xtype: 'button',
+                            scale: 'large',
+                            text: 'Cancel',
+                            listeners: {
+                                click: function() {
+                                    this.up('window').close();
+                                }
+                            }
+                        }, '->', {
+                            xtype: 'button',
+                            iconCls: 'icon-next-32',
+                            scale: 'large',
+                            text: 'Next',
+                            listeners: {
+                                click: function() {
+                                    this.up('window').close();
+                                    me.selectDeadline(cleanedParsedArray);
+                                }
+                            }
+                        }]
+                    }]
+                }).show();
+            } else {
+                this.selectDeadline(parsedArray);
+            }
+        } else {
+            this.selectDeadline(parsedArray);
+        }
     },
 
     /**
