@@ -26,7 +26,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '<div class="section helpsection">' +
         //'   <h1>Help</h1>' +
         '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box.</p>' +
-        '   <p>Check <strong>Clear duplicates</strong> to ignore any assignment groups that contains students that already has an assignment group on this assignment.</p>' +
+        '   <p>Check <strong>Ignore duplicates</strong> to ignore any assignment groups that contains students that already has an assignment group on this assignment.</p>' +
         '   <h2>Common usage examples</h2>' +
         '   <h3>Individual deliveries</h3>' +
         '   <p>Very often, an assignment requires <strong>individual</strong> deliveries and feedback. In this case, each <em>assignment group</em> should contain a single student. In this case, the input box should contain something similar to this:</p>' +
@@ -83,7 +83,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         });
 
         this.clearDupsCheck = Ext.widget('checkbox', {
-            boxLabel: "Clear duplicates?",
+            boxLabel: "Ignore duplicates?",
             checked: true
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
@@ -369,10 +369,10 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             if(diff.length > 0) {
                 this.showClearedDuplicatesInfoWindow(cleanedParsedArray, diff);
             } else {
-                this.selectDeadline(parsedArray);
+                this.checkForNoGroups(parsedArray);
             }
         } else {
-            this.selectDeadline(parsedArray);
+            this.checkForNoGroups(parsedArray);
         }
     },
 
@@ -432,7 +432,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                     listeners: {
                         click: function() {
                             this.up('window').close();
-                            me.selectDeadline(cleanedParsedArray);
+                            me.checkForNoGroups(cleanedParsedArray, 'No groups where created because all groups contained students that already have a group, and you chose to ignore duplicates.');
                         }
                     }
                 }]
@@ -443,6 +443,16 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
+    checkForNoGroups: function(parsedArray, noGroupsMsg) {
+        if(parsedArray.length == 0) {
+            var msg = noGroupsMsg || 'You must add at least one group in the <em>assignment groups</em> box.';
+            Ext.MessageBox.alert('No assignmen groups created', msg);
+            this.up('window').close();
+        } else {
+            this.selectDeadline(parsedArray);
+        }
+    },
+
     selectDeadline: function(parsedArray) {
         var me = this;
         var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
