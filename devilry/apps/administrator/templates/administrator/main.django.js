@@ -35,8 +35,8 @@
     var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
         stores: [nodestore, subjectstore, periodstore],
         //renderTo: 'no-permissions-message',
-        emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not an administrator</h1>' +
-            '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG }}</p></div>',
+        emptyHtml: '<div class="section info-small extravisible-small"><h1>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG.title }}</h1>' +
+            '<p>{{ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG.body }}</p></div>',
         listeners: {
             allLoaded: function(loadedItems, loadedWithRecords) {
                 Ext.getBody().unmask();

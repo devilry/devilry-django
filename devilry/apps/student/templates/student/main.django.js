@@ -68,8 +68,8 @@
 
     var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
         stores: [assignmentgroup_permcheckstore],
-        emptyHtml: '<div class="section info-small extravisible-small"><h1>You are not a student</h1>' +
-            '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG }}</p></div>',
+        emptyHtml: '<div class="section info-small extravisible-small"><h1>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG.title }}</h1>' +
+            '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG.body }}</p></div>',
         listeners: {
             allLoaded: function() {
                 Ext.getBody().unmask();
