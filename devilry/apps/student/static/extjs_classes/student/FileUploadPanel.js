@@ -100,16 +100,13 @@ Ext.define('devilry.student.FileUploadPanel', {
                 name: 'uploaded_file',
                 fieldLabel: 'Delivery',
                 hideLabel: true,
-                labelWidth: 50,
-                width: '100%',
                 anchor: '100%',
-                msgTarget: 'side',
                 allowBlank: true,
                 emptyText: 'Select file...',
                 buttonText: 'Add new file',
-                buttonConfig: {
-                    scale: 'large'
-                },
+                margin: {top: 20},
+                height: 70,
+                
                 listeners: {
                     scope: this,
                     change: this.onAddFile

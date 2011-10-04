@@ -2,7 +2,6 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
     extend: 'Ext.container.Container',
     alias: 'widget.add_deliveries_container',
     cls: 'widget-add_deliveries_container',
-    autoScroll: true,
     border: false,
     requires: [
         'devilry.extjshelpers.SingleRecordContainer',
@@ -15,6 +14,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         deadlineid: undefined,
         deliverymodelname: undefined,
         latest_deadline: undefined,
+        deadline_modelname: undefined,
         ag_model: undefined
     },
 
@@ -32,17 +32,17 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
             }
         });
 
-        Ext.apply(this, {
+        this.center = Ext.widget('container', {
+            margin: { top: 20 },
+            flex: 1,
+            layout: {
+                type: 'hbox',
+                align: 'stretchmax'
+            },
+            style: 'background-color: transparent',
+            autoScroll: true,
             items: [{
-                xtype: 'deadlinetitle',
-                singlerecordontainer: agroup_recordcontainer,
-                flex: 1,
-                extradata: {
-                    latest_deadline: this.latest_deadline
-                }
-            }, {
-                flex: 1,
-                margin: { top: 20 },
+                flex: 7,
                 xtype: 'fileuploadpanel',
                 bodyPadding: 20,
                 assignmentgroupid: this.assignmentgroupid,
@@ -52,8 +52,42 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 agroup_recordcontainer: agroup_recordcontainer
             }]
         });
-        this.callParent(arguments);
-    }
 
-    
+        Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'deadlinetitle',
+                singlerecordontainer: agroup_recordcontainer,
+                extradata: {
+                    latest_deadline: this.latest_deadline
+                }
+            }, this.center]
+        });
+
+        this.showDeadlineTextIfAny();
+        this.callParent(arguments);
+    },
+
+    showDeadlineTextIfAny: function() {
+        Ext.ModelManager.getModel(this.deadline_modelname).load(this.deadlineid, {
+            scope: this,
+            success: function(record) {
+                if(record.data.text) {
+                    this.center.add({
+                        xtype: 'panel',
+                        title: 'About this deadline',
+                        html: record.data.text,
+                        style: 'white-space: pre-line',
+                        width: 100,
+                        margin: {left: 10},
+                        bodyPadding: 10,
+                        flex: 3
+                    });
+                }
+            }
+        });
+    }
 });

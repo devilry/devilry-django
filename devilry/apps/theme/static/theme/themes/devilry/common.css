@@ -1045,12 +1045,6 @@ table.verticalinfotable {
 
 .widget-fileuploadpanel .ok ul li {
   list-style: square !important; }
-.widget-fileuploadpanel .x-form-file-wrap {
-  margin-top: 20px; }
-  .widget-fileuploadpanel .x-form-file-wrap input[type="text"] {
-    font-size: 24px !important;
-    padding: 6px !important;
-    height: auto !important; }
 
 div.section h1 {
   font-size: 2.6em;
