@@ -40,24 +40,19 @@
             region: 'center',
             xtype: 'container',
             padding: {left: 20, right: 20},
+            autoScroll: true,
             border: false,
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
             items: [{
                 xtype: 'deadlinetitle',
                 singlerecordontainer: agroup_recordcontainer,
-                //flex: 1,
+                flex: 1,
                 extradata: {
                     latest_deadline: new Date({{ deadline_timestamp_milliseconds}})
                 }
             }, {
-                xtype: 'fileuploadpanel',
                 flex: 1,
-                autoScroll: true,
-                //border: false,
                 margin: { top: 20 },
+                xtype: 'fileuploadpanel',
                 bodyPadding: 20,
                 assignmentgroupid: {{ assignmentgroupid }},
                 deadlineid: {{ deadlineid }},
