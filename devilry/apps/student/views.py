@@ -42,15 +42,10 @@ class AddDeliveryView(View):
         deadline_timestamp_milliseconds = mktime(deadline.deadline.timetuple()) + (deadline.deadline.microsecond/1000000)
         deadline_timestamp_milliseconds *= 1000
         return render(request, 'student/add-delivery.django.html',
-                      {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
-                       'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
-                       'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
-                       'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
+                      {'restfulapi': dump_all_into_dict(restful),
                        'assignmentgroupid': assignmentgroupid,
                        'deadlineid': deadline.id,
-                       'deadline_timestamp_milliseconds': deadline_timestamp_milliseconds,
-                       'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment,
-                       'RestfulSimplifiedAssignmentGroup': RestfulSimplifiedAssignmentGroup}
+                       'deadline_timestamp_milliseconds': deadline_timestamp_milliseconds}
                       )
 
 class ShowDeliveryView(View):

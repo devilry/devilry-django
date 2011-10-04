@@ -84,8 +84,10 @@ input, select {
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
   font-size: 12px;
-  background-color: #fff;
   color: #222; }
+
+.viewport {
+  background-color: #f8f8f8 !important; }
 
 .header {
   background-color: #000;

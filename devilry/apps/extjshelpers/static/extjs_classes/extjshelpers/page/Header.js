@@ -1,6 +1,7 @@
 Ext.define('devilry.extjshelpers.page.Header', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.pageheader',
+    bodyStyle: 'background-color: transparent !important',
     border: false,
     margins: '0 0 0 0',
     height: 125,

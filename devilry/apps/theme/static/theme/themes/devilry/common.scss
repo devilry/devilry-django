@@ -33,7 +33,6 @@ $radiussize_small: 6px;
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
 	font-size: 12px;
-	background-color: #fff;
 	color: #222;
 }
 
@@ -142,6 +141,10 @@ body {
         color: $fg;
         background-color: $hoverbg !important;
     }
+}
+
+.viewport {
+    background-color: #f8f8f8 !important;
 }
 
 .header {

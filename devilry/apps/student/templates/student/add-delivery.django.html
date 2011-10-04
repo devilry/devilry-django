@@ -1,53 +1,70 @@
-{% extends "theme/base.django.html" %}
+{% extends "student/base.django.js" %}
 {% load extjs %}
 
-{% block title %}Devilry student interface{% endblock %}
-
-
-{% block nav-class %}student{% endblock %}
-
-
-{% block headextra %}
-<script>
-    {{ RestfulSimplifiedDelivery|extjs_model }};
-    var ag_model = {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
-
-
+{% block imports %}
+    {{ block.super }}
     Ext.require('devilry.student.FileUploadPanel');
     Ext.require('devilry.student.DeadlineTitle');
     Ext.require('devilry.extjshelpers.SingleRecordContainer');
-    Ext.onReady(function() {
-        var agroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-
-        Ext.create('devilry.student.DeadlineTitle', {
-            renderTo: 'content-heading',
-            singlerecordontainer: agroup_recordcontainer,
-            extradata: {
-                latest_deadline: new Date({{ deadline_timestamp_milliseconds}})
-            }
-        });
-
-        ag_model.load({{assignmentgroupid}}, {
-            success: function(record) {
-                agroup_recordcontainer.setRecord(record);
-            }
-        });
-
-        var fileuploadpanel = Ext.widget('fileuploadpanel', {
-            bodyPadding: 20,
-            renderTo: 'fileuploadpanel',
-            assignmentgroupid: {{ assignmentgroupid }},
-            deadlineid: {{ deadlineid }},
-            initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
-            deliverymodelname: {{RestfulSimplifiedDelivery|extjs_modelname }},
-            agroup_recordcontainer: agroup_recordcontainer
-        });
-    });
-</script>
-
 {% endblock %}
 
-{% block main %}
-<div class="section treeheading" id="content-heading"></div>
-<div id='fileuploadpanel'></div>
+
+{% block appjs %}
+    {{ block.super }}
+
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }};
+    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+{% endblock %}
+
+{% block onready %}
+    {{ block.super }}
+    var agroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+    ag_model.load({{assignmentgroupid}}, {
+        success: function(record) {
+            Ext.getBody().unmask();
+            agroup_recordcontainer.setRecord(record);
+        }
+    });
+
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        cls: 'viewport',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'student'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'container',
+            padding: {left: 20, right: 20},
+            border: false,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'deadlinetitle',
+                singlerecordontainer: agroup_recordcontainer,
+                //flex: 1,
+                extradata: {
+                    latest_deadline: new Date({{ deadline_timestamp_milliseconds}})
+                }
+            }, {
+                xtype: 'fileuploadpanel',
+                flex: 1,
+                autoScroll: true,
+                //border: false,
+                margin: { top: 20 },
+                bodyPadding: 20,
+                assignmentgroupid: {{ assignmentgroupid }},
+                deadlineid: {{ deadlineid }},
+                initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
+                deliverymodelname: {{ restfulapi.RestfulSimplifiedDelivery|extjs_modelname }},
+                agroup_recordcontainer: agroup_recordcontainer
+            }]
+        }]
+    });
 {% endblock %}
