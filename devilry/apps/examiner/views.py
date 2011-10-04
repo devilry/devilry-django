@@ -16,7 +16,7 @@ from devilry.defaults.encoding import ZIPFILE_FILENAME_CHARSET
 
 
 class MainView(TemplateView):
-    template_name='examiner/main.django.html'
+    template_name='examiner/main.django.js'
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
