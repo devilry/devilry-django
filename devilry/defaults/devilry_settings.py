@@ -32,11 +32,11 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 
 ## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
-## These 3 can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
+## The body of each message can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
 DEVILRY_STUDENT_NO_PERMISSION_MSG = {'title': 'No published assignments',
                                      'body': 'You are not registered as a student on any assignments in Devilry. This is usually because you subject/course administrator has not published any assignments yet. Contact your subject/course administrator if this is wrong.'}
 DEVILRY_EXAMINER_NO_PERMISSION_MSG = {'title': 'You are not an examiner',
-                                      'body': 'You are not registered as an examiner on anything in Devilry. If this is wrong, please contact the system administrator.'}
+                                      'body': 'You are not registered as an examiner on any publshed assignments in Devilry. If this is wrong, please contact the subject/course administrator.'}
 DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrator',
                                            'body': 'You are not registered as an administrator on any Node, Subject/Course, Period/Semester or Assignment in Devilry. If this is wrong, please contact the system administrator.'}
 
