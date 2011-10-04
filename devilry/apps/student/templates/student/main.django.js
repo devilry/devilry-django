@@ -5,7 +5,7 @@
     {{ block.super }}
     Ext.require('devilry.student.StudentSearchWidget');
     Ext.require('devilry.extjshelpers.PermissionChecker');
-    Ext.require('devilry.student.AddDeliveriesView');
+    Ext.require('devilry.student.AddDeliveriesGrid');
 {% endblock %}
 
 {% block appjs %}
@@ -30,7 +30,7 @@
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }}
     var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }}
     function createGrids() {
-        var addDeliveriesView = Ext.create('devilry.student.AddDeliveriesView', {
+        var addDeliveriesGrid = Ext.create('devilry.student.AddDeliveriesGrid', {
             store: ag_store,
             dashboard_url: DASHBOARD_URL,
             minHeight: 140,
@@ -49,7 +49,7 @@
             dashboard_url: DASHBOARD_URL,
             flex: 1
         });
-        Ext.getCmp('assignmentcontainer').add([addDeliveriesView, {
+        Ext.getCmp('assignmentcontainer').add([addDeliveriesGrid, {
             xtype: 'container',
             margin: {top: 10},
             layout: {
