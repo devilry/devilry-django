@@ -11,13 +11,10 @@ Ext.define('devilry.extjshelpers.EvenRandomSelection', {
 
     getRandomItem: function() {
         if(this.pool.length === 0) {
-            console.log('hei');
             this.pool = Ext.Array.clone(this.selection);
         }
-        console.log(this.pool.length, this.pool, this.selection);
         var randomIndex = Math.floor(Math.random() * (this.pool.length));
         var next = this.pool[randomIndex];
-        console.log(next);
         Ext.Array.remove(this.pool, next);
         return next;
     },
