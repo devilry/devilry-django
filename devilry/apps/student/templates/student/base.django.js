@@ -23,6 +23,7 @@
 
     var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
         urlPrefix: DASHBOARD_URL,
+        hidden: true,
         assignmentgroupRowTpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
         deadlineRowTpl: '{{ restfulapi.RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}',
         deliveryRowTpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
