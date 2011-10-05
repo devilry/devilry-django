@@ -15,7 +15,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         deliverymodelname: undefined,
         latest_deadline: undefined,
         deadline_modelname: undefined,
-        ag_model: undefined
+        ag_modelname: undefined
     },
 
     constructor: function(config) {
@@ -25,7 +25,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
 
     initComponent: function() {
         var agroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.ag_model.load(this.assignmentgroupid, {
+        Ext.ModelManager.getModel(this.ag_modelname).load(this.assignmentgroupid, {
             success: function(record) {
                 Ext.getBody().unmask();
                 agroup_recordcontainer.setRecord(record);
@@ -33,11 +33,10 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         });
 
         this.center = Ext.widget('container', {
-            margin: { top: 20 },
             flex: 1,
             layout: {
                 type: 'hbox',
-                align: 'stretchmax'
+                align: 'stretch'
             },
             style: 'background-color: transparent',
             autoScroll: true,

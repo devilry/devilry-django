@@ -11,10 +11,9 @@
 
 {% block appjs %}
     {{ block.super }}
-
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }};
-    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }};
 {% endblock %}
 
 {% block onready %}
@@ -38,7 +37,7 @@
             deliverymodelname: {{ restfulapi.RestfulSimplifiedDelivery|extjs_modelname }},
             latest_deadline: new Date({{ deadline_timestamp_milliseconds}}),
             deadline_modelname: {{ restfulapi.RestfulSimplifiedDeadline|extjs_modelname }},
-            ag_model: ag_model
+            ag_modelname: {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_modelname }}
         }]
     });
 {% endblock %}

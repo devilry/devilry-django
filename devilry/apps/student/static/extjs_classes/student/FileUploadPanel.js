@@ -81,6 +81,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         this.uploadedFiles = [];
         this.infoBoxView = Ext.widget('box', {
             tpl: this.uploadedFilesTpl,
+            flex: 5
         });
         this.updateInfoBox();
 
@@ -95,17 +96,21 @@ Ext.define('devilry.student.FileUploadPanel', {
         });
 
         Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [this.infoBoxView, {
+                flex: 1,
                 xtype: 'fileuploadfield',
                 name: 'uploaded_file',
                 fieldLabel: 'Delivery',
                 hideLabel: true,
-                anchor: '100%',
                 allowBlank: true,
                 emptyText: 'Select file...',
                 buttonText: 'Add new file',
                 margin: {top: 20},
-                height: 70,
+                //height: 70,
                 
                 listeners: {
                     scope: this,
