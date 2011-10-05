@@ -45,7 +45,7 @@ Ext.define('devilry.student.FileUploadPanel', {
     },
 
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="deliverysuccessful">',
+        '<tpl if="finished">',
         '   <div class="section ok">',
         '       <h1>Success</h1>',
         '       <p>Delivery created.',
@@ -55,20 +55,14 @@ Ext.define('devilry.student.FileUploadPanel', {
         '       </p>',
         '   </div>',
         '</tpl>',
-        '<tpl if="!deliverysuccessful">',
-        '   <tpl if="filenames.length &gt; 0">',
+        '<tpl if="!finished">',
+        '   <tpl if="has_filenames">',
         '      <div class="section info">',
         '          <h1>File uploaded successfully</h1>',
-        '          <p>You have uploaded the following {filenames.length} files.</p>',
-        '          <ul>',
-        '          <tpl for="filenames">',
-        '              <li>{.}</li>',
-        '          </tpl>',
-        '          </ul>',
         '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
         '      </div>',
         '   </tpl>',
-        '   <tpl if="filenames.length == 0">',
+        '   <tpl if="!has_filenames">',
         '      <div class="section help">',
         '          <h1>Create delivery</h1>',
         '          <p>{initialhelptext}</p>',
@@ -140,9 +134,10 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     updateInfoBox: function(finished) {
         this.infoBoxView.update({
+            has_filenames: this.uploadedFilesStore.count() > 0,
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
-            deliverysuccessful: finished,
+            finished: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX,
             agroup: (this.agroup_recordcontainer.record? this.agroup_recordcontainer.record.data: null)
@@ -223,7 +218,6 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileSuccess: function(form, res) {
-        console.log(this.uploadedFilesStore);
         this.uploadedFilesStore.add({filename: res.result.file});
 
         this.uploadedFiles.push(res.result.file);
