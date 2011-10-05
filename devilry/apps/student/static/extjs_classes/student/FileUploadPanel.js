@@ -56,13 +56,13 @@ Ext.define('devilry.student.FileUploadPanel', {
         '   </div>',
         '</tpl>',
         '<tpl if="!finished">',
-        '   <tpl if="has_filenames">',
+        '   <tpl if="filenameCount &gt; 0">',
         '      <div class="section info">',
         '          <h1>File uploaded successfully</h1>',
-        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
+        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenameCount} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
         '      </div>',
         '   </tpl>',
-        '   <tpl if="!has_filenames">',
+        '   <tpl if="filenameCount == 0">',
         '      <div class="section help">',
         '          <h1>Create delivery</h1>',
         '          <p>{initialhelptext}</p>',
@@ -134,8 +134,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     updateInfoBox: function(finished) {
         this.infoBoxView.update({
-            has_filenames: this.uploadedFilesStore.count() > 0,
-            filenames: this.uploadedFiles,
+            filenameCount: this.uploadedFilesStore.count(),
             initialhelptext: this.initialhelptext,
             finished: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
