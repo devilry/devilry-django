@@ -35,7 +35,13 @@ Ext.define('devilry.student.FileUploadPanel', {
          * @cfg
          * The name of the Delivery ``Ext.data.Model``.
          */
-        deliverymodelname: undefined
+        deliverymodelname: undefined,
+
+        /**
+         * @cfg
+         * Filenames are added to this store on each upload.
+         */
+        uploadedFilesStore: undefined
     },
 
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
@@ -217,6 +223,9 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileSuccess: function(form, res) {
+        console.log(this.uploadedFilesStore);
+        this.uploadedFilesStore.add({filename: res.result.file});
+
         this.uploadedFiles.push(res.result.file);
         this.updateInfoBox();
         this.deliverbutton.enable(); // really only needed on first upload, but it does not hurt.

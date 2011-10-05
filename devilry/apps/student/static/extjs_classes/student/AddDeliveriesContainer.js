@@ -6,7 +6,8 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
     requires: [
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.student.FileUploadPanel',
-        'devilry.student.DeadlineTitle'
+        'devilry.student.DeadlineTitle',
+        'devilry.student.stores.UploadedFileStore'
     ],
 
     config: {
@@ -32,6 +33,8 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
             }
         });
 
+        this.uploadedFilesStore = Ext.create('devilry.student.stores.UploadedFileStore');
+
         this.center = Ext.widget('container', {
             flex: 1,
             layout: {
@@ -48,7 +51,8 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 deadlineid: this.deadlineid,
                 initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
                 deliverymodelname: this.deliverymodelname,
-                agroup_recordcontainer: agroup_recordcontainer
+                agroup_recordcontainer: agroup_recordcontainer,
+                uploadedFilesStore: this.uploadedFilesStore
             }]
         });
 
