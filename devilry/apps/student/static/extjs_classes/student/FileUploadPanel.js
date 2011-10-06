@@ -228,7 +228,12 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileFailure: function(form, res) {
-        Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
+        var errormsg = 'Error during upload. Please try again.'
+        try {
+            var responseData = Ext.JSON.decode(res.response.responseText);
+            errormsg = responseData.errormessages[0];
+        } catch(e) {}
+        Ext.Msg.alert('Error', errormsg);
     },
 
 
