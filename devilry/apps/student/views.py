@@ -14,9 +14,10 @@ from django.db import IntegrityError
 from devilry.apps.core.models import Delivery, FileMeta, Deadline, AssignmentGroup
 from devilry.utils.module import dump_all_into_dict
 from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
-from devilry.restful.serializers import serialize, SerializableResult, ErrorMsgSerializableResult
+from devilry.restful.serializers import (serialize, SerializableResult,
+                                         ErrorMsgSerializableResult,
+                                         ForbiddenSerializableResult)
 from devilry.restful.extjshacks import extjshacks, extjswrap
-from devilry.restful.forbidden import forbidden_if_not_authenticated
 
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
