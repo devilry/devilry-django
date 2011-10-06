@@ -18,8 +18,8 @@ class ErrorMsgSerializableResult(SerializableResult):
                                                          httpresponsecls=httpresponsecls)
 
 class ForbiddenSerializableResult(ErrorMsgSerializableResult):
-    def __init__(self, exception):
-        if exception.message:
+    def __init__(self, exception=None):
+        if exception and exception.message:
             errormessage = exception.message
         else:
             errormessage = 'Forbidden'
