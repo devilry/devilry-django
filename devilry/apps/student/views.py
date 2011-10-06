@@ -1,26 +1,29 @@
-from tempfile import TemporaryFile, NamedTemporaryFile
-from django.views.generic import (TemplateView, View)
-from django.shortcuts import render, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, HttpResponseForbidden
-from django.core.servers.basehttp import FileWrapper
-from datetime import datetime
+from tempfile import NamedTemporaryFile
 import zipfile
-import tarfile
 from os import stat
 from mimetypes import guess_type
 from time import mktime
 import json
-from ..core.models import (Delivery, FileMeta,
-                           Deadline, AssignmentGroup,
-                           Candidate)
 
+from django.views.generic import (TemplateView, View)
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
+from django.core.servers.basehttp import FileWrapper
+from django.db import IntegrityError
+
+from devilry.apps.core.models import Delivery, FileMeta, Deadline, AssignmentGroup
 from devilry.utils.module import dump_all_into_dict
 from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
+from devilry.restful.serializers import serialize, SerializableResult, ErrorMsgSerializableResult
+from devilry.restful.extjshacks import extjshacks, extjswrap
+from devilry.restful.forbidden import forbidden_if_not_authenticated
+
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
-                     RestfulSimplifiedDeadline,
                      RestfulSimplifiedStaticFeedback,
-                     RestfulSimplifiedAssignment, RestfulSimplifiedAssignmentGroup)
+                     RestfulSimplifiedAssignment)
+
+
 
 class MainView(TemplateView):
     template_name='student/main.django.js'
@@ -59,6 +62,9 @@ class ShowDeliveryView(View):
                       )
 
 class FileUploadView(View):
+
+    @extjshacks
+    @serialize(content_type_override='text/html')
     def post(self, request, assignmentgroupid):
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=assignmentgroupid)
         deadlineid = assignment_group_obj.get_active_deadline().id
@@ -69,11 +75,11 @@ class FileUploadView(View):
         # Allow administrators and candidates on the group
         if not assignment_group_obj.can_save(logged_in_user):
             if not assignment_group_obj.is_candidate(logged_in_user):
-                return HttpResponseForbidden()
+                return ForbiddenSerializableResult()
 
         # Only allowed to add on open groups
         if not assignment_group_obj.can_add_deliveries():
-            return HttpResponseForbidden()
+            return ForbiddenSerializableResult()
 
         if 'uploaded_file' in request.FILES:
             #TODO Use simplified abstracted models
@@ -81,17 +87,17 @@ class FileUploadView(View):
             uploaded_file_name = uploaded_file.name
 
             delivery = get_object_or_404(Delivery, id=deliveryid)
-            delivery.add_file(uploaded_file_name, uploaded_file.chunks())
+            try:
+                delivery.add_file(uploaded_file_name, uploaded_file.chunks())
+            except IntegrityError, e:
+                return ErrorMsgSerializableResult('Filename must be unique',
+                                                  httpresponsecls=HttpResponseBadRequest)
             delivery.full_clean()
             delivery.save()
-
-            json_dict = {'success' : 'true', 'file':uploaded_file_name, 'deliveryid':delivery.id}
-            json_result = json.dumps(json_dict)
-
-            return HttpResponse(json_result)
+            json_dict = {'success': True, 'file':uploaded_file_name, 'deliveryid':delivery.id}
+            return SerializableResult(json_dict)
         else:
-            json_result = json.dumps({'success': 'false'})
-            return HttpResponse(json_result)
+            return SerializableResult({'success': False})
 
 
 
