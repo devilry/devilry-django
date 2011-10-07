@@ -1,28 +1,53 @@
-{% extends "administrator/single-base.django.html" %}
+{% extends "administrator/base.django.js" %}
 
 
-{% block headextra %}
-{{ block.super }}
-{% include "markup/mathjaxheader.django.html" %}
+{% block extra_js_libraries %}
+    {% include "markup/mathjaxheader.django.html" %}
+{% endblock %}
 
-<script>
+{% block imports %}
+    {{ block.super }}
     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+
+{% endblock %}
+
+{% block appjs %}
+    {{ block.super }}
     //Ext.require('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup');
     //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});    
+{% endblock %}
 
-    Ext.onReady(function() {
-        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            assignmentgroupid: {{ objectid }},
-            renderTo: 'content-main',
-            isAdministrator: true,
-            canExamine: true
-        });
-        
-        //var tooltip = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {});
-        //tooltip.initComponent();        
-        
+{% block onready %}
+    {{ block.super }}
+
+    Ext.getBody().unmask();
+    var ag_overview = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
+        assignmentgroupid: {{ objectid }},
+        isAdministrator: true,
+        canExamine: true
     });
-</script>
 
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'container',
+            border: false,
+            autoScroll: true,
+            padding: {left: 20, right: 20},
+            items: [searchwidget, {xtype:'box', height: 20}, ag_overview]
+        }]
+    });
+    
+    //var tooltip = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {});
+    //tooltip.initComponent();        
 {% endblock %}

@@ -5,6 +5,9 @@
         </title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" >
 
+        {# TODO: Remove this when we are completely viewport/app based #}
+        {% block extra_js_libraries %}{% endblock %}
+
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/common.css"
             type="text/css" media="screen" charset="utf-8"/>
 
