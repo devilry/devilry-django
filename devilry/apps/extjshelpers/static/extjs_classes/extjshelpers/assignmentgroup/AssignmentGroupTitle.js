@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
     extend: 'devilry.extjshelpers.SingleRecordView',
     alias: 'widget.assignmentgrouptitle',
-    cls: 'widget-assignmentgrouptitle',
+    cls: 'widget-assignmentgrouptitle section treeheading',
 
     tpl: Ext.create('Ext.XTemplate',
         '<h1>{parentnode__parentnode__parentnode__long_name}</h1>',

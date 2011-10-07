@@ -14,6 +14,7 @@
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             assignmentgroupid: {{ objectid }},
+            renderTo: 'content-main',
             isAdministrator: true,
             canExamine: true
         });

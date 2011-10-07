@@ -22,18 +22,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     config: {
         /**
          * @cfg
-        * ID of the div to render title to. Defaults to 'content-heading'.
-        */
-        renderTitleTo: 'content-heading',
-
-        /*Assignment group*
-         * @cfg
-        * ID of the div to render the body to. Defaults to 'content-main'.
-        */
-        renderTo: 'content-main',
-
-        /**
-         * @cfg
          * Enable creation of new feedbacks? Defaults to ``false``.
          * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
          *
@@ -78,11 +66,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
-        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
-            renderTo: this.renderTitleTo,
-            singlerecordontainer: this.assignmentgroup_recordcontainer
-        });
-
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
         this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
@@ -98,7 +81,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
             this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
         }
-
     },
 
     /**
@@ -176,27 +158,33 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         }
 
         Ext.apply(this, {
-            border: false,
             items: [{
-                xtype: 'assignmentgroupinfo',
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                assignmentgroupstore: this.assignmentgroupstore,
-                deliverymodel: this.deliverymodel,
-                deadlinemodel: this.deadlinemodel,
-                canExamine: this.canExamine
+                xtype: 'assignmentgrouptitle',
+                singlerecordontainer: this.assignmentgroup_recordcontainer
             }, {
-                xtype: 'deliveryinfo',
-                title: 'Delivery',
-                filemetastore: this.filemetastore,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                deliverymodel: this.deliverymodel,
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                listeners: {
-                    scope: this,
-                    deliveriesLoaded: this.onDeliveriesLoaded
-                }
-            }, this.feedbackPanel]
+                xtype: 'container',
+                border: false,
+                items: [{
+                    xtype: 'assignmentgroupinfo',
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    assignmentgroupstore: this.assignmentgroupstore,
+                    deliverymodel: this.deliverymodel,
+                    deadlinemodel: this.deadlinemodel,
+                    canExamine: this.canExamine
+                }, {
+                    xtype: 'deliveryinfo',
+                    title: 'Delivery',
+                    filemetastore: this.filemetastore,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    deliverymodel: this.deliverymodel,
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    listeners: {
+                        scope: this,
+                        deliveriesLoaded: this.onDeliveriesLoaded
+                    }
+                }, this.feedbackPanel]
+            }]
         });
     },
 
