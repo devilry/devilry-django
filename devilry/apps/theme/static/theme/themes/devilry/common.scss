@@ -731,6 +731,11 @@ div.section {
     @include inlineList();
 }
 
+.text_with_tooltip {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .studentsmanager {
     .widget-studentsmanager_studentsgrid {
         td.x-grid-cell {

@@ -14,6 +14,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
+        'devilry.extjshelpers.assignmentgroup.IsOpen',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
@@ -176,6 +177,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     region: 'west', 
                     width: 250,
                     items: [{
+                        xtype: 'assignmentgroup_isopen',
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        canExamine: this.canExamine
+                    }, {
                         xtype: 'assignmentgroupinfo',
                         assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                         delivery_recordcontainer: this.delivery_recordcontainer,

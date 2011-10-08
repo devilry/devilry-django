@@ -197,6 +197,9 @@ input, select {
 .icon-add-16 {
   background-image: url(icons/16x16/add.png) !important; }
 
+.icon-help-16 {
+  background-image: url(icons/16x16/help.png) !important; }
+
 .icon-help-32 {
   background-image: url(icons/32x32/help.png) !important; }
 
@@ -1128,6 +1131,10 @@ div.section h3 {
     content: ", "; }
   .commaSeparatedList li:last-child:after {
     content: ""; }
+
+.text_with_tooltip {
+  text-decoration: underline;
+  font-weight: bold; }
 
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
