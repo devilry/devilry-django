@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.page.Header', {
     bodyStyle: 'background-color: transparent !important',
     border: false,
     margins: '0 0 0 0',
-    height: 125,
+    height: 100,
     //autoHeight: true,
 
     bodyTpl: Ext.create('Ext.XTemplate',

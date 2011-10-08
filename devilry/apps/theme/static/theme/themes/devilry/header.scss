@@ -1,0 +1,124 @@
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: #222;
+    color: #fff;
+    &:hover {
+        color: $fg;
+        background-color: $hoverbg !important;
+    }
+}
+
+.header {
+    background-color: #000; color: #fff;
+
+    /**
+     *
+     * Heading
+     *
+     */
+    >#heading {
+        float: right;
+    }
+    >#heading>h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
+    >#heading>a#projectlink {
+        display: block;
+        margin: 0 20px 5px 20px;
+        text-decoration: none;
+        font-size: 0.8em;
+        text-align: right;
+        color: #a00;
+    }
+
+    /**
+     *
+     * Header userinfo/loginout
+     *
+     */
+    >#authenticated-user-bar {
+        padding-top: 20px;
+        padding-left: 20px;
+        color: #ccc;
+        font-size: 0.8em;
+    }
+    >#authenticated-user-bar>a.loginout-link {
+        color: #fff;
+        font-weight: bold;
+    }
+    >#authenticated-user-bar>a.loginout-link:visited {
+        color: #fff;
+    }
+    >#authenticated-user-bar>a.loginout-link:hover {
+        color: #fff;
+    }
+
+
+    /**
+     *
+     * Header navigation bar
+     *
+     */
+    >.nav {
+        margin-top: 20px;
+        
+        ul {
+            margin: 0 0 0 20px;
+            padding: 0;
+        }
+        li {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            padding: 0;
+        }
+
+
+        li a {
+            text-decoration: none;
+            display: block;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 10px 20px;
+            font-size: 1.0em;
+            font-weight: normal;
+            color: #08C;
+            border-radius: $radiussize_big $radiussize_small 0 0;
+            font-weight: bold;
+        }
+
+        li.student-navitem a {
+            @include navitemlink($studentcolor_bg, $studentcolor_fg, $studentcolor_hoverbg);
+        }
+        li.examiner-navitem a {
+            @include navitemlink($examinercolor_bg, $examinercolor_fg, $examinercolor_hoverbg);
+        }
+        li.administrator-navitem a {
+            @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
+        }
+        li.externallink-navitem a {
+            @include navitemlink(#444, #fff, #333);
+            border-radius: $radiussize_small $radiussize_big 0 0;
+            background-image: url(icons/16x16/external-link.png) !important;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            padding-left: 32px;
+        }
+    }
+
+    /* Color the bottom border of the header with the color of the current section. */
+    >.student {
+        border-bottom: 10px solid $studentcolor_bg;
+        li.student-navitem a {
+            background-color: $studentcolor_bg;
+        }
+    }
+    >.examiner {
+        border-bottom: 10px solid $examinercolor_bg;
+        li.examiner-navitem a {
+            background-color: $examinercolor_bg;
+        }
+    }
+    >.administrator {
+        border-bottom: 10px solid $administratorcolor_bg;
+        li.administrator-navitem a {
+            background-color: $administratorcolor_bg;
+        }
+    }
+}

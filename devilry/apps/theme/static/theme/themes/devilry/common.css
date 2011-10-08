@@ -81,14 +81,6 @@ hr {
 input, select {
   vertical-align: middle; }
 
-body {
-  font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
-  font-size: 12px;
-  color: #222; }
-
-.viewport {
-  background-color: #f8f8f8 !important; }
-
 .header {
   background-color: #000;
   color: #fff;
@@ -195,11 +187,53 @@ body {
     .header > .administrator li.administrator-navitem a {
       background-color: #cc4400; }
 
-/**
- *
- * Main (dynamic) content
- *
- */
+.icon-delete-16 {
+  background-image: url(icons/16x16/delete.png) !important; }
+
+.icon-edit-16 {
+  background-image: url(icons/16x16/edit.png) !important; }
+
+.icon-save-16 {
+  background-image: url(icons/16x16/save.png) !important; }
+
+.icon-save-16 {
+  background-image: url(icons/16x16/save.png) !important; }
+
+.icon-add-16 {
+  background-image: url(icons/16x16/add.png) !important; }
+
+.icon-help-32 {
+  background-image: url(icons/32x32/help.png) !important; }
+
+.icon-previous-32 {
+  background-image: url(icons/32x32/previous.png) !important; }
+
+.icon-next-32 {
+  background-image: url(icons/32x32/next.png) !important; }
+
+.icon-delete-32 {
+  background-image: url(icons/32x32/delete.png) !important; }
+
+.icon-edit-32 {
+  background-image: url(icons/32x32/edit.png) !important; }
+
+.icon-save-32 {
+  background-image: url(icons/32x32/save.png) !important; }
+
+.icon-save-32 {
+  background-image: url(icons/32x32/save.png) !important; }
+
+.icon-add-32 {
+  background-image: url(icons/32x32/add.png) !important; }
+
+body {
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
+  font-size: 12px;
+  color: #222; }
+
+.viewport {
+  background-color: #f8f8f8 !important; }
+
 /**
  *
  * SearchWidget
@@ -318,50 +352,6 @@ a.warning-button {
   color: #ffeee5; }
   a.warning-button:hover {
     background-color: #e64d00; }
-
-/**
- *
- * Icons
- *
- */
-.icon-delete-16 {
-  background-image: url(icons/16x16/delete.png) !important; }
-
-.icon-edit-16 {
-  background-image: url(icons/16x16/edit.png) !important; }
-
-.icon-save-16 {
-  background-image: url(icons/16x16/save.png) !important; }
-
-.icon-save-16 {
-  background-image: url(icons/16x16/save.png) !important; }
-
-.icon-add-16 {
-  background-image: url(icons/16x16/add.png) !important; }
-
-.icon-help-32 {
-  background-image: url(icons/32x32/help.png) !important; }
-
-.icon-previous-32 {
-  background-image: url(icons/32x32/previous.png) !important; }
-
-.icon-next-32 {
-  background-image: url(icons/32x32/next.png) !important; }
-
-.icon-delete-32 {
-  background-image: url(icons/32x32/delete.png) !important; }
-
-.icon-edit-32 {
-  background-image: url(icons/32x32/edit.png) !important; }
-
-.icon-save-32 {
-  background-image: url(icons/32x32/save.png) !important; }
-
-.icon-save-32 {
-  background-image: url(icons/32x32/save.png) !important; }
-
-.icon-add-32 {
-  background-image: url(icons/32x32/add.png) !important; }
 
 /**
  *
@@ -1085,11 +1075,11 @@ div.section h3 {
 .treeheading {
   margin-bottom: 30px; }
   .treeheading h1 {
-    margin: 0 0 8px 0; }
+    margin: 0 0 5px 0 !important; }
   .treeheading h2 {
-    margin: 0 0 8px 0; }
+    margin: 0 0 5px 0 !important; }
   .treeheading h3 {
-    margin: 0 0 8px 0; }
+    margin: 0 0 5px 0 !important; }
   .treeheading ul li {
     display: inline; }
     .treeheading ul li:after {
@@ -1246,11 +1236,6 @@ div.section h3 {
 .edit-toolbar .linkbtn .x-btn-inner {
   text-decoration: underline; }
 
-/**
- *
- * Footer
- *
- */
 .footer {
   text-align: right;
   clear: both;

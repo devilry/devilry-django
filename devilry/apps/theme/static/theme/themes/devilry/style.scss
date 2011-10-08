@@ -901,7 +901,7 @@ div.section {
     margin-bottom: 30px;
     @each $headtype in h1, h2, h3 {
         #{$headtype} {
-            margin: 0 0 8px 0;
+            margin: 0 0 5px 0 !important;
         }
     }
     ul {

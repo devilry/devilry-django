@@ -30,6 +30,9 @@ $administratorcolor_fg: $warningcolor_fg;
 $radiussize_big: 14px;
 $radiussize_small: 6px;
 
+@import "header";
+@import "icons";
+
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
 	font-size: 12px;
@@ -134,170 +137,11 @@ body {
 }
 
 
-@mixin navitemlink($bg, $fg, $hoverbg) {
-    background-color: #222;
-    color: #fff;
-    &:hover {
-        color: $fg;
-        background-color: $hoverbg !important;
-    }
-}
-
 .viewport {
     background-color: #f8f8f8 !important;
 }
 
-.header {
-    background-color: #000; color: #fff;
 
-    /**
-     *
-     * Heading
-     *
-     */
-    >#heading {
-        float: right;
-    }
-    >#heading>h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
-    >#heading>a#projectlink {
-        display: block;
-        margin: 0 20px 5px 20px;
-        text-decoration: none;
-        font-size: 0.8em;
-        text-align: right;
-        color: #a00;
-    }
-
-    /**
-     *
-     * Header userinfo/loginout
-     *
-     */
-    >#authenticated-user-bar {
-        padding-top: 20px;
-        padding-left: 20px;
-        color: #ccc;
-        font-size: 0.8em;
-    }
-    >#authenticated-user-bar>a.loginout-link {
-        color: #fff;
-        font-weight: bold;
-    }
-    >#authenticated-user-bar>a.loginout-link:visited {
-        color: #fff;
-    }
-    >#authenticated-user-bar>a.loginout-link:hover {
-        color: #fff;
-    }
-
-
-    /**
-     *
-     * Header navigation bar
-     *
-     */
-    >.nav {
-        margin-top: 20px;
-        
-        ul {
-            margin: 0 0 0 20px;
-            padding: 0;
-        }
-        li {
-            display: inline-block;
-            margin: 0 10px 0 0;
-            padding: 0;
-        }
-
-
-        li a {
-            text-decoration: none;
-            display: block;
-            margin-left: 0;
-            margin-right: 0;
-            padding: 10px 20px;
-            font-size: 1.0em;
-            font-weight: normal;
-            color: #08C;
-            border-radius: $radiussize_big $radiussize_small 0 0;
-            font-weight: bold;
-        }
-
-        li.student-navitem a {
-            @include navitemlink($studentcolor_bg, $studentcolor_fg, $studentcolor_hoverbg);
-        }
-        li.examiner-navitem a {
-            @include navitemlink($examinercolor_bg, $examinercolor_fg, $examinercolor_hoverbg);
-        }
-        li.administrator-navitem a {
-            @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
-        }
-        li.externallink-navitem a {
-            @include navitemlink(#444, #fff, #333);
-            border-radius: $radiussize_small $radiussize_big 0 0;
-            background-image: url(icons/16x16/external-link.png) !important;
-            background-repeat: no-repeat;
-            background-position: 10px center;
-            padding-left: 32px;
-        }
-    }
-
-    /* Color the bottom border of the header with the color of the current section. */
-    >.student {
-        border-bottom: 10px solid $studentcolor_bg;
-        li.student-navitem a {
-            background-color: $studentcolor_bg;
-        }
-    }
-    >.examiner {
-        border-bottom: 10px solid $examinercolor_bg;
-        li.examiner-navitem a {
-            background-color: $examinercolor_bg;
-        }
-    }
-    >.administrator {
-        border-bottom: 10px solid $administratorcolor_bg;
-        li.administrator-navitem a {
-            background-color: $administratorcolor_bg;
-        }
-    }
-}
-
-
-
-
-
-
-/**
- *
- * Main (dynamic) content
- *
- */
-
-//#mainwrapper {
-    //background-color: #f8f8f8;
-    //#main {
-        //width: $mainwidth;
-        //padding: 30px 0 30px 0;
-        //margin: 0 auto 0 auto;
-        //a {
-            //font-size: 1.2em;
-            //font-weight: bold;
-            //color: $linkcolor;
-        //}
-        //a:visited {
-            //color: #6E0840;
-        //}
-
-        //dt {
-            //padding-top: 6px;
-            //font-weight: bold;
-        //}
-        //dd {
-            //margin-left: 15px;
-        //}
-    //}
-//}
 
 
 
@@ -464,30 +308,6 @@ a.neutral-button {
 a.warning-button {
     @include specialbutton($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
 }
-
-
-
-/**
- *
- * Icons
- *
- */
-
-.icon-info-16 { }
-.icon-delete-16 { background-image: url(icons/16x16/delete.png) !important; }
-.icon-edit-16 { background-image: url(icons/16x16/edit.png) !important; }
-.icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
-.icon-save-16 { background-image: url(icons/16x16/save.png) !important; }
-.icon-add-16 { background-image: url(icons/16x16/add.png) !important; }
-
-.icon-help-32 { background-image: url(icons/32x32/help.png) !important; }
-.icon-previous-32 { background-image: url(icons/32x32/previous.png) !important; }
-.icon-next-32 { background-image: url(icons/32x32/next.png) !important; }
-.icon-delete-32 { background-image: url(icons/32x32/delete.png) !important; }
-.icon-edit-32 { background-image: url(icons/32x32/edit.png) !important; }
-.icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
-.icon-save-32 { background-image: url(icons/32x32/save.png) !important; }
-.icon-add-32 { background-image: url(icons/32x32/add.png) !important; }
 
 
 
@@ -871,7 +691,7 @@ div.section {
     margin-bottom: 30px;
     @each $headtype in h1, h2, h3 {
         #{$headtype} {
-            margin: 0 0 8px 0;
+            margin: 0 0 5px 0 !important;
         }
     }
     ul {
@@ -987,33 +807,5 @@ div.section {
 
 
 
-/**
- *
- * Footer
- *
- */
-
-.footer {
-	text-align: right;
-	clear: both;
-	padding-top: 5px;
-	text-align: center;
-	border-top-style: solid;
-	border-top-width: 1px;
-	color: #D4D2CE;
-	border-top-color: 1px solid #ECEBE9;
-	background-color: #fff;
-
-    a {
-        color: #D4D2CE;
-    }
-    a:hover {
-        color: #776B5F;
-    }
-    a:visited {
-        color: #D4D2CE;
-    }
-}
-
-
-@import "../../pygments/tango"
+@import "footer";
+@import "../../pygments/tango";
