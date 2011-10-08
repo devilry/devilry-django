@@ -11,7 +11,6 @@ Ext.define('devilry.extjshelpers.page.Header', {
         '<div class="header">',
         '    <div id="heading">',
         '        <h1>Devilry</h1>',
-        '        <a href="http://devilry.org" id="projectlink">http://devilry.org</a>',
         '    </div>',
         '    <div id="authenticated-user-bar">',
         '        <tpl if="DevilryUser.is_authenticated">',

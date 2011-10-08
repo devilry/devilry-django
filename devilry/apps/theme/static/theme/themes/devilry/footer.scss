@@ -5,17 +5,21 @@
 	text-align: center;
 	border-top-style: solid;
 	border-top-width: 1px;
-	color: #D4D2CE;
+	color: #C8C6C0;
 	border-top-color: 1px solid #ECEBE9;
 	background-color: #fff;
 
     a {
-        color: #D4D2CE;
-    }
-    a:hover {
-        color: #776B5F;
-    }
-    a:visited {
-        color: #D4D2CE;
+        color: #C8C6C0;
+        &.projectlink {
+            color: #BDBAB3 !important;
+            font-weight: bold;
+        }
+        &:hover {
+            color: #776B5F !important;
+        }
+        &:visited {
+            color: #C8C6C0;
+        }
     }
 }

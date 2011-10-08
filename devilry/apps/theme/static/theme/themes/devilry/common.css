@@ -1243,15 +1243,18 @@ div.section h3 {
   text-align: center;
   border-top-style: solid;
   border-top-width: 1px;
-  color: #D4D2CE;
+  color: #C8C6C0;
   border-top-color: 1px solid #ECEBE9;
   background-color: #fff; }
   .footer a {
-    color: #D4D2CE; }
-  .footer a:hover {
-    color: #776B5F; }
-  .footer a:visited {
-    color: #D4D2CE; }
+    color: #C8C6C0; }
+    .footer a.projectlink {
+      color: #BDBAB3 !important;
+      font-weight: bold; }
+    .footer a:hover {
+      color: #776B5F !important; }
+    .footer a:visited {
+      color: #C8C6C0; }
 
 .codehilite .hll {
   background-color: #ffffcc; }
