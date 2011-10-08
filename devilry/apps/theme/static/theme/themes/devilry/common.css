@@ -84,14 +84,10 @@ input, select {
 .header {
   background-color: #000;
   color: #fff;
+  padding-top: 10px;
   /**
    *
    * Heading
-   *
-   */
-  /**
-   *
-   * Header userinfo/loginout
    *
    */
   /**
@@ -100,31 +96,29 @@ input, select {
    *
    */
   /* Color the bottom border of the header with the color of the current section. */ }
-  .header > #heading {
-    float: right; }
-  .header > #heading > h1 {
-    font-size: 2.0em;
-    padding: 20px 20px 5px 20px;
-    text-align: right; }
-  .header > #heading > a#projectlink {
-    display: block;
-    margin: 0 20px 5px 20px;
-    text-decoration: none;
-    font-size: 0.8em;
-    text-align: right;
-    color: #a00; }
-  .header > #authenticated-user-bar {
-    padding-top: 20px;
-    padding-left: 20px;
-    color: #ccc;
-    font-size: 0.8em; }
-  .header > #authenticated-user-bar > a.loginout-link {
-    color: #fff;
-    font-weight: bold; }
-  .header > #authenticated-user-bar > a.loginout-link:visited {
-    color: #fff; }
-  .header > #authenticated-user-bar > a.loginout-link:hover {
-    color: #fff; }
+  .header #heading {
+    float: right;
+    padding: 0 20px 0 0;
+    /**
+     *
+     * Header userinfo/loginout
+     *
+     */ }
+    .header #heading h1 {
+      font-size: 2.0em;
+      padding: 0;
+      margin: 0;
+      text-align: right; }
+    .header #heading #authenticated-user-bar {
+      color: #ccc;
+      font-size: 0.8em; }
+    .header #heading #authenticated-user-bar > a.loginout-link {
+      color: #fff;
+      font-weight: bold; }
+    .header #heading #authenticated-user-bar > a.loginout-link:visited {
+      color: #fff; }
+    .header #heading #authenticated-user-bar > a.loginout-link:hover {
+      color: #fff; }
   .header > .nav {
     margin-top: 20px; }
     .header > .nav ul {

@@ -9,46 +9,41 @@
 
 .header {
     background-color: #000; color: #fff;
+    padding-top: 10px;
 
     /**
      *
      * Heading
      *
      */
-    >#heading {
+    #heading {
         float: right;
-    }
-    >#heading>h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
-    >#heading>a#projectlink {
-        display: block;
-        margin: 0 20px 5px 20px;
-        text-decoration: none;
-        font-size: 0.8em;
-        text-align: right;
-        color: #a00;
+        padding: 0 20px 0 0;
+        h1 {font-size: 2.0em; padding: 0; margin: 0; text-align: right;}
+
+        /**
+         *
+         * Header userinfo/loginout
+         *
+         */
+        #authenticated-user-bar {
+            //padding-top: 20px;
+            //padding-left: 20px;
+            color: #ccc;
+            font-size: 0.8em;
+        }
+        #authenticated-user-bar>a.loginout-link {
+            color: #fff;
+            font-weight: bold;
+        }
+        #authenticated-user-bar>a.loginout-link:visited {
+            color: #fff;
+        }
+        #authenticated-user-bar>a.loginout-link:hover {
+            color: #fff;
+        }
     }
 
-    /**
-     *
-     * Header userinfo/loginout
-     *
-     */
-    >#authenticated-user-bar {
-        padding-top: 20px;
-        padding-left: 20px;
-        color: #ccc;
-        font-size: 0.8em;
-    }
-    >#authenticated-user-bar>a.loginout-link {
-        color: #fff;
-        font-weight: bold;
-    }
-    >#authenticated-user-bar>a.loginout-link:visited {
-        color: #fff;
-    }
-    >#authenticated-user-bar>a.loginout-link:hover {
-        color: #fff;
-    }
 
 
     /**
