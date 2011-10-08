@@ -9,13 +9,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
 
     tooltips: {
         canExamine: 'Click to toggle open/closed. A group should remain open until you have finished grading them. Devilry normally opens and closes groups for you automatically. You may want to manually close a group if you want to make the current grade their final grade on this assignment. A closed group can be re-opened at any time.',
-        student: 'This assignment is open for more deliveries. You can add as many deliveries as you like, and you examiner(s) will normally correct your latest delivery.'
+        student: 'As long as the assignment is open for more deliveries, you can add as many deliveries as you like, and you examiner(s) will normally correct your latest delivery. When an assignment is closed, the latest feedback is your final grade on this assignment. If you have not been given feedback, and you think this is wrong, you should contact your examiner or course administrator.'
     },
-    layout: {
-        type: 'hbox',
-        align: 'stretch'
-    },
-    height: 22,
+    layout: 'fit',
 
     constructor: function(config) {
         this.initConfig(config);
@@ -39,7 +35,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
         if(this.canExamine) {
             this.add({
                 xtype: 'button',
-                text: this.assignmentgroup_recordcontainer.record.data.is_open? 'Open': 'Closed',
+                text: this.assignmentgroup_recordcontainer.record.data.is_open? 'Open - click to close': 'Closed - click to open',
                 listeners: {
                     scope: this,
                     click: this.onStatusButtonClick,
@@ -49,7 +45,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
                             title: 'How open/closed works',
                             text: this.tooltips.canExamine,
                             width: 350,
-                            dismissDelay: 20000 // Hide after 10 seconds hover
+                            dismissDelay: 30000 // Hide after 30 seconds hover
                         });
                     }
                 }
@@ -58,28 +54,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             this.add({
                 xtype: 'box',
                 cls: 'text_with_tooltip',
-                html: this.assignmentgroup_recordcontainer.record.data.is_open? 'Open': 'Closed',
+                html: this.assignmentgroup_recordcontainer.record.data.is_open? 'Open - more deliveries allowed': 'Closed - final grade given',
                 listeners: {
                     scope: this,
                     render: function(button) {
                         Ext.tip.QuickTipManager.register({
                             target: button.getEl(),
                             title: 'How open/closed works',
-                            text: this.tooltips.canExamine,
+                            text: this.tooltips.student,
                             width: 300,
-                            dismissDelay: 20000 // Hide after 10 seconds hover
+                            dismissDelay: 30000 // Hide after 30 seconds hover
                         });
                     }
                 }
             });
         }
-
-        this.add([{xtype:'box', width: 5}, {
-            xtype: 'box',
-            cls: 'status',
-            padding: {top: 3},
-            html: 'for more deliveries'
-        }]);
     },
 
 

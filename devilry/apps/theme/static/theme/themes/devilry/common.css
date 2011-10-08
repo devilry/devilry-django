@@ -224,6 +224,11 @@ input, select {
 .icon-add-32 {
   background-image: url(icons/32x32/add.png) !important; }
 
+.text_with_tooltip {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: help; }
+
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
   font-size: 12px;
@@ -1131,10 +1136,6 @@ div.section h3 {
     content: ", "; }
   .commaSeparatedList li:last-child:after {
     content: ""; }
-
-.text_with_tooltip {
-  text-decoration: underline;
-  font-weight: bold; }
 
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
