@@ -22,11 +22,6 @@
     {{ block.super }}
 
     Ext.getBody().unmask();
-    var ag_overview = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-        assignmentgroupid: {{ objectid }},
-        isAdministrator: true,
-        canExamine: true
-    });
 
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
@@ -40,13 +35,13 @@
             xtype: 'pagefooter'
         }, {
             region: 'center',
-            xtype: 'container',
-            border: false,
-            autoScroll: true,
-            padding: {left: 20, right: 20},
-            items: [
-                //searchwidget, {xtype:'box', height: 20},
-                ag_overview]
+            xtype: 'assignmentgroupoverview',
+            assignmentgroupid: {{ objectid }},
+            isAdministrator: true,
+            canExamine: true,
+            //border: false,
+            //autoScroll: true,
+            padding: {left: 20, right: 20}
         }]
     });
     

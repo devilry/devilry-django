@@ -144,6 +144,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             title: 'Feedback',
             staticfeedbackstore: this.staticfeedbackstore,
             hidden: true,
+            region: 'center', 
             delivery_recordcontainer: this.delivery_recordcontainer,
             isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
@@ -158,31 +159,42 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         }
 
         Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [{
                 xtype: 'assignmentgrouptitle',
                 singlerecordontainer: this.assignmentgroup_recordcontainer
             }, {
                 xtype: 'container',
+                layout: 'border',
+                flex: 1,
                 border: false,
                 items: [{
-                    xtype: 'assignmentgroupinfo',
-                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    assignmentgroupstore: this.assignmentgroupstore,
-                    deliverymodel: this.deliverymodel,
-                    deadlinemodel: this.deadlinemodel,
-                    canExamine: this.canExamine
-                }, {
-                    xtype: 'deliveryinfo',
-                    title: 'Delivery',
-                    filemetastore: this.filemetastore,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    deliverymodel: this.deliverymodel,
-                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                    listeners: {
-                        scope: this,
-                        deliveriesLoaded: this.onDeliveriesLoaded
-                    }
+                    xtype: 'container',
+                    region: 'west', 
+                    width: 250,
+                    items: [{
+                        xtype: 'assignmentgroupinfo',
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        delivery_recordcontainer: this.delivery_recordcontainer,
+                        assignmentgroupstore: this.assignmentgroupstore,
+                        deliverymodel: this.deliverymodel,
+                        deadlinemodel: this.deadlinemodel,
+                        canExamine: this.canExamine
+                    }, {
+                        xtype: 'deliveryinfo',
+                        title: 'Delivery',
+                        filemetastore: this.filemetastore,
+                        delivery_recordcontainer: this.delivery_recordcontainer,
+                        deliverymodel: this.deliverymodel,
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        listeners: {
+                            scope: this,
+                            deliveriesLoaded: this.onDeliveriesLoaded
+                        }
+                    }]
                 }, this.feedbackPanel]
             }]
         });
