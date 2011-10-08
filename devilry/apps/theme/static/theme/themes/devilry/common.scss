@@ -689,10 +689,27 @@ div.section {
 
 .treeheading {
     margin-bottom: 30px;
-    @each $headtype in h1, h2, h3 {
-        #{$headtype} {
-            margin: 0 0 5px 0 !important;
-        }
+    h1 {
+        font-size: 1.4em !important;
+        font-weight: bold;
+        padding: 0;
+        margin: 0 0 5px 0 !important;
+        display: inline-block;
+        &:after { content: ', '; }
+    }
+    h2 {
+        font-size: 1.0em !important;
+        margin: 0 0 5px 10px !important;
+        display: inline-block;
+        padding: 0;
+        &:after { content: ', '; }
+    }
+    h3 {
+        font-size: 1.0em !important;
+        font-style: italic;
+        margin: 0 0 5px 10px !important;
+        display: inline-block;
+        padding: 0;
     }
     ul {
         @include inlineList();

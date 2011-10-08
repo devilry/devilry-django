@@ -4,9 +4,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
     cls: 'widget-assignmentgrouptitle section treeheading',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<h1>{parentnode__parentnode__parentnode__long_name}</h1>',
-        '<h2>{parentnode__parentnode__long_name}</h2>',
-        '<h3>{parentnode__long_name}</h3>',
+        '<h1>{parentnode__long_name}</h1>',
+        '<h2>{parentnode__parentnode__long_name:ellipsis(20)}</h2>',
+        '<h3>{parentnode__parentnode__parentnode__long_name:ellipsis(60)}</h3>',
         '<tpl if="name">',
         '   {name}: ',
         '</tpl>',

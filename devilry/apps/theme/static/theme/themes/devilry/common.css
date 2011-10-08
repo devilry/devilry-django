@@ -1069,11 +1069,26 @@ div.section h3 {
 .treeheading {
   margin-bottom: 30px; }
   .treeheading h1 {
-    margin: 0 0 5px 0 !important; }
+    font-size: 1.4em !important;
+    font-weight: bold;
+    padding: 0;
+    margin: 0 0 5px 0 !important;
+    display: inline-block; }
+    .treeheading h1:after {
+      content: ', '; }
   .treeheading h2 {
-    margin: 0 0 5px 0 !important; }
+    font-size: 1.0em !important;
+    margin: 0 0 5px 10px !important;
+    display: inline-block;
+    padding: 0; }
+    .treeheading h2:after {
+      content: ', '; }
   .treeheading h3 {
-    margin: 0 0 5px 0 !important; }
+    font-size: 1.0em !important;
+    font-style: italic;
+    margin: 0 0 5px 10px !important;
+    display: inline-block;
+    padding: 0; }
   .treeheading ul li {
     display: inline; }
     .treeheading ul li:after {
