@@ -108,7 +108,8 @@ input, select {
       font-size: 2.0em;
       padding: 0;
       margin: 0;
-      text-align: right; }
+      text-align: right;
+      color: #a00; }
     .header #heading #authenticated-user-bar {
       color: #ccc;
       font-size: 0.8em; }
