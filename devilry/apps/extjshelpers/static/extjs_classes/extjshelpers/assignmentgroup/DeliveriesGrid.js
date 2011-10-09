@@ -70,6 +70,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
      */
     onSelectDelivery: function(grid, deliveryRecord) {
         console.log('selected', deliveryRecord);
-        //this.delivery_recordcontainer.setRecord(deliveryRecord);
+        this.delivery_recordcontainer.setRecord(deliveryRecord);
     },
 });

@@ -15,10 +15,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     layout: {
         type: 'accordion'
     },
-    height: 200,
 
     config: {
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+         * The record is changed when a user selects a delivery.
+         */
+        delivery_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -42,6 +48,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      * @private
      */
     loadAllDeadlines: function() {
+        this.removeAll();
         var deadlinestore = devilry.extjshelpers.RestFactory.createStore('administrator', 'Deadline', {
             filters: [{
                 property: 'assignment_group',
@@ -78,6 +85,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             border: false,
             items: [{
                 xtype: 'deliveriesgrid',
+                delivery_recordcontainer: this.delivery_recordcontainer,
                 store: deliveriesStore
             }]
         });

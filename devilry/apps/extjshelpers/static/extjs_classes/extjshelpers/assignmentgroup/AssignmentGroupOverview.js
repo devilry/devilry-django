@@ -209,6 +209,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     }, {
                         xtype: 'deliveriesgroupedbydeadline',
                         assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        delivery_recordcontainer: this.delivery_recordcontainer,
                         flex: 1
                     //}, {
                         //xtype: 'assignmentgroupinfo',
