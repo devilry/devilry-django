@@ -482,29 +482,6 @@ span.menuref {
     @include neutralInlineItem();
 }
 
-table.verticalinfotable {
-	border-collapse:collapse;
-	border: 1px solid #D4D2CE;
-    thead th {
-        text-align: left;
-        font-weight: bold;
-        font-style: normal;
-        /*background-color: #ECEBE9;*/
-    }
-    th {
-        text-align: right;
-        font-weight: normal;
-        font-style: italic;
-        background-color: #ECEBE9;
-    }
-    td, th {
-        padding: 2px 6px;
-        border: 1px solid #D4D2CE;
-    }
-    td {
-        background-color: #fff;
-    }
-}
 
 .widget-assignmentgrouptodolist {
     background: #fff !important;
@@ -527,15 +504,12 @@ table.verticalinfotable {
     }
     
     .widget-staticfeedbackinfo {
-        width: 100% !important;
+        //width: 100% !important;
         > .x-panel-body {
-            padding: 20px;
+            //padding: 20px;
             .widget-staticfeedbackinfo-feedbackview {
                 $padding: 20px;
                 padding: $padding;
-                table.verticalinfotable {
-                    margin: 0 auto $padding auto;
-                }
             }
             .no-feedback, .no-feedback-editable {
                 padding: 40px;
