@@ -1,6 +1,7 @@
 Ext.define('devilry.extjshelpers.RestFactory', {
     requires: [
         'devilry.extjshelpers.models.Delivery',
+        'devilry.extjshelpers.models.Deadline',
         'devilry.extjshelpers.Store',
         'devilry.extjshelpers.RestProxy'
     ],
@@ -14,7 +15,7 @@ Ext.define('devilry.extjshelpers.RestFactory', {
         createStore: function(role, name) {
             return Ext.create('devilry.extjshelpers.Store', {
                 model: 'devilry.extjshelpers.models.' + name,
-                proxy: devilry.extjshelpers.RestFactory.createProxy(role, name.toLowerCase())
+                //proxy: devilry.extjshelpers.RestFactory.createProxy(role, name.toLowerCase())
             });
         }
     }

@@ -8,24 +8,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader',
          * @cfg
          * Delivery ``Ext.data.Model``.
          */
-        deliverymodel: undefined,
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_id: undefined
     },
 
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
-
-        if(this.assignmentgroup_recordcontainer.record) {
-            this.onSetAssignmentGroupRecord();
-        } else {
-            this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroupRecord, this);
-        }
-    },
-
-    onSetAssignmentGroupRecord: function() {
-        this.store = this.createDeliveryStore();
-        this.loadAllDeliveries();
+        this.deadlinestore = this.createDeadlineStore();
+        this.loadAllDeadlines();
+        //this.deliverystore = this.createDeliveryStore();
+        //this.loadAllDeliveries();
     },
 
     createDeliveryStore: function() {
@@ -33,17 +25,39 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader',
         deliverystore.proxy.setDevilryFilters([{
             field: 'deadline__assignment_group',
             comp: 'exact',
-            value: this.assignmentgroup_recordcontainer.record.data.id
+            value: this.assignmentgroup_id
         }]);
         deliverystore.proxy.setDevilryOrderby(['-deadline__deadline', '-number']);
         return deliverystore;
     },
-
     loadAllDeliveries: function() {
-        this.store.loadAll({
+        this.deliverystore.loadAll({
             scope: this,
             callback: function(records) {
                 console.log(records);
+            }
+        });
+    },
+
+    createDeadlineStore: function() {
+        var deadlinestore = devilry.extjshelpers.RestFactory.createStore('administrator', 'Deadline');
+        //deadlinestore.proxy.setDevilryFilters([{
+            //field: 'assignment_group',
+            //comp: 'exact',
+            //value: this.assignmentgroup_id
+        //}]);
+        deadlinestore.proxy.setDevilryOrderby(['-deadline']);
+        return deadlinestore;
+    },
+
+    loadAllDeadlines: function() {
+        this.deadlinestore.loadAll({
+            scope: this,
+            callback: function(records) {
+                Ext.each(records, function(record, index) {
+                    console.log(record.data.deadline);
+                    record.deliveries().load();
+                });
             }
         });
     }
