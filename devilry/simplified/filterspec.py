@@ -78,21 +78,26 @@ class FilterSpec(object):
             value = filterdict['value']
             fieldname = filterdict['field']
         except KeyError, e:
-            raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
-        else:
-            if isinstance(value, basestring) and value.strip() == '':
-                return None
-            if not comp in self.supported_comp:
-                raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
             try:
-                value = self.type_converter(value)
-            except ValueError, e:
-                raise FilterValidationError('Value has invalid type for field {0}: {1}'.format(fieldname, value))
-            djangocomp = COMP_TO_DJANGO_MAP[comp]
-            filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
-            qryparam = {filterfieldname: value}
-            #print qryparam
-            return Q(**qryparam)
+                comp = 'exact'
+                value = filterdict['value']
+                fieldname = filterdict['property']
+            except KeyError, e:
+                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+
+        if isinstance(value, basestring) and value.strip() == '':
+            return None
+        if not comp in self.supported_comp:
+            raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
+        try:
+            value = self.type_converter(value)
+        except ValueError, e:
+            raise FilterValidationError('Value has invalid type for field {0}: {1}'.format(fieldname, value))
+        djangocomp = COMP_TO_DJANGO_MAP[comp]
+        filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
+        qryparam = {filterfieldname: value}
+        #print qryparam
+        return Q(**qryparam)
 
     def aslist(self):
         return [self]
@@ -188,7 +193,10 @@ class FilterSpecs(object):
             try:
                 fieldname = filterdict['field']
             except KeyError, e:
-                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+                try:
+                    fieldname = filterdict['property']
+                except KeyError, e:
+                    raise FilterValidationError('Invalid filter: {0}. No "field" specified.'.format(filterdict))
 
             try:
                 filterspec = self.find_filterspec(fieldname)
