@@ -1,9 +1,12 @@
 /** Store with defaults tuned for Devilry and some extra utility functions. */
 Ext.define('devilry.extjshelpers.Store', {
     extend: 'Ext.data.Store',
-    remoteFilter: true,
-    remoteSort: true,
-    autoSync: true,
+
+    config: {
+        remoteFilter: true,
+        remoteSort: true,
+        autoSync: true
+    },
 
     constructor: function(config) {
         this.callParent([config]);
