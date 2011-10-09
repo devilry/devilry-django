@@ -15,7 +15,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
-        'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader',
+        'devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline',
         'devilry.extjshelpers.assignmentgroup.IsOpen',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
@@ -57,7 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.createAttributes();
         this.createLayout();
         this.callParent(arguments);
-        this.loadAssignmentgroupRecord();
+        this.loadAssignmentgroupRecord(); // NOTE: Must come after createLayout() because components listen for the setRecord event
         this.selectDeliveryIfInQueryString();
     },
 
@@ -161,11 +161,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             this.delivery_recordcontainer.addListener('setRecord', this.showFeedbackPanel, this);
         }
 
-        var deliveries = Ext.create('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader', {
-            deliverymodel: this.deliverymodel,
-            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
-        });
-
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -183,6 +178,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     xtype: 'container',
                     region: 'west', 
                     width: 250,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
                     items: [{
                         xtype: 'container',
                         layout: {
@@ -207,6 +206,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                                 }
                             }
                         }]
+                    }, {
+                        xtype: 'deliveriesgroupedbydeadline',
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        flex: 1
                     //}, {
                         //xtype: 'assignmentgroupinfo',
                         //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
@@ -215,17 +218,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         //deliverymodel: this.deliverymodel,
                         //deadlinemodel: this.deadlinemodel,
                         //canExamine: this.canExamine
-                    }, {
-                        xtype: 'deliveryinfo',
-                        title: 'Delivery',
-                        filemetastore: this.filemetastore,
-                        delivery_recordcontainer: this.delivery_recordcontainer,
-                        deliverymodel: this.deliverymodel,
-                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                        listeners: {
-                            scope: this,
-                            deliveriesLoaded: this.onDeliveriesLoaded
-                        }
+                    //}, {
+                        //xtype: 'deliveryinfo',
+                        //title: 'Delivery',
+                        //filemetastore: this.filemetastore,
+                        //delivery_recordcontainer: this.delivery_recordcontainer,
+                        //deliverymodel: this.deliverymodel,
+                        //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        //listeners: {
+                            //scope: this,
+                            //deliveriesLoaded: this.onDeliveriesLoaded
+                        //}
                     }]
                 }, this.feedbackPanel]
             }]
