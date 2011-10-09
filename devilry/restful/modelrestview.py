@@ -84,7 +84,7 @@ class ModelRestfulView(RestfulView):
 
 
     def _load_getdata(self):
-        if 'getdata_in_qrystring' in self.request.GET: # NOTE: For easier ExtJS integration
+        if 'getdata_in_qrystring' in self.request.GET or self.use_extjshacks: # NOTE: For easier ExtJS integration
             return True, self.request.GET
         else:
             try:
