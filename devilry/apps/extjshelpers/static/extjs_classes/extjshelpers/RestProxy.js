@@ -103,7 +103,7 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         this.extraParams.filters = Ext.JSON.encode(filters);
     },
     setDevilryOrderby: function(orderby) {
-        if(Ext.typeOf(filters) !== 'array') {
+        if(Ext.typeOf(orderby) !== 'array') {
             throw "setDevilryOrderby(): orderby must be an array";
         }
         this.extraParams.orderby = Ext.JSON.encode(orderby);

@@ -15,6 +15,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
+        'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader',
         'devilry.extjshelpers.assignmentgroup.IsOpen',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
@@ -159,6 +160,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         } else {
             this.delivery_recordcontainer.addListener('setRecord', this.showFeedbackPanel, this);
         }
+
+        var deliveries = Ext.create('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupLoader', {
+            deliverymodel: this.deliverymodel,
+            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+        });
 
         Ext.apply(this, {
             layout: {
