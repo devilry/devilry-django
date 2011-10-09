@@ -122,7 +122,9 @@ class ModelRestfulView(RestfulView):
                         cleaned_data['orderby'] = orderby
 
             if 'filter' in cleaned_data:
-                cleaned_data['filters'] = cleaned_data['filter']
+                f = cleaned_data['filter']
+                if f:
+                    cleaned_data['filters'] = f
                 del cleaned_data['filter']
             try:
                 qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
