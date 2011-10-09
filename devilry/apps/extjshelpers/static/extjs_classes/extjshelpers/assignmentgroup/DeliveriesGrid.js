@@ -5,10 +5,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     hideHeaders: true, // Hide column header
 
     rowTpl: Ext.create('Ext.XTemplate',
-        '<span class="delivery_number">{number}:</span> ',
-        '<span class="time_of_delivery">{time_of_delivery:date}</span>',
-        '<tpl if="time_of_delivery &gt; deadline__deadline">',
+        '<span class="delivery_number">{delivery.number}:</span> ',
+        '<span class="time_of_delivery">{delivery.time_of_delivery:date}</span>',
+        '<tpl if="delivery.time_of_delivery &gt; deadline__deadline">',
         '   <span class="after-deadline">(After deadline)</span>',
+        '</tpl>',
+        '<tpl if="feedback">',
+        '   <span class="has-feedback">({feedback.grade})</span>',
         '</tpl>'
     ),
 
@@ -36,7 +39,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                 flex: 1,
                 renderer: function(value, metaData, deliveryrecord) {
                     //console.log(deliveryrecord.data);
-                    return this.rowTpl.apply(deliveryrecord.data);
+                    console.log(deliveryrecord);
+                    var staticfeedbackStore = deliveryrecord.staticfeedbacks();
+                    //console.log(staticfeedbackStore.data.items);
+                    return this.rowTpl.apply({
+                        delivery: deliveryrecord.data,
+                        feedback: staticfeedbackStore.count() > 0? staticfeedbackStore.data.items[0].data: undefined
+                    });
                 }
             }],
             listeners: {
@@ -69,7 +78,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
      * @private
      */
     onSelectDelivery: function(grid, deliveryRecord) {
-        console.log('selected', deliveryRecord);
+        //console.log('selected', deliveryRecord);
         this.delivery_recordcontainer.setRecord(deliveryRecord);
     },
 });

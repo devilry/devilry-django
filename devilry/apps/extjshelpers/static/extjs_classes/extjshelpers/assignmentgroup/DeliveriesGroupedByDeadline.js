@@ -75,29 +75,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     handleSingleDeadline: function(deadlineRecord, index) {
         var deliveriesStore = deadlineRecord.deliveries();
         //deliveriesStore.pageSize = 1; // Uncomment to test paging
-        var deadlinePanel = this.add({
-            xtype: 'panel',
-            title: this.titleTpl.apply({
-                deadline: deadlineRecord.data,
-                extra: '(Loading feedback...)'
-            }),
-            layout: 'fit',
-            border: false,
-            items: [{
-                xtype: 'deliveriesgrid',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                store: deliveriesStore
-            }]
-        });
         deliveriesStore.load({
             scope: this,
             callback: function(deliveryRecords) {
-                this.findLatestFeebackInDeadline(deadlinePanel, deadlineRecord, deliveryRecords)
+                this.findLatestFeebackInDeadline(deadlineRecord, deliveriesStore, deliveryRecords)
             }
         });
     },
 
-    findLatestFeebackInDeadline: function(deadlinePanel, deadlineRecord, deliveryRecords) {
+    findLatestFeebackInDeadline: function(deadlineRecord, deliveriesStore, deliveryRecords) {
         var allStaticFeedbacks = [];
         var loadedStaticFeedbackStores = 0;
         Ext.each(deliveryRecords, function(deliveryRecord, index) {
@@ -112,17 +98,31 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                     if(loadedStaticFeedbackStores === deliveryRecords.length) {
                         // TODO: Sort allStaticFeedbacks by save_timestamp and pick first
                         var activeFeedback = allStaticFeedbacks[0];
-                        var extra = '(No feedback)';
-                        if(activeFeedback) {
-                            var extra = Ext.String.format('(Grade: {0} SEE TODO)', activeFeedback.data.grade);
-                        }
-                        deadlinePanel.setTitle(this.titleTpl.apply({
-                            deadline: deadlineRecord.data,
-                            extra: extra
-                        }));
+                        this.addDeadlineGrid(deadlineRecord, deliveriesStore, activeFeedback);
                     }
                 }
             })
         }, this);
+    },
+
+    addDeadlineGrid: function(deadlineRecord, deliveriesStore, activeFeedback) {
+        var extra = '(No feedback)';
+        if(activeFeedback) {
+            var extra = Ext.String.format('(Grade: {0} SEE TODO)', activeFeedback.data.grade);
+        }
+        this.add({
+            xtype: 'panel',
+            title: this.titleTpl.apply({
+                deadline: deadlineRecord.data,
+                extra: extra
+            }),
+            layout: 'fit',
+            border: false,
+            items: [{
+                xtype: 'deliveriesgrid',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                store: deliveriesStore
+            }]
+        });
     }
 });
