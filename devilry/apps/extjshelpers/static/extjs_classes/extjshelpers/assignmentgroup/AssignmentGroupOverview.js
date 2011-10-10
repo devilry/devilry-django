@@ -150,6 +150,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             region: 'center',
             width: 400,
             delivery_recordcontainer: this.delivery_recordcontainer,
+            filemetastore: this.filemetastore,
             isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
             deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor

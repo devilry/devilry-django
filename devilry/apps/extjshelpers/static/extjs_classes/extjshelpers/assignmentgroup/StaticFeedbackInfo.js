@@ -7,10 +7,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView'
     ],
 
     config: {
+        /**
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+         * class.
+         */
+        filemetastore: undefined,
+
         /**
          * @cfg
          * FileMeta ``Ext.data.Store``. (Required).
@@ -39,12 +48,33 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
         this.editToolbar = Ext.ComponentManager.create({
             xtype: 'toolbar',
-            dock: 'bottom',
-            width: 200,
+            width: 300,
             style: {
                 border: 'none'
-            }
-            //hidden: true
+            },
+
+            items: [{
+                xtype: 'button',
+                text: 'Browse files',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    afterrender: function(button) {
+                        if(!this.delivery_recordcontainer.record) {
+                            this.delivery_recordcontainer.on('setRecord', function() {
+                                button.getEl().unmask();
+                            });
+                            button.getEl().mask('Loading');
+                        }
+                    },
+                    click: function() {
+                        Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
+                            filemetastore: this.filemetastore,
+                            deliveryid: this.delivery_recordcontainer.record.data.id
+                        }).show();
+                    }
+                }
+            }]
         });
 
         Ext.apply(this, {
