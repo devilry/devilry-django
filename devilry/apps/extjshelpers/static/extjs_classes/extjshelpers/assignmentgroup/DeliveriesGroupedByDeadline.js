@@ -7,7 +7,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.administrator.models.StaticFeedback',
         'devilry.administrator.models.Delivery',
         'devilry.administrator.models.Deadline',
-        'devilry.extjshelpers.assignmentgroup.DeliveriesGrid'
+        'devilry.extjshelpers.assignmentgroup.DeliveriesGrid',
+        'devilry.extjshelpers.assignmentgroup.DeliveriesPanel'
     ],
 
     title: 'Deliveries grouped by deadline',
@@ -42,16 +43,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             }, 100, this);
         });
     },
-
-    titleTpl: Ext.create('Ext.XTemplate',
-        '<div class="deadline_title">',
-        '    <div>Deadline: <span class="deadline">{deadline.deadline:date}</span></div>',
-        '    <div>',
-        '        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
-        '        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
-        '    </div>',
-        '<div>'
-    ),
 
     /**
      * @private
@@ -126,23 +117,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     },
 
     addDeadlineGrid: function(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback) {
-        var extra = '(No feedback)';
-        if(activeFeedback) {
-            var extra = Ext.String.format('(Grade: {0} SEE TODO)', activeFeedback.data.grade);
-        }
         this.add({
-            xtype: 'panel',
-            title: this.titleTpl.apply({
-                deadline: deadlineRecord.data,
-                extra: extra
-            }),
-            layout: 'fit',
-            border: false,
-            items: [{
-                xtype: 'deliveriesgrid',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                store: deliveriesStore
-            }],
+            xtype: 'deliveriespanel',
+            delivery_recordcontainer: this.delivery_recordcontainer,
+            deadlineRecord: deadlineRecord,
+            deliveriesStore: deliveriesStore,
+            activeFeedback: activeFeedback,
             listeners: {
                 scope: this,
                 afterlayout: function(panel) {
@@ -151,7 +131,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         this.isLoading = false;
                     }
                 }
-            }
+            },
         });
     }
 });
