@@ -71,6 +71,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      */
     loadAllDeadlines: function() {
         this.isLoading = true;
+        this._tmp_deliveriespanels = [];
         this.addLoadMask();
         this.removeAll();
         var deadlinestore = devilry.extjshelpers.RestFactory.createStore('administrator', 'Deadline', {
@@ -133,22 +134,41 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         }, this);
     },
 
+    /**
+     * @private
+     */
     addDeliveriesPanel: function(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback) {
-        this.add({
+        this._tmp_deliveriespanels.push({
             xtype: 'deliveriespanel',
             delivery_recordcontainer: this.delivery_recordcontainer,
             deadlineRecord: deadlineRecord,
             deliveriesStore: deliveriesStore,
-            activeFeedback: activeFeedback,
-            listeners: {
-                scope: this,
-                afterlayout: function(panel) {
-                    if(this.items.length === deadlineRecords.length) {
-                        this.getEl().unmask();
-                        this.isLoading = false;
-                    }
-                }
-            },
+            activeFeedback: activeFeedback
+        });
+
+        if(this._tmp_deliveriespanels.length === deadlineRecords.length) {
+            this.sortDeliveryPanels();
+            this.add(this._tmp_deliveriespanels);
+            this.getEl().unmask();
+            this.isLoading = false;
+        }
+    },
+
+
+    /**
+     * @private
+     * Sort delivery panels, since they are added on response from an
+     * asynchronous operation. Sorted descending by deadline datetime.
+     */
+    sortDeliveryPanels: function() {
+        this._tmp_deliveriespanels.sort(function(a, b) {
+            if(a.deadlineRecord.data.deadline > b.deadlineRecord.data.deadline) {
+                return -1;
+            } else if(a.deadlineRecord.data.deadline === b.deadlineRecord.data.deadline) {
+                return 0;
+            } else {
+                return 1;
+            }
         });
     },
 
