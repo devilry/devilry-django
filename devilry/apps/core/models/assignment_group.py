@@ -80,7 +80,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     .. attribute:: feedback
 
-       The last `StaticFeedback`_ on the last delivery on this assignmentgroup.
+       The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
     .. attribute:: etag
 
