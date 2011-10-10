@@ -12,6 +12,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
         student: 'As long as the assignment is open for more deliveries, you can add as many deliveries as you like, and you examiner(s) will normally correct your latest delivery. When an assignment is closed, the latest feedback is your final grade on this assignment. If you have not been given feedback, and you think this is wrong, you should contact your examiner or course administrator.'
     },
     layout: 'fit',
+    //style: 'border: none',
 
     constructor: function(config) {
         this.initConfig(config);

@@ -186,6 +186,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     },
                     items: [{
                         xtype: 'container',
+                        //title: 'Actions',
                         layout: {
                             type: 'hbox'
                         },

@@ -41,8 +41,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             bbar: [{
                 xtype: 'button',
                 text: 'New deadline',
-                iconCls: 'icon-add-32',
-                scale: 'large',
+                iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
                     click: this.onCreateNewDeadline
