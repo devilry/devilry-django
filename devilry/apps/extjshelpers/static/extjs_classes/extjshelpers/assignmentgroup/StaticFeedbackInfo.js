@@ -11,6 +11,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
         'devilry.extjshelpers.SingleRecordContainerDepButton'
     ],
+    title: 'Please select a delivery',
 
     config: {
         /**
@@ -35,6 +36,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
          */
         delivery_recordcontainer: undefined
     },
+
+    titleTpl: Ext.create('Ext.XTemplate',
+        'Delivery {delivery.number}: ',
+        '{delivery.time_of_delivery:date}',
+        '<tpl if="delivery.time_of_delivery &gt; deadline__deadline">',
+        '   <span class="after-deadline">(After deadline)</span>',
+        '</tpl>',
+        '<tpl if="feedback">',
+        '   ({feedback.grade})',
+        '</tpl>'
+    ),
 
 
     constructor: function(config) {
@@ -120,6 +132,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             value: this.delivery_recordcontainer.record.data.id
         }]);
         this.staticfeedbackstore.load();
+
+        var deliveryrecord = this.delivery_recordcontainer.record;
+        var staticfeedbackStore = deliveryrecord.staticfeedbacks();
+        this.setTitle(this.titleTpl.apply({
+            delivery: deliveryrecord.data,
+            feedback: staticfeedbackStore.count() > 0? staticfeedbackStore.data.items[0].data: undefined
+        }));
     },
 
 

@@ -17,6 +17,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
         'devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline',
         'devilry.extjshelpers.assignmentgroup.IsOpen',
+        'devilry.extjshelpers.RestFactory',
+        'devilry.administrator.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
@@ -71,7 +73,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
-        this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
+        //this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
         this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
         this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
         this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
@@ -144,7 +146,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
-            title: 'Feedback',
             staticfeedbackstore: this.staticfeedbackstore,
             //hidden: true,
             region: 'center',
@@ -259,18 +260,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         var query = Ext.Object.fromQueryString(window.location.search);
         if(query.deliveryid) {
             var deliveryid = parseInt(query.deliveryid);
-            this.deliverymodel.load(deliveryid, {
+            var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
+            deliverymodel.load(deliveryid, {
                 scope: this,
                 success: function(record) {
-                    if(this.assignmentgroupid == record.data.deadline__assignment_group) {
-                        this.delivery_recordcontainer.setRecord(record);
-                    } else {
-                        throw Ext.String.format(
-                            'Delivery {0} is not in AssignmentGroup {1}',
-                            deliveryid,
-                            this.assignmentgroupid
-                        );
-                    }
+                    this.delivery_recordcontainer.setRecord(record);
                 },
                 failure: function() {
                     // TODO: Handle errors

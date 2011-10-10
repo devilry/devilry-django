@@ -10,9 +10,17 @@ Ext.define('devilry.extjshelpers.RestFactory', {
             });
         },
 
+        getModelName: function(role, name) {
+            return Ext.String.format('devilry.{0}.models.{1}', role, name);
+        },
+
+        getModel: function(role, name) {
+            return Ext.ModelManager.getModel(devilry.extjshelpers.RestFactory.getModelName(role, name));
+        },
+
         createStore: function(role, name, config) {
             var args = {
-                model: Ext.String.format('devilry.{0}.models.{1}', role, name)
+                model: devilry.extjshelpers.RestFactory.getModelName(role, name)
             };
             Ext.apply(args, config);
             return Ext.create('devilry.extjshelpers.Store', args);

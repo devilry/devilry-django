@@ -70,7 +70,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         });
         var defaultItems = this.callParent();
         Ext.Array.insert(defaultItems, 0, [this.createButton]);
-        console.log(defaultItems);
         return defaultItems;
     },
 
