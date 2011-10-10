@@ -489,44 +489,14 @@ span.menuref {
 
 
 .widget-assignmentgroupoverview {
-    .widget-deliveryinfo {
-        > .x-panel-body {
-            padding: 20px;
-        }
-    }
-
-    .widget-assignmentgroupdetails {
-        padding: 20px;
-    }
-
-    .widget-deliveryinfo, .widget-staticfeedbackinfo {
-        margin-top: 20px;
-    }
-    
     .widget-staticfeedbackinfo {
-        //width: 100% !important;
         > .x-panel-body {
-            //padding: 20px;
-            .widget-staticfeedbackinfo-feedbackview {
-                $padding: 20px;
-                padding: $padding;
-            }
-            .no-feedback, .no-feedback-editable {
+            .no-feedback {
                 padding: 40px;
                 text-align: center;
                 font-size: 2.0em;
                 .no-feedback-message {
                     font-size: 1.5em;
-                }
-            }
-            .no-feedback-editable {
-                cursor: pointer;
-                border: 4px solid transparent;
-                &:hover {
-                    font-weight: bold;
-                    background-color: $goodcolor_bg;
-                    color: $goodcolor_fg;
-                    border-radius: 20px;
                 }
             }
         }

@@ -43,8 +43,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             width: 200,
             style: {
                 border: 'none'
-            },
-            hidden: true
+            }
+            //hidden: true
         });
 
         Ext.apply(this, {
@@ -97,28 +97,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         var isactive = this.staticfeedbackstore.currentPage == 1;
         this.setBody({
             xtype: 'staticfeedbackview',
+            padding: 10,
             singlerecordontainer: this.staticfeedback_recordcontainer,
             extradata: {
                 isactive: isactive
             }
         });
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        //MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     },
 
     onLoadStaticfeedbackstore: function(store, records, successful) {
         if(successful) {
             if(records.length == 0) {
-                //this.infotable.hide();
-                this.editToolbar.hide();
                 this.bodyWithNoFeedback();
             }
             else {
-                //this.infotable.show();
-                this.editToolbar.show();
                 this.staticfeedback_recordcontainer.setRecord(records[0]);
                 this.fireEvent('afterStoreLoadMoreThanZero');
             }
-        } else {
+       } else {
             // TODO: handle failure
         }
     },
@@ -131,7 +128,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
     bodyWithNoFeedback: function() {
         this.setBody({
-            xtype: 'component',
+            xtype: 'box',
+            padding: 10,
             cls: 'no-feedback',
             html: 'No feedback yet'
         });
