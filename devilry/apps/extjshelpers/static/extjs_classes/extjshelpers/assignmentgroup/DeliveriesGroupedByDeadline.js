@@ -125,13 +125,28 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         allStaticFeedbacks.push(staticFeedbackRecords[0]);
                     }
                     if(loadedStaticFeedbackStores === deliveryRecords.length) {
-                        // TODO: Sort allStaticFeedbacks by save_timestamp and pick first
+                        this.sortAllStaticFeedbacks(allStaticFeedbacks);
                         var activeFeedback = allStaticFeedbacks[0];
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
                 }
             })
         }, this);
+    },
+
+    /**
+     * @private
+     */
+    sortAllStaticFeedbacks: function(allStaticFeedbacks) {
+        allStaticFeedbacks.sort(function(a, b) {
+            if(a.data.save_timestamp > b.data.save_timestamp) {
+                return -1;
+            } else if(a.data.save_timestamp === b.data.save_timestamp) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
     },
 
     /**
@@ -153,7 +168,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.isLoading = false;
         }
     },
-
 
     /**
      * @private

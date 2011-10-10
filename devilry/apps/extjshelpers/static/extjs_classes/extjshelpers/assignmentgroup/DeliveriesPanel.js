@@ -28,7 +28,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
     initComponent: function() {
         var extra = '(No feedback)';
         if(this.activeFeedback) {
-            extra = Ext.String.format('(Grade: {0} SEE TODO)', this.activeFeedback.data.grade);
+            extra = Ext.String.format('(Latest feedback: {0})', this.activeFeedback.data.grade);
         }
 
         Ext.apply(this, {
