@@ -14,7 +14,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         '<div class="deadline_title">',
         '    <div style="font-weight:bold">Deadline: {deadline.deadline:date}</div>',
         '    <div>',
-        '        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
+        //'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
         '        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
         '    </div>',
         '<div>'
@@ -38,12 +38,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
             }),
             layout: 'fit',
             border: false,
-            items: {
-                xtype: 'deliveriesgrid',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                store: this.deliveriesStore
-            },
-
             tbar: [{
                 xtype: 'button',
                 iconCls: 'icon-edit-16',
@@ -54,6 +48,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 }
             }]
         });
+
+        if(this.deliveriesStore.count() === 0) {
+            this.items = {
+                xtype: 'box',
+                html: 'No deliveries on this deadline.',
+                padding: 10
+            };
+        } else {
+            this.items = {
+                xtype: 'deliveriesgrid',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                store: this.deliveriesStore
+            };
+        }
+
         this.callParent(arguments);
     },
 
