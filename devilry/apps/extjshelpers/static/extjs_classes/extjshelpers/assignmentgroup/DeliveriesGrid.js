@@ -39,9 +39,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                 flex: 1,
                 renderer: function(value, metaData, deliveryrecord) {
                     //console.log(deliveryrecord.data);
-                    console.log(deliveryrecord);
                     var staticfeedbackStore = deliveryrecord.staticfeedbacks();
-                    //console.log(staticfeedbackStore.data.items);
                     return this.rowTpl.apply({
                         delivery: deliveryrecord.data,
                         feedback: staticfeedbackStore.count() > 0? staticfeedbackStore.data.items[0].data: undefined
