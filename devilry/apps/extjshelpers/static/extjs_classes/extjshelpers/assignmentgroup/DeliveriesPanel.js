@@ -37,16 +37,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 extra: extra
             }),
             layout: 'fit',
-            border: false,
-            tbar: [{
-                xtype: 'button',
-                iconCls: 'icon-edit-16',
-                text: 'Edit deadline',
-                listeners: {
-                    scope: this,
-                    click: this.onEditDeadline
-                }
-            }]
+            border: false
+            //tbar: [{
+                //xtype: 'button',
+                //iconCls: 'icon-edit-16',
+                //text: 'Edit deadline',
+                //listeners: {
+                    //scope: this,
+                    //click: this.onEditDeadline
+                //}
+            //}, {
+                //xtype: 'button',
+                //iconCls: 'icon-delete-16',
+                //text: 'Delete deadline',
+                //listeners: {
+                    //scope: this,
+                    //click: this.onDeleteDeadline
+                //}
+            //}]
         });
 
         if(this.deliveriesStore.count() === 0) {
@@ -71,5 +79,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
      */
     onEditDeadline: function() {
         console.log('Edit deadline');
+    },
+
+    onDeleteDeadline: function() {
+        console.log('Delete deadline');
     }
 });
