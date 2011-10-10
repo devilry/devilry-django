@@ -172,11 +172,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }, {
                 xtype: 'container',
                 layout: 'border',
+                style: 'background-color: transparent',
                 flex: 1,
                 border: false,
                 items: [{
                     xtype: 'container',
-                    region: 'west', 
+                    region: 'west',
+                    margin: {right: 10},
                     width: 250,
                     layout: {
                         type: 'vbox',
@@ -191,7 +193,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             xtype: 'assignmentgroup_isopen',
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             canExamine: this.canExamine
-                        }, {
+                        }, {xtype: 'box', width: 10}, {
                             xtype: 'button',
                             hidden: !this.canExamine,
                             text: 'To-do',
@@ -208,6 +210,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         }]
                     }, {
                         xtype: 'deliveriesgroupedbydeadline',
+                        margin: {top: 10},
                         assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                         delivery_recordcontainer: this.delivery_recordcontainer,
                         flex: 1
