@@ -29,11 +29,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
             {field: 'delivery', comp:'exact', value: this.deliveryid}
         ]);
 
-        this.filemetastore.load();
-        
-        //TODO Necessary. Get undefined when referenced later
-        var stored_delivery_id = this.deliveryid;
-
+        this.on('render', function() {
+            Ext.defer(function() {
+                if(this.filemetastore.loading) {
+                    this.setLoading(true);
+                }
+            }, 100, this);
+        });
+        this.filemetastore.load({
+            scope: this,
+            callback: function() {
+                this.setLoading(false);
+            }
+        });
         
         Ext.apply(this, {
             items: [{
@@ -65,9 +73,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                         
                     }
                 }],
-                    listeners: {
+                listeners: {
+                    scope: this,
                     itemclick: function(self, record) {
-                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.data.id;
+                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + this.deliveryid
                         window.open(url, 'download');
                     }
                 }
@@ -79,8 +88,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 scale: 'large',
                 text: 'Download all files (.zip)',
                 listeners: {
+                    scope: this,
                     click: function(view, record, item) {
-                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/compressedfiledownload/" + stored_delivery_id;
+                        var url = Ext.String.format(
+                            '{0}/student/show-delivery/compressedfiledownload/{1}',
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deliveryid
+                        );
                         window.open(url, 'download');
                     }
                 }

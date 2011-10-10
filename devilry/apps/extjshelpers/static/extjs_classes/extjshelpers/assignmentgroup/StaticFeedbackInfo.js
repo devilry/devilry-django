@@ -8,7 +8,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
+        'devilry.extjshelpers.SingleRecordContainerDepButton'
     ],
 
     config: {
@@ -46,37 +47,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.bodyContent = Ext.create('Ext.container.Container');
 
-        this.editToolbar = Ext.ComponentManager.create({
-            xtype: 'toolbar',
-            width: 300,
-            style: {
-                border: 'none'
-            },
-
-            items: [{
-                xtype: 'button',
-                text: 'Browse files',
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    afterrender: function(button) {
-                        if(!this.delivery_recordcontainer.record) {
-                            this.delivery_recordcontainer.on('setRecord', function() {
-                                button.getEl().unmask();
-                            });
-                            button.getEl().mask('Loading');
-                        }
-                    },
-                    click: function() {
-                        Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-                            filemetastore: this.filemetastore,
-                            deliveryid: this.delivery_recordcontainer.record.data.id
-                        }).show();
-                    }
-                }
-            }]
-        });
-
+        this.editToolbar = this.createEditToolbar();
         Ext.apply(this, {
             items: [this.bodyContent],
             dockedItems: [{
@@ -108,6 +79,46 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             this.onLoadDelivery();
         }
         this.delivery_recordcontainer.addListener('setRecord', this.onLoadDelivery, this);
+    },
+
+    createEditToolbar: function() {
+        return Ext.ComponentManager.create({
+            xtype: 'toolbar',
+            width: 380,
+            style: { border: 'none'},
+
+            items: [{
+                xtype: 'singlerecordcontainerdepbutton',
+                singlerecordcontainer: this.delivery_recordcontainer,
+                text: 'Browse files',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: function() {
+                        Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
+                            filemetastore: this.filemetastore,
+                            deliveryid: this.delivery_recordcontainer.record.data.id
+                        }).show();
+                    }
+                }
+            }, {
+                xtype: 'singlerecordcontainerdepbutton',
+                singlerecordcontainer: this.delivery_recordcontainer,
+                scale: 'large',
+                text: 'Download all files (.zip)',
+                listeners: {
+                    scope: this,
+                    click: function(view, record, item) {
+                        var url = Ext.String.format(
+                            '{0}/student/show-delivery/compressedfiledownload/{1}',
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                            this.delivery_recordcontainer.record.data.id
+                        );
+                        window.open(url, 'download');
+                    }
+                }
+            }]
+        });
     },
 
     /**
