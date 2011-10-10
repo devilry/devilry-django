@@ -36,22 +36,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.callParent(arguments);
 
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecordInEditor, this);
-
-        var me = this;
-        this.createButton = Ext.create('Ext.button.Button', {
-            text: 'Create feedback',
-            iconCls: 'icon-add-32',
-            hidden: false,
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.loadGradeEditor,
-                render: this.onRenderEditButton
-            }
-        });
-
-        this.editToolbar.add(this.createButton);
-
         this.on('afterStoreLoadMoreThanZero', this.onAfterStoreLoadMoreThanZero, this);
 
         if(this.delivery_recordcontainer.record) {
@@ -70,6 +54,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.assignmentgroup_recordcontainer.addListener('setRecord', this.enableEditButton, this);
 
     },
+
+
+    getToolbarItems: function() {
+        this.createButton = Ext.create('Ext.button.Button', {
+            text: 'Create feedback',
+            iconCls: 'icon-add-32',
+            hidden: false,
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: this.loadGradeEditor,
+                render: this.onRenderEditButton
+            }
+        });
+        var defaultItems = this.callParent();
+        Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        console.log(defaultItems);
+        return defaultItems;
+    },
+
 
     /**
      * @private

@@ -47,27 +47,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.bodyContent = Ext.create('Ext.container.Container');
 
-        this.editToolbar = this.createEditToolbar();
         Ext.apply(this, {
             items: [this.bodyContent],
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                items: [this.editToolbar, '->', {
-                    xtype: 'devilrypager',
-                    store: this.staticfeedbackstore,
-                    width: 200,
-                    reverseDirection: true,
-                    middleLabelTpl: Ext.create('Ext.XTemplate',
-                        '<tpl if="firstRecord">',
-                    '   {currentNegativePageOffset})&nbsp;&nbsp;',
-                    '   {firstRecord.data.save_timestamp:date}',
-                    '</tpl>'
-                    )
-                }]
-            }],
+            tbar: this.getToolbarItems()
         });
-
         this.callParent(arguments);
 
         this.staticfeedbackstore.pageSize = 1;
@@ -81,44 +64,50 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.delivery_recordcontainer.addListener('setRecord', this.onLoadDelivery, this);
     },
 
-    createEditToolbar: function() {
-        return Ext.ComponentManager.create({
-            xtype: 'toolbar',
-            width: 380,
-            style: { border: 'none'},
 
-            items: [{
-                xtype: 'singlerecordcontainerdepbutton',
-                singlerecordcontainer: this.delivery_recordcontainer,
-                text: 'Browse files',
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    click: function() {
-                        Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-                            filemetastore: this.filemetastore,
-                            deliveryid: this.delivery_recordcontainer.record.data.id
-                        }).show();
-                    }
+    getToolbarItems: function() {
+        return [{
+            xtype: 'singlerecordcontainerdepbutton',
+            singlerecordcontainer: this.delivery_recordcontainer,
+            text: 'Browse files',
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: function() {
+                    Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
+                        filemetastore: this.filemetastore,
+                        deliveryid: this.delivery_recordcontainer.record.data.id
+                    }).show();
                 }
-            }, {
-                xtype: 'singlerecordcontainerdepbutton',
-                singlerecordcontainer: this.delivery_recordcontainer,
-                scale: 'large',
-                text: 'Download all files (.zip)',
-                listeners: {
-                    scope: this,
-                    click: function(view, record, item) {
-                        var url = Ext.String.format(
-                            '{0}/student/show-delivery/compressedfiledownload/{1}',
-                            DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                            this.delivery_recordcontainer.record.data.id
-                        );
-                        window.open(url, 'download');
-                    }
+            }
+        }, {
+            xtype: 'singlerecordcontainerdepbutton',
+            singlerecordcontainer: this.delivery_recordcontainer,
+            scale: 'large',
+            text: 'Download all files (.zip)',
+            listeners: {
+                scope: this,
+                click: function(view, record, item) {
+                    var url = Ext.String.format(
+                        '{0}/student/show-delivery/compressedfiledownload/{1}',
+                        DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        this.delivery_recordcontainer.record.data.id
+                    );
+                    window.open(url, 'download');
                 }
-            }]
-        });
+            }
+        }, '->', {
+            xtype: 'devilrypager',
+            store: this.staticfeedbackstore,
+            width: 200,
+            reverseDirection: true,
+            middleLabelTpl: Ext.create('Ext.XTemplate',
+                '<tpl if="firstRecord">',
+            '   {currentNegativePageOffset})&nbsp;&nbsp;',
+            '   {firstRecord.data.save_timestamp:date}',
+            '</tpl>'
+            )
+        }];
     },
 
     /**
