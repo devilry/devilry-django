@@ -21,13 +21,14 @@
         Ext.create('devilry.statistics.Loader', {{ periodid }}, {
             listeners: {
                 loaded: function(loader) {
+                    var extjsStructures = loader.extjsFormat();
                     Ext.getBody().unmask();
                     //console.log(loader.students);
                     //console.log(loader.columns);
 
                     var store = Ext.create('Ext.data.Store', {
-                        fields: loader.storeFields,
-                        data: {'items': loader.studentsStoreFmt},
+                        fields: extjsStructures.storeFields,
+                        data: {'items': extjsStructures.storeStudents},
                         proxy: {
                             type: 'memory',
                             reader: {
@@ -42,7 +43,7 @@
                         items: [{
                             xtype: 'grid',
                             store: store,
-                            columns: loader.gridColumns,
+                            columns: extjsStructures.gridColumns,
                             renderTo: Ext.getBody()
                         }]
                     });

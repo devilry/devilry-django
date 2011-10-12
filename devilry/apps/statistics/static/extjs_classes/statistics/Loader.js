@@ -2,12 +2,9 @@ Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
 
     constructor: function(periodid, config) {
-        this.storeFields = ['username', 'assignments'];
-        this.gridColumns = [{header: 'Username', dataIndex: 'username'}];
         this._studentsUsernameToIndexMap = {};
-        this.studentsStoreFmt = [];
         this.students = [];
-        this.loadPeriod(periodid);
+        this._loadPeriod(periodid);
 
         this.addEvents('loaded');
 
@@ -18,74 +15,22 @@ Ext.define('devilry.statistics.Loader', {
         this.callParent(arguments);        
     },
 
-    loadGroups: function(assignmentid, totalAssignments) {
-        assignmentgroup_store.pageSize = 10000; // TODO: avoid UGLY hack
-        assignmentgroup_store.proxy.setDevilryFilters([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: assignmentid
-        }]);
-        assignmentgroup_store.load({
+    /**
+     * @private
+     */
+    _loadPeriod: function(periodid) {
+        period_model.load(periodid, {
             scope: this,
-            callback: function(grouprecords, success) {
-                //console.log('Loaded assignmentgroups:', grouprecords);
-                Ext.each(grouprecords, function(grouprecord, index) {
-                    Ext.each(grouprecord.data.candidates__student__username, function(username, index) {
-                        var studentStoreFmt;
-                        if(this._studentsUsernameToIndexMap[username]) {
-                            studentStoreFmt = this.studentsStoreFmt[this._studentsUsernameToIndexMap[username].index];
-                        } else {
-                            this._studentsUsernameToIndexMap[username] = {index: this.studentsStoreFmt.length};
-                            studentStoreFmt = {};
-                            studentStoreFmt.username = username;
-                            this.studentsStoreFmt.push(studentStoreFmt);
-                        }
-
-                        var assignment_ident = grouprecord.data.parentnode__short_name;
-                        var pointdataIndex = assignment_ident + '::points';
-                        var scaledPointdataIndex = assignment_ident + '::scaledPoints';
-                        var passingdataIndex = assignment_ident + '::is_passing_grade';
-                        if(!studentStoreFmt.assignments) {
-                            studentStoreFmt.assignments = {};
-                        }
-                        studentStoreFmt.assignments[assignment_ident] = {
-                            points: grouprecord.data.feedback__points,
-                            scaled_points: grouprecord.data.feedback__points,
-                            is_passing_grade: grouprecord.data.feedback__is_passing_grade
-                        };
-                        studentStoreFmt[pointdataIndex] = grouprecord.data.feedback__points;
-                        studentStoreFmt[scaledPointdataIndex] = grouprecord.data.feedback__points;
-                        studentStoreFmt[passingdataIndex] = grouprecord.data.feedback__is_passing_grade;
-
-                        if(!Ext.Array.contains(this.storeFields, pointdataIndex)) {
-                            this.storeFields.push(pointdataIndex);
-                            this.storeFields.push(scaledPointdataIndex);
-                            this.storeFields.push(passingdataIndex);
-                            this.gridColumns.push({
-                                text: assignment_ident,
-                                columns: [{
-                                    dataIndex: scaledPointdataIndex,
-                                    text: 'Points',
-                                    sortable: true
-                                }, {
-                                    dataIndex: passingdataIndex,
-                                    text: 'Is passing grade',
-                                    sortable: true
-                                }]
-                            });
-                        }
-                    }, this);
-                }, this);
-
-                this._tmpAssignmentsWithAllGroupsLoaded ++;
-                if(this._tmpAssignmentsWithAllGroupsLoaded == totalAssignments) {
-                    this.fireEvent('loaded', this);
-                }
+            success: function(record) {
+                this._loadAssignments(record.data.id);
             }
         });
     },
 
-    loadAssignments: function(periodid) {
+    /**
+     * @private
+     */
+    _loadAssignments: function(periodid) {
         assignment_store.pageSize = 10000; // TODO: avoid UGLY hack
         assignment_store.proxy.setDevilryFilters([{
             field: 'parentnode',
@@ -95,30 +40,112 @@ Ext.define('devilry.statistics.Loader', {
         assignment_store.load({
             scope: this,
             callback: function(assignmentrecords, success) {
-                //console.log('Loaded assignments:', assignmentrecords);
                 this._tmpAssignmentsWithAllGroupsLoaded = 0;
                 Ext.each(assignmentrecords, function(assignmentrecord, index) {
-                    this.loadGroups(assignmentrecord.data.id, assignmentrecords.length);
+                    this._loadGroups(assignmentrecord.data.id, assignmentrecords.length);
                 }, this);
             }
         });
     },
 
-    loadPeriod: function(periodid) {
-        period_model.load(periodid, {
+    /**
+     * @private
+     */
+    _loadGroups: function(assignmentid, totalAssignments) {
+        assignmentgroup_store.pageSize = 10000; // TODO: avoid UGLY hack
+        assignmentgroup_store.proxy.setDevilryFilters([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: assignmentid
+        }]);
+        assignmentgroup_store.load({
             scope: this,
-            success: function(record) {
-                //console.log("Loaded period:", record);
-                this.loadAssignments(record.data.id);
+            callback: function(grouprecords, success) {
+                this._onLoadGroups(totalAssignments, grouprecords, success);
             }
         });
     },
 
-    //extjsFormat: function() {
-        //Ext.each(this.students, function(student, index) {
-            //Ext.each(student.assignments, function(assignment, index) {
-                
-            //}, this);
-        //}, this);
-    //}
+    /**
+     * @private
+     */
+    _onLoadGroups: function(totalAssignments, grouprecords, success) {
+        Ext.each(grouprecords, function(grouprecord, index) {
+            Ext.each(grouprecord.data.candidates__student__username, function(username, index) {
+                this._addStudent(username, grouprecord);
+            }, this);
+        }, this);
+
+        this._tmpAssignmentsWithAllGroupsLoaded ++;
+        if(this._tmpAssignmentsWithAllGroupsLoaded == totalAssignments) {
+            this.fireEvent('loaded', this);
+        }
+    },
+
+    /**
+     * @private
+     */
+    _addStudent: function(username, grouprecord) {
+        if(!this.students[username]) {
+            this.students[username] = {
+                username: username,
+                assignments: {}
+            };
+        }
+        var student = this.students[username];   
+        student.assignments[grouprecord.data.parentnode__short_name] = {
+            points: grouprecord.data.feedback__points,
+            scaled_points: grouprecord.data.feedback__points,
+            is_passing_grade: grouprecord.data.feedback__is_passing_grade
+        };
+    },
+
+
+    /**
+     * @private
+     */
+    _extjsFormatSingleAssignment: function(studentStoreFmt, assignment_short_name, assignment, storeFields, gridColumns) {
+        var pointdataIndex = assignment_short_name + '::points';
+        var scaledPointdataIndex = assignment_short_name + '::scaledPoints';
+        var passingdataIndex = assignment_short_name + '::is_passing_grade';
+        studentStoreFmt[pointdataIndex] = assignment.points;
+        studentStoreFmt[scaledPointdataIndex] = assignment.scaled_points;
+        studentStoreFmt[passingdataIndex] = assignment.is_passing_grade;
+
+        if(!Ext.Array.contains(storeFields, pointdataIndex)) {
+            storeFields.push(pointdataIndex);
+            storeFields.push(scaledPointdataIndex);
+            storeFields.push(passingdataIndex);
+            gridColumns.push({
+                text: assignment_short_name,
+                columns: [{
+                    dataIndex: scaledPointdataIndex,
+                    text: 'Points',
+                    sortable: true
+                }, {
+                    dataIndex: passingdataIndex,
+                    text: 'Is passing grade',
+                    sortable: true
+                }]
+            });
+        }
+    },
+
+    extjsFormat: function() {
+        var storeStudents = [];
+        var storeFields = ['username'];
+        var gridColumns = [{header: 'Username', dataIndex: 'username'}];
+        Ext.Object.each(this.students, function(username, student, index) {
+            var studentStoreFmt = {username: username};
+            storeStudents.push(studentStoreFmt);
+            Ext.Object.each(student.assignments, function(assignment_short_name, assignment, index) {
+                this._extjsFormatSingleAssignment(studentStoreFmt, assignment_short_name, assignment, storeFields, gridColumns);
+            }, this);
+        }, this);
+        return {
+            storeStudents: storeStudents,
+            storeFields: storeFields,
+            gridColumns: gridColumns
+        };
+    }
 });
