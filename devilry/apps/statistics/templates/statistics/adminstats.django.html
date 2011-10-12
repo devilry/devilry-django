@@ -16,6 +16,7 @@
     
 
     Ext.require('devilry.statistics.Loader');
+    Ext.require('devilry.statistics.FilterGroup');
     Ext.onReady(function() {
         Ext.getBody().mask("Loading page", 'page-load-mask');
         Ext.create('devilry.statistics.Loader', {{ periodid }}, {
@@ -50,14 +51,28 @@
 
                     //console.log(loader.students);
                     ////store.filter('username', /student1/);
-                    //store.filter(
-                        //Ext.create('Ext.util.Filter', {
-                            //filterFn: function(item) {
-                                ////console.log(item.get('assignments'));
-                                //return true;
-                            //}
-                        //})
-                    //);
+                    var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
+                        title: 'Approved'
+                    });
+                    approvedFilter.addFilter({
+                        must_pass: ['week1', 'week2'],
+                        pointspec: Ext.create('devilry.statistics.PointSpec', {
+                            assignments: ['week2', 'week3'],
+                            min: 6,
+                            max: 14
+                        })
+                    });
+                    store.filter(
+                        Ext.create('Ext.util.Filter', {
+                            filterFn: function(item) {
+                                var username = item.get('username');
+                                var student = loader.students[username];
+                                //console.log(student);
+                                var m = approvedFilter.match(student);
+                                return m;
+                            }
+                        })
+                    );
                 }
             }
         });
