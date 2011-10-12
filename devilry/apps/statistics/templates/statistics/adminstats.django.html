@@ -26,8 +26,8 @@
                     //console.log(loader.columns);
 
                     var store = Ext.create('Ext.data.Store', {
-                        fields: loader.fields,
-                        data: {'items': loader.students},
+                        fields: loader.storeFields,
+                        data: {'items': loader.studentsStoreFmt},
                         proxy: {
                             type: 'memory',
                             reader: {
@@ -42,12 +42,21 @@
                         items: [{
                             xtype: 'grid',
                             store: store,
-                            columns: loader.columns,
-                            //width: 800,
-                            //height: 600,
+                            columns: loader.gridColumns,
                             renderTo: Ext.getBody()
                         }]
                     });
+
+                    //console.log(loader.students);
+                    ////store.filter('username', /student1/);
+                    //store.filter(
+                        //Ext.create('Ext.util.Filter', {
+                            //filterFn: function(item) {
+                                ////console.log(item.get('assignments'));
+                                //return true;
+                            //}
+                        //})
+                    //);
                 }
             }
         });
