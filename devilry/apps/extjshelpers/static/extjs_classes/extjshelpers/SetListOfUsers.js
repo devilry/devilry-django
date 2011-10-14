@@ -75,6 +75,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
                 flex: 10,
                 xtype: 'box',
                 padding: 10,
+                autoScroll: true,
                 html: this.helptpl.apply(this)
             }],
 
