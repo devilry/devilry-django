@@ -49,7 +49,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
 
-        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow');
+        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
+            isAdministrator: this.isAdministrator
+        });
     },
 
 
