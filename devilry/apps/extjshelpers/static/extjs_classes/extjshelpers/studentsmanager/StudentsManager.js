@@ -175,6 +175,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }, {
             text: 'From previous period',
             handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
+        }, {xtype: 'menuheader', html: 'Candidate ID'}, {
+            text: 'Missing candidate ID',
+            handler: function() { me.setFilter('candidates__identifier:none'); }
         }];
     },
 
