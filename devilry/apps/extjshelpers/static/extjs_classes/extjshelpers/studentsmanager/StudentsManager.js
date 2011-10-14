@@ -142,7 +142,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getFilters: function() {
         var me = this;
-        return [{xtype: 'menuheader', html: 'Open/closed'}, {
+        var filters = [{xtype: 'menuheader', html: 'Open/closed'}, {
             text: 'Open',
             handler: function() { me.setFilter('is_open:yes'); }
         }, {
@@ -175,10 +175,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }, {
             text: 'From previous period',
             handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
-        }, {xtype: 'menuheader', html: 'Candidate ID'}, {
-            text: 'Missing candidate ID',
-            handler: function() { me.setFilter('candidates__identifier:none'); }
         }];
+        if(this.assignmentrecord.data.anonymous) {
+            filters.push({
+                xtype: 'menuheader', html: 'Candidate ID'
+            });
+            filters.push({
+                text: 'Missing candidate ID',
+                handler: function() { me.setFilter('candidates__identifier:none'); }
+            });
+        }
+        return filters;
     },
 
     getToolbarItems: function() {
