@@ -247,6 +247,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 scope: this,
                 click: this.onAddDeadline
             }
+        }, {
+            text: 'Import candidate ID',
+            listeners: {
+                scope: this,
+                click: this.onSetCandidateIdBulk
+            }
         }];
     },
 

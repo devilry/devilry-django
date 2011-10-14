@@ -281,6 +281,110 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         this.createManyGroupsInBulk(groups);
     },
 
+
+    onSetCandidateIdBulk: function() {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var win = Ext.widget('window', {
+            title: 'Select members',
+            modal: true,
+            width: 500,
+            height: 400,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'setlistofusers',
+                usernames: [],
+                anonymous: this.assignmentrecord.anonymous,
+                helptpl: Ext.create('Ext.XTemplate',
+                    '<div class="section helpsection">',
+                    '   <tpl if="anonymous">',
+                    '       <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by a single colon. Note that <em>candidate ID</em> does not have to be a number.</p>',
+                    '       <p>Example:</p>',
+                    '       <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
+                    '   </tpl>',
+                    '   <tpl if="!anonymous">',
+                    '       <p>One username on each line. Example</p>',
+                    '       <pre style="padding: 5px;">bob\nalice\neve\ndave</pre>',
+                    '   </tpl>',
+                    '</div>'
+                ),
+                listeners: {
+                    scope: this,
+                    saveClicked: function(setlistofusersobj, candidateSpecs, caller) {
+                        setlistofusersobj.up('window').close();
+                        this.progressWindow.start('Set candidate ID on many');
+                        this._finishedSavingGroupCount = 0;
+                        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                            scope: this,
+                            callback: this.setCandidateId,
+                            extraArgs: [this.parseCandidateImportFormat(candidateSpecs)]
+                        });
+                        
+                    },
+                }
+            }
+        });
+        win.show();
+
+    },
+
+    /**
+     * @private
+     */
+    parseCandidateImportFormat: function(candidateSpecs) {
+        var usernameToCandidateIdMap = {};
+        Ext.each(candidateSpecs, function(candidateSpec, index) {
+            var s = candidateSpec.split(/\s*:\s*/);
+            // TODO: Error checking
+            usernameToCandidateIdMap[s[0]] = s[1];
+        }, this);
+        return usernameToCandidateIdMap;
+    },
+
+    /**
+     * @private
+     */
+    setCandidateId: function(record, index, totalSelectedGroups, usernameToCandidateIdMap) {
+        var msg = Ext.String.format('Setting candidate ID on group {0}/{1}',
+            index, totalSelectedGroups
+        );
+        this.getEl().mask(msg);
+
+        var editRecord = this.createRecordFromStoreRecord(record);
+        console.log(usernameToCandidateIdMap, record);
+        editRecord.data.fake_candidates = [];
+        Ext.Array.each(record.data.candidates__student__username, function(username) {
+            //editRecord.data.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
+            editRecord.data.fake_candidates.push({
+                username: username,
+                candidate_id: usernameToCandidateIdMap[username]
+            });
+        }, this);
+
+        editRecord.save({
+            scope: this,
+            callback: function(records, operation) {
+                // TODO: Show changes in success message!
+                if(operation.success) {
+                    this.progressWindow.addSuccess(record, 'Group successfully saved.');
+                } else {
+                    this.progressWindow.addErrorFromOperation(record, 'Failed to save changes to group.', operation);
+                }
+
+                this._finishedSavingGroupCount ++;
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish();
+                }
+            }
+        });
+    },
+
+
     statics: {
         getCandidateInfoFromGroupRecord: function(record) {
             var candidates = [];
