@@ -290,8 +290,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         var win = Ext.widget('window', {
             title: 'Select members',
             modal: true,
-            width: 500,
-            height: 400,
+            width: 800,
+            height: 600,
             maximizable: true,
             layout: 'fit',
             items: {
@@ -300,27 +300,29 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 anonymous: this.assignmentrecord.anonymous,
                 helptpl: Ext.create('Ext.XTemplate',
                     '<div class="section helpsection">',
-                    '   <tpl if="anonymous">',
-                    '       <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by a single colon. Note that <em>candidate ID</em> does not have to be a number.</p>',
-                    '       <p>Example:</p>',
-                    '       <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
-                    '   </tpl>',
-                    '   <tpl if="!anonymous">',
-                    '       <p>One username on each line. Example</p>',
-                    '       <pre style="padding: 5px;">bob\nalice\neve\ndave</pre>',
-                    '   </tpl>',
+                    '    <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by whitespace and/or a single colon, comma or semicolon. Note that <em>candidate ID</em> does not have to be a number.</p>',
+                    '    <p>Example (using colon to separate username and candidate ID):</p>',
+                    '    <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
+                    '    <p>Example (showing all of the separators supported):</p>',
+                    '    <pre style="padding: 5px;">bob    20\nalice : A753\neve, SEC-01\ndave;  30</pre>',
                     '</div>'
                 ),
                 listeners: {
                     scope: this,
                     saveClicked: function(setlistofusersobj, candidateSpecs, caller) {
+                        try {
+                            var usernameToCandidateIdMap = this.parseCandidateImportFormat(candidateSpecs);
+                        } catch(e) {
+                            Ext.MessageBox.alert('Error', e);
+                            return;
+                        }
                         setlistofusersobj.up('window').close();
                         this.progressWindow.start('Set candidate ID on many');
                         this._finishedSavingGroupCount = 0;
                         this.down('studentsmanager_studentsgrid').performActionOnSelected({
                             scope: this,
                             callback: this.setCandidateId,
-                            extraArgs: [this.parseCandidateImportFormat(candidateSpecs)]
+                            extraArgs: [usernameToCandidateIdMap]
                         });
                         
                     },
@@ -337,9 +339,13 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
     parseCandidateImportFormat: function(candidateSpecs) {
         var usernameToCandidateIdMap = {};
         Ext.each(candidateSpecs, function(candidateSpec, index) {
-            var s = candidateSpec.split(/\s*:\s*/);
-            // TODO: Error checking
-            usernameToCandidateIdMap[s[0]] = s[1];
+            var s = candidateSpec.split(/\s*[:,;\s]\s*/);
+            if(candidateSpec.length > 0) {
+                if(s.length != 2) {
+                    throw Ext.String.format('Invalid format on line {0}: {1}', index, candidateSpec)
+                }
+                usernameToCandidateIdMap[s[0]] = s[1];
+            }
         }, this);
         return usernameToCandidateIdMap;
     },
@@ -354,22 +360,32 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         this.getEl().mask(msg);
 
         var editRecord = this.createRecordFromStoreRecord(record);
-        console.log(usernameToCandidateIdMap, record);
         editRecord.data.fake_candidates = [];
-        Ext.Array.each(record.data.candidates__student__username, function(username) {
-            //editRecord.data.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
+
+        var result_preview = '';
+        var usernames = record.data.candidates__student__username;
+        Ext.Array.each(usernames, function(username, index) {
+            var candidate_id = usernameToCandidateIdMap[username];
             editRecord.data.fake_candidates.push({
                 username: username,
-                candidate_id: usernameToCandidateIdMap[username]
+                candidate_id: candidate_id
             });
+            result_preview += username;
+            if(candidate_id) {
+                result_preview += username + ':';
+            } else {
+                this.progressWindow.addWarning(record, Ext.String.format('No Candidate ID for {0}.', username));
+            }
+            if(index < usernames.length) {
+                result_preview += ', ';
+            }
         }, this);
 
         editRecord.save({
             scope: this,
             callback: function(records, operation) {
-                // TODO: Show changes in success message!
                 if(operation.success) {
-                    this.progressWindow.addSuccess(record, 'Group successfully saved.');
+                    this.progressWindow.addSuccess(record, Ext.String.format('Candidate IDs successfully updated to: {0}.', result_preview));
                 } else {
                     this.progressWindow.addErrorFromOperation(record, 'Failed to save changes to group.', operation);
                 }
