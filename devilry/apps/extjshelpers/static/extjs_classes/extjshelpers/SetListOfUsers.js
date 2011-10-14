@@ -11,6 +11,12 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
          */
         usernames: [],
 
+        /**
+         * @cfg
+         * The label of the box/field.
+         */
+        fieldLabel: 'Usernames',
+
         buttonLabel: 'Save',
 
         example: 'bob\nalice\neve\ndave',
@@ -41,7 +47,7 @@ Ext.define('devilry.extjshelpers.SetListOfUsers', {
 
     initComponent: function() {
         this.userinput = Ext.widget('textareafield', {
-            fieldLabel: 'Usernames',
+            fieldLabel: this.fieldLabel,
             flex: 12, // Take up all remaining vertical space
             margin: 10,
             labelAlign: 'top',

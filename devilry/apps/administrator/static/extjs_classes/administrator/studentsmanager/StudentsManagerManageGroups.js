@@ -288,7 +288,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             return;
         }
         var win = Ext.widget('window', {
-            title: 'Select members',
+            title: 'Import candidate IDs',
             modal: true,
             width: 800,
             height: 600,
@@ -297,13 +297,16 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             items: {
                 xtype: 'setlistofusers',
                 usernames: [],
+                fieldLabel: 'Candidates',
                 anonymous: this.assignmentrecord.anonymous,
                 helptpl: Ext.create('Ext.XTemplate',
                     '<div class="section helpsection">',
-                    '    <p>One candidate of on each line. Username and <em>candidate ID</em> is separated by whitespace and/or a single colon, comma or semicolon. Note that <em>candidate ID</em> does not have to be a number.</p>',
-                    '    <p>Example (using colon to separate username and candidate ID):</p>',
+                    '    <p><strong>Warning:</strong> This action will replace/clear candidate IDs on every selected group.</p>',
+                    '    <p>The <em>intended use case</em> for this window is to paste candidate IDs into Devilry instead of setting candidate IDs manually.</p>',
+                    '    <p>The format is one candidate on each line. Username and <em>candidate ID</em> is separated by whitespace and/or a single colon, comma or semicolon. Note that <em>candidate ID</em> does not have to be a number.</p>',
+                    '    <p><strong>Example</strong> (using colon to separate username and candidate ID):</p>',
                     '    <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
-                    '    <p>Example (showing all of the separators supported):</p>',
+                    '    <p><strong>Example</strong> (showing all of the supported separators):</p>',
                     '    <pre style="padding: 5px;">bob    20\nalice : A753\neve, SEC-01\ndave;  30</pre>',
                     '</div>'
                 ),
