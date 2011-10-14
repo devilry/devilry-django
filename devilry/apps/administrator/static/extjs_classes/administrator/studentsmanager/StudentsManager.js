@@ -165,7 +165,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         });
         if(this.assignmentrecord.data.anonymous) {
             menu.push({
-                text: 'Import candidate ID',
+                text: 'Import candidate IDs',
                 listeners: {
                     scope: this,
                     click: this.onSetCandidateIdBulk

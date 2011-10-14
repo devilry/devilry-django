@@ -931,7 +931,7 @@ div.section {
                 @include errorInlineItem();
             }
         }
-        .candidatescolumn, .examinerscolumn {
+        .candidatescolumn, .examinerscolumn, .usernamescolumn {
             @include inlineList();
         }   
         .pointscolumn {

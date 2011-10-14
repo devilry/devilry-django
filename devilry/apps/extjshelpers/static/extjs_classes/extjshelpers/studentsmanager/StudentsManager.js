@@ -88,6 +88,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
                     assignmentid: this.assignmentid,
+                    isAdministrator: this.isAdministrator,
+                    isAnonymous: this.assignmentrecord.data.anonymous,
                     dockedItems: [{
                         xtype: 'toolbar',
                         dock: 'top',
