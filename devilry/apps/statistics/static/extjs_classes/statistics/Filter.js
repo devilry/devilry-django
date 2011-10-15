@@ -33,12 +33,11 @@ Ext.define('devilry.statistics.Filter', {
         var one_of_them_is_passing = false;
         Ext.each(assignment_short_names, function(assignment_short_name, index) {
             var assignment = student.assignments[assignment_short_name];
-            if(!assignment) {
-                throw "Invalid assignment name: " + assignment_short_name;
-            }
-            if(assignment.is_passing_grade) {
-                one_of_them_is_passing = true;
-                return false; // Break
+            if(assignment) {
+                if(assignment.is_passing_grade) {
+                    one_of_them_is_passing = true;
+                    return false; // Break
+                }
             }
         }, this);
         return one_of_them_is_passing;

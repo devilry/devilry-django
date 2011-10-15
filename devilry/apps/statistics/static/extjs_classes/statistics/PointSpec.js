@@ -32,11 +32,10 @@ Ext.define('devilry.statistics.PointSpec', {
         var max = 0;
         Ext.each(assignment_short_names, function(assignment_short_name, index) {
             var assignment = student.assignments[assignment_short_name];
-            if(!assignment) {
-                throw "Invalid assignment name: " + assignment_short_name;
-            }
-            if(max < assignment.scaled_points) {
-                max = assignment.scaled_points;
+            if(assignment) {
+                if(max < assignment.scaled_points) {
+                    max = assignment.scaled_points;
+                }
             }
         });
         return max;

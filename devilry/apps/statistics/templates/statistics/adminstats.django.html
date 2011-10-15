@@ -55,20 +55,25 @@
                         title: 'Approved'
                     });
                     approvedFilter.addFilter({
-                        must_pass: [['week2', 'week3'], ['week4']],
+                        must_pass: [
+                            [loader.getAssignmentByShortName('week1').get('short_name'), loader.getAssignmentByShortName('week3').get('short_name')],
+                            [loader.getAssignmentByShortName('week2').get('short_name')]
+                        ],
                         pointspec: Ext.create('devilry.statistics.PointSpec', {
-                            assignments: [['week2', 'week3'], ['week4']],
-                            min: 18,
-                            max: 18
+                            assignments: [
+                                [loader.getAssignmentByShortName('week2').get('short_name'), loader.getAssignmentByShortName('week3').get('short_name')],
+                                [loader.getAssignmentByShortName('week1').get('short_name')]
+                            ],
+                            min: 10,
+                            max: 40
                         })
                     });
                     store.filter(
                         Ext.create('Ext.util.Filter', {
                             filterFn: function(item) {
                                 var username = item.get('username');
-                                var student = loader.students[username];
-                                //console.log(student);
-                                var m = approvedFilter.match(student);
+                                var student = loader.getStudentByName(username);
+                                var m = approvedFilter.match(loader, student);
                                 return m;
                             }
                         })
