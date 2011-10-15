@@ -55,11 +55,11 @@
                         title: 'Approved'
                     });
                     approvedFilter.addFilter({
-                        must_pass: ['week1', 'week2'],
+                        must_pass: [['week2', 'week3'], ['week4']],
                         pointspec: Ext.create('devilry.statistics.PointSpec', {
-                            assignments: ['week2', 'week3'],
-                            min: 6,
-                            max: 14
+                            assignments: [['week2', 'week3'], ['week4']],
+                            min: 18,
+                            max: 18
                         })
                     });
                     store.filter(
