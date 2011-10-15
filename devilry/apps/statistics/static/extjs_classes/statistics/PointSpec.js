@@ -30,11 +30,11 @@ Ext.define('devilry.statistics.PointSpec', {
 
     _findAssignmentWithMostScaledPoints: function(student, assignment_short_names) {
         var max = 0;
-        Ext.each(assignment_short_names, function(assignment_short_name, index) {
-            var assignment = student.assignments[assignment_short_name];
-            if(assignment) {
-                if(max < assignment.scaled_points) {
-                    max = assignment.scaled_points;
+        Ext.each(assignment_short_names, function(assignment_id, index) {
+            var group = student.groupsByAssignmentId[assignment_id];
+            if(group) {
+                if(max < group.scaled_points) {
+                    max = group.scaled_points;
                 }
             }
         });

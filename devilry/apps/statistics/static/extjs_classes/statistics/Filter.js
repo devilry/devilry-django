@@ -19,8 +19,8 @@ Ext.define('devilry.statistics.Filter', {
             return true;
         }
         var matches = true;
-        Ext.each(this.must_pass, function(assignment_short_names, index) {
-            var one_of_them_is_passing = this._passesOneOfManyAssignments(student, assignment_short_names);
+        Ext.each(this.must_pass, function(assignment_ids, index) {
+            var one_of_them_is_passing = this._passesOneOfManyAssignments(student, assignment_ids);
             if(!one_of_them_is_passing) {
                 matches = false;
                 return false; // Break
@@ -29,12 +29,12 @@ Ext.define('devilry.statistics.Filter', {
         return matches;
     },
 
-    _passesOneOfManyAssignments: function(student, assignment_short_names) {
+    _passesOneOfManyAssignments: function(student, assignment_ids) {
         var one_of_them_is_passing = false;
-        Ext.each(assignment_short_names, function(assignment_short_name, index) {
-            var assignment = student.assignments[assignment_short_name];
-            if(assignment) {
-                if(assignment.is_passing_grade) {
+        Ext.each(assignment_ids, function(assignment_id, index) {
+            var group = student.groupsByAssignmentId[assignment_id];
+            if(group) {
+                if(group.is_passing_grade) {
                     one_of_them_is_passing = true;
                     return false; // Break
                 }

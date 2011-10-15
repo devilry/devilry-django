@@ -49,20 +49,18 @@
                         }]
                     });
 
-                    //console.log(loader.students);
-                    ////store.filter('username', /student1/);
                     var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
                         title: 'Approved'
                     });
                     approvedFilter.addFilter({
                         must_pass: [
-                            [loader.getAssignmentByShortName('week1').get('short_name'), loader.getAssignmentByShortName('week3').get('short_name')],
-                            [loader.getAssignmentByShortName('week2').get('short_name')]
+                            [loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                            [loader.getAssignmentByShortName('week2').get('id')]
                         ],
                         pointspec: Ext.create('devilry.statistics.PointSpec', {
                             assignments: [
-                                [loader.getAssignmentByShortName('week2').get('short_name'), loader.getAssignmentByShortName('week3').get('short_name')],
-                                [loader.getAssignmentByShortName('week1').get('short_name')]
+                                [loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                                [loader.getAssignmentByShortName('week1').get('id')]
                             ],
                             min: 10,
                             max: 40
