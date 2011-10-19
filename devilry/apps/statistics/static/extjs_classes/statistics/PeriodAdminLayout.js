@@ -1,10 +1,10 @@
 Ext.define('devilry.statistics.PeriodAdminLayout', {
     extend: 'Ext.container.Viewport',
     layout: 'border',
-    style: 'background-color: transparent',
     requires: [
         'devilry.statistics.Loader',
-        'devilry.statistics.FilterGroup'
+        'devilry.statistics.FilterGroup',
+        'devilry.statistics.FilterEditor'
     ],
 
     config: {
@@ -17,7 +17,11 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
     
     initComponent: function() {
+        this._center = Ext.widget('container', {
+            region: 'center'
+        });
         Ext.apply(this, {
+            style: 'background-color: transparent',
             items: [{
                 region: 'north',
                 xtype: 'pageheader',
@@ -25,10 +29,20 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, {
                 region: 'south',
                 xtype: 'pagefooter'
-            }, this._center = Ext.widget('container', {
+            }, {
                 region: 'center',
-                padding: {left: 20, right: 20}
-            })]
+                xtype: 'container',
+                style: 'background-color: transparent',
+                layout: 'border',
+                padding: {left: 20, right: 20},
+                items: [this._center, {
+                    xtype: 'statistics-filtereditor',
+                    region: 'east',
+                    title: 'Configurable labels',
+                    width: 300,
+                    collapsible: true,
+                }]
+            }]
         });
         this.callParent(arguments);
         this._loadStudents();
