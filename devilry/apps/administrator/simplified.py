@@ -4,7 +4,7 @@ from django.db.models import Count, Max
 from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
                                 PermissionDenied, InvalidUsername, FieldSpec,
                                 FilterSpecs, FilterSpec, PatternFilterSpec,
-                                stringOrNoneConverter)
+                                stringOrNoneConverter, boolConverter)
 from ..core import models
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedPeriodMetaMixin,
@@ -230,10 +230,11 @@ class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudentKeyValue`. """
     class Meta(RelatedUsersMetaBase):
         model = models.RelatedStudentKeyValue
-        resultfields = FieldSpec('id', 'application', 'key', 'value', 'relatedstudent')
+        resultfields = FieldSpec('id', 'application', 'key', 'value', 'relatedstudent', 'student_can_read')
         searchfields = FieldSpec('application', 'key', 'value', 'relatedstudent__user__username')
-        editablefields = ('application', 'key', 'value', 'relatedstudent')
+        editablefields = ('application', 'key', 'value', 'relatedstudent', 'student_can_read')
         filters = FilterSpecs(FilterSpec('id', supported_comp=('exact',)),
+                              FilterSpec('student_can_read', supported_comp=('exact',), type_converter=boolConverter),
                               FilterSpec('relatedstudent__period', supported_comp=('exact',)),
                               FilterSpec('relatedstudent__user', supported_comp=('exact',)))
 
