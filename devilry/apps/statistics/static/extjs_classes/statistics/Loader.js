@@ -198,7 +198,7 @@ Ext.define('devilry.statistics.Loader', {
                 text: Ext.String.format('{0} (id: {1})', group.assignment_shortname, assignment_id),
                 columns: [{
                     dataIndex: scaledPointdataIndex,
-                    text: 'Points',
+                    text: 'Scaled points',
                     sortable: true
                 }, {
                     dataIndex: passingdataIndex,

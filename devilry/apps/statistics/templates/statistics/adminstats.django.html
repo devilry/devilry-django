@@ -45,11 +45,11 @@
 
                     Ext.create('Ext.panel.Panel', {
                         layout: 'fit',
+                        renderTo: Ext.getBody(),
                         items: [{
                             xtype: 'grid',
                             store: store,
                             columns: extjsStructures.gridColumns,
-                            renderTo: Ext.getBody()
                         }]
                     });
 
@@ -76,7 +76,7 @@
                                 var username = item.get('username');
                                 var student = loader.getStudentByName(username);
                                 var m = approvedFilter.match(loader, student);
-                                return true;
+                                return m;
                             }
                         })
                     );
