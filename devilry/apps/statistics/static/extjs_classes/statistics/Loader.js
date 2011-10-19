@@ -7,16 +7,21 @@ Ext.define('devilry.statistics.Loader', {
 
         this._students_by_releatedid = {};
         this._students = {};
-        this._assignmentCollection = Ext.create('Ext.util.MixedCollection');
         this.periodid = periodid;
-        this._loadAllRelatedStudents(periodid);
+
+        this.assignment_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+            remoteFilter: true,
+            remoteSort: true
+        });
 
         this.addEvents('loaded');
-
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
+
         this.callParent(arguments);        
+        this._loadAllRelatedStudents(periodid);
     },
 
     /**
@@ -113,11 +118,6 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadAssignments: function(periodid) {
-        this.assignment_store = Ext.create('Ext.data.Store', {
-            model: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
-            remoteFilter: true,
-            remoteSort: true
-        });
         this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
         this.assignment_store.proxy.setDevilryFilters([{
             field: 'parentnode',
@@ -136,7 +136,6 @@ Ext.define('devilry.statistics.Loader', {
     _onAssignmentsLoaded: function(assignmentrecords, success) {
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
-            this._assignmentCollection.add(assignmentrecord.data.id, assignmentrecord);
             this._loadGroups(assignmentrecord.data.id, assignmentrecords.length);
         }, this);
     },
@@ -267,14 +266,12 @@ Ext.define('devilry.statistics.Loader', {
         return this._students[username];
     },
 
-    //getAssignmentById: function(id) {
-        //return this._assignmentCollection.get(id);
-    //},
+    getAssignmentById: function(id) {
+        return this.assignment_store.findRecord('id', id);
+    },
 
     getAssignmentByShortName: function(short_name) {
-        return this._assignmentCollection.findBy(function(assignmentrecord) {
-            return assignmentrecord.data.short_name == short_name;
-        }, this);
+        return this.assignment_store.findRecord('short_name', short_name);
     }
 
     //validateAssignmentShortName: function(assignment_id) {

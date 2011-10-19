@@ -18,7 +18,8 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     
     initComponent: function() {
         this._center = Ext.widget('container', {
-            region: 'center'
+            region: 'center',
+            layout: 'fit'
         });
         Ext.apply(this, {
             style: 'background-color: transparent',
@@ -76,36 +77,39 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
         this._center.add({
             xtype: 'grid',
+            autoScroll: true,
             store: store,
             columns: extjsStructures.gridColumns,
         });
 
-        var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
-            title: 'Approved'
-        });
-        approvedFilter.addFilter({
-            must_pass: [
-                [loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                [loader.getAssignmentByShortName('week2').get('id')]
-            ],
-            pointspec: Ext.create('devilry.statistics.PointSpec', {
-                assignments: [
-                    [loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                    [loader.getAssignmentByShortName('week1').get('id')]
-                ],
-                min: 10,
-                max: 40
-            })
-        });
-        store.filter(
-            Ext.create('Ext.util.Filter', {
-                filterFn: function(item) {
-                    var username = item.get('username');
-                    var student = loader.getStudentByName(username);
-                    var m = approvedFilter.match(loader, student);
-                    return m;
-                }
-            })
-        );
+
+        //loader.getAssignmentByShortName('week1').get('id')
+        //var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
+            //title: 'Approved'
+        //});
+        //approvedFilter.addFilter({
+            //must_pass: [
+                //[loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                //[loader.getAssignmentByShortName('week2').get('id')]
+            //],
+            //pointspec: Ext.create('devilry.statistics.PointSpec', {
+                //assignments: [
+                    //[loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                    //[loader.getAssignmentByShortName('week1').get('id')]
+                //],
+                //min: 10,
+                //max: 40
+            //})
+        //});
+        //store.filter(
+            //Ext.create('Ext.util.Filter', {
+                //filterFn: function(item) {
+                    //var username = item.get('username');
+                    //var student = loader.getStudentByName(username);
+                    //var m = approvedFilter.match(loader, student);
+                    //return m;
+                //}
+            //})
+        //);
     }
 });
