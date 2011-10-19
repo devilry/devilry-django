@@ -1,10 +1,10 @@
 Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
 
-    label_key: 'devilry.statistics',
+    label_appkey: 'devilry.statistics',
 
     constructor: function(periodid, config) {
-        this._studentsUsernameToIndexMap = {};
+        this._students_by_releatedid = {};
         this._students = {};
         this._assignmentCollection = Ext.create('Ext.util.MixedCollection');
         this.periodid = periodid;
@@ -38,18 +38,6 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _loadPeriod: function() {
-        period_model.load(this.periodid, {
-            scope: this,
-            success: function(record) {
-                this._loadAssignments(record.data.id);
-            }
-        });
-    },
-
-    /**
-     * @private
-     */
     _onLoadAllRelatedStudents: function(records, success) {
         // TODO: Handle errors
         Ext.each(records, function(relatedStudentRecord, index) {
@@ -57,11 +45,58 @@ Ext.define('devilry.statistics.Loader', {
             this._students[username] = {
                 username: username,
                 relatedstudent: relatedStudentRecord,
+                labels: {},
                 groupsByAssignmentId: {}
             };
+            this._students_by_releatedid[relatedStudentRecord.get('id')] = this._students[username];
         }, this);
-        console.log(this._students);
+        this._loadAllStudentLabels();
+    },
+
+    /**
+     * @private
+     */
+    _loadAllStudentLabels: function() {
+        relatedstudentkeyvalue_store.pageSize = 100000; // TODO: avoid UGLY hack
+        relatedstudentkeyvalue_store.proxy.setDevilryFilters([{
+            field: 'relatedstudent__period',
+            comp: 'exact',
+            value: this.periodid
+        }, {
+            field: 'application',
+            comp: 'exact',
+            value: this.label_appkey
+        }]);
+        relatedstudentkeyvalue_store.load({
+            scope: this,
+            callback: this._onLoadAllStudentLabels
+        });
+    },
+
+    /**
+     * @private
+     */
+    _onLoadAllStudentLabels: function(records, success) {
+        // TODO: Handle errors
+        Ext.each(records, function(appKeyValueRecord, index) {
+            var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
+            var label = appKeyValueRecord.get('key');
+            var labelDescription = appKeyValueRecord.get('value');
+            this._students_by_releatedid[relatedstudent_id].labels[label] = labelDescription;
+        }, this);
         this._loadPeriod();
+    },
+
+    /**
+     * @private
+     */
+    _loadPeriod: function() {
+        period_model.load(this.periodid, {
+            scope: this,
+            success: function(record) {
+                this._loadAssignments(record.data.id);
+            }
+        });
     },
 
     /**
@@ -130,7 +165,7 @@ Ext.define('devilry.statistics.Loader', {
      */
     _addStudent: function(username, grouprecord) {
         if(!this._students[username]) {
-            console.log(Ext.String.format('Skipped {0} because the user is not a related student.', username));
+            console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
             return;
         }
         var student = this._students[username];
@@ -176,14 +211,30 @@ Ext.define('devilry.statistics.Loader', {
 
     extjsFormat: function() {
         var storeStudents = [];
-        var storeFields = ['username'];
-        var gridColumns = [{header: 'Username', dataIndex: 'username'}];
+        var storeFields = ['username', 'labels'];
+        var pointsTpl = Ext.create('Ext.XTemplate',
+            '<ul class="labels-list">',
+            '    <tpl for="labels">',
+            '       <li class="label-{.}">{.}</li>',
+            '    </tpl>',
+            '</ul>'
+        );
+        var gridColumns = [{
+            header: 'Username', dataIndex: 'username'
+        }, {
+            header: 'Labels', dataIndex: 'labels',
+            renderer: function(value, p, record) {
+                return pointsTpl.apply(record.data);
+            }
+        }];
         Ext.Object.each(this._students, function(username, student, index) {
             var studentStoreFmt = {username: username};
             storeStudents.push(studentStoreFmt);
             Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
                 this._extjsFormatSingleAssignment(studentStoreFmt, assignment_id, group, storeFields, gridColumns);
             }, this);
+
+            studentStoreFmt['labels'] = Ext.Object.getKeys(student.labels);
         }, this);
         return {
             storeStudents: storeStudents,
