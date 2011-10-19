@@ -1,11 +1,14 @@
 Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
 
+    label_key: 'devilry.statistics',
+
     constructor: function(periodid, config) {
         this._studentsUsernameToIndexMap = {};
         this._students = {};
         this._assignmentCollection = Ext.create('Ext.util.MixedCollection');
-        this._loadPeriod(periodid);
+        this.periodid = periodid;
+        this._loadAllRelatedStudents(periodid);
 
         this.addEvents('loaded');
 
@@ -19,8 +22,24 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _loadPeriod: function(periodid) {
-        period_model.load(periodid, {
+    _loadAllRelatedStudents: function() {
+        relatedstudent_store.pageSize = 100000; // TODO: avoid UGLY hack
+        relatedstudent_store.proxy.setDevilryFilters([{
+            field: 'period',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        relatedstudent_store.load({
+            scope: this,
+            callback: this._onLoadAllRelatedStudents
+        });
+    },
+
+    /**
+     * @private
+     */
+    _loadPeriod: function() {
+        period_model.load(this.periodid, {
             scope: this,
             success: function(record) {
                 this._loadAssignments(record.data.id);
@@ -31,8 +50,25 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
+    _onLoadAllRelatedStudents: function(records, success) {
+        // TODO: Handle errors
+        Ext.each(records, function(relatedStudentRecord, index) {
+            var username = relatedStudentRecord.get('user__username')
+            this._students[username] = {
+                username: username,
+                relatedstudent: relatedStudentRecord,
+                groupsByAssignmentId: {}
+            };
+        }, this);
+        console.log(this._students);
+        this._loadPeriod();
+    },
+
+    /**
+     * @private
+     */
     _loadAssignments: function(periodid) {
-        assignment_store.pageSize = 10000; // TODO: avoid UGLY hack
+        assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
         assignment_store.proxy.setDevilryFilters([{
             field: 'parentnode',
             comp: 'exact',
@@ -59,7 +95,7 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadGroups: function(assignmentid, totalAssignments) {
-        assignmentgroup_store.pageSize = 10000; // TODO: avoid UGLY hack
+        assignmentgroup_store.pageSize = 100000; // TODO: avoid UGLY hack
         assignmentgroup_store.proxy.setDevilryFilters([{
             field: 'parentnode',
             comp: 'exact',
@@ -94,10 +130,8 @@ Ext.define('devilry.statistics.Loader', {
      */
     _addStudent: function(username, grouprecord) {
         if(!this._students[username]) {
-            this._students[username] = {
-                username: username,
-                groupsByAssignmentId: {}
-            };
+            console.log(Ext.String.format('Skipped {0} because the user is not a related student.', username));
+            return;
         }
         var student = this._students[username];
         student.groupsByAssignmentId[grouprecord.data.parentnode] = {

@@ -7,6 +7,8 @@
 {% block headextra %}
 
 <script>
+    var relatedstudent_model = {{ RestfulSimplifiedRelatedStudent|extjs_model:"user_details" }}
+    var relatedstudent_store = {{ RestfulSimplifiedRelatedStudent|extjs_store }}
     var period_model = {{ RestfulSimplifiedPeriod|extjs_model }};
     var assignment_model = {{ RestfulSimplifiedAssignment|extjs_model }};
     var assignment_store = {{ RestfulSimplifiedAssignment|extjs_store }};
@@ -72,7 +74,7 @@
                                 var username = item.get('username');
                                 var student = loader.getStudentByName(username);
                                 var m = approvedFilter.match(loader, student);
-                                return m;
+                                return true;
                             }
                         })
                     );
