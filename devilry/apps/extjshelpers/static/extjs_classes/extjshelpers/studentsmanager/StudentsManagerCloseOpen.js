@@ -87,6 +87,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
                 }
             }
         });
-    },
+    }
 
 });

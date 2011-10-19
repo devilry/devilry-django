@@ -49,7 +49,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
 
-        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow');
+        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
+            isAdministrator: this.isAdministrator
+        });
     },
 
 
@@ -86,6 +88,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
                     assignmentid: this.assignmentid,
+                    isAdministrator: this.isAdministrator,
+                    isAnonymous: this.assignmentrecord.data.anonymous,
                     dockedItems: [{
                         xtype: 'toolbar',
                         dock: 'top',
@@ -138,7 +142,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getFilters: function() {
         var me = this;
-        return [{xtype: 'menuheader', html: 'Open/closed'}, {
+        var filters = [{xtype: 'menuheader', html: 'Open/closed'}, {
             text: 'Open',
             handler: function() { me.setFilter('is_open:yes'); }
         }, {
@@ -172,6 +176,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             text: 'From previous period',
             handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
         }];
+        if(this.assignmentrecord.data.anonymous) {
+            filters.push({
+                xtype: 'menuheader', html: 'Candidate ID'
+            });
+            filters.push({
+                text: 'Missing candidate ID',
+                handler: function() { me.setFilter('candidates__identifier:none'); }
+            });
+        }
+        return filters;
     },
 
     getToolbarItems: function() {
