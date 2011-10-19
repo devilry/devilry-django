@@ -286,6 +286,129 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         this.createManyGroupsInBulk(groups);
     },
 
+
+    onSetCandidateIdBulk: function() {
+        if(this.noneSelected()) {
+            this.onSelectNone();
+            return;
+        }
+        var win = Ext.widget('window', {
+            title: 'Import candidate IDs',
+            modal: true,
+            width: 800,
+            height: 600,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'setlistofusers',
+                usernames: [],
+                fieldLabel: 'Candidates',
+                anonymous: this.assignmentrecord.anonymous,
+                helptpl: Ext.create('Ext.XTemplate',
+                    '<div class="section helpsection">',
+                    '    <p><strong>Warning:</strong> This action will replace/clear candidate IDs on every selected group.</p>',
+                    '    <p>The <em>intended use case</em> for this window is to paste candidate IDs into Devilry instead of setting candidate IDs manually.</p>',
+                    '    <p>The format is one candidate on each line. Username and <em>candidate ID</em> is separated by whitespace and/or a single colon, comma or semicolon. Note that <em>candidate ID</em> does not have to be a number.</p>',
+                    '    <p><strong>Example</strong> (using colon to separate username and candidate ID):</p>',
+                    '    <pre style="padding: 5px;">bob:20\nalice:A753\neve:SEC-01\ndave:30</pre>',
+                    '    <p><strong>Example</strong> (showing all of the supported separators):</p>',
+                    '    <pre style="padding: 5px;">bob    20\nalice : A753\neve, SEC-01\ndave;  30</pre>',
+                    '</div>'
+                ),
+                listeners: {
+                    scope: this,
+                    saveClicked: function(setlistofusersobj, candidateSpecs, caller) {
+                        try {
+                            var usernameToCandidateIdMap = this.parseCandidateImportFormat(candidateSpecs);
+                        } catch(e) {
+                            Ext.MessageBox.alert('Error', e);
+                            return;
+                        }
+                        setlistofusersobj.up('window').close();
+                        this.progressWindow.start('Set candidate ID on many');
+                        this._finishedSavingGroupCount = 0;
+                        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+                            scope: this,
+                            callback: this.setCandidateId,
+                            extraArgs: [usernameToCandidateIdMap]
+                        });
+                        
+                    },
+                }
+            }
+        });
+        win.show();
+
+    },
+
+    /**
+     * @private
+     */
+    parseCandidateImportFormat: function(candidateSpecs) {
+        var usernameToCandidateIdMap = {};
+        Ext.each(candidateSpecs, function(candidateSpec, index) {
+            var s = candidateSpec.split(/\s*[:,;\s]\s*/);
+            if(candidateSpec.length > 0) {
+                if(s.length != 2) {
+                    throw Ext.String.format('Invalid format on line {0}: {1}', index, candidateSpec)
+                }
+                usernameToCandidateIdMap[s[0]] = s[1];
+            }
+        }, this);
+        return usernameToCandidateIdMap;
+    },
+
+    /**
+     * @private
+     */
+    setCandidateId: function(record, index, totalSelectedGroups, usernameToCandidateIdMap) {
+        var msg = Ext.String.format('Setting candidate ID on group {0}/{1}',
+            index, totalSelectedGroups
+        );
+        this.getEl().mask(msg);
+
+        var editRecord = this.createRecordFromStoreRecord(record);
+        editRecord.data.fake_candidates = [];
+
+        var result_preview = '';
+        var usernames = record.data.candidates__student__username;
+        Ext.Array.each(usernames, function(username, index) {
+            var candidate_id = usernameToCandidateIdMap[username];
+            editRecord.data.fake_candidates.push({
+                username: username,
+                candidate_id: candidate_id
+            });
+            result_preview += username;
+            if(candidate_id) {
+                result_preview += username + ':';
+            } else {
+                this.progressWindow.addWarning(record, Ext.String.format('No Candidate ID for {0}.', username));
+            }
+            if(index < usernames.length) {
+                result_preview += ', ';
+            }
+        }, this);
+
+        editRecord.save({
+            scope: this,
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(record, Ext.String.format('Candidate IDs successfully updated to: {0}.', result_preview));
+                } else {
+                    this.progressWindow.addErrorFromOperation(record, 'Failed to save changes to group.', operation);
+                }
+
+                this._finishedSavingGroupCount ++;
+                if(this._finishedSavingGroupCount == totalSelectedGroups) {
+                    this.loadFirstPage();
+                    this.getEl().unmask();
+                    this.progressWindow.finish();
+                }
+            }
+        });
+    },
+
+
     statics: {
         getCandidateInfoFromGroupRecord: function(record) {
             var candidates = [];

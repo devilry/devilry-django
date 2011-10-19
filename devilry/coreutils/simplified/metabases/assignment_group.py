@@ -1,6 +1,6 @@
 from devilry.apps.core import models
 from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
-                                ForeignFilterSpec, boolConverter, intConverter,
+                                ForeignFilterSpec, boolConverter, intConverter, noCandidateIdConverter,
                                 intOrNoneConverter, dateTimeConverter)
 
 
@@ -66,6 +66,8 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                           FilterSpec('feedback__points', type_converter=intConverter),
                           FilterSpec('feedback__is_passing_grade', type_converter=boolConverter),
                           FilterSpec('feedback__grade'),
+
+                          FilterSpec('candidates__identifier', type_converter=noCandidateIdConverter),
 
                           # Latest delivery
                           FilterSpec('feedback__delivery__number', type_converter=intConverter),

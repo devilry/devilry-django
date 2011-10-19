@@ -53,5 +53,6 @@ class Candidate(models.Model, Etag):
 
     #TODO delete this?
     def save(self, *args, **kwargs):
-        self.update_identifier(self.assignment_group.parentnode.anonymous)
+        anonymous = kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous)
+        self.update_identifier(anonymous)
         super(Candidate, self).save(*args, **kwargs)

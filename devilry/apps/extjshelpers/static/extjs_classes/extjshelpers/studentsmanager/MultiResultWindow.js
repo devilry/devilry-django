@@ -8,6 +8,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     modal: true,
     maximizable: true,
 
+    config: {
+        isAdministrator: undefined
+    },
+
     logTpl: Ext.create('Ext.XTemplate',
         '<tpl for="log">',
         '    <div class="section {parent.csscls}-small">',
@@ -15,8 +19,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '            <tpl if="assgnmentGroupRecord.data.name">',
         '               {assgnmentGroupRecord.data.name} -',
         '            </tpl>',
-        '            <tpl for="assgnmentGroupRecord.data.candidates__identifier">',
-        '               {.}<tpl if="xindex &lt; xcount">, </tpl>',
+        '            <tpl if="parent.isAdministrator">',
+        '                <tpl for="assgnmentGroupRecord.data.candidates__student__username">',
+        '                   {.}<tpl if="xindex &lt; xcount">, </tpl>',
+        '                </tpl>',
+        '            </tpl>',
+        '            <tpl if="!parent.isAdministrator">',
+        '                <tpl for="assgnmentGroupRecord.data.candidates__identifier">',
+        '                   {.}<tpl if="xindex &lt; xcount">, </tpl>',
+        '                </tpl>',
         '            </tpl>',
         '        </h1>',
         '        {msg}',
@@ -36,6 +47,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     ),
 
     constructor: function(config) {
+        this.initConfig(config);
         this.callParent([config]);
     },
 
@@ -57,10 +69,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
                 xtype: 'panel',
                 border: false,
                 layout: 'accordion'
-                //layout: {
-                    //type: 'vbox',
-                    //align: 'stretch'
-                //}
             },
             dockedItems: [{
                 xtype: 'toolbar',
@@ -83,12 +91,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     },
 
     addToLog: function(level, assgnmentGroupRecord, msg) {
+        
         var logitem = {
             assgnmentGroupRecord: assgnmentGroupRecord,
             msg: msg
         }
         this.log[level].push(logitem);
-        //console.log(logitem);
     },
 
     addError: function(assgnmentGroupRecord, msg) {
@@ -135,7 +143,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
                 autoScroll: true,
                 html: this.logTpl.apply({
                     csscls: csscls,
-                    log: log
+                    log: log,
+                    isAdministrator: this.isAdministrator
                 })
             });
             this.down('panel').add(container);
