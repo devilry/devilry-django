@@ -1,6 +1,6 @@
-Ext.define('devilry.statistics.FilterGroup', {
+Ext.define('devilry.statistics.LabelConfig', {
     config: {
-        title: undefined
+        label: undefined
     },
     requires: [
         'devilry.statistics.Filter',

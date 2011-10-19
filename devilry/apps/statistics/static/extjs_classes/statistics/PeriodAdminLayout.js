@@ -3,7 +3,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     layout: 'border',
     requires: [
         'devilry.statistics.Loader',
-        'devilry.statistics.FilterGroup',
+        'devilry.statistics.LabelConfig',
         'devilry.statistics.FilterEditor'
     ],
 
@@ -92,9 +92,8 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         }])
 
 
-        //loader.getAssignmentByShortName('week1').get('id')
-        //var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
-            //title: 'Approved'
+        //var approvedFilter = Ext.create('devilry.statistics.LabelConfig', {
+            //label: 'Approved'
         //});
         //approvedFilter.addFilter({
             //must_pass: [
