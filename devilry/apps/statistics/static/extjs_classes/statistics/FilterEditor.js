@@ -1,17 +1,19 @@
 Ext.define('devilry.statistics.FilterEditor', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.tab.Panel',
     alias: 'widget.statistics-filtereditor',
     requires: [
-        'devilry.statistics.ListOfAssignments'
+        'devilry.statistics.MustPassEditor',
+        'devilry.statistics.PointSpecEditor'
     ],
 
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'statistics-listofassignments',
-                title: 'Require passing grade on these assignments'
+                xtype: 'statistics-mustpasseditor',
+                title: 'Must pass'
             }, {
-                
+                xtype: 'statistics-pointspeceditor',
+                title: 'Points'
             }]
         });
         this.callParent(arguments);

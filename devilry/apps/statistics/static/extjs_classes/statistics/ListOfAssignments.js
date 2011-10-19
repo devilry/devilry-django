@@ -2,11 +2,30 @@ Ext.define('devilry.statistics.ListOfAssignments', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.statistics-listofassignments',
     hideHeaders: true,
+
     recordTpl: Ext.create('Ext.XTemplate',
-        '<tpl for="assignments">',
-        '    {.}<tpl if="xindex &lt; xcount"> OR </tpl>',
+        '<tpl if="assignments.length &gt; 1">',
+        '    {prefix}',
+        '    <tpl for="assignments">',
+        '        {.}<tpl if="xindex &lt; xcount"> {parent.splitter} </tpl>',
+        '    </tpl>',
+        '</tpl>',
+        '<tpl if="assignments.length == 1">',
+        '    <tpl for="assignments">',
+        '        {.}',
+        '    </tpl>',
         '</tpl>'
     ),
+
+    config: {
+        rowPrefix: '',
+        rowSplitter: 'OR'
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
 
     initComponent: function() {
         this.store = Ext.create('Ext.data.ArrayStore', {
@@ -22,7 +41,11 @@ Ext.define('devilry.statistics.ListOfAssignments', {
             columns: [{
                 header: 'Assignments', dataIndex: 'assignments', flex: 1,
                 renderer: function(value, p, record) {
-                    return this.recordTpl.apply({assignments: value});
+                    return this.recordTpl.apply({
+                        assignments: value,
+                        prefix: this.rowPrefix,
+                        splitter: this.rowSplitter
+                    });
                 }
             }],
             bbar: [{
