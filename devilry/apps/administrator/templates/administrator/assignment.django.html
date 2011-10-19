@@ -9,8 +9,8 @@
 <script>
     {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }}
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }}
-    {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }}
-    {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model:"user_details" }}
+    {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model:"user_details" }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject,admins" }};
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,feedbackdelivery,assignment,period,subject,users,tags" }};
