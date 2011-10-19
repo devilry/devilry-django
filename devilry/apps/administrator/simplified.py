@@ -16,7 +16,8 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
 
-__all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
+__all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment',
+           'SimplifiedRelatedExaminer', 'SimplifiedRelatedStudent', 'SimplifiedRelatedStudentKeyValue')
 
 
 def _convert_list_of_usernames_to_userobjects(usernames):
@@ -197,11 +198,13 @@ class RelatedUsersBase(SimplifiedModelApi):
 
 class RelatedUsersMetaBase:
     methods = ['create', 'read', 'update', 'delete', 'search']
-    resultfields = FieldSpec('id', 'userspec', 'period')
-    searchfields = FieldSpec('userspec')
-    editablefields = ('userspec', 'period')
-    filters = FilterSpecs(FilterSpec('period'),
-                          FilterSpec('userspec'))
+    resultfields = FieldSpec('id', 'period', 'user',
+                             user_details=['user__username', 'user__first_name', 'user__last_name', 'user__email'])
+    searchfields = FieldSpec('user__username')
+    editablefields = ('period', 'user')
+    filters = FilterSpecs(FilterSpec('id', supported_comp=('exact',)),
+                          FilterSpec('period', supported_comp=('exact',)),
+                          FilterSpec('user', supported_comp=('exact',)))
 
 @simplified_modelapi
 class SimplifiedRelatedExaminer(RelatedUsersBase):
@@ -216,6 +219,44 @@ class SimplifiedRelatedStudent(RelatedUsersBase):
     class Meta(RelatedUsersMetaBase):
         """ Defines what methods an Administrator can use on a RelatedStudent object using the Simplified API """
         model = models.RelatedStudent
+        resultfields = RelatedUsersMetaBase.resultfields + FieldSpec('candidate_id')
+        searchfields = RelatedUsersMetaBase.searchfields + FieldSpec('candidate_id')
+        editablefields = RelatedUsersMetaBase.editablefields + ('candidate_id',)
+        filters = RelatedUsersMetaBase.filters + FilterSpecs(FilterSpec('candidate_id'))
+
+
+@simplified_modelapi
+class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudentKeyValue`. """
+    class Meta(RelatedUsersMetaBase):
+        model = models.RelatedStudentKeyValue
+        resultfields = FieldSpec('id', 'application', 'key', 'value', 'relatedstudent')
+        searchfields = FieldSpec('application', 'key', 'value', 'relatedstudent__user__username')
+        editablefields = ('application', 'key', 'value', 'relatedstudent')
+        filters = FilterSpecs(FilterSpec('id', supported_comp=('exact',)),
+                              FilterSpec('relatedstudent__period', supported_comp=('exact',)),
+                              FilterSpec('relatedstudent__user', supported_comp=('exact',)))
+
+    @classmethod
+    def create_searchqryset(cls, user):
+        """ Returns all related users of this type where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A object of the type this method is used in.
+        :throws PermissionDenied:
+        """
+        if not obj.relatedstudent.period.can_save(user):
+            raise PermissionDenied()
 
 
 @simplified_modelapi
