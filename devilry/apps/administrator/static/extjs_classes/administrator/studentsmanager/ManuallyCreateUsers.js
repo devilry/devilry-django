@@ -3,6 +3,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     alias: 'widget.manuallycreateusers',
     frame: false,
     border: false,
+    poolSize: 20,
 
     layout: {
         type: 'vbox',
@@ -188,6 +189,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.finishedCounter = 0;
         this.unsuccessful = [];
         this.parsedArray = parsedArray;
+        this._currentPoolMembers = 0;
         Ext.Array.each(this.parsedArray, function(groupSpecObj) {
             this.createGroup(groupSpecObj);
         }, this);
@@ -227,6 +229,13 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     createGroup: function(groupSpecObj) {
+        if(this._currentPoolMembers >= this.poolSize) {
+            Ext.defer(function() {
+                this.createGroup(groupSpecObj);
+            }, 250, this);
+            return;
+        }
+        this._currentPoolMembers ++;
         var completeGroupSpecObj = {
             parentnode: this.assignmentrecord.data.id
         };
@@ -236,6 +245,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             scope: this,
             success: this.createDeadline,
             failure: function() {
+                this._currentPoolMembers --;
                 this.finishedCounter ++;
                 this.unsuccessful.push(groupSpecObj);
                 this.getEl().mask(
@@ -259,6 +269,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 scope: this,
                 failure: function() {
                     console.error('Failed to save deadline record');
+                    this._currentPoolMembers --;
                 },
                 success: this.onCreateDeadlineSuccess
             }
@@ -269,6 +280,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onCreateDeadlineSuccess: function(record) {
+        this._currentPoolMembers --;
         this.finishedCounter ++;
         this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
             this.finishedCounter, this.parsedArray.length,
