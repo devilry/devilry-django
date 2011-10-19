@@ -18,70 +18,10 @@
     var assignmentgroup_store = {{ RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     
-
-    Ext.require('devilry.statistics.Loader');
-    Ext.require('devilry.statistics.FilterGroup');
+    Ext.require('devilry.statistics.PeriodAdminLayout');
     Ext.onReady(function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
-        Ext.create('devilry.statistics.Loader', {{ periodid }}, {
-            listeners: {
-                loaded: function(loader) {
-                    var extjsStructures = loader.extjsFormat();
-                    Ext.getBody().unmask();
-                    //console.log(loader.students);
-                    //console.log(loader.columns);
-
-                    var store = Ext.create('Ext.data.Store', {
-                        fields: extjsStructures.storeFields,
-                        data: {'items': extjsStructures.storeStudents},
-                        proxy: {
-                            type: 'memory',
-                            reader: {
-                                type: 'json',
-                                root: 'items'
-                            }
-                        }
-                    });
-
-                    Ext.create('Ext.panel.Panel', {
-                        layout: 'fit',
-                        renderTo: Ext.getBody(),
-                        items: [{
-                            xtype: 'grid',
-                            store: store,
-                            columns: extjsStructures.gridColumns,
-                        }]
-                    });
-
-                    var approvedFilter = Ext.create('devilry.statistics.FilterGroup', {
-                        title: 'Approved'
-                    });
-                    approvedFilter.addFilter({
-                        must_pass: [
-                            [loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                            [loader.getAssignmentByShortName('week2').get('id')]
-                        ],
-                        pointspec: Ext.create('devilry.statistics.PointSpec', {
-                            assignments: [
-                                [loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                                [loader.getAssignmentByShortName('week1').get('id')]
-                            ],
-                            min: 10,
-                            max: 40
-                        })
-                    });
-                    store.filter(
-                        Ext.create('Ext.util.Filter', {
-                            filterFn: function(item) {
-                                var username = item.get('username');
-                                var student = loader.getStudentByName(username);
-                                var m = approvedFilter.match(loader, student);
-                                return m;
-                            }
-                        })
-                    );
-                }
-            }
+        Ext.create('devilry.statistics.PeriodAdminLayout', {
+            periodid: {{ periodid }}
         });
     });
 </script>
