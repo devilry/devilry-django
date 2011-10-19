@@ -382,14 +382,6 @@ class TestTestHelper(TestCase):
         self.assertGreater(d5.time_of_delivery.date(), d5.deadline.deadline.date())   # self.ti.inf1000_second_oblig1.publishing_time)
         self.assertTrue(d5.after_deadline)
 
-        # check that all the created deliveries have the status
-        # Delivery.DELIVERY_NOT_CORRECTED
-        self.assertEquals(d1._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
-        self.assertEquals(d2._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
-        self.assertEquals(d3._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
-        self.assertEquals(d4._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
-        self.assertEquals(d5._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
-
     def test_feedback(self):
         self.ti.add(nodes='uio.ifi',
                     subjects=['inf1000'],

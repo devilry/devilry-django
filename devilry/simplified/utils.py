@@ -82,5 +82,47 @@ def modelinstance_to_dict(instance, fieldnames):
                 dct[fieldname] = getattr(instance, fieldname) # This is an annotated field (or something is seriously wrong)
             except AttributeError:
                 # Annotated field
-                continue # If we fail here, it will not work to user this for both read (which does not support annotated fields) and search
+                continue # If we fail here, it will not work to use this for both read (which does not support annotated fields) and search
     return dct
+
+
+class DictDiffer(object):
+
+    def __init__(self, dict1, dict2):
+        self.dict1, self.dict2 = dict1, dict2
+        self.set_current, self.set_past = set(dict1.keys()), set(dict2.keys())
+        self.intersect = self.set_current.intersection(self.set_past)
+    def added(self):
+        return self.set_current - self.intersect 
+    def removed(self):
+        return self.set_past - self.intersect 
+    def changed(self):
+        return set(o for o in self.intersect if self.dict2[o] != self.dict1[o])
+
+    def diff(self):
+        res = ""
+        if len(self.added()) > 0:
+            res += "Fields only in dict1:\n"
+            for e in self.added():
+                res += "* %s:%s\n" % (e, self.dict1[e])
+        if len(self.removed()) > 0:
+            res += "Fields only in dict2:\n"
+            for e in self.removed():
+                res += "* %s:%s\n" % (e, self.dict2[e])
+        c = self.changed()
+        if len(c) > 0:
+            res += "Following fields differ in values:\n"
+            for e in c:
+                res += "* %s:  dict1:'%s', dict2:'%s'\n" % (e, self.dict1[e], self.dict2[e])
+        return res
+        
+    def get_sorted_list_as_string(self):
+        return self.sorted_dict_as_string(self.dict1), self.sorted_dict_as_string(self.dict2)
+
+    def equals(self):
+        return len(self.added()) == 0 and len(self.removed()) == 0 and len(self.changed()) == 0
+    
+    def sorted_dict_as_string(self, dict):
+        keys = dict.keys()
+        keys.sort()
+        return map(lambda k: "%s:%s" % (k, dict[k]), [key for key in keys])
