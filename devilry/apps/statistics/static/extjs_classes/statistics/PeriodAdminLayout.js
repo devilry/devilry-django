@@ -18,15 +18,14 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     
     initComponent: function() {
         Ext.apply(this, {
-            items: [//{
-                //region: 'north',
-                //xtype: 'pageheader',
-                //navclass: 'administrator'
-            //}, {
-                //region: 'south',
-                //xtype: 'pagefooter'
-            //}, 
-            this._center = Ext.widget('container', {
+            items: [{
+                region: 'north',
+                xtype: 'pageheader',
+                navclass: 'administrator'
+            }, {
+                region: 'south',
+                xtype: 'pagefooter'
+            }, this._center = Ext.widget('container', {
                 region: 'center',
                 padding: {left: 20, right: 20}
             })]

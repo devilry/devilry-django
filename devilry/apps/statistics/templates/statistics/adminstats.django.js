@@ -1,12 +1,12 @@
-{% extends "theme/no-body.django.html" %}
+{% extends "theme/common.django.html" %}
 {% load extjs %}
 
-{% block title %}Statistics{% endblock %}
+{% block imports %}
+    {{ block.super }}
+    Ext.require('devilry.statistics.PeriodAdminLayout');
+{% endblock %}
 
-
-{% block headextra %}
-
-<script>
+{% block appjs %}
     {{ RestfulSimplifiedRelatedStudent|extjs_model:"user_details" }}
     var relatedstudent_store = {{ RestfulSimplifiedRelatedStudent|extjs_store }}
     {{ RestfulSimplifiedRelatedStudentKeyValue|extjs_model }}
@@ -18,12 +18,11 @@
     var assignmentgroup_store = {{ RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     
-    Ext.require('devilry.statistics.PeriodAdminLayout');
-    Ext.onReady(function() {
-        Ext.create('devilry.statistics.PeriodAdminLayout', {
-            periodid: {{ periodid }}
-        });
-    });
-</script>
+{% endblock %}
 
+{% block onready %}
+    {{ block.super }}
+    Ext.create('devilry.statistics.PeriodAdminLayout', {
+        periodid: {{ periodid }}
+    });
 {% endblock %}
