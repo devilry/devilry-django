@@ -5,12 +5,22 @@ Ext.define('devilry.statistics.MustPassEditor', {
         'devilry.statistics.ListOfAssignments'
     ],
 
+    config: {
+        assignment_store: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
             items: {
                 xtype: 'statistics-listofassignments',
-                title: 'Require passing grade on the following assignments:'
+                title: 'Require passing grade on the following assignments:',
+                assignment_store: this.assignment_store
             }
         });
         this.callParent(arguments);

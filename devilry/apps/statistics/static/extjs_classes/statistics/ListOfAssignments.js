@@ -4,28 +4,23 @@ Ext.define('devilry.statistics.ListOfAssignments', {
     hideHeaders: true,
 
     recordTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="assignments.length &gt; 1">',
+        '<tpl if="assignmentRecords.length &gt; 1">',
         '    {prefix}',
-        '    <tpl for="assignments">',
-        '        {.}<tpl if="xindex &lt; xcount"> {parent.splitter} </tpl>',
+        '    <tpl for="assignmentRecords">',
+        '        {data.short_name}<tpl if="xindex &lt; xcount">{parent.splitter}</tpl>',
         '    </tpl>',
         '</tpl>',
-        '<tpl if="assignments.length == 1">',
-        '    <tpl for="assignments">',
-        '        {.}',
+        '<tpl if="assignmentRecords.length == 1">',
+        '    <tpl for="assignmentRecords">',
+        '        {data.short_name}',
         '    </tpl>',
         '</tpl>'
     ),
 
     config: {
         rowPrefix: '',
-        rowSplitter: 'OR',
-
-        /**
-         * @cfg
-         * A devilry.statistics.Loader object which is used to get assignments.
-         */
-        loader: undefined
+        rowSplitter: ' OR ',
+        assignment_store: undefined
     },
 
     constructor: function(config) {
@@ -37,18 +32,18 @@ Ext.define('devilry.statistics.ListOfAssignments', {
         this.store = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,
             idIndex: 0,
-            fields: ['assignments']
+            fields: ['assignmentIds']
         });
         this.store.add({
-            assignments: ['week1', 'week2']
+            assignmentIds: [1, 3]
         })
 
         Ext.apply(this, {
             columns: [{
-                header: 'Assignments', dataIndex: 'assignments', flex: 1,
-                renderer: function(value, p, record) {
+                header: 'Assignments', dataIndex: 'assignmentIds', flex: 1,
+                renderer: function(assignmentIds, p, record) {
                     return this.recordTpl.apply({
-                        assignments: value,
+                        assignmentRecords: this._getAssignmentRecordsFromIds(assignmentIds),
                         prefix: this.rowPrefix,
                         splitter: this.rowSplitter
                     });
@@ -70,20 +65,38 @@ Ext.define('devilry.statistics.ListOfAssignments', {
         var me = this;
         Ext.Msg.prompt('Assignment(s)', 'Please enter assignment(s):', function(btn, text){
             if(btn == 'ok'){
-                var assignments = me._parseAssignmentSpec(text);
-                console.log(assignments);
-                me._addAssignmentGroupToStore(assignments);
+                var assignmentShortNames = me._parseAssignmentSpec(text);
+                var assignmentIds = me._convertShortnamesToIds(assignmentShortNames);
+                me._addToStore(assignmentIds);
             }
         });
     },
 
-    _parseAssignmentSpec: function(mustPassItemAsStr) {
-        return mustPassItemAsStr.split(/\s*,\s*/);;
+    _parseAssignmentSpec: function(assignmentShortNames) {
+        return assignmentShortNames.split(/\s*,\s*/);;
     },
 
-    _addAssignmentGroupToStore: function(assignments) {
+    _convertShortnamesToIds: function(assignmentShortNames) {
+        var ids = [];
+        Ext.each(assignmentShortNames, function(short_name, index) {
+            var assignmentRecord = this.assignment_store.findRecord('short_name', short_name);
+            ids.push(assignmentRecord.get('id'));
+        }, this);
+        return ids;
+    },
+
+    _addToStore: function(assignmentIds) {
         this.store.add({
-            assignments: assignments
+            assignmentIds: assignmentIds
         });
+    },
+
+    _getAssignmentRecordsFromIds: function(assignmentIds) {
+        var assignmentRecords = [];
+        Ext.each(assignmentIds, function(assignmentId, index) {
+            var assignmentRecord = this.assignment_store.findRecord('id', assignmentId);
+            assignmentRecords.push(assignmentRecord);
+        }, this);
+        return assignmentRecords;
     }
 });

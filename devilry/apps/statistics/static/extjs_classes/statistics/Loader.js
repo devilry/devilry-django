@@ -264,15 +264,15 @@ Ext.define('devilry.statistics.Loader', {
 
     getStudentByName: function(username) {
         return this._students[username];
-    },
-
-    getAssignmentById: function(id) {
-        return this.assignment_store.findRecord('id', id);
-    },
-
-    getAssignmentByShortName: function(short_name) {
-        return this.assignment_store.findRecord('short_name', short_name);
     }
+
+    //getAssignmentById: function(id) {
+        //return this.assignment_store.findRecord('id', id);
+    //},
+
+    //getAssignmentByShortName: function(short_name) {
+        //return this.assignment_store.findRecord('short_name', short_name);
+    //}
 
     //validateAssignmentShortName: function(assignment_id) {
         //if(!this.getAssignmentByShortName(assignment_id)) {

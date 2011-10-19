@@ -6,14 +6,25 @@ Ext.define('devilry.statistics.FilterEditor', {
         'devilry.statistics.PointSpecEditor'
     ],
 
+    config: {
+        assignment_store: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         Ext.apply(this, {
             items: [{
                 xtype: 'statistics-mustpasseditor',
-                title: 'Must pass'
+                title: 'Must pass',
+                assignment_store: this.assignment_store
             }, {
                 xtype: 'statistics-pointspeceditor',
-                title: 'Must have points'
+                title: 'Must have points',
+                assignment_store: this.assignment_store
             }],
 
             bbar: ['->', {

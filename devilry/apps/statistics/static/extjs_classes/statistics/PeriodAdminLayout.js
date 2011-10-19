@@ -17,10 +17,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
     
     initComponent: function() {
-        this._center = Ext.widget('container', {
-            region: 'center',
-            layout: 'fit'
-        });
+        //this._center = Ext.widget('container', {
+            //region: 'center',
+            //layout: 'fit'
+        //});
         Ext.apply(this, {
             style: 'background-color: transparent',
             items: [{
@@ -30,20 +30,22 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, {
                 region: 'south',
                 xtype: 'pagefooter'
-            }, {
+            }, this._center = Ext.widget('container', {
                 region: 'center',
-                xtype: 'container',
                 style: 'background-color: transparent',
-                layout: 'border',
-                padding: {left: 20, right: 20},
-                items: [this._center, {
-                    xtype: 'statistics-filtereditor',
-                    region: 'east',
-                    title: 'Configurable labels',
-                    width: 300,
-                    collapsible: true,
-                }]
-            }]
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                padding: {left: 20, right: 20}
+                //items: [this._center, {
+                    //xtype: 'statistics-filtereditor',
+                    //region: 'east',
+                    //title: 'Configurable labels',
+                    //width: 300,
+                    //collapsible: true,
+                //}]
+            })]
         });
         this.callParent(arguments);
         this._loadStudents();
@@ -75,12 +77,19 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }
         });
 
-        this._center.add({
+        this._center.add([{
             xtype: 'grid',
             autoScroll: true,
+            flex: 1,
             store: store,
             columns: extjsStructures.gridColumns,
-        });
+        }, {
+            xtype: 'statistics-filtereditor',
+            region: 'east',
+            title: 'Configurable labels',
+            assignment_store: loader.assignment_store,
+            width: 300
+        }])
 
 
         //loader.getAssignmentByShortName('week1').get('id')

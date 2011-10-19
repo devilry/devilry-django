@@ -6,6 +6,15 @@ Ext.define('devilry.statistics.PointSpecEditor', {
         'devilry.statistics.RangeSelect'
     ],
 
+    config: {
+        assignment_store: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         Ext.apply(this, {
             layout: {
@@ -18,6 +27,7 @@ Ext.define('devilry.statistics.PointSpecEditor', {
                 title: 'Require the following amount of points:'
             }, {
                 xtype: 'statistics-listofassignments',
+                assignment_store: this.assignment_store,
                 flex: 1,
                 title: '... in total on the following assignments:',
                 rowPrefix: 'Highest score of: ',
