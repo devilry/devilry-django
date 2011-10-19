@@ -16,12 +16,12 @@ Ext.define('devilry.statistics.RangeSelect', {
     items: [{
         name: "min",
         fieldLabel: "Minimum",
-        xtype: 'textfield',
+        xtype: 'numberfield',
         emptyText: 'Example: 0'
     }, {
         name: "max",
         fieldLabel: "Maximum",
-        xtype: 'textfield',
+        xtype: 'numberfield',
         emptyText: 'Example: 1000'
     }]
 });

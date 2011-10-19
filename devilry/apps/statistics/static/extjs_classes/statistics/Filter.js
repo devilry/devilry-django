@@ -1,6 +1,5 @@
 Ext.define('devilry.statistics.Filter', {
     config: {
-        label: undefined,
         pointspec: undefined,
         must_pass: []
     },

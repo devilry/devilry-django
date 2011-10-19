@@ -24,5 +24,9 @@ Ext.define('devilry.statistics.MustPassEditor', {
             }
         });
         this.callParent(arguments);
+    },
+
+    getResult: function() {
+        return this.down('statistics-listofassignments').getArrayOfAssignmentIds();
     }
 });

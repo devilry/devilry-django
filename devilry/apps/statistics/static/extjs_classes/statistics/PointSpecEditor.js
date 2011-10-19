@@ -3,7 +3,8 @@ Ext.define('devilry.statistics.PointSpecEditor', {
     alias: 'widget.statistics-pointspeceditor',
     requires: [
         'devilry.statistics.ListOfAssignments',
-        'devilry.statistics.RangeSelect'
+        'devilry.statistics.RangeSelect',
+        'devilry.statistics.PointSpec'
     ],
 
     config: {
@@ -35,5 +36,16 @@ Ext.define('devilry.statistics.PointSpecEditor', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    getResult: function() {
+        var range = this.down('statistics-rangeselect').getForm().getFieldValues();
+        var assignments = this.down('statistics-listofassignments').getArrayOfAssignmentIds();
+        var pointSpec = Ext.create('devilry.statistics.PointSpec', {
+            assignments: assignments,
+            min: range.min,
+            max: range.max
+        });
+        return pointSpec;
     }
 });

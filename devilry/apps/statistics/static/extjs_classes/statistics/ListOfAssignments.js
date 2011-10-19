@@ -98,5 +98,13 @@ Ext.define('devilry.statistics.ListOfAssignments', {
             assignmentRecords.push(assignmentRecord);
         }, this);
         return assignmentRecords;
+    },
+
+    getArrayOfAssignmentIds: function() {
+        var ids = [];
+        Ext.each(this.store.data.items, function(record, index) {
+            ids.push(record.get('assignmentIds'));
+        }, this);
+        return ids;
     }
 });

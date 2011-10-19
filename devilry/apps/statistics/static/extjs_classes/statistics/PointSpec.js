@@ -7,7 +7,7 @@ Ext.define('devilry.statistics.PointSpec', {
 
     constructor: function(config) {
         this.initConfig(config);
-        if(this.min != undefined && this.max != undefined && this.min > this.max) {
+        if(Ext.typeOf(this.min) == 'number' && Ext.typeOf(this.max) == 'number' && this.min > this.max) {
             throw "Minimum points must be less than maximum points.";
         }
     },
