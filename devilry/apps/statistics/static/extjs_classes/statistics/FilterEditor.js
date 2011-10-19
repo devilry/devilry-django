@@ -14,6 +14,13 @@ Ext.define('devilry.statistics.FilterEditor', {
             }, {
                 xtype: 'statistics-pointspeceditor',
                 title: 'Must have points'
+            }],
+
+            bbar: ['->', {
+                xtype: 'button',
+                text: 'Save label',
+                iconCls: 'icon-save-32',
+                scale: 'large'
             }]
         });
         this.callParent(arguments);
