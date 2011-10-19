@@ -235,6 +235,7 @@ class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
         editablefields = ('application', 'key', 'value', 'relatedstudent', 'student_can_read')
         filters = FilterSpecs(FilterSpec('id', supported_comp=('exact',)),
                               FilterSpec('student_can_read', supported_comp=('exact',), type_converter=boolConverter),
+                              FilterSpec('application', supported_comp=('exact',)),
                               FilterSpec('relatedstudent__period', supported_comp=('exact',)),
                               FilterSpec('relatedstudent__user', supported_comp=('exact',)))
 
