@@ -1,5 +1,5 @@
 Ext.define('devilry.statistics.FilterEditor', {
-    extend: 'Ext.tab.Panel',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-filtereditor',
     requires: [
         'devilry.statistics.MustPassEditor',
@@ -18,13 +18,19 @@ Ext.define('devilry.statistics.FilterEditor', {
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'statistics-mustpasseditor',
-                title: 'Must pass',
-                assignment_store: this.assignment_store
+                xtype: 'box',
+                html: 'Test'
             }, {
-                xtype: 'statistics-pointspeceditor',
-                title: 'Must have points',
-                assignment_store: this.assignment_store
+                xtype: 'tabpanel',
+                items: [{
+                    xtype: 'statistics-mustpasseditor',
+                    title: 'Must pass',
+                    assignment_store: this.assignment_store
+                }, {
+                    xtype: 'statistics-pointspeceditor',
+                    title: 'Must have points',
+                    assignment_store: this.assignment_store
+                }]
             }],
 
             bbar: ['->', {
