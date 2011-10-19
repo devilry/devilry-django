@@ -19,7 +19,13 @@ Ext.define('devilry.statistics.ListOfAssignments', {
 
     config: {
         rowPrefix: '',
-        rowSplitter: 'OR'
+        rowSplitter: 'OR',
+
+        /**
+         * @cfg
+         * A devilry.statistics.Loader object which is used to get assignments.
+         */
+        loader: undefined
     },
 
     constructor: function(config) {

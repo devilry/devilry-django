@@ -4,6 +4,7 @@ Ext.define('devilry.statistics.Loader', {
     label_appkey: 'devilry.statistics',
 
     constructor: function(periodid, config) {
+
         this._students_by_releatedid = {};
         this._students = {};
         this._assignmentCollection = Ext.create('Ext.util.MixedCollection');
@@ -15,7 +16,6 @@ Ext.define('devilry.statistics.Loader', {
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
-
         this.callParent(arguments);        
     },
 
@@ -23,6 +23,11 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadAllRelatedStudents: function() {
+        var relatedstudent_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedRelatedStudent',
+            remoteFilter: true,
+            remoteSort: true
+        });
         relatedstudent_store.pageSize = 100000; // TODO: avoid UGLY hack
         relatedstudent_store.proxy.setDevilryFilters([{
             field: 'period',
@@ -57,6 +62,11 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadAllStudentLabels: function() {
+        var relatedstudentkeyvalue_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue',
+            remoteFilter: true,
+            remoteSort: true
+        });
         relatedstudentkeyvalue_store.pageSize = 100000; // TODO: avoid UGLY hack
         relatedstudentkeyvalue_store.proxy.setDevilryFilters([{
             field: 'relatedstudent__period',
@@ -91,7 +101,7 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadPeriod: function() {
-        period_model.load(this.periodid, {
+        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
             scope: this,
             success: function(record) {
                 this._loadAssignments(record.data.id);
@@ -103,13 +113,18 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadAssignments: function(periodid) {
-        assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
-        assignment_store.proxy.setDevilryFilters([{
+        this.assignment_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+            remoteFilter: true,
+            remoteSort: true
+        });
+        this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.assignment_store.proxy.setDevilryFilters([{
             field: 'parentnode',
             comp: 'exact',
             value: periodid
         }]);
-        assignment_store.load({
+        this.assignment_store.load({
             scope: this,
             callback: this._onAssignmentsLoaded
         });
@@ -130,6 +145,11 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadGroups: function(assignmentid, totalAssignments) {
+        var assignmentgroup_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup',
+            remoteFilter: true,
+            remoteSort: true
+        });
         assignmentgroup_store.pageSize = 100000; // TODO: avoid UGLY hack
         assignmentgroup_store.proxy.setDevilryFilters([{
             field: 'parentnode',

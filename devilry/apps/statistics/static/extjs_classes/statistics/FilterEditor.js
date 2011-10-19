@@ -13,7 +13,7 @@ Ext.define('devilry.statistics.FilterEditor', {
                 title: 'Must pass'
             }, {
                 xtype: 'statistics-pointspeceditor',
-                title: 'Points'
+                title: 'Must have points'
             }]
         });
         this.callParent(arguments);

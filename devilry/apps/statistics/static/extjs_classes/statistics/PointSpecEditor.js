@@ -15,11 +15,11 @@ Ext.define('devilry.statistics.PointSpecEditor', {
             items: [{
                 xtype: 'statistics-rangeselect',
                 height: 160,
-                title: 'Require the following amount of points'
+                title: 'Require the following amount of points:'
             }, {
                 xtype: 'statistics-listofassignments',
                 flex: 1,
-                title: '... on the following assignments',
+                title: '... in total on the following assignments:',
                 rowPrefix: 'Highest score of: ',
                 rowSplitter: ', '
             }]
