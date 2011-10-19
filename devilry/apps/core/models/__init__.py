@@ -5,7 +5,7 @@ from basenode import BaseNode
 from node import Node
 from subject import Subject
 from period import Period
-from relateduser import RelatedExaminer, RelatedStudent
+from relateduser import RelatedExaminer, RelatedStudent, RelatedStudentKeyValue
 from assignment import Assignment
 from assignment_group import AssignmentGroup, AssignmentGroupTag
 from delivery import Delivery
@@ -15,6 +15,7 @@ from static_feedback import StaticFeedback
 from filemeta import FileMeta
 
 __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
-           "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer',
-           'RelatedStudent', "Assignment", "AssignmentGroup", "AssignmentGroupTag", "Delivery",
-           "Deadline", "Candidate", "StaticFeedback", "FileMeta")
+           "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer', 'RelatedStudent',
+           "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
+           "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
+           "FileMeta")
