@@ -1,7 +1,7 @@
 Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
 
-    label_appkey: 'devilry.statistics',
+    label_appkey: 'devilry.statistics.Labels',
 
     constructor: function(periodid, config) {
 
@@ -97,7 +97,7 @@ Ext.define('devilry.statistics.Loader', {
             var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
             var label = appKeyValueRecord.get('key');
             var labelDescription = appKeyValueRecord.get('value');
-            this._students_by_releatedid[relatedstudent_id].labels[label] = labelDescription;
+            this._students_by_releatedid[relatedstudent_id].labels[label] = appKeyValueRecord;
         }, this);
         this._loadPeriod();
     },
@@ -272,11 +272,45 @@ Ext.define('devilry.statistics.Loader', {
 
     getAssignmentByShortName: function(short_name) {
         return this.assignment_store.findRecord('short_name', short_name);
-    }
+    },
 
     //validateAssignmentShortName: function(assignment_id) {
         //if(!this.getAssignmentByShortName(assignment_id)) {
             //throw Ext.String.format("{0}: Invalid assignment name: {1}", student.username, assignment_id);
         //}
     //}
+
+    setLabels: function(options) {
+        var labelRecords = [];
+        Ext.Object.each(this._students, function(relstudentid, student) {
+            var labelspecs = Ext.bind(options.callback, options.scope)(student);
+            Ext.each(labelspecs, function(labelspec, index) {
+                var labelRecord = student.labels[labelspec.labelname];
+                var has_label = labelRecord !== undefined; 
+                if(labelspec.apply && !has_label) {
+                    this._createLabel(student, labelspec.labelname);
+                } else if(!labelspec.apply && has_label) {
+                    this._deleteLabel(labelRecord);
+                }
+            }, this);
+        }, this);
+    },
+
+    _createLabel: function(student, labelname) {
+        var record = this._createLabelRecord(student, labelname);
+        record.save();
+    },
+
+    _deleteLabel: function(record) {
+        record.destroy();
+    },
+
+    _createLabelRecord: function(student, labelname) {
+        var record = Ext.create('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue', {
+            relatedstudent: student.relatedstudent.get('id'),
+            application: this.label_appkey,
+            key: labelname
+        });
+        return record;
+    },
 });

@@ -8,7 +8,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
 
     config: {
         loader: undefined,
-        aggregatedStore: undefined
+        aggregatedStore: undefined,
+        labelname: undefined
     },
 
     constructor: function(config) {
@@ -20,13 +21,23 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
         Ext.apply(this, {
             listeners: {
                 scope: this,
-                click: this._onClick
+                click: this._onApply
             }
         });
         this.callParent(arguments);
     },
 
-    _onClick: function() {
-        console.log(this.aggregatedStore);
+    _onApply: function() {
+        this.loader.setLabels({
+            callback: function(student) {
+                //console.log('_onApply', student.username);
+                return [{
+                    labelname: this.labelname,
+                    apply: true
+                }];
+            },
+            scope: this,
+            mode: 'update'
+        });
     }
 });

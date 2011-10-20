@@ -9,6 +9,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     config: {
         loader: undefined,
         aggregatedStore: undefined,
+        labelname: 'qualifies-for-exam',
         sidebarplugins: []
     },
 
@@ -27,6 +28,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         margins: '0 0 10 0'
     },
 
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+
     initComponent: function() {
         var chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             availablePlugins: [{
@@ -38,7 +44,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             }],
             commonArgs: {
                 loader: this.loader,
-                aggregatedStore: this.aggregatedStore
+                aggregatedStore: this.aggregatedStore,
+                labelname: this.labelname
             },
 
             listeners: {
