@@ -56,6 +56,7 @@ Ext.define('devilry.statistics.FilterEditor', {
     },
 
     _onSave: function() {
-        console.log(this.getFilter());
+        var filter = this.getFilter();
+        console.log(filter.toString(this.assignment_store));
     }
 });

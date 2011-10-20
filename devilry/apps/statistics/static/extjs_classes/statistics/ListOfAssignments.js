@@ -34,9 +34,11 @@ Ext.define('devilry.statistics.ListOfAssignments', {
             idIndex: 0,
             fields: ['assignmentIds']
         });
-        this.store.add({
+        this.store.add([{
             assignmentIds: [1, 3]
-        })
+        }, {
+            assignmentIds: [2]
+        }])
 
         Ext.apply(this, {
             columns: [{
@@ -92,12 +94,7 @@ Ext.define('devilry.statistics.ListOfAssignments', {
     },
 
     _getAssignmentRecordsFromIds: function(assignmentIds) {
-        var assignmentRecords = [];
-        Ext.each(assignmentIds, function(assignmentId, index) {
-            var assignmentRecord = this.assignment_store.findRecord('id', assignmentId);
-            assignmentRecords.push(assignmentRecord);
-        }, this);
-        return assignmentRecords;
+        return this.statics().getAssignmentRecordsFromIds(this.assignment_store, assignmentIds);
     },
 
     getArrayOfAssignmentIds: function() {
@@ -106,5 +103,16 @@ Ext.define('devilry.statistics.ListOfAssignments', {
             ids.push(record.get('assignmentIds'));
         }, this);
         return ids;
+    },
+
+    statics: {
+        getAssignmentRecordsFromIds: function(assignment_store, assignmentIds) {
+            var assignmentRecords = [];
+            Ext.each(assignmentIds, function(assignmentId, index) {
+                var assignmentRecord = assignment_store.findRecord('id', assignmentId);
+                assignmentRecords.push(assignmentRecord);
+            });
+            return assignmentRecords;
+        }
     }
 });
