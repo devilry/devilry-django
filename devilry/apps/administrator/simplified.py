@@ -228,8 +228,9 @@ class SimplifiedRelatedStudent(RelatedUsersBase):
 @simplified_modelapi
 class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudentKeyValue`. """
-    class Meta(RelatedUsersMetaBase):
+    class Meta:
         model = models.RelatedStudentKeyValue
+        methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec('id', 'application', 'key', 'value', 'relatedstudent', 'student_can_read')
         searchfields = FieldSpec('application', 'key', 'value', 'relatedstudent__user__username')
         editablefields = ('application', 'key', 'value', 'relatedstudent', 'student_can_read')
@@ -259,6 +260,10 @@ class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
         """
         if not obj.relatedstudent.period.can_save(user):
             raise PermissionDenied()
+
+    @classmethod
+    def is_empty(cls, obj):
+        return True
 
 
 @simplified_modelapi
