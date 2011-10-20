@@ -342,10 +342,18 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
-def add_relatedusers(related, userspecs):
-    for userspec in userspecs:
+def add_relatedstudents(related, usernames):
+    for username in usernames:
         try:
-            related.create(userspec=userspec)
+            related.create(user=User.objects.get(username=username),
+                           candidate_id=username.replace('student', 'secretcand'))
+        except IntegrityError:
+            pass # We can not add duplicates
+
+def add_relatedexaminers(related, usernames):
+    for username in usernames:
+        try:
+            related.create(user=User.objects.get(username=username))
         except IntegrityError:
             pass # We can not add duplicates
 
@@ -396,8 +404,8 @@ def create_example_assignment(period,
     logging.info("    Creating groups on {0}".format(assignment))
     all_examiners = create_numbered_users(num_examiners, examinername_prefix)
     all_students = create_numbered_users(num_students, studentname_prefix)
-    add_relatedusers(period.relatedexaminers, all_examiners)
-    add_relatedusers(period.relatedstudents, all_students)
+    add_relatedexaminers(period.relatedexaminer_set, all_examiners)
+    add_relatedstudents(period.relatedstudent_set, all_students)
     create_groups(assignment,
                   deadlines = deadlines,
                   groupname_prefix = groupname_prefix,

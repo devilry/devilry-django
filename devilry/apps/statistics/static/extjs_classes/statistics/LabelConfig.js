@@ -1,6 +1,6 @@
-Ext.define('devilry.statistics.FilterGroup', {
+Ext.define('devilry.statistics.LabelConfig', {
     config: {
-        title: undefined
+        label: undefined
     },
     requires: [
         'devilry.statistics.Filter',
@@ -16,7 +16,7 @@ Ext.define('devilry.statistics.FilterGroup', {
         this.filters.push(Ext.create('devilry.statistics.Filter', filterConf));
     },
 
-    match: function(student) {
+    match: function(loader, student) {
         var matches = false;
         Ext.each(this.filters, function(filter, index) {
             if(filter.match(student)) {

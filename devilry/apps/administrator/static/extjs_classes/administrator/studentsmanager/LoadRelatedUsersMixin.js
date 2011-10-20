@@ -8,11 +8,12 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
             remoteSort: true
         });
 
-        relatedUserStore.proxy.extraParams.filters = Ext.JSON.encode([{
+        relatedUserStore.proxy.setDevilryFilters([{
             field: 'period',
             comp: 'exact',
             value: this.periodid
         }]);
+        relatedUserStore.proxy.setDevilryResultFieldgroups(['user_details']);
         //deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
 
         relatedUserStore.proxy.extraParams.page = 1;
@@ -39,9 +40,10 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
         )(relatedUsers);
     },
 
-    relatedUserRecordsToArray: function(relatedUsers) {
+    relatedUserRecordsToStringArray: function(relatedUsers, format) {
+        var tpl = Ext.create('Ext.XTemplate', format);
         return Ext.Array.map(relatedUsers, function(relatedUser) {
-            return Ext.String.trim(relatedUser.data.userspec);
+            return tpl.apply(relatedUser.data);
         }, this);
     },
 
@@ -61,6 +63,7 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
 
     onLoadAllRelatedStudents: function(records) {
         this.getEl().unmask();
+        //console.log(records);
         this._relatedStudents = records;
         this.postLoadAllRelatedUsers(this._onLoadAllRelatedStudentsCallbackOpt, records);
         this._onLoadAllRelatedStudentsCallbackOpt = undefined;

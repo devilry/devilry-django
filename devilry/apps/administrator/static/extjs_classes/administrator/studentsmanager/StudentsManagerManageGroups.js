@@ -91,7 +91,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
      * @private
      */
     createOneGroupForEachRelatedStudent: function(relatedStudents) {
-        this.createManyGroupsInBulk(this.relatedUserRecordsToArray(relatedStudents));
+        var format = '{user__username}';
+        if(this.assignmentrecord.data.anonymous) {
+            format += '<tpl if="candidate_id">:{candidate_id}</tpl>'
+        }
+        var userspecs = this.relatedUserRecordsToStringArray(relatedStudents, format);
+        this.createManyGroupsInBulk(userspecs);
     },
 
 
