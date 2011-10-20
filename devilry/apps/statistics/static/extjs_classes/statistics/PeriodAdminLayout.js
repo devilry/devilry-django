@@ -4,7 +4,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     requires: [
         'devilry.statistics.Loader',
         'devilry.statistics.LabelConfig',
-        'devilry.statistics.FilterEditor'
+        'devilry.statistics.FilterEditor',
+        'devilry.statistics.LabelOverview',
+        'devilry.statistics.LabelConfigEditor'
     ],
 
     config: {
@@ -17,10 +19,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
     
     initComponent: function() {
-        //this._center = Ext.widget('container', {
-            //region: 'center',
-            //layout: 'fit'
-        //});
         Ext.apply(this, {
             style: 'background-color: transparent',
             items: [{
@@ -30,14 +28,14 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, {
                 region: 'south',
                 xtype: 'pagefooter'
-            }, this._center = Ext.widget('container', {
-                region: 'center',
-                style: 'background-color: transparent',
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch'
-                },
-                padding: {left: 20, right: 20}
+            }, this._center = Ext.widget('tabpanel', {
+                region: 'center'
+                //style: 'background-color: transparent',
+                //layout: {
+                    //type: 'hbox',
+                    //align: 'stretch'
+                //},
+                //padding: {left: 20, right: 20}
                 //items: [this._center, {
                     //xtype: 'statistics-filtereditor',
                     //region: 'east',
@@ -77,38 +75,45 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }
         });
 
+        var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
+            label: 'qualifies-for-exam'
+        });
+        qualifiesForExam.addFilter({
+            must_pass: [
+                [loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                [loader.getAssignmentByShortName('week2').get('id')]
+            ],
+            pointspec: Ext.create('devilry.statistics.PointSpec', {
+                assignments: [
+                    [loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                    [loader.getAssignmentByShortName('week1').get('id')]
+                ],
+                min: 10,
+                max: 40
+            })
+        });
+
+
         this._center.add([{
             xtype: 'grid',
+            title: 'Details',
             autoScroll: true,
-            flex: 1,
             store: store,
             columns: extjsStructures.gridColumns,
         }, {
-            xtype: 'statistics-filtereditor',
-            region: 'east',
-            title: 'Configurable labels',
+            xtype: 'statistics-labeloverview',
             assignment_store: loader.assignment_store,
-            width: 300
-        }])
+            title: 'Edit labels',
+            labels: [qualifiesForExam]
+            //layout: 'accordion',
+            //items: [{
+                //xtype: 'statistics-labelconfigeditor',
+                //assignment_store: loader.assignment_store,
+                //label: qualifiesForExam
+            //}]
+        }]);
 
 
-        //var approvedFilter = Ext.create('devilry.statistics.LabelConfig', {
-            //label: 'Approved'
-        //});
-        //approvedFilter.addFilter({
-            //must_pass: [
-                //[loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                //[loader.getAssignmentByShortName('week2').get('id')]
-            //],
-            //pointspec: Ext.create('devilry.statistics.PointSpec', {
-                //assignments: [
-                    //[loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                    //[loader.getAssignmentByShortName('week1').get('id')]
-                //],
-                //min: 10,
-                //max: 40
-            //})
-        //});
         //store.filter(
             //Ext.create('Ext.util.Filter', {
                 //filterFn: function(item) {

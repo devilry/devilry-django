@@ -29,7 +29,7 @@ Ext.define('devilry.statistics.FilterEditor', {
 
             bbar: ['->', {
                 xtype: 'button',
-                text: 'Save label',
+                text: 'Save filter',
                 iconCls: 'icon-save-32',
                 scale: 'large',
                 listeners: {
@@ -56,7 +56,6 @@ Ext.define('devilry.statistics.FilterEditor', {
     },
 
     _onSave: function() {
-        var filter = this.getFilter();
-        console.log(filter.toString(this.assignment_store));
+        this.fireEvent('save', this.getFilter());
     }
 });
