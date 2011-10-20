@@ -1178,11 +1178,11 @@ div.section h3 {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li {
+.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li {
   display: inline; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after {
+  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li:after {
     content: ", "; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:last-child:after {
+  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li:last-child:after {
     content: ""; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
   font-size: 30px; }

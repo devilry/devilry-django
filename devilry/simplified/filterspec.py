@@ -45,6 +45,10 @@ def stringOrNoneConverter(value):
     if isinstance(value, basestring) and value.lower() == 'none':
         return None
     return value
+def noCandidateIdConverter(value):
+    if isinstance(value, basestring) and value.lower() == 'none':
+        return 'candidate-id missing'
+    return value
 def dateTimeConverter(value):
     return datetime.strptime(str(value), '%Y-%m-%dT%H:%M:%S')
 

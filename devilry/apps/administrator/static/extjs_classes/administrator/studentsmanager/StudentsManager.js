@@ -163,6 +163,15 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onDeleteGroups
             }
         });
+        if(this.assignmentrecord.data.anonymous) {
+            menu.push({
+                text: 'Import candidate IDs',
+                listeners: {
+                    scope: this,
+                    click: this.onSetCandidateIdBulk
+                }
+            });
+        }
         return menu;
     },
 
