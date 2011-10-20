@@ -18,7 +18,7 @@ Ext.define('devilry.statistics.Loader', {
             remoteSort: true
         });
 
-        this.addEvents('loaded');
+        this.addEvents('loaded', 'datachange');
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
@@ -285,45 +285,76 @@ Ext.define('devilry.statistics.Loader', {
 
     setLabels: function(options) {
         var labelRecords = [];
+        Ext.getBody().mask('Updating labels');
+        var index = 0;
+        this._finished = 0;
+        this._watingFor = Ext.Object.getSize(this._students);
         Ext.Object.each(this._students, function(relstudentid, student) {
-            var labelspecs = Ext.bind(options.callback, options.scope)(student);
-            Ext.each(labelspecs, function(labelspec, index) {
-                var labelRecord = student.labels[labelspec.labelname];
-                var has_label = labelRecord !== undefined; 
-                if(labelspec.apply && !has_label) {
-                    this._createLabel(student, labelspec.labelname);
-                } else if(!labelspec.apply && has_label) {
-                    this._deleteLabel(labelRecord);
-                }
-            }, this);
+            var labelspec = Ext.bind(options.callback, options.scope)(student);
+            var labelRecord = student.labels[labelspec.labelname];
+            var has_label = labelRecord !== undefined; 
+            if(labelspec.apply && !has_label) {
+                this._createLabel(student, labelspec.labelname, index);
+            } else if(!labelspec.apply && has_label) {
+                this._deleteLabel(student, labelRecord, index);
+            } else {
+                this._checkFinished();
+            }
+            index ++;
         }, this);
     },
 
-    _createLabel: function(student, labelname) {
+    _createLabel: function(student, labelname, index) {
         var record = this._createLabelRecord(student, labelname);
+        console.log('create', record);
         devilry.extjshelpers.AsyncActionPool.add({
             scope: this,
             callback: function(pool) {
                 record.save({
-                    callback: function() {
+                    scope: this,
+                    callback: function(records, op, successful) {
+                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
+                        var label = record.get('key');
+                        this._students[student.username].labels[label] = record;
                         pool.notifyTaskCompleted();
+                        this._checkFinished();
                     }
                 });
             }
         });
     },
 
-    _deleteLabel: function(record) {
+    _deleteLabel: function(student, record, index) {
+        console.log('delete', record);
         devilry.extjshelpers.AsyncActionPool.add({
             scope: this,
             callback: function(pool) {
                 record.destroy({
+                    scope: this,
                     callback: function() {
+                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
+                        var label = record.get('key');
+                        this._students[student.username].labels[label] = undefined;
                         pool.notifyTaskCompleted();
+                        this._checkFinished();
                     }
                 });
             }
         });
+    },
+
+    _checkFinished: function(dontAddToFinished) {
+        if(!dontAddToFinished) {
+            this._finished ++;
+        }
+        if(this._watingFor == undefined) {
+            return;
+        }
+        if(this._finished >= this._watingFor) {
+            this._watingFor = undefined;
+            Ext.getBody().unmask();
+            this._onDataChanged();
+        }
     },
 
     _createLabelRecord: function(student, labelname) {
@@ -333,5 +364,10 @@ Ext.define('devilry.statistics.Loader', {
             key: labelname
         });
         return record;
+    },
+
+    _onDataChanged: function() {
+        var extjsStructures = this.extjsFormat();
+        this.fireEvent('datachange', extjsStructures);
     }
 });

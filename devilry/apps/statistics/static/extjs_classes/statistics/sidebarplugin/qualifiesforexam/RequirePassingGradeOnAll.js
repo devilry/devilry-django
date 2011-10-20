@@ -30,11 +30,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
     _onApply: function() {
         this.loader.setLabels({
             callback: function(student) {
-                //console.log('_onApply', student.username);
-                return [{
+                return {
                     labelname: this.labelname,
-                    apply: true
-                }];
+                    apply: false
+                };
             },
             scope: this,
             mode: 'update'

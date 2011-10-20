@@ -51,18 +51,25 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         Ext.create('devilry.statistics.Loader', this.periodid, {
             listeners: {
                 scope: this,
-                loaded: this._onLoaded
+                loaded: this._onLoaded,
+                datachange: this._onDatachange
             }
         });
+    },
+
+    _onDatachange: function(extjsStructures) {
+        this.aggregatedStore.removeAll();
+        this.aggregatedStore.add(extjsStructures.storeStudents);
+        //this.aggregatedStore.loadRecords(extjsStructures.storeStudents);
     },
 
     _onLoaded: function(loader) {
         var extjsStructures = loader.extjsFormat();
         Ext.getBody().unmask();
 
-        var store = Ext.create('Ext.data.Store', {
+        this.aggregatedStore = Ext.create('Ext.data.Store', {
             fields: extjsStructures.storeFields,
-            data: {'items': extjsStructures.storeStudents},
+            data: {'items': []},
             proxy: {
                 type: 'memory',
                 reader: {
@@ -71,6 +78,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 }
             }
         });
+        this._onDatachange(extjsStructures);
 
         //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
             //label: 'qualifies-for-exam'
@@ -96,19 +104,19 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             flex: 3,
             autoScroll: true,
             loader: loader,
-            aggregatedStore: store,
+            aggregatedStore: this.aggregatedStore,
             sidebarplugins: this.sidebarplugins
         }, {
             xtype: 'grid',
             title: 'Details',
             autoScroll: true,
             flex: 7,
-            store: store,
+            store: this.aggregatedStore,
             columns: extjsStructures.gridColumns,
         }]);
 
 
-        //store.filter(
+        //this.aggregatedStore.filter(
             //Ext.create('Ext.util.Filter', {
                 //filterFn: function(item) {
                     //var username = item.get('username');
