@@ -86,43 +86,18 @@ def modelinstance_to_dict(instance, fieldnames):
     return dct
 
 
-class DictDiffer(object):
-
-    def __init__(self, dict1, dict2):
-        self.dict1, self.dict2 = dict1, dict2
-        self.set_current, self.set_past = set(dict1.keys()), set(dict2.keys())
-        self.intersect = self.set_current.intersection(self.set_past)
-    def added(self):
-        return self.set_current - self.intersect 
-    def removed(self):
-        return self.set_past - self.intersect 
-    def changed(self):
-        return set(o for o in self.intersect if self.dict2[o] != self.dict1[o])
-
-    def diff(self):
-        res = ""
-        if len(self.added()) > 0:
-            res += "Fields only in dict1:\n"
-            for e in self.added():
-                res += "* %s:%s\n" % (e, self.dict1[e])
-        if len(self.removed()) > 0:
-            res += "Fields only in dict2:\n"
-            for e in self.removed():
-                res += "* %s:%s\n" % (e, self.dict2[e])
-        c = self.changed()
-        if len(c) > 0:
-            res += "Following fields differ in values:\n"
-            for e in c:
-                res += "* %s:  dict1:'%s', dict2:'%s'\n" % (e, self.dict1[e], self.dict2[e])
-        return res
-        
-    def get_sorted_list_as_string(self):
-        return self.sorted_dict_as_string(self.dict1), self.sorted_dict_as_string(self.dict2)
-
-    def equals(self):
-        return len(self.added()) == 0 and len(self.removed()) == 0 and len(self.changed()) == 0
-    
-    def sorted_dict_as_string(self, dict):
-        keys = dict.keys()
-        keys.sort()
-        return map(lambda k: "%s:%s" % (k, dict[k]), [key for key in keys])
+def fix_expected_data_missing_database_fields(test_groups, expected_res, search_res=None):
+    for i in xrange(len(test_groups)):
+        if search_res:
+            expected_res[i]['status'] = search_res[i]['status']
+        deadline = test_groups[i].get_active_deadline()
+        expected_res[i]['latest_deadline_id'] = deadline.id
+        expected_res[i]['latest_deadline_deadline'] = deadline.deadline
+        expected_res[i]['number_of_deliveries'] = deadline.deliveries.all().count()
+        if deadline.deliveries.all().count() > 0:
+            from django.db.models import Max
+            max_id = deadline.deliveries.aggregate(Max("id"))
+            expected_res[i]['latest_delivery_id'] = deadline.deliveries.filter(id=max_id['id__max'])[0].id
+            #expected_res[i]['latest_delivery_id'] = deadline.deliveries.all()[0].id
+        else:
+            expected_res[i]['latest_delivery_id'] = None

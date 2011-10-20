@@ -5,7 +5,7 @@ from django.test import TransactionTestCase
 
 
 from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
-from ....simplified.utils import modelinstance_to_dict, DictDiffer
+from ....simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
 from ...core import models, testhelper
 from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                           SimplifiedAssignment, SimplifiedAssignmentGroup,
@@ -1068,22 +1068,15 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                        self.inf110_secondsem_a1_g1,
                        self.inf110_secondsem_a2_g1,
                        self.inf101_secondsem_a1_g2,
-                       self.inf101_secondsem_a2_g2,
-                       ]
+                       self.inf101_secondsem_a2_g2,]
         expected_res = map(lambda group: modelinstance_to_dict(group, self.baseFields), test_groups)
         
         expected_res[0].update(dict(latest_delivery_id=self.secondDelivery.id))
         for expected_resitem in expected_res[1:]:
             expected_resitem.update(dict(latest_delivery_id=None))
 
-        # Fix the expected data, by adding missing fields that are not database fields.
-        for i in xrange(len(test_groups)):
-            expected_res[i]['status'] = search_res[i]['status']
-            if test_groups[i].deadlines.all().count() > 0:
-                deadline = test_groups[i].get_active_deadline()
-                expected_res[i]['latest_deadline_id'] = deadline.id
-                expected_res[i]['number_of_deliveries'] = deadline.deliveries.all().count()
-                expected_res[i]['latest_deadline_deadline'] = deadline.deadline
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res, search_res)
         
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), len(expected_res))
@@ -1098,35 +1091,29 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                        self.inf110_secondsem_a1_g1,
                        self.inf110_secondsem_a2_g1,
                        self.inf101_secondsem_a1_g2,
-                       self.inf101_secondsem_a2_g2,
-                       ]
+                       self.inf101_secondsem_a2_g2,]
         expected_res = map(lambda group: modelinstance_to_dict(group, self.allFields), test_groups)
         self.assertEquals(search_res.count(), len(expected_res))
         
-        # Fix the expected data, by adding missing fields that are not database fields.
-        for i in xrange(len(test_groups)):
-            expected_res[i]['status'] = search_res[i]['status']
-            if test_groups[i].deadlines.all().count() > 0:
-                deadline = test_groups[i].get_active_deadline()
-                expected_res[i]['latest_deadline_id'] = deadline.id
-                expected_res[i]['number_of_deliveries'] = deadline.deliveries.all().count()
-                expected_res[i]['latest_deadline_deadline'] = deadline.deadline
-                if deadline.deliveries.all().count() > 0:
-                    expected_res[i]['latest_delivery_id'] = deadline.deliveries.all()[0].id
-                else:
-                    expected_res[i]['latest_delivery_id'] = None
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res, search_res)
+        
         for i in xrange(len(search_res)):
             self.assertEquals(search_res[i], expected_res[i])
 
     def test_search_query(self):
         # search with query
         search_res = SimplifiedAssignmentGroup.search(self.admin1, query='secondStud')
-        expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2, self.baseFields),
-                        modelinstance_to_dict(self.inf101_secondsem_a2_g2, self.baseFields)]
-
+        test_groups = [self.inf101_secondsem_a1_g2,
+                       self.inf101_secondsem_a2_g2,]
+        expected_res = map(lambda group: modelinstance_to_dict(group, self.baseFields), test_groups)
+        
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res, search_res)
+                
         self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
+        for i in xrange(len(search_res)):
+            self.assertEquals(search_res[i], expected_res[i])
 
     def test_search_queryandextras(self):
         # with query and extra fields
@@ -1134,15 +1121,21 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         test_groups = [self.inf101_firstsem_a1_g1,
                        self.inf101_firstsem_a2_g1, 
                        self.inf101_secondsem_a1_g2,
-                       self.inf101_secondsem_a2_g2,
-                       ]
+                       self.inf101_secondsem_a2_g2,]
         expected_res = map(lambda group: modelinstance_to_dict(group, self.allFields), test_groups)
 
+        # Fix missing database fields by adding data from the test_groups
+        #fix_expected_data_missing_database_fields(test_groups, expected_res, search_res)
+        
         # Fix the expected data, by adding missing fields that are not database fields.
         for i in xrange(len(test_groups)):
             expected_res[i]['status'] = search_res[i]['status']
             if test_groups[i].deadlines.all().count() > 0:
                 deadline = test_groups[i].get_active_deadline()
+                deadlines = test_groups[i].deadlines.all()
+                for d in deadlines:
+                    print "Deadline id:", d.id
+                
                 print "\nsearch deadline id:",  search_res[i]['latest_deadline_id']
                 print "search deadline dl:",  search_res[i]['latest_deadline_deadline']
                 print "search deadline dc:",  search_res[i]['number_of_deliveries']
@@ -1156,11 +1149,8 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                 expected_res[i]['latest_deadline_deadline'] = deadline.deadline
                 if deadline.deliveries.all().count() > 0:
                     from django.db.models import Max
-                    #expected_res[i]['latest_delivery_id'] = deadline.deliveries.filter(idall()[0].id
                     max_id = deadline.deliveries.aggregate(Max("id"))
                     expected_res[i]['latest_delivery_id'] = deadline.deliveries.filter(id=max_id['id__max'])[0].id
-                    #deadline.deliveries.aggregate(Max("id"))
-                    #expected_res[i]['latest_delivery_id'] = 
                 else:
                     expected_res[i]['latest_delivery_id'] = None
 
@@ -1185,7 +1175,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1,
                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))
         # Setting status since it's not used TODO: Remove when status is no longer defined
-        expected_res['status'] = search_res['status']
+        expected_res['status'] = read_res['status']
         self.assertDictEqual(read_res, expected_res)
 
     def test_read_security_asstudent(self):

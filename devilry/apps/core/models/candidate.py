@@ -51,7 +51,8 @@ class Candidate(models.Model, Etag):
         else:
             self.identifier = self.student.username
 
-    #TODO delete this?
     def save(self, *args, **kwargs):
-        self.update_identifier(self.assignment_group.parentnode.anonymous)
+        # Set identifer when the Candidate object is created
+        if not self.pk:
+            self.update_identifier(self.assignment_group.parentnode.anonymous)
         super(Candidate, self).save(*args, **kwargs)
