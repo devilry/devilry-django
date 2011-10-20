@@ -58,18 +58,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
 
     _onDatachange: function(extjsStructures) {
-        this.aggregatedStore.removeAll();
-        this.aggregatedStore.add(extjsStructures.storeStudents);
-        //this.aggregatedStore.loadRecords(extjsStructures.storeStudents);
-    },
-
-    _onLoaded: function(loader) {
-        var extjsStructures = loader.extjsFormat();
-        Ext.getBody().unmask();
-
-        this.aggregatedStore = Ext.create('Ext.data.Store', {
+        var aggregatedStore = Ext.create('Ext.data.Store', {
             fields: extjsStructures.storeFields,
-            data: {'items': []},
+            data: {'items': extjsStructures.storeStudents},
             proxy: {
                 type: 'memory',
                 reader: {
@@ -78,7 +69,32 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 }
             }
         });
+        this._gridContainer.removeAll();
+        this._gridContainer.add({
+            xtype: 'grid',
+            title: 'Details',
+            autoScroll: true,
+            store: aggregatedStore,
+            columns: extjsStructures.gridColumns
+        });
+    },
+
+    _onLoaded: function(loader) {
+        Ext.getBody().unmask();
+
+        this._gridContainer = Ext.widget('container', {
+            layout: 'fit',
+            flex: 7
+        });
+        var extjsStructures = loader.extjsFormat();
         this._onDatachange(extjsStructures);
+        this._center.add([{
+            xtype: 'statistics-sidebarplugincontainer',
+            flex: 3,
+            autoScroll: true,
+            loader: loader,
+            sidebarplugins: this.sidebarplugins
+        }, this._gridContainer]);
 
         //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
             //label: 'qualifies-for-exam'
@@ -99,21 +115,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         //});
 
 
-        this._center.add([{
-            xtype: 'statistics-sidebarplugincontainer',
-            flex: 3,
-            autoScroll: true,
-            loader: loader,
-            aggregatedStore: this.aggregatedStore,
-            sidebarplugins: this.sidebarplugins
-        }, {
-            xtype: 'grid',
-            title: 'Details',
-            autoScroll: true,
-            flex: 7,
-            store: this.aggregatedStore,
-            columns: extjsStructures.gridColumns,
-        }]);
 
 
         //this.aggregatedStore.filter(

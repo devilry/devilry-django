@@ -306,7 +306,6 @@ Ext.define('devilry.statistics.Loader', {
 
     _createLabel: function(student, labelname, index) {
         var record = this._createLabelRecord(student, labelname);
-        console.log('create', record);
         devilry.extjshelpers.AsyncActionPool.add({
             scope: this,
             callback: function(pool) {
@@ -325,7 +324,6 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _deleteLabel: function(student, record, index) {
-        console.log('delete', record);
         devilry.extjshelpers.AsyncActionPool.add({
             scope: this,
             callback: function(pool) {
