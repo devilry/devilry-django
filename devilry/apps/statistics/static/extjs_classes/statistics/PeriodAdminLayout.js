@@ -6,11 +6,16 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         'devilry.statistics.LabelConfig',
         'devilry.statistics.FilterEditor',
         'devilry.statistics.LabelOverview',
-        'devilry.statistics.LabelConfigEditor'
+        'devilry.statistics.LabelConfigEditor',
+        'devilry.statistics.SidebarPluginContainer',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
     ],
 
     config: {
-        periodid: undefined
+        periodid: undefined,
+        sidebarplugins: [
+            'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
+        ]
     },
 
     constructor: function(config) {
@@ -28,21 +33,13 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, {
                 region: 'south',
                 xtype: 'pagefooter'
-            }, this._center = Ext.widget('tabpanel', {
-                region: 'center'
-                //style: 'background-color: transparent',
-                //layout: {
-                    //type: 'hbox',
-                    //align: 'stretch'
-                //},
-                //padding: {left: 20, right: 20}
-                //items: [this._center, {
-                    //xtype: 'statistics-filtereditor',
-                    //region: 'east',
-                    //title: 'Configurable labels',
-                    //width: 300,
-                    //collapsible: true,
-                //}]
+            }, this._center = Ext.widget('panel', {
+                region: 'center',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                padding: {left: 20, right: 20}
             })]
         });
         this.callParent(arguments);
@@ -75,42 +72,39 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }
         });
 
-        var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
-            label: 'qualifies-for-exam'
-        });
-        qualifiesForExam.addFilter({
-            must_pass: [
-                [loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                [loader.getAssignmentByShortName('week2').get('id')]
-            ],
-            pointspec: Ext.create('devilry.statistics.PointSpec', {
-                assignments: [
-                    [loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                    [loader.getAssignmentByShortName('week1').get('id')]
-                ],
-                min: 10,
-                max: 40
-            })
-        });
+        //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
+            //label: 'qualifies-for-exam'
+        //});
+        //qualifiesForExam.addFilter({
+            //must_pass: [
+                //[loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                //[loader.getAssignmentByShortName('week2').get('id')]
+            //],
+            //pointspec: Ext.create('devilry.statistics.PointSpec', {
+                //assignments: [
+                    //[loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
+                    //[loader.getAssignmentByShortName('week1').get('id')]
+                //],
+                //min: 10,
+                //max: 40
+            //})
+        //});
 
 
         this._center.add([{
+            xtype: 'statistics-sidebarplugincontainer',
+            flex: 3,
+            autoScroll: true,
+            loader: loader,
+            aggregatedStore: store,
+            sidebarplugins: this.sidebarplugins
+        }, {
             xtype: 'grid',
             title: 'Details',
             autoScroll: true,
+            flex: 7,
             store: store,
             columns: extjsStructures.gridColumns,
-        }, {
-            xtype: 'statistics-labeloverview',
-            assignment_store: loader.assignment_store,
-            title: 'Edit labels',
-            labels: [qualifiesForExam]
-            //layout: 'accordion',
-            //items: [{
-                //xtype: 'statistics-labelconfigeditor',
-                //assignment_store: loader.assignment_store,
-                //label: qualifiesForExam
-            //}]
         }]);
 
 
