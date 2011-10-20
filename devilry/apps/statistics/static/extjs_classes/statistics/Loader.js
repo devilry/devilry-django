@@ -1,5 +1,8 @@
 Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
+    requires: [
+        'devilry.extjshelpers.AsyncActionPool'
+    ],
 
     label_appkey: 'devilry.statistics.Labels',
 
@@ -298,11 +301,29 @@ Ext.define('devilry.statistics.Loader', {
 
     _createLabel: function(student, labelname) {
         var record = this._createLabelRecord(student, labelname);
-        record.save();
+        devilry.extjshelpers.AsyncActionPool.add({
+            scope: this,
+            callback: function(pool) {
+                record.save({
+                    callback: function() {
+                        pool.notifyTaskCompleted();
+                    }
+                });
+            }
+        });
     },
 
     _deleteLabel: function(record) {
-        record.destroy();
+        devilry.extjshelpers.AsyncActionPool.add({
+            scope: this,
+            callback: function(pool) {
+                record.destroy({
+                    callback: function() {
+                        pool.notifyTaskCompleted();
+                    }
+                });
+            }
+        });
     },
 
     _createLabelRecord: function(student, labelname) {
@@ -312,5 +333,5 @@ Ext.define('devilry.statistics.Loader', {
             key: labelname
         });
         return record;
-    },
+    }
 });
