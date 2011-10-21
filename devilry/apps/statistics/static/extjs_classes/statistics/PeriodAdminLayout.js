@@ -86,7 +86,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             layout: 'fit',
             flex: 7
         });
-        var extjsStructures = loader.extjsFormat();
+        var extjsStructures = loader.extjsBridge.extjsFormat();
         this._onDatachange(extjsStructures);
         this._center.add([{
             xtype: 'statistics-sidebarplugincontainer',
