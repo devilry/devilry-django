@@ -2,6 +2,7 @@ Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
     requires: [
         'devilry.extjshelpers.AsyncActionPool',
+        'devilry.statistics.AggregatedPeriodDataForStudent',
         'devilry.statistics.LabelManager'
     ],
 
@@ -65,12 +66,10 @@ Ext.define('devilry.statistics.Loader', {
         // TODO: Handle errors
         Ext.each(records, function(relatedStudentRecord, index) {
             var username = relatedStudentRecord.get('user__username')
-            this._students[username] = {
+            this._students[username] = Ext.create('devilry.statistics.AggregatedPeriodDataForStudent', {
                 username: username,
-                relatedstudent: relatedStudentRecord,
-                labels: {},
-                groupsByAssignmentId: {}
-            };
+                relatedstudent: relatedStudentRecord
+            });
             this._students_by_releatedid[relatedStudentRecord.get('id')] = this._students[username];
         }, this);
         this._loadAllStudentLabels();
