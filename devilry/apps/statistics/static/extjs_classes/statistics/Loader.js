@@ -18,9 +18,6 @@ Ext.define('devilry.statistics.Loader', {
                 changedMany: this._onDataChanged
             }
         });
-        this.extjsBridge = Ext.create('devilry.statistics.ExtjsBridgeForLoader', {
-            loader: this
-        });
 
         this.assignment_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
@@ -228,7 +225,7 @@ Ext.define('devilry.statistics.Loader', {
     //}
 
     _onDataChanged: function() {
-        var extjsStructures = this.extjsBridge.extjsFormat();
-        this.fireEvent('datachange', extjsStructures);
+        //var extjsStructures = this.dataView.refresh();
+        this.fireEvent('datachange');
     }
 });

@@ -1,14 +1,19 @@
-Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
+Ext.define('devilry.statistics.dataview.LayoutBase', {
+    extend: 'Ext.container.Container',
+    layout: 'fit',
     config: {
         loader: undefined
     },
     constructor: function(config) {
         this.initConfig(config);
+        this.callParent([config]);
     },
 
-    /**
-     * @private
-     */
+    initComponent: function() {
+        this.callParent(arguments);
+        this.refresh();
+    },
+
     _extjsFormatSingleAssignment: function(studentStoreFmt, assignment_id, group, storeFields, gridColumns) {
         var pointdataIndex = assignment_id + '::points';
         var scaledPointdataIndex = assignment_id + '::scaledPoints';
@@ -37,10 +42,10 @@ Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
         }
     },
 
-    extjsFormat: function() {
+    _create: function() {
         var storeStudents = [];
         var storeFields = ['username', 'labels'];
-        var pointsTpl = Ext.create('Ext.XTemplate',
+        var labelTpl = Ext.create('Ext.XTemplate',
             '<ul class="labels-list">',
             '    <tpl for="labels">',
             '       <li class="label-{.}">{.}</li>',
@@ -53,17 +58,17 @@ Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
             header: 'Labels', dataIndex: 'labels',
             width: 150,
             renderer: function(value, p, record) {
-                return pointsTpl.apply(record.data);
+                return labelTpl.apply(record.data);
             }
         }];
         Ext.Object.each(this.loader._students, function(username, student, index) {
             var studentStoreFmt = {username: username};
             storeStudents.push(studentStoreFmt);
+            studentStoreFmt['labels'] = Ext.Object.getKeys(student.labels);
             Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
                 this._extjsFormatSingleAssignment(studentStoreFmt, assignment_id, group, storeFields, gridColumns);
             }, this);
 
-            studentStoreFmt['labels'] = Ext.Object.getKeys(student.labels);
         }, this);
         return {
             storeStudents: storeStudents,
@@ -71,4 +76,27 @@ Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
             gridColumns: gridColumns
         };
     },
+
+    refresh: function() {
+        var extjsStructures = this._create();
+        var store = Ext.create('Ext.data.Store', {
+            fields: extjsStructures.storeFields,
+            data: {'items': extjsStructures.storeStudents},
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    root: 'items'
+                }
+            }
+        });
+        this.removeAll();
+        this.add({
+            xtype: 'grid',
+            title: 'Details',
+            autoScroll: true,
+            store: store,
+            columns: extjsStructures.gridColumns
+        });
+    }
 });

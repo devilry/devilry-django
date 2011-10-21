@@ -8,6 +8,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         'devilry.statistics.LabelOverview',
         'devilry.statistics.LabelConfigEditor',
         'devilry.statistics.SidebarPluginContainer',
+        'devilry.statistics.dataview.DataView',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
     ],
 
@@ -57,26 +58,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         });
     },
 
-    _onDatachange: function(extjsStructures) {
-        var aggregatedStore = Ext.create('Ext.data.Store', {
-            fields: extjsStructures.storeFields,
-            data: {'items': extjsStructures.storeStudents},
-            proxy: {
-                type: 'memory',
-                reader: {
-                    type: 'json',
-                    root: 'items'
-                }
-            }
-        });
-        this._gridContainer.removeAll();
-        this._gridContainer.add({
-            xtype: 'grid',
-            title: 'Details',
-            autoScroll: true,
-            store: aggregatedStore,
-            columns: extjsStructures.gridColumns
-        });
+    _onDatachange: function() {
+        if(this._dataview) {
+            this._dataview.refresh();
+        }
     },
 
     _onLoaded: function(loader) {
@@ -86,15 +71,17 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             layout: 'fit',
             flex: 7
         });
-        var extjsStructures = loader.extjsBridge.extjsFormat();
-        this._onDatachange(extjsStructures);
+        //var extjsStructures = loader.extjsBridge.refresh();
         this._center.add([{
             xtype: 'statistics-sidebarplugincontainer',
             flex: 3,
             autoScroll: true,
             loader: loader,
             sidebarplugins: this.sidebarplugins
-        }, this._gridContainer]);
+        }, this._dataview = Ext.widget('statistics-dataview', {
+            flex: 7,
+            loader: loader
+        })]);
 
         //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
             //label: 'qualifies-for-exam'
