@@ -4,7 +4,8 @@ Ext.define('devilry.statistics.dataview.DataView', {
     layout: 'fit',
 
     requires: [
-        'devilry.statistics.dataview.LayoutBase'
+        'devilry.statistics.dataview.MinimalGridView',
+        'devilry.statistics.dataview.FullGridView'
     ],
     
     config: {
@@ -19,7 +20,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
     
     initComponent: function() {
         this.callParent(arguments);
-        this.setView('devilry.statistics.dataview.LayoutBase');
+        this.setView('devilry.statistics.dataview.FullGridView');
     },
 
     setView: function(path) {
