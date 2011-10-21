@@ -26,6 +26,7 @@ Ext.define('devilry.statistics.Loader', {
             remoteFilter: true,
             remoteSort: true
         });
+        this.assignment_ids = [];
 
         this.addEvents('loaded', 'datachange');
         // Copy configured listeners into *this* object so that the base class's
@@ -148,6 +149,7 @@ Ext.define('devilry.statistics.Loader', {
     _onAssignmentsLoaded: function(assignmentrecords, success) {
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
+            this.assignment_ids.push(assignmentrecord.get('id'));
             this._loadGroups(assignmentrecord.data.id, assignmentrecords.length);
         }, this);
     },
@@ -181,7 +183,7 @@ Ext.define('devilry.statistics.Loader', {
     _onLoadGroups: function(totalAssignments, grouprecords, success) {
         Ext.each(grouprecords, function(grouprecord, index) {
             Ext.each(grouprecord.data.candidates__student__username, function(username, index) {
-                this._addStudent(username, grouprecord);
+                this._addGroupToStudent(username, grouprecord);
             }, this);
         }, this);
 
@@ -194,7 +196,7 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _addStudent: function(username, grouprecord) {
+    _addGroupToStudent: function(username, grouprecord) {
         if(!this._students[username]) {
             console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
             return;

@@ -31,8 +31,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
         this.loader.labelManager.setLabels({
             callback: function(student) {
                 var passes = 0;
-                Ext.Object.each(student.groupsByAssignmentId, function(key, group) {
-                    if(group.is_passing_grade) {
+                Ext.each(this.loader.assignment_ids, function(assignment_id, index) {
+                    var group = student.groupsByAssignmentId[assignment_id];
+                    if(group && group.is_passing_grade) {
                         passes ++;
                     }
                 }, this);
