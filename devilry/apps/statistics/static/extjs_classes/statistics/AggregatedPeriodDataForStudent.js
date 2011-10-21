@@ -5,5 +5,5 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudent', {
 
         this.labels = {};
         this.groupsByAssignmentId = {};
-    },
+    }
 });

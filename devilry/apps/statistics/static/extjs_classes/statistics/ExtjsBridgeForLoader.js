@@ -22,8 +22,8 @@ Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
             storeFields.push(scaledPointdataIndex);
             storeFields.push(passingdataIndex);
             gridColumns.push({
-                //text: group.assignment_shortname,
-                text: Ext.String.format('{0} (id: {1})', group.assignment_shortname, assignment_id),
+                text: group.assignment_shortname,
+                //text: Ext.String.format('{0} (id: {1})', group.assignment_shortname, assignment_id),
                 columns: [{
                     dataIndex: scaledPointdataIndex,
                     text: 'Scaled points',
@@ -51,6 +51,7 @@ Ext.define('devilry.statistics.ExtjsBridgeForLoader', {
             header: 'Username', dataIndex: 'username'
         }, {
             header: 'Labels', dataIndex: 'labels',
+            width: 150,
             renderer: function(value, p, record) {
                 return pointsTpl.apply(record.data);
             }

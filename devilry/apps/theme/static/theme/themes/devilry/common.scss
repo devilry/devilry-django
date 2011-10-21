@@ -34,25 +34,6 @@ $radiussize_small: 6px;
 @import "icons";
 @import "global";
 
-body {
-	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
-	font-size: 12px;
-	color: #222;
-}
-
-
-
-@mixin inlineList($separator:", ") {
-    li {
-        display: inline; 
-        &:after {
-            content: $separator;
-        }
-        &:last-child:after {
-            content: "";
-        }
-    }
-}
 
 @mixin inlineItem($bg, $fg, $bordercolor) {
     border: 1px solid $bordercolor;
@@ -76,6 +57,28 @@ body {
 @mixin errorInlineItem() {
     @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
 }
+@mixin inlineList($separator:", ") {
+    li {
+        display: inline; 
+        &:after {
+            content: $separator;
+        }
+        &:last-child:after {
+            content: "";
+        }
+    }
+}
+
+
+@import "statistics";
+
+body {
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
+	font-size: 12px;
+	color: #222;
+}
+
+
 
 @mixin commonSectionElements() {
     strong {

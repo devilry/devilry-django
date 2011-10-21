@@ -64,10 +64,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
     _pluginSelected: function(pluginObj) {
         this._main.removeAll();
-        //this._main.add({
-            //xtype: 'box',
-            //html: 'Hei'
-        //});
         this._main.add(pluginObj);
     }
 });

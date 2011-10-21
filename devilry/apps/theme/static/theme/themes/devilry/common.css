@@ -229,6 +229,21 @@ input, select {
   font-weight: bold;
   cursor: help; }
 
+.labels-list li {
+  display: inline; }
+  .labels-list li:after {
+    content: " "; }
+  .labels-list li:last-child:after {
+    content: ""; }
+.labels-list li.label-qualifies-for-exam {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
   font-size: 12px;
@@ -1108,11 +1123,11 @@ div.section h3 {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li {
+.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li {
   display: inline; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after {
+  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li:after {
     content: ", "; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:last-child:after {
+  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li:last-child:after {
     content: ""; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
   font-size: 30px; }
