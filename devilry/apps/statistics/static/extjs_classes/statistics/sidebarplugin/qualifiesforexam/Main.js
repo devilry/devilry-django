@@ -41,6 +41,18 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
                 label: 'Require passing grade on a subset of all assignments'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                label: 'Require a specific number of points on all assignments'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                label: 'Require a specific number of points on a subset of all assignments'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                label: 'Advanced'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                label: 'Manually label students'
             }],
             commonArgs: {
                 loader: this.loader,

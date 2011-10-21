@@ -1,0 +1,6 @@
+.labels-list {
+    @include inlineList(" ");
+    li.label-qualifies-for-exam {
+        @include goodInlineItem();
+    }
+}
