@@ -28,7 +28,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
     },
 
     _onApply: function() {
-        this.loader.setLabels({
+        this.loader.labelManager.setLabels({
             callback: function(student) {
                 var passes = 0;
                 Ext.Object.each(student.groupsByAssignmentId, function(key, group) {
