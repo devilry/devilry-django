@@ -1,5 +1,5 @@
 Ext.define('devilry.statistics.dataview.DataView', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-dataview',
     layout: 'fit',
 
@@ -10,7 +10,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
     
     config: {
         loader: undefined,
-        layoutCls: undefined
+        defaultView: 'devilry.statistics.dataview.FullGridView'
     },
     
     constructor: function(config) {
@@ -19,11 +19,41 @@ Ext.define('devilry.statistics.dataview.DataView', {
     },
     
     initComponent: function() {
+        var selectViewStore = Ext.create('Ext.data.Store', {
+            fields: ['path', 'label'],
+            data: [{
+                path: 'devilry.statistics.dataview.MinimalGridView',
+                label: 'Minimal view'
+            }, {
+                path: 'devilry.statistics.dataview.FullGridView',
+                label: 'Detailed view'
+            }],
+            proxy: 'memory'
+        });
+        Ext.apply(this, {
+            tbar: ['->', {
+                xtype: 'combobox',
+                valueField: 'path',
+                displayField: 'label',
+                forceSelection: true,
+                store: selectViewStore,
+                value: this.defaultView,
+                listeners: {
+                    scope: this,
+                    select: this._onSelectView
+                }
+            }]
+        });
         this.callParent(arguments);
-        this.setView('devilry.statistics.dataview.FullGridView');
+        this._setView(this.defaultView);
     },
 
-    setView: function(path) {
+    _onSelectView: function(combo, records) {
+        var record = records[0];
+        this._setView(record.get('path'));
+    },
+
+    _setView: function(path) {
         this.removeAll();
         this._layout = Ext.create(path, {
             loader: this.loader

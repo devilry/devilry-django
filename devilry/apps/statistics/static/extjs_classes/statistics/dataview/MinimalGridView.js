@@ -50,7 +50,6 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         this.removeAll();
         this.add({
             xtype: 'grid',
-            title: 'Details',
             autoScroll: true,
             store: store,
             columns: this.gridColumns
