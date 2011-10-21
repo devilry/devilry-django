@@ -1,4 +1,6 @@
 Ext.define('devilry.statistics.LabelManager', {
+    extend: 'Ext.util.Observable',
+    
     config: {
         loader: undefined
     },
@@ -6,6 +8,10 @@ Ext.define('devilry.statistics.LabelManager', {
 
     constructor: function(config) {
         this.initConfig(config);
+        this.addEvents({
+            "changedMany": true
+        });
+        this.callParent(arguments);
     },
     
     setLabels: function(options) {
@@ -76,7 +82,7 @@ Ext.define('devilry.statistics.LabelManager', {
         if(this._finished >= this._watingFor) {
             this._watingFor = undefined;
             Ext.getBody().unmask();
-            this.loader._onDataChanged();
+            this.fireEvent('changedMany');
         }
     },
 

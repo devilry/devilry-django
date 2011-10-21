@@ -11,7 +11,11 @@ Ext.define('devilry.statistics.Loader', {
         this._students = {};
         this.periodid = periodid;
         this.labelManager = Ext.create('devilry.statistics.LabelManager', {
-            loader: this
+            loader: this,
+            listeners: {
+                scope: this,
+                changedMany: this._onDataChanged
+            }
         });
         this.extjsBridge = Ext.create('devilry.statistics.ExtjsBridgeForLoader', {
             loader: this
