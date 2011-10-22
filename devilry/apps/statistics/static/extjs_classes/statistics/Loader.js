@@ -217,14 +217,25 @@ Ext.define('devilry.statistics.Loader', {
         return group.points;
     },
 
-    _createStore: function() {
-        var storeFields = ['username', 'labels', 'student'];
+
+    _createModel: function() {
+        var fields = ['username', 'labels', 'student'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
-            storeFields.push(assignmentRecord.get('short_name'));
+            fields.push(assignmentRecord.get('short_name'));
+            var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
+            fields.push(scaledPointdataIndex);
         }, this);
+        var model =Ext.define('devilry.statistics.AggregatedPeriodDataForStudent', {
+            extend: 'Ext.data.Model',
+            fields: fields
+        });
+        return model;
+    },
+
+    _createStore: function() {
         var store = Ext.create('Ext.data.Store', {
-            fields: storeFields,
-            data: []
+            model: this._createModel(),
+            proxy: 'memory'
         });
         Ext.Object.each(this._students, function(username, student, index) {
             var studentStoreFmt = {
