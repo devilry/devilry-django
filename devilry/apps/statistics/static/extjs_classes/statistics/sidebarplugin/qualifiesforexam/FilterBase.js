@@ -43,15 +43,23 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onSave: function() {
-        this.loader.labelManager.setLabels({
-            filter: this.filter,
-            scope: this,
-            label: this.labelname
-        });
+        if(this.validInput()) {
+            this.loader.labelManager.setLabels({
+                filter: this.filter,
+                scope: this,
+                label: this.labelname
+            });
+        }
     },
 
     _onPreview: function() {
-        this.loader.clearFilter();
-        this.loader.filterBy(this.title, this.filter, this);
+        if(this.validInput()) {
+            this.loader.clearFilter();
+            this.loader.filterBy(this.title, this.filter, this);
+        }
+    },
+
+    validInput: function() {
+        return true;
     }
 });

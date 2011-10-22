@@ -19,5 +19,14 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
     filter: function(student) {
         var assignment_ids = this.down('statistics-chooseassignmentsgrid').getIdOfSelected();
         return student.passesAssignments(assignment_ids);
+    },
+
+    validInput: function() {
+        var assignment_ids = this.down('statistics-chooseassignmentsgrid').getIdOfSelected();
+        if(assignment_ids.length === 0) {
+            Ext.MessageBox.alert('Invalid input', 'Please select at least one assignment');
+            return false;
+        }
+        return true;
     }
 });
