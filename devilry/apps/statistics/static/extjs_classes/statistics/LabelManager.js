@@ -19,7 +19,7 @@ Ext.define('devilry.statistics.LabelManager', {
         Ext.getBody().mask('Updating labels');
         var index = 0;
         this._finished = 0;
-        this._watingFor = Ext.Object.getSize(this.loader._students);
+        this._watingFor = this.loader.store.count();
         Ext.each(this.loader.store.data.items, function(student) {
             var match = Ext.bind(options.filter, options.scope)(student);
             var labelRecord = student.get('labels')[options.label];
