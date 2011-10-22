@@ -12,6 +12,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             text: 'Save',
             iconCls: 'icon-save-32',
             scale: 'large',
+            flex: 2,
             listeners: {
                 scope: this,
                 click: this._onSave
@@ -21,10 +22,20 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             text: 'Preview',
             //iconCls: '',
             scale: 'large',
+            flex: 1,
             listeners: {
                 scope: this,
                 click: this._onPreview
             }
+        });
+
+        this.defaultButtonPanel = Ext.widget('container', {
+            items: [this.previewButton, this.saveButton],
+            layout: {
+                type: 'hbox',
+                align: 'top'
+            },
+            height: 60
         });
         this.callParent([config]);
         this.initConfig(config);
@@ -40,5 +51,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     _onPreview: function() {
         console.log('preview');
+        this.loader.store.clearFilter();
+        this.loader.store.filter(
+            Ext.create('Ext.util.Filter', {
+                filterFn: Ext.bind(this.filter, this)
+            })
+        );
     }
 });

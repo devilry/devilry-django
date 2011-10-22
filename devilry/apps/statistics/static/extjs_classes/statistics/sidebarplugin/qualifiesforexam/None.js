@@ -4,7 +4,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.None', {
 
     initComponent: function() {
         Ext.apply(this, {
-            items: this.saveButton
+            items: [this.defaultButtonPanel]
         });
         this.callParent(arguments);
     },
