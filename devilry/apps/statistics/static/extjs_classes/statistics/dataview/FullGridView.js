@@ -5,19 +5,14 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
         '<tpl if="!is_passing_grade"> <span class="not_passing_grade">failed</span></tpl>'
     ),
 
-    _extjsFormatSingleAssignment: function(studentStoreFmt, assignment_id, group) {
-        studentStoreFmt[assignment_id] = group;
-
-        var scaledPointdataIndex = assignment_id + '::scaledPoints';
-        studentStoreFmt[scaledPointdataIndex] = this.loader.calculateScaledPoints(group);
-
+    _getGridColumns: function() {
+        var gridColumns = this.callParent();
         var me = this;
-        if(!Ext.Array.contains(this.storeFields, assignment_id)) {
-            this.storeFields.push(assignment_id);
-            this.storeFields.push(scaledPointdataIndex);
-            this.gridColumns.push({
-                text: group.assignment_shortname,
-                //text: Ext.String.format('{0} (id: {1})', group.assignment_shortname, assignment_id),
+        Ext.each(this.loader.assignment_store.data.items, function(assignmentRecord, index) {
+            var assignment_id = assignmentRecord.get('id');
+            var scaledPointdataIndex = assignment_id + '::scaledPoints';
+            gridColumns.push({
+                text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 sortable: true,
                 renderer: function(value, p, record) {
@@ -28,12 +23,7 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                     });
                 }
             });
-        }
-    },
-
-    _extraOnEachStudent: function(student, studentStoreFmt) {
-        Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
-            this._extjsFormatSingleAssignment(studentStoreFmt, assignment_id, group);
         }, this);
-    },
+        return gridColumns;
+    }
 });

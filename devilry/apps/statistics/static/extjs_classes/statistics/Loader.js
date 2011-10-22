@@ -206,24 +206,6 @@ Ext.define('devilry.statistics.Loader', {
         };
     },
 
-    getStudentByName: function(username) {
-        return this._students[username];
-    },
-
-    //getAssignmentById: function(id) {
-        //return this.assignment_store.findRecord('id', id);
-    //},
-
-    getAssignmentByShortName: function(short_name) {
-        return this.assignment_store.findRecord('short_name', short_name);
-    },
-
-    //validateAssignmentShortName: function(assignment_id) {
-        //if(!this.getAssignmentByShortName(assignment_id)) {
-            //throw Ext.String.format("{0}: Invalid assignment name: {1}", student.username, assignment_id);
-        //}
-    //}
-
     _onDataChanged: function() {
         //var extjsStructures = this.dataView.refresh();
         this.fireEvent('datachange');
@@ -232,5 +214,28 @@ Ext.define('devilry.statistics.Loader', {
 
     calculateScaledPoints: function(group) {
         return group.points;
+    },
+
+    _createStore: function() {
+        var storeFields = ['username', 'labels', 'student'];
+        Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
+            storeFields.push(assignmentRecord.get('short_name'));
+        }, this);
+        var store = Ext.create('Ext.data.Store', {
+            fields: storeFields,
+            data: []
+        });
+        Ext.Object.each(this._students, function(username, student, index) {
+            var studentStoreFmt = {username: username};
+            studentStoreFmt.student = student;
+            studentStoreFmt.labels = Ext.Object.getKeys(student.labels);
+            Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
+                studentStoreFmt[assignment_id] = group;
+                var scaledPointdataIndex = assignment_id + '::scaledPoints';
+                studentStoreFmt[scaledPointdataIndex] = this.calculateScaledPoints(group);
+            }, this);
+            store.add(studentStoreFmt);
+        }, this);
+        return store;
     }
 });

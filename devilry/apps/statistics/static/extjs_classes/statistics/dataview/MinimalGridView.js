@@ -9,11 +9,9 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         '</ul>'
     ),
 
-    _create: function() {
-        var storeStudents = [];
-        this.storeFields = ['username', 'labels'];
+    _getGridColumns: function() {
         var me = this;
-        this.gridColumns = [{
+        var gridColumns = [{
             header: 'Username', dataIndex: 'username'
         }, {
             header: 'Labels', dataIndex: 'labels',
@@ -22,37 +20,18 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
                 return me.labelTpl.apply(record.data);
             }
         }];
-        Ext.Object.each(this.loader._students, function(username, student, index) {
-            var studentStoreFmt = {username: username};
-            storeStudents.push(studentStoreFmt);
-            studentStoreFmt['labels'] = Ext.Object.getKeys(student.labels);
-            this._extraOnEachStudent(student, studentStoreFmt);
-        }, this);
-        return storeStudents;
-    },
-
-    _extraOnEachStudent: function(student, studentStoreFmt) {
+        return gridColumns;
     },
 
     refresh: function() {
-        var storeStudents = this._create();
-        var store = Ext.create('Ext.data.Store', {
-            fields: this.storeFields,
-            data: {'items': storeStudents},
-            proxy: {
-                type: 'memory',
-                reader: {
-                    type: 'json',
-                    root: 'items'
-                }
-            }
-        });
+        var gridColumns = this._getGridColumns();
+        var store = this.loader._createStore();
         this.removeAll();
         this.add({
             xtype: 'grid',
             autoScroll: true,
             store: store,
-            columns: this.gridColumns
+            columns: gridColumns
         });
     }
 });
