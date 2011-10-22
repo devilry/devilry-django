@@ -12,12 +12,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
     filter: function(student) {
         var passes = 0;
         Ext.each(this.loader.assignment_ids, function(assignment_id, index) {
-            var group = student.groupsByAssignmentId[assignment_id];
+            var group = student.get('groupsByAssignmentId')[assignment_id];
             if(group && group.is_passing_grade) {
                 passes ++;
             }
         }, this);
-        return passes == Ext.Object.getSize(student.groupsByAssignmentId);
+        //console.log(student.get('groupsByAssignmentId'));
+        return passes == Ext.Object.getSize(student.get('groupsByAssignmentId'));
         //return true;
     }
 });
