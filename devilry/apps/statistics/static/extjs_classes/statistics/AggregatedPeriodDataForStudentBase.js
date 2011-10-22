@@ -29,5 +29,19 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
             };
         }, this);
         return passes === assignment_ids.length;
+    },
+
+    getSumScaledPoints: function(assignment_ids) {
+        var sumScaledPoints = 0;
+        Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
+            if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
+                sumScaledPoints += group.points;
+            };
+        }, this);
+        return sumScaledPoints;
+    },
+
+    hasMinimalNumberOfScaledPointsOn: function(assignment_ids, minimumScaledPoints) {
+        return this.getSumScaledPoints(assignment_ids) >= minimumScaledPoints;
     }
 });

@@ -22,11 +22,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
     },
 
     validInput: function() {
-        var assignment_ids = this.down('statistics-chooseassignmentsgrid').getIdOfSelected();
-        if(assignment_ids.length === 0) {
-            Ext.MessageBox.alert('Invalid input', 'Please select at least one assignment');
-            return false;
-        }
-        return true;
+        return this.down('statistics-chooseassignmentsgrid').checkAtLeastOneSelected();
     }
 });

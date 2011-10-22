@@ -5,6 +5,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         'devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin',
         'devilry.statistics.sidebarplugin.qualifiesforexam.None',
         'devilry.statistics.sidebarplugin.qualifiesforexam.All',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSubset',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
     ],
@@ -50,11 +52,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
                 title: 'Require passing grade on a subset of all assignments'
             }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                title: 'Require a specific number of points in total on all assignments'
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll',
+                title: 'Require a minimum number of points in total on all assignments'
             }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                title: 'Require a specific number of points in total on a subset of all assignments'
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSubset',
+                title: 'Require a minimum number of points in total on a subset of all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
                 title: 'Advanced'
