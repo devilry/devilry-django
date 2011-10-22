@@ -46,7 +46,8 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function(records, op, successful) {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        student.get('labels')[label] = record;
+                        //student.get('labels')[label] = record;
+                        student.setLabel(label, record);
                         pool.notifyTaskCompleted();
                         this._checkFinished();
                     }
@@ -64,7 +65,8 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function() {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        delete student.get('labels')[label];
+                        //delete student.get('labels')[label];
+                        student.delLabel(label);
                         pool.notifyTaskCompleted();
                         this._checkFinished();
                     }
