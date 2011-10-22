@@ -16,7 +16,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
     initComponent: function() {
         var model = Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoicesModel', {
             extend: 'Ext.data.Model',
-            fields: ['label', 'path', 'args']
+            fields: ['title', 'path', 'args']
         });
         var store = Ext.create('Ext.data.Store', {
             model: model,
@@ -27,7 +27,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             store: store,
             fieldLabel: 'How?',
             queryMode: 'local',
-            displayField: 'label',
+            displayField: 'title',
             valueField: 'path',
             emptyText: 'Please make a selection...',
             forceSelection: true,
@@ -38,14 +38,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
 
     _onSelect: function(field, values) {
         var record = values[0];
-        var args = record.get('args');
-        var label = record.get('label');
+        var title = record.get('title');
         var path = record.get('path');
-        var config = {};
+        var config = {title: title};
         Ext.apply(config, this.commonArgs);
-        if(args) {
-            Ext.apply(config, args);
-        }
         var pluginObj = Ext.create(path, config);
         this.fireEvent('pluginSelected', pluginObj);
     }

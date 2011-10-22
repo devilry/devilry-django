@@ -39,28 +39,28 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         var chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             availablePlugins: [{
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
-                label: 'No students qualify for final exams'
+                title: 'No students qualify for final exams'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.All',
-                label: 'All students qualify for final exams'
+                title: 'All students qualify for final exams'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
-                label: 'Require passing grade on all assignments'
+                title: 'Require passing grade on all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                label: 'Require passing grade on a subset of all assignments'
+                title: 'Require passing grade on a subset of all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                label: 'Require a specific number of points in total on all assignments'
+                title: 'Require a specific number of points in total on all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                label: 'Require a specific number of points in total on a subset of all assignments'
+                title: 'Require a specific number of points in total on a subset of all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                label: 'Advanced'
+                title: 'Advanced'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
-                label: 'Manually select the students that qualify for final exams'
+                title: 'Manually select the students that qualify for final exams'
             }],
             commonArgs: {
                 loader: this.loader,

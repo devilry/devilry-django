@@ -52,16 +52,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         Ext.create('devilry.statistics.Loader', this.periodid, {
             listeners: {
                 scope: this,
-                loaded: this._onLoaded,
-                datachange: this._onDatachange
+                loaded: this._onLoaded
             }
         });
-    },
-
-    _onDatachange: function() {
-        if(this._dataview) {
-            this._dataview.refresh();
-        }
     },
 
     _onLoaded: function(loader) {

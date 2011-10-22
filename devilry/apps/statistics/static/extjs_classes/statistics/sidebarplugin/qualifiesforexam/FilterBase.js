@@ -4,7 +4,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     config: {
         loader: undefined,
         aggregatedStore: undefined,
-        labelname: undefined
+        labelname: undefined,
+        title: undefined
     },
 
     constructor: function(config) {
@@ -50,12 +51,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onPreview: function() {
-        console.log('preview');
-        this.loader.store.clearFilter();
-        this.loader.store.filter(
-            Ext.create('Ext.util.Filter', {
-                filterFn: Ext.bind(this.filter, this)
-            })
-        );
+        this.loader.clearFilter();
+        this.loader.filterBy(this.title, this.filter, this);
     }
 });

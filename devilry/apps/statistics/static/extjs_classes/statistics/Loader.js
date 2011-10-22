@@ -27,7 +27,7 @@ Ext.define('devilry.statistics.Loader', {
         });
         this.assignment_ids = [];
 
-        this.addEvents('loaded', 'datachange');
+        this.addEvents('loaded', 'datachange', 'filterApplied', 'filterCleared');
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
@@ -210,8 +210,6 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _onDataChanged: function() {
-        //var extjsStructures = this.dataView.refresh();
-        //this.fireEvent('datachange');
     },
 
 
@@ -255,5 +253,15 @@ Ext.define('devilry.statistics.Loader', {
             var record = store.add(studentStoreFmt);
         }, this);
         return store;
+    },
+
+    filterBy: function(description, fn, scope) {
+        this.store.filterBy(fn, scope);
+        this.fireEvent('filterApplied', this, description);
+    },
+
+    clearFilter: function() {
+        this.store.clearFilter();
+        this.fireEvent('filterCleared', this);
     }
 });

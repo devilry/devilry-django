@@ -6,6 +6,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
     requires: [
         'devilry.statistics.dataview.SelectViewCombo',
         'devilry.statistics.dataview.MinimalGridView',
+        'devilry.statistics.ClearFilters',
         'devilry.statistics.dataview.FullGridView'
     ],
     
@@ -33,7 +34,10 @@ Ext.define('devilry.statistics.dataview.DataView', {
             proxy: 'memory'
         });
         Ext.apply(this, {
-            tbar: ['->', {
+            tbar: [{
+                xtype: 'statistics-clearfilters',
+                loader: this.loader
+            }, '->', {
                 xtype: 'statistics-dataview-selectviewcombo',
                 availableViews: this.availableViews,
                 defaultViewClsname: this.defaultViewClsname,
