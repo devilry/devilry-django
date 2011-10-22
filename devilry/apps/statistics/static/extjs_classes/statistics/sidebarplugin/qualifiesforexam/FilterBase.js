@@ -9,12 +9,21 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     constructor: function(config) {
         this.saveButton = Ext.widget('button', {
-            text: 'Apply to all students',
+            text: 'Save',
             iconCls: 'icon-save-32',
             scale: 'large',
             listeners: {
                 scope: this,
                 click: this._onSave
+            }
+        });
+        this.previewButton = Ext.widget('button', {
+            text: 'Preview',
+            //iconCls: '',
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: this._onPreview
             }
         });
         this.callParent([config]);
@@ -27,5 +36,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             scope: this,
             label: this.labelname
         });
+    },
+
+    _onPreview: function() {
+        console.log('preview');
     }
 });
