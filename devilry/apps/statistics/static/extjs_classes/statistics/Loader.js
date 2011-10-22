@@ -3,6 +3,7 @@ Ext.define('devilry.statistics.Loader', {
     requires: [
         'devilry.extjshelpers.AsyncActionPool',
         'devilry.statistics.AggregatedPeriodDataForStudent',
+        'devilry.statistics.AggregatedPeriodDataForStudentBase',
         'devilry.statistics.LabelManager'
     ],
 
@@ -143,6 +144,7 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _onAssignmentsLoaded: function(assignmentrecords, success) {
+        this._createModel();
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
             this.assignment_ids.push(assignmentrecord.get('id'));
@@ -219,14 +221,14 @@ Ext.define('devilry.statistics.Loader', {
 
 
     _createModel: function() {
-        var fields = ['username', 'labels', 'student'];
+        var fields = ['username', 'labels', 'student', 'relatedstudent'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             fields.push(assignmentRecord.get('short_name'));
             var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
             fields.push(scaledPointdataIndex);
         }, this);
-        var model =Ext.define('devilry.statistics.AggregatedPeriodDataForStudent', {
-            extend: 'Ext.data.Model',
+        var model = Ext.define('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
+            extend: 'devilry.statistics.AggregatedPeriodDataForStudentBase',
             fields: fields
         });
         return model;
@@ -234,13 +236,14 @@ Ext.define('devilry.statistics.Loader', {
 
     _createStore: function() {
         var store = Ext.create('Ext.data.Store', {
-            model: this._createModel(),
+            model: 'devilry.statistics.AggregatedPeriodDataForStudentGenerated',
             proxy: 'memory'
         });
         Ext.Object.each(this._students, function(username, student, index) {
             var studentStoreFmt = {
                 username: username,
-                student: student,
+                //student: student,
+                relatedstudent: student.relatedstudent,
                 labels: Ext.Object.getKeys(student.labels)
             };
             Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
@@ -248,7 +251,8 @@ Ext.define('devilry.statistics.Loader', {
                 var scaledPointdataIndex = assignment_id + '::scaledPoints';
                 studentStoreFmt[scaledPointdataIndex] = this.calculateScaledPoints(group);
             }, this);
-            store.add(studentStoreFmt);
+            var record = store.add(studentStoreFmt);
+            record.groupsByAssignmentId = student.groupsByAssignmentId
         }, this);
         return store;
     }
