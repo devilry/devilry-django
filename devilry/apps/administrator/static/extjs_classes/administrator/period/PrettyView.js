@@ -47,7 +47,29 @@ Ext.define('devilry.administrator.period.PrettyView', {
         return {
             is_old: is_old,
             starttime_in_future: starttime_in_future,
-            is_active: (!is_old && !starttime_in_future)
+            is_active: (!is_old && !starttime_in_future),
         };
+    },
+
+    initComponent: function() {
+        Ext.apply(this, {
+            relatedButtons: [{
+                xtype: 'button',
+                scale: 'large',
+                text: 'Overview of all students',
+                listeners: {
+                    scope: this,
+                    click: this._onPeriodOverview
+                }
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    _onPeriodOverview: function() {
+        window.location.href = Ext.String.format('{0}/statistics/admin/{1}',
+            DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            this.record.get('id')
+        );
     }
 });
