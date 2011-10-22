@@ -1138,8 +1138,6 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstsem_a1_g1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1,
                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))
-        # Setting status since it's not used TODO: Remove when status is no longer defined
-        expected_res['status'] = read_res['status']
         self.assertDictEqual(read_res, expected_res)
 
     def test_read_security_asstudent(self):

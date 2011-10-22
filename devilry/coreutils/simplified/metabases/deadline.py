@@ -15,7 +15,6 @@ class SimplifiedDeadlineMetaMixin(object):
                              'deadline',
                              'assignment_group',
                              'number_of_deliveries',
-                             #'status', # TODO: Needs to handle the fact that students should not know about "Corrected not published"
                              'feedbacks_published',
                              subject=['assignment_group__parentnode__parentnode__parentnode__id',
                                       'assignment_group__parentnode__parentnode__parentnode__short_name',

@@ -14,7 +14,6 @@ class SimplifiedAssignmentGroupMetaMixin(object):
     resultfields = FieldSpec('id',
                              'name',
                              'is_open',
-                             'status',
                              'parentnode',
                              'feedback',
                              'latest_delivery_id',

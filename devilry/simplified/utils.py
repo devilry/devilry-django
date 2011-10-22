@@ -90,8 +90,6 @@ def modelinstance_to_dict(instance, fieldnames):
 def fix_expected_data_missing_database_fields(test_groups, expected_res, search_res=None):
     """ For internal test use ONLY. """
     for i in xrange(len(test_groups)):
-        if search_res:
-            expected_res[i]['status'] = search_res[i]['status']
         group = test_groups[i]
         deadline = group.get_active_deadline()
         expected_res[i]['latest_deadline_id'] = deadline.id
