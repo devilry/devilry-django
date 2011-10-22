@@ -24,7 +24,6 @@ Ext.define('devilry.statistics.LabelManager', {
             var match = Ext.bind(options.filter, options.scope)(student);
             var labelRecord = student.get('labels')[options.label];
             var has_label = labelRecord !== undefined; 
-            //console.log(student.get('labels'), labelRecord, has_label, options.label, match);
             if(match && !has_label) {
                 this._createLabel(student, options.label, index);
             } else if(!match && has_label) {
@@ -46,7 +45,6 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function(records, op, successful) {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        //student.get('labels')[label] = record;
                         student.setLabel(label, record);
                         pool.notifyTaskCompleted();
                         this._checkFinished();
@@ -65,7 +63,6 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function() {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        //delete student.get('labels')[label];
                         student.delLabel(label);
                         pool.notifyTaskCompleted();
                         this._checkFinished();
