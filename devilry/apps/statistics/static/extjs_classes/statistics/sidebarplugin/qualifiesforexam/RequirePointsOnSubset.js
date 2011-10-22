@@ -13,6 +13,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
             }, {
                 xtype: 'numberfield',
                 fieldLabel: 'Minumum total points on selected',
+                minValue: 0,
                 margin: {bottom: 10}
             }, this.defaultButtonPanel]
         });
