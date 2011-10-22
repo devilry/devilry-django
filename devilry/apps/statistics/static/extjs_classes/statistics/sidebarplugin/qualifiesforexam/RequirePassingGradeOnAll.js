@@ -1,38 +1,12 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll', {
-    extend: 'Ext.button.Button',
-    text: 'Apply to all students',
-    iconCls: 'icon-save-32',
-    scale: 'large',
-    //height: 30,
-    //width: 200,
-
-    config: {
-        loader: undefined,
-        aggregatedStore: undefined,
-        labelname: undefined
-    },
-
-    constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
+    extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
+    layout: 'fit',
 
     initComponent: function() {
         Ext.apply(this, {
-            listeners: {
-                scope: this,
-                click: this._onApply
-            }
+            items: this.saveButton
         });
         this.callParent(arguments);
-    },
-
-    _onApply: function() {
-        this.loader.labelManager.setLabels({
-            filter: this.filter,
-            scope: this,
-            label: this.labelname
-        });
     },
 
     filter: function(student) {
