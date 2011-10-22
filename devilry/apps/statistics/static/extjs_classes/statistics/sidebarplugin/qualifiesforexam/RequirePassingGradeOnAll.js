@@ -18,5 +18,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
             }
         }, this);
         return passes == Ext.Object.getSize(student.groupsByAssignmentId);
+        //return true;
     }
 });

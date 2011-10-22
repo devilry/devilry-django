@@ -185,6 +185,7 @@ Ext.define('devilry.statistics.Loader', {
 
         this._tmpAssignmentsWithAllGroupsLoaded ++;
         if(this._tmpAssignmentsWithAllGroupsLoaded == totalAssignments) {
+            this.store = this._createStore();
             this.fireEvent('loaded', this);
         }
     },
@@ -226,9 +227,11 @@ Ext.define('devilry.statistics.Loader', {
             data: []
         });
         Ext.Object.each(this._students, function(username, student, index) {
-            var studentStoreFmt = {username: username};
-            studentStoreFmt.student = student;
-            studentStoreFmt.labels = Ext.Object.getKeys(student.labels);
+            var studentStoreFmt = {
+                username: username,
+                student: student,
+                labels: Ext.Object.getKeys(student.labels)
+            };
             Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
                 studentStoreFmt[assignment_id] = group;
                 var scaledPointdataIndex = assignment_id + '::scaledPoints';

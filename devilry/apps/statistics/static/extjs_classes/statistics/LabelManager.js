@@ -45,7 +45,7 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function(records, op, successful) {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        this.loader._students[student.username].labels[label] = record;
+                        student.labels[label] = record;
                         pool.notifyTaskCompleted();
                         this._checkFinished();
                     }
@@ -63,7 +63,7 @@ Ext.define('devilry.statistics.LabelManager', {
                     callback: function() {
                         Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
                         var label = record.get('key');
-                        this.loader._students[student.username].labels[label] = undefined;
+                        delete student.labels[label];
                         pool.notifyTaskCompleted();
                         this._checkFinished();
                     }
@@ -87,6 +87,7 @@ Ext.define('devilry.statistics.LabelManager', {
     },
 
     _createLabelRecord: function(student, label) {
+        console.log(student);
         var record = Ext.create('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue', {
             relatedstudent: student.relatedstudent.get('id'),
             application: this.application_id,
