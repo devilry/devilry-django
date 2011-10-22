@@ -1135,22 +1135,6 @@ div.section h3 {
   color: #aaa; }
 .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn {
   line-height: 1.8em; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .not_passing_grade {
-    border: 1px solid #e64d00;
-    border-radius: 3px;
-    background-color: #cc4400;
-    color: #ffeee5;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .passing_grade {
-    border: 1px solid #88cc00;
-    border-radius: 3px;
-    background-color: #77b300;
-    color: #f7ffe5;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap; }
   .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .delivery_type {
     font-style: italic;
     font-weight: bold !important; }
@@ -1170,6 +1154,24 @@ div.section h3 {
       font-weight: bold;
       padding: 1px 4px;
       white-space: nowrap; }
+
+.not_passing_grade {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.passing_grade {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
 
 .group_is_open {
   border: 1px solid #88cc00;

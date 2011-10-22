@@ -229,7 +229,8 @@ Ext.define('devilry.statistics.Loader', {
         this.fireEvent('datachange');
     },
 
-    filterBy: function(fn, scope) {
-        this.fireEvent('filterBy', fn, scope);
+
+    calculateScaledPoints: function(group) {
+        return group.points;
     }
 });

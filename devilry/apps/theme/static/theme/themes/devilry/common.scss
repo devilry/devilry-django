@@ -702,12 +702,6 @@ div.section {
         }
         .gradecolumn {
             line-height: 1.8em;
-            .not_passing_grade {
-                @include warningInlineItem();
-            }
-            .passing_grade {
-                @include goodInlineItem();
-            }
             .delivery_type {
                 font-style: italic;
                 font-weight: bold !important;
@@ -720,6 +714,12 @@ div.section {
             }
         }
     }
+}
+.not_passing_grade {
+    @include warningInlineItem();
+}
+.passing_grade {
+    @include goodInlineItem();
 }
 
 .group_is_open {
