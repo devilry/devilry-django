@@ -61,12 +61,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         to the maximum number of points possible with the selected grade
         plugin.
 
-    .. attribute:: must_pass
-        
-        Each student must get a passing grade on this assignment to get a
-        passing grade on the period. Defaults to False.
-
-
     .. attribute:: examiners_publish_feedbacks_directly
 
        Should feedbacks published by examiners be made avalable to the
@@ -104,10 +98,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
                 'files where the filename is not among the given filenames.'))
-    must_pass = models.BooleanField(default=False,
-            verbose_name=_("Must pass"),
-            help_text=_('Each student must get a passing grade on this ' \
-                'assignment to get a passing grade on the period.'))
     pointscale = models.PositiveIntegerField(default=1,
             verbose_name = _("Scaled maximum points"),
             help_text=_(

@@ -102,20 +102,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
                 #parentnode__parentnode=self)
         #return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
 
-    def student_passes_period(self, user):
-        groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                parentnode__parentnode=self,
-                is_passing_grade=False,
-                parentnode__must_pass=True)
-        if groups.count() > 0:
-            return False
-        totalpoints = self.student_sum_scaled_points(user)
-        return totalpoints >= self.minimum_points
-
-    #TODO delete this?
-    #def get_must_pass_assignments(self):
-        #return self.assignments.filter(must_pass=True)
-
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \

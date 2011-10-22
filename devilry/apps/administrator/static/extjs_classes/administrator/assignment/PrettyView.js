@@ -5,7 +5,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     requires: [
         'devilry.administrator.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
@@ -79,18 +78,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                <strong>{publishing_time:date}</strong>.',
         '                You may change the publishing time by selecting the <span class="menuref">Edit</span> button in the toolbar.',
         '             </p>',
-        '        </div>',
-        '    </tpl>',
-        '    <tpl if="must_pass">',
-        '        <div class="section info">',
-        '            <h1>Must pass</h1>',
-        '            <p>',
-        '                Each students are <em>required</em> to get a passsing grade ',
-        '                on this assigmment to pass the <em>period</em>. This requirement ',
-        '                is only active for students registered on groups on this assignment.',
-        '                Select <span class="menuref">Advanced options</span> ',
-        '                in the toolbar to change this setting.',
-        '            </p>',
         '        </div>',
         '    </tpl>',
         '    <tpl if="anonymous">',
@@ -168,16 +155,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
-        this.advancedbutton = Ext.create('Ext.button.Button', {
-            text: 'Advanced options',
-            enableToggle: true,
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onAdvanced
-            }
-        });
-
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
             scale: 'large',
@@ -226,7 +203,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                     click: this.onDownload
                 }
             }],
-            extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
+            extraMeButtons: [this.gradeeditormenu],
         });
         this.callParent(arguments);
     },
@@ -351,30 +328,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
             gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
         }).show();
-    },
-
-    onAdvanced: function(button) {
-        var editpanel = Ext.ComponentManager.create({
-            xtype: 'restfulsimplified_editpanel',
-            model: this.modelname,
-            editform: Ext.widget('administrator_assignmentadvancedform'),
-            record: this.record,
-            saveSuccessMessage: 'Advanced options saved'
-        });
-        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-            title: 'Advanced options',
-            editpanel: editpanel,
-            prettyview: this,
-            listeners: {
-                scope: this,
-                close: function() {
-                    this.advancedbutton.toggle(false);
-                }
-            }
-        });
-        this.setSizeToCoverBody(editwindow);
-        editwindow.show();
-        this.alignToCoverBody(editwindow);
     },
 
     onStudents: function() {
