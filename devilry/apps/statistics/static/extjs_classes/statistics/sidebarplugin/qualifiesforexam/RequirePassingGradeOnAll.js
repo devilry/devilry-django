@@ -29,21 +29,20 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
 
     _onApply: function() {
         this.loader.labelManager.setLabels({
-            callback: function(student) {
-                var passes = 0;
-                Ext.each(this.loader.assignment_ids, function(assignment_id, index) {
-                    var group = student.groupsByAssignmentId[assignment_id];
-                    if(group && group.is_passing_grade) {
-                        passes ++;
-                    }
-                }, this);
-                return {
-                    labelname: this.labelname,
-                    apply: passes == Ext.Object.getSize(student.groupsByAssignmentId)
-                };
-            },
+            filter: this.filter,
             scope: this,
-            mode: 'update'
+            label: this.labelname
         });
+    },
+
+    filter: function(student) {
+        var passes = 0;
+        Ext.each(this.loader.assignment_ids, function(assignment_id, index) {
+            var group = student.groupsByAssignmentId[assignment_id];
+            if(group && group.is_passing_grade) {
+                passes ++;
+            }
+        }, this);
+        return passes == Ext.Object.getSize(student.groupsByAssignmentId);
     }
 });
