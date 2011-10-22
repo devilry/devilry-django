@@ -14,7 +14,7 @@ DATABASES = {"default": {
             }
 
 INSTALLED_APPS += [
-                   #'devilry.apps.asminimalaspossible_gradeeditor',
+                   'devilry.apps.asminimalaspossible_gradeeditor',
                    #'devilry.apps.gradeform_gradeeditor',
                    'devilry.apps.statistics',
 
