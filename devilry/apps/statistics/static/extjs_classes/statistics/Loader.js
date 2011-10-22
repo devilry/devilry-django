@@ -220,7 +220,7 @@ Ext.define('devilry.statistics.Loader', {
 
 
     _createModel: function() {
-        var fields = ['username', 'labels', 'student', 'relatedstudent', 'groupsByAssignmentId'];
+        var fields = ['username', 'labels', 'student', 'relatedstudent', 'groupsByAssignmentId', 'totalScaledPoints'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             fields.push(assignmentRecord.get('short_name'));
             var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
@@ -246,11 +246,14 @@ Ext.define('devilry.statistics.Loader', {
                 groupsByAssignmentId: student.groupsByAssignmentId,
                 labels: student.labels
             };
+            var totalScaledPoints = 0;
             Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
                 studentStoreFmt[assignment_id] = group;
                 var scaledPointdataIndex = assignment_id + '::scaledPoints';
-                studentStoreFmt[scaledPointdataIndex] = this.calculateScaledPoints(group);
+                studentStoreFmt[scaledPointdataIndex] = group.scaled_points;
+                totalScaledPoints += group.scaled_points;
             }, this);
+            studentStoreFmt.totalScaledPoints = totalScaledPoints;
             var record = store.add(studentStoreFmt);
         }, this);
         return store;

@@ -43,5 +43,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
 
     hasMinimalNumberOfScaledPointsOn: function(assignment_ids, minimumScaledPoints) {
         return this.getSumScaledPoints(assignment_ids) >= minimumScaledPoints;
-    }
+    },
+
+    
 });

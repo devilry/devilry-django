@@ -58,10 +58,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSubset',
                 title: 'Require a minimum number of points in total on a subset of all assignments'
             }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
                 title: 'Advanced'
             }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
                 title: 'Manually select the students that qualify for final exams'
             }],
             commonArgs: {

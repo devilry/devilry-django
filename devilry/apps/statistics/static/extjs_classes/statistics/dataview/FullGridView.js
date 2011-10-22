@@ -7,6 +7,11 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
 
     _getGridColumns: function() {
         var gridColumns = this.callParent();
+        gridColumns.push({
+            text: 'Total points',
+            dataIndex: 'totalScaledPoints',
+            sortable: true
+        });
         var me = this;
         Ext.each(this.loader.assignment_store.data.items, function(assignmentRecord, index) {
             var assignment_id = assignmentRecord.get('id');
