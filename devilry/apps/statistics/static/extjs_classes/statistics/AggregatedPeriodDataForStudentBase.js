@@ -17,5 +17,17 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         delete labels[label];
         this.set('labels', labels);
         this.set('labelKeys', Ext.Object.getKeys(labels));
+    },
+
+    passesAssignments: function(assignment_ids) {
+        var passes = 0;
+        Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
+            if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
+                if(group.is_passing_grade) {
+                    passes ++;
+                }
+            };
+        }, this);
+        return passes === assignment_ids.length;
     }
 });
