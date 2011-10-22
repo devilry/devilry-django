@@ -55,12 +55,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         The points will be scaled down or up making the _this_
         number the maximum number of points. Defaults to 1.
 
-    .. attribute:: autoscale
-            
-        If this field is True, the pointscale will automatically be set
-        to the maximum number of points possible with the selected grade
-        plugin.
-
     .. attribute:: examiners_publish_feedbacks_directly
 
        Should feedbacks published by examiners be made avalable to the
@@ -114,11 +108,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     #maxpoints = models.PositiveIntegerField(default=0,
             #help_text=_('The maximum number of points possible without '\
                 #'scaling.'))
-    autoscale = models.BooleanField(default=True,
-            verbose_name=_("Autoscale"),
-            help_text=_('If this field is set, the pointscale will '\
-                'automatically be set to the maximum number of points '\
-                'possible with the selected grade plugin.'))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
                                                      help_text=_('Should feedbacks published by examiners be made '
@@ -168,15 +157,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for cand in candidates: 
             #cand.update_identifier(self.anonymous)
             cand.save(anonymous=self.anonymous)
-
-    #TODO delete this?
-    #def save(self, *args, **kwargs):
-        #""" Save and recalculate the value of :attr:`maxpoints` and
-        #:attr:`pointscale`. """
-        #if self.autoscale:
-            #self.pointscale = self.maxpoints
-        #super(Assignment, self).save()
-        #self._update_scalepoints()
 
     #TODO delete this?
     #def get_filenames(self):
