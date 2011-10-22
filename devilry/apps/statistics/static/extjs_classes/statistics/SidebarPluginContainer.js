@@ -1,11 +1,10 @@
 Ext.define('devilry.statistics.SidebarPluginContainer', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-sidebarplugincontainer',
     layout: 'accordion',
 
     constructor: function(config) {
         this.callParent([config]);
-        this.initConfig(config);
     },
 
     initComponent: function() {

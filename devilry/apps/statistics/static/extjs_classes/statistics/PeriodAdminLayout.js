@@ -35,12 +35,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, {
                 region: 'south',
                 xtype: 'pagefooter'
-            }, this._center = Ext.widget('panel', {
+            }, this._center = Ext.widget('container', {
                 region: 'center',
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch'
-                },
+                layout: 'fit',
                 padding: {left: 20, right: 20}
             })]
         });
@@ -61,16 +58,25 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     _onLoaded: function(loader) {
         Ext.getBody().unmask();
 
-        this._center.add([{
-            xtype: 'statistics-sidebarplugincontainer',
-            flex: 3,
-            autoScroll: true,
-            loader: loader,
-            sidebarplugins: this.sidebarplugins
-        }, this._dataview = Ext.widget('statistics-dataview', {
-            flex: 7,
-            loader: loader
-        })]);
+        this._center.add({
+            xtype: 'panel',
+            layout: 'border',
+            items: [{
+                xtype: 'statistics-sidebarplugincontainer',
+                //flex: 3,
+                title: 'Label students',
+                region: 'east',
+                collapsible: true,
+                width: 300,
+                autoScroll: true,
+                loader: loader,
+                sidebarplugins: this.sidebarplugins
+            }, this._dataview = Ext.widget('statistics-dataview', {
+                //flex: 7,
+                region: 'center',
+                loader: loader
+            })]
+        });
 
         //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
             //label: 'qualifies-for-exam'
