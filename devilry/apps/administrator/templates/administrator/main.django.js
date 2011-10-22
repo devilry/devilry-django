@@ -16,7 +16,7 @@
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }};
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model }};
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }};
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model }};
 
     var nodestore = {{ restfulapi.RestfulSimplifiedNode|extjs_store }};
     var subjectstore = {{ restfulapi.RestfulSimplifiedSubject|extjs_store }};

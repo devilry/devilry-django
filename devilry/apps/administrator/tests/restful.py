@@ -137,7 +137,7 @@ class TestRestfulSimplifiedAssignment(TestCase, testhelper.TestHelper):
         self.assertEquals(set(first.keys()), set(resultfields.aslist()))
 
         r = self.client.get(url, data={'getdata_in_qrystring': True,
-                                       'result_fieldgroups': json.dumps(['subject', 'period', 'pointfields', 'admins'])})
+                                       'result_fieldgroups': json.dumps(['subject', 'period', 'admins'])})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
         first = data['items'][0]

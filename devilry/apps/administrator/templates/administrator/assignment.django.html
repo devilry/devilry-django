@@ -12,7 +12,7 @@
     {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model:"user_details" }}
     {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model:"user_details" }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject,admins" }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"period,subject,admins" }};
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,feedbackdelivery,assignment,period,subject,users,tags" }};
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};

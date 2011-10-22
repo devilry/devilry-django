@@ -774,15 +774,6 @@ class TestSimplifiedAdminAssignment(SimplifiedAdminTestBase):
                                                  'subject']))
         self.assertEquals(read_res, expected_res)
 
-    def test_read_period_subject_pointfields(self):
-        read_res = SimplifiedAssignment.read(self.admin1,
-                self.inf101_firstsem_a1.id, result_fieldgroups=['period',
-                    'subject', 'pointfields'])
-        expected_res = modelinstance_to_dict(self.inf101_firstsem_a1,
-                                             SimplifiedAssignment._meta.resultfields.aslist(['period',
-                                                 'subject', 'pointfields']))
-        self.assertEquals(read_res, expected_res)
-
     def test_read_security_asstudent(self):
         # test that a student cant read a assignment
         with self.assertRaises(PermissionDenied):

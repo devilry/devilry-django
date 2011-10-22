@@ -14,14 +14,15 @@ class SimplifiedAssignmentMetaMixin(object):
                              'long_name',
                              'publishing_time',
                              'delivery_types',
+                             'anonymous',
                              period=['parentnode__short_name',
                                      'parentnode__long_name',
                                      'parentnode__start_time',
                                      'parentnode__end_time',
                                      'parentnode__parentnode'],
                              subject=['parentnode__parentnode__short_name',
-                                      'parentnode__parentnode__long_name'],
-                             pointfields=['anonymous'])
+                                      'parentnode__parentnode__long_name']
+                            )
     searchfields = FieldSpec('short_name',
                              'long_name',
                              'parentnode__short_name',
