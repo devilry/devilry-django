@@ -4,13 +4,21 @@ Ext.define('devilry.statistics.dataview.DataView', {
     layout: 'fit',
 
     requires: [
+        'devilry.statistics.dataview.SelectViewCombo',
         'devilry.statistics.dataview.MinimalGridView',
         'devilry.statistics.dataview.FullGridView'
     ],
     
     config: {
         loader: undefined,
-        defaultView: 'devilry.statistics.dataview.FullGridView'
+        availableViews: [{
+            clsname: 'devilry.statistics.dataview.FullGridView',
+            label: 'Detailed view'
+        }, {
+            clsname: 'devilry.statistics.dataview.MinimalGridView',
+            label: 'Minimal view'
+        }],
+        defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
     },
     
     constructor: function(config) {
@@ -20,42 +28,28 @@ Ext.define('devilry.statistics.dataview.DataView', {
     
     initComponent: function() {
         var selectViewStore = Ext.create('Ext.data.Store', {
-            fields: ['path', 'label'],
-            data: [{
-                path: 'devilry.statistics.dataview.MinimalGridView',
-                label: 'Minimal view'
-            }, {
-                path: 'devilry.statistics.dataview.FullGridView',
-                label: 'Detailed view'
-            }],
+            fields: ['clsname', 'label'],
+            data: this.availableViews,
             proxy: 'memory'
         });
         Ext.apply(this, {
             tbar: ['->', {
-                xtype: 'combobox',
-                valueField: 'path',
-                displayField: 'label',
-                forceSelection: true,
-                store: selectViewStore,
-                value: this.defaultView,
+                xtype: 'statistics-dataview-selectviewcombo',
+                availableViews: this.availableViews,
+                defaultViewClsname: this.defaultViewClsname,
                 listeners: {
                     scope: this,
-                    select: this._onSelectView
+                    selectView: this._setView
                 }
             }]
         });
         this.callParent(arguments);
-        this._setView(this.defaultView);
+        this._setView(this.defaultViewClsname);
     },
 
-    _onSelectView: function(combo, records) {
-        var record = records[0];
-        this._setView(record.get('path'));
-    },
-
-    _setView: function(path) {
+    _setView: function(clsname) {
         this.removeAll();
-        this._layout = Ext.create(path, {
+        this._layout = Ext.create(clsname, {
             loader: this.loader
         });
         this.add(this._layout);
