@@ -211,7 +211,7 @@ Ext.define('devilry.statistics.Loader', {
 
     _onDataChanged: function() {
         //var extjsStructures = this.dataView.refresh();
-        this.fireEvent('datachange');
+        //this.fireEvent('datachange');
     },
 
 

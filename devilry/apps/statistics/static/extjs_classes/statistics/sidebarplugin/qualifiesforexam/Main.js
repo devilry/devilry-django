@@ -3,6 +3,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     title: 'Configure: Qualifies for final exam',
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.None',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.All',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
     ],
@@ -36,6 +38,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     initComponent: function() {
         var chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             availablePlugins: [{
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
+                label: 'No students qualify for exams'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.All',
+                label: 'All students qualify for exams'
+            }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
                 label: 'Require passing grade on all assignments'
             }, {
