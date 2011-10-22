@@ -26,11 +26,16 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
     refresh: function() {
         var gridColumns = this._getGridColumns();
         this.removeAll();
-        this.add({
+        this.grid = this.add({
             xtype: 'grid',
+            multiSelect: true,
             autoScroll: true,
             store: this.loader.store,
             columns: gridColumns
         });
+    },
+
+    getSelectedStudents: function() {
+        return this.grid.getSelectionModel().getSelection();
     }
 });

@@ -229,6 +229,28 @@ input, select {
   font-weight: bold;
   cursor: help; }
 
+.readable-section strong {
+  font-weight: bold; }
+.readable-section em {
+  font-style: italic; }
+.readable-section p {
+  padding: 5px 0;
+  line-height: 1.2em; }
+.readable-section pre, .readable-section code {
+  background-color: #f8f8f8;
+  border: 1px solid #eee; }
+.readable-section code {
+  padding: 1px 4px;
+  color: #600;
+  white-space: nowrap; }
+.readable-section pre {
+  padding: 8px; }
+.readable-section ul li {
+  padding: 5px 0;
+  margin-left: 25px !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important; }
+
 .labels-list li {
   display: inline; }
   .labels-list li:after {

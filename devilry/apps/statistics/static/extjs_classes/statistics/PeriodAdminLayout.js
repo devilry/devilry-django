@@ -1,5 +1,6 @@
 Ext.define('devilry.statistics.PeriodAdminLayout', {
     extend: 'Ext.container.Viewport',
+    alias: 'widget.statistics-periodadminlayout', // NOTE: devilry.statistics.sidebarplugin.qualifiesforexam.Manual depends on this alias
     layout: 'border',
     requires: [
         'devilry.statistics.Loader',

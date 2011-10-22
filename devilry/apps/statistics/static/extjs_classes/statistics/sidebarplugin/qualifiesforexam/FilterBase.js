@@ -43,13 +43,26 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onSave: function() {
-        if(this.validInput()) {
-            this.loader.labelManager.setLabels({
-                filter: this.filter,
-                scope: this,
-                label: this.labelname
-            });
+        if(!this.validInput()) {
+            return;
         }
+        Ext.MessageBox.show({
+            title: 'Save?',
+            msg: 'Are you sure you want to save? Students will be able to see if they are qualified for final exams.',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            closable: false,
+            scope: this,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.loader.labelManager.setLabels({
+                        filter: this.filter,
+                        scope: this,
+                        label: this.labelname
+                    });
+                }
+            }
+        });
     },
 
     _onPreview: function() {

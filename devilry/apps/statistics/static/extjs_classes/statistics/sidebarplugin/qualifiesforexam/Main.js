@@ -8,6 +8,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSubset',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
     ],
     config: {
@@ -61,7 +62,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
                 title: 'Advanced'
             }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
                 title: 'Manually select the students that qualify for final exams'
             }],
             commonArgs: {

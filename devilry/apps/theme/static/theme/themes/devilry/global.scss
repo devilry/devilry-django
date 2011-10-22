@@ -3,3 +3,7 @@
     font-weight: bold;
     cursor: help;
 }
+
+.readable-section {
+    @include commonSectionElements();
+}

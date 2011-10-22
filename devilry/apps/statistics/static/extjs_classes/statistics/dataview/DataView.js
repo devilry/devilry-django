@@ -66,5 +66,9 @@ Ext.define('devilry.statistics.dataview.DataView', {
 
     refresh: function() {
         this._layout.refresh();
+    },
+
+    getSelectedStudents: function() {
+        return this._layout.getSelectedStudents();
     }
 });
