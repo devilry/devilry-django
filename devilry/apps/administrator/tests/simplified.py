@@ -1291,7 +1291,8 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                                               name='test1',
                                               parentnode=self.inf101_firstsem_a1_g1.parentnode,
                                               fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
-                                              fake_candidates=(dict(username='examplestudent1'),
+                                              fake_candidates=(dict(username='firstStud'),
+                                                               dict(username='examplestudent1'),
                                                                dict(username='examplestudent2',
                                                                     candidate_id='23xx')))
         update_res = models.AssignmentGroup.objects.get(pk=pk)
@@ -1304,6 +1305,15 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
         self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
                           '23xx')
+
+    def test_update_remove_student_with_delivery(self):
+        self.create_user('examplestudent1')
+        self.assertRaises(PermissionDenied, SimplifiedAssignmentGroup.update,
+                          self.admin1,
+                          pk=self.inf101_firstsem_a1_g1.id,
+                          name='test1',
+                          parentnode=self.inf101_firstsem_a1_g1.parentnode,
+                          fake_candidates=(dict(username='examplestudent1'),))
 
     def test_update_with_candidates_errors_rollback(self):
         self.create_user('exampleexaminer1')
