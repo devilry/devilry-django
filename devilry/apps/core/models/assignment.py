@@ -46,10 +46,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A set of :class:`assignmentgroups <devilry.apps.core.models.AssignmentGroup>` for this assignment
 
-    .. attribute:: filenames
-    
-        A optional string of filenames separated by whitespace.
-
     .. attribute:: examiners_publish_feedbacks_directly
 
        Should feedbacks published by examiners be made avalable to the
@@ -82,11 +78,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
-    filenames = models.TextField(blank=True, null=True,
-            verbose_name=_("Filenames"),
-            help_text=_('Filenames separated by newline or space. If '
-                'filenames are used, students will not be able to deliver '
-                'files where the filename is not among the given filenames.'))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
                                                      help_text=_('Should feedbacks published by examiners be made '
@@ -131,23 +122,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for cand in candidates: 
             #cand.update_identifier(self.anonymous)
             cand.save(anonymous=self.anonymous)
-
-    #TODO delete this?
-    #def get_filenames(self):
-        #""" Get the filenames as a list of strings. """
-        #return self.filenames.split()
-
-    #TODO delete this?
-    #def validate_filenames(self, filenames):
-        #""" Raise ValueError unless each filename in the iterable
-        #``filenames`` is one of the filenames on this assignment. Nothing is
-        #done if :attr:`filenames` is not set, or set to a empty string. """
-        #if self.filenames:
-            #valid = self.get_filenames()
-            #for filename in filenames:
-                #if not filename in valid:
-                    #raise ValueError(_("Invalid filename: %(filename)s" %
-                        #dict(filename=filename)))
 
     @classmethod
     def q_is_admin(cls, user_obj):
