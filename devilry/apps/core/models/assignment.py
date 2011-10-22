@@ -50,11 +50,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     
         A optional string of filenames separated by whitespace.
 
-    .. attribute:: pointscale
-
-        The points will be scaled down or up making the _this_
-        number the maximum number of points. Defaults to 1.
-
     .. attribute:: examiners_publish_feedbacks_directly
 
        Should feedbacks published by examiners be made avalable to the
@@ -92,22 +87,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
                 'files where the filename is not among the given filenames.'))
-    pointscale = models.PositiveIntegerField(default=1,
-            verbose_name = _("Scaled maximum points"),
-            help_text=_(
-                'The points will be scaled down or up making the _this_ '
-                'number the maximum number of points on this assignment. '
-                'You use this to adjust how much an assignment counts '
-                'towards the final grade (or towards passing the period). '
-                'A typical example is when you have one assignment where '
-                'it is possible to get 30 points, and one assignment '
-                'where it is possible to get 1 point (like '
-                'with the approved/notapproved plugin). If you want both '
-                'to count for maximum 40 points, you set this field to 40 '
-                'on both assignments.'))
-    #maxpoints = models.PositiveIntegerField(default=0,
-            #help_text=_('The maximum number of points possible without '\
-                #'scaling.'))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
                                                      help_text=_('Should feedbacks published by examiners be made '
@@ -131,11 +110,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @classmethod
     def q_is_candidate(cls, user_obj):
         return Q(assignmentgroups__candidates__student=user_obj)
-
-    def _update_scalepoints(self):
-        for group in self.assignmentgroups.iterator():
-            group.scaled_points = group._get_scaled_points()
-            group.save()
 
     def save(self, *args, **kwargs):
         if self.pk:

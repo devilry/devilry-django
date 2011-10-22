@@ -69,15 +69,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         contains ``"Corrected"``. This is because the student should never
         know about unpublished feedback.
 
-    .. attribute:: scaled_points
-
-        The :attr:`points` of this group scaled according to
-        :attr:`Assignment.pointscale` and :attr:`Assignment.maxpoints`.
-
-        Calculated as: `float(pointscale)/maxpoints * points`.
-
-        **Note:** This field is a cache for the calculation above.
-
     .. attribute:: feedback
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
@@ -148,20 +139,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                          choices = enumerate(status_mapping),
                                          verbose_name = _('Status'),
                                          help_text = _('Status number.'))
-    scaled_points = models.FloatField(default=0.0)
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'core'
         ordering = ['id']
-
-    def _get_scaled_points(self):
-        scale = float(self.parentnode.pointscale)
-        maxpoints = self.parentnode.maxpoints
-        if maxpoints == 0:
-            return 0.0
-        return (scale/maxpoints) * self.points
 
     def save(self, *args, **kwargs):
         super(AssignmentGroup, self).save(*args, **kwargs)

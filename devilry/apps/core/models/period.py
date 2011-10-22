@@ -96,12 +96,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_candidate(cls, user_obj):
         return Q(assignments__assignmentgroups__candidates__student=user_obj)
 
-    #TODO delete this?
-    #def student_sum_scaled_points(self, user):
-        #groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                #parentnode__parentnode=self)
-        #return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
-
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \
