@@ -13,14 +13,14 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             text: 'Save',
             iconCls: 'icon-save-32',
             scale: 'large',
-            flex: 2,
+            flex: 1,
             listeners: {
                 scope: this,
                 click: this._onSave
             }
         });
         this.previewButton = Ext.widget('button', {
-            text: 'Preview',
+            text: 'Show matching students',
             //iconCls: '',
             scale: 'large',
             flex: 1,

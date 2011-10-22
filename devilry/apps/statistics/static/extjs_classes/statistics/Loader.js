@@ -119,6 +119,7 @@ Ext.define('devilry.statistics.Loader', {
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
             scope: this,
             success: function(record) {
+                this.periodRecord = record;
                 this._loadAssignments(record.data.id);
             }
         });

@@ -84,6 +84,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
     _pluginSelected: function(pluginObj) {
         this._main.removeAll();
+        this.loader.clearFilter();
         this._main.add(pluginObj);
     }
 });
