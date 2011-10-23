@@ -342,11 +342,19 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
+def get_random_tags():
+    available = ['tag1', 'tag2', 'supertag', 'tag3', 'special']
+    tags = set()
+    for x in xrange(randint(1, 2)):
+        tags.add(available[randint(0, len(available)-1)])
+    return ','.join(tags)
+
 def add_relatedstudents(related, usernames):
     for username in usernames:
         try:
             relatedStudent = related.create(user=User.objects.get(username=username),
-                           candidate_id=username.replace('student', 'secretcand'))
+                                            candidate_id=username.replace('student', 'secretcand'),
+                                            tags=get_random_tags())
             profile = relatedStudent.user.get_profile()
             profile.full_name = 'The ' + username.capitalize()
             profile.save()
@@ -356,7 +364,8 @@ def add_relatedstudents(related, usernames):
 def add_relatedexaminers(related, usernames):
     for username in usernames:
         try:
-            related.create(user=User.objects.get(username=username))
+            related.create(user=User.objects.get(username=username),
+                           tags=get_random_tags())
         except IntegrityError:
             pass # We can not add duplicates
 
