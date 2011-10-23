@@ -26,7 +26,7 @@ Ext.define('devilry.statistics.LabelManager', {
             var labelRecord = student.get('labels')[options.label];
             var has_label = labelRecord !== undefined; 
             if(match && !has_label) {
-                this._createLabel(student, options.label, index);
+                this._createLabel(student, options.label, options.student_can_read, index);
             } else if(!match && has_label) {
                 this._deleteLabel(student, labelRecord, index);
             } else {
@@ -36,8 +36,8 @@ Ext.define('devilry.statistics.LabelManager', {
         }, this);
     },
 
-    _createLabel: function(student, label, index) {
-        var record = this._createLabelRecord(student, label);
+    _createLabel: function(student, label, student_can_read, index) {
+        var record = this._createLabelRecord(student, label, student_can_read);
         devilry.extjshelpers.AsyncActionPool.add({
             scope: this,
             callback: function(pool) {
@@ -87,11 +87,12 @@ Ext.define('devilry.statistics.LabelManager', {
         }
     },
 
-    _createLabelRecord: function(student, label) {
+    _createLabelRecord: function(student, label, student_can_read) {
         var record = Ext.create('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue', {
             relatedstudent: student.get('relatedstudent').get('id'),
             application: this.application_id,
-            key: label
+            key: label,
+            student_can_read: (student_can_read == true)
         });
         return record;
     },

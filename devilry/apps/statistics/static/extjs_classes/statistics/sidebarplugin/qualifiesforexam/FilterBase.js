@@ -58,7 +58,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
                     this.loader.labelManager.setLabels({
                         filter: this.filter,
                         scope: this,
-                        label: this.labelname
+                        label: this.labelname,
+                        student_can_read: true
                     });
                 }
             }
