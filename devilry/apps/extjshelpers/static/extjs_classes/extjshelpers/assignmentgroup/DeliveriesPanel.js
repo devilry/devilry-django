@@ -6,6 +6,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
     ],
 
     config: {
+        assignmentgroup_recordcontainer: undefined,
         delivery_recordcontainer: undefined,
         deadlineRecord: undefined,
         deliveriesStore: undefined,
@@ -14,7 +15,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
 
     titleTpl: Ext.create('Ext.XTemplate',
         '<div class="deadline_title">',
-        '    <div style="font-weight:bold">Deadline: {deadline.deadline:date}</div>',
+        '    <div style="font-weight:bold">Deadline: ',
+        '        <tpl if="assignmentgroup.parentnode__delivery_types !== 1">{deadline.deadline:date}</tpl>',
+        '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">Not defined in Devilry</tpl>',
+        '    </div>',
         '    <div>',
         //'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
         '        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
@@ -36,6 +40,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         Ext.apply(this, {
             title: this.titleTpl.apply({
                 deadline: this.deadlineRecord.data,
+                assignmentgroup: this.assignmentgroup_recordcontainer.record.data,
                 extra: extra
             }),
             layout: 'fit',
@@ -73,6 +78,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
             this.items = {
                 xtype: 'deliveriesgrid',
                 delivery_recordcontainer: this.delivery_recordcontainer,
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 store: this.deliveriesStore
             };
         }
