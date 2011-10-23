@@ -138,29 +138,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     showFeedbackPanel: function() {
+        if(!this.feedbackPanel) {
+            this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
+                staticfeedbackstore: this.staticfeedbackstore,
+                //width: 400,
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                filemetastore: this.filemetastore,
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
+                assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
+                gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+            });
+            this.centerArea.removeAll();
+            this.centerArea.add(this.feedbackPanel);
+        };
         if(this.assignmentgroup_recordcontainer.record.get('parentnode__delivery_types') === 1) {
             this.nonElectronicNote.show();
         }
-        this.feedbackPanel.show();
     },
 
     /**
      * @private
      */
     createLayout: function() {
-        this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
-            staticfeedbackstore: this.staticfeedbackstore,
-            hidden: true,
-            region: 'center',
-            width: 400,
-            delivery_recordcontainer: this.delivery_recordcontainer,
-            filemetastore: this.filemetastore,
-            isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
-            deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
-            assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
-            gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-        });
         if(this.delivery_recordcontainer.record) {
             this.showFeedbackPanel();
         } else {
@@ -236,7 +237,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             flex: 1
                         }]
                     }]
-                }, this.feedbackPanel]
+                }, this.centerArea = Ext.widget('container', {
+                    region: 'center',
+                    layout: 'fit',
+                    items: {
+                        xtype: 'box',
+                        html: ''
+                    }
+                })]
             }]
         });
     },

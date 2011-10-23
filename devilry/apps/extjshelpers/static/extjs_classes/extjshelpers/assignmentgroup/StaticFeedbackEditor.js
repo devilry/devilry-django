@@ -23,7 +23,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          */
         isAdministrator: false,
 
-        assignmentgroup_recordcontainer: undefined,
         assignmentgroupmodel: undefined,
         deadlinemodel: undefined
     },
@@ -38,11 +37,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecordInEditor, this);
         this.on('afterStoreLoadMoreThanZero', this.onAfterStoreLoadMoreThanZero, this);
 
-        if(this.delivery_recordcontainer.record) {
-            this.onLoadDeliveryInEditor();
-        }
-        this.delivery_recordcontainer.on('setRecord', this.onLoadDeliveryInEditor, this);
-
         if(this.gradeeditor_config_recordcontainer.record) {
             this.onLoadGradeEditorConfig();
         }
@@ -53,6 +47,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
         this.assignmentgroup_recordcontainer.addListener('setRecord', this.enableEditButton, this);
 
+        if(this.delivery_recordcontainer.record) {
+            this.onLoadDeliveryInEditor();
+        }
+        this.delivery_recordcontainer.on('setRecord', this.onLoadDeliveryInEditor, this);
     },
 
 
