@@ -36,7 +36,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         var sumScaledPoints = 0;
         Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
             if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
-                sumScaledPoints += this._calculateScaledPoints(group.points);
+                sumScaledPoints += group.scaled_points;
             };
         }, this);
         return sumScaledPoints;
