@@ -53,7 +53,6 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
         }, this);
     },
 
-
     loadAllRelatedStudents: function(callbackOpt) {
         if(this._relatedStudents == undefined) {
             this.getEl().mask('Loading related students');

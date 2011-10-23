@@ -95,6 +95,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
         if(this.assignmentrecord.data.anonymous) {
             format += '<tpl if="candidate_id">:{candidate_id}</tpl>'
         }
+        format += '<tpl if="tags"> ({tags})</tpl>';
         var userspecs = this.relatedUserRecordsToStringArray(relatedStudents, format);
         this.createManyGroupsInBulk(userspecs);
     },
