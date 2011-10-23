@@ -33,6 +33,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              assignment=['parentnode__long_name',
                                          'parentnode__short_name',
                                          'parentnode__anonymous',
+                                         'parentnode__delivery_types',
                                          'parentnode__publishing_time'],
                              period=['parentnode__parentnode',
                                      'parentnode__parentnode__long_name',
