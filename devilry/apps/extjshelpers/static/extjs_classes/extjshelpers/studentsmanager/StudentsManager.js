@@ -240,7 +240,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getOnManyMenuItems: function() {
-        return [{
+        var items = [{
             text: 'Close/open',
             menu: [{
                 text: 'Close',
@@ -255,14 +255,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     click: this.onOpenGroups
                 }
             }]
-        }, {
-            text: 'Add deadline',
-            iconCls: 'icon-add-16',
-            listeners: {
-                scope: this,
-                click: this.onAddDeadline
-            }
         }];
+        if(this.assignmentrecord.get('delivery_types') !== this.deliveryTypes.TYPE_NON_ELECTRONIC) {
+            items.push({
+                text: 'Add deadline',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    scope: this,
+                    click: this.onAddDeadline
+                }
+            });
+        }
+        return items;
     },
 
     onHelp: function() {
