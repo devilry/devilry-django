@@ -393,35 +393,35 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         }
         this.loadAllRelatedExaminers({
             scope: this,
-            callback: function(relatedExaminers) {
-                var examiners = this.relatedUserRecordsToStringArray(relatedExaminers, '{user__username}');
-                var parsedExaminers = [];
-                Ext.each(examiners, function(examinerspec, index) {
-                    var parsed = devilry.administrator.studentsmanager.ManuallyCreateUsers.parseUsernamesAndTags(examinerspec);
-                    parsedExaminers.push(parsed);
-                });
-                this.setExaminersFromTags(parsedExaminers);
-            }
+            callback: this.setExaminersFromTags
+            //callback: function(relatedExaminers) {
+                //var examiners = this.relatedUserRecordsToStringArray(relatedExaminers, '{user__username}');
+                //var parsedExaminers = [];
+                //Ext.each(examiners, function(examinerspec, index) {
+                    //var parsed = devilry.administrator.studentsmanager.ManuallyCreateUsers.parseUsernamesAndTags(examinerspec);
+                    //parsedExaminers.push(parsed);
+                //});
+                //this.setExaminersFromTags(parsedExaminers);
+            //}
         });
     },
 
-    setExaminersFromTags: function(parsedExaminers) {
+    setExaminersFromTags: function(relatedExaminers) {
         this.progressWindow.start('Match tagged examiners to equally tagged groups');
         this._finishedSavingGroupCount = 0;
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.setExaminersFromTagsOnSingleGroup,
-            extraArgs: [parsedExaminers]
+            extraArgs: [relatedExaminers]
         });
     },
 
-    setExaminersFromTagsOnSingleGroup: function(groupRecord, index, totalSelectedGroups, parsedExaminers) {
+    setExaminersFromTagsOnSingleGroup: function(groupRecord, index, totalSelectedGroups, relatedExaminers) {
         var msg = Ext.String.format('Setting examiners on group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
         var editRecord = this.createRecordFromStoreRecord(groupRecord);
-        //console.log(groupRecord.data.tags__tag);
-        var matchedExaminerUsernames = this.examinersMatchesGroupTags(groupRecord, parsedExaminers);
+        var matchedExaminerUsernames = this.examinersMatchesGroupTags(groupRecord, relatedExaminers);
 
         editRecord.data.fake_examiners = matchedExaminerUsernames;
         editRecord.save({
@@ -435,15 +435,19 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         });
     },
 
-    examinersMatchesGroupTags: function(groupRecord, parsedExaminers) {
+    examinersMatchesGroupTags: function(groupRecord, relatedExaminers) {
         var matchedExaminerUsernames = [];
-        Ext.each(parsedExaminers, function(parsedExaminer, index) {
-            var intersect = Ext.Array.intersect(groupRecord.data.tags__tag, parsedExaminer.tags);
-            //console.log(groupRecord, parsedExaminer, intersect);
-            if(intersect.length > 0) {
-                matchedExaminerUsernames = Ext.Array.merge(matchedExaminerUsernames, parsedExaminer.usernames);
+        Ext.each(relatedExaminers, function(relatedExaminer, index) {
+            var tagsString = relatedExaminer.get('tags');
+            if(tagsString) {
+                var tags = tagsString.split(',');
+                //console.log(relatedExaminer.get('user__username'), tags);
+                var intersect = Ext.Array.intersect(groupRecord.data.tags__tag, tags);
+                if(intersect.length > 0) {
+                    Ext.Array.include(matchedExaminerUsernames, relatedExaminer.get('user__username'));
+                }
             }
         });
-            return matchedExaminerUsernames;
+        return matchedExaminerUsernames;
     }
 });
