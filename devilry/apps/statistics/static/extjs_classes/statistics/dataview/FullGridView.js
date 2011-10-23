@@ -1,7 +1,7 @@
 Ext.define('devilry.statistics.dataview.FullGridView', {
     extend: 'devilry.statistics.dataview.MinimalGridView',
     cellTpl: Ext.create('Ext.XTemplate',
-        '{scaled_points}',
+        '{scaled_points:number("0.00")}',
         '<tpl if="!is_passing_grade"> <span class="not_passing_grade">failed</span></tpl>'
     ),
 
@@ -19,8 +19,6 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
             var assignment_id = assignmentRecord.get('id');
             var scaledPointdataIndex = assignment_id + '::scaledPoints';
             gridColumns.push({
-                xtype: 'numbercolumn',
-                format: '0.00',
                 text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 sortable: true,
