@@ -52,7 +52,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
             }
         });
 
+        if(!this.store.loading) {
+            this.onLoadStore();
+        }
         this.store.on('load', this.onLoadStore, this);
+
 
         this.callParent(arguments);
     },
@@ -62,14 +66,28 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
      * Make sure we show pager if needed.
      */
     onLoadStore: function() {
+        if(this._hasPager) {
+            return;
+        }
+        this._hasPager = true;
         if(this.store.count() < this.store.getTotalCount()) {
+            this._addPager();
+        };
+    },
+
+    _addPager: function() {
+        try {
             this.addDocked({
                 xtype: 'pagingtoolbar',
                 store: this.store,
                 dock: 'bottom',
                 displayInfo: false
             });
-        };
+        } catch(e) {
+            Ext.defer(function() {
+                this._addPager();
+            }, 250, this);
+        }
     },
 
     /**
