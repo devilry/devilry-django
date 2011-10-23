@@ -147,7 +147,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     createLayout: function() {
         this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
             staticfeedbackstore: this.staticfeedbackstore,
-            //hidden: true,
+            hidden: true,
             region: 'center',
             width: 400,
             delivery_recordcontainer: this.delivery_recordcontainer,
@@ -218,40 +218,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                         delivery_recordcontainer: this.delivery_recordcontainer,
                         flex: 1
-                    //}, {
-                        //xtype: 'assignmentgroupinfo',
-                        //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                        //delivery_recordcontainer: this.delivery_recordcontainer,
-                        //assignmentgroupstore: this.assignmentgroupstore,
-                        //deliverymodel: this.deliverymodel,
-                        //deadlinemodel: this.deadlinemodel,
-                        //canExamine: this.canExamine
-                    //}, {
-                        //xtype: 'deliveryinfo',
-                        //title: 'Delivery',
-                        //filemetastore: this.filemetastore,
-                        //delivery_recordcontainer: this.delivery_recordcontainer,
-                        //deliverymodel: this.deliverymodel,
-                        //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                        //listeners: {
-                            //scope: this,
-                            //deliveriesLoaded: this.onDeliveriesLoaded
-                        //}
                     }]
                 }, this.feedbackPanel]
             }]
         });
     },
-
-    /** 
-     * @private
-     */
-    onDeliveriesLoaded: function(deliverystore) {
-        //var assignmentgroupdetails = this.down('assignmentgroupdetails');
-        //assignmentgroupdetails.extradata.numDeliveries = deliverystore.totalCount;
-        //assignmentgroupdetails.updateBody();
-    },
-
 
     /**
      * @private
@@ -271,7 +242,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             });
         } else {
-            this.down('deliveryinfo').onOtherDeliveries();
+            //console.log(delivery);
+            //this.down('deliveryinfo').onOtherDeliveries();
         }
     }
 });

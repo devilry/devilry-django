@@ -91,6 +91,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      * @private
      */
     onLoadAllDeadlines: function(deadlineRecords) {
+        var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
+        if(deadlineRecords.length > 0 && deadlineRecords[0].get('deadline') < Ext.Date.now() && is_open) {
+            this._onExpiredNoDeliveries();
+        }
         Ext.each(deadlineRecords, this.handleSingleDeadline, this);
     },
 
@@ -158,6 +162,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             delivery_recordcontainer: this.delivery_recordcontainer,
             deadlineRecord: deadlineRecord,
             deliveriesStore: deliveriesStore,
+            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
             activeFeedback: activeFeedback
         });
 
@@ -166,6 +171,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.add(this._tmp_deliveriespanels);
             this.getEl().unmask();
             this.isLoading = false;
+
+            
         }
     },
 
@@ -201,5 +208,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             }
         });
         createDeadlineWindow.show();
-    }
+    },
+
+
+    /**
+     * @private
+     */
+    _onExpiredNoDeliveries: function() {
+        var win = Ext.MessageBox.show({
+            title: 'This group has no deliveries, and their active deadline has expired',
+            msg: '<p>Would you like to give the group a new deadline?</p><ul>' +
+                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
+                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
+                '<li>Choose <strong>cancel</strong> to close this window without doing anything.</li>' +
+                '</ul>',
+            buttons: Ext.Msg.YESNOCANCEL,
+            scope: this,
+            closable: false,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.onCreateNewDeadline()
+                } else if (buttonId == 'no') {
+                    devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
+                }
+            }
+        });
+    },
 });

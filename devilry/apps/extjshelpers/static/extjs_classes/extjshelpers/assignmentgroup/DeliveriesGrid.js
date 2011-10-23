@@ -52,12 +52,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
             }
         });
 
-        if(!this.store.loading) {
-            this.onLoadStore();
-        }
-        this.store.on('load', this.onLoadStore, this);
-
-
+        this._addPagerIfNeeded();
         this.callParent(arguments);
     },
 
@@ -65,7 +60,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
      * @private
      * Make sure we show pager if needed.
      */
-    onLoadStore: function() {
+    _addPagerIfNeeded: function() {
         if(this._hasPager) {
             return;
         }

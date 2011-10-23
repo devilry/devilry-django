@@ -268,7 +268,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             title: 'You published a feedback with a failing grade',
             msg: '<p>Would you like to give the group another try?</p><ul>' +
                 '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
-                '<li>Choose <em>no</no> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
+                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
                 '</ul>',
             buttons: Ext.Msg.YESNO,
             scope: this,

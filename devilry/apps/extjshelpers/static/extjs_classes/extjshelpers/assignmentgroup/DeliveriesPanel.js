@@ -1,7 +1,9 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deliveriespanel',
-
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.IsOpen',
+    ],
 
     config: {
         delivery_recordcontainer: undefined,
@@ -37,7 +39,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 extra: extra
             }),
             layout: 'fit',
-            border: false
+            border: false,
+            listeners: {
+                scope: this,
+                collapse: this._onCollapse
+            }
             //tbar: [{
                 //xtype: 'button',
                 //iconCls: 'icon-edit-16',
@@ -72,6 +78,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         }
 
         this.callParent(arguments);
+    },
+
+    _onCollapse: function() {
+        //var allGrids = this.up('assignmentgroupoverview').feedbackPanel.hide();
     },
 
     /**

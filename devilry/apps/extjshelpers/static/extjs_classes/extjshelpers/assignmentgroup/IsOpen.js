@@ -138,18 +138,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             closable: false,
             fn: function(buttonId) {
                 if(buttonId == 'yes') {
-                    this.assignmentgroup_recordcontainer.record.data.is_open = false;
-                    this.assignmentgroup_recordcontainer.record.save({
-                        scope: this,
-                        success: function(record) {
-                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
-                        },
-                        failure: function() {
-                            throw "Failed to close group."
-                        }
-                    });
+                    this.statics().closeGroup(this.assignmentgroup_recordcontainer);
                 }
             }
         });
     },
+
+    statics: {
+        closeGroup: function(assignmentgroup_recordcontainer) {
+            assignmentgroup_recordcontainer.record.data.is_open = false;
+            assignmentgroup_recordcontainer.record.save({
+                success: function(record) {
+                    assignmentgroup_recordcontainer.fireSetRecordEvent();
+                },
+                failure: function() {
+                    throw "Failed to close group."
+                }
+            });
+        }
+    }
 });
