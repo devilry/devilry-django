@@ -5,17 +5,24 @@ from optparse import make_option
 
 
 class UserModCommand(BaseCommand):
-    def save_user(self, user, verbosity):
+    def save(self, obj):
         try:
-            user.full_clean()
+            obj.full_clean()
         except ValidationError, e:
             errmsg = []
             for key, messages in e.message_dict.iteritems():
                 errmsg.append('{0}: {1}'.format(key, ' '.join(messages)))
             raise CommandError('\n'.join(errmsg))
-        user.save()
+        obj.save()
+
+    def save_user(self, user, verbosity):
+        self.save(user)
         if verbosity > 0:
             print 'User "{0}" saved successfully.'.format(user.username)
+
+    def save_profile(self, profile):
+        self.save(profile)
+
 
 
 class Command(UserModCommand):
@@ -26,14 +33,10 @@ class Command(UserModCommand):
             dest='email',
             default=None,
             help='Email address'),
-        make_option('--first_name',
-            dest='first_name',
+        make_option('--full_name',
+            dest='full_name',
             default=None,
-            help='First name'),
-        make_option('--last_name',
-            dest='last_name',
-            default=None,
-            help='Last name'),
+            help='Full name'),
         make_option('--superuser',
             action='store_true',
             dest='superuser',
@@ -52,7 +55,7 @@ class Command(UserModCommand):
         verbosity = int(options.get('verbosity', '1'))
         username = args[0]
         kw = {}
-        for attrname in ('email', 'first_name', 'last_name'):
+        for attrname in ('email',):
             value = options[attrname]
             if value:
                 kw[attrname] = value
@@ -71,3 +74,9 @@ class Command(UserModCommand):
             if user.password == '':
                 user.set_unusable_password()
             self.save_user(user, verbosity)
+
+            profile = user.get_profile()
+            full_name = options.get('full_name')
+            if full_name:
+                profile.full_name = full_name
+            self.save_profile(profile)
