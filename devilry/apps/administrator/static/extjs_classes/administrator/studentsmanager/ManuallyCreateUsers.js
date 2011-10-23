@@ -5,6 +5,10 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     border: false,
     poolSize: 20,
 
+    requires: [
+        'devilry.extjshelpers.AsyncActionPool'
+    ],
+
     layout: {
         type: 'vbox',
         align: 'stretch' // Child items are stretched to full width
@@ -189,7 +193,6 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.finishedCounter = 0;
         this.unsuccessful = [];
         this.parsedArray = parsedArray;
-        this._currentPoolMembers = 0;
         Ext.Array.each(this.parsedArray, function(groupSpecObj) {
             this.createGroup(groupSpecObj);
         }, this);
@@ -225,17 +228,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         return uniqueGroupSpecObjs;
     },
 
-    /**
-     * @private
-     */
-    createGroup: function(groupSpecObj) {
-        if(this._currentPoolMembers >= this.poolSize) {
-            Ext.defer(function() {
-                this.createGroup(groupSpecObj);
-            }, 250, this);
-            return;
-        }
-        this._currentPoolMembers ++;
+
+    _createGroupCallback: function(pool, groupSpecObj) {
         var completeGroupSpecObj = {
             parentnode: this.assignmentrecord.data.id
         };
@@ -243,18 +237,21 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
         group.save({
             scope: this,
-            success: this.createDeadline,
-            failure: function() {
-                this._currentPoolMembers --;
-                this.finishedCounter ++;
-                this.unsuccessful.push(groupSpecObj);
-                this.getEl().mask(
-                    Ext.String.format('Finished saving {0}/{1} groups',
-                        this.finishedCounter, this.parsedArray.length, this.parsedArray.length
-                    )
-                );
-                if(this.finishedCounter == this.parsedArray.length) {
-                    this.onFinishedSavingAll();
+            callback: function(records, op) {
+                pool.notifyTaskCompleted();
+                if(op.success) {
+                    this.createDeadline(records);
+                } else {
+                    this.finishedCounter ++;
+                    this.unsuccessful.push(groupSpecObj);
+                    this.getEl().mask(
+                        Ext.String.format('Finished saving {0}/{1} groups',
+                            this.finishedCounter, this.parsedArray.length, this.parsedArray.length
+                        )
+                    );
+                    if(this.finishedCounter == this.parsedArray.length) {
+                        this.onFinishedSavingAll();
+                    }
                 }
             }
         });
@@ -263,13 +260,20 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    createDeadline: function(assignmentGroupRecord) {
+    createGroup: function(groupSpecObj) {
+        devilry.extjshelpers.AsyncActionPool.add({
+            scope: this,
+            args: [groupSpecObj],
+            callback: this._createGroupCallback
+        });
+    },
+
+    _createDeadlineCallback: function(pool, assignmentGroupRecord) {
         devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines.createDeadline(
             assignmentGroupRecord, this.deadlineRecord, this.deadlinemodel, {
                 scope: this,
                 failure: function() {
                     console.error('Failed to save deadline record');
-                    this._currentPoolMembers --;
                 },
                 success: this.onCreateDeadlineSuccess
             }
@@ -279,8 +283,18 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
+    createDeadline: function(assignmentGroupRecord) {
+        devilry.extjshelpers.AsyncActionPool.add({
+            scope: this,
+            args: [assignmentGroupRecord],
+            callback: this._createDeadlineCallback
+        });
+    },
+
+    /**
+     * @private
+     */
     onCreateDeadlineSuccess: function(record) {
-        this._currentPoolMembers --;
         this.finishedCounter ++;
         this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
             this.finishedCounter, this.parsedArray.length,
