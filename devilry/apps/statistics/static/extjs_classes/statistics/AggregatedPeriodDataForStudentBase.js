@@ -1,8 +1,9 @@
 Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     extend: 'Ext.data.Model',
 
-    constructor: function(config) {
+    constructor: function(assignment_store, config) {
         this.callParent([config]);
+        this.assignment_store = assignment_store;
         this.updateScaledPoints();
     },
 
@@ -49,7 +50,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
             var group = this.get('groupsByAssignmentId')[parseInt(assignment_id)];
             group.scaled_points = this._calculateScaledPoints(group);
             this.set(assignment_id + '::scaledPoints', group.scaled_points);
-            totalScaledPoints += group.points;
+            totalScaledPoints += group.scaled_points;
         }, this);
         this.set('totalScaledPoints', totalScaledPoints);
         this.commit(); // NOTE: removes the red triangle from grid
@@ -65,6 +66,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     },
 
     _calculateScaledPoints: function(group) {
-        return group.points;
+        var assignmentRecord = this.assignment_store.getById(group.parentnode);
+        return assignmentRecord.get('scale_points_percent') * group.points / 100;
     }
 });
