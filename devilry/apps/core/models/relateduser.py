@@ -1,6 +1,9 @@
+import re
+
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from period import Period
 from node import Node
@@ -13,6 +16,9 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
     period = models.ForeignKey(Period,
                                verbose_name='Period')
     user = models.ForeignKey(User)
+    tags = models.TextField(blank=True, null=True)
+
+    tags_patt = re.compile('^(?:[a-z0-9]+,)*[a-z0-9]+$')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
@@ -24,6 +30,10 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
         return Q(period__admins=user_obj) | \
                 Q(period__parentnode__admins=user_obj) | \
                 Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+
+    def clean(self):
+        if self.tags and not self.tags_patt.match(self.tags):
+            raise ValidationError('tags must be a comma-separated list of tags, each tag only containing a-z and 0-9.')
 
     def __unicode__(self):
         return '{0}:{1}'.format(self.period, self.user.username)
