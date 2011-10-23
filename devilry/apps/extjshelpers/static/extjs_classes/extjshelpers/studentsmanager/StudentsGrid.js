@@ -12,7 +12,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         assignmentid: undefined,
         dockedItems: [],
         isAdministrator: undefined,
-        isAnonymous: undefined
+        isAnonymous: undefined,
+        assignmentrecord: undefined
     },
 
     mixins: {
@@ -177,10 +178,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatInfoCol
             }, studentsCol, {
-                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
-                menuDisabled: true,
-                renderer: this.formatDeliveriesCol
-            }, {
                 text: 'Latest feedback',
                 menuDisabled: true,
                 sortable: false,
@@ -208,14 +205,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatTagsCol
             }, {
-                text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
-                menuDisabled: true,
-                renderer: this.formatActiveDeadlineCol
-            }, {
                 text: 'Group name', dataIndex: 'name', flex: 3,
                 menuDisabled: true
             }]
         });
+        if(this.assignmentrecord.get('delivery_types') != 1) {
+            this.columns.push({
+                text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
+                menuDisabled: true,
+                renderer: this.formatActiveDeadlineCol
+            });
+
+            Ext.Array.insert(this.columns, 2, [{
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
+                menuDisabled: true,
+                renderer: this.formatDeliveriesCol
+            }]);
+        }
 
         this.dockedItems.push({
             xtype: 'pagingtoolbar',
