@@ -15,6 +15,7 @@ class SimplifiedAssignmentMetaMixin(object):
                              'publishing_time',
                              'delivery_types',
                              'anonymous',
+                             'scale_points_percent',
                              period=['parentnode__short_name',
                                      'parentnode__long_name',
                                      'parentnode__start_time',
@@ -33,6 +34,7 @@ class SimplifiedAssignmentMetaMixin(object):
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
                           FilterSpec('delivery_types'),
+                          FilterSpec('anonymous'),
                           # Period
                           ForeignFilterSpec('parentnode',
                                             FilterSpec('parentnode'),
