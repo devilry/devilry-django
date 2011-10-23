@@ -51,7 +51,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
        Should feedbacks published by examiners be made avalable to the
        students immediately? If not, an administrator have to publish
        feedbacks. See also :attr:`Deadline.feedbacks_published`.
-       
+
+    .. scale_points_percent
+
+        Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
@@ -87,6 +91,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                  choices=deliverytypes.as_choices_tuple(),
                                                  help_text='This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.')
+    scale_points_percent = models.PositiveIntegerField(default=100,
+                                                       help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
+
 
     @classmethod
     def q_published(cls, old=True, active=True):
