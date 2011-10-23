@@ -5,6 +5,8 @@ from os import getcwd, makedirs
 from django.core.management.base import BaseCommand, CommandError
 
 from devilry.apps.administrator import restful as administrator_restful
+from devilry.apps.examiner import restful as examiner_restful
+from devilry.apps.student import restful as student_restful
 from devilry.apps.extjshelpers.modelintegration import (restfulcls_to_extjsmodel,
                                                         get_extjs_modelname)
 
@@ -24,33 +26,42 @@ class Command(BaseCommand):
         if not exists(join(self.reporoot, 'devilry', 'apps')):
             raise CommandError('Invalid --devilry-reporoot: {0}'.format(abspath(self.reporoot)))
         self._create_files_for_module(administrator_restful)
+        self._create_files_for_module(examiner_restful)
+        self._create_files_for_module(student_restful)
 
     def _create_files_for_module(self, restfulmodule):
         modelnames = []
+        dirname = self._create_dir(restfulmodule)
         for clsname in restfulmodule.__all__:
             restfulcls = getattr(administrator_restful, clsname)
             js = self._get_js_for_model(restfulcls)
             modelname = get_extjs_modelname(restfulcls)
-            self._create_extjsclassfile(modelname, js)
+            self._create_extjsclassfile(dirname, modelname, js)
             modelnames.append(modelname)
-        self._create_requireall_file(modelnames)
+        self._create_requireall_file(dirname, modelnames)
 
-    def _create_requireall_file(self, modelnames):
-        requires = ',\n'.join(["'{0}'".format(modelname) for modelname in modelnames])
+    def _create_requireall_file(self, dirname, modelnames):
+        requires = ',\n'.join(["    '{0}'".format(modelname) for modelname in modelnames])
+        content = '{0}\nExt.require([\n{1}\n]);'.format(self.fileheader, requires)
+        open(join(dirname, 'require_all.js'), 'w').write(content)
 
     def _get_js_for_model(self, restfulcls):
         result_fieldgroups =  restfulcls._meta.simplified._meta.resultfields.additional_aslist()
         js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups)
         return js + ';'
 
-    def _create_extjsclassfile(self, modelname, js):
-        clspathsplit = modelname.split('.')
+
+    def _create_dir(self, restfulmodule):
+        clspathsplit = restfulmodule.__name__.split('.')
         if not clspathsplit[0] == 'devilry' and clspathsplit[1] == 'apps':
-            raise CommandError('Invalid class name: {0}.'.format(modelname))
+            raise CommandError('Invalid restful module: {0}.'.format(restfulmodule.__name__))
         appname = clspathsplit[2]
-        clsname = clspathsplit[-1]
         dirname = join(self.reporoot, 'devilry', 'apps', appname, 'static', 'extjs_classes', 'apps', appname, 'simplified')
-        path = join(dirname, clsname + '.js')
         if not exists(dirname):
             makedirs(dirname)
+        return dirname
+
+    def _create_extjsclassfile(self, dirname, modelname, js):
+        clsname = modelname.split('.')[-1]
+        path = join(dirname, clsname + '.js')
         open(path, 'w').write('{0}\n{1}'.format(self.fileheader, js))
