@@ -194,11 +194,10 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     },
 
     importRelatedExaminers: function(relatedExaminers, setlistofusersobj) {
-        var examiners = this.relatedUserRecordsToStringArray(relatedExaminers, '{user__username}');
         var usernames = [];
-        Ext.each(examiners, function(examiner, index) {
-            usernames.push(examiner.split(/\s*\(/)[0]);
-        });
+        Ext.each(relatedExaminers, function(relatedExaminer, index) {
+            usernames.push(relatedExaminer.get('user__username'));
+        }, this);
         setlistofusersobj.setValueFromArray(usernames);
     },
 
