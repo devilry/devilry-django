@@ -76,7 +76,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
      * @private
      */
     onSelectDelivery: function(grid, deliveryRecord) {
-        //console.log('selected', deliveryRecord);
+        var allGrids = this.up('deliveriesgroupedbydeadline').query('deliveriesgrid');
+        Ext.each(allGrids, function(grid, index) {
+            if(grid !== this) {
+                grid.getSelectionModel().deselectAll();
+            }
+        }, this);
         this.delivery_recordcontainer.setRecord(deliveryRecord);
     }
 });
