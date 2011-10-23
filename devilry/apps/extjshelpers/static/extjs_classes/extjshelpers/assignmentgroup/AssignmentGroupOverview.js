@@ -138,6 +138,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     showFeedbackPanel: function() {
+        if(this.assignmentgroup_recordcontainer.record.get('parentnode__delivery_types') === 1) {
+            this.nonElectronicNote.show();
+        }
         this.feedbackPanel.show();
     },
 
@@ -213,11 +216,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             }
                         }]
                     }, {
-                        xtype: 'deliveriesgroupedbydeadline',
+                        xtype: 'panel',
                         margin: {top: 10},
-                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                        delivery_recordcontainer: this.delivery_recordcontainer,
-                        flex: 1
+                        flex: 1,
+                        border: false,
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch'
+                        },
+                        items: [this.nonElectronicNote = Ext.widget('box', {
+                            margin: {bottom: 10},
+                            hidden: true,
+                            cls: 'readable-section',
+                            html: '<strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. Deliveries are registered (by examiners) as a placeholder for your results.'
+                        }), {
+                            xtype: 'deliveriesgroupedbydeadline',
+                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            delivery_recordcontainer: this.delivery_recordcontainer,
+                            flex: 1
+                        }]
                     }]
                 }, this.feedbackPanel]
             }]
