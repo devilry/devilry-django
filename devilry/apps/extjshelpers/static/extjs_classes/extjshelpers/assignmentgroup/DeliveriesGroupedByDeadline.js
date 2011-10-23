@@ -91,10 +91,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      * @private
      */
     onLoadAllDeadlines: function(deadlineRecords) {
-        var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-        if(deadlineRecords.length > 0 && deadlineRecords[0].get('deadline') < Ext.Date.now() && is_open) {
-            this._onExpiredNoDeliveries();
-        }
         Ext.each(deadlineRecords, this.handleSingleDeadline, this);
     },
 
@@ -107,6 +103,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         deliveriesStore.load({
             scope: this,
             callback: function(deliveryRecords) {
+
+                if(index === 0) {
+                    var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
+                    if(deliveryRecords.length === 0 && deadlineRecords[0].get('deadline') < Ext.Date.now() && is_open) {
+                        this._onExpiredNoDeliveries();
+                    }
+                }
+
                 if(deliveryRecords.length === 0) {
                     this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore);
                 } else {
