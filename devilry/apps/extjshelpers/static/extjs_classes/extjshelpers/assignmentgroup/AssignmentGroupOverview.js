@@ -229,7 +229,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             margin: {bottom: 10},
                             hidden: true,
                             cls: 'readable-section',
-                            html: '<strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. Deliveries are registered (by examiners) as a placeholder for your results.'
+                            html: '<strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. Deliveries are registered (by examiners) as a placeholder for results.'
                         }), {
                             xtype: 'deliveriesgroupedbydeadline',
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
