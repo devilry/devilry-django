@@ -215,7 +215,7 @@ Ext.define('devilry.statistics.Loader', {
 
 
     _createModel: function() {
-        var fields = ['username', 'labels', 'student', 'relatedstudent', 'groupsByAssignmentId', 'totalScaledPoints'];
+        var fields = ['username', 'full_name', 'labels', 'student', 'relatedstudent', 'groupsByAssignmentId', 'totalScaledPoints'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             fields.push(assignmentRecord.get('short_name'));
             var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
@@ -236,6 +236,7 @@ Ext.define('devilry.statistics.Loader', {
         Ext.Object.each(this._students, function(username, student, index) {
             var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentBase', this.assignment_store, {
                 username: username,
+                full_name: student.relatedstudent.get('user__devilryuserprofile__full_name'),
                 relatedstudent: student.relatedstudent,
                 labelKeys: Ext.Object.getKeys(student.labels),
                 groupsByAssignmentId: student.groupsByAssignmentId,

@@ -8,7 +8,7 @@
 
 {% block appjs %}
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }};
-    {{ RestfulSimplifiedRelatedStudent|extjs_model:"user_details" }}
+    {{ RestfulSimplifiedRelatedStudent|extjs_model }}
     {{ RestfulSimplifiedRelatedStudentKeyValue|extjs_model }}
     {{ RestfulSimplifiedAssignment|extjs_model }};
     {{ RestfulSimplifiedAssignmentGroup|extjs_model:"users,feedback" }};

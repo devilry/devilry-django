@@ -13,7 +13,6 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
             comp: 'exact',
             value: this.periodid
         }]);
-        relatedUserStore.proxy.setDevilryResultFieldgroups(['user_details']);
         //deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
 
         relatedUserStore.proxy.extraParams.page = 1;

@@ -15,6 +15,8 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             header: 'Username', dataIndex: 'username',
             locked: true
         }, {
+            header: 'Full name', dataIndex: 'full_name'
+        }, {
             header: 'Labels', dataIndex: 'labelKeys',
             width: 150,
             renderer: function(value, p, record) {

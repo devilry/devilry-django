@@ -14,6 +14,7 @@ STATIC_ROOT = 'devilry-static-files'
 DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.defaults.root_urlconf'
+AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 
 
 INSTALLED_APPS = ['django.contrib.markup',

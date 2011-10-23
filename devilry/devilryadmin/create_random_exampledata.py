@@ -345,8 +345,11 @@ def create_numbered_users(numusers, prefix):
 def add_relatedstudents(related, usernames):
     for username in usernames:
         try:
-            related.create(user=User.objects.get(username=username),
+            relatedStudent = related.create(user=User.objects.get(username=username),
                            candidate_id=username.replace('student', 'secretcand'))
+            profile = relatedStudent.user.get_profile()
+            profile.full_name = 'The ' + username.capitalize()
+            profile.save()
         except IntegrityError:
             pass # We can not add duplicates
 
