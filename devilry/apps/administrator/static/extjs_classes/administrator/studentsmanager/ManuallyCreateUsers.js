@@ -475,7 +475,14 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             Ext.MessageBox.alert('No assignmen groups created', msg);
             this.up('window').close();
         } else {
-            this.selectDeadline(parsedArray);
+            if(this.assignmentrecord.get('delivery_types') == 1) {
+                this.deadlineRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedDeadline', {
+                    deadline: new Date(Ext.Date.now())
+                });
+                this.createAll(parsedArray);
+            } else {
+                this.selectDeadline(parsedArray);
+            }
         }
     },
 
