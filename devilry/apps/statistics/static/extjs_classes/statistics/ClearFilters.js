@@ -46,11 +46,11 @@ Ext.define('devilry.statistics.ClearFilters', {
         this.tooltip = Ext.create('Ext.tip.ToolTip', {
             title: 'Active filters',
             html: this.filterTipTpl.apply(this),
-            anchor: 'left',
+            anchor: 'bottom',
             target: this.getEl().id,
             width: 415,
             closable: true,
-            dismissDelay: 10000,
+            dismissDelay: 6000,
             autoHide: true
         });
         this.show();

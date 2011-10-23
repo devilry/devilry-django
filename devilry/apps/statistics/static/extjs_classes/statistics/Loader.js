@@ -243,7 +243,7 @@ Ext.define('devilry.statistics.Loader', {
                 relatedstudent: student.relatedstudent,
                 labelKeys: Ext.Object.getKeys(student.labels),
                 groupsByAssignmentId: student.groupsByAssignmentId,
-                labels: student.labels,
+                labels: student.labels
             };
             var record = store.add(studentStoreFmt);
         }, this);

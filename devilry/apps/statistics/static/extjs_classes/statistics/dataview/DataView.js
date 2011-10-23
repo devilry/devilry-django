@@ -7,6 +7,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
         'devilry.statistics.dataview.SelectViewCombo',
         'devilry.statistics.dataview.MinimalGridView',
         'devilry.statistics.ClearFilters',
+        'devilry.statistics.ScalePointsPanel',
         'devilry.statistics.dataview.FullGridView'
     ],
 
@@ -42,6 +43,13 @@ Ext.define('devilry.statistics.dataview.DataView', {
             tbar: [{
                 xtype: 'statistics-clearfilters',
                 loader: this.loader
+            }, {
+                xtype: 'button',
+                text: 'Scale assignments',
+                listeners: {
+                    scope: this,
+                    click: this._onScaleAssignments
+                }
             }, '->', {
                 xtype: 'statistics-dataview-selectviewcombo',
                 availableViews: this.availableViews,
@@ -70,5 +78,18 @@ Ext.define('devilry.statistics.dataview.DataView', {
 
     getSelectedStudents: function() {
         return this._layout.getSelectedStudents();
+    },
+
+    _onScaleAssignments: function() {
+        Ext.widget('window', {
+            width: 400,
+            height: 400,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'statistics-scalepointspanel',
+                store: this.loader.assignment_store
+            }
+        }).show();
     }
 });
