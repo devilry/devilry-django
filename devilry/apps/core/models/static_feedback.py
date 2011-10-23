@@ -128,3 +128,12 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
+
+def set_latest_feedback_handler(sender, **kwargs):
+    feedback = kwargs['instance']
+    feedback.delivery.deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
+    feedback.delivery.deadline.assignment_group.save()
+
+from django.db.models.signals import post_save
+post_save.connect(set_latest_feedback_handler,
+                  sender=StaticFeedback)
