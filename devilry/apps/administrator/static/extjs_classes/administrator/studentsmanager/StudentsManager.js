@@ -185,7 +185,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                     url: assignmentGroupModel.proxy.url
                 })
             });
-            assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users']);
+            assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users', 'tags']);
 
             assignmentGroupStore.proxy.setDevilryFilters([{
                 field: 'parentnode',

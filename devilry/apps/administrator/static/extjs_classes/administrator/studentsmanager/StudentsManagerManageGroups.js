@@ -263,27 +263,36 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
                 help: '<div class="section helpsection">Select the assignment you wish to import assignment groups from, and click <em>Next</em> to further edit the selected groups.</div>',
                 listeners: {
                     scope: this,
-                    next: this.importGroupsFromAnotherAssignmentInCurrentPeriod
+                    next: this._importGroupsFromAnotherAssignmentInCurrentPeriod
                 }
             }
         }).show();
     },
 
-    importGroupsFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
-        importPanel.up('window').close();
+    _convertGroupRecordToGroupSpec: function(groupRecord) {
         var statics = this.statics();
+        var candidates = statics.getCandidateInfoFromGroupRecord(groupRecord);
+        var groupString = '';
+        Ext.each(candidates, function(candidate, index) {
+            var candidateString = statics.formatCandidateInfoAsString(candidate);
+            if(index != candidates.length-1)
+                candidateString += ', ';
+            groupString += candidateString;
+        }, this);
+        var tags = groupRecord.get('tags__tag');
+        if(tags && tags.length > 0) {
+            var tagsString = tags.join(',');
+            groupString += Ext.String.format(' ({0})', tagsString);
+        }
+        return groupString;
+    },
+
+    _importGroupsFromAnotherAssignmentInCurrentPeriod: function(importPanel, assignmentGroupRecords) {
+        importPanel.up('window').close();
         var groups = [];
-        Ext.each(assignmentGroupRecords, function(record, index) {
-            var candidates = statics.getCandidateInfoFromGroupRecord(record);
-            var groupString = '';
-            Ext.each(candidates, function(candidate, index) {
-                var candidateString = statics.formatCandidateInfoAsString(candidate);
-                if(index != candidates.length-1)
-                    candidateString += ', ';
-                groupString += candidateString;
-            });
-            groups.push(groupString);
-        });
+        Ext.each(assignmentGroupRecords, function(groupRecord, index) {
+            groups.push(this._convertGroupRecordToGroupSpec(groupRecord));
+        }, this);
         this.createManyGroupsInBulk(groups);
     },
 

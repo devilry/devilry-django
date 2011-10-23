@@ -394,15 +394,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         this.loadAllRelatedExaminers({
             scope: this,
             callback: this.setExaminersFromTags
-            //callback: function(relatedExaminers) {
-                //var examiners = this.relatedUserRecordsToStringArray(relatedExaminers, '{user__username}');
-                //var parsedExaminers = [];
-                //Ext.each(examiners, function(examinerspec, index) {
-                    //var parsed = devilry.administrator.studentsmanager.ManuallyCreateUsers.parseUsernamesAndTags(examinerspec);
-                    //parsedExaminers.push(parsed);
-                //});
-                //this.setExaminersFromTags(parsedExaminers);
-            //}
         });
     },
 

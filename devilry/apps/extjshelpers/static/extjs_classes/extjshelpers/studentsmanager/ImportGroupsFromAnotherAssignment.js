@@ -96,11 +96,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignme
         devilry.administrator.studentsmanager.StudentsManager.getAllGroupsInAssignment(assignmentid, {
             scope: this,
             callback: function(records, op, success) {
-                if(!success) {
+                if(success) {
+                    this.getEl().unmask();
+                    this.fireEvent('next', this, records);
+                } else {
                     this.loadAssignmentGroupStoreFailed();
                 }
-                this.getEl().unmask();
-                this.fireEvent('next', this, records);
             }
         });
     },
