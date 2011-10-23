@@ -202,10 +202,9 @@ Ext.define('devilry.statistics.Loader', {
             return;
         }
         var student = this._students[username];
+        var assignmentRecord = this.assignment_store.getById(grouprecord.data.parentnode);
         student.groupsByAssignmentId[grouprecord.data.parentnode] = {
-            assignment_shortname: grouprecord.data.parentnode__short_name,
             points: grouprecord.data.feedback__points,
-            scaled_points: grouprecord.data.feedback__points,
             is_passing_grade: grouprecord.data.feedback__is_passing_grade
         };
     },
@@ -244,16 +243,8 @@ Ext.define('devilry.statistics.Loader', {
                 relatedstudent: student.relatedstudent,
                 labelKeys: Ext.Object.getKeys(student.labels),
                 groupsByAssignmentId: student.groupsByAssignmentId,
-                labels: student.labels
+                labels: student.labels,
             };
-            var totalScaledPoints = 0;
-            Ext.Object.each(student.groupsByAssignmentId, function(assignment_id, group, index) {
-                studentStoreFmt[assignment_id] = group;
-                var scaledPointdataIndex = assignment_id + '::scaledPoints';
-                studentStoreFmt[scaledPointdataIndex] = group.scaled_points;
-                totalScaledPoints += group.scaled_points;
-            }, this);
-            studentStoreFmt.totalScaledPoints = totalScaledPoints;
             var record = store.add(studentStoreFmt);
         }, this);
         return store;

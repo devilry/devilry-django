@@ -20,10 +20,10 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 sortable: true,
-                renderer: function(value, p, record) {
-                    var group = record.get(assignment_id);
+                renderer: function(scaled_points, p, studentRecord) {
+                    var group = studentRecord.get('groupsByAssignmentId')[assignment_id];
                     return me.cellTpl.apply({
-                        scaled_points: me.loader.calculateScaledPoints(group),
+                        scaled_points: scaled_points,
                         is_passing_grade: group.is_passing_grade
                     });
                 }

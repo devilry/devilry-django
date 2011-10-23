@@ -3,6 +3,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
 
     constructor: function(config) {
         this.callParent([config]);
+        this.updateScaledPoints();
     },
 
     setLabel: function(label, value) {
@@ -35,15 +36,35 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         var sumScaledPoints = 0;
         Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
             if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
-                sumScaledPoints += group.points;
+                sumScaledPoints += this._calculateScaledPoints(group.points);
             };
         }, this);
         return sumScaledPoints;
+    },
+
+    updateScaledPoints: function() {
+        var assignment_ids = Ext.Object.getKeys(this.get('groupsByAssignmentId'));
+        var totalScaledPoints = 0;
+        Ext.each(assignment_ids, function(assignment_id, index) {
+            var group = this.get('groupsByAssignmentId')[parseInt(assignment_id)];
+            group.scaled_points = this._calculateScaledPoints(group);
+            this.set(assignment_id + '::scaledPoints', group.scaled_points);
+            totalScaledPoints += group.points;
+        }, this);
+        this.set('totalScaledPoints', totalScaledPoints);
+        this.commit(); // NOTE: removes the red triangle from grid
     },
 
     hasMinimalNumberOfScaledPointsOn: function(assignment_ids, minimumScaledPoints) {
         return this.getSumScaledPoints(assignment_ids) >= minimumScaledPoints;
     },
 
-    
+    getScaledPoints: function(assignment_id) {
+        var group = this.get('groupsByAssignmentId')[assignment_id];
+        return group.scaled_points;
+    },
+
+    _calculateScaledPoints: function(group) {
+        return group.points;
+    }
 });
