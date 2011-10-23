@@ -198,7 +198,7 @@ class RelatedUsersBase(SimplifiedModelApi):
 
 class RelatedUsersMetaBase:
     methods = ['create', 'read', 'update', 'delete', 'search']
-    resultfields = FieldSpec('id', 'period', 'user',
+    resultfields = FieldSpec('id', 'period', 'user', 'tags',
                              'user__username',
                              'user__devilryuserprofile__full_name',
                              'user__email')
