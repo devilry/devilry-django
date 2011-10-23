@@ -46,7 +46,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
                 loader: this.loader
             }, {
                 xtype: 'button',
-                text: 'Scale assignments',
+                text: 'Change weight of assignments',
                 listeners: {
                     scope: this,
                     click: this._onScaleAssignments
@@ -81,15 +81,16 @@ Ext.define('devilry.statistics.dataview.DataView', {
         return this._layout.getSelectedStudents();
     },
 
-    _onScaleAssignments: function() {
+    _onScaleAssignments: function(button) {
         Ext.widget('window', {
-            width: 400,
-            height: 400,
+            width: 350,
+            height: 250,
+            title: button.text,
             maximizable: true,
             layout: 'fit',
             items: {
                 xtype: 'statistics-scalepointspanel',
-                store: this.loader.assignment_store
+                store: this.loader.assignment_store,
             }
         }).show();
     },

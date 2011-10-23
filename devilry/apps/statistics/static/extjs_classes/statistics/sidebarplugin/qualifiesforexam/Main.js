@@ -1,6 +1,6 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     extend: 'Ext.form.Panel',
-    title: 'Configure: Qualifies for final exams',
+    title: 'Label students that qualifies for final exams',
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin',
         'devilry.statistics.sidebarplugin.qualifiesforexam.None',
