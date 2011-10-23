@@ -4,6 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.staticfeedbackinfo',
     cls: 'widget-staticfeedbackinfo',
+    layout: 'fit',
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
@@ -57,7 +58,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     
     initComponent: function() {
         this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.bodyContent = Ext.create('Ext.container.Container');
+        this.bodyContent = Ext.create('Ext.container.Container', {
+            layout: 'fit',
+            autoScroll: true
+        });
 
         Ext.apply(this, {
             items: [this.bodyContent],
