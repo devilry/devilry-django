@@ -8,6 +8,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
     _getGridColumns: function() {
         var gridColumns = this.callParent();
         gridColumns.push({
+            xtype: 'numbercolumn',
+            format: '0.00',
             text: 'Total points',
             dataIndex: 'totalScaledPoints',
             sortable: true
@@ -17,6 +19,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
             var assignment_id = assignmentRecord.get('id');
             var scaledPointdataIndex = assignment_id + '::scaledPoints';
             gridColumns.push({
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 sortable: true,
