@@ -124,6 +124,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
      * @private
      */
     onCloseGroup: function() {
+        var statics = this.statics();
         var win = Ext.MessageBox.show({
             title: 'Are you sure you want to close this group?',
             msg: '<p>This will <strong>prevent</strong> students from adding more deliveries. ' +
@@ -138,7 +139,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             closable: false,
             fn: function(buttonId) {
                 if(buttonId == 'yes') {
-                    this.statics().closeGroup(this.assignmentgroup_recordcontainer);
+                    statics.closeGroup(this.assignmentgroup_recordcontainer);
                 }
             }
         });
