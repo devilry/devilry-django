@@ -85,7 +85,7 @@ create_testgroups(testhelper.duck1100_spring01,
                                  {'short_name': 'week3', 'deadline_profiles': '-9', 'grade_maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
                                  {'short_name': 'week4', 'deadline_profiles': '-3', 'grade_maxpoints': 9,
-                                  'long_name': 'The one and only week tree'},
+                                  'long_name': 'The one and only week four'},
                                 ])
 
 # Duck 1080
