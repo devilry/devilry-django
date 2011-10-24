@@ -32,6 +32,7 @@
 
 
     var dashboard_assignment_model = {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    var dashboard_periodmodel = {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
         stores: [nodestore, subjectstore, periodstore],
         //renderTo: 'no-permissions-message',
@@ -41,12 +42,18 @@
             allLoaded: function(loadedItems, loadedWithRecords) {
                 Ext.getBody().unmask();
                 if(is_superuser || loadedWithRecords > 0) {
-                    //Ext.getDom('searchsection').style.display = 'block';
                     var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
                         model: dashboard_assignment_model,
                         dashboard_url: DASHBOARD_URL
                     });
                     Ext.getCmp('active-assignments').add(activeAssignmentsView);
+
+                    var activePeriodsView = Ext.create('devilry.extjshelpers.ActivePeriodsGrid', {
+                        model: dashboard_periodmodel,
+                        dashboard_url: DASHBOARD_URL
+                    });
+                    Ext.getCmp('active-periods').add(activePeriodsView);
+
                     searchwidget.show();
                 }
             }
@@ -84,11 +91,28 @@
                 align: 'stretch'
             },
             items: [searchwidget, {xtype:'box', height: 20}, permchecker, buttonbar, {
-                xtype: 'panel',
+                xtype: 'container',
                 flex: 1,
-                layout: 'fit',
-                border: false,
-                id: 'active-assignments'
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                items: [{
+                    xtype: 'panel',
+                    flex: 7,
+                    layout: 'fit',
+                    border: false,
+                    id: 'active-assignments'
+                }, {
+                    xtype: 'box',
+                    width: 30
+                }, {
+                    xtype: 'panel',
+                    flex: 3,
+                    layout: 'fit',
+                    border: false,
+                    id: 'active-periods'
+                }]
             }]
         }]
     });
