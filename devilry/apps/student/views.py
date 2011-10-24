@@ -125,7 +125,7 @@ class FileDownloadView(View):
         
         # TODO: make this work on any storage backend
         response = HttpResponse(FileWrapper(filemeta.deliverystore.read_open(filemeta)),
-                                content_type=guess_type(filemeta.filename))
+                                content_type=guess_type(filemeta.filename)[0])
         response['Content-Disposition'] = "attachment; filename=%s" % \
             filemeta.filename.encode("ascii", 'replace')
         response['Content-Length'] = filemeta.size
