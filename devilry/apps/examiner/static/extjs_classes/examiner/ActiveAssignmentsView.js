@@ -64,23 +64,23 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
                 text: 'Period',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
-                flex: 20,
+                flex: 10,
             },{
                 text: 'Assignment',
                 menuDisabled: true,
                 flex: 20,
                 dataIndex: 'long_name'
-            },{
-                text: 'Published',
-                menuDisabled: true,
-                width: 150,
-                dataIndex: 'publishing_time',
-                renderer: function(value) {
-                    var rowTpl = Ext.create('Ext.XTemplate',
-                        '{.:date}'
-                    );
-                    return rowTpl.apply(value);
-                }
+            //},{
+                //text: 'Published',
+                //menuDisabled: true,
+                //width: 150,
+                //dataIndex: 'publishing_time',
+                //renderer: function(value) {
+                    //var rowTpl = Ext.create('Ext.XTemplate',
+                        //'{.:date}'
+                    //);
+                    //return rowTpl.apply(value);
+                //}
             }],
             listeners: {
                 scope: this,

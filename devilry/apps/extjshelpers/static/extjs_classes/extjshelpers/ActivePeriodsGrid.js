@@ -54,7 +54,7 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
                 text: 'Subject',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
-                flex: 20,
+                flex: 30,
             },{
                 text: 'Period',
                 menuDisabled: true,
