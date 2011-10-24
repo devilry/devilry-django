@@ -60,8 +60,11 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _onLoadAllRelatedStudents: function(records, success) {
-        // TODO: Handle errors
+    _onLoadAllRelatedStudents: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load related students', op);
+            return;
+        }
         Ext.each(records, function(relatedStudentRecord, index) {
             var username = relatedStudentRecord.get('user__username')
             this._students[username] = Ext.create('devilry.statistics.AggregatedPeriodDataForStudent', {
@@ -101,8 +104,11 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _onLoadAllStudentLabels: function(records, success) {
-        // TODO: Handle errors
+    _onLoadAllStudentLabels: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load labels', op);
+            return;
+        }
         Ext.each(records, function(appKeyValueRecord, index) {
             var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
             var label = appKeyValueRecord.get('key');
@@ -118,7 +124,11 @@ Ext.define('devilry.statistics.Loader', {
     _loadPeriod: function() {
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
             scope: this,
-            success: function(record) {
+            callback: function(record, op) {
+                if(!op.success) {
+                    this._handleLoadError('Failed to load period', op);
+                    return;
+                }
                 this.periodRecord = record;
                 this._loadAssignments(record.data.id);
             }
@@ -144,7 +154,11 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _onAssignmentsLoaded: function(assignmentrecords, success) {
+    _onAssignmentsLoaded: function(assignmentrecords, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load assignments', op);
+            return;
+        }
         this._createModel();
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
@@ -170,8 +184,12 @@ Ext.define('devilry.statistics.Loader', {
         }]);
         assignmentgroup_store.load({
             scope: this,
-            callback: function(grouprecords, success) {
-                this._onLoadGroups(totalAssignments, grouprecords, success);
+            callback: function(grouprecords, op) {
+                if(!op.success) {
+                    this._handleLoadError('Failed to load assignment groups', op);
+                    return;
+                }
+                this._onLoadGroups(totalAssignments, grouprecords);
             }
         });
     },
@@ -179,7 +197,7 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _onLoadGroups: function(totalAssignments, grouprecords, success) {
+    _onLoadGroups: function(totalAssignments, grouprecords) {
         Ext.each(grouprecords, function(grouprecord, index) {
             Ext.each(grouprecord.data.candidates__student__username, function(username, index) {
                 this._addGroupToStudent(username, grouprecord);
@@ -261,5 +279,21 @@ Ext.define('devilry.statistics.Loader', {
     clearFilter: function() {
         this.store.clearFilter();
         this.fireEvent('filterCleared', this);
+    },
+
+    _handleLoadError: function(details, op) {
+        Ext.getBody().unmask();
+        var httperror = 'Lost connection with server';
+        if(op.error.status !== 0) {
+            httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
+        }
+        Ext.MessageBox.show({
+            title: 'Failed to load the period overview',
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Try reloading the page</strong>.</p>' +
+                Ext.String.format('<p>Error details: {0}: {1}</p>', httperror, details),
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            closable: false
+        });
     }
 });
