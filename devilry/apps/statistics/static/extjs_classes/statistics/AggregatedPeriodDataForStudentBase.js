@@ -15,12 +15,16 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         var passes = 0;
         Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
             if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
-                if(group.is_passing_grade) {
+                if(group.assignmentGroupRecord.get('feedback__is_passing_grade')) {
                     passes ++;
                 }
             };
         }, this);
         return passes === assignment_ids.length;
+    },
+
+    passesAllAssignments: function() {
+        return passesAssignments(this.assignment_ids);
     },
 
     getSumScaledPoints: function(assignment_ids) {
