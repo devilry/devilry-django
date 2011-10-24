@@ -30,8 +30,22 @@ Ext.define('devilry.statistics.Loader', {
         // constructor will add them.
         this.listeners = config.listeners;
 
+        Ext.getBody().mask('Loading all data about all students on the period', 'page-load-mask');
         this.callParent(arguments);        
+        this._loadedCount = 0;
         this._loadAssignments();
+        this._loadAllGroupsInPeriod();
+        this._loadPeriod();
+        this._loadAllStudentLabels();
+        this._loadAllCandidatesInPeriod();
+        this._loadAllRelatedStudents();
+    },
+
+    _checkLoadComplete: function() {
+        this._loadedCount ++;
+        if(this._loadedCount >= 6) {
+            this._onLoaded();
+        };
     },
 
     /**
@@ -44,7 +58,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
-        Ext.getBody().mask('Loading all assignments within the period', 'page-load-mask');
         this.assignment_store.load({
             scope: this,
             callback: this._onAssignmentsLoaded
@@ -60,11 +73,10 @@ Ext.define('devilry.statistics.Loader', {
             return;
         }
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
-        Ext.getBody().mask('Loading all assignment groups (students) on all assignments within the period', 'page-load-mask');
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
             this.assignment_ids.push(assignmentrecord.get('id'));
         }, this);
-        this._loadAllRelatedStudents();
+        this._checkLoadComplete();
     },
 
     /**
@@ -82,7 +94,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
-        Ext.getBody().mask('Loading all students on the period', 'page-load-mask');
         this.relatedstudent_store.load({
             scope: this,
             callback: this._onLoadAllRelatedStudents
@@ -97,13 +108,13 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load related students', op);
             return;
         }
-        this._loadAllCandidatesInPeriod(this.periodid);
+        this._checkLoadComplete();
     },
 
     /** 
      * @private
      */
-    _loadAllCandidatesInPeriod: function(periodid) {
+    _loadAllCandidatesInPeriod: function() {
         this.candidate_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedCandidate',
             remoteFilter: true,
@@ -115,7 +126,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
-        Ext.getBody().mask('Loading all candidates on the period', 'page-load-mask');
         this.candidate_store.load({
             scope: this,
             callback: this._onLoadAllCandidatesInPeriod
@@ -130,7 +140,7 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load candidates', op);
             return;
         }
-        this._loadAllStudentLabels();
+        this._checkLoadComplete();
     },
 
     /**
@@ -152,7 +162,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.labelManager.application_id
         }]);
-        Ext.getBody().mask('Loading labels', 'page-load-mask');
         this.relatedstudentkeyvalue_store.load({
             scope: this,
             callback: this._onLoadAllStudentLabels
@@ -167,14 +176,13 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load labels', op);
             return;
         }
-        this._loadPeriod();
+        this._checkLoadComplete();
     },
 
     /**
      * @private
      */
     _loadPeriod: function() {
-        Ext.getBody().mask('Loading detailed information about the Period', 'page-load-mask');
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
             scope: this,
             callback: function(record, op) {
@@ -183,7 +191,7 @@ Ext.define('devilry.statistics.Loader', {
                     return;
                 }
                 this.periodRecord = record;
-                this._loadAllGroupsInPeriod();
+                this._checkLoadComplete();
             }
         });
     },
@@ -191,7 +199,7 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _loadAllGroupsInPeriod: function(assignmentrecord) {
+    _loadAllGroupsInPeriod: function() {
         this.assignmentgroup_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup',
             remoteFilter: true,
@@ -203,7 +211,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
-        Ext.getBody().mask('Loading all assignment groups in the Period', 'page-load-mask');
         this.assignmentgroup_store.load({
             scope: this,
             callback: this._onLoadAllGroupsInPeriod
@@ -218,7 +225,7 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load assignment groups', op);
             return;
         }
-        this._onLoaded();
+        this._checkLoadComplete();
     },
 
 
