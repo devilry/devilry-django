@@ -125,6 +125,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         }
 
         items = Ext.Array.merge(items, ['->', {
+            // This button is only here to work around rendering issues when the toolbar is empty (because we have added singlerecordcontainerdepbutton's, but they are never shown)
+            xtype: 'button',
+            text: '&nbsp;',
+            disabled: true,
+            scale: 'large'
+        }, {
             xtype: 'devilrypager',
             store: this.staticfeedbackstore,
             width: 200,
@@ -198,7 +204,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             xtype: 'box',
             padding: 10,
             cls: 'no-feedback',
-            html: 'No feedback yet'
+            html: 'No feedback'
         });
     }
 });
