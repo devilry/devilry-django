@@ -19,6 +19,7 @@ Ext.define('devilry.statistics.LabelManager', {
         Ext.getBody().mask('Updating labels');
         var index = 0;
         this._finished = 0;
+        this._errors = 0;
         this.loader.clearFilter();
         this._watingFor = this.loader.store.count() * 2;
         Ext.each(this.loader.store.data.items, function(student) {
@@ -49,11 +50,16 @@ Ext.define('devilry.statistics.LabelManager', {
             callback: function(pool) {
                 record.save({
                     scope: this,
-                    callback: function(records, op, successful) {
-                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
-                        var label = record.get('key');
-                        student.setLabel(label, record);
+                    callback: function(r, op) {
                         pool.notifyTaskCompleted();
+                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}/{1}', index, this._watingFor));
+                        if(op.success) {
+                            var label = record.get('key');
+                            student.setLabel(label, record);
+                        }
+                        else {
+                            this._errors ++;
+                        }
                         this._checkFinished();
                     }
                 });
@@ -67,11 +73,16 @@ Ext.define('devilry.statistics.LabelManager', {
             callback: function(pool) {
                 record.destroy({
                     scope: this,
-                    callback: function() {
-                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}', index));
-                        var label = record.get('key');
-                        student.delLabel(label);
+                    callback: function(r, op) {
                         pool.notifyTaskCompleted();
+                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}/{1}', index, this._watingFor));
+                        if(op.success) {
+                            var label = record.get('key');
+                            student.delLabel(label);
+                        }
+                        else {
+                            this._errors ++;
+                        }
                         this._checkFinished();
                     }
                 });
@@ -87,10 +98,27 @@ Ext.define('devilry.statistics.LabelManager', {
             return;
         }
         if(this._finished >= this._watingFor) {
-            this._watingFor = undefined;
-            Ext.getBody().unmask();
-            this.fireEvent('changedMany');
+            this._onFinished();
         }
+    },
+
+    _onFinished: function() {
+        Ext.getBody().unmask();
+        this.fireEvent('changedMany');
+        if(this._errors > 0) {
+            this._onErrors();
+        }
+        this._watingFor = undefined;
+    },
+
+    _onErrors: function() {
+        Ext.MessageBox.show({
+            title: Ext.String.format('Failed to set {0} of {1} labels', this._errors, this._watingFor),
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Try to apply the labels again</strong>.</p>',
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            closable: false
+        });
     },
 
     _createLabelRecord: function(student, label, student_can_read) {
