@@ -311,10 +311,10 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         :param user: A django user object.
         :rtype: a django queryset
         """
-        return cls._meta.model.where_is_admin_or_superadmin(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
-                                                                           latest_deadline_id=Max('deadlines__id'),
-                                                                           latest_deadline_deadline=Max('deadlines__deadline'),
-                                                                           number_of_deliveries=Count('deadlines__deliveries'))
+        return cls._meta.model.where_is_admin_or_superadmin(user, 'feedback', 'parentnode').annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                                                                                                     latest_deadline_id=Max('deadlines__id'),
+                                                                                                     latest_deadline_deadline=Max('deadlines__deadline'),
+                                                                                                     number_of_deliveries=Count('deadlines__deliveries'))
 
     @classmethod
     def _parse_examiners_as_list_of_usernames(cls, obj):
