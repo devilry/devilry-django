@@ -13,11 +13,12 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedDeadlineMetaMixin,
                                                    SimplifiedDeliveryMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
-                                                   SimplifiedFileMetaMetaMixin)
+                                                   SimplifiedFileMetaMetaMixin,
+                                                   SimplifiedCandidateMetaMixin)
 from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment', 'SimplifiedAssignmentGroup',
-           'SimplifiedRelatedExaminer', 'SimplifiedRelatedStudent', 'SimplifiedRelatedStudentKeyValue')
+           'SimplifiedRelatedExaminer', 'SimplifiedRelatedStudent', 'SimplifiedRelatedStudentKeyValue', 'SimplifiedCandidate')
 
 
 def _convert_list_of_usernames_to_userobjects(usernames):
@@ -282,6 +283,23 @@ class SimplifiedAssignment(HasAdminsMixin, CanSaveBase):
         Return ``True`` if the given assignment contains no assignmentgroups.
         """
         return obj.assignmentgroups.all().count() == 0
+
+
+@simplified_modelapi
+class SimplifiedCandidate(CanSaveBase):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
+    class Meta(HasAdminsMixin.MetaMixin, SimplifiedCandidateMetaMixin):
+        """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
+        methods = ('create', 'read', 'update', 'delete', 'search')
+        editablefields = ('student', 'candidate_id', 'assignment_group')
+        resultfields = FieldSpec('student', 'candidate_id') + SimplifiedCandidateMetaMixin.resultfields
+
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given assignment contains no assignmentgroups.
+        """
+        return models.Delivery.objects.filter(deadline__assignment_group=obj.assignment_group, delivered_by=obj).count() == 0
 
 
 @simplified_modelapi
