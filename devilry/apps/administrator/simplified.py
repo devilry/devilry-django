@@ -182,7 +182,7 @@ class RelatedUsersBase(SimplifiedModelApi):
         :param user: A django user object.
         :rtype: a django queryset
         """
-        return cls._meta.model.where_is_admin_or_superadmin(user)
+        return cls._meta.model.where_is_admin_or_superadmin(user, 'period', 'user', 'user__devilryuserprofile')
 
     @classmethod
     def write_authorize(cls, user, obj):
