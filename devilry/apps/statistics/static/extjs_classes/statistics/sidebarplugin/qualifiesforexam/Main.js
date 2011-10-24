@@ -8,6 +8,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSubset',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.Advanced',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
     ],
@@ -41,12 +42,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     initComponent: function() {
         var chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             availablePlugins: [{
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
-                title: 'No students qualify for final exams'
-            }, {
-                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.All',
-                title: 'All students qualify for final exams'
-            }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
                 title: 'Require passing grade on all assignments'
             }, {
@@ -60,6 +55,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                 title: 'Require a minimum number of points in total on a subset of all assignments'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.None',
+                title: 'No students qualify for final exams'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.All',
+                title: 'All students qualify for final exams'
+            }, {
+                path: 'devilry.statistics.sidebarplugin.qualifiesforexam.Advanced',
                 title: 'Advanced'
             }, {
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
