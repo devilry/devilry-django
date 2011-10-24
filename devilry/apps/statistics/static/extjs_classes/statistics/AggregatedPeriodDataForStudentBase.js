@@ -1,29 +1,19 @@
 Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     extend: 'Ext.data.Model',
 
-    constructor: function(assignment_store, config) {
-        this.callParent([config]);
-        this.assignment_store = assignment_store;
-        //this.updateScaledPoints();
-    },
-
     setLabel: function(label, value) {
-        var labels = this.get('labels');
-        labels[label] = value;
-        this.set('labels', labels);
+        this.labels[label] = value;
         this.set('labelKeys', Ext.Object.getKeys(labels));
     },
 
     delLabel: function(label) {
-        var labels = this.get('labels');
-        delete labels[label];
-        this.set('labels', labels);
+        delete this.labels[label];
         this.set('labelKeys', Ext.Object.getKeys(labels));
     },
 
     passesAssignments: function(assignment_ids) {
         var passes = 0;
-        Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
+        Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
             if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
                 if(group.is_passing_grade) {
                     passes ++;
@@ -35,7 +25,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
 
     getSumScaledPoints: function(assignment_ids) {
         var sumScaledPoints = 0;
-        Ext.Object.each(this.get('groupsByAssignmentId'), function(assignment_id, group) {
+        Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
             if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
                 sumScaledPoints += group.scaled_points;
             };
@@ -44,10 +34,10 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     },
 
     updateScaledPoints: function() {
-        var assignment_ids = Ext.Object.getKeys(this.get('groupsByAssignmentId'));
+        var assignment_ids = Ext.Object.getKeys(this.groupsByAssignmentId);
         var totalScaledPoints = 0;
         Ext.each(this.assignment_ids, function(assignment_id, index) {
-            var group = this.get('groupsByAssignmentId')[assignment_id];
+            var group = this.groupsByAssignmentId[assignment_id];
             if(group.assignmentGroupRecord) {
                 group.scaled_points = this._calculateScaledPoints(group.assignmentGroupRecord);
                 this.set(assignment_id + '::scaledPoints', group.scaled_points);
@@ -63,7 +53,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     },
 
     getScaledPoints: function(assignment_id) {
-        var group = this.get('groupsByAssignmentId')[assignment_id];
+        var group = this.groupsByAssignmentId[assignment_id];
         if(group) {
             return group.scaled_points;
         } else {

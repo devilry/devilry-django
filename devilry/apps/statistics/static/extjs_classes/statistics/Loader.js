@@ -226,16 +226,17 @@ Ext.define('devilry.statistics.Loader', {
         Ext.each(this.relatedstudent_store.data.items, function(relatedStudentRecord, index) {
             var userid = relatedStudentRecord.get('user')
             var username = relatedStudentRecord.get('user__username')
-            var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentGenerated', this.assignment_store, {
+            var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
                 userid: userid,
                 username: username,
-                relatedstudent: relatedStudentRecord,
                 full_name: relatedStudentRecord.get('user__devilryuserprofile__full_name'),
-                groupsByAssignmentId: {},
-                labelKeys: [],
-                labels: []
+                labelKeys: []
             });
             this.store.add(record);
+            record.labels = [];
+            record.assignment_store = this.assignment_store;
+            record.relatedStudentRecord = relatedStudentRecord;
+            record.groupsByAssignmentId = {};
             this._students_by_releatedid[relatedStudentRecord.get('id')] = record;
         }, this);
     },
@@ -245,7 +246,7 @@ Ext.define('devilry.statistics.Loader', {
             var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
             var label = appKeyValueRecord.get('key');
             var labelDescription = appKeyValueRecord.get('value');
-            this._students_by_releatedid[relatedstudent_id].get('labels')[label] = appKeyValueRecord;
+            this._students_by_releatedid[relatedstudent_id].labels[label] = appKeyValueRecord;
         }, this);
     },
 
@@ -255,7 +256,7 @@ Ext.define('devilry.statistics.Loader', {
             assignment_ids.push(assignmentRecord.get('id'));
         }, this);
         Ext.each(this.store.data.items, function(studentRecord, index) {
-            var groupsByAssignmentId = studentRecord.get('groupsByAssignmentId');
+            var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
             Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
                 groupsByAssignmentId[assignmentRecord.get('id')] = {
                     candidates: [],
@@ -274,7 +275,7 @@ Ext.define('devilry.statistics.Loader', {
             var assignmentgroup_id = candidateRecord.get('assignment_group');
             var assignmentGroupRecord = this.assignmentgroup_store.getById(assignmentgroup_id);
 
-            var groupsByAssignmentId = studentRecord.get('groupsByAssignmentId');
+            var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
             var assignment_id = assignmentGroupRecord.get('parentnode');
             var group = groupsByAssignmentId[assignment_id];
             group.candidates.push(candidateRecord); // This will add only unique candidate records, since we only fetch distinct candidates
@@ -321,7 +322,7 @@ Ext.define('devilry.statistics.Loader', {
 
 
     _createModel: function() {
-        var fields = ['userid', 'username', 'full_name', 'labels', 'labelKeys', 'student', 'relatedstudent', 'groupsByAssignmentId', 'totalScaledPoints'];
+        var fields = ['userid', 'username', 'full_name', 'labelKeys', 'student', 'totalScaledPoints'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             fields.push(assignmentRecord.get('short_name'));
             var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
