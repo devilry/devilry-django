@@ -16,6 +16,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         loader: undefined,
         aggregatedStore: undefined,
         labelname: 'qualifies-for-exam',
+        negative_labelname: 'unqualified-for-exam',
         sidebarplugins: []
     },
 
@@ -69,7 +70,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             commonArgs: {
                 loader: this.loader,
                 aggregatedStore: this.aggregatedStore,
-                labelname: this.labelname
+                labelname: this.labelname,
+                negative_labelname: this.negative_labelname
             },
 
             listeners: {

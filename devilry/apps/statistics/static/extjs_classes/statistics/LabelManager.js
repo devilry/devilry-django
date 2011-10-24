@@ -20,20 +20,26 @@ Ext.define('devilry.statistics.LabelManager', {
         var index = 0;
         this._finished = 0;
         this.loader.clearFilter();
-        this._watingFor = this.loader.store.count();
+        this._watingFor = this.loader.store.count() * 2;
         Ext.each(this.loader.store.data.items, function(student) {
             var match = Ext.bind(options.filter, options.scope)(student);
-            var labelRecord = student.get('labels')[options.label];
-            var has_label = labelRecord !== undefined; 
-            if(match && !has_label) {
-                this._createLabel(student, options.label, options.student_can_read, index);
-            } else if(!match && has_label) {
-                this._deleteLabel(student, labelRecord, index);
-            } else {
-                this._checkFinished();
-            }
+            this._changeLabelIfRequired(student, match, options.label, options.student_can_read, index);
+            index ++;
+            this._changeLabelIfRequired(student, !match, options.negative_label, options.student_can_read, index);
             index ++;
         }, this);
+    },
+
+    _changeLabelIfRequired: function(student, match, label, student_can_read, index) {
+        var labelRecord = student.get('labels')[label];
+        var has_label = labelRecord !== undefined; 
+        if(match && !has_label) {
+            this._createLabel(student, label, student_can_read, index);
+        } else if(!match && has_label) {
+            this._deleteLabel(student, labelRecord, index);
+        } else {
+            this._checkFinished();
+        }
     },
 
     _createLabel: function(student, label, student_can_read, index) {

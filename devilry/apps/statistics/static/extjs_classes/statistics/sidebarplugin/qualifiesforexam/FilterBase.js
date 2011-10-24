@@ -5,6 +5,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
         loader: undefined,
         aggregatedStore: undefined,
         labelname: undefined,
+        negative_labelname: undefined,
         title: undefined
     },
 
@@ -59,6 +60,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
                         filter: this.filter,
                         scope: this,
                         label: this.labelname,
+                        negative_label: this.negative_labelname,
                         student_can_read: true
                     });
                 }

@@ -265,6 +265,14 @@ input, select {
   font-weight: bold;
   padding: 1px 4px;
   white-space: nowrap; }
+.labels-list li.label-unqualified-for-exam {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
 
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;

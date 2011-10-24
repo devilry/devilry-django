@@ -3,4 +3,7 @@
     li.label-qualifies-for-exam {
         @include goodInlineItem();
     }
+    li.label-unqualified-for-exam {
+        @include warningInlineItem();
+    }
 }
