@@ -246,7 +246,9 @@ Ext.define('devilry.statistics.Loader', {
             var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
             var label = appKeyValueRecord.get('key');
             var labelDescription = appKeyValueRecord.get('value');
-            this._students_by_releatedid[relatedstudent_id].labels[label] = appKeyValueRecord;
+            var studentRecord = this._students_by_releatedid[relatedstudent_id];
+            studentRecord.labels[label] = appKeyValueRecord;
+            studentRecord.setLabelKeysFromLabels();
         }, this);
     },
 

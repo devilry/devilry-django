@@ -32,7 +32,7 @@ Ext.define('devilry.statistics.LabelManager', {
     },
 
     _changeLabelIfRequired: function(student, match, label, student_can_read, index) {
-        var labelRecord = student.get('labels')[label];
+        var labelRecord = student.labels[label];
         var has_label = labelRecord !== undefined; 
         if(match && !has_label) {
             this._createLabel(student, label, student_can_read, index);
@@ -123,7 +123,7 @@ Ext.define('devilry.statistics.LabelManager', {
 
     _createLabelRecord: function(student, label, student_can_read) {
         var record = Ext.create('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue', {
-            relatedstudent: student.get('relatedstudent').get('id'),
+            relatedstudent: student.relatedStudentRecord.get('id'),
             application: this.application_id,
             key: label,
             student_can_read: (student_can_read == true)

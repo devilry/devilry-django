@@ -3,12 +3,17 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
 
     setLabel: function(label, value) {
         this.labels[label] = value;
-        this.set('labelKeys', Ext.Object.getKeys(labels));
+        this.setLabelKeysFromLabels();
     },
 
     delLabel: function(label) {
         delete this.labels[label];
-        this.set('labelKeys', Ext.Object.getKeys(labels));
+        this.setLabelKeysFromLabels();
+    },
+
+    setLabelKeysFromLabels: function() {
+        this.set('labelKeys', Ext.Object.getKeys(this.labels));
+        this.commit();
     },
 
     passesAssignments: function(assignment_ids) {
