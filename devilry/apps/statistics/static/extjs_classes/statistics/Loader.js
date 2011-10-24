@@ -51,6 +51,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
+        Ext.getBody().mask('Loading all students on the period', 'page-load-mask');
         relatedstudent_store.load({
             scope: this,
             callback: this._onLoadAllRelatedStudents
@@ -95,6 +96,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.labelManager.application_id
         }]);
+        Ext.getBody().mask('Loading labels', 'page-load-mask');
         relatedstudentkeyvalue_store.load({
             scope: this,
             callback: this._onLoadAllStudentLabels
@@ -122,6 +124,7 @@ Ext.define('devilry.statistics.Loader', {
      * @private
      */
     _loadPeriod: function() {
+        Ext.getBody().mask('Loading detailed information about the Period', 'page-load-mask');
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
             scope: this,
             callback: function(record, op) {
@@ -145,6 +148,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: periodid
         }]);
+        Ext.getBody().mask('Loading all assignments within the period', 'page-load-mask');
         this.assignment_store.load({
             scope: this,
             callback: this._onAssignmentsLoaded
@@ -163,14 +167,15 @@ Ext.define('devilry.statistics.Loader', {
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
             this.assignment_ids.push(assignmentrecord.get('id'));
-            this._loadGroups(assignmentrecord.data.id, assignmentrecords.length);
+            this._loadGroups(assignmentrecord, assignmentrecords.length);
         }, this);
     },
 
     /**
      * @private
      */
-    _loadGroups: function(assignmentid, totalAssignments) {
+    _loadGroups: function(assignmentrecord, totalAssignments) {
+        var assignmentid = assignmentrecord.get('id');
         var assignmentgroup_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup',
             remoteFilter: true,
@@ -182,6 +187,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: assignmentid
         }]);
+        Ext.getBody().mask(Ext.String.format('Loading all assignment groups within: {0}', assignmentrecord.get('long_name')), 'page-load-mask');
         assignmentgroup_store.load({
             scope: this,
             callback: function(grouprecords, op) {
