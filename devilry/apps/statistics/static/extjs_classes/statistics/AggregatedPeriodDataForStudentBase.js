@@ -4,7 +4,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     constructor: function(assignment_store, config) {
         this.callParent([config]);
         this.assignment_store = assignment_store;
-        this.updateScaledPoints();
+        //this.updateScaledPoints();
     },
 
     setLabel: function(label, value) {
@@ -46,10 +46,10 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     updateScaledPoints: function() {
         var assignment_ids = Ext.Object.getKeys(this.get('groupsByAssignmentId'));
         var totalScaledPoints = 0;
-        Ext.each(assignment_ids, function(assignment_id, index) {
-            var group = this.get('groupsByAssignmentId')[parseInt(assignment_id)];
-            if(group) {
-                group.scaled_points = this._calculateScaledPoints(group);
+        Ext.each(this.assignment_ids, function(assignment_id, index) {
+            var group = this.get('groupsByAssignmentId')[assignment_id];
+            if(group.assignmentGroupRecord) {
+                group.scaled_points = this._calculateScaledPoints(group.assignmentGroupRecord);
                 this.set(assignment_id + '::scaledPoints', group.scaled_points);
                 totalScaledPoints += group.scaled_points;
             }
@@ -71,8 +71,9 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         }
     },
 
-    _calculateScaledPoints: function(group) {
-        var assignmentRecord = this.assignment_store.getById(group.parentnode);
-        return assignmentRecord.get('scale_points_percent') * group.points / 100;
+    _calculateScaledPoints: function(assignmentGroupRecord) {
+        var assignmentRecord = this.assignment_store.getById(assignmentGroupRecord.get('parentnode'));
+        var points = assignmentGroupRecord.get('feedback__points');
+        return assignmentRecord.get('scale_points_percent') * points / 100;
     }
 });

@@ -250,14 +250,20 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _addAssignmentsToStore: function() {
+        var assignment_ids = [];
+        Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
+            assignment_ids.push(assignmentRecord.get('id'));
+        }, this);
         Ext.each(this.store.data.items, function(studentRecord, index) {
             var groupsByAssignmentId = studentRecord.get('groupsByAssignmentId');
             Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
                 groupsByAssignmentId[assignmentRecord.get('id')] = {
                     candidates: [],
-                    assignmentGroupRecord: null
+                    assignmentGroupRecord: null,
+                    scaled_points: null
                 };
             }, this);
+            studentRecord.assignment_ids = assignment_ids;
         }, this);
     },
 
@@ -287,6 +293,7 @@ Ext.define('devilry.statistics.Loader', {
         this._createStore();
         this.store.suspendEvents();
         this._mergeDataIntoStore();
+        this.updateScaledPoints();
         this.store.resumeEvents();
         this.store.fireEvent('datachanged');
         this.fireEvent('loaded', this);

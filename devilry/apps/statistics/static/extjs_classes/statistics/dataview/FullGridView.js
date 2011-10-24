@@ -24,10 +24,11 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 sortable: true,
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.get('groupsByAssignmentId')[assignment_id];
+                    console.log(scaled_points);
                     if(group) {
                         return me.cellTpl.apply({
                             scaled_points: scaled_points,
-                            is_passing_grade: group.is_passing_grade
+                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade')
                         });
                     } else {
                         return '';
