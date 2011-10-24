@@ -16,7 +16,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
 
-__all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment',
+__all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment', 'SimplifiedAssignmentGroup',
            'SimplifiedRelatedExaminer', 'SimplifiedRelatedStudent', 'SimplifiedRelatedStudentKeyValue')
 
 
