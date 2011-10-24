@@ -13,7 +13,7 @@ class SimplifiedCandidateMetaMixin(object):
     searchfields = FieldSpec('identifier')
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('assignment_group'),
-                          ForeignFilterSpec('assignment_group__parentnode'), # Assignment
-                          ForeignFilterSpec('assignment_group__parentnode__parentnode'), # Period
-                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode') # Subject
+                          FilterSpec('assignment_group__parentnode'), # Assignment
+                          FilterSpec('assignment_group__parentnode__parentnode'), # Period
+                          FilterSpec('assignment_group__parentnode__parentnode__parentnode') # Subject
                          )

@@ -13,6 +13,7 @@ class AdminStats(TemplateView):
         context['RestfulSimplifiedPeriod'] = restful.RestfulSimplifiedPeriod
         context['RestfulSimplifiedAssignment'] = restful.RestfulSimplifiedAssignment
         context['RestfulSimplifiedAssignmentGroup'] = restful.RestfulSimplifiedAssignmentGroup
+        context['RestfulSimplifiedCandidate'] = restful.RestfulSimplifiedCandidate
         return render(request,
                       'statistics/adminstats.django.js',
                        context) 

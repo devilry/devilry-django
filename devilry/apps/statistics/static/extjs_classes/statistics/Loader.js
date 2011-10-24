@@ -33,7 +33,7 @@ Ext.define('devilry.statistics.Loader', {
         this.listeners = config.listeners;
 
         this.callParent(arguments);        
-        this._loadAllRelatedStudents(periodid);
+        this._loadAllRelatedStudents();
     },
 
     /**
@@ -74,6 +74,39 @@ Ext.define('devilry.statistics.Loader', {
             });
             this._students_by_releatedid[relatedStudentRecord.get('id')] = this._students[username];
         }, this);
+        this._loadAllCandidatesInPeriod(this.periodid);
+    },
+
+    /** 
+     * @private
+     */
+    _loadAllCandidatesInPeriod: function(periodid) {
+        this.candidate_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedCandidate',
+            remoteFilter: true,
+            remoteSort: true
+        });
+        this.candidate_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.candidate_store.proxy.setDevilryFilters([{
+            field: 'assignment_group__parentnode__parentnode',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        Ext.getBody().mask('Loading all candidates on the period', 'page-load-mask');
+        this.candidate_store.load({
+            scope: this,
+            callback: this._onLoadAllCandidatesInPeriod
+        });
+    },
+
+    /**
+     * @private
+     */
+    _onLoadAllCandidatesInPeriod: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load candidates', op);
+            return;
+        }
         this._loadAllStudentLabels();
     },
 
@@ -133,7 +166,7 @@ Ext.define('devilry.statistics.Loader', {
                     return;
                 }
                 this.periodRecord = record;
-                this._loadAssignments(record.data.id);
+                this._loadAssignments();
             }
         });
     },
@@ -141,12 +174,12 @@ Ext.define('devilry.statistics.Loader', {
     /**
      * @private
      */
-    _loadAssignments: function(periodid) {
+    _loadAssignments: function() {
         this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
         this.assignment_store.proxy.setDevilryFilters([{
             field: 'parentnode',
             comp: 'exact',
-            value: periodid
+            value: this.periodid
         }]);
         Ext.getBody().mask('Loading all assignments within the period', 'page-load-mask');
         this.assignment_store.load({

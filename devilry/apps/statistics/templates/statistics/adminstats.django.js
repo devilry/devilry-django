@@ -11,7 +11,8 @@
     {{ RestfulSimplifiedRelatedStudent|extjs_model }}
     {{ RestfulSimplifiedRelatedStudentKeyValue|extjs_model }}
     {{ RestfulSimplifiedAssignment|extjs_model }};
-    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"users,feedback" }};
+    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"feedback" }};
+    {{ RestfulSimplifiedCandidate|extjs_model }};
 
     
 {% endblock %}
