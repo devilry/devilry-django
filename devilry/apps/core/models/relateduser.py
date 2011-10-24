@@ -59,9 +59,9 @@ class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(periodstudent__period__admins=user_obj) | \
-                Q(periodstudent__period__parentnode__admins=user_obj) | \
-                Q(periodstudent__period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return Q(relatedstudent__period__admins=user_obj) | \
+                Q(relatedstudent__period__parentnode__admins=user_obj) | \
+                Q(relatedstudent__period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.relatedstudent, super(RelatedStudentKeyValue, self).__unicode__())
