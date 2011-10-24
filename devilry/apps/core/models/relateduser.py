@@ -36,7 +36,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
             raise ValidationError('tags must be a comma-separated list of tags, each tag only containing a-z and 0-9.')
 
     def __unicode__(self):
-        return '{0}:{1}'.format(self.period, self.user.username)
+        return '{0}:user={1}:tags={2}'.format(self.period, self.user.username, self.tags)
 
 
 class RelatedExaminer(RelatedUserBase):
