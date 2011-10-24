@@ -1,29 +1,37 @@
-{% extends "examiner/base.django.html" %}
-{% load extjs %}
+{% extends "examiner/base.django.js" %}
 
-
-{% block headextra %}
-{{ block.super }}
-{% include "markup/mathjaxheader.django.html" %}
-
-<script>
-    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
-    Ext.onReady(function() {
-        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            assignmentgroupid: {{ objectid }},
-            isAdministrator: false,
-            renderTo: 'content-main',
-            canExamine: true
-        });
-    });
-</script>
+{% block extra_js_libraries %}
+    {% include "markup/mathjaxheader.django.html" %}
 {% endblock %}
 
+{% block imports %}
+    {{ block.super }}
+    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
+    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+{% endblock %}
 
-{% block main %}
-<div class="section treeheading" id="content-heading"></div>
-{{ block.super }}
-<div id="content-main"></div>
+{% block onready %}
+    {{ block.super }}
 
+    Ext.getBody().unmask();
+
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'examiner'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'assignmentgroupoverview',
+            assignmentgroupid: {{ objectid }},
+            isAdministrator: false,
+            canExamine: true,
+            padding: {left: 20, right: 20}
+        }]
+    });
 {% endblock %}

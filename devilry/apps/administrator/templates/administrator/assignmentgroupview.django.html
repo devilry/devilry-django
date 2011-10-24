@@ -12,11 +12,6 @@
 
 {% endblock %}
 
-{% block appjs %}
-    {{ block.super }}
-    //Ext.require('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup');
-    //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});    
-{% endblock %}
 
 {% block onready %}
     {{ block.super }}
@@ -39,12 +34,7 @@
             assignmentgroupid: {{ objectid }},
             isAdministrator: true,
             canExamine: true,
-            //border: false,
-            //autoScroll: true,
             padding: {left: 20, right: 20}
         }]
     });
-    
-    //var tooltip = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {});
-    //tooltip.initComponent();        
 {% endblock %}

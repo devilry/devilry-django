@@ -4,9 +4,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     cls: 'widget-deliveriesgroupedbydeadline',
     requires: [
         'devilry.extjshelpers.RestFactory',
-        'devilry.administrator.models.StaticFeedback',
-        'devilry.administrator.models.Delivery',
         'devilry.administrator.models.Deadline',
+        'devilry.administrator.models.Delivery',
+        'devilry.administrator.models.StaticFeedback',
+        'devilry.examiner.models.Deadline',
+        'devilry.examiner.models.Delivery',
+        'devilry.examiner.models.StaticFeedback',
+        //'devilry.student.models.Deadline',
+        //'devilry.student.models.Delivery',
+        //'devilry.student.models.StaticFeedback',
+
         'devilry.extjshelpers.assignmentgroup.DeliveriesGrid',
         'devilry.extjshelpers.assignmentgroup.DeliveriesPanel',
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
@@ -19,6 +26,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     },
 
     config: {
+        role: undefined,
         assignmentgroup_recordcontainer: undefined,
 
         /**
@@ -74,7 +82,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         this._tmp_deliveriespanels = [];
         this.addLoadMask();
         this.removeAll();
-        var deadlinestore = devilry.extjshelpers.RestFactory.createStore('administrator', 'Deadline', {
+        var deadlinestore = devilry.extjshelpers.RestFactory.createStore(this.role, 'Deadline', {
             filters: [{
                 property: 'assignment_group',
                 value: this.assignmentgroup_recordcontainer.record.data.id
@@ -205,7 +213,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         var me = this;
         var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
             assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
-            deadlinemodel: 'devilry.administrator.models.Deadline',
+            deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
             onSaveSuccess: function(record) {
                 this.close();
                 me.loadAllDeadlines();

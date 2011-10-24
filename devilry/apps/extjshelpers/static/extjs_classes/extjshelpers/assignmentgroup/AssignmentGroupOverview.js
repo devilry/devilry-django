@@ -19,6 +19,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.IsOpen',
         'devilry.extjshelpers.RestFactory',
         'devilry.administrator.models.Delivery',
+        'devilry.examiner.models.Delivery',
+        //'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
@@ -137,22 +139,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     /**
      * @private
      */
-    showFeedbackPanel: function() {
-        if(!this.feedbackPanel) {
-            this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
-                staticfeedbackstore: this.staticfeedbackstore,
-                //width: 400,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                filemetastore: this.filemetastore,
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-                deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
-                assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
-                gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-            });
-            this.centerArea.removeAll();
-            this.centerArea.add(this.feedbackPanel);
-        };
+    _showFeedbackPanel: function() {
+        if(this.delivery_recordcontainer.record && this.assignmentgroup_recordcontainer.record) {
+            if(!this.feedbackPanel) {
+                this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
+                    staticfeedbackstore: this.staticfeedbackstore,
+                    //width: 400,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    filemetastore: this.filemetastore,
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                    deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
+                    assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
+                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+                });
+                this.centerArea.removeAll();
+                this.centerArea.add(this.feedbackPanel);
+            };
+        }
+    },
+
+    _showNonElectronicNote: function() {
         if(this.assignmentgroup_recordcontainer.record.get('parentnode__delivery_types') === 1) {
             this.nonElectronicNote.show();
         }
@@ -163,9 +170,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         if(this.delivery_recordcontainer.record) {
-            this.showFeedbackPanel();
+            this._showFeedbackPanel();
         } else {
-            this.delivery_recordcontainer.addListener('setRecord', this.showFeedbackPanel, this);
+            this.delivery_recordcontainer.addListener('setRecord', this._showFeedbackPanel, this);
+        }
+        if(this.assignmentgroup_recordcontainer.record) {
+            this._showFeedbackPanel();
+            this._showNonElectronicNote();
+        } else {
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this._showFeedbackPanel, this);
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this._showNonElectronicNote, this);
         }
 
         Ext.apply(this, {
@@ -232,6 +246,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             html: '<strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. Deliveries are registered (by examiners) as a placeholder for results.'
                         }), {
                             xtype: 'deliveriesgroupedbydeadline',
+                            role: this.role,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
                             flex: 1
