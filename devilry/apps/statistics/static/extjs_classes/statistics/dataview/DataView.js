@@ -30,7 +30,6 @@ Ext.define('devilry.statistics.dataview.DataView', {
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
-        this.loader.assignment_store.on('update', this._onAssignmentStoreUpdate, this);
     },
     
     initComponent: function() {
@@ -91,13 +90,8 @@ Ext.define('devilry.statistics.dataview.DataView', {
             items: {
                 xtype: 'statistics-scalepointspanel',
                 store: this.loader.assignment_store,
+                loader: this.loader
             }
         }).show();
-    },
-
-    _onAssignmentStoreUpdate: function(assignmentStore, assignmentRecord, operation) {
-        if(operation === Ext.data.Model.COMMIT) {
-            this.loader.updateScaledPoints();
-        }
     }
 });

@@ -33,6 +33,7 @@ Ext.define('devilry.statistics.ScalePointsPanel', {
                 edit: function(editor, e) {
                     e.record.commit();
                     e.record.save();
+                    this.loader.updateScaledPoints();
                 }
             },
 

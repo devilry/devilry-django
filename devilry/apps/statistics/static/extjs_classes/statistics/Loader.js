@@ -256,6 +256,7 @@ Ext.define('devilry.statistics.Loader', {
     _createStore: function() {
         var store = Ext.create('Ext.data.Store', {
             model: 'devilry.statistics.AggregatedPeriodDataForStudentGenerated',
+            autoSync: false,
             proxy: 'memory'
         });
         Ext.Object.each(this._students, function(username, student, index) {
@@ -273,9 +274,12 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     updateScaledPoints: function() {
+        this.store.suspendEvents(); // without suspendEvents/resumeEvents, each record change fires an update event, which makes updateScaledPoints take forever for huge datasets.
         Ext.each(this.store.data.items, function(studentRecord, index) {
             studentRecord.updateScaledPoints();
         }, this);
+        this.store.resumeEvents();
+        this.store.fireEvent('datachanged');
     },
 
     filterBy: function(description, fn, scope) {
