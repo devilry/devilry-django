@@ -20,7 +20,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.RestFactory',
         'devilry.administrator.models.Delivery',
         'devilry.examiner.models.Delivery',
-        //'devilry.student.models.Delivery',
+        'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 

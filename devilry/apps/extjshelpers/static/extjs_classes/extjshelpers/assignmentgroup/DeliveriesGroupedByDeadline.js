@@ -3,17 +3,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     alias: 'widget.deliveriesgroupedbydeadline',
     cls: 'widget-deliveriesgroupedbydeadline',
     requires: [
-        'devilry.extjshelpers.RestFactory',
         'devilry.administrator.models.Deadline',
         'devilry.administrator.models.Delivery',
         'devilry.administrator.models.StaticFeedback',
         'devilry.examiner.models.Deadline',
         'devilry.examiner.models.Delivery',
         'devilry.examiner.models.StaticFeedback',
-        //'devilry.student.models.Deadline',
-        //'devilry.student.models.Delivery',
-        //'devilry.student.models.StaticFeedback',
+        'devilry.student.models.Deadline',
+        'devilry.student.models.Delivery',
+        'devilry.student.models.StaticFeedback',
 
+        'devilry.extjshelpers.RestFactory',
         'devilry.extjshelpers.assignmentgroup.DeliveriesGrid',
         'devilry.extjshelpers.assignmentgroup.DeliveriesPanel',
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
