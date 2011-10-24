@@ -165,6 +165,7 @@ Ext.define('devilry.statistics.Loader', {
         }
         this._createModel();
         this._tmpAssignmentsWithAllGroupsLoaded = 0;
+        Ext.getBody().mask('Loading all assignment groups (students) on all assignments within the period', 'page-load-mask');
         Ext.each(assignmentrecords, function(assignmentrecord, index) {
             this.assignment_ids.push(assignmentrecord.get('id'));
             this._loadGroups(assignmentrecord, assignmentrecords.length);
@@ -187,7 +188,6 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: assignmentid
         }]);
-        Ext.getBody().mask(Ext.String.format('Loading all assignment groups within: {0}', assignmentrecord.get('long_name')), 'page-load-mask');
         assignmentgroup_store.load({
             scope: this,
             callback: function(grouprecords, op) {
@@ -195,6 +195,7 @@ Ext.define('devilry.statistics.Loader', {
                     this._handleLoadError('Failed to load assignment groups', op);
                     return;
                 }
+                Ext.getBody().mask(Ext.String.format('Finished loading all assignment groups (students) within: {0}', assignmentrecord.get('long_name')), 'page-load-mask');
                 this._onLoadGroups(totalAssignments, grouprecords);
             }
         });
