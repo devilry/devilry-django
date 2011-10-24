@@ -223,7 +223,7 @@ Ext.define('devilry.statistics.Loader', {
      */
     _addGroupToStudent: function(username, grouprecord) {
         if(!this._students[username]) {
-            console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
+            //console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
             return;
         }
         var student = this._students[username];

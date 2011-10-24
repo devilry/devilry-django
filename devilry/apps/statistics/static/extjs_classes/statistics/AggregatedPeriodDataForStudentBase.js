@@ -48,9 +48,11 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         var totalScaledPoints = 0;
         Ext.each(assignment_ids, function(assignment_id, index) {
             var group = this.get('groupsByAssignmentId')[parseInt(assignment_id)];
-            group.scaled_points = this._calculateScaledPoints(group);
-            this.set(assignment_id + '::scaledPoints', group.scaled_points);
-            totalScaledPoints += group.scaled_points;
+            if(group) {
+                group.scaled_points = this._calculateScaledPoints(group);
+                this.set(assignment_id + '::scaledPoints', group.scaled_points);
+                totalScaledPoints += group.scaled_points;
+            }
         }, this);
         this.set('totalScaledPoints', totalScaledPoints);
         this.commit(); // NOTE: removes the red triangle from grid
@@ -62,7 +64,11 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
 
     getScaledPoints: function(assignment_id) {
         var group = this.get('groupsByAssignmentId')[assignment_id];
-        return group.scaled_points;
+        if(group) {
+            return group.scaled_points;
+        } else {
+            return 0;
+        }
     },
 
     _calculateScaledPoints: function(group) {
