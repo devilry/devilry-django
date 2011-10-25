@@ -3,7 +3,6 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     alias: 'widget.manuallycreateusers',
     frame: false,
     border: false,
-    poolSize: 20,
 
     requires: [
         'devilry.extjshelpers.AsyncActionPool'
@@ -272,10 +271,14 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines.createDeadline(
             assignmentGroupRecord, this.deadlineRecord, this.deadlinemodel, {
                 scope: this,
-                failure: function() {
-                    console.error('Failed to save deadline record');
-                },
-                success: this.onCreateDeadlineSuccess
+                callback: function(records, op) {
+                    pool.notifyTaskCompleted();
+                    if(op.success) {
+                        this.onCreateDeadlineSuccess();
+                    } else {
+                        console.error('Failed to save deadline record');
+                    }
+                }
             }
         );
     },
@@ -294,7 +297,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    onCreateDeadlineSuccess: function(record) {
+    onCreateDeadlineSuccess: function() {
         this.finishedCounter ++;
         this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
             this.finishedCounter, this.parsedArray.length,
