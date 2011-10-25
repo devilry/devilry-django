@@ -76,7 +76,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 listeners: {
                     scope: this,
                     itemclick: function(self, record) {
-                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + this.deliveryid
+                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
                         window.open(url, 'download');
                     }
                 }
