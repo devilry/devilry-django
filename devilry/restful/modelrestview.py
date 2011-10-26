@@ -72,7 +72,11 @@ class ModelRestfulView(RestfulView):
         for field_values in list_of_field_values:
             form = self.__class__.EditForm(field_values)
             if form.is_valid():
-                list_of_deserialized_field_values.append(form.cleaned_data)
+                cleaned = form.cleaned_data
+                pk = field_values.get('pk')
+                if pk:
+                    cleaned['pk'] = pk
+                list_of_deserialized_field_values.append(cleaned)
             else:
                 errors.append(form)
         return errors, list_of_deserialized_field_values
@@ -82,16 +86,12 @@ class ModelRestfulView(RestfulView):
         if errors:
             return MultiFormErrorSerializableResult(errors, self.use_extjshacks)
 
-        import pprint
-        pprint.pprint(list_of_deserialized_field_values)
-
         responsedata = []
         if update:
-            pass
+            responsedata = self._meta.simplified.updatemany(self.request.user, *list_of_deserialized_field_values)
         else:
             responsedata = self._meta.simplified.createmany(self.request.user, *list_of_deserialized_field_values)
 
-        #responsedata = list_of_deserialized_field_values
         result = self.extjswrapshortcut(responsedata)
         if update:
             return SerializableResult(result)
