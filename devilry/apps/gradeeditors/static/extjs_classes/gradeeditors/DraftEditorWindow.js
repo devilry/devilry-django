@@ -67,7 +67,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                     success: this.onLoadDraftEditorSuccess,
                     failure: this.onLoadDraftEditorFailure
                 }
-            }
+            },
+            onEsc: Ext.emptyFn
         });
         this.initComponentExtra();
         this.callParent(arguments);
