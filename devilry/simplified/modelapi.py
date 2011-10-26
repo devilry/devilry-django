@@ -169,6 +169,17 @@ class SimplifiedModelApi(object):
         """
 
     @classmethod
+    def _create(cls, user, **field_values):
+        obj = cls._meta.model()
+        cls._set_values(obj, field_values)
+        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+        cls.pre_full_clean(user, obj)
+        obj.full_clean()
+        obj.save()
+        cls.post_save(user, obj)
+        return obj.pk
+
+    @classmethod
     def create(cls, user, **field_values):
         """ Create the given object.
 
@@ -181,14 +192,17 @@ class SimplifiedModelApi(object):
             is not in ``cls._meta.editablefields``.
         """
         with transaction.commit_on_success():
-            obj = cls._meta.model()
-            cls._set_values(obj, field_values)
-            cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
-            cls.pre_full_clean(user, obj)
-            obj.full_clean()
-            obj.save()
-            cls.post_save(user, obj)
-            return obj.pk
+            return cls._create(user, **field_values)
+
+    @classmethod
+    def createmany(cls, user, *list_of_field_values):
+        pks = []
+        with transaction.commit_manually():
+            for field_values in list_of_field_values:
+                pks.append(cls._create(user, **field_values))
+            transaction.commit()
+        return pks
+
 
     @classmethod
     def read(cls, user, pk, result_fieldgroups=[]):

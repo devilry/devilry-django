@@ -59,15 +59,24 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         self.assertEquals(create_res.parentnode, self.uni)
 
     def test_create_assuperadmin(self):
-        kw = dict(
-                long_name='TestOne',
-                parentnode = None)
-
-        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', **kw)
+        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', long_name='TestOne', parentnode=None)
         create_res = models.Node.objects.get(pk=newpk)
         self.assertEquals(create_res.short_name, 'test1')
         self.assertEquals(create_res.long_name, 'TestOne')
         self.assertEquals(create_res.parentnode, None)
+
+    def test_createmany_assuperadmin(self):
+        list_of_field_values = [dict(short_name='test1', long_name='TestOne', parentnode=None),
+                                dict(short_name='test2', long_name='TestTwo', parentnode=None),
+                                dict(short_name='test3', long_name='TestThree', parentnode=None),
+                                dict(short_name='test4', long_name='TestFour', parentnode=None)]
+        newpks = SimplifiedNode.createmany(self.superadminuser, *list_of_field_values)
+        for index, newpk in enumerate(newpks):
+            expected = list_of_field_values[index]
+            create_res = models.Node.objects.get(pk=newpk)
+            self.assertEquals(create_res.short_name, expected['short_name'])
+            self.assertEquals(create_res.long_name, expected['long_name'])
+            self.assertEquals(create_res.parentnode, expected['parentnode'])
 
     def test_create_security_asstudent(self):
         # test that a student cant create a node
