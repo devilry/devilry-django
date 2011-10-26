@@ -196,6 +196,12 @@ class SimplifiedModelApi(object):
 
     @classmethod
     def createmany(cls, user, *list_of_field_values):
+        """ Create many.
+
+        This does the same as calling :meth:`create` many times, except that it
+        does it all in a single transaction. This means that the database rolls
+        back the changes unless they all succeed.
+        """
         pks = []
         with transaction.commit_manually():
             for field_values in list_of_field_values:
