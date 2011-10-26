@@ -14,6 +14,7 @@ from node import Node
 from subject import Subject
 from model_utils import *
 from model_utils import Etag
+from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
