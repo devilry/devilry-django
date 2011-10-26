@@ -300,6 +300,18 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedNode.delete(self.superadminuser, self.uni.id)
 
+    def test_deletemany(self):
+        pks = []
+        for short_name in ('a', 'b', 'c'):
+            node = models.Node.objects.create(short_name=short_name)
+            pks.append(node.pk)
+        before = models.Node.objects.all().count()
+        resuls_pks = SimplifiedNode.deletemany(self.superadminuser, *pks)
+        after = models.Node.objects.all().count()
+        self.assertEquals(after, before - 3)
+        self.assertEquals(resuls_pks, tuple(pks))
+
+
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
             SimplifiedNode.delete(self.teststud, self.uni.id)
