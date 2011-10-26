@@ -201,6 +201,10 @@ class SimplifiedModelApi(object):
         This does the same as calling :meth:`create` many times, except that it
         does it all in a single transaction. This means that the database rolls
         back the changes unless they all succeed.
+
+        :param: list_of_field_values
+            List of field_values dicts (see :meth:`create`).
+        :return: List of the primary keys of the created objects.
         """
         pks = []
         with transaction.commit_manually():
@@ -208,7 +212,6 @@ class SimplifiedModelApi(object):
                 pks.append(cls._create(user, **field_values))
             transaction.commit()
         return pks
-
 
     @classmethod
     def read(cls, user, pk, result_fieldgroups=[]):
@@ -231,6 +234,19 @@ class SimplifiedModelApi(object):
         return modelinstance_to_dict(obj, resultfields)
 
     @classmethod
+    def _update(cls, user, pk, **field_values):
+        obj = cls._getwrapper(pk)
+        cls._set_values(obj, field_values)
+        # Important to write authorize after _set_values in case any attributes
+        # used in write_authorize is changed by _set_values.
+        cls.write_authorize(user, obj)
+        cls.pre_full_clean(user, obj)
+        obj.full_clean()
+        obj.save()
+        cls.post_save(user, obj)
+        return obj.pk
+
+    @classmethod
     def update(cls, user, pk, **field_values):
         """ Update the given object.
 
@@ -245,16 +261,30 @@ class SimplifiedModelApi(object):
             is not in ``cls._meta.editablefields``.
         """
         with transaction.commit_on_success():
-            obj = cls._getwrapper(pk)
-            cls._set_values(obj, field_values)
-            # Important to write authorize after _set_values in case any attributes
-            # used in write_authorize is changed by _set_values.
-            cls.write_authorize(user, obj)
-            cls.pre_full_clean(user, obj)
-            obj.full_clean()
-            obj.save()
-            cls.post_save(user, obj)
-            return obj.pk
+            return cls._update(user, pk, **field_values)
+
+    @classmethod
+    def updatemany(cls, user, *list_of_field_values):
+        """ Update many.
+
+        This does the same as calling :meth:`update` many times, except that it
+        does it all in a single transaction. This means that the database rolls
+        back the changes unless they all succeed.
+
+        :param: list_of_field_values
+            List of field_values dicts (see :meth:`update`). Each dict _must_
+            have a _pk_ key that maps to the primary-key/id value.
+        :return: List of the primary keys of the updated objects.
+        """
+        pks = []
+        with transaction.commit_manually():
+            for field_values in list_of_field_values:
+                pk = field_values['pk']
+                del field_values['pk']
+                cls._update(user, pk, **field_values)
+                pks.append(pk)
+            transaction.commit()
+        return pks
 
     @classmethod
     def delete(cls, user, pk):
