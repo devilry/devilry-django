@@ -1,6 +1,8 @@
+from urllib import urlencode
+import json
+
 from django.test import TestCase
 from django.test.client import Client
-import json
 
 from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment, RestfulSimplifiedSubject,
                        RestfulSimplifiedPeriod, RestfulSimplifiedAssignmentGroup)
@@ -67,7 +69,7 @@ class TestRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
 
     def test_create_many(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
-        url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
+        url = RestfulSimplifiedNode.get_rest_url()
 
         list_of_field_values = [dict(short_name='multicreatetest1', long_name='TestOne', parentnode=self.uni.id),
                                 dict(short_name='multicreatetest2', long_name='TestTwo', parentnode=self.uni.id),
@@ -86,7 +88,7 @@ class TestRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
 
     def test_update_many(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
-        url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
+        url = RestfulSimplifiedNode.get_rest_url()
 
         list_of_field_values = [dict(short_name='multitest1', long_name='TestOne'),
                                 dict(short_name='multitest2', long_name='TestTwo'),
@@ -115,6 +117,26 @@ class TestRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
             self.assertEquals(fromdb.short_name, updated_list_of_field_values[index]['short_name'])
             self.assertEquals(fromdb.long_name, updated_list_of_field_values[index]['long_name'])
             self.assertEquals(fromdb.parentnode.id, self.uni.id)
+
+    def test_delete_many(self):
+        url = RestfulSimplifiedNode.get_rest_url()
+
+        list_of_field_values = [dict(short_name='multitest1', long_name='TestOne'),
+                                dict(short_name='multitest2', long_name='TestTwo'),
+                                dict(short_name='multitest3', long_name='TestThree'),
+                                dict(short_name='multitest4', long_name='TestFour')]
+        pks = []
+        for field_values in list_of_field_values:
+            node = models.Node.objects.create(parentnode=self.uni, **field_values)
+            pks.append(node.id)
+
+        self.assertEquals(models.Node.objects.filter(short_name__startswith='multitest').count(), len(list_of_field_values))
+        r = self.client.delete('{0}?{1}'.format(url, urlencode(dict(pks=json.dumps(pks), deletedata_in_qrystring=True))),
+                               content_type='application/json')
+        response = json.loads(r.content)
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(models.Node.objects.filter(short_name__startswith='multitest').count(), 0)
+        self.assertEquals(response['items'], pks)
 
     def test_create_errors(self):
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)

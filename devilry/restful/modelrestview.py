@@ -215,7 +215,7 @@ class ModelRestfulView(RestfulView):
         else:
             return self._create_or_replace_many(data, update=False)
 
-    def crud_update(self, request, id):
+    def crud_update(self, request, id=None):
         """ Maps to the ``update`` method of the simplified class. """
         data, is_single = self._deserialize_create_or_replace_request()
         if is_single:
@@ -227,12 +227,28 @@ class ModelRestfulView(RestfulView):
         else:
             return self._create_or_replace_many(data, update=True)
 
-    def crud_delete(self, request, id):
-        """ Maps to the ``delete`` method of the simplified class. """
-        try:
-            self._meta.simplified.delete(request.user, id)
-        except PermissionDenied, e:
-            return ForbiddenSerializableResult(e)
+
+    def _delete_many(self):
+        if 'deletedata_in_qrystring' in self.request.GET:
+            raw_data = self.request.GET['pks']
         else:
-            data = self.extjswrapshortcut(dict(id=id))
-            return SerializableResult(data)
+            raw_data = self.request.raw_post_data
+        list_of_pks = serializers.deserialize(self.comformat, raw_data)
+        pks = self._meta.simplified.deletemany(self.request.user, *list_of_pks)
+        result = self.extjswrapshortcut(pks, total=len(pks))
+        return SerializableResult(result)
+
+
+    def crud_delete(self, request, id=None):
+        """ Maps to the ``delete`` method of the simplified class. """
+        is_single = id != None
+        if is_single:
+            try:
+                self._meta.simplified.delete(request.user, id)
+            except PermissionDenied, e:
+                return ForbiddenSerializableResult(e)
+            else:
+                data = self.extjswrapshortcut(dict(id=id))
+                return SerializableResult(data)
+        else:
+            return self._delete_many()
