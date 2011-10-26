@@ -12,10 +12,12 @@ from os.path import join
 import logging
 
 from common import (getscriptsdir, require_djangoproject,
-                    append_pythonexec_to_command, depends, Command,
+                    depends, Command,
                     DevilryAdmArgumentParser)
+from django.contrib.auth.models import User
 from create_random_exampledata import create_example_assignment
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core import models
 
 
 parser = DevilryAdmArgumentParser(description='Process some integers.')
@@ -63,6 +65,11 @@ def create_testgroups(period, assignments, **shared_kwargs):
         create_example_assignment(period, **kw)
 
 
+def add_extra_relatedusers(period):
+    for username in ('huey', 'dewey', 'louie', 'april', 'may', 'june'):
+        models.RelatedStudent.objects.create(user=User.objects.get(username=username), period=period)
+
+
 testhelper = TestHelper()
 testhelper.add()
 testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
@@ -72,6 +79,8 @@ testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
                          'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff - avoiding permanent psychological scarring of most of the students)'],
                periods=['spring01:ln(Spring year zero)'])
 
+if args.duckburghusers:
+    add_extra_relatedusers(testhelper.duck1100_spring01)
 
 # Duck 1100
 create_testgroups(testhelper.duck1100_spring01,
@@ -84,9 +93,25 @@ create_testgroups(testhelper.duck1100_spring01,
                                   'long_name': 'The one and only week two'},
                                  {'short_name': 'week3', 'deadline_profiles': '-9', 'grade_maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
-                                 {'short_name': 'week4', 'deadline_profiles': '-3', 'grade_maxpoints': 9,
-                                  'long_name': 'The one and only week four'},
                                 ])
+create_testgroups(testhelper.duck1100_spring01,
+                  num_students = args.num_students/3, num_examiners = args.num_examiners,
+                  deliverycountrange=args.deliverycountrange,
+                  assignments = [
+                                 {'short_name': 'project1', 'deadline_profiles': '-60', 'grade_maxpoints': 60,
+                                  'long_name': 'The easy project'},
+                                 {'short_name': 'project2', 'deadline_profiles': '-3', 'grade_maxpoints': 100,
+                                  'long_name': 'The hard project'},
+                                ])
+
+create_testgroups(testhelper.duck1100_spring01,
+                  num_students = args.num_students + 5, num_examiners = args.num_examiners,
+                  deliverycountrange=args.deliverycountrange,
+                  assignments = [
+                                 {'short_name': 'extra', 'deadline_profiles': '-20', 'grade_maxpoints': 5,
+                                  'long_name': 'Extra'},
+                                ])
+
 
 # Duck 1080
 create_testgroups(testhelper.duck1080_spring01,
