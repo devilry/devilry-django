@@ -287,6 +287,16 @@ class SimplifiedModelApi(object):
         return pks
 
     @classmethod
+    def _delete(cls, user, pk):
+        obj = cls._writeauth_get(user, pk) # authorization in cls._writeauth_get
+        if not cls.is_empty(obj):
+            if not user.is_superuser:
+                raise PermissionDenied()
+        pk = obj.pk
+        obj.delete()
+        return pk
+
+    @classmethod
     def delete(cls, user, pk):
         """ Delete the given object. If the object :meth:`is_empty` it can be
         deleted by any user with :meth:`write_authorize`,
@@ -301,13 +311,26 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if the user does not have permission
             to recursively delete this objects and all its children.
         """
-        obj = cls._writeauth_get(user, pk) # authorization in cls._writeauth_get
-        if not cls.is_empty(obj):
-            if not user.is_superuser:
-                raise PermissionDenied()
-        pk = obj.pk
-        obj.delete()
-        return pk
+        with transaction.commit_on_success():
+            cls._delete(user, pk)
+
+    @classmethod
+    def deletemany(cls, user, *list_of_pks):
+        """ Delete many.
+
+        This does the same as calling :meth:`delete` many times, except that it
+        does it all in a single transaction. This means that the database rolls
+        back the changes unless they all succeed.
+
+        :param: list_of_pks
+            List of primary-keys/ids of the objects to delete.
+        :return: List of the primary keys of the deleted objects.
+        """
+        with transaction.commit_manually():
+            for pk in list_of_pks:
+                cls._delete(user, pk)
+            transaction.commit()
+        return list_of_pks
 
     @classmethod
     def search(cls, user,

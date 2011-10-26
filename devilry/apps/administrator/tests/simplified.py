@@ -147,6 +147,31 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         self.refresh_var(self.uni)
         self.assertEquals(self.uni.short_name, 'testuni')
 
+    def test_updatemany(self):
+        list_of_field_values = [dict(short_name='test1', long_name='TestOne', parentnode=None),
+                                dict(short_name='test2', long_name='TestTwo', parentnode=None),
+                                dict(short_name='test3', long_name='TestThree', parentnode=None),
+                                dict(short_name='test4', long_name='TestFour', parentnode=None)]
+        updated_list_of_field_values = []
+        for field_values in list_of_field_values:
+            node = models.Node.objects.create(**field_values)
+            updated_field_values = dict(pk=node.id,
+                                        short_name=node.short_name + 'updated',
+                                        long_name=node.long_name + 'updated')
+            updated_list_of_field_values.append(updated_field_values)
+
+        newpks = SimplifiedNode.updatemany(self.superadminuser, *updated_list_of_field_values)
+        for index, newpk in enumerate(newpks):
+            create_res = models.Node.objects.get(pk=newpk)
+
+            not_expected = list_of_field_values[index]
+            self.assertNotEquals(create_res.short_name, not_expected['short_name'])
+            self.assertNotEquals(create_res.long_name, not_expected['long_name'])
+
+            expected = updated_list_of_field_values[index]
+            self.assertEquals(create_res.short_name, expected['short_name'])
+            self.assertEquals(create_res.long_name, expected['long_name'])
+
     def test_update_security_asstudent(self):
         # test that an admin for a subject cant create a node
         kw = dict(
