@@ -2,7 +2,6 @@ Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
     requires: [
         'devilry.extjshelpers.AsyncActionPool',
-        'devilry.statistics.AggregatedPeriodDataForStudent',
         'devilry.statistics.AggregatedPeriodDataForStudentBase',
         'devilry.statistics.LabelManager'
     ],
@@ -79,6 +78,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
+        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
         this.assignment_store.load({
             scope: this,
             callback: this._onAssignmentsLoaded
