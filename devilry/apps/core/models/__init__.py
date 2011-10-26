@@ -19,4 +19,4 @@ __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer', 'RelatedStudent',
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
-           "FileMeta", "DevilryUserProfile")
+           "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue')

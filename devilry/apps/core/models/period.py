@@ -13,7 +13,8 @@ from basenode import BaseNode
 from node import Node
 from subject import Subject
 from model_utils import *
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
@@ -151,3 +152,21 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners=user_obj)
 
+
+
+class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
+    """ Key/value pair tied to a specific Period. """
+    period = models.ForeignKey(Period)
+
+    class Meta:
+        unique_together = ('period', 'application', 'key')
+        app_label = 'core'
+
+    @classmethod
+    def q_is_admin(cls, user_obj):
+        return Q(period__admins=user_obj) | \
+                Q(period__parentnode__admins=user_obj) | \
+                Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.period, super(RelatedStudentKeyValue, self).__unicode__())
