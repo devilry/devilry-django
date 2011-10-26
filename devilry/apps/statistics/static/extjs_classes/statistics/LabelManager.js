@@ -14,10 +14,16 @@ Ext.define('devilry.statistics.LabelManager', {
         this.callParent(arguments);
     },
 
-    _onErrors: function(what) {
+    _onError: function(what, response) {
+        Ext.getBody().unmask();
+        var httperror = 'Lost connection with server';
+        if(response.status !== 0) {
+            var httperror = Ext.String.format('{0} {1}', response.status, response.statusText);
+        }
         Ext.MessageBox.show({
             title: Ext.String.format('Failed to {0} labels', what),
-            msg: '<p>This is usually caused by an unstable server connection. <strong>Please re-try to save labels</strong>.</p>',
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Please re-try saving labels</strong>.</p>' +
+                Ext.String.format('<p>Error details: {0}</p>', httperror),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR,
             closable: false
@@ -62,7 +68,7 @@ Ext.define('devilry.statistics.LabelManager', {
                 if(success) {
                     this._onFinished();
                 } else {
-                    this._onError('create');
+                    this._onError('create', response);
                 }
             }
         });
@@ -82,7 +88,7 @@ Ext.define('devilry.statistics.LabelManager', {
                 if(success) {
                     this._create(toBeCreated);
                 } else {
-                    this._onError('delete');
+                    this._onError('delete', response);
                 }
             }
         });
