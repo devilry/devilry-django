@@ -230,10 +230,17 @@ class ModelRestfulView(RestfulView):
 
     def _delete_many(self):
         if 'deletedata_in_qrystring' in self.request.GET:
-            raw_data = self.request.GET['pks']
+            try:
+                raw_data = self.request.GET['pks']
+            except KeyError, e:
+                return ErrorMsgSerializableResult('The querystring must contain a JSON encoded array of primary-keys in the "pks" attribute.',
+                                                  httpresponsecls=HttpResponseBadRequest)
         else:
             raw_data = self.request.raw_post_data
         list_of_pks = serializers.deserialize(self.comformat, raw_data)
+        if not isinstance(list_of_pks, list):
+            return ErrorMsgSerializableResult('Requires "pks" as a JSON encoded array.',
+                                              httpresponsecls=HttpResponseBadRequest)
         pks = self._meta.simplified.deletemany(self.request.user, *list_of_pks)
         result = self.extjswrapshortcut(pks, total=len(pks))
         return SerializableResult(result)
