@@ -24,7 +24,7 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 sortable: true,
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.groupsByAssignmentId[assignment_id];
-                    if(group) {
+                    if(group.assignmentGroupRecord) {
                         return me.cellTpl.apply({
                             scaled_points: scaled_points,
                             is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade')

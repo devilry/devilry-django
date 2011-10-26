@@ -19,7 +19,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     passesAssignments: function(assignment_ids) {
         var passes = 0;
         Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
-            if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
+            if(group.assignmentGroupRecord && Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
                 if(group.assignmentGroupRecord.get('feedback__is_passing_grade')) {
                     passes ++;
                 }
