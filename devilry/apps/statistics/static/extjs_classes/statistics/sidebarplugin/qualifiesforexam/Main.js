@@ -10,7 +10,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Advanced',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+        'devilry.extjshelpers.DateTime'
     ],
     config: {
         loader: undefined,
@@ -187,7 +188,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
     _saveReadyForExportRecord: function(callback, scope) {
         Ext.getBody().mask('Marking as ready for export', 'page-load-mask');
-        this.readyForExportRecord.set('value', 'yes');
+        this.readyForExportRecord.set('value', Ext.JSON.encode({
+            isready: 'yes',
+            savetime: devilry.extjshelpers.DateTime.restfulNow()
+        }));
         this.readyForExportRecord.save({
             scope: this,
             callback: function(record, op) {
