@@ -4,13 +4,13 @@ import re
 from django.test import TransactionTestCase
 
 
-from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
-from ....simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
-from ...core import models, testhelper
-from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
-                          SimplifiedAssignment, SimplifiedAssignmentGroup,
-                          SimplifiedDeadline, SimplifiedStaticFeedback,
-                          SimplifiedFileMeta, InvalidUsername)
+from devilry.simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults, InvalidUsername
+from devilry.simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
+from devilry.apps.core import models, testhelper
+from devilry.apps.administrator.simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+                                                   SimplifiedAssignment, SimplifiedAssignmentGroup,
+                                                   SimplifiedDeadline, SimplifiedStaticFeedback,
+                                                   SimplifiedFileMeta)
 
 testhelper.TestHelper.set_memory_deliverystore()
 
