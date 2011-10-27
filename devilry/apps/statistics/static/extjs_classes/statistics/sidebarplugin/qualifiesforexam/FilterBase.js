@@ -47,7 +47,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _loadSettings: function() {
-        if(this.main.settings.path === this.path) {
+        if(this.main.settings && this.main.settings.path === this.path) {
             this.settings = this.main.settings.settings;
         }
     },
@@ -74,10 +74,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onSaveYes: function() {
-        this.main.saveSettings(this.path, this.getSettings(), function(success) {
-            if(success) {
-                this._saveLabels();
-            }
+        this.main.saveSettings(this.path, this.getSettings(), function() {
+            this._saveLabels();
         }, this);
     },
 

@@ -19,6 +19,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         negative_labelname: 'unqualified-for-exam',
         sidebarplugins: []
     },
+    applicationid: 'statistics-qualifiesforexam',
 
     bodyPadding: 10,
 
@@ -103,27 +104,27 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
 
     _loadSettings: function() {
-        var applicationid = 'statistics-qualifiesforexam';
-        this.relatedstudentkeyvalue_store = Ext.create('Ext.data.Store', {
+        this.periodapplicationkeyvalue_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue',
             remoteFilter: true,
             remoteSort: true
         });
-        this.relatedstudentkeyvalue_store.pageSize = 1;
-        this.relatedstudentkeyvalue_store.proxy.setDevilryFilters([{
+        this.periodapplicationkeyvalue_store.proxy.setDevilryFilters([{
             field: 'period',
             comp: 'exact',
             value: this.loader.periodid
         }, {
             field: 'application',
             comp: 'exact',
-            value: applicationid
-        }, {
-            field: 'key',
-            comp: 'exact',
-            value: 'settings'
+            value: this.applicationid
+        //}, {
+            //field: 'key',
+            //comp: 'exact',
+            //value: 'settings'
         }]);
-        this.relatedstudentkeyvalue_store.load({
+        this.periodapplicationkeyvalue_store.proxy.setDevilryOrderby(['-key']);
+        this.periodapplicationkeyvalue_store.pageSize = 2; // settings and ready-for-export
+        this.periodapplicationkeyvalue_store.load({
             scope: this,
             callback: this._onLoadSettings
         });
@@ -135,18 +136,31 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             this._handleComError('Save settings', op);
             return;
         }
-        if(records.length === 0) {
+
+        var settingsindex = this.periodapplicationkeyvalue_store.findExact('key', 'settings');
+        if(settingsindex > -1) {
+            this.settingsRecord = records[settingsindex];
+            this.settings = Ext.JSON.decode(this.settingsRecord.get('value'));
+            this.chooseplugin.selectByPath(this.settings.path);
+        } else {
             this.settingsRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue', {
                 period: this.loader.periodid,
-                application: applicationid,
+                application: this.applicationid,
                 key: 'settings',
                 value: null
             });
-            this.settings = null;
+        }
+
+        var readyForExportIndex = this.periodapplicationkeyvalue_store.findExact('key', 'ready-for-export');
+        if(readyForExportIndex > -1) {
+            this.readyForExportRecord = records[readyForExportIndex];
         } else {
-            this.settingsRecord = records[0];
-            this.settings = Ext.JSON.decode(this.settingsRecord.get('value'));
-            this.chooseplugin.selectByPath(this.settings.path);
+            this.readyForExportRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue', {
+                period: this.loader.periodid,
+                application: this.applicationid,
+                key: 'ready-for-export',
+                value: null
+            });
         }
     },
 
@@ -166,13 +180,28 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                     return;
                 }
                 this.settings = settingData;
-                Ext.bind(callback, scope)(op.success);
+                this._saveReadyForExportRecord(callback, scope);
+            }
+        });
+    },
+
+    _saveReadyForExportRecord: function(callback, scope) {
+        Ext.getBody().mask('Marking as ready for export', 'page-load-mask');
+        this.readyForExportRecord.set('value', 'yes');
+        this.readyForExportRecord.save({
+            scope: this,
+            callback: function(record, op) {
+                Ext.getBody().unmask();
+                if(!op.success) {
+                    this._handleComError('Mark ready for export', op);
+                    return;
+                }
+                Ext.bind(callback, scope)();
             }
         });
     },
 
     _handleComError: function(details, op) {
-        // TODO: Make work for both model and store response
         Ext.getBody().unmask();
         var httperror = 'Lost connection with server';
         if(op.error.status !== 0) {
