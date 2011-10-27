@@ -1,6 +1,7 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.All', {
     extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
     layout: 'fit',
+    pluginname: 'all',
 
     initComponent: function() {
         Ext.apply(this, {

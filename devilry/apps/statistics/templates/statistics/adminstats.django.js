@@ -13,6 +13,7 @@
     {{ RestfulSimplifiedAssignment|extjs_model }};
     {{ RestfulSimplifiedAssignmentGroup|extjs_model:"feedback" }};
     {{ RestfulSimplifiedCandidate|extjs_model }};
+    {{ RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }};
 
     
 {% endblock %}
