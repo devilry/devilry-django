@@ -9,9 +9,9 @@ def get_extjs_storeid(restfulcls, storeidsuffix=''):
     :param storeidsuffix: This string added to the end of the id.
     """
     simplified = restfulcls._meta.simplified
-    return '{module}.{name}Store{storeidsuffix}'.format(module=simplified.__module__,
-                                                        name=simplified.__name__,
-                                                        storeidsuffix=storeidsuffix)
+    prefix = get_extjs_modelname(restfulcls)
+    return '{prefix}Store{storeidsuffix}'.format(prefix=prefix,
+                                                 storeidsuffix=storeidsuffix)
 
 def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
                              storeidsuffix=''):
