@@ -1,21 +1,6 @@
-from django.contrib.auth.models import User
-from django.db.models import Count, Max
-
 from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
-                                PermissionDenied, InvalidUsername, FieldSpec,
-                                FilterSpecs, FilterSpec, PatternFilterSpec,
-                                stringOrNoneConverter, boolConverter)
-from devilry.apps.core import models
-from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
-                                                   SimplifiedPeriodMetaMixin,
-                                                   SimplifiedAssignmentMetaMixin,
-                                                   SimplifiedAssignmentGroupMetaMixin,
-                                                   SimplifiedDeadlineMetaMixin,
-                                                   SimplifiedDeliveryMetaMixin,
-                                                   SimplifiedStaticFeedbackMetaMixin,
-                                                   SimplifiedFileMetaMetaMixin,
-                                                   SimplifiedCandidateMetaMixin)
-from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
+                                PermissionDenied)
+from devilry.coreutils.simplified.metabases import SimplifiedDeliveryMetaMixin
 
 
 @simplified_modelapi
