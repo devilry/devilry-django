@@ -40,7 +40,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
     getSettings: function() {
         var settings = this.callParent(arguments);
         settings.assignment_ids = this._getGrid().getIdOfSelected();
-        console.log(settings);
         return settings;
     }
 });
