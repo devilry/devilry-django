@@ -3,8 +3,8 @@ from django.db import models
 
 class AbstractApplicationKeyValue(models.Model):
     """ Abstract model for application+Key/value pair. """
-    application = models.CharField(max_length=300)
-    key = models.CharField(max_length=300)
+    application = models.CharField(max_length=300, db_index=True)
+    key = models.CharField(max_length=300, db_index=True)
     value = models.TextField(null=True, blank=True)
 
     class Meta:
