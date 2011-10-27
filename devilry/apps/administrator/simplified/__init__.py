@@ -15,5 +15,6 @@ from hasadminsmixin import HasAdminsMixin
 from simplifiedcandidate import SimplifiedCandidate
 from simplifiednode import SimplifiedNode
 from simplifiedstaticfeedback import SimplifiedStaticFeedback
+from simplifiedperiodapplicationkeyvalue import SimplifiedPeriodApplicationKeyValue
 
 __all__ = ('SimplifiedRelatedExaminer', 'RelatedUsersBase', 'SimplifiedDelivery', 'RelatedUsersMetaBase', 'SimplifiedAssignment', 'SimplifiedSubject', 'CanSaveBase', 'SimplifiedRelatedStudent', 'SimplifiedFileMeta', 'SimplifiedAssignmentGroup', 'SimplifiedRelatedStudentKeyValue', 'SimplifiedDeadline', 'SimplifiedPeriod', 'HasAdminsMixin', 'SimplifiedCandidate', 'SimplifiedNode', 'SimplifiedStaticFeedback')

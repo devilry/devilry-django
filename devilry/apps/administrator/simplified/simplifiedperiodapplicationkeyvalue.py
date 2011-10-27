@@ -15,7 +15,7 @@ class SimplifiedPeriodApplicationKeyValue(CanSaveBase):
         model = models.PeriodApplicationKeyValue
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec('period') + SimplifiedAbstractApplicationKeyValueMixin.resultfields
-        editablefields = ('application', 'key', 'value', 'relatedstudent', 'student_can_read')
+        editablefields = ('period',) + SimplifiedAbstractApplicationKeyValueMixin.editablefields
         filters = FilterSpecs(FilterSpec('period', supported_comp=('exact',))) + SimplifiedAbstractApplicationKeyValueMixin.filters
 
     @classmethod
