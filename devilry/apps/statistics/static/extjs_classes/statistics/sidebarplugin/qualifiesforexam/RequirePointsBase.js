@@ -10,5 +10,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsBase'
             return false;
         }
         return true;
+    },
+
+    getSettings: function() {
+        var minimumScaledPoints = this.down('numberfield').getValue();
+        return {
+            minimumScaledPoints: minimumScaledPoints
+        };
     }
 });

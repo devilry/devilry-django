@@ -3,10 +3,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     config: {
         loader: undefined,
+        path: undefined,
         aggregatedStore: undefined,
         labelname: undefined,
         negative_labelname: undefined,
-        title: undefined
+        title: undefined,
+        main: undefined
     },
 
     constructor: function(config) {
@@ -39,56 +41,14 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             },
             height: 60
         });
+        this.initConfig(config); // Must come before _loadSettings
+        this._loadSettings(); // Must come before callParent, because callParent calls initComponent (which needs settings)
         this.callParent([config]);
-        this.initConfig(config);
-        this._loadSettings();
     },
 
     _loadSettings: function() {
-        var applicationid = 'statistics-qualifiesforexam';
-        this.relatedstudentkeyvalue_store = Ext.create('Ext.data.Store', {
-            model: 'devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue',
-            remoteFilter: true,
-            remoteSort: true
-        });
-        this.relatedstudentkeyvalue_store.pageSize = 1;
-        this.relatedstudentkeyvalue_store.proxy.setDevilryFilters([{
-            field: 'period',
-            comp: 'exact',
-            value: this.loader.periodid
-        }, {
-            field: 'application',
-            comp: 'exact',
-            value: applicationid
-        }, {
-            field: 'key',
-            comp: 'exact',
-            value: 'settings'
-        }]);
-        this.relatedstudentkeyvalue_store.load({
-            scope: this,
-            callback: this._onLoadSettings
-        });
-    },
-
-    _onLoadSettings: function(records, op) {
-        if(!op.success) {
-            this._handleLoadError('Save settings', op);
-            return;
-        }
-        console.log(records);
-        if(records.length === 0) {
-            this.settingsRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue', {
-                period: this.loader.periodid,
-                application: applicationid,
-                key: 'settings',
-                value: Ext.JSON.encode({
-                    plugin: this.pluginname,
-                    settings: this.getSettings()
-                })
-            });
-        } else {
-            this.settingsRecord = records[0];
+        if(this.main.settings.path === this.path) {
+            this.settings = this.main.settings.settings;
         }
     },
 
@@ -114,7 +74,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onSaveYes: function() {
-        this._saveSettings();
+        this.main.saveSettings(this.path, this.getSettings(), function(success) {
+            if(success) {
+                this._saveLabels();
+            }
+        }, this);
     },
 
     _saveLabels: function() {
@@ -127,21 +91,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
         });
     },
 
-    _saveSettings: function() {
-        Ext.getBody().mask('Saving current settings', 'page-load-mask');
-        this.settingsRecord.save({
-            scope: this,
-            callback: function(record, op) {
-                Ext.getBody().unmask();
-                if(!op.success) {
-                    this._handleLoadError('Save settings', op);
-                    return;
-                }
-                this._saveLabels();
-            }
-        });
-    },
-
     _onPreview: function() {
         if(this.validInput()) {
             this.loader.clearFilter();
@@ -149,29 +98,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
         }
     },
 
-    getSettings: function() {
-        return false;
-    },
-
     validInput: function() {
         return true;
     },
 
-
-    _handleLoadError: function(details, op) {
-        // TODO: Make work for both model and store response
-        Ext.getBody().unmask();
-        var httperror = 'Lost connection with server';
-        if(op.error.status !== 0) {
-            httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
-        }
-        Ext.MessageBox.show({
-            title: 'Error',
-            msg: '<p>This is usually caused by an unstable server connection. <strong>Try reloading the page</strong>.</p>' +
-                Ext.String.format('<p>Error details: {0}: {1}</p>', httperror, details),
-            buttons: Ext.Msg.OK,
-            icon: Ext.Msg.ERROR,
-            closable: false
-        });
+    getSettings: function() {
+        return false;
     }
 });
