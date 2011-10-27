@@ -1,21 +1,11 @@
 from django.contrib.auth.models import User
 from django.db.models import Count, Max
 
-from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
-                                PermissionDenied, InvalidUsername, FieldSpec,
-                                FilterSpecs, FilterSpec, PatternFilterSpec,
-                                stringOrNoneConverter, boolConverter)
+from devilry.simplified import (simplified_modelapi, PermissionDenied,
+                                InvalidUsername, FieldSpec, FilterSpecs,
+                                FilterSpec, stringOrNoneConverter)
 from devilry.apps.core import models
-from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
-                                                   SimplifiedPeriodMetaMixin,
-                                                   SimplifiedAssignmentMetaMixin,
-                                                   SimplifiedAssignmentGroupMetaMixin,
-                                                   SimplifiedDeadlineMetaMixin,
-                                                   SimplifiedDeliveryMetaMixin,
-                                                   SimplifiedStaticFeedbackMetaMixin,
-                                                   SimplifiedFileMetaMetaMixin,
-                                                   SimplifiedCandidateMetaMixin)
-from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
+from devilry.coreutils.simplified.metabases import SimplifiedAssignmentGroupMetaMixin
 
 from helpers import _convert_list_of_usernames_to_userobjects
 from cansavebase import CanSaveBase
