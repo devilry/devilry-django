@@ -4,7 +4,7 @@ from abstract_is_candidate import AbstractIsCandidate
 from basenode import BaseNode
 from node import Node
 from subject import Subject
-from period import Period
+from period import Period, PeriodApplicationKeyValue
 from relateduser import RelatedExaminer, RelatedStudent, RelatedStudentKeyValue
 from assignment import Assignment
 from assignment_group import AssignmentGroup, AssignmentGroupTag
