@@ -3,22 +3,21 @@ from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
                                 FilterSpecs, FilterSpec,
                                 boolConverter)
 from devilry.apps.core import models
+from devilry.coreutils.simplified.metabases import SimplifiedAbstractApplicationKeyValueMixin
 
 
 @simplified_modelapi
 class SimplifiedRelatedStudentKeyValue(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudentKeyValue`. """
-    class Meta:
+    class Meta(SimplifiedAbstractApplicationKeyValueMixin):
         model = models.RelatedStudentKeyValue
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec('id', 'application', 'key', 'value', 'relatedstudent', 'student_can_read')
-        searchfields = FieldSpec('application', 'key', 'value', 'relatedstudent__user__username')
-        editablefields = ('application', 'key', 'value', 'relatedstudent', 'student_can_read')
-        filters = FilterSpecs(FilterSpec('id', supported_comp=('exact',)),
-                              FilterSpec('student_can_read', supported_comp=('exact',), type_converter=boolConverter),
-                              FilterSpec('application', supported_comp=('exact',)),
+        resultfields = FieldSpec('relatedstudent', 'student_can_read') + SimplifiedAbstractApplicationKeyValueMixin.resultfields
+        searchfields = FieldSpec('relatedstudent__user__username') + SimplifiedAbstractApplicationKeyValueMixin.searchfields
+        editablefields = ('relatedstudent', 'student_can_read') + SimplifiedAbstractApplicationKeyValueMixin.editablefields
+        filters = FilterSpecs(FilterSpec('student_can_read', supported_comp=('exact',), type_converter=boolConverter),
                               FilterSpec('relatedstudent__period', supported_comp=('exact',)),
-                              FilterSpec('relatedstudent__user', supported_comp=('exact',)))
+                              FilterSpec('relatedstudent__user', supported_comp=('exact',))) + SimplifiedAbstractApplicationKeyValueMixin.filters
 
     @classmethod
     def create_searchqryset(cls, user):
