@@ -7,7 +7,8 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     cls: 'selectable-grid',
 
     requires: [
-        'devilry.extjshelpers.DateTime'
+        'devilry.extjshelpers.DateTime',
+        'devilry.statistics.activeperiods.AggregatedPeriodModel'
     ],
     
     config: {
@@ -58,13 +59,8 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
 
     _createStore: function() {
-        var model = Ext.define('devilry.administrator.activeperiods.AggregatedPeriodModel', {
-            extend: 'Ext.data.Model',
-            fields: ['period_id', 'subject_long_name', 'period_long_name', 'ready_for_export'],
-            idProperty: 'period_id'
-        });
         this.store = Ext.create('Ext.data.Store', {
-            model: model,
+            model: 'devilry.statistics.activeperiods.AggregatedPeriodModel',
             autoSync: false,
             proxy: 'memory'
         });
