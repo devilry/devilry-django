@@ -5,14 +5,14 @@ from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta,
-                        SimplifiedCandidate)
+                        SimplifiedCandidate, SimplifiedPeriodApplicationKeyValue)
 from ..extjshelpers import extjs_restful_modelapi
 from devilry.coreutils.restful import metabases as restfulmetabases
 #from devilry.restful.fields import JsonListWithFallbackField
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
-           'RestfulSimplifiedPeriod',
+           'RestfulSimplifiedPeriod', 'RestfulSimplifiedPeriodApplicationKeyValue',
            'RestfulSimplifiedRelatedExaminer', 'RestfulSimplifiedRelatedStudent',
            'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
@@ -67,6 +67,14 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
                         '    <h1>{long_name:ellipsis(40)}</h1>'
                         '</div>')
         combobox_displayfield = 'short_name'
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedPeriodApplicationKeyValue(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedPeriodApplicationKeyValue
+        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
 
 
 @administrator_restful.register

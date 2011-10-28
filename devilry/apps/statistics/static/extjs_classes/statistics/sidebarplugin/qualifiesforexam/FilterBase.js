@@ -3,10 +3,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     config: {
         loader: undefined,
+        path: undefined,
         aggregatedStore: undefined,
         labelname: undefined,
         negative_labelname: undefined,
-        title: undefined
+        title: undefined,
+        main: undefined
     },
 
     constructor: function(config) {
@@ -39,14 +41,23 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             },
             height: 60
         });
+        this.initConfig(config); // Must come before _loadSettings
+        this._loadSettings(); // Must come before callParent, because callParent calls initComponent (which needs settings)
         this.callParent([config]);
-        this.initConfig(config);
+    },
+
+    _loadSettings: function() {
+        if(this.main.settings && this.main.settings.path === this.path) {
+            this.settings = this.main.settings.settings;
+        }
     },
 
     _onSave: function() {
         if(!this.validInput()) {
             return;
         }
+        this._onSaveYes();
+        return;
         Ext.MessageBox.show({
             title: 'Save?',
             msg: 'Are you sure you want to save? Students will be able to see if they are qualified for final exams.',
@@ -56,15 +67,25 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             scope: this,
             fn: function(buttonId) {
                 if(buttonId == 'yes') {
-                    this.loader.labelManager.setLabels({
-                        filter: this.filter,
-                        scope: this,
-                        label: this.labelname,
-                        negative_label: this.negative_labelname,
-                        student_can_read: true
-                    });
+                    this._onSaveYes();
                 }
             }
+        });
+    },
+
+    _onSaveYes: function() {
+        this.main.saveSettings(this.path, this.getSettings(), function() {
+            this._saveLabels();
+        }, this);
+    },
+
+    _saveLabels: function() {
+        this.loader.labelManager.setLabels({
+            filter: this.filter,
+            scope: this,
+            label: this.labelname,
+            negative_label: this.negative_labelname,
+            student_can_read: true
         });
     },
 
@@ -77,5 +98,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     validInput: function() {
         return true;
+    },
+
+    getSettings: function() {
+        return false;
     }
 });

@@ -9,16 +9,23 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
             items: [{
                 xtype: 'statistics-chooseassignmentsgrid',
                 margin: {bottom: 10},
+                selectedAssignmentIds: this.settings? this.settings.assignment_ids: undefined,
                 store: this.loader.assignment_store
             }, {
                 xtype: 'numberfield',
                 fieldLabel: 'Minumum total points on selected',
                 minValue: 0,
+                value: this.settings? this.settings.minimumScaledPoints: '',
                 margin: {bottom: 10}
             }, this.defaultButtonPanel]
         });
         this.callParent(arguments);
     },
+
+    _getGrid: function() {
+        return this.down('statistics-chooseassignmentsgrid');
+    },
+
 
     filter: function(student) {
         var assignment_ids = this.down('statistics-chooseassignmentsgrid').getIdOfSelected();
@@ -28,5 +35,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
 
     validInput: function() {
         return this.validPointInput() && this.down('statistics-chooseassignmentsgrid').checkAtLeastOneSelected();
+    },
+
+    getSettings: function() {
+        var settings = this.callParent(arguments);
+        settings.assignment_ids = this._getGrid().getIdOfSelected();
+        return settings;
     }
 });

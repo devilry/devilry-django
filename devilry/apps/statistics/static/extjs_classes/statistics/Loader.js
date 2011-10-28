@@ -2,7 +2,6 @@ Ext.define('devilry.statistics.Loader', {
     extend: 'Ext.util.Observable',
     requires: [
         'devilry.extjshelpers.AsyncActionPool',
-        'devilry.statistics.AggregatedPeriodDataForStudent',
         'devilry.statistics.AggregatedPeriodDataForStudentBase',
         'devilry.statistics.LabelManager'
     ],
@@ -32,20 +31,41 @@ Ext.define('devilry.statistics.Loader', {
 
         Ext.getBody().mask('Loading all data about all students on the period', 'page-load-mask');
         this.callParent(arguments);        
-        this._loadedCount = 0;
-        this._loadAssignments();
-        this._loadAllGroupsInPeriod();
-        this._loadPeriod();
-        this._loadAllStudentLabels();
-        this._loadAllCandidatesInPeriod();
-        this._loadAllRelatedStudents();
+
+        // NOTE: Commented out this code, and the code in _checkLoadComplete
+        // because it causes issues on windows (or perhaps all remote clients).
+        // It works locally though. It is supposed to enable loading of all
+        // elements in parallel.
+        //this._loadedCount = 0;
+        //this._loadAssignments();
+        //this._loadAllGroupsInPeriod();
+        //this._loadPeriod();
+        //this._loadAllStudentLabels();
+        //this._loadAllCandidatesInPeriod();
+        //this._loadAllRelatedStudents();
+
+        this._loaders = [
+            this._loadAssignments,
+            this._loadAllGroupsInPeriod,
+            this._loadPeriod,
+            this._loadAllStudentLabels,
+            this._loadAllCandidatesInPeriod,
+            this._loadAllRelatedStudents
+        ]
+        this._checkLoadComplete();
     },
 
     _checkLoadComplete: function() {
-        this._loadedCount ++;
-        if(this._loadedCount >= 6) {
+        //this._loadedCount ++;
+        //if(this._loadedCount >= 6) {
+            //this._onLoaded();
+        //};
+        if(this._loaders.length > 0) {
+            var loader = this._loaders.pop();
+            Ext.bind(loader, this)();
+        } else {
             this._onLoaded();
-        };
+        }
     },
 
     /**
@@ -58,6 +78,7 @@ Ext.define('devilry.statistics.Loader', {
             comp: 'exact',
             value: this.periodid
         }]);
+        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
         this.assignment_store.load({
             scope: this,
             callback: this._onAssignmentsLoaded

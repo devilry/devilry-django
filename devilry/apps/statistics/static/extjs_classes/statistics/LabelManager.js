@@ -13,121 +13,118 @@ Ext.define('devilry.statistics.LabelManager', {
         });
         this.callParent(arguments);
     },
-    
-    setLabels: function(options) {
-        var labelRecords = [];
-        Ext.getBody().mask('Updating labels', 'page-load-mask');
-        var index = 0;
-        this._finished = 0;
-        this._errors = 0;
-        this.loader.clearFilter();
-        this._watingFor = this.loader.store.count() * 2;
-        Ext.each(this.loader.store.data.items, function(student) {
-            var match = Ext.bind(options.filter, options.scope)(student);
-            this._changeLabelIfRequired(student, match, options.label, options.student_can_read, index);
-            index ++;
-            this._changeLabelIfRequired(student, !match, options.negative_label, options.student_can_read, index);
-            index ++;
-        }, this);
-    },
 
-    _changeLabelIfRequired: function(student, match, label, student_can_read, index) {
-        var labelRecord = student.labels[label];
-        var has_label = labelRecord !== undefined; 
-        if(match && !has_label) {
-            this._createLabel(student, label, student_can_read, index);
-        } else if(!match && has_label) {
-            this._deleteLabel(student, labelRecord, index);
-        } else {
-            this._checkFinished();
-        }
-    },
-
-    _createLabel: function(student, label, student_can_read, index) {
-        var record = this._createLabelRecord(student, label, student_can_read);
-        devilry.extjshelpers.AsyncActionPool.add({
-            scope: this,
-            callback: function(pool) {
-                record.save({
-                    scope: this,
-                    callback: function(r, op) {
-                        pool.notifyTaskCompleted();
-                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}/{1}', index, this._watingFor), 'page-load-mask');
-                        if(op.success) {
-                            var label = record.get('key');
-                            student.setLabel(label, record);
-                        }
-                        else {
-                            this._errors ++;
-                        }
-                        this._checkFinished();
-                    }
-                });
-            }
-        });
-    },
-
-    _deleteLabel: function(student, record, index) {
-        devilry.extjshelpers.AsyncActionPool.add({
-            scope: this,
-            callback: function(pool) {
-                record.destroy({
-                    scope: this,
-                    callback: function(r, op) {
-                        pool.notifyTaskCompleted();
-                        Ext.getBody().mask(Ext.String.format('Completed updating label {0}/{1}', index, this._watingFor), 'page-load-mask');
-                        if(op.success) {
-                            var label = record.get('key');
-                            student.delLabel(label);
-                        }
-                        else {
-                            this._errors ++;
-                        }
-                        this._checkFinished();
-                    }
-                });
-            }
-        });
-    },
-
-    _checkFinished: function(dontAddToFinished) {
-        if(!dontAddToFinished) {
-            this._finished ++;
-        }
-        if(this._watingFor == undefined) {
-            return;
-        }
-        if(this._finished >= this._watingFor) {
-            this._onFinished();
-        }
-    },
-
-    _onFinished: function() {
+    _onError: function(what, response) {
         Ext.getBody().unmask();
-        this.fireEvent('changedMany');
-        if(this._errors > 0) {
-            this._onErrors();
+        var httperror = 'Lost connection with server';
+        if(response.status !== 0) {
+            var httperror = Ext.String.format('{0} {1}', response.status, response.statusText);
         }
-        this._watingFor = undefined;
-    },
-
-    _onErrors: function() {
         Ext.MessageBox.show({
-            title: Ext.String.format('Failed to set {0} of {1} labels', this._errors, this._watingFor),
-            msg: '<p>This is usually caused by an unstable server connection. <strong>Try to apply the labels again</strong>.</p>',
+            title: Ext.String.format('Failed to {0} labels', what),
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Please re-try saving labels</strong>.</p>' +
+                Ext.String.format('<p>Error details: {0}</p>', httperror),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR,
             closable: false
         });
     },
 
-    _createLabelRecord: function(student, label, student_can_read) {
-        var record = Ext.create('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyValue', {
+    _onFinished: function() {
+        Ext.getBody().unmask();
+        window.location.href = window.location.href;
+    },
+    
+    _changeRequired: function(student, match, label) {
+        var labelRecord = student.labels[label];
+        var has_label = labelRecord !== undefined; 
+        if(match && !has_label) {
+            return 'create';
+        } else if(!match && has_label) {
+            return 'delete';
+        } else {
+            return false;
+        }
+    },
+
+    _sendRestRequest: function(args) {
+        Ext.apply(args, {
+            url: Ext.String.format('{0}/administrator/restfulsimplifiedrelatedstudentkeyvalue/', DevilrySettings.DEVILRY_URLPATH_PREFIX),
+        });
+        Ext.Ajax.request(args);
+    },
+
+    _create: function(toBeCreated) {
+        if(toBeCreated.length === 0) {
+            this._onFinished();
+            return;
+        };
+        Ext.getBody().mask('Creating labels', 'page-load-mask');
+        this._sendRestRequest({
+            params: Ext.JSON.encode(toBeCreated),
+            method: 'POST',
+            scope: this,
+            callback: function(op, success, response) {
+                if(success) {
+                    this._onFinished();
+                } else {
+                    this._onError('create', response);
+                }
+            }
+        });
+    },
+
+    _delete: function(toBeDeleted, toBeCreated) {
+        if(toBeDeleted.length === 0) {
+            this._create(toBeCreated);
+            return;
+        };
+        Ext.getBody().mask('Deleting current labels', 'page-load-mask');
+        this._sendRestRequest({
+            params: Ext.JSON.encode(toBeDeleted),
+            method: 'DELETE',
+            scope: this,
+            callback: function(op, success, response) {
+                if(success) {
+                    this._create(toBeCreated);
+                } else {
+                    this._onError('delete', response);
+                }
+            }
+        });
+    },
+
+    _createLabelObj: function(student, label, student_can_read) {
+        return {
             relatedstudent: student.relatedStudentRecord.get('id'),
             application: this.application_id,
             key: label,
             student_can_read: (student_can_read == true)
-        });
-        return record;
+        };
     },
+
+    _addToAppropriateChagelist: function(toBeCreated, toBeDeleted, match, student, label, student_can_read) {
+        var changeRequired = this._changeRequired(student, match, label);
+        if(changeRequired === 'create') {
+            toBeCreated.push(this._createLabelObj(student, label, student_can_read));
+        } else if(changeRequired === 'delete') {
+            var labelRecord = student.labels[label];
+            toBeDeleted.push(labelRecord.get('id'));
+        }
+    },
+
+    setLabels: function(options) {
+        var labelRecords = [];
+        Ext.getBody().mask('Updating labels', 'page-load-mask');
+        this.loader.clearFilter();
+
+        var toBeCreated = [];
+        var toBeDeleted = [];
+        Ext.each(this.loader.store.data.items, function(student) {
+            var match = Ext.bind(options.filter, options.scope)(student);
+            this._addToAppropriateChagelist(toBeCreated, toBeDeleted, match, student, options.label, options.student_can_read);
+            this._addToAppropriateChagelist(toBeCreated, toBeDeleted, !match, student, options.negative_label, options.student_can_read);
+        }, this);
+        this._delete(toBeDeleted, toBeCreated);
+    }
 });

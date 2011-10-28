@@ -19,7 +19,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     passesAssignments: function(assignment_ids) {
         var passes = 0;
         Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
-            if(Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
+            if(group.assignmentGroupRecord && Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
                 if(group.assignmentGroupRecord.get('feedback__is_passing_grade')) {
                     passes ++;
                 }
@@ -71,8 +71,12 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
     },
 
     _calculateScaledPoints: function(assignmentGroupRecord) {
-        var assignmentRecord = this.assignment_store.getById(assignmentGroupRecord.get('parentnode'));
-        var points = assignmentGroupRecord.get('feedback__points');
-        return assignmentRecord.get('scale_points_percent') * points / 100;
+        if(assignmentGroupRecord) {
+            var assignmentRecord = this.assignment_store.getById(assignmentGroupRecord.get('parentnode'));
+            var points = assignmentGroupRecord.get('feedback__points');
+            return assignmentRecord.get('scale_points_percent') * points / 100;
+        } else {
+            return 0;
+        }
     }
 });

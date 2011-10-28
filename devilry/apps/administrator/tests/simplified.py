@@ -4,13 +4,13 @@ import re
 from django.test import TransactionTestCase
 
 
-from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
-from ....simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
-from ...core import models, testhelper
-from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
-                          SimplifiedAssignment, SimplifiedAssignmentGroup,
-                          SimplifiedDeadline, SimplifiedStaticFeedback,
-                          SimplifiedFileMeta, InvalidUsername)
+from devilry.simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults, InvalidUsername
+from devilry.simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
+from devilry.apps.core import models, testhelper
+from devilry.apps.administrator.simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+                                                   SimplifiedAssignment, SimplifiedAssignmentGroup,
+                                                   SimplifiedDeadline, SimplifiedStaticFeedback,
+                                                   SimplifiedFileMeta)
 
 testhelper.TestHelper.set_memory_deliverystore()
 
@@ -59,15 +59,24 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         self.assertEquals(create_res.parentnode, self.uni)
 
     def test_create_assuperadmin(self):
-        kw = dict(
-                long_name='TestOne',
-                parentnode = None)
-
-        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', **kw)
+        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', long_name='TestOne', parentnode=None)
         create_res = models.Node.objects.get(pk=newpk)
         self.assertEquals(create_res.short_name, 'test1')
         self.assertEquals(create_res.long_name, 'TestOne')
         self.assertEquals(create_res.parentnode, None)
+
+    def test_createmany_assuperadmin(self):
+        list_of_field_values = [dict(short_name='test1', long_name='TestOne', parentnode=None),
+                                dict(short_name='test2', long_name='TestTwo', parentnode=None),
+                                dict(short_name='test3', long_name='TestThree', parentnode=None),
+                                dict(short_name='test4', long_name='TestFour', parentnode=None)]
+        newpks = SimplifiedNode.createmany(self.superadminuser, *list_of_field_values)
+        for index, newpk in enumerate(newpks):
+            expected = list_of_field_values[index]
+            create_res = models.Node.objects.get(pk=newpk)
+            self.assertEquals(create_res.short_name, expected['short_name'])
+            self.assertEquals(create_res.long_name, expected['long_name'])
+            self.assertEquals(create_res.parentnode, expected['parentnode'])
 
     def test_create_security_asstudent(self):
         # test that a student cant create a node
@@ -137,6 +146,31 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         self.assertEquals(self.uni.short_name, 'uni')
         self.refresh_var(self.uni)
         self.assertEquals(self.uni.short_name, 'testuni')
+
+    def test_updatemany(self):
+        list_of_field_values = [dict(short_name='test1', long_name='TestOne', parentnode=None),
+                                dict(short_name='test2', long_name='TestTwo', parentnode=None),
+                                dict(short_name='test3', long_name='TestThree', parentnode=None),
+                                dict(short_name='test4', long_name='TestFour', parentnode=None)]
+        updated_list_of_field_values = []
+        for field_values in list_of_field_values:
+            node = models.Node.objects.create(**field_values)
+            updated_field_values = dict(pk=node.id,
+                                        short_name=node.short_name + 'updated',
+                                        long_name=node.long_name + 'updated')
+            updated_list_of_field_values.append(updated_field_values)
+
+        newpks = SimplifiedNode.updatemany(self.superadminuser, *updated_list_of_field_values)
+        for index, newpk in enumerate(newpks):
+            create_res = models.Node.objects.get(pk=newpk)
+
+            not_expected = list_of_field_values[index]
+            self.assertNotEquals(create_res.short_name, not_expected['short_name'])
+            self.assertNotEquals(create_res.long_name, not_expected['long_name'])
+
+            expected = updated_list_of_field_values[index]
+            self.assertEquals(create_res.short_name, expected['short_name'])
+            self.assertEquals(create_res.long_name, expected['long_name'])
 
     def test_update_security_asstudent(self):
         # test that an admin for a subject cant create a node
@@ -265,6 +299,18 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
 
         with self.assertRaises(PermissionDenied):
             SimplifiedNode.delete(self.superadminuser, self.uni.id)
+
+    def test_deletemany(self):
+        pks = []
+        for short_name in ('a', 'b', 'c'):
+            node = models.Node.objects.create(short_name=short_name)
+            pks.append(node.pk)
+        before = models.Node.objects.all().count()
+        resuls_pks = SimplifiedNode.deletemany(self.superadminuser, *pks)
+        after = models.Node.objects.all().count()
+        self.assertEquals(after, before - 3)
+        self.assertEquals(resuls_pks, tuple(pks))
+
 
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):

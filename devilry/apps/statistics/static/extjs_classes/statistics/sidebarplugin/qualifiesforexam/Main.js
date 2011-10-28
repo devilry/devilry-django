@@ -10,7 +10,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Advanced',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Manual',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset',
+        'devilry.extjshelpers.DateTime'
     ],
     config: {
         loader: undefined,
@@ -19,6 +20,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         negative_labelname: 'unqualified-for-exam',
         sidebarplugins: []
     },
+    applicationid: 'statistics-qualifiesforexam',
 
     bodyPadding: 10,
 
@@ -36,12 +38,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     constructor: function(config) {
+        Ext.getBody().mask('Loading current settings', 'page-load-mask');
         this.initConfig(config);
         this.callParent([config]);
     },
 
     initComponent: function() {
-        var chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
+        this.chooseplugin = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             availablePlugins: [{
                 path: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll',
                 title: 'Require passing grade on all assignments'
@@ -71,26 +74,150 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
                 loader: this.loader,
                 aggregatedStore: this.aggregatedStore,
                 labelname: this.labelname,
-                negative_labelname: this.negative_labelname
+                negative_labelname: this.negative_labelname,
+                main: this
             },
 
             listeners: {
                 scope: this,
-                pluginSelected: this._pluginSelected
+                pluginSelected: this._pluginSelected,
+                render: this._onRenderChoices
             }
         });
         this._main = Ext.widget('container', {
             layout: 'fit'
         });
         Ext.apply(this, {
-            items: [chooseplugin, this._main]
+            items: [this.chooseplugin, this._main]
         });
         this.callParent(arguments);
+    },
+
+    _onRenderChoices: function() {
+        this._loadSettings();
     },
 
     _pluginSelected: function(pluginObj) {
         this._main.removeAll();
         this.loader.clearFilter();
         this._main.add(pluginObj);
+    },
+
+
+    _loadSettings: function() {
+        this.periodapplicationkeyvalue_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue',
+            remoteFilter: true,
+            remoteSort: true
+        });
+        this.periodapplicationkeyvalue_store.proxy.setDevilryFilters([{
+            field: 'period',
+            comp: 'exact',
+            value: this.loader.periodid
+        }, {
+            field: 'application',
+            comp: 'exact',
+            value: this.applicationid
+        //}, {
+            //field: 'key',
+            //comp: 'exact',
+            //value: 'settings'
+        }]);
+        this.periodapplicationkeyvalue_store.proxy.setDevilryOrderby(['-key']);
+        this.periodapplicationkeyvalue_store.pageSize = 2; // settings and ready-for-export
+        this.periodapplicationkeyvalue_store.load({
+            scope: this,
+            callback: this._onLoadSettings
+        });
+    },
+
+    _onLoadSettings: function(records, op) {
+        Ext.getBody().unmask();
+        if(!op.success) {
+            this._handleComError('Save settings', op);
+            return;
+        }
+
+        var settingsindex = this.periodapplicationkeyvalue_store.findExact('key', 'settings');
+        if(settingsindex > -1) {
+            this.settingsRecord = records[settingsindex];
+            this.settings = Ext.JSON.decode(this.settingsRecord.get('value'));
+            this.chooseplugin.selectByPath(this.settings.path);
+        } else {
+            this.settingsRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue', {
+                period: this.loader.periodid,
+                application: this.applicationid,
+                key: 'settings',
+                value: null
+            });
+        }
+
+        var readyForExportIndex = this.periodapplicationkeyvalue_store.findExact('key', 'ready-for-export');
+        if(readyForExportIndex > -1) {
+            this.readyForExportRecord = records[readyForExportIndex];
+        } else {
+            this.readyForExportRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue', {
+                period: this.loader.periodid,
+                application: this.applicationid,
+                key: 'ready-for-export',
+                value: null
+            });
+        }
+    },
+
+    saveSettings: function(path, settings, callback, scope) {
+        Ext.getBody().mask('Saving current settings', 'page-load-mask');
+        var settingData = {
+            path: path,
+            settings: settings
+        }
+        this.settingsRecord.set('value', Ext.JSON.encode(settingData));
+        this.settingsRecord.save({
+            scope: this,
+            callback: function(record, op) {
+                Ext.getBody().unmask();
+                if(!op.success) {
+                    this._handleComError('Save settings', op);
+                    return;
+                }
+                this.settings = settingData;
+                this._saveReadyForExportRecord(callback, scope);
+            }
+        });
+    },
+
+    _saveReadyForExportRecord: function(callback, scope) {
+        Ext.getBody().mask('Marking as ready for export', 'page-load-mask');
+        this.readyForExportRecord.set('value', Ext.JSON.encode({
+            isready: 'yes',
+            savetime: devilry.extjshelpers.DateTime.restfulNow()
+        }));
+        this.readyForExportRecord.save({
+            scope: this,
+            callback: function(record, op) {
+                Ext.getBody().unmask();
+                if(!op.success) {
+                    this._handleComError('Mark ready for export', op);
+                    return;
+                }
+                Ext.bind(callback, scope)();
+            }
+        });
+    },
+
+    _handleComError: function(details, op) {
+        Ext.getBody().unmask();
+        var httperror = 'Lost connection with server';
+        if(op.error.status !== 0) {
+            httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
+        }
+        Ext.MessageBox.show({
+            title: 'Error',
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Try reloading the page</strong>.</p>' +
+                Ext.String.format('<p>Error details: {0}: {1}</p>', httperror, details),
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            closable: false
+        });
     }
 });

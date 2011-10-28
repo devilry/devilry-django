@@ -10,6 +10,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll
                 xtype: 'numberfield',
                 fieldLabel: 'Minumum total points',
                 minValue: 0,
+                value: this.settings? this.settings.minimumScaledPoints: '',
                 margin: {bottom: 10}
             }, this.defaultButtonPanel]
         });

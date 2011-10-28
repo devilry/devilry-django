@@ -2,8 +2,13 @@ Ext.define('devilry.statistics.ScalePointsPanel', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.statistics-scalepointspanel',
     requires: [
-        'devilry.extjshelpers.HelpWindow'
+        'devilry.extjshelpers.HelpWindow',
+        'devilry.extjshelpers.NotificationManager'
     ],
+
+    saveMessageTpl: Ext.create('Ext.XTemplate',
+        '{long_name}: {scale_points_percent}%'
+    ),
     
     initComponent: function() {
         Ext.apply(this, {
@@ -30,11 +35,7 @@ Ext.define('devilry.statistics.ScalePointsPanel', {
 
             listeners: {
                 scope: this,
-                edit: function(editor, e) {
-                    e.record.commit();
-                    e.record.save();
-                    this.loader.updateScaledPoints();
-                }
+                edit: this._onEdit
             },
 
             bbar: [{
@@ -49,6 +50,34 @@ Ext.define('devilry.statistics.ScalePointsPanel', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    _onEdit: function(editor, e) {
+        Ext.getBody().mask('Saving point scale', 'page-load-mask');
+        e.record.commit();
+        e.record.save({
+            scope: this,
+            callback: this._onSaveComplete
+        });
+    },
+
+    _onSaveComplete: function(record, op) {
+        Ext.getBody().unmask();
+        if(op.success) {
+            this.loader.updateScaledPoints();
+            devilry.extjshelpers.NotificationManager.show({
+                title: 'Save successful',
+                message: this.saveMessageTpl.apply(record.data)
+            });
+        } else {
+            Ext.MessageBox.show({
+                title: 'Failed to save point scale changes',
+                msg: '<p>This is usually caused by an unstable server connection. Please try to reload the page.</p>',
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR,
+                closable: false
+            });
+        }
     },
 
     _onHelp: function() {
