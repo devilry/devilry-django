@@ -28,6 +28,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             store: store,
             fieldLabel: 'How?',
             queryMode: 'local',
+            editable: false,
             displayField: 'title',
             valueField: 'path',
             emptyText: 'Please make a selection...',

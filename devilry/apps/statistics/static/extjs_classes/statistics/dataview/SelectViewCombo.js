@@ -4,6 +4,7 @@ Ext.define('devilry.statistics.dataview.SelectViewCombo', {
     valueField: 'clsname',
     displayField: 'label',
     forceSelection: true,
+    editable: false,
     
     config: {
         availableViews: [],
