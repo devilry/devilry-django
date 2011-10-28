@@ -1,7 +1,6 @@
-from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
+from devilry.simplified import (simplified_modelapi,
                                 PermissionDenied, FieldSpec,
-                                FilterSpecs, FilterSpec,
-                                boolConverter)
+                                FilterSpecs, FilterSpec)
 from devilry.apps.core import models
 from devilry.coreutils.simplified.metabases import SimplifiedAbstractApplicationKeyValueMixin
 
@@ -16,7 +15,12 @@ class SimplifiedPeriodApplicationKeyValue(CanSaveBase):
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = FieldSpec('period') + SimplifiedAbstractApplicationKeyValueMixin.resultfields
         editablefields = ('period',) + SimplifiedAbstractApplicationKeyValueMixin.editablefields
-        filters = FilterSpecs(FilterSpec('period', supported_comp=('exact',))) + SimplifiedAbstractApplicationKeyValueMixin.filters
+        filters = FilterSpecs(FilterSpec('period', supported_comp=('exact',)),
+                              FilterSpec('period__start_time'),
+                              FilterSpec('period__end_time'),
+                              FilterSpec('period__parentnode', supported_comp=('exact',)),
+                              FilterSpec('period__parentnode__parentnode', supported_comp=('exact',))
+                             ) + SimplifiedAbstractApplicationKeyValueMixin.filters
 
     @classmethod
     def create_searchqryset(cls, user):
