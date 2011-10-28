@@ -205,7 +205,8 @@ class FilterSpecs(object):
             try:
                 filterspec = self.find_filterspec(fieldname)
             except KeyError, e:
-                raise FilterValidationError('Invalid filter fieldname {0} in: {1}.'.format(fieldname, filterdict))
+                fieldnames = ', '.join(self.filterspecs.keys())
+                raise FilterValidationError('Invalid filter fieldname {0} in: {1}. Available filter fieldnames: {2}'.format(fieldname, filterdict, fieldnames))
             else:
                 qrysegment = filterspec.to_django_qry(filterdict)
                 if qrysegment != None:
