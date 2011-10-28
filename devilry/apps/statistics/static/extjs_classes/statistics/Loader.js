@@ -302,14 +302,16 @@ Ext.define('devilry.statistics.Loader', {
         Ext.each(this.candidate_store.data.items, function(candidateRecord, index) {
             var student_id = candidateRecord.get('student');
             var studentRecord = this.store.getById(student_id);
-            var assignmentgroup_id = candidateRecord.get('assignment_group');
-            var assignmentGroupRecord = this.assignmentgroup_store.getById(assignmentgroup_id);
+            if(studentRecord) {
+                var assignmentgroup_id = candidateRecord.get('assignment_group');
+                var assignmentGroupRecord = this.assignmentgroup_store.getById(assignmentgroup_id);
 
-            var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
-            var assignment_id = assignmentGroupRecord.get('parentnode');
-            var group = groupsByAssignmentId[assignment_id];
-            group.candidates.push(candidateRecord); // This will add only unique candidate records, since we only fetch distinct candidates
-            group.assignmentGroupRecord = assignmentGroupRecord; // This will be overwritten for each candidate, but that does not matter, since they overwrite with the same record
+                var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
+                var assignment_id = assignmentGroupRecord.get('parentnode');
+                var group = groupsByAssignmentId[assignment_id];
+                group.candidates.push(candidateRecord); // This will add only unique candidate records, since we only fetch distinct candidates
+                group.assignmentGroupRecord = assignmentGroupRecord; // This will be overwritten for each candidate, but that does not matter, since they overwrite with the same record
+            }
         }, this);
     },
 

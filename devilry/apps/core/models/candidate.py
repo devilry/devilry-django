@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
+from node import Node
 
 class Candidate(models.Model, Etag, AbstractIsAdmin):
     """
