@@ -74,7 +74,20 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     }, {
         name: "anonymous",
         fieldLabel: "Anonymous?",
-        xtype: 'checkbox'
+        xtype: 'combobox',
+        queryMode: 'local',
+        valueField: 'value',
+        displayField: 'label',
+        forceSelection: true,
+        editable: false,
+        value: false,
+        store: Ext.create('Ext.data.Store', {
+            fields: ['value', 'label'],
+            data : [
+                {value:false, label:"No"},
+                {value:true, label:"Yes"}
+            ]
+        })
     }],
 
     help: [
