@@ -28,7 +28,18 @@ Ext.define('devilry.administrator.node.PrettyView', {
                 }
             }]
         });
+
+        if(this.record) {
+            this._onLoadRecord();
+        } else {
+            this.on('loadmodel', this._onLoadRecord, this);
+        }
+
         this.callParent(arguments);
+    },
+
+    _onLoadRecord: function() {
+        //this._onActivePeriods();
     },
 
     _onActivePeriods: function() {
@@ -36,7 +47,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
         var win = Ext.widget('window', {
             title: Ext.String.format('Overview of active periods/semesters on {0}', node.get('long_name')),
             modal: true,
-            width: 400,
+            width: 800,
             height: 500,
             maximizable: true,
             layout: 'fit',
