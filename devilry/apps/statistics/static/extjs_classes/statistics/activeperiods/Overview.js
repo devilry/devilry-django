@@ -1,4 +1,4 @@
-Ext.define('devilry.administrator.activeperiods.Overview', {
+Ext.define('devilry.statistics.activeperiods.Overview', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.activeperiods-overview',
     frame: false,

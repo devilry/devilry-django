@@ -3,7 +3,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
     alias: 'widget.administrator_nodeprettyview',
 
     requires: [
-        'devilry.administrator.activeperiods.Overview'
+        'devilry.statistics.activeperiods.Overview'
     ],
 
     bodyTpl: Ext.create('Ext.XTemplate',
