@@ -21,7 +21,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
             relatedButtons: [{
                 xtype: 'button',
                 scale: 'large',
-                text: 'Overview of active periods/semesters',
+                text: 'Active periods/semesters',
                 listeners: {
                     scope: this,
                     click: this._onActivePeriods
@@ -45,7 +45,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
     _onActivePeriods: function() {
         var node = this.record;
         var win = Ext.widget('window', {
-            title: Ext.String.format('Overview of active periods/semesters on {0}', node.get('long_name')),
+            title: Ext.String.format('Active periods/semesters on {0}', node.get('long_name')),
             modal: true,
             width: 800,
             height: 500,

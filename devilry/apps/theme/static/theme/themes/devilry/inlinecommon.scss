@@ -1,0 +1,31 @@
+.not_passing_grade {
+    @include warningInlineItem();
+}
+.passing_grade {
+    @include goodInlineItem();
+}
+
+.group_is_open {
+    @include goodInlineItem();
+}
+.group_is_closed {
+    @include warningInlineItem();
+}
+
+.group_is_corrected {
+    @include goodInlineItem();
+}
+
+.group_is_uncorrected {
+    @include warningInlineItem();
+}
+
+.goodInlineItem {
+    @include goodInlineItem();
+}
+.warningInlineItem {
+    @include warningInlineItem();
+}
+.neutralInlineItem {
+    @include neutralInlineItem();
+}

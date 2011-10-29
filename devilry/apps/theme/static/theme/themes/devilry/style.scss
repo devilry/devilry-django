@@ -39,76 +39,10 @@ body {
 
 
 
-@mixin inlineList($separator:", ") {
-    li {
-        display: inline; 
-        &:after {
-            content: $separator;
-        }
-        &:last-child:after {
-            content: "";
-        }
-    }
-}
 
-@mixin inlineItem($bg, $fg, $bordercolor) {
-    border: 1px solid $bordercolor;
-    border-radius: 3px;
-    background-color: $bg;
-    color: $fg;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap;
-}
+@import "mixins";
+@import "inlinecommon";
 
-@mixin goodInlineItem() {
-    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
-}
-@mixin neutralInlineItem() {
-    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
-}
-@mixin warningInlineItem() {
-    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
-}
-@mixin errorInlineItem() {
-    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
-}
-
-@mixin commonSectionElements() {
-    strong {
-        font-weight: bold;
-    }
-    em {
-        font-style: italic;
-    }
-
-    p {
-        padding: 5px 0;
-        line-height: 1.2em;
-    }
-
-    pre, code {
-        background-color: #f8f8f8;;
-        border: 1px solid #eee;
-    }
-    code {
-        padding: 1px 4px;
-        color: #600;
-        white-space: nowrap;
-    }
-    pre {
-        padding: 8px;
-    }
-
-    ul {
-        li {
-            padding: 5px 0;
-            margin-left: 25px !important;
-            list-style-type: disc !important;
-            list-style-position: outside !important;
-        }
-    }
-}
 
 @mixin commonHeaderElements() {
     h1 {
@@ -962,20 +896,6 @@ div.section {
     }
 }
 
-.group_is_open {
-    @include goodInlineItem();
-}
-.group_is_closed {
-    @include warningInlineItem();
-}
-
-.group_is_corrected {
-    @include goodInlineItem();
-}
-
-.group_is_uncorrected {
-    @include warningInlineItem();
-}
 
 .widget-menuheader {
     margin-top: 8px;

@@ -17,9 +17,8 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     readyForExportTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="ready_for_export">',
-        '   yes',
-        '</tpl>'
+        '<tpl if="ready_for_export"><span class="goodInlineItem">yes</span></tpl>',
+        '<tpl if="!ready_for_export"><span class="warningInlineItem">no</span></tpl>'
     ),
     
     constructor: function(config) {
@@ -40,7 +39,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 dataIndex: 'period_long_name',
                 flex: 20
             },{
-                text: 'Ready for export?',
+                text: '&laquo;Qualifies for exam&raquo; ready for export?',
                 dataIndex: 'ready_for_export',
                 flex: 20,
                 renderer: function(value, m, record) {
@@ -124,10 +123,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             field: 'period__end_time',
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
-        //}, {
-            //field: 'application',
-            //comp: 'exact',
-            //value: 'ready-for-export'
+        }, {
+            field: 'application',
+            comp: 'exact',
+            value: 'statistics-qualifiesforexam'
         }, {
             field: 'key',
             comp: 'exact',

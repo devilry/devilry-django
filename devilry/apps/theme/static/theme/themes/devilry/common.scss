@@ -35,6 +35,7 @@ $radiussize_small: 6px;
 @import "icons";
 @import "global";
 @import "statistics";
+@import "inlinecommon";
 
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
@@ -642,27 +643,7 @@ div.section {
         }
     }
 }
-.not_passing_grade {
-    @include warningInlineItem();
-}
-.passing_grade {
-    @include goodInlineItem();
-}
 
-.group_is_open {
-    @include goodInlineItem();
-}
-.group_is_closed {
-    @include warningInlineItem();
-}
-
-.group_is_corrected {
-    @include goodInlineItem();
-}
-
-.group_is_uncorrected {
-    @include warningInlineItem();
-}
 
 .widget-menuheader {
     margin-top: 8px;
