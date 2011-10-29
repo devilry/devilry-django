@@ -8,7 +8,8 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     requires: [
         'devilry.extjshelpers.DateTime',
-        'devilry.statistics.activeperiods.AggregatedPeriodModel'
+        'devilry.statistics.activeperiods.AggregatedPeriodModel',
+        'devilry.extjshelpers.RestProxy'
     ],
     
     config: {
@@ -97,7 +98,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     _onPeriodStoreLoad: function(records, op) {
         if(!op.success) {
-            this._handleLoadError(op);
+            this._handleLoadError(op, 'Failed to load active periods.');
         } else {
             this._createAndLoadPeriodAppKeyValueStore();
         }
@@ -123,6 +124,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             field: 'period__end_time',
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
+        //}, {
+            //field: 'application',
+            //comp: 'exact',
+            //value: 'ready-for-export'
         }, {
             field: 'key',
             comp: 'exact',
@@ -137,14 +142,15 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     _onPeriodAppKeyValueStoreLoad: function(records, op) {
         if(!op.success) {
-            this._handleLoadError(op);
+            this._handleLoadError(op, 'Failed to load ready-for-export status on active periods.');
         } else {
             this._populateStore();
         }
     },
 
-    _handleLoadError: function(op) {
+    _handleLoadError: function(op, title) {
         console.log('Error', op);
+        devilry.extjshelpers.RestProxy.showErrorMessagePopup(op, title);
     },
 
     _populateStore: function() {
