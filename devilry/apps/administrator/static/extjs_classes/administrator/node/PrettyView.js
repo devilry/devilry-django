@@ -39,7 +39,7 @@ Ext.define('devilry.administrator.node.PrettyView', {
     },
 
     _onLoadRecord: function() {
-        this._onActivePeriods();
+        //this._onActivePeriods();
     },
 
     _onActivePeriods: function() {

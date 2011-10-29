@@ -32,7 +32,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
             displayField: 'title',
             valueField: 'path',
             emptyText: 'Please make a selection...',
-            forceSelection: true,
+            forceSelection: true
         });
         this.on('select', this._onSelect, this);
         this.callParent(arguments);
