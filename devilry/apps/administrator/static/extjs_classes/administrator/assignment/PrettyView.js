@@ -333,7 +333,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     onStudents: function() {
         this.hide();
         var studentswindow = Ext.widget('maximizablewindow', {
-            title: 'Manage assignment groups (students)',
+            title: Ext.create('Ext.XTemplate',
+                'Manage assignment groups (students) for ',
+                '{parentnode__parentnode__short_name}.',
+                '{parentnode__short_name}.{short_name}'
+            ).apply(this.record.data),
             width: 926,
             height: 500,
             layout: 'fit',
