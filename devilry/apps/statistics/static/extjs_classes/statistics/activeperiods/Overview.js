@@ -220,7 +220,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     _handleLoadError: function(op, title) {
-        console.log('Error', op);
+        //console.log('Error', op);
         devilry.extjshelpers.RestProxy.showErrorMessagePopup(op, title);
     },
 
