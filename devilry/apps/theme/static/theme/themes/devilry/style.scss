@@ -833,7 +833,10 @@ div.section {
             }
         }
         .candidatescolumn, .examinerscolumn, .usernamescolumn {
-            @include inlineList();
+            //@include inlineList();
+            li {
+                list-style: none;
+            }
         }   
         .pointscolumn {
             font-size: 30px;

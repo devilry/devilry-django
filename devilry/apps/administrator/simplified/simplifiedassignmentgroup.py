@@ -22,9 +22,10 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = \
                 FieldSpec(users=['candidates__student__username'],
+                          students_full_name=['candidates__student__devilryuserprofile__full_name'],
                           tags=['tags__tag']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
-        searchfields = FieldSpec('tags__tag', 'candidates__student__username') + SimplifiedAssignmentGroupMetaMixin.searchfields
+        searchfields = FieldSpec('tags__tag', 'candidates__student__username', 'candidates__student__devilryuserprofile__full_name') + SimplifiedAssignmentGroupMetaMixin.searchfields
         filters = SimplifiedAssignmentGroupMetaMixin.filters + \
                 FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
                             FilterSpec('examiners__user__username', type_converter=stringOrNoneConverter),

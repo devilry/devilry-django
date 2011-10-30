@@ -41,15 +41,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     candidatesCol: Ext.create('Ext.XTemplate', 
         '<ul class="candidatescolumn">',
         '    <tpl for="candidates__identifier">',
-        '       <li>{.}</li>',
+        '       <li>',
+        '           {.}',
+        '       </li>',
         '    </tpl>',
         '</ul>'
     ),
 
     usernamesCol: Ext.create('Ext.XTemplate', 
         '<ul class="usernamescolumn">',
-        '    <tpl for="candidates__student__username">',
-        '       <li>{.}</li>',
+        '    <tpl for="users">',
+        '       <li>{username} ({full_name})</li>',
         '    </tpl>',
         '</ul>'
     ),
@@ -138,20 +140,26 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         });
 
         var studentsCol;
-        if(this.isAdministrator && this.isAnonymous) {
-            studentsCol = {
-                text: 'Students', dataIndex: 'id', flex: 4,
-                menuDisabled: true, sortable: false,
-                columns: [{
-                    text: 'Usernames', dataIndex: 'candidates__student__username', flex: 1,
-                    menuDisabled: true, sortable: true,
-                    renderer: this.formatUsernamesCol
-                }, {
-                    text: 'Candidate IDs', dataIndex: 'candidates__identifier', flex: 1,
-                    menuDisabled: true, sortable: true,
-                    renderer: this.formatCandidatesCol
-                }]
+        if(this.isAdministrator) {
+            var col = {
+                text: 'Username (Name)', dataIndex: 'candidates__student__username', width: 170,
+                menuDisabled: true, sortable: true,
+                renderer: this.formatUsernamesCol
             };
+            if(this.isAnonymous) {
+                studentsCol = {
+                    text: 'Students', dataIndex: 'id',
+                    menuDisabled: true, sortable: false,
+                    columns: [col, {
+                        text: 'Candidate ID', dataIndex: 'candidates__identifier',
+                        width: 100,
+                        menuDisabled: true, sortable: true,
+                        renderer: this.formatCandidatesCol
+                    }]
+                };
+            } else {
+                studentsCol = col;
+            }
         } else {
             studentsCol = {
                 text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
@@ -197,11 +205,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Examiners', dataIndex: 'examiners__username', flex: 4,
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 3,
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
             }, {
-                text: 'Tags', dataIndex: 'tags__tag', flex: 4,
+                text: 'Tags', dataIndex: 'tags__tag', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatTagsCol
             }, {
@@ -243,7 +251,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     formatUsernamesCol: function(value, p, record) {
-        return this.usernamesCol.apply(record.data);
+        var users = [];
+        Ext.each(record.get('candidates__student__username'), function(username, index) {
+            users.push({
+                username: username
+            });
+        }, this);
+        Ext.each(record.get('candidates__student__devilryuserprofile__full_name'), function(full_name, index) {
+            users[index].full_name = full_name;
+        }, this);
+        return this.usernamesCol.apply({users: users});
     },
 
     formatExaminersCol: function(value, p, record) {
