@@ -99,19 +99,19 @@
                 },
                 items: [{
                     xtype: 'panel',
-                    flex: 7,
+                    flex: 3,
                     layout: 'fit',
                     border: false,
-                    id: 'active-assignments'
+                    id: 'active-periods'
                 }, {
                     xtype: 'box',
                     width: 30
                 }, {
                     xtype: 'panel',
-                    flex: 3,
+                    flex: 7,
                     layout: 'fit',
                     border: false,
-                    id: 'active-periods'
+                    id: 'active-assignments'
                 }]
             }]
         }]
