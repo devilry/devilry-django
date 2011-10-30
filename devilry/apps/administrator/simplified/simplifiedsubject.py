@@ -11,7 +11,7 @@ class SimplifiedSubject(HasAdminsMixin, CanSaveBase):
     class Meta(HasAdminsMixin.MetaMixin, SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedSubjectMetaMixin.resultfields
+        resultfields = FieldSpec(admins=['admins__username', 'admins__email']) + SimplifiedSubjectMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):

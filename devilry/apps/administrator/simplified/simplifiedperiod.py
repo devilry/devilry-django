@@ -11,7 +11,7 @@ class SimplifiedPeriod(HasAdminsMixin, CanSaveBase):
     class Meta(HasAdminsMixin.MetaMixin, SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedPeriodMetaMixin.resultfields
+        resultfields = FieldSpec(admins=['admins__username', 'admins__email']) + SimplifiedPeriodMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):
