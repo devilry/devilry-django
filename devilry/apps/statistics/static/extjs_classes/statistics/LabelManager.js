@@ -32,7 +32,7 @@ Ext.define('devilry.statistics.LabelManager', {
 
     _onFinished: function() {
         Ext.getBody().unmask();
-        window.location.href = window.location.href;
+        window.location.search = 'open_overview=yes';
     },
     
     _changeRequired: function(student, match, label) {

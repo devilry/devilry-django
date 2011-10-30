@@ -91,6 +91,7 @@ Ext.define('devilry.administrator.period.PrettyView', {
             maximized: true,
             maximizable: true,
             layout: 'fit',
+            onEsc: Ext.emptyFn,
             items: {
                 xtype: 'statistics-periodadminlayout',
                 periodid: this.record.get('id'),
