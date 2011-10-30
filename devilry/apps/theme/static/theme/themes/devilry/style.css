@@ -168,6 +168,54 @@ body {
   padding: 1px 4px;
   white-space: nowrap; }
 
+.x-mask {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+  opacity: 0.7 !important;
+  background-color: #000 !important;
+  width: 100% !important; }
+
+.page-load-mask {
+  padding: 20px !important;
+  border-radius: 20px;
+  background-color: #000 !important;
+  border: none !important; }
+  .page-load-mask div {
+    background-color: transparent !important;
+    color: #eee !important;
+    border: none !important;
+    font-size: 1.2em !important; }
+
+.x-window-maximized {
+  width: 100% !important; }
+
+.labels-list li {
+  display: inline; }
+  .labels-list li:after {
+    content: " "; }
+  .labels-list li:last-child:after {
+    content: ""; }
+.labels-list li.label-qualifies-for-exam {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+.labels-list li.label-unqualified-for-exam {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.nofeedback {
+  color: #777;
+  font-style: italic; }
+
 .header {
   background-color: #000;
   color: #fff;
@@ -591,27 +639,6 @@ a.warning-button {
   font-size: 1.2em; }
   .tooltip-title span.tooltip-title-current-item {
     font-weight: bold; }
-
-.x-mask {
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
-  opacity: 0.7 !important;
-  background-color: #000 !important;
-  width: 100% !important; }
-
-.page-load-mask {
-  padding: 20px !important;
-  border-radius: 20px;
-  background-color: #000 !important;
-  border: none !important; }
-  .page-load-mask div {
-    background-color: transparent !important;
-    color: #666 !important;
-    border: none !important;
-    font-size: 1.2em !important; }
-
-.x-window-maximized {
-  width: 100% !important; }
 
 /*
  *

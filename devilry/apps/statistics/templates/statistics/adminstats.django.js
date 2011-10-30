@@ -20,7 +20,21 @@
 
 {% block onready %}
     {{ block.super }}
-    Ext.create('devilry.statistics.PeriodAdminLayout', {
-        periodid: {{ periodid }}
+    Ext.create('Ext.container.Viewport', {
+        layout: 'fit',
+        layout: 'border',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            xtype: 'statistics-periodadminlayout',
+            region: 'center',
+            margin: {left: 10, right: 10},
+            periodid: {{ periodid }}
+        }]
     });
 {% endblock %}

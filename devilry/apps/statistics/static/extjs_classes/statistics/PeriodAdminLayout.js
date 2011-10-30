@@ -1,7 +1,7 @@
 Ext.define('devilry.statistics.PeriodAdminLayout', {
-    extend: 'Ext.container.Viewport',
+    extend: 'Ext.container.Container',
     alias: 'widget.statistics-periodadminlayout', // NOTE: devilry.statistics.sidebarplugin.qualifiesforexam.Manual depends on this alias
-    layout: 'border',
+    layout: 'fit',
     requires: [
         'devilry.statistics.Loader',
         'devilry.statistics.LabelConfig',
@@ -15,10 +15,15 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
     config: {
         periodid: undefined,
+
         sidebarplugins: [
             'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
         ]
     },
+
+    titleTpl: Ext.create('Ext.XTemplate',
+        '{parentnode__long_name:ellipsis(60)} &mdash; {long_name}'
+    ),
 
     constructor: function(config) {
         this.initConfig(config);
@@ -28,18 +33,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     initComponent: function() {
         Ext.apply(this, {
             style: 'background-color: transparent',
-            items: [{
-                region: 'north',
-                xtype: 'pageheader',
-                navclass: 'administrator'
-            }, {
-                region: 'south',
-                xtype: 'pagefooter'
-            }, this._center = Ext.widget('container', {
-                region: 'center',
-                layout: 'fit',
-                padding: {left: 20, right: 20}
-            })]
+            items: []
         });
         this.callParent(arguments);
         this._loadStudents();
@@ -58,7 +52,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     _onLoaded: function(loader) {
         Ext.getBody().unmask();
 
-        this._center.add({
+        var title = this.titleTpl.apply(loader.periodRecord.data);
+        this.up('window').setTitle(title);
+            
+        this.add({
             xtype: 'panel',
             layout: 'border',
             items: [{
@@ -77,37 +74,5 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 loader: loader
             })]
         });
-
-        //var qualifiesForExam = Ext.create('devilry.statistics.LabelConfig', {
-            //label: 'qualifies-for-exam'
-        //});
-        //qualifiesForExam.addFilter({
-            //must_pass: [
-                //[loader.getAssignmentByShortName('week1').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                //[loader.getAssignmentByShortName('week2').get('id')]
-            //],
-            //pointspec: Ext.create('devilry.statistics.PointSpec', {
-                //assignments: [
-                    //[loader.getAssignmentByShortName('week2').get('id'), loader.getAssignmentByShortName('week3').get('id')],
-                    //[loader.getAssignmentByShortName('week1').get('id')]
-                //],
-                //min: 10,
-                //max: 40
-            //})
-        //});
-
-
-
-
-        //this.aggregatedStore.filter(
-            //Ext.create('Ext.util.Filter', {
-                //filterFn: function(item) {
-                    //var username = item.get('username');
-                    //var student = loader.getStudentByName(username);
-                    //var m = approvedFilter.match(loader, student);
-                    //return m;
-                //}
-            //})
-        //);
     }
 });

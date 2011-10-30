@@ -2,6 +2,9 @@
 Ext.define('devilry.administrator.period.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_periodprettyview',
+    requires: [
+        'devilry.statistics.PeriodAdminLayout'
+    ],
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="section">',
@@ -64,12 +67,36 @@ Ext.define('devilry.administrator.period.PrettyView', {
             }]
         });
         this.callParent(arguments);
+        if(this.record) {
+            this._onLoadRecord();
+        } else {
+            this.addListener('loadmodel', this._onLoadRecord, this);
+        }
     },
 
-    _onPeriodOverview: function() {
-        window.location.href = Ext.String.format('{0}/statistics/admin/{1}',
-            DevilrySettings.DEVILRY_URLPATH_PREFIX,
-            this.record.get('id')
-        );
+    _onLoadRecord: function() {
+        var querystring = Ext.Object.fromQueryString(window.location.search);
+        if(querystring.open_overview === 'yes') {
+            this._onPeriodOverview(
+                querystring.overview_minimal === 'yes',
+                querystring.overview_hidelabels === 'yes'
+            );
+        }
+    },
+
+    _onPeriodOverview: function(minimal_layout, hidelabels) {
+        Ext.widget('window', {
+            width: 800,
+            height: 600,
+            maximized: true,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'statistics-periodadminlayout',
+                periodid: this.record.get('id'),
+                minimal_layout: minimal_layout,
+                hidelabels: hidelabels
+            }
+        }).show();
     }
 });

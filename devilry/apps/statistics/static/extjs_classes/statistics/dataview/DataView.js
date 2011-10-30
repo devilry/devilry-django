@@ -11,10 +11,6 @@ Ext.define('devilry.statistics.dataview.DataView', {
         'devilry.statistics.dataview.FullGridView'
     ],
 
-    titleTpl: Ext.create('Ext.XTemplate',
-        '{parentnode__long_name:ellipsis(60)} &mdash; {long_name}'
-    ),
-    
     config: {
         loader: undefined,
         availableViews: [{
@@ -39,7 +35,6 @@ Ext.define('devilry.statistics.dataview.DataView', {
             proxy: 'memory'
         });
         Ext.apply(this, {
-            title: this.titleTpl.apply(this.loader.periodRecord.data),
             tbar: [{
                 xtype: 'statistics-clearfilters',
                 loader: this.loader
