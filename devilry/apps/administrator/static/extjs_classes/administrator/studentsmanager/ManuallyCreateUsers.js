@@ -287,11 +287,16 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     createDeadline: function(assignmentGroupRecord) {
-        devilry.extjshelpers.AsyncActionPool.add({
-            scope: this,
-            args: [assignmentGroupRecord],
-            callback: this._createDeadlineCallback
-        });
+        if(this.assignmentrecord.get('delivery_types') == 1) {
+            // For non-electronic assignments, a "dummy deadline" is created automatically
+            this.onCreateDeadlineSuccess();
+        } else {
+            devilry.extjshelpers.AsyncActionPool.add({
+                scope: this,
+                args: [assignmentGroupRecord],
+                callback: this._createDeadlineCallback
+            });
+        }
     },
 
     /**
@@ -475,13 +480,10 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     checkForNoGroups: function(parsedArray, noGroupsMsg) {
         if(parsedArray.length == 0) {
             var msg = noGroupsMsg || 'You must add at least one group in the <em>assignment groups</em> box.';
-            Ext.MessageBox.alert('No assignmen groups created', msg);
+            Ext.MessageBox.alert('No assignment groups created', msg);
             this.up('window').close();
         } else {
             if(this.assignmentrecord.get('delivery_types') == 1) {
-                this.deadlineRecord = Ext.create('devilry.apps.administrator.simplified.SimplifiedDeadline', {
-                    deadline: new Date(Ext.Date.now())
-                });
                 this.createAll(parsedArray);
             } else {
                 this.selectDeadline(parsedArray);

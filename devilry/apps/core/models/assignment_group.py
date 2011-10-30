@@ -11,6 +11,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
 from model_utils import Etag
 from examiner import Examiner
+import deliverytypes
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
@@ -76,7 +77,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         ordering = ['id']
 
     def save(self, *args, **kwargs):
+        create_dummy_deadline = False
+        if self.id == None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
+            create_dummy_deadline = True
         super(AssignmentGroup, self).save(*args, **kwargs)
+        if create_dummy_deadline:
+            self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
 
     @classmethod
     def q_is_admin(cls, user_obj):
