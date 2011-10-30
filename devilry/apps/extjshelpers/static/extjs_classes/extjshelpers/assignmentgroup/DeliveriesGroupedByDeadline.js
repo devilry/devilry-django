@@ -111,12 +111,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         deliveriesStore.load({
             scope: this,
             callback: function(deliveryRecords) {
-
                 if(index === 0) {
-                    var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-                    if(deliveryRecords.length === 0 && deadlineRecords[0].get('deadline') < Ext.Date.now() && is_open) {
-                        this._onExpiredNoDeliveries();
-                    }
+                    this._handleLatestDeadline(deadlineRecords[0], deliveryRecords);
                 }
 
                 if(deliveryRecords.length === 0) {
@@ -126,6 +122,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 }
             }
         });
+    },
+
+    _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
+        var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
+        if(deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
+            this._onExpiredNoDeliveries();
+        }
     },
 
     findLatestFeebackInDeadline: function(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords) {
