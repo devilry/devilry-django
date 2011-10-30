@@ -21,6 +21,11 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         '<tpl if="qualifies_for_exam_ready_for_export"><span class="goodInlineItem">yes</span></tpl>',
         '<tpl if="!qualifies_for_exam_ready_for_export"><span class="warningInlineItem">no</span></tpl>'
     ),
+
+    emailLinkTpl: Ext.create('Ext.XTemplate',
+        'mailto:{from}?',
+        'bcc={emailAddresses}'
+    ),
     
     constructor: function(config) {
         this.initConfig(config);
@@ -41,14 +46,14 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                     //newSearchValue: this._onNewSearchValue,
                     //emptyInput: this._onEmptySearchValue
                 //}
-            //{
-                //xtype: 'button',
-                //text: 'Send email to admin(s) on visible',
-                //listeners: {
-                    //scope: this,
-                    //click: this._sendEmailsToVisible
-                //}
-            '->', {
+            {
+                xtype: 'button',
+                text: 'Send email to admin(s) on visible',
+                listeners: {
+                    scope: this,
+                    click: this._sendEmailsToVisible
+                }
+            }, '->', {
                 xtype: 'combobox',
                 width: 350,
                 valueField: 'filterfunc',
@@ -98,7 +103,6 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    //var url = Ext.String.format('{0}/statistics/admin/{1}?view=minimal', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
                     var url = Ext.String.format('{0}/administrator/period/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
                     window.open(url, '_blank');
                 }
@@ -215,12 +219,40 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         if(!op.success) {
             this._handleLoadError(op, 'Failed to load ready-for-export status on active periods.');
         } else {
+            this._createAndLoadSubjectStore();
+        }
+    },
+
+
+    _createAndLoadSubjectStore: function() {
+        this.subjectstore = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedSubject',
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
+
+        this.subjectstore.proxy.setDevilryFilters([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.node.get('id')
+        }]);
+        this.subjectstore.pageSize = 100000;
+        this.subjectstore.load({
+            scope: this,
+            callback: this._onSubjectStoreLoad
+        });
+    },
+
+    _onSubjectStoreLoad: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError(op, 'Failed to load subjects.');
+        } else {
             this._populateStore();
         }
     },
 
     _handleLoadError: function(op, title) {
-        //console.log('Error', op);
         devilry.extjshelpers.RestProxy.showErrorMessagePopup(op, title);
     },
 
@@ -243,10 +275,22 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         }, this);
     },
 
-    //_sendEmailsToVisible: function() {
-        //Ext.each(this.store.data.items, function(record, index) {
-            //var periodRecord = this.periodstore.getById(record.get('period_id'));
-            //console.log(periodRecord);
-        //}, this);
-    //}
+    _sendEmailsToVisible: function() {
+        var emailAddresses = this._getAdminEmailAddresses().join(',');
+        window.location.href = this.emailLinkTpl.apply({
+            emailAddresses: emailAddresses
+        });
+    },
+
+    _getAdminEmailAddresses: function() {
+        var emails = [];
+        Ext.each(this.store.data.items, function(record, index) {
+            var periodRecord = this.periodstore.getById(record.get('period_id'));
+            var subjectid = periodRecord.get('parentnode');
+            var subjectRecord = this.subjectstore.getById(subjectid);
+            emails = Ext.Array.merge(emails, periodRecord.get('admins__email'));
+            emails = Ext.Array.merge(emails, subjectRecord.get('admins__email'));
+        }, this);
+        return emails;
+    }
 });
