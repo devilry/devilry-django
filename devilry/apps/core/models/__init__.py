@@ -14,9 +14,10 @@ from candidate import Candidate
 from static_feedback import StaticFeedback
 from filemeta import FileMeta
 from devilryuserprofile import DevilryUserProfile
+from examiner import Examiner
 
 __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer', 'RelatedStudent',
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
-           "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue')
+           "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner')

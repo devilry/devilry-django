@@ -5,7 +5,8 @@ from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta,
-                        SimplifiedCandidate, SimplifiedPeriodApplicationKeyValue)
+                        SimplifiedCandidate, SimplifiedPeriodApplicationKeyValue,
+                        SimplifiedExaminer, SimplifiedAssignmentGroupTag)
 from ..extjshelpers import extjs_restful_modelapi
 from devilry.coreutils.restful import metabases as restfulmetabases
 #from devilry.restful.fields import JsonListWithFallbackField
@@ -171,4 +172,20 @@ class RestfulSimplifiedFileMeta(ModelRestfulView):
 class RestfulSimplifiedCandidate(ModelRestfulView):
     class Meta:
         simplified = SimplifiedCandidate
+        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedExaminer(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedExaminer
+        foreignkey_fields = {'assignmentgroup': RestfulSimplifiedAssignmentGroup}
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedAssignmentGroupTag(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedAssignmentGroupTag
         foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}

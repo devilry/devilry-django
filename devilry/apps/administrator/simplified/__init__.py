@@ -16,5 +16,7 @@ from simplifiedcandidate import SimplifiedCandidate
 from simplifiednode import SimplifiedNode
 from simplifiedstaticfeedback import SimplifiedStaticFeedback
 from simplifiedperiodapplicationkeyvalue import SimplifiedPeriodApplicationKeyValue
+from simplifiedexaminer import SimplifiedExaminer
+from simplifiedassignmentgrouptag import SimplifiedAssignmentGroupTag
 
-__all__ = ('SimplifiedRelatedExaminer', 'RelatedUsersBase', 'SimplifiedDelivery', 'RelatedUsersMetaBase', 'SimplifiedAssignment', 'SimplifiedSubject', 'CanSaveBase', 'SimplifiedRelatedStudent', 'SimplifiedFileMeta', 'SimplifiedAssignmentGroup', 'SimplifiedRelatedStudentKeyValue', 'SimplifiedDeadline', 'SimplifiedPeriod', 'HasAdminsMixin', 'SimplifiedCandidate', 'SimplifiedNode', 'SimplifiedStaticFeedback')
+__all__ = ('SimplifiedRelatedExaminer', 'RelatedUsersBase', 'SimplifiedDelivery', 'RelatedUsersMetaBase', 'SimplifiedAssignment', 'SimplifiedSubject', 'CanSaveBase', 'SimplifiedRelatedStudent', 'SimplifiedFileMeta', 'SimplifiedAssignmentGroup', 'SimplifiedRelatedStudentKeyValue', 'SimplifiedDeadline', 'SimplifiedPeriod', 'HasAdminsMixin', 'SimplifiedCandidate', 'SimplifiedNode', 'SimplifiedStaticFeedback', 'SimplifiedExaminer', 'SimplifiedAssignmentGroupTag')
