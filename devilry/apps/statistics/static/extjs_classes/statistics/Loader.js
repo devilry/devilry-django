@@ -354,7 +354,7 @@ Ext.define('devilry.statistics.Loader', {
 
 
     _createModel: function() {
-        var fields = ['userid', 'username', 'full_name', 'labelKeys', 'student', 'totalScaledPoints'];
+        var fields = ['userid', 'username', 'full_name', 'labelKeys', 'totalScaledPoints'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             fields.push(assignmentRecord.get('short_name'));
             var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
