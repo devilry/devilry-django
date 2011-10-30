@@ -24,7 +24,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
-    //title: 'Assignment group',
+    nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
+        '<p><strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
+        'Deliveries are registered (by examiners) as a placeholder for results.</p>',
+        '<tpl if="canExamine">',
+        '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to examine non-electronic deliveries.</p>',
+        '</tpl>'
+    ),
 
     config: {
         /**
@@ -243,7 +249,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             margin: {bottom: 10},
                             hidden: true,
                             cls: 'readable-section',
-                            html: '<strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. Deliveries are registered (by examiners) as a placeholder for results.'
+                            html: this.nonElectronicNodeTpl.apply({canExamine: this.canExamine, DEVILRY_HELP_URL: DevilrySettings.DEVILRY_HELP_URL})
                         }), {
                             xtype: 'deliveriesgroupedbydeadline',
                             role: this.role,
