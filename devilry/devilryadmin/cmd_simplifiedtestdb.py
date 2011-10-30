@@ -77,7 +77,7 @@ testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
                          'duck1080:admin(daisy):ln(DUCK1080 - Making the illogical seem logical)',
                          'duck3580:admin(clarabelle):ln(DUCK3580 - Making the web work)',
                          'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff - avoiding permanent psychological scarring of most of the students)'],
-               periods=['spring01:ln(Spring year zero)'])
+               periods=['spring01:admin(fethry,gus,gladstone):ln(Spring year zero)'])
 
 if args.duckburghusers:
     add_extra_relatedusers(testhelper.duck1100_spring01)
