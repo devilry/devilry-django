@@ -3,6 +3,8 @@ from devilry.simplified import (SimplifiedModelApi, PermissionDenied)
 
 class CanSaveBase(SimplifiedModelApi):
     """ Mixin class extended by many of the classes in the Simplified API for Administrator """
+    related_fields = []
+
     @classmethod
     def write_authorize(cls, user, obj):
         """ Check if the given ``user`` can save changes to the given
@@ -36,4 +38,4 @@ class CanSaveBase(SimplifiedModelApi):
         :param \*\*kwargs: A dict containing search-parameters.
         :rtype: a django queryset
         """
-        return cls._meta.model.where_is_admin_or_superadmin(user)
+        return cls._meta.model.where_is_admin_or_superadmin(user, *cls.related_fields)

@@ -8,10 +8,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         grandma = User.objects.get(username='grandma')
-        [x for x in SimplifiedRelatedStudent.search(grandma)]
+        #[x for x in SimplifiedRelatedStudent.search(grandma)]
         #[x for x in SimplifiedAssignmentGroup.search(grandma,
                                                      #filters=[{"field":"parentnode","comp":"exact","value":1}],
                                                      #result_fieldgroups=["feedback"])]
+        [x for x in SimplifiedCandidate.search(grandma,
+                                               filters=[{"field":"assignment_group__parentnode__parentnode","comp":"exact","value":1}])]
         for qry in connection.queries:
             #print '{time:<10}: {sql}'.format(**qry)
             print '{sql}'.format(**qry)
