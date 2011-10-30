@@ -13,9 +13,12 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         var me = this;
         var gridColumns = [{
             header: 'Username', dataIndex: 'username',
+            width: 100,
             locked: true
         }, {
-            header: 'Full name', dataIndex: 'full_name'
+            header: 'Full name', dataIndex: 'full_name',
+            minWidth: 140,
+            flex: 2,
         }, {
             header: 'Labels', dataIndex: 'labelKeys',
             width: 150,
