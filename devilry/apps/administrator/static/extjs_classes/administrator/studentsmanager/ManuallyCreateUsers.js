@@ -124,7 +124,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 ui: 'footer',
                 items: ['->', {
                     xtype: 'button',
-                    iconCls: 'icon-next-32',
+                    iconCls: this.assignmentrecord.get('delivery_types') == 1? 'icon-save-32': 'icon-next-32',
                     scale: 'large',
                     text: this.assignmentrecord.get('delivery_types') == 1? 'Create groups': 'Select deadline',
                     listeners: {
