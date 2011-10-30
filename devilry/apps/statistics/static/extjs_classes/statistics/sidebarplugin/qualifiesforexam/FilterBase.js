@@ -56,11 +56,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
         if(!this.validInput()) {
             return;
         }
-        this._onSaveYes();
-        return;
         Ext.MessageBox.show({
             title: 'Save?',
-            msg: 'Are you sure you want to save? Students will be able to see if they are qualified for final exams.',
+            msg: 'Are you sure you want to save? Students will be able to see if they are qualified for final exams. It will also mark <em>qualifies for exam</em> as <strong>ready for export</strong> to related systems.',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             closable: false,
