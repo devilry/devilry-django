@@ -65,7 +65,7 @@ class TestAssignment(TestCase, TestHelper):
         q = Assignment.where_is_examiner(examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldassignment')
-        self.inf1100_looong_assignment3_group1.examiners.add(examiner3)
+        self.inf1100_looong_assignment3_group1.examiners.create(user=examiner3)
         self.assertEquals(q.count(), 2)
 
     def test_published_where_is_examiner(self):
@@ -78,7 +78,7 @@ class TestAssignment(TestCase, TestHelper):
         self.assertEquals(q[0].short_name, 'oldassignment')
 
         # Add as examiner, count should increase
-        self.inf1100_looong_assignment1_g1.examiners.add(self.examiner3)
+        self.inf1100_looong_assignment1_g1.examiners.create(user=self.examiner3)
         self.assertEquals(q.count(), 2)
         # Set publishing_time to future. count should decrease
         self.inf1100_looong_assignment1.publishing_time = datetime.now() + timedelta(10)

@@ -152,7 +152,7 @@ class TestHelper(object):
 
         # get the examiner
         if not examiner:
-            examiner = delivery.deadline.assignment_group.examiners.all()[0]
+            examiner = delivery.deadline.assignment_group.examiners.all()[0].user
 
         # get the timestamp
         if not timestamp:
@@ -455,7 +455,7 @@ class TestHelper(object):
             cand.save()
 
         for examiner in extras['examiner']:
-            group.examiners.add(self._create_or_add_user(examiner))
+            group.examiners.create(user=self._create_or_add_user(examiner))
 
         group.full_clean()
         group.save()

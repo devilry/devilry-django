@@ -57,7 +57,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(q[1].short_name, 'inf1100')
 
         self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
-        self.inf1010_spring10_oblig1_group1.examiners.add(examiner1)
+        self.inf1010_spring10_oblig1_group1.examiners.create(user=examiner1)
         self.inf1010_spring10_oblig1.save()
         q = Subject.where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
@@ -72,7 +72,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(q[1].short_name, 'inf1100')
 
         self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
-        self.inf1010_spring10_oblig1_group1.examiners.add(examiner1)
+        self.inf1010_spring10_oblig1_group1.examiners.create(user=examiner1)
         self.inf1010_spring10_oblig1_group1.save()
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)

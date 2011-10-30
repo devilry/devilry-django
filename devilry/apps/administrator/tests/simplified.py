@@ -1252,8 +1252,8 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         self.assertEquals(create_res.name, 'test1')
         self.assertEquals(create_res.parentnode,
                           self.inf101_firstsem_a1_g1.parentnode)
-        self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
-        self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.examiners.filter(user__username='exampleexaminer1').count(), 1)
+        self.assertEquals(create_res.examiners.filter(user__username='exampleexaminer2').count(), 1)
         self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
         self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
         self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
@@ -1307,8 +1307,8 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         self.assertEquals(update_res.name, 'test1')
         self.assertEquals(update_res.parentnode,
                           self.inf101_firstsem_a1_g1.parentnode)
-        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
-        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.examiners.filter(user__username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(user__username='exampleexaminer2').count(), 1)
         self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
         self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
         self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
@@ -1406,7 +1406,8 @@ class TestSimplifiedAdminStaticFeedback(SimplifiedAdminTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.exam1)
+                if group.examiners.filter(user=self.exam1).count() == 0:
+                    group.examiners.create(user=self.exam1)
                 self.add_delivery(group)
                 self.add_feedback(group)
 
@@ -1786,7 +1787,8 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.exam1)
+                if group.examiners.filter(user=self.exam1).count() == 0:
+                    group.examiners.create(user=self.exam1)
                 files = {'good.py': ['print ', 'awesome']}
                 self.add_delivery(group, files)
 

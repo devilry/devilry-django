@@ -664,7 +664,7 @@ class TestSimplifiedExaminerStaticFeedback(SimplifiedExaminerTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.admin)
+                group.examiners.create(user=self.admin)
                 self.add_delivery(group)
                 self.add_feedback(group)
 

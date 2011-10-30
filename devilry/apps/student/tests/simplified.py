@@ -482,7 +482,8 @@ class TestSimplifiedDelivery(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.admin)
+                if group.examiners.filter(user=self.admin).count() == 0:
+                    group.examiners.create(user=self.admin)
                 self.add_delivery(group)
 
     def test_search_noextras(self):
@@ -639,7 +640,8 @@ class TestSimplifiedStaticFeedback(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.admin)
+                if group.examiners.filter(user=self.admin).count() == 0:
+                    group.examiners.create(user=self.admin)
                 self.add_delivery(group)
                 self.add_feedback(group)
 
@@ -795,7 +797,8 @@ class TestSimplifiedCandidateFileMeta(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.exam1)
+                if group.examiners.filter(user=self.exam1).count() == 0:
+                    group.examiners.create(user=self.exam1)
                 files = {'good.py': ['print ', 'awesome']}
                 self.add_delivery(group, files)
 

@@ -119,7 +119,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             handler: function() { me.setFilter('candidates__student__username:none'); }
         }, {
             text: 'Has no examiners',
-            handler: function() { me.setFilter('examiners__username:none'); }
+            handler: function() { me.setFilter('examiners__user__username:none'); }
         }];
         Ext.Array.insert(adminFilters, 0, defaultFilters);
         return adminFilters;

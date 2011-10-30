@@ -48,7 +48,7 @@ class TestAssignmentGroup(TestCase, TestHelper):
     def test_where_is_examiner(self):
         self.assertEquals(8, AssignmentGroup.where_is_examiner(self.examiner2).count())
         self.assertEquals(5, AssignmentGroup.where_is_examiner(self.examiner3).count())
-        self.inf1100_looong_assignment1_g2.examiners.add(self.examiner3)
+        self.inf1100_looong_assignment1_g2.examiners.create(user=self.examiner3)
         self.assertEquals(6, AssignmentGroup.where_is_examiner(self.examiner3).count())
 
     def test_published_where_is_examiner(self):

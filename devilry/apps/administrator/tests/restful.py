@@ -467,8 +467,8 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         self.assertEquals(create_res.name, 'test1')
         self.assertEquals(create_res.parentnode,
                           self.inf101_firstsem_a1_g1.parentnode)
-        self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
-        self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.examiners.filter(user__username='exampleexaminer1').count(), 1)
+        self.assertEquals(create_res.examiners.filter(user__username='exampleexaminer2').count(), 1)
         self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
         self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
         self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
@@ -501,8 +501,8 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         self.assertEquals(update_res.name, 'test1')
         self.assertEquals(update_res.parentnode,
                           self.inf101_firstsem_a1_g1.parentnode)
-        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
-        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.examiners.filter(user__username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(user__username='exampleexaminer2').count(), 1)
         self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
         self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
         self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,

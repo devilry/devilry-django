@@ -121,4 +121,4 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+        return Q(assignment_group__examiners__user=user_obj)

@@ -269,7 +269,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
         this.getEl().mask(msg);
 
         if(append) {
-            usernames = Ext.Array.merge(usernames, record.data.examiners__username);
+            usernames = Ext.Array.merge(usernames, record.data.examiners__user__username);
         };
 
         var editRecord = this.createRecordFromStoreRecord(record);

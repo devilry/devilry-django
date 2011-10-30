@@ -20,7 +20,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'latest_deadline_id',
                              'latest_deadline_deadline',
                              'number_of_deliveries',
-                             users=['examiners__username',
+                             users=['examiners__user__username',
                                     'candidates__identifier'],
                              feedback=['feedback__points',
                                        'feedback__grade',
@@ -43,7 +43,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                                       'parentnode__parentnode__parentnode__short_name']
                              )
     searchfields = FieldSpec('name',
-                             'examiners__username',
+                             'examiners__user__username',
                              'candidates__identifier',
                              # assignment
                              'parentnode__long_name',

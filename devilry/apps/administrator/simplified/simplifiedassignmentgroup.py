@@ -27,7 +27,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         searchfields = FieldSpec('tags__tag', 'candidates__student__username') + SimplifiedAssignmentGroupMetaMixin.searchfields
         filters = SimplifiedAssignmentGroupMetaMixin.filters + \
                 FilterSpecs(FilterSpec('candidates__student__username', type_converter=stringOrNoneConverter),
-                            FilterSpec('examiners__username', type_converter=stringOrNoneConverter),
+                            FilterSpec('examiners__user__username', type_converter=stringOrNoneConverter),
                             FilterSpec('tags__tag', type_converter=stringOrNoneConverter))
 
 
@@ -53,9 +53,10 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         """
         if hasattr(obj, 'fake_examiners') and obj.fake_examiners != None:
             users = _convert_list_of_usernames_to_userobjects(obj.fake_examiners)
-            obj.examiners.clear()
+            for examiner in obj.examiners.all():
+                examiner.delete()
             for user in users:
-                obj.examiners.add(user)
+                obj.examiners.create(user=user)
 
     @classmethod
     def _set_tags_from_fake_tags(cls, obj):

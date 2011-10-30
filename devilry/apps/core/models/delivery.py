@@ -127,7 +127,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(deadline__assignment_group__examiners=user_obj)
+        return Q(deadline__assignment_group__examiners__user=user_obj)
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.

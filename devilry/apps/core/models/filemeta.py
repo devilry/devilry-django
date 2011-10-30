@@ -81,7 +81,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(delivery__deadline__assignment_group__examiners=user_obj)
+        return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
     @classmethod
     def q_is_admin(cls, user_obj):

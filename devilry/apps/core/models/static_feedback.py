@@ -111,7 +111,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Returns a django.models.Q object matching Feedbacks where
         the given student is candidate.
         """
-        return Q(delivery__deadline__assignment_group__examiners=user_obj)
+        return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode

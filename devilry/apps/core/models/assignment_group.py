@@ -9,7 +9,8 @@ from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+from examiner import Examiner
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
@@ -63,8 +64,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     name = models.CharField(max_length=30, blank=True, null=True,
                            help_text=_('An optional name for the group. Typically used a project '\
                                        'name on project assignments.'))
-    examiners = models.ManyToManyField(User, blank=True,
-            related_name="examiners")
+    #examiners = models.ManyToManyField(User, blank=True,
+                                       #related_name="examiners", through=Examiner)
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
@@ -149,7 +150,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(examiners=user_obj)
+        return Q(examiners__user=user_obj)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(), self.get_candidates())
@@ -175,7 +176,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_examiners(self):
         """ Get a string contaning all examiners in the group separated by
         comma (``','``). """
-        return u', '.join([u.username for u in self.examiners.all()])
+        return u', '.join([examiner.user.username for examiner in self.examiners.all()])
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
@@ -185,7 +186,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
-        return self.examiners.filter(pk=user_obj.pk).count() > 0
+        return self.examiners.filter(user__id=user_obj.pk).count() > 0
 
     def get_active_deadline(self):
         """ Get the active :class:`Deadline`.

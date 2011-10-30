@@ -139,7 +139,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignmentgroups__examiners=user_obj)
+        return Q(assignmentgroups__examiners__user=user_obj)
 
     def clean(self, *args, **kwargs):
         """Validate the assignment.

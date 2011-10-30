@@ -56,7 +56,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     examinersCol: Ext.create('Ext.XTemplate', 
         '<ul class="examinerscolumn">',
-        '    <tpl for="examiners__username">',
+        '    <tpl for="examiners__user__username">',
         '       <li>{.}</li>',
         '    </tpl>',
         '</ul>'

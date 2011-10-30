@@ -148,7 +148,7 @@ def create_example_assignmentgroup(assignment, students, examiners,
         group.candidates.create(
                 student=User.objects.get(username=student))
     for examiner in examiners:
-        group.examiners.add(User.objects.get(username=examiner))
+        group.examiners.create(user=User.objects.get(username=examiner))
     #group.deadlines.create(deadline=deadline)
     logging.info("        Created {0} (id:{1})".format(group, group.id))
     return group

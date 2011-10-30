@@ -151,7 +151,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignments__assignmentgroups__examiners=user_obj)
+        return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
 
 
