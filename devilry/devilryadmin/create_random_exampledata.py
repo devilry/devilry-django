@@ -122,7 +122,7 @@ def autocreate_feedback(delivery, group_quality_percent, max_percent, grade_maxp
     assignment = delivery.deadline.assignment_group.parentnode
     examiner = delivery.deadline.assignment_group.examiners.all()[0]
     feedback = delivery.feedbacks.create(rendered_view=get_feedback_text(),
-                                         saved_by=examiner, points=points,
+                                         saved_by=examiner.user, points=points,
                                          grade="g{0}".format(points),
                                          is_passing_grade=bool(points))
     logging.info('                Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
