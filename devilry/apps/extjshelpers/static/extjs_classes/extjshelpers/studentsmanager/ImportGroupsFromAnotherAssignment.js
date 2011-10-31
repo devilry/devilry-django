@@ -56,6 +56,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignme
                     displayField: 'long_name',
                     valueField: 'id',
                     forceSelection: true,
+                    editable: false,
                     listeners: {
                         scope: this,
                         select: function() {
