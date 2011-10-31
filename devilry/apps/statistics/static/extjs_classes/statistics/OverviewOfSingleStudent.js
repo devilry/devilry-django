@@ -105,8 +105,10 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
                 html: this.mainTpl.apply(this),
                 flex: 6
             }, {
-                xtype: 'statistics-singlestudentperiodchart',
-                store: this.store,
+                //xtype: 'statistics-singlestudentperiodchart',
+                xtype: 'box',
+                html: '',
+                //store: this.store,
                 flex: 4
             }]
         });
