@@ -223,7 +223,6 @@ table.horizontalinfotable {
     text-align: left;
     font-weight: bold;
     font-style: normal;
-    text-align: right;
     background-color: #ECEBE9; }
   table.horizontalinfotable td, table.horizontalinfotable th {
     padding: 2px 6px;
@@ -232,7 +231,7 @@ table.horizontalinfotable {
     font-style: normal;
     font-weight: bold;
     font-style: normal;
-    color: #777; }
+    color: #666; }
   table.horizontalinfotable td {
     background-color: #fff; }
 

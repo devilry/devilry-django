@@ -85,6 +85,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 title: 'Select a student to view their details',
                 region: 'south',
                 autoScroll: true,
+                layout: 'fit',
                 height: 200,
                 collapsed: true,
                 collapsible: true
@@ -94,14 +95,13 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
     _onSelectStudent: function(record) {
         this._detailsPanel.removeAll();
+        this._detailsPanel.expand();
         var assignmentgroups = [];
         Ext.Object.each(record.groupsByAssignmentId, function(assignmentid, group) {
             if(group.assignmentGroupRecord != null) {
                 assignmentgroups.push(group.assignmentGroupRecord.data);
             }
         }, this);
-        //console.log(assignmentgroups);
-        console.log('Rec', record);
         this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
         this._detailsPanel.add({
             xtype: 'statistics-overviewofsinglestudent',
@@ -112,6 +112,5 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             border: false,
             frame: false
         });
-        this._detailsPanel.expand();
     }
 });

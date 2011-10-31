@@ -2,7 +2,8 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
     extend: 'Ext.container.Container',
     alias: 'widget.statistics-overviewofsinglestudent',
     requires: [
-        'devilry.statistics.OverviewOfSingleStudentRecord'
+        'devilry.statistics.OverviewOfSingleStudentRecord',
+        'devilry.statistics.SingleStudentPeriodChart'
     ],
     
     config: {
@@ -20,16 +21,26 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
         '       <th>Points (no scaling)</th>',
         '       <th>Grade</th>',
         '       <th>Passing grade?</th>',
+        '       <th>Open?</th>',
         '   </tr></thead>',
         '   <tbody>',
         '      <tpl for="store.data.items">',
         '         <tr>',
-        '             <td>{data.assignment__long_name}</td>',
+        '             <td><a href="{parent.DEVILRY_URLPATH_PREFIX}/administrator/assignmentgroup/{data.id}" target="_blank">{data.assignment__long_name}</a></td>',
         '             <td>{data.feedback__points}</td>',
         '             <td>{data.feedback__grade}</td>',
         '             <td>',
-        '                 <tpl if="data.feedback__is_passing_grade"><span class="passing_grade">Yes</span></tpl>',
-        '                 <tpl if="!data.feedback__is_passing_grade"><span class="not_passing_grade">No</span></tpl>',
+        '                 <tpl if="data.feedback === null">',
+        '                    <span class="nofeedback">No feedback</span>',
+        '                 </tpl>',
+        '                 <tpl if="data.feedback !== null">',
+        '                    <tpl if="data.feedback__is_passing_grade"><span class="passing_grade">Yes</span></tpl>',
+        '                    <tpl if="!data.feedback__is_passing_grade"><span class="not_passing_grade">No</span></tpl>',
+        '                 </tpl>',
+        '             </td>',
+        '             <td>',
+        '                <tpl if="data.is_open">Yes</tpl>',
+        '                <tpl if="!data.is_open">No</tpl>',
         '             </td>',
         '         </tr>',
         '      </tpl>',
@@ -37,7 +48,7 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
         '   <tfoot>',
         '      <tr>',
         '          <td>Total points</td>',
-        '          <td colspan="3">{total_points}</td>',
+        '          <td>{total_points}</td>',
         '      </tr>',
         '   </tfoot>',
         '</table>'
@@ -60,8 +71,11 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
             this.total_points += assignmentgroup.feedback__points;
             this.store.add({
                 id: assignmentgroup.id,
+                assignmentid: assignmentRecord.get('id'),
                 assignment__short_name: assignmentRecord.get('short_name'),
                 assignment__long_name: assignmentRecord.get('long_name'),
+                is_open: assignmentgroup.is_open,
+                feedback: assignmentgroup.feedback,
                 feedback__points: assignmentgroup.feedback__points,
                 feedback__grade: assignmentgroup.feedback__grade,
                 feedback__is_passing_grade: assignmentgroup.feedback__is_passing_grade
@@ -72,8 +86,21 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
     },
     
     initComponent: function() {
+        this.DEVILRY_URLPATH_PREFIX = DevilrySettings.DEVILRY_URLPATH_PREFIX;
         Ext.apply(this, {
-            html: this.mainTpl.apply(this)
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'box',
+                html: this.mainTpl.apply(this),
+                flex: 6
+            }, {
+                xtype: 'statistics-singlestudentperiodchart',
+                store: this.store,
+                flex: 4
+            }]
         });
         this.callParent(arguments);
     },
