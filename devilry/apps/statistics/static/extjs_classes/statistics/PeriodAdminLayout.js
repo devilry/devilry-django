@@ -103,12 +103,14 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }
         }, this);
         this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
+        console.log(record);
         this._detailsPanel.add({
             xtype: 'statistics-overviewofsinglestudent',
             assignment_store: record.assignment_store,
             assignmentgroups: assignmentgroups,
             username: record.get('username'),
             full_name: record.get('full_name'),
+            labelKeys: record.get('labelKeys'),
             border: false,
             frame: false
         });
