@@ -103,7 +103,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }
         }, this);
         this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
-        console.log(record);
         this._detailsPanel.add({
             xtype: 'statistics-overviewofsinglestudent',
             assignment_store: record.assignment_store,
