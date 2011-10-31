@@ -37,7 +37,13 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             multiSelect: true,
             autoScroll: true,
             store: this.loader.store,
-            columns: gridColumns
+            columns: gridColumns,
+            listeners: {
+                scope: this,
+                select: function(grid, record) {
+                    this.up('statistics-dataview').fireEvent('selectStudent', record);
+                }
+            }
         });
     },
 

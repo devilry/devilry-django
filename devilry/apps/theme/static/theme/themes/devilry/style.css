@@ -216,6 +216,26 @@ body {
   color: #777;
   font-style: italic; }
 
+table.horizontalinfotable {
+  border-collapse: collapse;
+  border: 1px solid #D4D2CE; }
+  table.horizontalinfotable thead th {
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    text-align: right;
+    background-color: #ECEBE9; }
+  table.horizontalinfotable td, table.horizontalinfotable th {
+    padding: 2px 6px;
+    border: 1px solid #D4D2CE; }
+  table.horizontalinfotable tfoot td {
+    font-style: normal;
+    font-weight: bold;
+    font-style: normal;
+    color: #777; }
+  table.horizontalinfotable td {
+    background-color: #fff; }
+
 .header {
   background-color: #000;
   color: #fff;
@@ -666,25 +686,6 @@ span.menuref {
   padding: 1px 4px;
   white-space: nowrap; }
 
-table.verticalinfotable {
-  border-collapse: collapse;
-  border: 1px solid #D4D2CE; }
-  table.verticalinfotable thead th {
-    text-align: left;
-    font-weight: bold;
-    font-style: normal;
-    /*background-color: #ECEBE9;*/ }
-  table.verticalinfotable th {
-    text-align: right;
-    font-weight: normal;
-    font-style: italic;
-    background-color: #ECEBE9; }
-  table.verticalinfotable td, table.verticalinfotable th {
-    padding: 2px 6px;
-    border: 1px solid #D4D2CE; }
-  table.verticalinfotable td {
-    background-color: #fff; }
-
 .widget-assignmentgrouptodolist {
   background: #fff !important; }
 
@@ -700,8 +701,6 @@ table.verticalinfotable {
     padding: 20px; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview {
       padding: 20px; }
-      .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
-        margin: 0 auto 20px auto; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback-editable {
       padding: 40px;
       text-align: center;

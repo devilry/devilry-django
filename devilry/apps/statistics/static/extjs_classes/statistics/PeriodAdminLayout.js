@@ -10,7 +10,8 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         'devilry.statistics.LabelConfigEditor',
         'devilry.statistics.SidebarPluginContainer',
         'devilry.statistics.dataview.DataView',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.Main',
+        'devilry.statistics.OverviewOfSingleStudent'
     ],
 
     config: {
@@ -23,6 +24,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
     titleTpl: Ext.create('Ext.XTemplate',
         '{parentnode__long_name:ellipsis(60)} &mdash; {long_name}'
+    ),
+
+    selectedStudentTitleTpl: Ext.create('Ext.XTemplate',
+        '{full_name} ({username})'
     ),
 
     constructor: function(config) {
@@ -71,8 +76,42 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             }, this._dataview = Ext.widget('statistics-dataview', {
                 //flex: 7,
                 region: 'center',
-                loader: loader
+                loader: loader,
+                listeners: {
+                    scope: this,
+                    selectStudent: this._onSelectStudent
+                }
+            }), this._detailsPanel = Ext.widget('panel', {
+                title: 'Select a student to view their details',
+                region: 'south',
+                autoScroll: true,
+                height: 200,
+                collapsed: true,
+                collapsible: true
             })]
         });
+    },
+
+    _onSelectStudent: function(record) {
+        this._detailsPanel.removeAll();
+        var assignmentgroups = [];
+        Ext.Object.each(record.groupsByAssignmentId, function(assignmentid, group) {
+            if(group.assignmentGroupRecord != null) {
+                assignmentgroups.push(group.assignmentGroupRecord.data);
+            }
+        }, this);
+        //console.log(assignmentgroups);
+        console.log('Rec', record);
+        this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
+        this._detailsPanel.add({
+            xtype: 'statistics-overviewofsinglestudent',
+            assignment_store: record.assignment_store,
+            assignmentgroups: assignmentgroups,
+            username: record.get('username'),
+            full_name: record.get('full_name'),
+            border: false,
+            frame: false
+        });
+        this._detailsPanel.expand();
     }
 });

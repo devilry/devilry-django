@@ -26,6 +26,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
+        this.addEvents('selectStudent');
     },
     
     initComponent: function() {
