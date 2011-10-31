@@ -16,7 +16,7 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
         '               <li><a href="#{idprefix}-headers">Headers</a></li>',
         '               <li><a href="#{idprefix}-blockquotes">Blockquotes</a></li>',
         '               <li><a href="#{idprefix}-lists">Lists</a></li>',
-        '               <li><a href="#{idprefix}-codeblocks">Code</a></li>',
+        '               <li><a href="#{idprefix}-codeblocks">Code/unformatted</a></li>',
         '           </ul>',
         '       </li>',
         '       <li><a href="#{idprefix}-inline-elements">Inline elements</a>',
@@ -51,7 +51,7 @@ Ext.define('devilry.markup.MarkdownFullEditor', {
         '   <h3 id="{idprefix}-lists">Lists</h3>',
         '   <p>Markdown supports both ordered and unordered lists. To create an ordered list, simply prefix each line with a number (any number will do). To create an unordered list, you can prefix each line with <strong>-</strong>.</p>',
 
-        '   <h3 id="{idprefix}-codeblocks">Code blocks</h3>',
+        '   <h3 id="{idprefix}-codeblocks">Code/unformatted blocks</h3>',
         '   <p>Markdown wraps code blocks in pre-formatted tags to preserve indentation in your code blocks. To create a code block, indent the entire block by at least 4 spaces. Markdown will strip the extra indentation you’ve added to the code block.</p>',
         '   <p>To get <strong>syntax highlighting</strong>, add <code>:::somelanguage</code> at the top of a code block. For example:</p>',
         '   <pre>    :::python\n    def sum(a, b):\n        return a + b</pre>',

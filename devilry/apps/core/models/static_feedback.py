@@ -111,7 +111,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Returns a django.models.Q object matching Feedbacks where
         the given student is candidate.
         """
-        return Q(delivery__deadline__assignment_group__examiners=user_obj)
+        return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode
@@ -129,23 +129,11 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
 
-
-def update_deadline_and_assignmentgroup(feedback):
+def set_latest_feedback_handler(sender, **kwargs):
+    feedback = kwargs['instance']
     feedback.delivery.deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
     feedback.delivery.deadline.assignment_group.save()
-    feedback.delivery._update_status()
-
-def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
-    feedback = kwargs['instance']
-    update_deadline_and_assignmentgroup(feedback)
-
-# TODO: Update this for grade editors:
-#def feedback_grade_delete_handler(sender, **kwargs):
-    #feedback = kwargs['instance']
-    #if feedback.grade != None:
-        #feedback.grade.delete()
 
 from django.db.models.signals import post_save
-#pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
-post_save.connect(feedback_update_assignmentgroup_status_handler,
+post_save.connect(set_latest_feedback_handler,
                   sender=StaticFeedback)

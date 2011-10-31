@@ -110,14 +110,14 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
                 frame: false,
                 border: false,
                 html:
-                    '<section class="helpsection">' +
+                    '<div class="section helpsection">' +
                     '   <p>Marking a group as delivered in a previoud period/semester, does the following:</p>' +
                     '   <ul>' +
                     '       <li>Create a new <em>empty</em> delivery that is marked as imported from a previous semester. This is done automatically.</li>' +
                     '       <li>Create a feedback for the new <em>fake</em> delivery using the grade editor configured for this assignment.</li>' +
                     '   </ul>' +
                     '   <p>Click <em>next</em> to create the feedback. The feedback you select will be applied to each selected group.</p>' +
-                    '</section>'
+                    '</div>'
             },
 
             dockedItems: [{
@@ -241,11 +241,9 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
     },
 
 
-    /**
-     * @private
-     */
     createDeliveryRecord: function(groupRecord, deliveryType) {
-        return Ext.create('devilry.apps.administrator.simplified.SimplifiedDelivery', {
+        var modelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedDelivery', this.role);
+        return Ext.create(modelname, {
             successful: true,
             deadline: groupRecord.data.latest_deadline_id,
             delivery_type: deliveryType

@@ -24,19 +24,12 @@ Ext.define('devilry.extjshelpers.SearchField', {
     },
 
     initComponent: function() {
-        var me = this;
-        Ext.apply(this, {
-            listeners: {
-                scope: this,
-                specialKey: function(field, e) {
-                    me.handleSpecialKey(e);
-                },
-
-                change: function(field, newValue, oldValue) {
-                    me.handleChange(newValue);
-                }
-            }
-        });
+        this.on('specialKey', function(field, e) {
+            this.handleSpecialKey(e);
+        }, this);
+        this.on('change', function(field, newValue, oldValue) {
+            this.handleChange(newValue);
+        }, this);
         this.callParent(arguments);
     },
 

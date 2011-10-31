@@ -74,8 +74,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         help_text=_('The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
-    #status = models.PositiveIntegerField(default = 0,
-                                         #help_text = 'Status number. 0: Not corrected. 1: Corrected.')
 
     # Fields set by user
     successful = models.BooleanField(blank=True, default=False,
@@ -129,7 +127,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(deadline__assignment_group__examiners=user_obj)
+        return Q(deadline__assignment_group__examiners__user=user_obj)
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
@@ -154,18 +152,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    #def _get_status_number(self):
-        #""" Get the numeric status for this delivery.
-
-        #:return: The numeric status:
-            #:attr:`Delivery.DELIVERY_NOT_CORRECTED` or
-            #:attr:`Delivery.DELIVERY_CORRECTED`
-        #"""
-        #if self.feedbacks.all().count() == 0:
-            #return Delivery.DELIVERY_NOT_CORRECTED
-        #else:
-            #return Delivery.DELIVERY_CORRECTED
-
     def _set_number(self):
         m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
         self.number = (m['number__max'] or 0) + 1
@@ -179,23 +165,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
-    def _update_status(self):
-        #self.status = self._get_status_number()
-        #self.save()
-        self.deadline._update_status()
-
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
-
-
-def update_deadline_and_assignmentgroup_status(delivery):
-    delivery._update_status()
-
-def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
-    delivery = kwargs['instance']
-    update_deadline_and_assignmentgroup_status(delivery)
-
-from django.db.models.signals import post_save
-post_save.connect(delivery_update_assignmentgroup_status_handler,
-                  sender=Delivery)

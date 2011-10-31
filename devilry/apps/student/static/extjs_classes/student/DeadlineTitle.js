@@ -4,9 +4,11 @@ Ext.define('devilry.student.DeadlineTitle', {
     cls: 'widget-deadlinetitle',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<h1>{parentnode__parentnode__parentnode__long_name}</h1>',
+        '<div class="section treeheading">',
+        '<h1>{parentnode__long_name}</h1>',
         '<h2>{parentnode__parentnode__long_name}</h2>',
-        '<h3>{parentnode__long_name} &mdash; deadline: {latest_deadline:date}</h3>',
+        '<h3>{parentnode__parentnode__parentnode__long_name}</h3>',
+        '<div class="deadline"><em>deadline:</em> {latest_deadline:date}</div>',
         '<tpl if="name">',
         '   {name}: ',
         '</tpl>',
@@ -14,6 +16,7 @@ Ext.define('devilry.student.DeadlineTitle', {
         '<tpl for="candidates__identifier">',
         '   <li>{.}</li>',
         '</tpl>',
-        '</ul>'
+        '</ul>',
+        '</div>'
     )
 });

@@ -55,9 +55,12 @@ def get_extjs_modelname(restfulcls, modelnamesuffix=''):
         Suffixed to the generated model name.
     """
     simplified = restfulcls._meta.simplified
-    return '{module}.{name}{modelnamesuffix}'.format(module=simplified.__module__,
-                                                     name=simplified.__name__,
-                                                     modelnamesuffix=modelnamesuffix)
+    clsname = simplified.__name__
+    modulepath = simplified.__module__.replace('.' + clsname.lower(), '')
+    modelname = '{module}.{name}{modelnamesuffix}'.format(module=modulepath,
+                                                          name=clsname,
+                                                          modelnamesuffix=modelnamesuffix)
+    return modelname
 
 
 def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=''):

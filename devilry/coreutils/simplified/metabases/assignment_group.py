@@ -1,6 +1,6 @@
 from devilry.apps.core import models
 from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
-                                ForeignFilterSpec, boolConverter, intConverter,
+                                ForeignFilterSpec, boolConverter, intConverter, noCandidateIdConverter,
                                 intOrNoneConverter, dateTimeConverter)
 
 
@@ -14,14 +14,13 @@ class SimplifiedAssignmentGroupMetaMixin(object):
     resultfields = FieldSpec('id',
                              'name',
                              'is_open',
-                             'status',
                              'parentnode',
                              'feedback',
                              'latest_delivery_id',
                              'latest_deadline_id',
                              'latest_deadline_deadline',
                              'number_of_deliveries',
-                             users=['examiners__username',
+                             users=['examiners__user__username',
                                     'candidates__identifier'],
                              feedback=['feedback__points',
                                        'feedback__grade',
@@ -34,6 +33,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              assignment=['parentnode__long_name',
                                          'parentnode__short_name',
                                          'parentnode__anonymous',
+                                         'parentnode__delivery_types',
                                          'parentnode__publishing_time'],
                              period=['parentnode__parentnode',
                                      'parentnode__parentnode__long_name',
@@ -43,7 +43,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                                       'parentnode__parentnode__parentnode__short_name']
                              )
     searchfields = FieldSpec('name',
-                             'examiners__username',
+                             'examiners__user__username',
                              'candidates__identifier',
                              # assignment
                              'parentnode__long_name',
@@ -67,17 +67,22 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                           FilterSpec('feedback__is_passing_grade', type_converter=boolConverter),
                           FilterSpec('feedback__grade'),
 
+                          FilterSpec('candidates__identifier', type_converter=noCandidateIdConverter),
+
                           # Latest delivery
                           FilterSpec('feedback__delivery__number', type_converter=intConverter),
                           FilterSpec('feedback__delivery__time_of_delivery', type_converter=dateTimeConverter),
                           FilterSpec('feedback__delivery__delivery_type', type_converter=intConverter),
 
                           ForeignFilterSpec('parentnode',  # Assignment
+                                            FilterSpec('delivery_types'),
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
                           ForeignFilterSpec('parentnode__parentnode',  # Period
                                             FilterSpec('parentnode'),
+                                            FilterSpec('start_time'),
+                                            FilterSpec('end_time'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
                           ForeignFilterSpec('parentnode__parentnode__parentnode',  # Subject

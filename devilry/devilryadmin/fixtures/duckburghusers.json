@@ -67,7 +67,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "donald@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -103,7 +103,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "gladstone@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -121,7 +121,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "fethry@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -139,7 +139,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "gus@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -157,7 +157,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "scrooge@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -193,7 +193,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "daisy@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 
@@ -211,7 +211,7 @@
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
-            "email": "mail@example.com", 
+            "email": "clarabelle@example.com", 
             "date_joined": "2010-03-05 16:54:03"
         }
     }, 

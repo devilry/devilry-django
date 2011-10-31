@@ -35,38 +35,38 @@ Ext.define('devilry.student.FileUploadPanel', {
          * @cfg
          * The name of the Delivery ``Ext.data.Model``.
          */
-        deliverymodelname: undefined
+        deliverymodelname: undefined,
+
+        /**
+         * @cfg
+         * Filenames are added to this store on each upload.
+         */
+        uploadedFilesStore: undefined
     },
 
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="deliverysuccessful">',
-        '   <section class="ok">',
+        '<tpl if="finished">',
+        '   <div class="section ok">',
         '       <h1>Success</h1>',
         '       <p>Delivery created.',
         '           <tpl if="agroup">',
         '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{agroup.id}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
         '           </tpl>',
         '       </p>',
-        '   </section>',
+        '   </div>',
         '</tpl>',
-        '<tpl if="!deliverysuccessful">',
-        '   <tpl if="filenames.length &gt; 0">',
-        '      <section class="info">',
+        '<tpl if="!finished">',
+        '   <tpl if="filenameCount &gt; 0">',
+        '      <div class="section info">',
         '          <h1>File uploaded successfully</h1>',
-        '          <p>You have uploaded the following {filenames.length} files.</p>',
-        '          <ul>',
-        '          <tpl for="filenames">',
-        '              <li>{.}</li>',
-        '          </tpl>',
-        '          </ul>',
-        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
-        '      </section>',
+        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenameCount} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
+        '      </div>',
         '   </tpl>',
-        '   <tpl if="filenames.length == 0">',
-        '      <section class="help">',
+        '   <tpl if="filenameCount == 0">',
+        '      <div class="section help">',
         '          <h1>Create delivery</h1>',
         '          <p>{initialhelptext}</p>',
-        '      </section>',
+        '      </div>',
         '   </tpl>',
         '</tpl>'
     ),
@@ -81,6 +81,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         this.uploadedFiles = [];
         this.infoBoxView = Ext.widget('box', {
             tpl: this.uploadedFilesTpl,
+            flex: 5
         });
         this.updateInfoBox();
 
@@ -95,21 +96,22 @@ Ext.define('devilry.student.FileUploadPanel', {
         });
 
         Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [this.infoBoxView, {
+                flex: 1,
                 xtype: 'fileuploadfield',
                 name: 'uploaded_file',
                 fieldLabel: 'Delivery',
                 hideLabel: true,
-                labelWidth: 50,
-                width: '100%',
-                anchor: '100%',
-                msgTarget: 'side',
                 allowBlank: true,
                 emptyText: 'Select file...',
                 buttonText: 'Add new file',
-                buttonConfig: {
-                    scale: 'large'
-                },
+                margin: {top: 20},
+                //height: 70,
+                
                 listeners: {
                     scope: this,
                     change: this.onAddFile
@@ -132,9 +134,9 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     updateInfoBox: function(finished) {
         this.infoBoxView.update({
-            filenames: this.uploadedFiles,
+            filenameCount: this.uploadedFilesStore.count(),
             initialhelptext: this.initialhelptext,
-            deliverysuccessful: finished,
+            finished: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX,
             agroup: (this.agroup_recordcontainer.record? this.agroup_recordcontainer.record.data: null)
@@ -215,6 +217,8 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileSuccess: function(form, res) {
+        this.uploadedFilesStore.add({filename: res.result.file});
+
         this.uploadedFiles.push(res.result.file);
         this.updateInfoBox();
         this.deliverbutton.enable(); // really only needed on first upload, but it does not hurt.
@@ -224,7 +228,12 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileFailure: function(form, res) {
-        Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
+        var errormsg = 'Error during upload. Please try again.'
+        try {
+            var responseData = Ext.JSON.decode(res.response.responseText);
+            errormsg = responseData.errormessages[0];
+        } catch(e) {}
+        Ext.Msg.alert('Error', errormsg);
     },
 
 

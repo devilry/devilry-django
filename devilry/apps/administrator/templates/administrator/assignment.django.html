@@ -12,8 +12,8 @@
     {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }}
     {{ restfulapi.RestfulSimplifiedRelatedExaminer|extjs_model }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject,admins" }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,feedbackdelivery,assignment,period,subject,users" }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"period,subject,admins" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,feedbackdelivery,assignment,period,subject,users,tags,students_full_name" }};
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
@@ -24,7 +24,7 @@
     var assignmentgroupPrevApprovedStore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PrevApproved" }};
     {% endcomment %}
 
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users;ImportFromPrevAssignment" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users,tags;Import" }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');

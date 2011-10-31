@@ -1,21 +1,26 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedRelatedExaminer, SimplifiedRelatedStudent,
+                        SimplifiedRelatedStudentKeyValue,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
-                        SimplifiedStaticFeedback, SimplifiedFileMeta)
+                        SimplifiedStaticFeedback, SimplifiedFileMeta,
+                        SimplifiedCandidate, SimplifiedPeriodApplicationKeyValue,
+                        SimplifiedExaminer, SimplifiedAssignmentGroupTag)
 from ..extjshelpers import extjs_restful_modelapi
 from devilry.coreutils.restful import metabases as restfulmetabases
-from devilry.restful.fields import JsonListWithFallbackField
+#from devilry.restful.fields import JsonListWithFallbackField
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
-           'RestfulSimplifiedPeriod',
+           'RestfulSimplifiedPeriod', 'RestfulSimplifiedPeriodApplicationKeyValue',
            'RestfulSimplifiedRelatedExaminer', 'RestfulSimplifiedRelatedStudent',
            'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
-           'RestfulSimplifiedStaticFeedback')
+           'RestfulSimplifiedStaticFeedback', 'RestfulSimplifiedCandidate',
+           'RestfulSimplifiedExaminer', 'RestfulSimplifiedAssignmentGroupTag',
+           'RestfulSimplifiedRelatedStudentKeyValue')
 
 
 administrator_restful = RestfulManager()
@@ -30,9 +35,9 @@ class RestfulSimplifiedNode(ModelRestfulView):
 
     class ExtjsModelMeta:
         combobox_displayfield = 'short_name'
-        combobox_tpl = ('<section class="popuplistitem">'
+        combobox_tpl = ('<div class="section popuplistitem">'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
-                        '</section>')
+                        '</div>')
 
 
 @administrator_restful.register
@@ -60,11 +65,19 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
     class ExtjsModelMeta:
         """ Metadata for javascript. """
         combobox_fieldgroups = ['subject']
-        combobox_tpl = ('<section class="popuplistitem">'
+        combobox_tpl = ('<div class="section popuplistitem">'
                         '    <p class="path">{parentnode__short_name}</p>'
                         '    <h1>{long_name:ellipsis(40)}</h1>'
-                        '</section>')
+                        '</div>')
         combobox_displayfield = 'short_name'
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedPeriodApplicationKeyValue(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedPeriodApplicationKeyValue
+        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
 
 
 @administrator_restful.register
@@ -83,6 +96,15 @@ class RestfulSimplifiedRelatedStudent(ModelRestfulView):
     class Meta:
         simplified = SimplifiedRelatedStudent
         foreignkey_fields = {'period': RestfulSimplifiedPeriod}
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedRelatedStudentKeyValue(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedRelatedStudentKeyValue
+        foreignkey_fields = {'relatedstudent': RestfulSimplifiedRelatedStudent}
 
 
 @administrator_restful.register
@@ -145,3 +167,27 @@ class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
         simplified = SimplifiedFileMeta
         foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedCandidate(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedCandidate
+        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedExaminer(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedExaminer
+        foreignkey_fields = {'assignmentgroup': RestfulSimplifiedAssignmentGroup}
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedAssignmentGroupTag(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedAssignmentGroupTag
+        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}

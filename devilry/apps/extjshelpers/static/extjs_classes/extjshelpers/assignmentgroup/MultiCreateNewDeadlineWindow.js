@@ -16,7 +16,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', 
          * @cfg
          * Deadline ``Ext.data.Model``.
          */
-        deadlinemodel: undefined
+        deadlinemodel: undefined,
+
+        suggestedDeadline: undefined,
+        deadlineRecord: undefined
     },
 
     constructor: function(config) {
@@ -25,11 +28,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', 
     },
     
     initComponent: function() {
-
+        if(this.suggestedDeadline && !this.deadlineRecord) {
+            this.deadlineRecord = Ext.create(this.deadlinemodel, {
+                deadline: this.suggestedDeadline
+            });
+        }
         Ext.apply(this, {
             editpanel: Ext.widget('restfulsimplified_editpanel_base', {
                 model: this.deadlinemodel,
-                editform: Ext.create('devilry.extjshelpers.forms.Deadline')
+                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
+                record: this.deadlineRecord
             }),
         });
         this.callParent(arguments);

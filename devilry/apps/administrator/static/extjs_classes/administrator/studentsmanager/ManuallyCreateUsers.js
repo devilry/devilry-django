@@ -4,6 +4,10 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     frame: false,
     border: false,
 
+    requires: [
+        'devilry.extjshelpers.AsyncActionPool'
+    ],
+
     layout: {
         type: 'vbox',
         align: 'stretch' // Child items are stretched to full width
@@ -16,14 +20,17 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
          */
         initialLines: undefined,
 
-        assignmentid: undefined,
-        deadlinemodel: undefined
+        currentGroupRecords: undefined,
+        assignmentrecord: undefined,
+        deadlinemodel: undefined,
+        suggestedDeadline: undefined
     },
 
     helptext:
-        '<section class="helpsection">' +
+        '<div class="section helpsection">' +
         //'   <h1>Help</h1>' +
         '   <p>Students are organized in <em>assignment groups</em>. You should specify <strong>one</strong> <em>assignment group</em> on each line in the input box.</p>' +
+        '   <p>Check <strong>Ignore duplicates</strong> to ignore any assignment groups that contains students that already has an assignment group on this assignment.</p>' +
         '   <h2>Common usage examples</h2>' +
         '   <h3>Individual deliveries</h3>' +
         '   <p>Very often, an assignment requires <strong>individual</strong> deliveries and feedback. In this case, each <em>assignment group</em> should contain a single student. In this case, the input box should contain something similar to this:</p>' +
@@ -49,8 +56,9 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         '       <li>Group name is identified by two colons at the end of the name, and must be placed at the beginning of the line.</li>' +
         '       <li>A group name or at least one username is required for each group.</li>' +
         '       <li>An optional <em>candidate-id</em> for a candidate is denoted by a colon and the <em>candidate-id</em> after the username.</li>' +
+        '       <li>A an optional comma-separated list of tags surrounded by parentheses.</li>' +
         '   </ul>' +
-        '</section>',
+        '</div>',
 
     constructor: function(config) {
         this.initConfig(config);
@@ -74,9 +82,13 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             labelWidth: 100,
             labelStyle: 'font-weight:bold',
             emptyText: 'Read the text on your right hand side for help...',
-            flex: 10, // Take up all remaining vertical space
-            margin: 10,
+            flex: 10,
             value: currentValue
+        });
+
+        this.clearDupsCheck = Ext.widget('checkbox', {
+            boxLabel: "Ignore duplicates?",
+            checked: true
         });
         //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         //this.userinput.setValue('dewey\nlouie:401');
@@ -88,7 +100,17 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 align: 'stretch'
             },
 
-            items: [this.userinput, {
+            items: [{
+                margin: 10,
+                flex: 10,
+                xtype: 'panel',
+                border: false,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [this.userinput, this.clearDupsCheck],
+            }, {
                 flex: 10,
                 xtype: 'box',
                 padding: 20,
@@ -102,9 +124,9 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
                 ui: 'footer',
                 items: ['->', {
                     xtype: 'button',
-                    iconCls: 'icon-next-32',
+                    iconCls: this.assignmentrecord.get('delivery_types') == 1? 'icon-save-32': 'icon-next-32',
                     scale: 'large',
-                    text: 'Select deadline',
+                    text: this.assignmentrecord.get('delivery_types') == 1? 'Create groups': 'Select deadline',
                     listeners: {
                         scope: this,
                         click: this.onCreate
@@ -127,7 +149,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             name: null,
             is_open: true,
             fake_candidates: [],
-            fake_examiners: []
+            fake_examiners: [],
+            fake_tags: []
         };
 
         var nameSplit = groupSpec.split(/\s*::\s*/);
@@ -135,8 +158,11 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             groupSpecObj.name = nameSplit[0];
             groupSpec = nameSplit[1];
         }
-        var asArray = groupSpec.split(/\s*,\s*/);
-        Ext.Array.each(asArray, function(candidateSpec) {
+
+        var usernamesAndTags = this.statics().parseUsernamesAndTags(groupSpec);
+        groupSpecObj.fake_tags = usernamesAndTags.tags;
+
+        Ext.Array.each(usernamesAndTags.usernames, function(candidateSpec) {
             groupSpecObj.fake_candidates.push(devilry.administrator.studentsmanager.StudentsManagerManageGroups.parseCandidateSpec(candidateSpec));
         }, this);
         return groupSpecObj;
@@ -166,7 +192,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.finishedCounter = 0;
         this.unsuccessful = [];
         this.parsedArray = parsedArray;
-        Ext.Array.each(parsedArray, function(groupSpecObj) {
+        Ext.Array.each(this.parsedArray, function(groupSpecObj) {
             this.createGroup(groupSpecObj);
         }, this);
     },
@@ -174,25 +200,57 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    createGroup: function(groupSpecObj) {
+    clearDuplicates: function(parsedArray) {
+        var current_usernames = []
+        Ext.each(this.currentGroupRecords, function(groupRecord) {
+            var group_usernames = groupRecord.data.candidates__student__username;
+            current_usernames = Ext.Array.merge(current_usernames, group_usernames);
+        });
+
+        var uniqueGroupSpecObjs = [];
+        var new_usernames = [];
+        Ext.Array.each(parsedArray, function(groupSpecObj) {
+            var dups = false;
+            Ext.Array.each(groupSpecObj.fake_candidates, function(candidate) {
+                if(Ext.Array.contains(current_usernames, candidate.username) || Ext.Array.contains(new_usernames, candidate.username)) {
+                    dups = true;
+                }
+            }, this);
+            if(!dups) {
+                Ext.Array.each(groupSpecObj.fake_candidates, function(candidate) {
+                    new_usernames.push(candidate.username);
+                });
+                uniqueGroupSpecObjs.push(groupSpecObj);
+            }
+        }, this);
+
+        return uniqueGroupSpecObjs;
+    },
+
+
+    _createGroupCallback: function(pool, groupSpecObj) {
         var completeGroupSpecObj = {
-            parentnode: this.assignmentid
+            parentnode: this.assignmentrecord.data.id
         };
         Ext.apply(completeGroupSpecObj, groupSpecObj);
         var group = Ext.create(this.assignmentGroupModelCls, completeGroupSpecObj);
         group.save({
             scope: this,
-            success: this.createDeadline,
-            failure: function() {
-                this.finishedCounter ++;
-                this.unsuccessful.push(groupSpecObj);
-                this.getEl().mask(
-                    Ext.String.format('Finished saving {0}/{1} groups',
-                        this.finishedCounter, this.parsedArray.length, this.parsedArray.length
-                    )
-                );
-                if(this.finishedCounter == this.parsedArray.length) {
-                    this.onFinishedSavingAll();
+            callback: function(records, op) {
+                pool.notifyTaskCompleted();
+                if(op.success) {
+                    this.createDeadline(records);
+                } else {
+                    this.finishedCounter ++;
+                    this.unsuccessful.push(groupSpecObj);
+                    this.getEl().mask(
+                        Ext.String.format('Finished saving {0}/{1} groups',
+                            this.finishedCounter, this.parsedArray.length, this.parsedArray.length
+                        )
+                    );
+                    if(this.finishedCounter == this.parsedArray.length) {
+                        this.onFinishedSavingAll();
+                    }
                 }
             }
         });
@@ -201,14 +259,26 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    createDeadline: function(assignmentGroupRecord) {
+    createGroup: function(groupSpecObj) {
+        devilry.extjshelpers.AsyncActionPool.add({
+            scope: this,
+            args: [groupSpecObj],
+            callback: this._createGroupCallback
+        });
+    },
+
+    _createDeadlineCallback: function(pool, assignmentGroupRecord) {
         devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines.createDeadline(
             assignmentGroupRecord, this.deadlineRecord, this.deadlinemodel, {
                 scope: this,
-                failure: function() {
-                    console.error('Failed to save deadline record');
-                },
-                success: this.onCreateDeadlineSuccess
+                callback: function(records, op) {
+                    pool.notifyTaskCompleted();
+                    if(op.success) {
+                        this.onCreateDeadlineSuccess();
+                    } else {
+                        console.error('Failed to save deadline record');
+                    }
+                }
             }
         );
     },
@@ -216,7 +286,23 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     /**
      * @private
      */
-    onCreateDeadlineSuccess: function(record) {
+    createDeadline: function(assignmentGroupRecord) {
+        if(this.assignmentrecord.get('delivery_types') == 1) {
+            // For non-electronic assignments, a "dummy deadline" is created automatically
+            this.onCreateDeadlineSuccess();
+        } else {
+            devilry.extjshelpers.AsyncActionPool.add({
+                scope: this,
+                args: [assignmentGroupRecord],
+                callback: this._createDeadlineCallback
+            });
+        }
+    },
+
+    /**
+     * @private
+     */
+    onCreateDeadlineSuccess: function() {
         this.finishedCounter ++;
         this.getEl().mask(Ext.String.format('Finished saving {0}/{1} groups',
             this.finishedCounter, this.parsedArray.length,
@@ -309,24 +395,148 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
         this.getEl().mask('Parsing input');
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
         this.getEl().unmask();
-        this.selectDeadline(parsedArray);
+        var clearDuplicates = this.clearDupsCheck.getValue();
+        if(clearDuplicates) {
+            cleanedParsedArray = this.clearDuplicates(parsedArray);
+            var diff = Ext.Array.difference(parsedArray, cleanedParsedArray);
+            var me = this;
+            if(diff.length > 0) {
+                this.showClearedDuplicatesInfoWindow(cleanedParsedArray, diff);
+            } else {
+                this.checkForNoGroups(parsedArray);
+            }
+        } else {
+            this.checkForNoGroups(parsedArray);
+        }
     },
 
     /**
      * @private
      */
+    showClearedDuplicatesInfoWindow: function(cleanedParsedArray, diff) {
+        var me = this;
+        var msg = Ext.create('Ext.XTemplate',
+            '<div class="section helpsection">',
+            '<p>The groups listed below contains at least one student that already has a group on this assignment. If you choose <em>Next</em>, these groups will be ignored. Choose <em>Cancel</em> to return to the <em>Create assignment groups</em> window.</p>',
+            '<ul>',
+            '   <tpl for="diff"><li>',
+            '       <tpl if="name">',
+            '           {name}:: ',
+            '       </tpl>',
+            '       <tpl for="fake_candidates">',
+            '           {username}<tpl if="candidate_id">{candidate_id}</tpl><tpl if="xindex &lt; xcount">, </tpl>',
+            '       </tpl>',
+            '       <tpl if="fake_tags.length &gt; 0">',
+            '          (<tpl for="fake_tags">',
+            '              {.}<tpl if="xindex &lt; xcount">, </tpl>',
+            '          </tpl>)',
+            '       </tpl>',
+            '   </tpl></li>',
+            '</ul></div>'
+        ).apply({diff: diff});
+        Ext.widget('window', {
+            width: 500,
+            height: 400,
+            modal: true,
+            title: 'Confirm clear duplicates',
+            layout: 'fit',
+            items: {
+                xtype: 'panel',
+                border: false,
+                html: msg
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: [{
+                    xtype: 'button',
+                    scale: 'large',
+                    text: 'Cancel',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                        }
+                    }
+                }, '->', {
+                    xtype: 'button',
+                    iconCls: 'icon-next-32',
+                    scale: 'large',
+                    text: 'Next',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                            me.checkForNoGroups(cleanedParsedArray, 'No groups where created because all groups contained students that already have a group, and you chose to ignore duplicates.');
+                        }
+                    }
+                }]
+            }]
+        }).show();
+    },
+
+    /**
+     * @private
+     */
+    checkForNoGroups: function(parsedArray, noGroupsMsg) {
+        if(parsedArray.length == 0) {
+            var msg = noGroupsMsg || 'You must add at least one group in the <em>assignment groups</em> box.';
+            Ext.MessageBox.alert('No assignment groups created', msg);
+            this.up('window').close();
+        } else {
+            if(this.assignmentrecord.get('delivery_types') == 1) {
+                this.createAll(parsedArray);
+            } else {
+                this.selectDeadline(parsedArray);
+            }
+        }
+    },
+
     selectDeadline: function(parsedArray) {
         var me = this;
         var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
             width: this.up('window').getWidth(),
             height: this.up('window').getHeight(),
             deadlinemodel: this.deadlinemodel,
+            suggestedDeadline: this.suggestedDeadline,
+            deadlineRecord: this.deadlineRecord,
             onSaveSuccess: function(record) {
                 this.close();
                 me.deadlineRecord = record;
-                me.createAll(parsedArray);
+                var publishing_time = me.assignmentrecord.data.publishing_time;
+                var period_end_time = me.assignmentrecord.data.parentnode__end_time;
+                if(record.data.deadline <= publishing_time || record.data.deadline >= period_end_time) {
+                    var error = Ext.create('Ext.XTemplate',
+                        'Deadline must be between {publishing_time:date} and {period_end_time:date}.'
+                    ).apply({publishing_time: publishing_time, period_end_time: period_end_time});
+                    Ext.MessageBox.show({
+                        title: 'Error',
+                        msg: error,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                } else {
+                    me.createAll(parsedArray);
+                }
             }
         });
         createDeadlineWindow.show();
-    }
+    },
+
+
+    statics: {
+        parseUsernamesAndTags: function(rawstr) {
+            var tags = [];
+            var tagSplit = rawstr.split(/\s*\(\s*/);
+            if(tagSplit.length > 1) {
+                rawstr = tagSplit[0];
+                var tagsString = tagSplit[1];
+                tagsString = tagsString.replace(/\)/, "");
+                tags = tagsString.split(/\s*,\s*/);
+            }
+            return {
+                usernames: rawstr.split(/\s*,\s*/),
+                tags: tags
+            };
+        }
+    },
 });

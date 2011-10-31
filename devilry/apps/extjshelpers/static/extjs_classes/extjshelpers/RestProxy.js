@@ -103,30 +103,35 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         this.extraParams.filters = Ext.JSON.encode(filters);
     },
     setDevilryOrderby: function(orderby) {
-        if(Ext.typeOf(filters) !== 'array') {
+        if(Ext.typeOf(orderby) !== 'array') {
             throw "setDevilryOrderby(): orderby must be an array";
         }
         this.extraParams.orderby = Ext.JSON.encode(orderby);
     },
 
     statics: {
-        formatHtmlErrorMessage: function(operation) {
+        formatHtmlErrorMessage: function(operation, message) {
             var tpl = Ext.create('Ext.XTemplate', 
-                '<section class="errormessages">',
-                '<tpl if="httperror">{httperror.status} {httperror.statusText}</tpl>',
+                '<div class="section errormessages">',
+                '<tpl if="message"><p>{message}</p></tpl>',
+                '<tpl if="httperror"><p>{httperror.status} {httperror.statusText}</p></tpl>',
                 '<tpl for="errormessages">',
                 '   <p>{.}</p>',
                 '</tpl>',
-                '</section>'
+                '</div>'
             );
+            var tpldata = {message: message};
             if(operation.responseData && operation.responseData.errormessages) {
-                return tpl.apply({errormessages: operation.responseData.errormessages});
+                tpldata.errormessages = operation.responseData.errormessages;
+            } else if(operation.error.status === 0) {
+                tpldata.httperror = {'status': 'Lost connection with server.'};
             } else {
-                return tpl.apply({httperror: operation.error});
+                tpldata.httperror = operation.error;
             }
+            return tpl.apply(tpldata);
         },
 
-        showErrorMessagePopup: function(operation, title) {
+        showErrorMessagePopup: function(operation, title, message) {
             Ext.MessageBox.show({
                 title: title,
                 msg: devilry.extjshelpers.RestProxy.formatHtmlErrorMessage(operation),

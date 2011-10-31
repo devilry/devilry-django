@@ -23,7 +23,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          */
         isAdministrator: false,
 
-        assignmentgroup_recordcontainer: undefined,
         assignmentgroupmodel: undefined,
         deadlinemodel: undefined
     },
@@ -36,26 +35,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.callParent(arguments);
 
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecordInEditor, this);
-
-        var me = this;
-        this.createButton = Ext.create('Ext.button.Button', {
-            text: 'Edit feedback',
-            //iconCls: 'icon-edit-32',
-            hidden: false,
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.loadGradeEditor
-            }
-        });
-        this.editToolbar.add(this.createButton);
-
-        this.addListener('afterStoreLoadMoreThanZero', this.showCreateButton, this);
-
-        if(this.delivery_recordcontainer.record) {
-            this.onLoadDeliveryInEditor();
-        }
-        this.delivery_recordcontainer.addListener('setRecord', this.onLoadDeliveryInEditor, this);
+        this.on('afterStoreLoadMoreThanZero', this.onAfterStoreLoadMoreThanZero, this);
 
         if(this.gradeeditor_config_recordcontainer.record) {
             this.onLoadGradeEditorConfig();
@@ -65,8 +45,75 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
 
-        this.assignmentgroup_recordcontainer.addListener('setRecord', this.showCreateButton, this);
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.enableEditButton, this);
 
+        if(this.delivery_recordcontainer.record) {
+            this.onLoadDeliveryInEditor();
+        }
+        this.delivery_recordcontainer.on('setRecord', this.onLoadDeliveryInEditor, this);
+    },
+
+
+    getToolbarItems: function() {
+        this.createButton = Ext.create('Ext.button.Button', {
+            text: 'Create feedback',
+            iconCls: 'icon-add-32',
+            hidden: false,
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: this.loadGradeEditor,
+                render: this.onRenderEditButton
+            }
+        });
+        var defaultItems = this.callParent();
+        Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        return defaultItems;
+    },
+
+
+    /**
+     * @private
+     */
+    onAfterStoreLoadMoreThanZero: function() {
+        this.enableEditButton();
+        if(this.editFeedbackTip) {
+            this.editFeedbackTip.hide();
+        }
+    },
+
+    /**
+     * @private
+     */
+    onRenderEditButton: function(button) {
+        //var id = button.getEl().id
+        Ext.defer(function() {
+            if(!this.isReadyToEditFeedback()) {
+                button.getEl().mask('Loading...');
+            }
+        }, 100, this);
+        this.editFeedbackTip = Ext.create('Ext.tip.ToolTip', {
+            title: 'Click to give feedback on this delivery',
+            anchor: 'top',
+            target: button.getEl().id,
+            html: 'You add feedback to a specific delivery. The latest feedback you publish on any delivery made by this group on this assignment becomes the active feedback/grade for this assignment group.',
+            width: 415,
+            dismissDelay: 10000,
+            autoHide: true
+        });
+    },
+
+    /**
+     * @private
+     */
+    showNoFeedbackTip: function() {
+        if(this.editFeedbackTip) {
+            this.editFeedbackTip.show();
+        } else {
+            Ext.defer(function() {
+                this.showNoFeedbackTip();
+            }, 300, this);
+        }
     },
 
     /**
@@ -74,7 +121,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * This is suffixed with InEditor to not crash with superclass.onLoadDelivery().
      */
     onLoadDeliveryInEditor: function() {
-        this.showCreateButton();
+        this.enableEditButton();
     },
 
     /**
@@ -101,7 +148,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     onLoadRegistryItem: function() {
-        this.showCreateButton();
+        this.enableEditButton();
     },
 
     /**
@@ -112,17 +159,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * - Grade editor config has loaded.
      * - Registry item has loaded.
      */
-    showCreateButton: function() {
-        if(this.gradeeditor_config_recordcontainer.record &&
+    enableEditButton: function() {
+        if(this.isReadyToEditFeedback()) {
+            this.createButton.getEl().unmask();
+        }
+    },
+
+    /**
+     * @private
+     */
+    isReadyToEditFeedback: function() {
+        return this.gradeeditor_config_recordcontainer.record &&
                 this.delivery_recordcontainer.record &&
                 this.registryitem_recordcontainer.record &&
-                this.assignmentgroup_recordcontainer.record) {
-            //if(this.assignmentgroup_recordcontainer.record.data.is_open) {
-                //this.createButton.show();
-            //} else {
-                //this.createButton.hide();
-            //}
-        }
+                this.assignmentgroup_recordcontainer.record;
     },
 
     /**
@@ -148,14 +198,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         var me = this;
         this.setBody({
             xtype: 'component',
-            cls: 'no-feedback-editable',
-            html: '<p class="no-feedback-message">No feedback</p><p class="click-create-create-feedback-message">Click to create feedback</p>',
-            listeners: {
-                render: function() {
-                    this.getEl().addListener('mouseup', me.loadGradeEditor, me);
-                }
-            }
+            html: ''
         });
+        this.showNoFeedbackTip();
+        //this.setBody({
+            //xtype: 'component',
+            //cls: 'no-feedback-editable',
+            //html: '<p class="no-feedback-message">No feedback</p><p class="click-create-create-feedback-message">Click to create feedback</p>',
+            //listeners: {
+                //render: function() {
+                    //this.getEl().addListener('mouseup', me.loadGradeEditor, me);
+                //}
+            //}
+        //});
     },
 
     /**
@@ -211,7 +266,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             title: 'You published a feedback with a failing grade',
             msg: '<p>Would you like to give the group another try?</p><ul>' +
                 '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
-                '<li>Choose <em>no</no> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
+                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
                 '</ul>',
             buttons: Ext.Msg.YESNO,
             scope: this,

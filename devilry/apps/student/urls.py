@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
+from devilry.restful.forbidden import forbidden_if_not_authenticated
 from restful import student_restful
 from views import (MainView, AddDeliveryView, 
                    FileUploadView, AssignmentGroupView,
@@ -13,10 +14,7 @@ urlpatterns = patterns('devilry.apps.student',
                            login_required(AddDeliveryView.as_view()), 
                            name='add-delivery'),
                        url(r'^add-delivery/fileupload/(?P<assignmentgroupid>\d+)$',
-                           login_required(FileUploadView.as_view()),
-                           name='file-upload-id'),
-                       url(r'^add-delivery/fileupload/(?P<assignmentgroupid>\d+)$',
-                           login_required(FileUploadView.as_view()),
+                           forbidden_if_not_authenticated(FileUploadView.as_view()),
                            name='file-upload'),
                        url(r'^assignmentgroup/(?P<assignmentgroupid>\d+)$',
                            login_required(AssignmentGroupView.as_view()),

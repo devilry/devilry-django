@@ -152,7 +152,7 @@ class TestHelper(object):
 
         # get the examiner
         if not examiner:
-            examiner = delivery.deadline.assignment_group.examiners.all()[0]
+            examiner = delivery.deadline.assignment_group.examiners.all()[0].user
 
         # get the timestamp
         if not timestamp:
@@ -202,7 +202,7 @@ class TestHelper(object):
         return res
 
     def _create_or_add_user(self, name):
-        user = User(username=name)
+        user = User(username=name, email="%s@example.com" % name.strip())
         user.set_password("test")
         try:
             user.full_clean()
@@ -448,13 +448,14 @@ class TestHelper(object):
 
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
-            cand.candidate_id = cid if cid != None else str(cand.student.id)
+            #cand.candidate_id = cid if cid != None else str(cand.student.id)
+            cand.candidate_id = cid
             cand.update_identifier(parentnode.anonymous)
             cand.full_clean()
             cand.save()
 
         for examiner in extras['examiner']:
-            group.examiners.add(self._create_or_add_user(examiner))
+            group.examiners.create(user=self._create_or_add_user(examiner))
 
         group.full_clean()
         group.save()

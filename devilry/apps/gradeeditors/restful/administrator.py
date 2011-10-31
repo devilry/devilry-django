@@ -4,6 +4,7 @@ from devilry.apps.administrator.restful import (RestfulSimplifiedAssignment,
                                                 RestfulSimplifiedDelivery)
 from ..simplified.administrator import (SimplifiedConfig,
                                         SimplifiedFeedbackDraft)
+from examiner import RestfulSimplifiedFeedbackDraftCommon
 
 
 __all__ = ('RestfulSimplifiedConfig', 'RestfulSimplifiedFeedbackDraft')
@@ -21,7 +22,7 @@ class RestfulSimplifiedConfig(ModelRestfulView):
 @administrator_restful.register
 @extjs_restful_modelapi
 @restful_modelapi
-class RestfulSimplifiedFeedbackDraft(ModelRestfulView):
+class RestfulSimplifiedFeedbackDraft(RestfulSimplifiedFeedbackDraftCommon, ModelRestfulView):
     class Meta:
         simplified = SimplifiedFeedbackDraft
         foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}

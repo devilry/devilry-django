@@ -2,6 +2,7 @@
 proves useful outside this module, they should me moved to ``devilry.utils``. """
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import FieldDoesNotExist
+from django.db.models import Max, Count
 
 
 def get_clspath(cls):
@@ -82,5 +83,21 @@ def modelinstance_to_dict(instance, fieldnames):
                 dct[fieldname] = getattr(instance, fieldname) # This is an annotated field (or something is seriously wrong)
             except AttributeError:
                 # Annotated field
-                continue # If we fail here, it will not work to user this for both read (which does not support annotated fields) and search
+                continue # If we fail here, it will not work to use this for both read (which does not support annotated fields) and search
     return dct
+
+
+def fix_expected_data_missing_database_fields(test_groups, expected_res, search_res=None):
+    """ For internal test use ONLY. """
+    for i in xrange(len(test_groups)):
+        group = test_groups[i]
+        deadline = group.get_active_deadline()
+        expected_res[i]['latest_deadline_id'] = deadline.id
+        expected_res[i]['latest_deadline_deadline'] = deadline.deadline
+        expected_res[i]['number_of_deliveries'] = deadline.deliveries.all().count()
+        if deadline.deliveries.all().count() > 0:
+            max_id = deadline.deliveries.aggregate(Max("id"))
+            expected_res[i]['latest_delivery_id'] = deadline.deliveries.filter(id=max_id['id__max'])[0].id
+            #expected_res[i]['latest_delivery_id'] = deadline.deliveries.all()[0].id
+        else:
+            expected_res[i]['latest_delivery_id'] = None

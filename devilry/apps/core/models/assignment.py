@@ -46,33 +46,16 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A set of :class:`assignmentgroups <devilry.apps.core.models.AssignmentGroup>` for this assignment
 
-    .. attribute:: filenames
-    
-        A optional string of filenames separated by whitespace.
-
-    .. attribute:: pointscale
-
-        The points will be scaled down or up making the _this_
-        number the maximum number of points. Defaults to 1.
-
-    .. attribute:: autoscale
-            
-        If this field is True, the pointscale will automatically be set
-        to the maximum number of points possible with the selected grade
-        plugin.
-
-    .. attribute:: must_pass
-        
-        Each student must get a passing grade on this assignment to get a
-        passing grade on the period. Defaults to False.
-
-
     .. attribute:: examiners_publish_feedbacks_directly
 
        Should feedbacks published by examiners be made avalable to the
        students immediately? If not, an administrator have to publish
        feedbacks. See also :attr:`Deadline.feedbacks_published`.
-       
+
+    .. scale_points_percent
+
+        Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
@@ -99,36 +82,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
-    filenames = models.TextField(blank=True, null=True,
-            verbose_name=_("Filenames"),
-            help_text=_('Filenames separated by newline or space. If '
-                'filenames are used, students will not be able to deliver '
-                'files where the filename is not among the given filenames.'))
-    must_pass = models.BooleanField(default=False,
-            verbose_name=_("Must pass"),
-            help_text=_('Each student must get a passing grade on this ' \
-                'assignment to get a passing grade on the period.'))
-    pointscale = models.PositiveIntegerField(default=1,
-            verbose_name = _("Scaled maximum points"),
-            help_text=_(
-                'The points will be scaled down or up making the _this_ '
-                'number the maximum number of points on this assignment. '
-                'You use this to adjust how much an assignment counts '
-                'towards the final grade (or towards passing the period). '
-                'A typical example is when you have one assignment where '
-                'it is possible to get 30 points, and one assignment '
-                'where it is possible to get 1 point (like '
-                'with the approved/notapproved plugin). If you want both '
-                'to count for maximum 40 points, you set this field to 40 '
-                'on both assignments.'))
-    #maxpoints = models.PositiveIntegerField(default=0,
-            #help_text=_('The maximum number of points possible without '\
-                #'scaling.'))
-    autoscale = models.BooleanField(default=True,
-            verbose_name=_("Autoscale"),
-            help_text=_('If this field is set, the pointscale will '\
-                'automatically be set to the maximum number of points '\
-                'possible with the selected grade plugin.'))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
                                                      help_text=_('Should feedbacks published by examiners be made '
@@ -138,6 +91,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                  choices=deliverytypes.as_choices_tuple(),
                                                  help_text='This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.')
+    scale_points_percent = models.PositiveIntegerField(default=100,
+                                                       help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
+
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -152,11 +108,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @classmethod
     def q_is_candidate(cls, user_obj):
         return Q(assignmentgroups__candidates__student=user_obj)
-
-    def _update_scalepoints(self):
-        for group in self.assignmentgroups.iterator():
-            group.scaled_points = group._get_scaled_points()
-            group.save()
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -176,6 +127,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # Get all candidates on assignmentgroups for this assignment
         candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
         for cand in candidates: 
+<<<<<<< HEAD
             cand.save(anonymous=self.anonymous)
 
     #TODO delete this?
@@ -203,6 +155,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 #if not filename in valid:
                     #raise ValueError(_("Invalid filename: %(filename)s" %
                         #dict(filename=filename)))
+=======
+            #cand.update_identifier(self.anonymous)
+            cand.save(anonymous=self.anonymous)
+>>>>>>> 568a8b6033bee5d471a7b1686c739a592c04da8d
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -213,7 +169,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignmentgroups__examiners=user_obj)
+        return Q(assignmentgroups__examiners__user=user_obj)
 
     def clean(self, *args, **kwargs):
         """Validate the assignment.

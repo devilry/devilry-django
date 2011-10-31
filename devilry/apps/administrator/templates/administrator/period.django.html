@@ -7,8 +7,14 @@
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model }}
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }}
+    {{ restfulapi.RestfulSimplifiedSubject|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }};
+    {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedRelatedStudentKeyValue|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback" }};
+    {{ restfulapi.RestfulSimplifiedCandidate|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }};
 
     Ext.require('devilry.administrator.period.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');

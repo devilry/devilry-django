@@ -6,3 +6,6 @@ from deadline import SimplifiedDeadlineMetaMixin
 from delivery import SimplifiedDeliveryMetaMixin
 from staticfeedback import SimplifiedStaticFeedbackMetaMixin
 from filemeta import SimplifiedFileMetaMetaMixin
+from candidate import SimplifiedCandidateMetaMixin
+from abstract_applicationkeyvalue import SimplifiedAbstractApplicationKeyValueMixin
+from examiner import SimplifiedExaminerMetaMixin

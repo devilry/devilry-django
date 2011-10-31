@@ -2,7 +2,7 @@ import re
 from django.test import TestCase
 
 from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
-from ....simplified.utils import modelinstance_to_dict
+from ....simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
 
 from ...core import testhelper
 from ..simplified import (SimplifiedDelivery, SimplifiedStaticFeedback, SimplifiedAssignment,
@@ -16,6 +16,7 @@ testhelper.TestHelper.set_memory_deliverystore()
 class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):
 
     def setUp(self):
+        self.maxDiff = None # Show entire diffs
         # create a base structure
         self.add(nodes='uni:admin(admin)',
                  subjects=['inf101', 'inf110'],
@@ -339,53 +340,66 @@ class TestSimplifiedAssignmentGroup(SimplifiedStudentTestBase):
     def test_search_noextras(self):
         # search with no query and no extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstStud)
-        expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_firstsem_a2_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondsem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondsem_a2_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist())]
-
-        # assert that all search results are as expected
+        test_groups = [self.inf101_firstsem_a1_g1,
+                       self.inf101_firstsem_a2_g1,
+                       self.inf110_secondsem_a1_g1,
+                       self.inf110_secondsem_a2_g1,]
+        expected_res = map(lambda group: modelinstance_to_dict(group, 
+                                         SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                           test_groups)
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res)
+        
         self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
-
+        for i in xrange(len(search_res)):
+            self.assertEquals(search_res[i], expected_res[i])
+            
     def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstStud, result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf101_firstsem_a2_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondsem_a1_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondsem_a2_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))]
-
+        test_groups = [self.inf101_firstsem_a1_g1,
+                       self.inf101_firstsem_a2_g1,
+                       self.inf110_secondsem_a1_g1,
+                       self.inf110_secondsem_a2_g1,]
+        expected_res = map(lambda group: modelinstance_to_dict(group, 
+                                         SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
+                           test_groups)
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res)
+        
         self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
+        for i in xrange(len(search_res)):
+            self.assertEquals(search_res[i], expected_res[i])
 
     def test_search_query(self):
         # search with query
         search_res = SimplifiedAssignmentGroup.search(self.firstStud, query='a1')
-        expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondsem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist())]
-
+        test_groups = [self.inf101_firstsem_a1_g1,
+                       self.inf110_secondsem_a1_g1,]
+        expected_res = map(lambda group: modelinstance_to_dict(group, 
+                                         SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                           test_groups)
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res)
+        
         self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
+        for i in xrange(len(search_res)):
+            self.assertEquals(search_res[i], expected_res[i])
 
     def test_search_queryandextras(self):
         # with query and extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstStud, query='inf110', result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf110_secondsem_a1_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondsem_a2_g1,
-                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))]
-
+        test_groups = [self.inf110_secondsem_a1_g1,
+                       self.inf110_secondsem_a2_g1,]
+        expected_res = map(lambda group: modelinstance_to_dict(group, 
+                                         SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
+                           test_groups)
+        # Fix missing database fields by adding data from the test_groups
+        fix_expected_data_missing_database_fields(test_groups, expected_res)
+        
         self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
+        for i in xrange(len(search_res)):
+            self.assertEquals(search_res[i], expected_res[i])
 
     def test_search_security_asexam(self):
         search_res = SimplifiedAssignmentGroup.search(self.examiner)
@@ -468,7 +482,8 @@ class TestSimplifiedDelivery(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.admin)
+                if group.examiners.filter(user=self.admin).count() == 0:
+                    group.examiners.create(user=self.admin)
                 self.add_delivery(group)
 
     def test_search_noextras(self):
@@ -625,7 +640,8 @@ class TestSimplifiedStaticFeedback(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.admin)
+                if group.examiners.filter(user=self.admin).count() == 0:
+                    group.examiners.create(user=self.admin)
                 self.add_delivery(group)
                 self.add_feedback(group)
 
@@ -781,7 +797,8 @@ class TestSimplifiedCandidateFileMeta(SimplifiedStudentTestBase):
             # number
             if re.search('_g\d$', var):
                 group = getattr(self, var)
-                group.examiners.add(self.exam1)
+                if group.examiners.filter(user=self.exam1).count() == 0:
+                    group.examiners.create(user=self.exam1)
                 files = {'good.py': ['print ', 'awesome']}
                 self.add_delivery(group, files)
 

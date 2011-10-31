@@ -13,10 +13,11 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             title: 'No recent deliveries',
             msg: "You are not registered on any assignment groups with recent deliveries."
         },
+        dashboard_url: undefined
     },
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
-        '<ul class="useridlist">',
+        '<ul class="commaSeparatedList">',
         '   <tpl for="deadline__assignment_group__candidates__identifier">',
         '       <li>{.}</li>',
         '   </tpl>',
@@ -24,6 +25,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     ),
 
     assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
         '{deadline__assignment_group__parentnode__parentnode__short_name}.',
         '{deadline__assignment_group__parentnode__short_name}'
     ),
@@ -50,6 +52,10 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             field: 'deadline__assignment_group__parentnode__parentnode__end_time',
             comp: '>',
             value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'delivery_type',
+            comp: 'exact',
+            value: 0
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-time_of_delivery']);
         this.store.pageSize = this.limit;
@@ -57,9 +63,6 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
     createBody: function() {
         var me = this;
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{name:uppercase}',
-        });
 
         var columns = [{
             text: 'Assignment',
@@ -100,16 +103,17 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             frameHeader: false,
             border: false,
             sortableColumns: false,
+            autoScroll: true,
+            flex: 1,
             cls: 'selectable-grid',
             store: this.store,
-            features: [groupingFeature],
             columns: columns,
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
                     var url = Ext.String.format(
                         "{0}assignmentgroup/{1}?deliveryid={2}",
-                        DASHBOARD_URL,
+                        this.dashboard_url,
                         record.data.deadline__assignment_group,
                         record.data.id
                     );
@@ -119,7 +123,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
         });
         this.add({
             xtype: 'box',
-            html: '<h3>Recent deliveries</h3>'
+            html: '<div class="section"><h3>Recent deliveries</h3></div>'
         });
         this.add(activeAssignmentsGrid);
     }

@@ -1,6 +1,11 @@
 Ext.define('devilry.extjshelpers.DashGrid', {
     extend: 'Ext.Container',
 
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+
     initComponent: function() {
         this.callParent(arguments);
         this.createStore();
@@ -33,12 +38,13 @@ Ext.define('devilry.extjshelpers.DashGrid', {
                     }
                     this.add({
                         xtype: 'box',
-                        renderTo: 'no-active-assignments-message',
+                        autoScroll: true,
+                        flex: 1,
                         html: Ext.create('Ext.XTemplate',
-                            '<section class="{msgcls}-small extravisible-small">',
+                            '<div class="section {msgcls}-small extravisible-small">',
                             '   <h1>{title}</h1>',
                             '   <p>{msg}</p>',
-                            '</section>'
+                            '</div>'
                         ).apply(args)
                     });
                 } else {

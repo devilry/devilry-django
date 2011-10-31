@@ -100,7 +100,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         if(!this.editform.help) {
             return '';
         }
-        var help = '<section class="helpsection">';
+        var help = '<div class="section helpsection">';
         var me = this;
         var state = this.record == undefined? 'new': 'existing';
         Ext.Array.each(this.editform.help, function(helpobj) {
@@ -111,7 +111,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
                 help += Ext.String.format('<p>{0}</p>', helpobj.text);
             }
         });
-        return help + '</section>';
+        return help + '</div>';
     },
 
     onSave: function() {

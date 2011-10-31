@@ -1,0 +1,9 @@
+[
+    {"username":"student0", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"student1", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"student0", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"donald", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"scrooge", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"daisy", "tags":"super,duper", "candidate_id":"sec43"},
+    {"username":"student5", "tags":"super,duper", "candidate_id":"sec43"}
+]

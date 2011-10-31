@@ -15,15 +15,18 @@ class AbstractIsAdmin(object):
         raise NotImplementedError()
 
     @classmethod
-    def where_is_admin(cls, user_obj):
+    def where_is_admin(cls, user_obj, *related_fields):
         """ Get all objects of this type where the given user is admin. """
-        return cls.objects.filter(cls.q_is_admin(user_obj)).distinct()
+        return cls.objects.select_related(*related_fields).filter(cls.q_is_admin(user_obj)).distinct()
 
     @classmethod
-    def where_is_admin_or_superadmin(cls, user_obj):
+    def where_is_admin_or_superadmin(cls, user_obj, *related_fields):
         """ Get all objects of this type where the given user is admin, or
         all objects if the user is superadmin. """
         if user_obj.is_superuser:
-            return cls.objects.all()
+            if related_fields:
+                return cls.objects.select_related(*related_fields)
+            else:
+                return cls.objects.all()
         else:
-            return cls.where_is_admin(user_obj)
+            return cls.where_is_admin(user_obj, *related_fields)

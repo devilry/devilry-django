@@ -13,7 +13,9 @@ from basenode import BaseNode
 from node import Node
 from subject import Subject
 from model_utils import *
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+from abstract_is_admin import AbstractIsAdmin
+from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
@@ -96,26 +98,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_candidate(cls, user_obj):
         return Q(assignments__assignmentgroups__candidates__student=user_obj)
 
-    #TODO delete this?
-    #def student_sum_scaled_points(self, user):
-        #groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                #parentnode__parentnode=self)
-        #return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
-
-    def student_passes_period(self, user):
-        groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                parentnode__parentnode=self,
-                is_passing_grade=False,
-                parentnode__must_pass=True)
-        if groups.count() > 0:
-            return False
-        totalpoints = self.student_sum_scaled_points(user)
-        return totalpoints >= self.minimum_points
-
-    #TODO delete this?
-    #def get_must_pass_assignments(self):
-        #return self.assignments.filter(must_pass=True)
-
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \
@@ -169,5 +151,23 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignments__assignmentgroups__examiners=user_obj)
+        return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
+
+
+class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
+    """ Key/value pair tied to a specific Period. """
+    period = models.ForeignKey(Period)
+
+    class Meta:
+        unique_together = ('period', 'application', 'key')
+        app_label = 'core'
+
+    @classmethod
+    def q_is_admin(cls, user_obj):
+        return Q(period__admins=user_obj) | \
+                Q(period__parentnode__admins=user_obj) | \
+                Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.period, super(RelatedStudentKeyValue, self).__unicode__())

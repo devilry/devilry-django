@@ -16,6 +16,7 @@ def _create_seachform(cls):
         result_fieldgroups = fields.JsonListWithFallbackField()
         search_fieldgroups = fields.JsonListWithFallbackField()
         filters = fields.JsonListWithFallbackField()
+        filter = fields.JsonListWithFallbackField()
         sort = fields.JsonListWithFallbackField(fallbackvalue=None)
         exact_number_of_results = fields.PositiveIntegerWithFallbackField(fallbackvalue=None)
     cls.SearchForm = SearchForm

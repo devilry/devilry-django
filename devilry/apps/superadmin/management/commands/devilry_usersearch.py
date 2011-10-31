@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from optparse import make_option
 
@@ -16,7 +16,7 @@ class Command(BaseCommand):
             action='store_true',
             dest='noemail',
             default=False,
-            help='Only match users without and email address.'),
+            help='Only match users without an email address.'),
         make_option('--superusers',
             action='store_true',
             dest='superusers',
@@ -50,7 +50,11 @@ class Command(BaseCommand):
 
     def _print_user_details(self, user):
         print '{0}:'.format(user.username)
-        for attrname in ('email', 'first_name', 'last_name', 'is_superuser',
+        for attrname in ('email', 'is_superuser',
                          'last_login', 'date_joined'):
             print '   {attrname}: {attr}'.format(attrname=attrname,
                                                  attr=getattr(user, attrname))
+        profile = user.get_profile()
+        for attrname in ('full_name',):
+            print '   {attrname}: {attr}'.format(attrname=attrname,
+                                                 attr=getattr(profile, attrname))

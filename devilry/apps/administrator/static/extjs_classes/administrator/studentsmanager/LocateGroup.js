@@ -4,7 +4,7 @@ Ext.define('devilry.administrator.studentsmanager.LocateGroup', {
     cls: 'widget-locategroup selectable-grid',
 
     rowTpl: Ext.create('Ext.XTemplate',
-        '<section class="popuplistitem">',
+        '<div class="section popuplistitem">',
         '    <tpl if="name">',
         '        {name}: ',
         '    </tpl>',
@@ -16,7 +16,7 @@ Ext.define('devilry.administrator.studentsmanager.LocateGroup', {
         '    <tpl if="id == current_assignment_group_id">',
         '        &mdash; <strong>(currently selected)</strong>',
         '    </tpl>',
-        '</section>'
+        '</div>'
     ),
 
     requires: [

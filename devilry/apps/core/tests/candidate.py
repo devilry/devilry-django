@@ -13,7 +13,7 @@ class TestCandidate(TestCase, TestHelper):
                  subjects=["inf1100"],
                  periods=["autumn"],
                  assignments=["assignment1"],
-                 assignmentgroups=["g1:candidate(student1;5)"])
+                 assignmentgroups=["g1:candidate(student1;5,student2)"])
 
     def test_update_identifier(self):
         candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
@@ -26,12 +26,24 @@ class TestCandidate(TestCase, TestHelper):
         candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
         self.assertEquals(candidate.identifier, candidate.student.username)
    
-    def test_anonymous(self):
+    def test_change_anonymous(self):
         cands = self.inf1100_autumn_assignment1_g1.candidates.all()
         self.inf1100_autumn_assignment1.anonymous = True
         self.inf1100_autumn_assignment1.save()
         candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
         self.assertEquals(candidate.identifier, candidate.candidate_id)
+        # Test setting back to non-anomymous
+        self.inf1100_autumn_assignment1.anonymous = False
+        self.inf1100_autumn_assignment1.save()
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.identifier, candidate.student.username)
+
+    def test_anonymous_no_id(self):
+        cands = self.inf1100_autumn_assignment1_g1.candidates.all()
+        self.inf1100_autumn_assignment1.anonymous = True
+        self.inf1100_autumn_assignment1.save()
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[1]
+        self.assertEquals(candidate.identifier, "candidate-id missing")
 
     def test_etag_update(self):
         etag = datetime.now()

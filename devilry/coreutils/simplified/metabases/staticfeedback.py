@@ -15,7 +15,6 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'save_timestamp',
                              'delivery',
                              'rendered_view',
-                             #'delivery__deadline__assignment_group__examiners__username',
                              candidates=['delivery__deadline__assignment_group__candidates__identifier'],
                              period=['delivery__deadline__assignment_group__parentnode__parentnode__id',
                                      'delivery__deadline__assignment_group__parentnode__parentnode__short_name',
@@ -37,9 +36,7 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__deadline__assignment_group__parentnode__parentnode__long_name',
                              'delivery__deadline__assignment_group__parentnode__short_name',
                              'delivery__deadline__assignment_group__parentnode__long_name',
-                             'delivery__number',
-                             'delivery__deadline__assignment_group__examiners__username',
-                             )
+                             'delivery__number')
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('delivery'),
                           ForeignFilterSpec('delivery__deadline__assignment_group__parentnode__parentnode',  # Period

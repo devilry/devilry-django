@@ -122,7 +122,7 @@ def autocreate_feedback(delivery, group_quality_percent, max_percent, grade_maxp
     assignment = delivery.deadline.assignment_group.parentnode
     examiner = delivery.deadline.assignment_group.examiners.all()[0]
     feedback = delivery.feedbacks.create(rendered_view=get_feedback_text(),
-                                         saved_by=examiner, points=points,
+                                         saved_by=examiner.user, points=points,
                                          grade="g{0}".format(points),
                                          is_passing_grade=bool(points))
     logging.info('                Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
@@ -148,7 +148,7 @@ def create_example_assignmentgroup(assignment, students, examiners,
         group.candidates.create(
                 student=User.objects.get(username=student))
     for examiner in examiners:
-        group.examiners.add(User.objects.get(username=examiner))
+        group.examiners.create(user=User.objects.get(username=examiner))
     #group.deadlines.create(deadline=deadline)
     logging.info("        Created {0} (id:{1})".format(group, group.id))
     return group
@@ -342,10 +342,30 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
-def add_relatedusers(related, usernames):
+def get_random_tags():
+    available = ['tag1', 'tag2', 'supertag', 'tag3', 'special']
+    tags = set()
+    for x in xrange(randint(1, 2)):
+        tags.add(available[randint(0, len(available)-1)])
+    return ','.join(tags)
+
+def add_relatedstudents(related, usernames):
     for username in usernames:
         try:
-            related.create(username=username)
+            relatedStudent = related.create(user=User.objects.get(username=username),
+                                            candidate_id=username.replace('student', 'secretcand'),
+                                            tags=get_random_tags())
+            profile = relatedStudent.user.get_profile()
+            profile.full_name = 'The ' + username.capitalize()
+            profile.save()
+        except IntegrityError:
+            pass # We can not add duplicates
+
+def add_relatedexaminers(related, usernames):
+    for username in usernames:
+        try:
+            related.create(user=User.objects.get(username=username),
+                           tags=get_random_tags())
         except IntegrityError:
             pass # We can not add duplicates
 
@@ -396,8 +416,8 @@ def create_example_assignment(period,
     logging.info("    Creating groups on {0}".format(assignment))
     all_examiners = create_numbered_users(num_examiners, examinername_prefix)
     all_students = create_numbered_users(num_students, studentname_prefix)
-    add_relatedusers(period.relatedexaminers, all_examiners)
-    add_relatedusers(period.relatedstudents, all_students)
+    add_relatedexaminers(period.relatedexaminer_set, all_examiners)
+    add_relatedstudents(period.relatedstudent_set, all_students)
     create_groups(assignment,
                   deadlines = deadlines,
                   groupname_prefix = groupname_prefix,

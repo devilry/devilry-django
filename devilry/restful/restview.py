@@ -1,48 +1,13 @@
-from functools import wraps
 from django.core.urlresolvers import reverse
 from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponseBadRequest
 from django.conf.urls.defaults import url
 
 from serializers import serialize, SerializableResult
+from extjshacks import extjshacks, extjswrap
+from forbidden import forbidden_if_not_authenticated
 
 
-def extjshacks(f):
-    @wraps(f)
-    def wrapper(self, request, *args, **kwargs):
-        self.use_extjshacks = bool(request.META.get('HTTP_X_DEVILRY_USE_EXTJS', False))
-        return f(self, request, *args, **kwargs)
-    return wrapper
-
-
-def extjswrap(data, use_extjshacks, success=True, total=None):
-    """
-    If ``use_extjshacks`` is true, wrap ``data`` in the information
-    required by extjs.
-    """
-    if use_extjshacks:
-        result = dict(items = data)
-        if total != None:
-            result['total'] = total
-        result['success'] = success
-        return result
-    else:
-        if total == None:
-            return data
-        else:
-            return dict(items=data, total=total)
-
-def forbidden_if_not_authenticated(f):
-    """ Very similar to :func:`django.contrib.auth.decorators.login_required`,
-    however it returns class:`django.http.HttpResponseForbidden` instead of
-    redirecting to login. """
-    @wraps(f)
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return f(request, *args, **kwargs)
-        else:
-            return HttpResponseForbidden()
-    return wrapper
 
 class RestfulView(View):
     """

@@ -5,7 +5,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     requires: [
         'devilry.administrator.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
@@ -21,17 +20,17 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     bodyTpl: Ext.create('Ext.XTemplate',
-        '<section>',
+        '<div class="section">',
         '    <tpl if="totalAssignmentGroups == 0">',
-        '        <section class="error">',
+        '        <div class="section error">',
         '            <h1>No assignment groups</h1>',
         '            <p>',
         '               Students have to be organized in <em>assignment groups</em> before they can add any deliveries. A students belongs to a group even when they deliver individual deliveries. Students that is not in any assignment group do not even see the assignment. Please choose <span class="menuref">Manage assignment groups</span> to bring up the assignment group manager, and select <span class="menuref">Create groups</span>.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="missingGradeEditorConfig">',
-        '        <section class="error">',
+        '        <div class="section error">',
         '            <h1>Missing grade editor config</h1>',
         '            <p>',
         '                The selected grade editor, <em>{graderegistryitem.data.title}</em>, requires',
@@ -39,10 +38,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                without a configuration, however students will be able to add deliveries.',
         '                Choose <span class="menuref">Grade editor &rarr; Configure current grade editor</span> in the toolbar to create a configuration.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="graderegistryitem">',
-        '        <section class="info">',
+        '        <div class="section info">',
         '            <h1>Grade editor: {graderegistryitem.data.title}</h1>',
         '            <strong>About the grade editor:</strong>',
         '            <p>',
@@ -56,10 +55,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                Select <span class="menuref">Grade editor</span> in the toolbar to ',
         '                change or configure the grade editor.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="published">',
-        '        <section class="info">',
+        '        <div class="section info">',
         '            <h1>Published</h1>',
         '            <p>',
         '               The assignment is currently visible to students and examiners. ',
@@ -68,10 +67,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '               in the toolbar, however since it is already published, this may lead ',
         '               to confusion among students and examiners.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="!published">',
-        '        <section class="warning">',
+        '        <div class="section warning">',
         '             <h1>Not published</h1>',
         '             <p>',
         '                This assignment is currently <em>not visible</em> to students or examiners. ',
@@ -79,22 +78,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                <strong>{publishing_time:date}</strong>.',
         '                You may change the publishing time by selecting the <span class="menuref">Edit</span> button in the toolbar.',
         '             </p>',
-        '        </section>',
-        '    </tpl>',
-        '    <tpl if="must_pass">',
-        '        <section class="info">',
-        '            <h1>Must pass</h1>',
-        '            <p>',
-        '                Each students are <em>required</em> to get a passsing grade ',
-        '                on this assigmment to pass the <em>period</em>. This requirement ',
-        '                is only active for students registered on groups on this assignment.',
-        '                Select <span class="menuref">Advanced options</span> ',
-        '                in the toolbar to change this setting.',
-        '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="anonymous">',
-        '        <section class="info">',
+        '        <div class="section info">',
         '            <h1>Anonymous</h1>',
         '            <p>',
         '                The assignment <em>is anonymous</em>. This means that examiners ',
@@ -104,10 +91,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                Select <span class="menuref">Advanced options</span> ',
         '                in the toolbar to change this setting.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
         '    <tpl if="!anonymous">',
-        '        <section class="info">',
+        '        <div class="section info">',
         '            <h1>Not anonymous</h1>',
         '            <p>',
         '                The assignment is <em>not</em> anonymous. This means that examiners ',
@@ -118,9 +105,18 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                Select <span class="menuref">Advanced options</span> ',
         '                in the toolbar to change this setting.',
         '            </p>',
-        '        </section>',
+        '        </div>',
         '    </tpl>',
-        '</section>'
+        '    <tpl if="delivery_types == 1">',
+        '        <div class="section info">',
+        '            <h1>Non-electronic deliveries</h1>',
+        '            <p>',
+        '               This assignment does not use Devilry for deliveries, only for feedback.',
+        '               You may choose to use Devilry for electronic deliveries on this assignment using the <span class="menuref">Edit</span> button in the toolbar.',
+        '            </p>',
+        '        </div>',
+        '    </tpl>',
+        '</div>'
     ),
 
     constructor: function(config) {
@@ -156,16 +152,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 click: this.onStudents
-            }
-        });
-
-        this.advancedbutton = Ext.create('Ext.button.Button', {
-            text: 'Advanced options',
-            enableToggle: true,
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onAdvanced
             }
         });
 
@@ -217,7 +203,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                     click: this.onDownload
                 }
             }],
-            extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
+            extraMeButtons: [this.gradeeditormenu],
         });
         this.callParent(arguments);
     },
@@ -236,6 +222,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
+        //this.onStudents();
     },
 
     checkStudents: function() {
@@ -343,39 +330,21 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         }).show();
     },
 
-    onAdvanced: function(button) {
-        var editpanel = Ext.ComponentManager.create({
-            xtype: 'restfulsimplified_editpanel',
-            model: this.modelname,
-            editform: Ext.widget('administrator_assignmentadvancedform'),
-            record: this.record,
-            saveSuccessMessage: 'Advanced options saved'
-        });
-        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-            title: 'Advanced options',
-            editpanel: editpanel,
-            prettyview: this,
-            listeners: {
-                scope: this,
-                close: function() {
-                    this.advancedbutton.toggle(false);
-                }
-            }
-        });
-        this.setSizeToCoverBody(editwindow);
-        editwindow.show();
-        this.alignToCoverBody(editwindow);
-    },
-
     onStudents: function() {
+        this.hide();
         var studentswindow = Ext.widget('maximizablewindow', {
-            title: 'Manage assignment groups (students)',
+            title: Ext.create('Ext.XTemplate',
+                'Manage assignment groups (students) for ',
+                '{parentnode__parentnode__short_name}.',
+                '{parentnode__short_name}.{short_name}'
+            ).apply(this.record.data),
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
             maximized: true,
             modal: true,
+            onEsc: Ext.emptyFn,
             items: {
                 xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
@@ -390,6 +359,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 close: function() {
+                    this.show();
                     this.refreshBody();
                 }
             }

@@ -15,7 +15,6 @@ class SimplifiedDeadlineMetaMixin(object):
                              'deadline',
                              'assignment_group',
                              'number_of_deliveries',
-                             #'status', # TODO: Needs to handle the fact that students should not know about "Corrected not published"
                              'feedbacks_published',
                              subject=['assignment_group__parentnode__parentnode__parentnode__id',
                                       'assignment_group__parentnode__parentnode__parentnode__short_name',
@@ -24,11 +23,11 @@ class SimplifiedDeadlineMetaMixin(object):
                                      'assignment_group__parentnode__parentnode__short_name',
                                      'assignment_group__parentnode__parentnode__long_name'],
                              assignment=['assignment_group__parentnode__id',
+                                         'assignment_group__parentnode__delivery_types',
                                          'assignment_group__parentnode__short_name',
                                          'assignment_group__parentnode__long_name'],
                              assignment_group=['assignment_group__name', 'assignment_group__is_open'],
-                             assignment_group_users=['assignment_group__examiners__username',
-                                                     'assignment_group__candidates__identifier']
+                             assignment_group_users=['assignment_group__candidates__identifier']
                              )
     searchfields = FieldSpec(
         'assignment_group__candidates__identifier',
@@ -47,6 +46,7 @@ class SimplifiedDeadlineMetaMixin(object):
                                             FilterSpec('is_open'),
                                             FilterSpec('name')),
                           ForeignFilterSpec('assignment_group__parentnode',  # Assignment
+                                            FilterSpec('delivery_types'),
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),

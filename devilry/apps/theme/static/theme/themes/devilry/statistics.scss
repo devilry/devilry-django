@@ -1,0 +1,14 @@
+.labels-list {
+    @include inlineList(" ");
+    li.label-qualifies-for-exam {
+        @include goodInlineItem();
+    }
+    li.label-unqualified-for-exam {
+        @include warningInlineItem();
+    }
+}
+
+.nofeedback {
+    color: #777;
+    font-style: italic;
+}

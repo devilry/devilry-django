@@ -10,7 +10,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     config: {
         assignmentid: undefined,
-        dockedItems: []
+        dockedItems: [],
+        isAdministrator: undefined,
+        isAnonymous: undefined,
+        assignmentrecord: undefined
     },
 
     mixins: {
@@ -18,7 +21,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     infoColTpl: Ext.create('Ext.XTemplate', 
-        '<section class="infocolumn">',
+        '<div class="section infocolumn">',
         '    <div>',
         '        <tpl if="is_open">',
         '           <span class="group_is_open">Open</span>',
@@ -32,23 +35,45 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '           <span class="has_no_deadlines">No deadlines</span>',
         '        </tpl>',
         '    </div>',
-        '</section>'
+        '</div>'
     ),
 
     candidatesCol: Ext.create('Ext.XTemplate', 
         '<ul class="candidatescolumn">',
         '    <tpl for="candidates__identifier">',
-        '       <li>{.}</li>',
+        '       <li>',
+        '           {.}',
+        '       </li>',
+        '    </tpl>',
+        '</ul>'
+    ),
+
+    usernamesCol: Ext.create('Ext.XTemplate', 
+        '<ul class="usernamescolumn">',
+        '    <tpl for="users">',
+        '       <li>{username} ({full_name})</li>',
         '    </tpl>',
         '</ul>'
     ),
 
     examinersCol: Ext.create('Ext.XTemplate', 
         '<ul class="examinerscolumn">',
-        '    <tpl for="examiners__username">',
+        '    <tpl for="examiners__user__username">',
         '       <li>{.}</li>',
         '    </tpl>',
         '</ul>'
+    ),
+
+    tagsColTpl: Ext.create('Ext.XTemplate', 
+        '<ul class="tagscolumn">',
+        '    <tpl for="tags__tag">',
+        '       <li>{.}</li>',
+        '    </tpl>',
+        '</ul>'
+    ),
+
+    activeDeadlineColTpl: Ext.create('Ext.XTemplate', 
+        '<span class="activedeadlinecol">{latest_deadline_deadline}</span>'
     ),
 
     deliveriesColTpl: Ext.create('Ext.XTemplate', 
@@ -74,7 +99,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     ),
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
-        '<section class="gradecolumn">',
+        '<div class="section gradecolumn">',
         '   <tpl if="feedback">',
         '        <div class="is_passing_grade">',
         '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">Passed</span></tpl>',
@@ -93,7 +118,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '           No feedback',
         '        </div>',
         '    </tpl>',
-        '</section>'
+        '</div>'
     ),
 
     constructor: function(config) {
@@ -114,6 +139,36 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             checkOnly: false
         });
 
+        var studentsCol;
+        if(this.isAdministrator) {
+            var col = {
+                text: 'Username (Name)', dataIndex: 'candidates__student__username', width: 170,
+                menuDisabled: true, sortable: true,
+                renderer: this.formatUsernamesCol
+            };
+            if(this.isAnonymous) {
+                studentsCol = {
+                    text: 'Students', dataIndex: 'id',
+                    menuDisabled: true, sortable: false,
+                    columns: [col, {
+                        text: 'Candidate ID', dataIndex: 'candidates__identifier',
+                        width: 100,
+                        menuDisabled: true, sortable: true,
+                        renderer: this.formatCandidatesCol
+                    }]
+                };
+            } else {
+                studentsCol = col;
+            }
+        } else {
+            studentsCol = {
+                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
+                menuDisabled: true,
+                sortable: true,
+                renderer: this.formatCandidatesCol
+            };
+        }
+
         Ext.apply(this, {
             //listeners: {
                 //scope: this,
@@ -125,20 +180,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     //}
                 //}
             //},
-
+        
             columns: [{
                 text: '', dataIndex: 'is_open', width: 100,
                 menuDisabled: true,
                 renderer: this.formatInfoCol
-            }, {
-                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
-                menuDisabled: true,
-                renderer: this.formatCandidatesCol
-            }, {
-                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
-                menuDisabled: true,
-                renderer: this.formatDeliveriesCol
-            }, {
+            }, studentsCol, {
                 text: 'Latest feedback',
                 menuDisabled: true,
                 sortable: false,
@@ -158,14 +205,31 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Examiners', dataIndex: 'examiners__username', flex: 4,
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 3,
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
+            }, {
+                text: 'Tags', dataIndex: 'tags__tag', flex: 2,
+                menuDisabled: true,
+                renderer: this.formatTagsCol
             }, {
                 text: 'Group name', dataIndex: 'name', flex: 3,
                 menuDisabled: true
             }]
         });
+        if(this.assignmentrecord.get('delivery_types') != 1) {
+            this.columns.push({
+                text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
+                menuDisabled: true,
+                renderer: this.formatActiveDeadlineCol
+            });
+
+            Ext.Array.insert(this.columns, 2, [{
+                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
+                menuDisabled: true,
+                renderer: this.formatDeliveriesCol
+            }]);
+        }
 
         this.dockedItems.push({
             xtype: 'pagingtoolbar',
@@ -186,6 +250,19 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         return this.candidatesCol.apply(record.data);
     },
 
+    formatUsernamesCol: function(value, p, record) {
+        var users = [];
+        Ext.each(record.get('candidates__student__username'), function(username, index) {
+            users.push({
+                username: username
+            });
+        }, this);
+        Ext.each(record.get('candidates__student__devilryuserprofile__full_name'), function(full_name, index) {
+            users[index].full_name = full_name;
+        }, this);
+        return this.usernamesCol.apply({users: users});
+    },
+
     formatExaminersCol: function(value, p, record) {
         return this.examinersCol.apply(record.data);
     },
@@ -200,5 +277,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     formatGradeCol: function(value, p, record) {
         return this.gradeColTpl.apply(record.data);
+    },
+
+    formatActiveDeadlineCol: function(value, p, record) {
+        return this.activeDeadlineColTpl.apply(record.data);
+    },
+
+    formatTagsCol: function(value, p, record) {
+        return this.tagsColTpl.apply(record.data);
     }
 });

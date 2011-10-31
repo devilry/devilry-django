@@ -4,14 +4,14 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         'devilry.extjshelpers.DateTime'
     ],
 
-
     config: {
         model: undefined,
         noRecordsMessage: {
             title: 'No active assignments',
             msg: "You are not registered on any assignments in an active period/semester. You can find inactive assignments using the search box."
         },
-        pageSize: 30
+        pageSize: 30,
+        dashboard_url: undefined
     },
 
     constructor: function(config) {
@@ -50,8 +50,10 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             frameHeader: false,
             border: false,
             sortableColumns: false,
+            autoScroll: true,
             cls: 'selectable-grid',
             store: this.store,
+            flex: 1,
             //features: [groupingFeature],
             columns: [{
                 text: 'Subject',
@@ -62,35 +64,35 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
                 text: 'Period',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
-                flex: 20,
+                flex: 10,
             },{
                 text: 'Assignment',
                 menuDisabled: true,
                 flex: 20,
                 dataIndex: 'long_name'
-            },{
-                text: 'Published',
-                menuDisabled: true,
-                width: 150,
-                dataIndex: 'publishing_time',
-                renderer: function(value) {
-                    var rowTpl = Ext.create('Ext.XTemplate',
-                        '{.:date}'
-                    );
-                    return rowTpl.apply(value);
-                }
+            //},{
+                //text: 'Published',
+                //menuDisabled: true,
+                //width: 150,
+                //dataIndex: 'publishing_time',
+                //renderer: function(value) {
+                    //var rowTpl = Ext.create('Ext.XTemplate',
+                        //'{.:date}'
+                    //);
+                    //return rowTpl.apply(value);
+                //}
             }],
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = DASHBOARD_URL + "assignment/" + record.data.id
+                    var url = this.dashboard_url + "assignment/" + record.data.id
                     window.location = url;
                 }
             }
         });
         this.add({
             xtype: 'box',
-            html: '<h2>Assignments in an active period/semester</h2>'
+            html: '<div class="section"><h2>Assignments in an active period/semester</h2></div>'
         });
         this.add(activeAssignmentsGrid);
     }

@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <title>
+            {% block title %}Devilry{% endblock %}
+        </title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+
+        {# TODO: Remove this when we are completely viewport/app based #}
+        {% block extra_js_libraries %}{% endblock %}
+
+        <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/common.css"
+            type="text/css" media="screen" charset="utf-8"/>
+
+        <!-- ** ExtJS ** -->
+        <link rel="stylesheet" type="text/css"
+                {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
+                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
+
+        <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
+
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
+        <script type="text/javascript">
+            // Path to the blank image should point to a valid location on your server
+            Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
+            Ext.Loader.setConfig({
+                enabled: {% if debug %}true{% else %}false{% endif %},
+                paths: {
+                    'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes'
+                }
+            });
+
+            Ext.Ajax.defaultHeaders = {
+                    'X_DEVILRY_USE_EXTJS': true
+            };
+
+            Ext.define('DevilrySettings', {
+                singleton: true,
+                DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
+                DEVILRY_URLPATH_PREFIX: '{{ DEVILRY_URLPATH_PREFIX }}',
+                DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}',
+                DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
+                DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
+                DEVILRY_LOGIN_URL: '{% url login %}'
+            });
+
+            Ext.define('DevilryUser', {
+                singleton: true,
+                is_authenticated: {{ user.is_authenticated|yesno:"true,false" }},
+                username: '{{ user.username }}'
+            });
+
+            Ext.onReady(function() {
+                Ext.QuickTips.init();
+            });
+        </script>
+
+        {% if not debug %}
+            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
+        {% endif %}
+
+        <script type="text/javascript">
+            {% block imports %}
+                Ext.require('devilry.extjshelpers.page.Header');
+                Ext.require('devilry.extjshelpers.page.Footer');
+            {% endblock %}
+            {% block appjs %}{% endblock %}
+            Ext.onReady(function() {
+                {% block onready %}
+                    Ext.getBody().mask("Loading page", 'page-load-mask');
+                {% endblock %}
+            });
+        </script>
+    </head>
+
+    <body>
+    </body>
+</html>

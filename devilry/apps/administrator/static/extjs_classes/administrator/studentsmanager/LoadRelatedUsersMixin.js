@@ -1,5 +1,9 @@
 Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
-    loadAllRelatedUsers: function(modelname, callback) {
+
+    /**
+     * @private
+     */
+    _loadAllRelatedUsers: function(modelname, callback) {
         var relatedUserModel = Ext.ModelManager.getModel(modelname);
 
         var relatedUserStore = Ext.create('Ext.data.Store', {
@@ -8,7 +12,7 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
             remoteSort: true
         });
 
-        relatedUserStore.proxy.extraParams.filters = Ext.JSON.encode([{
+        relatedUserStore.proxy.setDevilryFilters([{
             field: 'period',
             comp: 'exact',
             value: this.periodid
@@ -30,7 +34,10 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
         });
     },
 
-    postLoadAllRelatedUsers: function(callbackOpt, relatedUsers) {
+    /**
+     * @private
+     */
+    _postLoadAllRelatedUsers: function(callbackOpt, relatedUsers) {
         Ext.bind(
             callbackOpt.callback,
             callbackOpt.scope,
@@ -39,30 +46,34 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
         )(relatedUsers);
     },
 
-    relatedUserRecordsToArray: function(relatedUsers) {
+    relatedUserRecordsToStringArray: function(relatedUsers, format) {
+        var tpl = Ext.create('Ext.XTemplate', format);
         return Ext.Array.map(relatedUsers, function(relatedUser) {
-            return relatedUser.data.username;
+            return tpl.apply(relatedUser.data);
         }, this);
     },
-
 
     loadAllRelatedStudents: function(callbackOpt) {
         if(this._relatedStudents == undefined) {
             this.getEl().mask('Loading related students');
             this._onLoadAllRelatedStudentsCallbackOpt = callbackOpt
-            this.loadAllRelatedUsers(
+            this._loadAllRelatedUsers(
                 'devilry.apps.administrator.simplified.SimplifiedRelatedStudent',
-                this.onLoadAllRelatedStudents
+                this._onLoadAllRelatedStudents
             );
         } else {
-            this.postLoadAllRelatedUsers(callbackOpt, this._relatedStudents);
+            this._postLoadAllRelatedUsers(callbackOpt, this._relatedStudents);
         };
     },
 
-    onLoadAllRelatedStudents: function(records) {
+    /**
+     * @private
+     */
+    _onLoadAllRelatedStudents: function(records) {
         this.getEl().unmask();
+        //console.log(records);
         this._relatedStudents = records;
-        this.postLoadAllRelatedUsers(this._onLoadAllRelatedStudentsCallbackOpt, records);
+        this._postLoadAllRelatedUsers(this._onLoadAllRelatedStudentsCallbackOpt, records);
         this._onLoadAllRelatedStudentsCallbackOpt = undefined;
     },
 
@@ -71,19 +82,22 @@ Ext.define('devilry.administrator.studentsmanager.LoadRelatedUsersMixin', {
         if(this._relatedExaminers == undefined) {
             this.getEl().mask('Loading related students');
             this._onLoadAllRelatedExaminersCallbackOpt = callbackOpt
-            this.loadAllRelatedUsers(
+            this._loadAllRelatedUsers(
                 'devilry.apps.administrator.simplified.SimplifiedRelatedExaminer',
-                this.onLoadAllRelatedExaminers
+                this._onLoadAllRelatedExaminers
             );
         } else {
-            this.postLoadAllRelatedUsers(callbackOpt, this._relatedExaminers);
+            this._postLoadAllRelatedUsers(callbackOpt, this._relatedExaminers);
         };
     },
 
-    onLoadAllRelatedExaminers: function(records) {
+    /**
+     * @private
+     */
+    _onLoadAllRelatedExaminers: function(records) {
         this.getEl().unmask();
         this._relatedExaminers = records;
-        this.postLoadAllRelatedUsers(this._onLoadAllRelatedExaminersCallbackOpt, records);
+        this._postLoadAllRelatedUsers(this._onLoadAllRelatedExaminersCallbackOpt, records);
         this._onLoadAllRelatedExaminersCallbackOpt = undefined;
     }
 });

@@ -44,28 +44,40 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     tpl: Ext.create('Ext.XTemplate',
         '<tpl if="time_of_delivery">', // If time_of_delivery is false, the record is not loaded yet
-        '    <tpl if="time_of_delivery &gt; deadline__deadline">',
-        '        <section class="warning-small">',
-        '           <h1>After deadline</h1>',
-        '           <p>This delivery was made <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
-        '        </section>',
+        '    <tpl if="delivery_type == 0">',
+        '        <tpl if="time_of_delivery &gt; deadline__deadline">',
+        '            <div class="section warning-small">',
+        '               <h1>After deadline</h1>',
+        '               <p>This delivery was made <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
+        '            </div>',
+        '        </tpl>',
+        '        <tpl if="!islatestDelivery">',
+        '            <div class="section warning-small">',
+        '               <h1>Not the latest delivery</h1>',
+        '               <p>',
+        '                   One or more deliveries has been made <strong>after</strong> the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
+        '                   <tpl if="time_of_delivery &gt; deadline__deadline">',
+        '                       However since this delivery was made after the deadline, an earlier delivery may be corrected instead.',
+        '                   </tpl>',
+        '                   Choose <span class="menuref">Other deliveries</span> in the toolbar to view other deliveries.',
+        '               </p>',
+        '            </div>',
+        '        </tpl>',
+        '        <div class="section info-small">',
+        '           <h1>Delivery number {number}</h1>',
+        '           <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">Browse files</span> in the toolbar to download the delivered files.</p>',
+        '        </div>',
         '    </tpl>',
-        '    <tpl if="!islatestDelivery">',
-        '        <section class="warning-small">',
-        '           <h1>Not the latest delivery</h1>',
-        '           <p>',
-        '               One or more deliveries has been made <strong>after</strong> the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
-        '               <tpl if="time_of_delivery &gt; deadline__deadline">',
-        '                   However since this delivery was made after the deadline, an earlier delivery may be corrected instead.',
-        '               </tpl>',
-        '               Choose <span class="menuref">Other deliveries</span> in the toolbar to view other deliveries.',
-        '           </p>',
-        '        </section>',
+        '    <tpl if="delivery_type == 1">',
+        '        <div class="section info-small">',
+        '           <p>This delivery was not made using Devilry. This usually means that it is a non-electronic delivery. However, it may also have been delivered through an alternative system, such as email.</p>',
+        '        </div>',
         '    </tpl>',
-        '    <section class="info-small">',
-        '       <h1>Delivery number {number}</h1>',
-        '       <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">Browse files</span> in the toolbar to download the delivered files.</p>',
-        '    </section>',
+        '    <tpl if="delivery_type == 2">',
+        '        <div class="section info-small">',
+        '           <p>This delivery was made in another period/semester. It has been imported into the current period/semester.</p>',
+        '        </div>',
+        '    </tpl>',
         '</tpl>'
     ),
 
@@ -145,27 +157,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         Ext.apply(data, delivery);
         this.update(data);
 
-        this.toolbar.add({
-            xtype: 'button',
-            text: 'Browse files',
-            id: 'tooltip-browse-files',
-            scale: 'large',
-            enableToggle: true,
-            listeners: {
-                scope: this,
-                click: this.showFileMetaBrowserWindow,
-                render: function() {
-                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+        if(delivery.delivery_type == 0) {
+            this.toolbar.add({
+                xtype: 'button',
+                text: 'Browse files',
+                id: 'tooltip-browse-files',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.showFileMetaBrowserWindow,
+                    render: function() {
+                        //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                    }
                 }
-            }
-        });
+            });
+        }
 
         this.toolbar.add({
             xtype: 'button',
             id: 'tooltip-other-deliveries',
             text: 'Other deliveries',
             scale: 'large',
-            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onOtherDeliveries
@@ -208,9 +220,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             }
         });
         deliveriesWindow.show();
-        if(button) {
-            deliveriesWindow.alignTo(button, 'bl', [0, 0]);
-        }
     },
 
     /**
@@ -229,15 +238,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 border: false,
                 filemetastore: this.filemetastore,
                 deliveryid: this.delivery_recordcontainer.record.data.id
-            }],
-            listeners: {
-                scope: this,
-                close: function() {
-                    button.toggle(false);
-                }
-            }
+            }]
         });
         fileBrowser.show();
-        fileBrowser.alignTo(button, 'bl', [0, 0]);
     }
 });

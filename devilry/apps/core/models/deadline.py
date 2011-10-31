@@ -38,17 +38,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         Should deliveries on this deadline be available to examiners before the
         deadline expires? This is set by students.
 
-    .. attribute:: status
-
-        The status of this deadline. The data can be deduces from other data in the database, but
-        since this requires complex queries, we store it as a integer
-        instead, with the following values:
-
-            0. No deliveries
-            1. Has deliveries
-            2. Corrected, not published
-            3. Corrected and published
-
     .. attribute:: feedbacks_published
 
         If this boolean field is ``True``, the student can see all
@@ -56,10 +45,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
 
     """
-    status = models.PositiveIntegerField(default = 0,
-                                         choices = enumerate(AssignmentGroup.status_mapping),
-                                         verbose_name = _('Status'),
-                                         help_text = _('Status number.'))
     assignment_group = models.ForeignKey(AssignmentGroup,
             related_name='deadlines')
     deadline = models.DateTimeField(help_text=_('The time of the deadline.'))
@@ -78,27 +63,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         verbose_name_plural = _('Deadlines')
         ordering = ['-deadline']
 
-    def _get_status_from_qry(self):
-        """Get status for active deadline"""
-        if self.deliveries.all().count == 0:
-            return AssignmentGroup.NO_DELIVERIES
-        else:
-            deliveries_with_feedback = [delivery for delivery in self.deliveries.all() \
-                                        if delivery.feedbacks.all().count() > 0]
-            if deliveries_with_feedback:
-                if self.feedbacks_published:
-                    return AssignmentGroup.CORRECTED_AND_PUBLISHED
-                else:
-                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
-            else:
-                return AssignmentGroup.HAS_DELIVERIES
-
-    def _update_status(self):
-        """ Query for the correct status, and set :attr:`status`. """
-        self.status = self._get_status_from_qry()
-        self.save()
-        self.assignment_group._update_status()
-    
     def clean(self, *args, **kwargs):
         """Validate the deadline.
 
@@ -157,4 +121,4 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+        return Q(assignment_group__examiners__user=user_obj)

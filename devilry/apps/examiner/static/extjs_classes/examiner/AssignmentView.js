@@ -44,11 +44,11 @@ Ext.define('devilry.examiner.AssignmentView', {
             }],
             
             helpTpl: Ext.create('Ext.XTemplate',
-                '<section class="helpsection">',
+                '<div class="section helpsection">',
                 '   {todohelptext}',
                 '   <p>Choose <span class="menuref">Manage assignment groups (students)</span> to view all groups, and to give feedback to multiple groups.</p>',
                 '   <p>You may want to <span class="menuref">Download all deliveries</span> as a zip file instead of downloading the delivery for each group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.</p>',
-                '</section>'
+                '</div>'
             ),
 
             onSelectGroup: function(grid, assignmentgroupRecord) {
@@ -118,12 +118,13 @@ Ext.define('devilry.examiner.AssignmentView', {
     },
 
     onStudents: function(button) {
+        this.hide();
         var studentswindow = Ext.create('Ext.window.Window', {
             title: 'Students',
             width: 926,
             height: 500,
             layout: 'fit',
-            maximizable: true,
+            maximizable: false,
             modal: true,
             maximized: true,
             items: {
@@ -138,6 +139,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             listeners: {
                 scope: this,
                 close: function() {
+                    this.show();
                     this.loadTodoList();
                 }
             }

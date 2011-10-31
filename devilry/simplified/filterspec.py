@@ -45,6 +45,10 @@ def stringOrNoneConverter(value):
     if isinstance(value, basestring) and value.lower() == 'none':
         return None
     return value
+def noCandidateIdConverter(value):
+    if isinstance(value, basestring) and value.lower() == 'none':
+        return 'candidate-id missing'
+    return value
 def dateTimeConverter(value):
     return datetime.strptime(str(value), '%Y-%m-%dT%H:%M:%S')
 
@@ -78,21 +82,26 @@ class FilterSpec(object):
             value = filterdict['value']
             fieldname = filterdict['field']
         except KeyError, e:
-            raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
-        else:
-            if isinstance(value, basestring) and value.strip() == '':
-                return None
-            if not comp in self.supported_comp:
-                raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
             try:
-                value = self.type_converter(value)
-            except ValueError, e:
-                raise FilterValidationError('Value has invalid type for field {0}: {1}'.format(fieldname, value))
-            djangocomp = COMP_TO_DJANGO_MAP[comp]
-            filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
-            qryparam = {filterfieldname: value}
-            #print qryparam
-            return Q(**qryparam)
+                comp = 'exact'
+                value = filterdict['value']
+                fieldname = filterdict['property']
+            except KeyError, e:
+                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+
+        if isinstance(value, basestring) and value.strip() == '':
+            return None
+        if not comp in self.supported_comp:
+            raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
+        try:
+            value = self.type_converter(value)
+        except ValueError, e:
+            raise FilterValidationError('Value has invalid type for field {0}: {1}'.format(fieldname, value))
+        djangocomp = COMP_TO_DJANGO_MAP[comp]
+        filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
+        qryparam = {filterfieldname: value}
+        #print qryparam
+        return Q(**qryparam)
 
     def aslist(self):
         return [self]
@@ -188,12 +197,16 @@ class FilterSpecs(object):
             try:
                 fieldname = filterdict['field']
             except KeyError, e:
-                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+                try:
+                    fieldname = filterdict['property']
+                except KeyError, e:
+                    raise FilterValidationError('Invalid filter: {0}. No "field" specified.'.format(filterdict))
 
             try:
                 filterspec = self.find_filterspec(fieldname)
             except KeyError, e:
-                raise FilterValidationError('Invalid filter fieldname {0} in: {1}.'.format(fieldname, filterdict))
+                fieldnames = ', '.join(self.filterspecs.keys())
+                raise FilterValidationError('Invalid filter fieldname {0} in: {1}. Available filter fieldnames: {2}'.format(fieldname, filterdict, fieldnames))
             else:
                 qrysegment = filterspec.to_django_qry(filterdict)
                 if qrysegment != None:

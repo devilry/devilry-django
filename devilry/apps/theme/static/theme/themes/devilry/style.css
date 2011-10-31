@@ -87,7 +87,155 @@ body {
   background-color: #fff;
   color: #222; }
 
-header {
+.not_passing_grade {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.passing_grade {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.group_is_open {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.group_is_closed {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.group_is_corrected {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.group_is_uncorrected {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.goodInlineItem {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.warningInlineItem {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.neutralInlineItem {
+  border: 1px solid #0088cc;
+  border-radius: 3px;
+  background-color: #0077b3;
+  color: #e5f7ff;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.x-mask {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+  opacity: 0.7 !important;
+  background-color: #000 !important;
+  width: 100% !important; }
+
+.page-load-mask {
+  padding: 20px !important;
+  border-radius: 20px;
+  background-color: #000 !important;
+  border: none !important; }
+  .page-load-mask div {
+    background-color: transparent !important;
+    color: #eee !important;
+    border: none !important;
+    font-size: 1.2em !important; }
+
+.x-window-maximized {
+  width: 100% !important; }
+
+.labels-list li {
+  display: inline; }
+  .labels-list li:after {
+    content: " "; }
+  .labels-list li:last-child:after {
+    content: ""; }
+.labels-list li.label-qualifies-for-exam {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+.labels-list li.label-unqualified-for-exam {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.nofeedback {
+  color: #777;
+  font-style: italic; }
+
+table.horizontalinfotable {
+  border-collapse: collapse;
+  border: 1px solid #D4D2CE; }
+  table.horizontalinfotable thead th {
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    background-color: #ECEBE9; }
+  table.horizontalinfotable td, table.horizontalinfotable th {
+    padding: 2px 6px;
+    border: 1px solid #D4D2CE; }
+  table.horizontalinfotable tfoot td {
+    font-style: normal;
+    font-weight: bold;
+    font-style: normal;
+    color: #666; }
+  table.horizontalinfotable td {
+    background-color: #fff; }
+
+.header {
   background-color: #000;
   color: #fff;
   /**
@@ -106,7 +254,7 @@ header {
   /*}*/
   /**
    *
-   * Header userinfo/logout
+   * Header userinfo/loginout
    *
    */
   /**
@@ -115,20 +263,20 @@ header {
    *
    */
   /* Color the bottom border of the header with the color of the current section. */ }
-  header > #heading {
+  .header > #heading {
     float: right; }
-  header > #heading > h1 {
+  .header > #heading > h1 {
     font-size: 2.0em;
     padding: 20px 20px 5px 20px;
     text-align: right; }
-  header > #heading > a#projectlink {
+  .header > #heading > a#projectlink {
     display: block;
     margin: 0 20px 5px 20px;
     text-decoration: none;
     font-size: 0.8em;
     text-align: right;
     color: #a00; }
-  header > #version {
+  .header > #version {
     /*margin: 0 20px 5px 20px;*/
     top: 24px;
     left: 35%;
@@ -142,30 +290,30 @@ header {
     position: absolute;
     color: #444;
     font-family: "Arial Black", sans-serif; }
-  header > #version span.codename {
+  .header > #version span.codename {
     font-style: italic; }
-  header > #authenticated-user-bar {
+  .header > #authenticated-user-bar {
     padding-top: 20px;
     padding-left: 20px;
     color: #ccc;
     font-size: 0.8em; }
-  header > #authenticated-user-bar > a#logout-link {
+  .header > #authenticated-user-bar > a.loginout-link {
     color: #fff;
     font-weight: bold; }
-  header > #authenticated-user-bar > a#logout-link:visited {
+  .header > #authenticated-user-bar > a.loginout-link:visited {
     color: #fff; }
-  header > #authenticated-user-bar > a#logout-link:hover {
+  .header > #authenticated-user-bar > a.loginout-link:hover {
     color: #fff; }
-  header > nav {
+  .header > .nav {
     margin-top: 20px; }
-    header > nav ul {
+    .header > .nav ul {
       margin: 0 0 0 20px;
       padding: 0; }
-    header > nav li {
+    .header > .nav li {
       display: inline-block;
       margin: 0 10px 0 0;
       padding: 0; }
-    header > nav li a {
+    .header > .nav li a {
       text-decoration: none;
       display: block;
       margin-left: 0;
@@ -176,25 +324,25 @@ header {
       color: #08C;
       border-radius: 14px 6px 0 0;
       font-weight: bold; }
-    header > nav li.student-navitem a {
+    .header > .nav li.student-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.student-navitem a:hover {
+      .header > .nav li.student-navitem a:hover {
         color: #f7ffe5;
         background-color: #88cc00 !important; }
-    header > nav li.examiner-navitem a {
+    .header > .nav li.examiner-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.examiner-navitem a:hover {
+      .header > .nav li.examiner-navitem a:hover {
         color: #e5f7ff;
         background-color: #0088cc !important; }
-    header > nav li.administrator-navitem a {
+    .header > .nav li.administrator-navitem a {
       background-color: #222;
       color: #fff; }
-      header > nav li.administrator-navitem a:hover {
+      .header > .nav li.administrator-navitem a:hover {
         color: #ffeee5;
         background-color: #e64d00 !important; }
-    header > nav li.externallink-navitem a {
+    .header > .nav li.externallink-navitem a {
       background-color: #222;
       color: #fff;
       border-radius: 6px 14px 0 0;
@@ -202,20 +350,20 @@ header {
       background-repeat: no-repeat;
       background-position: 10px center;
       padding-left: 32px; }
-      header > nav li.externallink-navitem a:hover {
+      .header > .nav li.externallink-navitem a:hover {
         color: white;
         background-color: #333333 !important; }
-  header > nav.student {
+  .header > .student {
     border-bottom: 10px solid #77b300; }
-    header > nav.student li.student-navitem a {
+    .header > .student li.student-navitem a {
       background-color: #77b300; }
-  header > nav.examiner {
+  .header > .examiner {
     border-bottom: 10px solid #0077b3; }
-    header > nav.examiner li.examiner-navitem a {
+    .header > .examiner li.examiner-navitem a {
       background-color: #0077b3; }
-  header > nav.administrator {
+  .header > .administrator {
     border-bottom: 10px solid #cc4400; }
-    header > nav.administrator li.administrator-navitem a {
+    .header > .administrator li.administrator-navitem a {
       background-color: #cc4400; }
 
 /**
@@ -281,41 +429,42 @@ header {
 .dashboard-buttonbar {
   width: 930px; }
 
-section.popuplistitem {
+.popuplistitem {
   line-height: 1.6em; }
-  section.popuplistitem h1, section.popuplistitem h2, section.popuplistitem h3, section.popuplistitem h4 {
+  .popuplistitem h1, .popuplistitem h2, .popuplistitem h3, .popuplistitem h4 {
     margin: 0; }
-  section.popuplistitem h1 {
-    font-size: 1.2em; }
-  section.popuplistitem h2 {
+  .popuplistitem h1 {
+    font-size: 1.2em !important;
+    margin: 0 !important; }
+  .popuplistitem h2 {
     font-size: 1.1em; }
-  section.popuplistitem h3 {
+  .popuplistitem h3 {
     font-size: 1.0em; }
-  section.popuplistitem table {
+  .popuplistitem table {
     width: 100%; }
-    section.popuplistitem table td.rightaligned {
+    .popuplistitem table td.rightaligned {
       text-align: right; }
-      section.popuplistitem table td.rightaligned h1, section.popuplistitem table td.rightaligned h2, section.popuplistitem table td.rightaligned h3, section.popuplistitem table td.rightaligned h4 {
+      .popuplistitem table td.rightaligned h1, .popuplistitem table td.rightaligned h2, .popuplistitem table td.rightaligned h3, .popuplistitem table td.rightaligned h4 {
         color: #888; }
-  section.popuplistitem strong {
+  .popuplistitem strong {
     font-weight: bold; }
-  section.popuplistitem ul li {
+  .popuplistitem ul li {
     display: inline; }
-    section.popuplistitem ul li:after {
+    .popuplistitem ul li:after {
       content: ", "; }
-    section.popuplistitem ul li:last-child:after {
+    .popuplistitem ul li:last-child:after {
       content: ""; }
-  section.popuplistitem p.path {
+  .popuplistitem p.path {
     font-size: 0.8em;
     color: #666666;
     font-weight: bold; }
-  section.popuplistitem section.dl_valueimportant > section {
+  .popuplistitem .dl_valueimportant > div.section {
     font-weight: bold; }
-    section.popuplistitem section.dl_valueimportant > section h1 {
+    .popuplistitem .dl_valueimportant > div.section h1 {
       display: inline;
       font-size: 0.8em;
       font-weight: normal; }
-      section.popuplistitem section.dl_valueimportant > section h1:after {
+      .popuplistitem .dl_valueimportant > div.section h1:after {
         content: ": "; }
 
 /**
@@ -421,46 +570,55 @@ a.warning-button {
 .helpbox {
   background-color: #fff !important; }
 
-section.helpsection {
+.helpsection {
   background-color: #fff;
   min-height: 128px;
   background-image: url(icons/128x128/helpfade-rightdown.png);
   background-repeat: no-repeat;
   background-position: right top;
   padding: 20px; }
-  section.helpsection strong {
+  .helpsection strong {
     font-weight: bold; }
-  section.helpsection em {
+  .helpsection em {
     font-style: italic; }
-  section.helpsection p {
+  .helpsection p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.helpsection pre, section.helpsection code {
+  .helpsection pre, .helpsection code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.helpsection code {
+  .helpsection code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.helpsection pre {
+  .helpsection pre {
     padding: 8px; }
-  section.helpsection ul li {
+  .helpsection ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.helpsection h2 {
+  .helpsection h1 {
+    font-size: 2.6em;
+    margin: 20px 0 15px 0; }
+  .helpsection h1:first-child {
+    margin-top: 0; }
+  .helpsection h2 {
+    font-size: 2.0em;
+    margin: 16px 0 6px 0;
     border-top: 5px solid #f8f8f8;
     padding-top: 8px;
     font-size: 2.0em;
     margin: 36px 0 6px 0; }
-  section.helpsection h3 {
+  .helpsection h3 {
+    font-size: 1.5em;
+    margin: 16px 0 6px 0;
     font-size: 1.5em;
     margin: 16px 0 6px 0; }
-  section.helpsection p {
+  .helpsection p {
     padding: 5px 0;
     line-height: 1.3em; }
-  section.helpsection ul.right_toc {
+  .helpsection ul.right_toc {
     float: right;
     background-color: #f8f8f8;
     border: 1px solid #eee;
@@ -468,26 +626,26 @@ section.helpsection {
     padding: 10px;
     margin: 0 0 20px 20px;
     width: 150px; }
-    section.helpsection ul.right_toc li {
+    .helpsection ul.right_toc li {
       padding: 0 !important;
       margin: 10px 0 !important;
       list-style-type: none !important;
       font-weight: bold !important; }
-      section.helpsection ul.right_toc li:first-child {
+      .helpsection ul.right_toc li:first-child {
         margin-top: 0 !important; }
-      section.helpsection ul.right_toc li:last-child {
+      .helpsection ul.right_toc li:last-child {
         margin-bottom: 0 !important; }
-      section.helpsection ul.right_toc li ul {
+      .helpsection ul.right_toc li ul {
         margin: 5px 0 5px 18px !important; }
-        section.helpsection ul.right_toc li ul li {
+        .helpsection ul.right_toc li ul li {
           font-weight: normal !important;
           list-style-type: square !important; }
-    section.helpsection ul.right_toc a {
+    .helpsection ul.right_toc a {
       text-decoration: none;
       color: #0b5a9d; }
-    section.helpsection ul.right_toc a:visited {
+    .helpsection ul.right_toc a:visited {
       color: #0b5a9d; }
-    section.helpsection ul.right_toc a:hover {
+    .helpsection ul.right_toc a:hover {
       text-decoration: underline; }
 
 /**
@@ -500,27 +658,6 @@ section.helpsection {
   font-size: 1.2em; }
   .tooltip-title span.tooltip-title-current-item {
     font-weight: bold; }
-
-.x-mask {
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
-  opacity: 0.7 !important;
-  background-color: #000 !important;
-  width: 100% !important; }
-
-.page-load-mask {
-  padding: 20px !important;
-  border-radius: 20px;
-  background-color: #000 !important;
-  border: none !important; }
-  .page-load-mask div {
-    background-color: transparent !important;
-    color: #666 !important;
-    border: none !important;
-    font-size: 1.2em !important; }
-
-.x-window-maximized {
-  width: 100% !important; }
 
 /*
  *
@@ -548,25 +685,6 @@ span.menuref {
   padding: 1px 4px;
   white-space: nowrap; }
 
-table.verticalinfotable {
-  border-collapse: collapse;
-  border: 1px solid #D4D2CE; }
-  table.verticalinfotable thead th {
-    text-align: left;
-    font-weight: bold;
-    font-style: normal;
-    /*background-color: #ECEBE9;*/ }
-  table.verticalinfotable th {
-    text-align: right;
-    font-weight: normal;
-    font-style: italic;
-    background-color: #ECEBE9; }
-  table.verticalinfotable td, table.verticalinfotable th {
-    padding: 2px 6px;
-    border: 1px solid #D4D2CE; }
-  table.verticalinfotable td {
-    background-color: #fff; }
-
 .widget-assignmentgrouptodolist {
   background: #fff !important; }
 
@@ -582,8 +700,6 @@ table.verticalinfotable {
     padding: 20px; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview {
       padding: 20px; }
-      .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
-        margin: 0 auto 20px auto; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback-editable {
       padding: 40px;
       text-align: center;
@@ -598,38 +714,48 @@ table.verticalinfotable {
         background-color: #77b300;
         color: #f7ffe5;
         border-radius: 20px; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view strong {
-      font-weight: bold; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view em {
-      font-style: italic; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
-      padding: 5px 0;
-      line-height: 1.2em; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
-      background-color: #f8f8f8;
-      border: 1px solid #eee; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view code {
-      padding: 1px 4px;
-      color: #600;
-      white-space: nowrap; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view pre {
-      padding: 8px; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view ul li {
-      padding: 5px 0;
-      margin-left: 25px !important;
-      list-style-type: disc !important;
-      list-style-position: outside !important; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h2 {
-      border-top: 5px solid #f8f8f8;
-      padding-top: 8px;
-      font-size: 2.0em;
-      margin: 36px 0 6px 0; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view h3 {
-      font-size: 1.5em;
-      margin: 16px 0 6px 0; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
-      padding: 5px 0 !important;
-      line-height: 1.6em !important; }
+
+.rendered_view strong {
+  font-weight: bold; }
+.rendered_view em {
+  font-style: italic; }
+.rendered_view p {
+  padding: 5px 0;
+  line-height: 1.2em; }
+.rendered_view pre, .rendered_view code {
+  background-color: #f8f8f8;
+  border: 1px solid #eee; }
+.rendered_view code {
+  padding: 1px 4px;
+  color: #600;
+  white-space: nowrap; }
+.rendered_view pre {
+  padding: 8px; }
+.rendered_view ul li {
+  padding: 5px 0;
+  margin-left: 25px !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important; }
+.rendered_view h1 {
+  font-size: 2.6em;
+  margin: 20px 0 15px 0; }
+.rendered_view h1:first-child {
+  margin-top: 0; }
+.rendered_view h2 {
+  font-size: 2.0em;
+  margin: 16px 0 6px 0;
+  border-top: 5px solid #f8f8f8;
+  padding-top: 8px;
+  font-size: 2.0em;
+  margin: 36px 0 6px 0; }
+.rendered_view h3 {
+  font-size: 1.5em;
+  margin: 16px 0 6px 0;
+  font-size: 1.5em;
+  margin: 16px 0 6px 0; }
+.rendered_view p {
+  padding: 5px 0 !important;
+  line-height: 1.6em !important; }
 
 .after-deadline {
   display: inline-block;
@@ -643,7 +769,7 @@ table.verticalinfotable {
 .selectable-grid tr.x-grid-row .x-grid-cell-inner {
   padding: 8px; }
 
-section.extravisible {
+.extravisible {
   border-radius: 14px;
   padding: 10px 10px 10px 178px !important;
   background-position: 10px 10px;
@@ -652,7 +778,7 @@ section.extravisible {
   background-color: #fff;
   border: 1px solid #eee; }
 
-section.extravisible-small {
+.extravisible-small {
   border-radius: 14px;
   padding: 10px 10px 10px 94px !important;
   background-position: 10px 10px;
@@ -661,402 +787,407 @@ section.extravisible-small {
   background-color: #fff;
   border: 1px solid #eee; }
 
-section.ok-small {
+.ok-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
   background-image: url(icons/64x64/ok.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.ok-small p {
+  .ok-small p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.ok-small strong {
+  .ok-small strong {
     font-weight: bold; }
-  section.ok-small em {
+  .ok-small em {
     font-style: italic; }
-  section.ok-small p {
+  .ok-small p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.ok-small pre, section.ok-small code {
+  .ok-small pre, .ok-small code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.ok-small code {
+  .ok-small code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.ok-small pre {
+  .ok-small pre {
     padding: 8px; }
-  section.ok-small ul li {
+  .ok-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.ok-small:first-child {
+  .ok-small:first-child {
     margin-top: 0; }
-  section.ok-small:last-child {
+  .ok-small:last-child {
     margin-bottom: 0; }
 
-section.ok-small h1 {
-  font-size: 1.6em;
-  margin: 10px 0 5px 0; }
-section.ok-small h1:first-child {
-  margin-top: 0; }
-section.ok-small h2 {
+.ok-small h1 {
+  font-size: 1.6em !important;
+  margin: 10px 0 5px 0 !important;
+  padding: 0 !important; }
+.ok-small h1:first-child {
+  margin-top: 0 !important; }
+.ok-small h2 {
   font-size: 1.3em;
   margin: 16px 0 6px 0; }
 
-section.ok {
+.ok {
   padding: 0px 0 0 148px;
   min-height: 128px;
   background-image: url(icons/128x128/ok.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.ok p {
+  .ok p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.ok strong {
+  .ok strong {
     font-weight: bold; }
-  section.ok em {
+  .ok em {
     font-style: italic; }
-  section.ok p {
+  .ok p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.ok pre, section.ok code {
+  .ok pre, .ok code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.ok code {
+  .ok code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.ok pre {
+  .ok pre {
     padding: 8px; }
-  section.ok ul li {
+  .ok ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.ok:first-child {
+  .ok:first-child {
     margin-top: 0; }
-  section.ok:last-child {
+  .ok:last-child {
     margin-bottom: 0; }
 
-section.info-small {
+.info-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
   background-image: url(icons/64x64/info.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.info-small p {
+  .info-small p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.info-small strong {
+  .info-small strong {
     font-weight: bold; }
-  section.info-small em {
+  .info-small em {
     font-style: italic; }
-  section.info-small p {
+  .info-small p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.info-small pre, section.info-small code {
+  .info-small pre, .info-small code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.info-small code {
+  .info-small code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.info-small pre {
+  .info-small pre {
     padding: 8px; }
-  section.info-small ul li {
+  .info-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.info-small:first-child {
+  .info-small:first-child {
     margin-top: 0; }
-  section.info-small:last-child {
+  .info-small:last-child {
     margin-bottom: 0; }
 
-section.info-small h1 {
-  font-size: 1.6em;
-  margin: 10px 0 5px 0; }
-section.info-small h1:first-child {
-  margin-top: 0; }
-section.info-small h2 {
+.info-small h1 {
+  font-size: 1.6em !important;
+  margin: 10px 0 5px 0 !important;
+  padding: 0 !important; }
+.info-small h1:first-child {
+  margin-top: 0 !important; }
+.info-small h2 {
   font-size: 1.3em;
   margin: 16px 0 6px 0; }
 
-section.info {
+.info {
   padding: 0px 0 0 148px;
   min-height: 128px;
   background-image: url(icons/128x128/info.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.info p {
+  .info p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.info strong {
+  .info strong {
     font-weight: bold; }
-  section.info em {
+  .info em {
     font-style: italic; }
-  section.info p {
+  .info p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.info pre, section.info code {
+  .info pre, .info code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.info code {
+  .info code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.info pre {
+  .info pre {
     padding: 8px; }
-  section.info ul li {
+  .info ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.info:first-child {
+  .info:first-child {
     margin-top: 0; }
-  section.info:last-child {
+  .info:last-child {
     margin-bottom: 0; }
 
-section.warning-small {
+.warning-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
   background-image: url(icons/64x64/warning.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.warning-small p {
+  .warning-small p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.warning-small strong {
+  .warning-small strong {
     font-weight: bold; }
-  section.warning-small em {
+  .warning-small em {
     font-style: italic; }
-  section.warning-small p {
+  .warning-small p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.warning-small pre, section.warning-small code {
+  .warning-small pre, .warning-small code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.warning-small code {
+  .warning-small code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.warning-small pre {
+  .warning-small pre {
     padding: 8px; }
-  section.warning-small ul li {
+  .warning-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.warning-small:first-child {
+  .warning-small:first-child {
     margin-top: 0; }
-  section.warning-small:last-child {
+  .warning-small:last-child {
     margin-bottom: 0; }
 
-section.warning-small h1 {
-  font-size: 1.6em;
-  margin: 10px 0 5px 0; }
-section.warning-small h1:first-child {
-  margin-top: 0; }
-section.warning-small h2 {
+.warning-small h1 {
+  font-size: 1.6em !important;
+  margin: 10px 0 5px 0 !important;
+  padding: 0 !important; }
+.warning-small h1:first-child {
+  margin-top: 0 !important; }
+.warning-small h2 {
   font-size: 1.3em;
   margin: 16px 0 6px 0; }
 
-section.warning {
+.warning {
   padding: 0px 0 0 148px;
   min-height: 128px;
   background-image: url(icons/128x128/warning.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.warning p {
+  .warning p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.warning strong {
+  .warning strong {
     font-weight: bold; }
-  section.warning em {
+  .warning em {
     font-style: italic; }
-  section.warning p {
+  .warning p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.warning pre, section.warning code {
+  .warning pre, .warning code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.warning code {
+  .warning code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.warning pre {
+  .warning pre {
     padding: 8px; }
-  section.warning ul li {
+  .warning ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.warning:first-child {
+  .warning:first-child {
     margin-top: 0; }
-  section.warning:last-child {
+  .warning:last-child {
     margin-bottom: 0; }
 
-section.error-small {
+.error-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
   background-image: url(icons/64x64/error.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.error-small p {
+  .error-small p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.error-small strong {
+  .error-small strong {
     font-weight: bold; }
-  section.error-small em {
+  .error-small em {
     font-style: italic; }
-  section.error-small p {
+  .error-small p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.error-small pre, section.error-small code {
+  .error-small pre, .error-small code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.error-small code {
+  .error-small code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.error-small pre {
+  .error-small pre {
     padding: 8px; }
-  section.error-small ul li {
+  .error-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.error-small:first-child {
+  .error-small:first-child {
     margin-top: 0; }
-  section.error-small:last-child {
+  .error-small:last-child {
     margin-bottom: 0; }
 
-section.error-small h1 {
-  font-size: 1.6em;
-  margin: 10px 0 5px 0; }
-section.error-small h1:first-child {
-  margin-top: 0; }
-section.error-small h2 {
+.error-small h1 {
+  font-size: 1.6em !important;
+  margin: 10px 0 5px 0 !important;
+  padding: 0 !important; }
+.error-small h1:first-child {
+  margin-top: 0 !important; }
+.error-small h2 {
   font-size: 1.3em;
   margin: 16px 0 6px 0; }
 
-section.error {
+.error {
   padding: 0px 0 0 148px;
   min-height: 128px;
   background-image: url(icons/128x128/error.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.error p {
+  .error p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.error strong {
+  .error strong {
     font-weight: bold; }
-  section.error em {
+  .error em {
     font-style: italic; }
-  section.error p {
+  .error p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.error pre, section.error code {
+  .error pre, .error code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.error code {
+  .error code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.error pre {
+  .error pre {
     padding: 8px; }
-  section.error ul li {
+  .error ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.error:first-child {
+  .error:first-child {
     margin-top: 0; }
-  section.error:last-child {
+  .error:last-child {
     margin-bottom: 0; }
 
-section.help-small {
+.help-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
   background-image: url(icons/64x64/help.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.help-small p {
+  .help-small p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.help-small strong {
+  .help-small strong {
     font-weight: bold; }
-  section.help-small em {
+  .help-small em {
     font-style: italic; }
-  section.help-small p {
+  .help-small p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.help-small pre, section.help-small code {
+  .help-small pre, .help-small code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.help-small code {
+  .help-small code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.help-small pre {
+  .help-small pre {
     padding: 8px; }
-  section.help-small ul li {
+  .help-small ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.help-small:first-child {
+  .help-small:first-child {
     margin-top: 0; }
-  section.help-small:last-child {
+  .help-small:last-child {
     margin-bottom: 0; }
 
-section.help-small h1 {
-  font-size: 1.6em;
-  margin: 10px 0 5px 0; }
-section.help-small h1:first-child {
-  margin-top: 0; }
-section.help-small h2 {
+.help-small h1 {
+  font-size: 1.6em !important;
+  margin: 10px 0 5px 0 !important;
+  padding: 0 !important; }
+.help-small h1:first-child {
+  margin-top: 0 !important; }
+.help-small h2 {
   font-size: 1.3em;
   margin: 16px 0 6px 0; }
 
-section.help {
+.help {
   padding: 0px 0 0 148px;
   min-height: 128px;
   background-image: url(icons/128x128/help.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.help p {
+  .help p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.help strong {
+  .help strong {
     font-weight: bold; }
-  section.help em {
+  .help em {
     font-style: italic; }
-  section.help p {
+  .help p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.help pre, section.help code {
+  .help pre, .help code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.help code {
+  .help code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.help pre {
+  .help pre {
     padding: 8px; }
-  section.help ul li {
+  .help ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-  section.help:first-child {
+  .help:first-child {
     margin-top: 0; }
-  section.help:last-child {
+  .help:last-child {
     margin-bottom: 0; }
 
-.widget-fileuploadpanel section.ok ul li {
+.widget-fileuploadpanel .ok ul li {
   list-style: square !important; }
 .widget-fileuploadpanel .x-form-file-wrap {
   margin-top: 20px; }
@@ -1065,55 +1196,55 @@ section.help {
     padding: 6px !important;
     height: auto !important; }
 
-section h1 {
+div.section h1 {
   font-size: 2.6em;
   margin: 20px 0 15px 0; }
-section h1:first-child {
+div.section h1:first-child {
   margin-top: 0; }
-section h2 {
+div.section h2 {
   font-size: 2.0em;
   margin: 16px 0 6px 0; }
-section h3 {
+div.section h3 {
   font-size: 1.5em;
   margin: 16px 0 6px 0; }
 
-section.gradeeditorselector {
+.gradeeditorselector {
   padding: 8px !important; }
-  section.gradeeditorselector strong {
+  .gradeeditorselector strong {
     font-weight: bold; }
-  section.gradeeditorselector em {
+  .gradeeditorselector em {
     font-style: italic; }
-  section.gradeeditorselector p {
+  .gradeeditorselector p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.gradeeditorselector pre, section.gradeeditorselector code {
+  .gradeeditorselector pre, .gradeeditorselector code {
     background-color: #f8f8f8;
     border: 1px solid #eee; }
-  section.gradeeditorselector code {
+  .gradeeditorselector code {
     padding: 1px 4px;
     color: #600;
     white-space: nowrap; }
-  section.gradeeditorselector pre {
+  .gradeeditorselector pre {
     padding: 8px; }
-  section.gradeeditorselector ul li {
+  .gradeeditorselector ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
 
-section.treeheading {
+.treeheading {
   margin-bottom: 30px; }
-  section.treeheading h1 {
-    margin: 0 0 8px 0; }
-  section.treeheading h2 {
-    margin: 0 0 8px 0; }
-  section.treeheading h3 {
-    margin: 0 0 8px 0; }
-  section.treeheading ul li {
+  .treeheading h1 {
+    margin: 0 0 5px 0 !important; }
+  .treeheading h2 {
+    margin: 0 0 5px 0 !important; }
+  .treeheading h3 {
+    margin: 0 0 5px 0 !important; }
+  .treeheading ul li {
     display: inline; }
-    section.treeheading ul li:after {
+    .treeheading ul li:after {
       content: ", "; }
-    section.treeheading ul li:last-child:after {
+    .treeheading ul li:last-child:after {
       content: ""; }
 
 #content-main {
@@ -1143,9 +1274,9 @@ section.treeheading {
 
 .studentsmanager .widget-studentsmanager_studentsgrid td.x-grid-cell {
   vertical-align: middle !important; }
-.studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn {
+.studentsmanager .widget-studentsmanager_studentsgrid .infocolumn {
   line-height: 1.8em; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.infocolumn .has_no_deadlines {
+  .studentsmanager .widget-studentsmanager_studentsgrid .infocolumn .has_no_deadlines {
     border: 1px solid red;
     border-radius: 3px;
     background-color: #bb0000;
@@ -1153,19 +1284,15 @@ section.treeheading {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li {
-  display: inline; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:after {
-    content: ", "; }
-  .studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li:last-child:after, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li:last-child:after {
-    content: ""; }
+.studentsmanager .widget-studentsmanager_studentsgrid .candidatescolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .examinerscolumn li, .studentsmanager .widget-studentsmanager_studentsgrid .usernamescolumn li {
+  list-style: none; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
   font-size: 30px; }
 .studentsmanager .widget-studentsmanager_studentsgrid .nofeedback, .studentsmanager .widget-studentsmanager_studentsgrid .nodeliveries {
   color: #aaa; }
-.studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn {
+.studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn {
   line-height: 1.8em; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .not_passing_grade {
+  .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .not_passing_grade {
     border: 1px solid #e64d00;
     border-radius: 3px;
     background-color: #cc4400;
@@ -1173,7 +1300,7 @@ section.treeheading {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .passing_grade {
+  .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .passing_grade {
     border: 1px solid #88cc00;
     border-radius: 3px;
     background-color: #77b300;
@@ -1181,10 +1308,10 @@ section.treeheading {
     font-weight: bold;
     padding: 1px 4px;
     white-space: nowrap; }
-  .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type {
+  .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .delivery_type {
     font-style: italic;
     font-weight: bold !important; }
-    .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type .alias {
+    .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .delivery_type .alias {
       border: 1px solid #0088cc;
       border-radius: 3px;
       background-color: #0077b3;
@@ -1192,7 +1319,7 @@ section.treeheading {
       font-weight: bold;
       padding: 1px 4px;
       white-space: nowrap; }
-    .studentsmanager .widget-studentsmanager_studentsgrid section.gradecolumn .delivery_type .unknown {
+    .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn .delivery_type .unknown {
       border: 1px solid red;
       border-radius: 3px;
       background-color: #bb0000;
@@ -1200,42 +1327,6 @@ section.treeheading {
       font-weight: bold;
       padding: 1px 4px;
       white-space: nowrap; }
-
-.group_is_open {
-  border: 1px solid #88cc00;
-  border-radius: 3px;
-  background-color: #77b300;
-  color: #f7ffe5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-
-.group_is_closed {
-  border: 1px solid #e64d00;
-  border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-
-.group_is_corrected {
-  border: 1px solid #88cc00;
-  border-radius: 3px;
-  background-color: #77b300;
-  color: #f7ffe5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
-
-.group_is_uncorrected {
-  border: 1px solid #e64d00;
-  border-radius: 3px;
-  background-color: #cc4400;
-  color: #ffeee5;
-  font-weight: bold;
-  padding: 1px 4px;
-  white-space: nowrap; }
 
 .widget-menuheader {
   margin-top: 8px;
@@ -1263,7 +1354,7 @@ section.treeheading {
  * Footer
  *
  */
-footer {
+.footer {
   text-align: right;
   clear: both;
   padding: 20px;
@@ -1273,11 +1364,11 @@ footer {
   color: #D4D2CE;
   border-top-color: 1px solid #ECEBE9;
   background-color: #fff; }
-  footer a {
+  .footer a {
     color: #D4D2CE; }
-  footer a:hover {
+  .footer a:hover {
     color: #776B5F; }
-  footer a:visited {
+  .footer a:visited {
     color: #D4D2CE; }
 
 .codehilite .hll {

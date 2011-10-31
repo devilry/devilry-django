@@ -8,8 +8,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     mixins: {
         manageExaminers: 'devilry.administrator.studentsmanager.StudentsManagerManageExaminers',
         createGroups: 'devilry.administrator.studentsmanager.StudentsManagerManageGroups',
-        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin',
-        addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
+        loadRelatedUsers: 'devilry.administrator.studentsmanager.LoadRelatedUsersMixin'
     },
 
     //config: {
@@ -56,42 +55,60 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             xtype: 'button',
             text: 'Set examiners',
             scale: 'large',
-            menu: [{
-                text: 'Replace',
-                iconCls: 'icon-edit-16',
-                listeners: {
-                    scope: this,
-                    click: this.onReplaceExaminers
-                }
-            }, {
-                text: 'Add',
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onAddExaminers
-                }
-            }, {
-                text: 'Random distribute',
-                listeners: {
-                    scope: this,
-                    click: this.onRandomDistributeExaminers
-                }
-            }, {
-                text: 'Copy from another assignment',
-                listeners: {
-                    scope: this,
-                    click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
-                }
-            }, {
-                text: 'Clear',
-                iconCls: 'icon-delete-16',
-                listeners: {
-                    scope: this,
-                    click: this.onClearExaminers
-                }
-            }]
+            menu: this.getSetExaminersMenuItems()
         }]);
         return defaults;
+    },
+
+    getSetExaminersMenuItems: function() {
+        return [{
+            text: 'Replace',
+            iconCls: 'icon-edit-16',
+            listeners: {
+                scope: this,
+                click: this.onReplaceExaminers
+            }
+        }, {
+            text: 'Add',
+            iconCls: 'icon-add-16',
+            listeners: {
+                scope: this,
+                click: this.onAddExaminers
+            }
+        }, {
+            text: 'Random distribute',
+            listeners: {
+                scope: this,
+                click: this.onRandomDistributeExaminers
+            }
+        }, {
+            text: 'Copy from another assignment',
+            listeners: {
+                scope: this,
+                click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
+            }
+        }, {
+            text: 'Match tagged examiners to equally tagged groups',
+            listeners: {
+                scope: this,
+                click: this.onSetExaminersFromTags
+            }
+        }, {
+            text: 'Clear',
+            iconCls: 'icon-delete-16',
+            listeners: {
+                scope: this,
+                click: this.onClearExaminers
+            }
+        }];
+    },
+
+    getContexMenuManySelectItems: function() {
+        var defaultItems = this.callParent();
+        return Ext.Array.merge(defaultItems, [{
+            text: 'Set examiners',
+            menu: this.getSetExaminersMenuItems()
+        }]);
     },
 
     getFilters: function() {
@@ -102,7 +119,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             handler: function() { me.setFilter('candidates__student__username:none'); }
         }, {
             text: 'Has no examiners',
-            handler: function() { me.setFilter('examiners__username:none'); }
+            handler: function() { me.setFilter('examiners__user__username:none'); }
         }];
         Ext.Array.insert(adminFilters, 0, defaultFilters);
         return adminFilters;
@@ -126,16 +143,6 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onChangeGroupName
             }
         });
-
-        if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
-            menu.push({
-                text: 'Add non-electronic delivery',
-                listeners: {
-                    scope: this,
-                    click: this.onAddNonElectronicDelivery
-                }
-            });
-        }
         return menu;
     },
 
@@ -156,6 +163,52 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
                 click: this.onDeleteGroups
             }
         });
+        if(this.assignmentrecord.data.anonymous) {
+            menu.push({
+                text: 'Import candidate IDs',
+                listeners: {
+                    scope: this,
+                    click: this.onSetCandidateIdBulk
+                }
+            });
+        }
         return menu;
+    },
+
+
+    statics: {
+        getAllGroupsInAssignment: function(assignmentid, action) {
+            assignmentGroupModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupImport');
+            var assignmentGroupStore = Ext.create('Ext.data.Store', {
+                model: assignmentGroupModel,
+                proxy: Ext.create('devilry.extjshelpers.RestProxy', {
+                    url: assignmentGroupModel.proxy.url
+                })
+            });
+            assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users', 'tags']);
+
+            assignmentGroupStore.proxy.setDevilryFilters([{
+                field: 'parentnode',
+                comp: 'exact',
+                value: assignmentid
+            }]);
+
+            assignmentGroupStore.pageSize = 1;
+            assignmentGroupStore.load({
+                scope: this,
+                callback: function(records, op, success) {
+                    if(!success) {
+                        this.loadAssignmentGroupStoreFailed();
+                    }
+                    assignmentGroupStore.pageSize = assignmentGroupStore.totalCount;
+                    assignmentGroupStore.load({
+                        scope: this,
+                        callback: function(records, op, success) {
+                            Ext.bind(action.callback, action.scope, action.extraArgs, true)(records, op, success);
+                        }
+                    });
+                }
+            });
+        }
     }
 });

@@ -39,85 +39,33 @@ body {
 
 
 
-@mixin inlineList($separator:", ") {
-    li {
-        display: inline; 
-        &:after {
-            content: $separator;
-        }
-        &:last-child:after {
-            content: "";
-        }
-    }
-}
 
-@mixin inlineItem($bg, $fg, $bordercolor) {
-    border: 1px solid $bordercolor;
-    border-radius: 3px;
-    background-color: $bg;
-    color: $fg;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap;
-}
+@import "mixins";
+@import "inlinecommon";
+@import "mask";
+@import "statistics";
+@import "tables";
 
-@mixin goodInlineItem() {
-    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
-}
-@mixin neutralInlineItem() {
-    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
-}
-@mixin warningInlineItem() {
-    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
-}
-@mixin errorInlineItem() {
-    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
-}
-
-@mixin commonSectionElements() {
-    strong {
-        font-weight: bold;
-    }
-    em {
-        font-style: italic;
-    }
-
-    p {
-        padding: 5px 0;
-        line-height: 1.2em;
-    }
-
-    pre, code {
-        background-color: #f8f8f8;;
-        border: 1px solid #eee;
-    }
-    code {
-        padding: 1px 4px;
-        color: #600;
-        white-space: nowrap;
-    }
-    pre {
-        padding: 8px;
-    }
-
-    ul {
-        li {
-            padding: 5px 0;
-            margin-left: 25px !important;
-            list-style-type: disc !important;
-            list-style-position: outside !important;
-        }
-    }
-}
 
 @mixin commonHeaderElements() {
+    h1 {
+        font-size: 2.6em;
+        margin: 20px 0 15px 0;
+    }
+    h1:first-child {
+        margin-top: 0;
+    }
     h2 {
+        font-size: 2.0em;
+        margin: 16px 0 6px 0;
         border-top: 5px solid #f8f8f8;
         padding-top: 8px;
         font-size: 2.0em;
         margin: 36px 0 6px 0;
     }
     h3 {
+        font-size: 1.5em;
+        margin: 16px 0 6px 0;
         font-size: 1.5em;
         margin: 16px 0 6px 0;
     }
@@ -133,7 +81,7 @@ body {
     }
 }
 
-header {
+.header {
     background-color: #000; color: #fff;
 
     /**
@@ -186,7 +134,7 @@ header {
 
     /**
      *
-     * Header userinfo/logout
+     * Header userinfo/loginout
      *
      */
     >#authenticated-user-bar {
@@ -195,14 +143,14 @@ header {
         color: #ccc;
         font-size: 0.8em;
     }
-    >#authenticated-user-bar>a#logout-link {
+    >#authenticated-user-bar>a.loginout-link {
         color: #fff;
         font-weight: bold;
     }
-    >#authenticated-user-bar>a#logout-link:visited {
+    >#authenticated-user-bar>a.loginout-link:visited {
         color: #fff;
     }
-    >#authenticated-user-bar>a#logout-link:hover {
+    >#authenticated-user-bar>a.loginout-link:hover {
         color: #fff;
     }
 
@@ -212,7 +160,7 @@ header {
      * Header navigation bar
      *
      */
-    >nav {
+    >.nav {
         margin-top: 20px;
         
         ul {
@@ -259,19 +207,19 @@ header {
     }
 
     /* Color the bottom border of the header with the color of the current section. */
-    >nav.student {
+    >.student {
         border-bottom: 10px solid $studentcolor_bg;
         li.student-navitem a {
             background-color: $studentcolor_bg;
         }
     }
-    >nav.examiner {
+    >.examiner {
         border-bottom: 10px solid $examinercolor_bg;
         li.examiner-navitem a {
             background-color: $examinercolor_bg;
         }
     }
-    >nav.administrator {
+    >.administrator {
         border-bottom: 10px solid $administratorcolor_bg;
         li.administrator-navitem a {
             background-color: $administratorcolor_bg;
@@ -373,12 +321,13 @@ header {
     width: $mainwidth;
 }
 
-section.popuplistitem {
+.popuplistitem {
     h1, h2, h3, h4 {
         margin: 0;
     }
     h1 {
-        font-size: 1.2em;
+        font-size: 1.2em !important;
+        margin: 0 !important;
     }
     h2 {
         font-size: 1.1em;
@@ -416,8 +365,8 @@ section.popuplistitem {
         font-weight: bold;
     }
 
-    section.dl_valueimportant {
-        >section {
+    .dl_valueimportant {
+        >div.section {
             font-weight: bold;
 
             h1 {
@@ -535,7 +484,7 @@ a.warning-button {
 .helpbox {
     background-color: #fff !important;
 }
-section.helpsection {
+.helpsection {
     @include commonSectionElements();
     @include commonHeaderElements();
 
@@ -609,41 +558,6 @@ section.helpsection {
     }
 }
 
-//.x-item-disabled { /* The overlay of disabled ExtJS forms. */
-    //-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    //filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    //opacity: 1.0 !important;
-//}
-
-@mixin overlayMask($opacity) {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100})" !important;
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity*100}) !important;
-    opacity: $opacity !important;
-    background-color: #000 !important;
-    width: 100% !important;
-}
-
-.x-mask {
-    @include overlayMask(0.7);
-}
-.page-load-mask {
-    //width: 600px !important;
-    //height: 400px !important;
-    padding: 20px !important;
-    border-radius: 20px;
-    background-color: #000 !important;
-    border: none !important;
-    div {
-        background-color: transparent !important;
-        color: #666 !important;
-        border: none !important;
-        font-size: 1.2em !important;
-    }
-}
-.x-window-maximized {
-    width: 100% !important;
-}
-
 
 
 /*
@@ -668,30 +582,6 @@ span.error {
 
 span.menuref {
     @include neutralInlineItem();
-}
-
-table.verticalinfotable {
-	border-collapse:collapse;
-	border: 1px solid #D4D2CE;
-    thead th {
-        text-align: left;
-        font-weight: bold;
-        font-style: normal;
-        /*background-color: #ECEBE9;*/
-    }
-    th {
-        text-align: right;
-        font-weight: normal;
-        font-style: italic;
-        background-color: #ECEBE9;
-    }
-    td, th {
-        padding: 2px 6px;
-        border: 1px solid #D4D2CE;
-    }
-    td {
-        background-color: #fff;
-    }
 }
 
 .widget-assignmentgrouptodolist {
@@ -721,9 +611,6 @@ table.verticalinfotable {
             .widget-staticfeedbackinfo-feedbackview {
                 $padding: 20px;
                 padding: $padding;
-                table.verticalinfotable {
-                    margin: 0 auto $padding auto;
-                }
             }
             .no-feedback, .no-feedback-editable {
                 padding: 40px;
@@ -743,17 +630,17 @@ table.verticalinfotable {
                     border-radius: 20px;
                 }
             }
-
-            section.rendered_view {
-                @include commonSectionElements();
-                @include commonHeaderElements();
-                p {
-                    padding: 5px 0 !important;
-                    line-height: 1.6em !important;
-                }   
-            }
         }
     }
+}
+
+.rendered_view {
+    @include commonSectionElements();
+    @include commonHeaderElements();
+    p {
+        padding: 5px 0 !important;
+        line-height: 1.6em !important;
+    }   
 }
 
 .after-deadline {
@@ -787,16 +674,16 @@ table.verticalinfotable {
     background-color: #fff;
     border: 1px solid #eee;
 }
-section.extravisible {
+.extravisible {
     @include extravisibleBox(148px);
 }
-section.extravisible-small {
+.extravisible-small {
     @include extravisibleBox(64px);
 }
 
 
 @mixin iconBox($category, $icon, $size) {
-    section.#{$category} {
+    .#{$category} {
         padding: 0px 0 0 ($size + 20px);
         min-height: $size;
         background-image: $icon;
@@ -821,13 +708,14 @@ section.extravisible-small {
 @each $category in ok, info, warning, error, help {
     @include iconBox(#{$category}-small, url(icons/64x64/#{$category}.png), 64px);
 
-    section.#{$category}-small { // The normal heading styles are to massive for -small
+    .#{$category}-small { // The normal heading styles are to massive for -small
         h1 {
-            font-size: 1.6em;
-            margin: 10px 0 5px 0;
+            font-size: 1.6em !important;
+            margin: 10px 0 5px 0 !important;
+            padding: 0 !important;
         }
         h1:first-child {
-            margin-top: 0;
+            margin-top: 0 !important;
         }
         h2 {
             font-size: 1.3em;
@@ -840,7 +728,7 @@ section.extravisible-small {
 
 
 .widget-fileuploadpanel{
-    section.ok {
+    .ok {
         ul {
             li {
                 list-style: square !important;
@@ -860,7 +748,7 @@ section.extravisible-small {
 }
 
 
-section {
+div.section {
     h1 {
         font-size: 2.6em;
         margin: 20px 0 15px 0;
@@ -878,17 +766,17 @@ section {
     }
 }
 
-section.gradeeditorselector {
+.gradeeditorselector {
     padding: 8px !important;
     @include commonSectionElements();
 }
 
 
-section.treeheading {
+.treeheading {
     margin-bottom: 30px;
     @each $headtype in h1, h2, h3 {
         #{$headtype} {
-            margin: 0 0 8px 0;
+            margin: 0 0 5px 0 !important;
         }
     }
     ul {
@@ -912,14 +800,17 @@ section.treeheading {
         td.x-grid-cell {
             vertical-align: middle !important;
         }
-        section.infocolumn {
+        .infocolumn {
             line-height: 1.8em;
             .has_no_deadlines {
                 @include errorInlineItem();
             }
         }
-        .candidatescolumn, .examinerscolumn {
-            @include inlineList();
+        .candidatescolumn, .examinerscolumn, .usernamescolumn {
+            //@include inlineList();
+            li {
+                list-style: none;
+            }
         }   
         .pointscolumn {
             font-size: 30px;
@@ -927,7 +818,7 @@ section.treeheading {
         .nofeedback, .nodeliveries {
             color: #aaa;
         }
-        section.gradecolumn {
+        .gradecolumn {
             line-height: 1.8em;
             .not_passing_grade {
                 @include warningInlineItem();
@@ -949,20 +840,6 @@ section.treeheading {
     }
 }
 
-.group_is_open {
-    @include goodInlineItem();
-}
-.group_is_closed {
-    @include warningInlineItem();
-}
-
-.group_is_corrected {
-    @include goodInlineItem();
-}
-
-.group_is_uncorrected {
-    @include warningInlineItem();
-}
 
 .widget-menuheader {
     margin-top: 8px;
@@ -1006,7 +883,7 @@ section.treeheading {
  *
  */
 
-footer {
+.footer {
 	text-align: right;
 	clear: both;
 	padding: 20px;

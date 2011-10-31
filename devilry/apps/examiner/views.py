@@ -12,10 +12,11 @@ import tarfile
 import os, glob
 import shutil
 import restful
+from devilry.defaults.encoding import ZIPFILE_FILENAME_CHARSET
 
 
 class MainView(TemplateView):
-    template_name='examiner/main.django.html'
+    template_name='examiner/main.django.js'
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
@@ -79,7 +80,7 @@ class CompressedFileDownloadView(View):
                                                       candidates=candidates,
                                                       deadline=deadline.deadline.strftime("%Y-%m-%dT%H_%M_%S"),
                                                       delivery_number="%.3d" % delivery.number,
-                                                      filename = filemeta.filename.encode('utf-8'))
+                                                      filename = filemeta.filename.encode(ZIPFILE_FILENAME_CHARSET))
                         zip_file.writestr(filename, file_content.read())
         zip_file.close()
 

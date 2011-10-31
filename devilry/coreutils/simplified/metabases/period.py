@@ -23,6 +23,8 @@ class SimplifiedPeriodMetaMixin(object):
     filters = FilterSpecs(FilterSpec('parentnode'),
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
+                          FilterSpec('start_time'),
+                          FilterSpec('end_time'),
                           ForeignFilterSpec('parentnode',  # Subject
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),

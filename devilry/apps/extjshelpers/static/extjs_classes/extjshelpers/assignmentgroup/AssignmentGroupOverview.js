@@ -14,24 +14,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
+        'devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline',
+        'devilry.extjshelpers.assignmentgroup.IsOpen',
+        'devilry.extjshelpers.RestFactory',
+        'devilry.administrator.models.Delivery',
+        'devilry.examiner.models.Delivery',
+        'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
-    //title: 'Assignment group',
+    nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
+        '<p><strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
+        'Deliveries are registered (by examiners) as a placeholder for results.</p>',
+        '<tpl if="canExamine">',
+        '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to examine non-electronic deliveries.</p>',
+        '</tpl>'
+    ),
 
     config: {
-        /**
-         * @cfg
-        * ID of the div to render title to. Defaults to 'content-heading'.
-        */
-        renderTitleTo: 'content-heading',
-
-        /*Assignment group*
-         * @cfg
-        * ID of the div to render the body to. Defaults to 'content-main'.
-        */
-        renderTo: 'content-main',
-
         /**
          * @cfg
          * Enable creation of new feedbacks? Defaults to ``false``.
@@ -66,7 +67,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.createAttributes();
         this.createLayout();
         this.callParent(arguments);
-        this.loadAssignmentgroupRecord();
+        this.loadAssignmentgroupRecord(); // NOTE: Must come after createLayout() because components listen for the setRecord event
         this.selectDeliveryIfInQueryString();
     },
 
@@ -78,14 +79,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
-        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
-            renderTo: this.renderTitleTo,
-            singlerecordontainer: this.assignmentgroup_recordcontainer
-        });
-
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
-        this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
+        //this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
         this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
         this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
         this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
@@ -98,7 +94,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
             this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
         }
-
     },
 
     /**
@@ -150,65 +145,130 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     /**
      * @private
      */
-    showFeedbackPanel: function() {
-        this.feedbackPanel.show();
+    _showFeedbackPanel: function() {
+        if(this.delivery_recordcontainer.record && this.assignmentgroup_recordcontainer.record) {
+            if(!this.feedbackPanel) {
+                this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
+                    staticfeedbackstore: this.staticfeedbackstore,
+                    //width: 400,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    filemetastore: this.filemetastore,
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                    deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
+                    assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
+                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+                });
+                this.centerArea.removeAll();
+                this.centerArea.add(this.feedbackPanel);
+            };
+        }
+    },
+
+    _showNonElectronicNote: function() {
+        if(this.assignmentgroup_recordcontainer.record.get('parentnode__delivery_types') === 1) {
+            this.nonElectronicNote.show();
+        }
     },
 
     /**
      * @private
      */
     createLayout: function() {
-        this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
-            title: 'Feedback',
-            staticfeedbackstore: this.staticfeedbackstore,
-            hidden: true,
-            delivery_recordcontainer: this.delivery_recordcontainer,
-            isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
-            deadlinemodel: this.deadlinemodel, // Only required by staticfeedbackeditor
-            assignmentgroupmodel: this.assignmentgroupmodel, // Only required by staticfeedbackeditor
-            gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-        });
         if(this.delivery_recordcontainer.record) {
-            this.showFeedbackPanel();
+            this._showFeedbackPanel();
         } else {
-            this.delivery_recordcontainer.addListener('setRecord', this.showFeedbackPanel, this);
+            this.delivery_recordcontainer.addListener('setRecord', this._showFeedbackPanel, this);
+        }
+        if(this.assignmentgroup_recordcontainer.record) {
+            this._showFeedbackPanel();
+            this._showNonElectronicNote();
+        } else {
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this._showFeedbackPanel, this);
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this._showNonElectronicNote, this);
         }
 
         Ext.apply(this, {
-            border: false,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [{
-                xtype: 'assignmentgroupinfo',
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                assignmentgroupstore: this.assignmentgroupstore,
-                deliverymodel: this.deliverymodel,
-                deadlinemodel: this.deadlinemodel,
-                canExamine: this.canExamine
+                xtype: 'assignmentgrouptitle',
+                singlerecordontainer: this.assignmentgroup_recordcontainer
             }, {
-                xtype: 'deliveryinfo',
-                title: 'Delivery',
-                filemetastore: this.filemetastore,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                deliverymodel: this.deliverymodel,
-                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                listeners: {
-                    scope: this,
-                    deliveriesLoaded: this.onDeliveriesLoaded
-                }
-            }, this.feedbackPanel]
+                xtype: 'container',
+                layout: 'border',
+                style: 'background-color: transparent',
+                flex: 1,
+                border: false,
+                items: [{
+                    xtype: 'container',
+                    region: 'west',
+                    margin: {right: 10},
+                    width: 250,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    items: [{
+                        xtype: 'container',
+                        //title: 'Actions',
+                        layout: {
+                            type: 'hbox'
+                        },
+                        items: [{
+                            xtype: 'assignmentgroup_isopen',
+                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            canExamine: this.canExamine
+                        }, {xtype: 'box', width: 10}, {
+                            xtype: 'button',
+                            hidden: !this.canExamine,
+                            text: 'To-do',
+                            scale: 'large',
+                            listeners: {
+                                scope: this,
+                                click: function() {
+                                    Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
+                                        assignmentgroupstore: this.assignmentgroupstore,
+                                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+                                    }).show();
+                                }
+                            }
+                        }]
+                    }, {
+                        xtype: 'panel',
+                        margin: {top: 10},
+                        flex: 1,
+                        border: false,
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch'
+                        },
+                        items: [this.nonElectronicNote = Ext.widget('box', {
+                            margin: {bottom: 10},
+                            hidden: true,
+                            cls: 'readable-section',
+                            html: this.nonElectronicNodeTpl.apply({canExamine: this.canExamine, DEVILRY_HELP_URL: DevilrySettings.DEVILRY_HELP_URL})
+                        }), {
+                            xtype: 'deliveriesgroupedbydeadline',
+                            role: this.role,
+                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            delivery_recordcontainer: this.delivery_recordcontainer,
+                            flex: 1
+                        }]
+                    }]
+                }, this.centerArea = Ext.widget('container', {
+                    region: 'center',
+                    layout: 'fit',
+                    items: {
+                        xtype: 'box',
+                        html: ''
+                    }
+                })]
+            }]
         });
     },
-
-    /** 
-     * @private
-     */
-    onDeliveriesLoaded: function(deliverystore) {
-        var assignmentgroupdetails = this.down('assignmentgroupdetails');
-        assignmentgroupdetails.extradata.numDeliveries = deliverystore.totalCount;
-        assignmentgroupdetails.updateBody();
-    },
-
 
     /**
      * @private
@@ -217,25 +277,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         var query = Ext.Object.fromQueryString(window.location.search);
         if(query.deliveryid) {
             var deliveryid = parseInt(query.deliveryid);
-            this.deliverymodel.load(deliveryid, {
+            var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
+            deliverymodel.load(deliveryid, {
                 scope: this,
                 success: function(record) {
-                    if(this.assignmentgroupid == record.data.deadline__assignment_group) {
-                        this.delivery_recordcontainer.setRecord(record);
-                    } else {
-                        throw Ext.String.format(
-                            'Delivery {0} is not in AssignmentGroup {1}',
-                            deliveryid,
-                            this.assignmentgroupid
-                        );
-                    }
+                    this.delivery_recordcontainer.setRecord(record);
                 },
                 failure: function() {
                     // TODO: Handle errors
                 }
             });
         } else {
-            this.down('deliveryinfo').onOtherDeliveries();
+            //console.log(delivery);
+            //this.down('deliveryinfo').onOtherDeliveries();
         }
     }
 });

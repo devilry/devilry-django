@@ -11,6 +11,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         'devilry.extjshelpers.NotificationManager',
         'devilry.gradeeditors.FailureHandler',
         'devilry.markup.MarkdownFullEditor',
+        'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
         'devilry.extjshelpers.HelpWindow'
     ],
 
@@ -65,13 +67,24 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                     success: this.onLoadDraftEditorSuccess,
                     failure: this.onLoadDraftEditorFailure
                 }
-            }
+            },
+            onEsc: Ext.emptyFn
         });
         this.initComponentExtra();
         this.callParent(arguments);
     },
 
     initComponentExtra: function() {
+        this.previewButton = Ext.widget('button', {
+            text: 'Show preview',
+            scale: 'large',
+            //iconCls: 'icon-save-32',
+            listeners: {
+                scope: this,
+                click: this.onPreview,
+            }
+        });
+
         this.draftButton = Ext.widget('button', {
             text: 'Save draft',
             scale: 'large',
@@ -95,7 +108,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         this.buttonBar = Ext.widget('toolbar', {
             dock: 'bottom',
             ui: 'footer',
-            items: ['->', this.draftButton, this.publishButton]
+            items: ['->', this.previewButton, this.draftButton, {xtype:'box', width: 20}, this.publishButton]
         });
 
         Ext.apply(this, {
@@ -236,6 +249,17 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
 
     /**
      * @private
+     * Save draft and show preview. Does the same as onSaveDraft(), however a
+     * preview is shown after the draft has been saved.
+     */
+    onPreview: function() {
+        this.previewButton.getEl().mask('');
+        this._tmp_showpreview = true;
+        this.getDraftEditor().onSaveDraft();
+    },
+
+    /**
+     * @private
      * Exit the grade editor.
      */
     exit: function() {
@@ -262,12 +286,16 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      *    editor that ``saveDraft`` was called from.
      */
     saveDraft: function(draftstring, onFailure) {
+        var showpreview = this._tmp_showpreview;
+        this._tmp_showpreview = false; // Reset the show preview (if we dont, any subsequent draft save after a preview will show a preview).
+
         onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
         this.save(false, draftstring, {
             scope: this.getDraftEditor(),
             callback: function() {
                 me.draftButton.getEl().unmask();
+                me.previewButton.getEl().unmask();
             },
             failure: onFailure,
             success: function(response) {
@@ -275,8 +303,49 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                     title: 'Draft saved',
                     message: 'The feedback draft has been saved.'
                 });
+                if(showpreview) {
+                    me.showPreview(response.raw.extra_responsedata);
+                }
             },
         });
+    },
+
+    showPreview: function(fake_staticfeedback) {
+        var fake_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        fake_recordcontainer.setRecord({data: fake_staticfeedback});
+        Ext.widget('window', {
+            width: this.width,
+            height: this.height,
+            modal: true,
+            layout: 'fit',
+            closable: false, // To easy to double click and close an undelying window
+            items: [{
+                xtype: 'panel',
+                autoScroll: true,
+                items: [{
+                    xtype: 'staticfeedbackview',
+                    padding: 20,
+                    singlerecordontainer: fake_recordcontainer
+                }]
+            }],
+            dockedItems: [{
+                xtype: 'toolbar',
+                ui: 'footer',
+                dock: 'bottom',
+                items: ['->', {
+                    xtype: 'button',
+                    text: 'Close preview',
+                    scale: 'large',
+                    listeners: {
+                        click: function() {
+                            this.up('window').close();
+                        }
+                    }
+                }, '->']
+            }]
+        }).show();
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     },
 
     /**

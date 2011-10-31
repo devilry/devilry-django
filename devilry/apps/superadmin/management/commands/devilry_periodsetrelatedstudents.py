@@ -1,17 +1,12 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from optparse import make_option
+from devilry.apps.core.models import RelatedStudent
 
-from devilry_usermod import UserModCommand
-from devilry.apps.core.models import Subject, Period
-import sys
+from devilry_periodsetrelatedexaminers import RelatedBaseCommand
 
-from devilry_periodsetrelatedexaminers import BaseCommand
 
-class Command(BaseCommand):
-    help = 'Set related students on a period. Usernames are read from stdin, one username on each line.'
+class Command(RelatedBaseCommand):
+    help = 'Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model. See devilry/apps/superadmin/examples/relatedstudents.json for an example.'
     user_type = "student"
 
     def handle(self, *args, **options):
-        self.get_course_and_period(args)
-        self.add_users(self.period.relatedstudents, args, options)
+        self.get_subject_and_period(args)
+        self.add_users(RelatedStudent, args, options)

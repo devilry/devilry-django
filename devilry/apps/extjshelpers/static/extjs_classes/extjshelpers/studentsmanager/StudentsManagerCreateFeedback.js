@@ -74,7 +74,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
         this.down('studentsmanager_studentsgrid').gatherSelectedRecordsInArray({
             scope: this,
             callback: function(groupRecords) {
-                if(this.anyGroupHaveNoDeliveries(groupRecords)) {
+                if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC && this.anyGroupHaveNoDeliveries(groupRecords)) {
                     Ext.MessageBox.show({
                         title: 'Selected groups with no deliveries',
                         msg: 'One or more of the selected groups have no deliveries. You can only give feedback to groups with deliveries. Please review your selection and try again.',
@@ -111,32 +111,58 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
         this.getEl().mask(msg);
 
         if(assignmentGroupRecord.data.latest_delivery_id == null)  {
-            this.progressWindow.addWarning(assignmentGroupRecord, 'Has no deliveries, and therefore we can not add any feedback.');
-            this._finishedSavingGroupCount ++;
-            this.checkIfFinishedGivingFeedback(totalSelectedGroups);
-        } else {
-            var draftrecord = Ext.create(feedbackdraftModelName, {
-                draft: draftstring,
-                published: true,
-                delivery: assignmentGroupRecord.data.latest_delivery_id
-            });
-            draftrecord.save({
-                scope: this,
-                callback: function(r, operation) {
-                    if(operation.success) {
-                        this.progressWindow.addSuccess(assignmentGroupRecord, 'Feedback successfully created.');
-                    } else {
-                        this.progressWindow.addErrorFromOperation(
-                            assignmentGroupRecord, 'Failed to create feedback', operation
-                        );
+            if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
+                this.progressWindow.addWarning(assignmentGroupRecord, 'Has no deliveries, and therefore we can not add any feedback.');
+                this._finishedSavingGroupCount ++;
+                this.checkIfFinishedGivingFeedback(totalSelectedGroups);
+            } else {
+                var delivery = this.createDeliveryRecord(assignmentGroupRecord, this.deliveryTypes.TYPE_NON_ELECTRONIC);
+                delivery.save({
+                    scope: this,
+                    callback: function(deliveryrecord, operation) {
+                        if(operation.success) {
+                            this.progressWindow.addSuccess(assignmentGroupRecord, 'Non-electronic delivery successfully registered.');
+                            this.publishFeedbackOnDelivery(assignmentGroupRecord, deliveryrecord.data.id, totalSelectedGroups, feedbackdraftModelName, draftstring);
+                        } else {
+                            this.progressWindow.addErrorFromOperation(
+                                assignmentGroupRecord, 'Failed to register non-electronic delivery', operation
+                            );
+                            this.checkIfFinishedGivingFeedback(totalSelectedGroups);
+                        }
                     }
-
-                    this._finishedSavingGroupCount ++;
-                    this.checkIfFinishedGivingFeedback(totalSelectedGroups);
-                }
-            });
+                });
+            }
+        } else {
+            this.publishFeedbackOnDelivery(assignmentGroupRecord, assignmentGroupRecord.data.latest_delivery_id, totalSelectedGroups, feedbackdraftModelName, draftstring);
         }
     },
+
+    /**
+     * @private
+     */
+    publishFeedbackOnDelivery: function(assignmentGroupRecord, delivery_id, totalSelectedGroups, feedbackdraftModelName, draftstring) {
+        var draftrecord = Ext.create(feedbackdraftModelName, {
+            draft: draftstring,
+            published: true,
+            delivery: delivery_id
+        });
+        draftrecord.save({
+            scope: this,
+            callback: function(r, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(assignmentGroupRecord, 'Feedback successfully created.');
+                } else {
+                    this.progressWindow.addErrorFromOperation(
+                        assignmentGroupRecord, 'Failed to create feedback', operation
+                    );
+                }
+
+                this._finishedSavingGroupCount ++;
+                this.checkIfFinishedGivingFeedback(totalSelectedGroups);
+            }
+        });
+    },
+
 
     checkIfFinishedGivingFeedback: function(totalSelectedGroups) {
         if(this._finishedSavingGroupCount == totalSelectedGroups) {
