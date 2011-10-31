@@ -8,6 +8,8 @@ from cansavebase import CanSaveBase
 
 @simplified_modelapi
 class SimplifiedCandidate(CanSaveBase):
+    related_fields = ['assignment_group', 'student']
+
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(HasAdminsMixin.MetaMixin, SimplifiedCandidateMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
