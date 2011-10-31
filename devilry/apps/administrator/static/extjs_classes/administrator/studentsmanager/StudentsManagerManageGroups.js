@@ -284,6 +284,10 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
             var tagsString = tags.join(',');
             groupString += Ext.String.format(' ({0})', tagsString);
         }
+        var name = groupRecord.get('name');
+        if(name) {
+            groupString = name + ":: " + groupString;
+        }
         return groupString;
     },
 
