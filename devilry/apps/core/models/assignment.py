@@ -127,38 +127,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # Get all candidates on assignmentgroups for this assignment
         candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
         for cand in candidates: 
-<<<<<<< HEAD
-            cand.save(anonymous=self.anonymous)
-
-    #TODO delete this?
-    #def save(self, *args, **kwargs):
-        #""" Save and recalculate the value of :attr:`maxpoints` and
-        #:attr:`pointscale`. """
-        #if self.autoscale:
-            #self.pointscale = self.maxpoints
-        #super(Assignment, self).save()
-        #self._update_scalepoints()
-
-    #TODO delete this?
-    #def get_filenames(self):
-        #""" Get the filenames as a list of strings. """
-        #return self.filenames.split()
-
-    #TODO delete this?
-    #def validate_filenames(self, filenames):
-        #""" Raise ValueError unless each filename in the iterable
-        #``filenames`` is one of the filenames on this assignment. Nothing is
-        #done if :attr:`filenames` is not set, or set to a empty string. """
-        #if self.filenames:
-            #valid = self.get_filenames()
-            #for filename in filenames:
-                #if not filename in valid:
-                    #raise ValueError(_("Invalid filename: %(filename)s" %
-                        #dict(filename=filename)))
-=======
             #cand.update_identifier(self.anonymous)
             cand.save(anonymous=self.anonymous)
->>>>>>> 568a8b6033bee5d471a7b1686c739a592c04da8d
 
     @classmethod
     def q_is_admin(cls, user_obj):
