@@ -63,6 +63,10 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
 
     #TODO delete this?
     def save(self, *args, **kwargs):
+<<<<<<< HEAD
+        self.update_identifier(kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous))
+=======
         anonymous = kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous)
         self.update_identifier(anonymous)
+>>>>>>> 568a8b6033bee5d471a7b1686c739a592c04da8d
         super(Candidate, self).save(*args, **kwargs)
