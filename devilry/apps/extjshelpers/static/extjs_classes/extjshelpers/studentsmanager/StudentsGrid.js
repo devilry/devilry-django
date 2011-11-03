@@ -40,18 +40,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     candidatesCol: Ext.create('Ext.XTemplate', 
         '<ul class="candidatescolumn">',
-        '    <tpl for="candidates__identifier">',
+        '    <tpl for="candidates">',
         '       <li>',
-        '           {.}',
+        '           {identifier}',
         '       </li>',
         '    </tpl>',
         '</ul>'
     ),
     fullNamesCol: Ext.create('Ext.XTemplate', 
         '<ul class="fullnamescol">',
-        '    <tpl for="candidates__full_name">',
+        '    <tpl for="candidates">',
         '       <li>',
-        '           {.}',
+        '           {full_name}',
         '       </li>',
         '    </tpl>',
         '</ul>'
