@@ -40,8 +40,6 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
     identifier = models.CharField(max_length=30,
                                   help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
-    username = models.CharField(max_length=30, blank=True, null=True,
-                                 help_text='None if this is a candidate on an anonymous assignment, and username if not.')
     full_name = models.CharField(max_length=300, blank=True, null=True,
                                  help_text='None if this is a candidate on an anonymous assignment, and full name if not.')
     email = models.CharField(max_length=300, blank=True, null=True,
@@ -62,7 +60,6 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
         if anonymous:
             self.full_name = None
             self.email = None
-            self.username = None
             if not self.candidate_id:
                 self.identifier = "candidate-id missing"
             else:
