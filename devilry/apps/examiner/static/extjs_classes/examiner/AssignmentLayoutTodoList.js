@@ -1,6 +1,6 @@
-Ext.define('devilry.examiner.AssignmentView', {
+Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
     extend: 'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
-    alias: 'widget.examiner-assignmentview',
+    alias: 'widget.examiner-assignmentlayout-todolist',
 
     requires: [
         'devilry.extjshelpers.studentsmanager.StudentsManager',

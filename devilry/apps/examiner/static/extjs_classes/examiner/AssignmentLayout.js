@@ -2,7 +2,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     extend: 'Ext.container.Container',
     alias: 'widget.examiner-assignmentlayout',
     requires: [
-        'devilry.examiner.AssignmentView',
+        'devilry.examiner.AssignmentLayoutTodoList',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.SingleRecordView'
     ],
@@ -37,7 +37,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
                 align: 'stretch'
             },
             items: [this.heading, {
-                xtype: 'examiner-assignmentview',
+                xtype: 'examiner-assignmentlayout-todolist',
                 flex: 1,
                 assignmentid: this.assignmentid,
                 assignment_recordcontainer: this.assignment_recordcontainer,
