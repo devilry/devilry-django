@@ -47,6 +47,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '    </tpl>',
         '</ul>'
     ),
+    fullNamesCol: Ext.create('Ext.XTemplate', 
+        '<ul class="fullnamescol">',
+        '    <tpl for="candidates__full_name">',
+        '       <li>',
+        '           {.}',
+        '       </li>',
+        '    </tpl>',
+        '</ul>'
+    ),
 
     usernamesCol: Ext.create('Ext.XTemplate', 
         '<ul class="usernamescolumn">',
@@ -161,12 +170,30 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 studentsCol = col;
             }
         } else {
-            studentsCol = {
-                text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
-                menuDisabled: true,
-                sortable: true,
-                renderer: this.formatCandidatesCol
-            };
+            if(this.isAnonymous) {
+                studentsCol = {
+                    text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
+                    menuDisabled: true,
+                    sortable: true,
+                    renderer: this.formatCandidatesCol
+                };
+            } else {
+                studentsCol = {
+                    text: 'Students', dataIndex: 'id',
+                    menuDisabled: true, sortable: false,
+                    columns: [{
+                        text: 'Usernames', dataIndex: 'candidates__identifier',
+                        width: 100,
+                        menuDisabled: true, sortable: true,
+                        renderer: this.formatCandidatesCol
+                    }, {
+                        text: 'Full names', dataIndex: 'candidates__full_name',
+                        width: 100,
+                        menuDisabled: true, sortable: true,
+                        renderer: this.formatFullNamesCol
+                    }]
+                };
+            }
         }
 
         Ext.apply(this, {
@@ -248,6 +275,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     formatCandidatesCol: function(value, p, record) {
         return this.candidatesCol.apply(record.data);
+    },
+    formatFullNamesCol: function(value, p, record) {
+        return this.fullNamesCol.apply(record.data);
     },
 
     formatUsernamesCol: function(value, p, record) {
