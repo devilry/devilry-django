@@ -21,6 +21,13 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
     
     initComponent: function() {
+        var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
+        assignmentmodel.load(this.assignmentid, {
+            scope: this,
+            success: this._onLoadAssignmentSuccess,
+            failure: this._onLoadAssignmentFailure
+        });
+
         this.heading = Ext.widget('singlerecordview', {
             singlerecordontainer: this.assignment_recordcontainer,
             tpl: Ext.create('Ext.XTemplate',
@@ -36,19 +43,40 @@ Ext.define('devilry.examiner.AssignmentLayout', {
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [this.heading, {
-                xtype: 'examiner-assignmentlayout-todolist',
-                flex: 1,
-                assignmentid: this.assignmentid,
-                assignment_recordcontainer: this.assignment_recordcontainer,
-                assignmentmodelname: this.assignmentmodelname,
-                assignmentgroupstore: this.assignmentgroupstore
-            }]
+            items: []
         });
         this.callParent(arguments);
     },
 
+    _onLoadAssignmentSuccess: function(record) {
+        this.assignment_recordcontainer.setRecord(record);
+    },
+
+    _onLoadAssignmentFailure: function() {
+        Ext.MessageBox.alert("Failed to load assignment. Please try to reload the page.");
+    },
+
     _onLoadRecord: function() {
+        this.add([this.heading, {
+            xtype: 'tabpanel',
+            flex: 1,
+            items: [{
+                xtype: 'examiner-assignmentlayout-todolist',
+                assignmentid: this.assignmentid,
+                assignment_recordcontainer: this.assignment_recordcontainer,
+                assignmentmodelname: this.assignmentmodelname,
+                assignmentgroupstore: this.assignmentgroupstore
+            }, {
+                xtype: 'studentsmanager',
+                title: 'Detailed overview of all students',
+                assignmentgroupstore: this.assignmentgroupstore,
+                assignmentid: this.assignmentid,
+                assignmentrecord: this.assignment_recordcontainer.record,
+                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
+                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
+                isAdministrator: false
+            }]
+        }]);
         Ext.getBody().unmask();
     }
 });

@@ -27,26 +27,19 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
+               iconCls: 'icon-save-32',
                text: 'Download all deliveries',
                listeners: {
                    scope: this,
                    click: this.onDownload
-               }
-            }, {
-               xtype: 'button',
-               scale: 'large',
-               text: 'Manage assignment groups (students)',
-               listeners: {
-                   scope: this,
-                   click: this.onStudents
                }
             }],
             
             helpTpl: Ext.create('Ext.XTemplate',
                 '<div class="section helpsection">',
                 '   {todohelptext}',
-                '   <p>Choose <span class="menuref">Manage assignment groups (students)</span> to view all groups, and to give feedback to multiple groups.</p>',
-                '   <p>You may want to <span class="menuref">Download all deliveries</span> as a zip file instead of downloading the delivery for each group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.</p>',
+                '   <p>Choose the <span class="menuref">Detailed overview of all students tab</span> to view all groups, and to give feedback to multiple groups.</p>',
+                '   <p>You may want to <span class="menuref">Download all deliveries</span> as a zip file instead of downloading the delivery for each student/group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.</p>',
                 '</div>'
             ),
 
@@ -58,54 +51,12 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             },
         });
         this.callParent(arguments);
-
-        var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
-        assignmentmodel.load(this.assignmentid, {
-            scope: this,
-            success: this.onLoadAssignmentSuccess,
-            failure: this.onLoadAssignmentFailure
-        });
+        this._loadTodoList();
     },
 
-    onLoadAssignmentSuccess: function(record) {
-        this.assignment_recordcontainer.setRecord(record);
-        //this.onStudents();
-    },
 
     _loadTodoList: function() {
         this.loadTodoListForAssignment(this.assignmentid);
-    },
-
-    onLoadAssignmentFailure: function() {
-        throw "Failed to load assignment";
-    },
-
-    onStudents: function(button) {
-        var studentswindow = Ext.create('Ext.window.Window', {
-            title: 'Students',
-            width: 926,
-            height: 500,
-            layout: 'fit',
-            maximizable: false,
-            modal: true,
-            maximized: true,
-            items: {
-                xtype: 'studentsmanager',
-                assignmentgroupstore: this.assignmentgroupstore,
-                assignmentid: this.assignmentid,
-                assignmentrecord: this.assignment_recordcontainer.record,
-                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
-                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
-                isAdministrator: false
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    this._loadTodoList();
-                }
-            }
-        });
-        studentswindow.show();
     },
 
     onDownload: function() {
