@@ -2,8 +2,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.studentsmanager',
     cls: 'studentsmanager',
-    frame: false,
-    border: false,
 
     requires: [
         'devilry.extjshelpers.studentsmanager.FilterSelector',

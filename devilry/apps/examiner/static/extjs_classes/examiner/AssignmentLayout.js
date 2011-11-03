@@ -56,27 +56,49 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         Ext.MessageBox.alert("Failed to load assignment. Please try to reload the page.");
     },
 
-    _onLoadRecord: function() {
+    _getStudentsManagerConfig: function() {
+        return {
+            xtype: 'studentsmanager',
+            title: 'Detailed overview of all students',
+            assignmentgroupstore: this.assignmentgroupstore,
+            assignmentid: this.assignmentid,
+            assignmentrecord: this.assignment_recordcontainer.record,
+            deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
+            gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
+            isAdministrator: false
+        };
+    },
+
+    _getTodoListConfig: function() {
+        return {
+            xtype: 'examiner-assignmentlayout-todolist',
+            assignmentid: this.assignmentid,
+            assignment_recordcontainer: this.assignment_recordcontainer,
+            assignmentmodelname: this.assignmentmodelname,
+            assignmentgroupstore: this.assignmentgroupstore
+        };
+    },
+
+    _electronicLayout: function() {
         this.add([this.heading, {
             xtype: 'tabpanel',
             flex: 1,
-            items: [{
-                xtype: 'examiner-assignmentlayout-todolist',
-                assignmentid: this.assignmentid,
-                assignment_recordcontainer: this.assignment_recordcontainer,
-                assignmentmodelname: this.assignmentmodelname,
-                assignmentgroupstore: this.assignmentgroupstore
-            }, {
-                xtype: 'studentsmanager',
-                title: 'Detailed overview of all students',
-                assignmentgroupstore: this.assignmentgroupstore,
-                assignmentid: this.assignmentid,
-                assignmentrecord: this.assignment_recordcontainer.record,
-                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
-                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
-                isAdministrator: false
-            }]
+            items: [this._getTodoListConfig(), this._getStudentsManagerConfig()]
         }]);
+    },
+
+    _nonElectronicLayout: function() {
+        var studentsmanagerConf = this._getStudentsManagerConfig();
+        studentsmanagerConf.flex = 1;
+        this.add([this.heading, studentsmanagerConf]);
+    },
+
+    _onLoadRecord: function() {
+        if(this.assignment_recordcontainer.record.get('delivery_types') == 1) {
+            this._nonElectronicLayout();
+        } else {
+            this._electronicLayout();
+        }
         Ext.getBody().unmask();
-    }
+    },
 });
