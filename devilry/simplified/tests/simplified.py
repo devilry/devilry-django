@@ -2,7 +2,7 @@ from django.test import TestCase
 from devilry.apps.core import testhelper
 from ..utils import modelinstance_to_dict
 
-from ..fieldspec import FieldSpec
+from ..fieldspec import FieldSpec, OneToMany
 from ..filterspec import FilterSpecs, FilterSpec, PatternFilterSpec
 
 
@@ -64,6 +64,18 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         self.assertEquals(modeldict2[_assignment_long], self.inf101_fall11_a2.long_name)
         self.assertEquals(modeldict2[_assignment_short], self.inf101_fall11_a2.short_name)
         self.assertEquals(modeldict2[_assignment_id], self.inf101_fall11_a2.id)
+
+
+    def test_model_to_dict_assignmentgroup(self):
+        resultfields = FieldSpec('id', OneToMany('candidates', fields=['full_name', 'email']))
+        modeldict = modelinstance_to_dict(self.inf101_fall11_a1_g1, resultfields.aslist())
+        self.assertEquals(modeldict['candidates'], [{'email': u'stud1@example.com', 'full_name': None},
+                                                    {'email': u'stud2@example.com', 'full_name': None}])
+
+        resultfields = FieldSpec('id', OneToMany('candidates', fields=['student__username', 'student__devilryuserprofile__full_name']))
+        modeldict = modelinstance_to_dict(self.inf101_fall11_a1_g1, resultfields.aslist())
+        self.assertEquals(modeldict['candidates'], [{'student__username': u'stud1', 'student__devilryuserprofile__full_name': None},
+                                                    {'student__username': u' stud2', 'student__devilryuserprofile__full_name': None}])
 
     def test_fieldspec(self):
         fs1 = FieldSpec('value1', 'value2', group1=['groupval1', 'groupval2'])

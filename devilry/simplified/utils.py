@@ -3,6 +3,7 @@ proves useful outside this module, they should me moved to ``devilry.utils``. ""
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models import Max, Count
+from fieldspec import OneToMany
 
 
 def get_clspath(cls):
@@ -21,7 +22,10 @@ def get_field_from_fieldname(modelcls, fieldname, fkfield_as_idfield=False):
             return _recurse_get_modelfield(parentmodel, path)
         else:
             return field
-    return _recurse_get_modelfield(modelcls, fieldname.split('__'))
+    if isinstance(fieldname, OneToMany):
+        pass
+    else:
+        return _recurse_get_modelfield(modelcls, fieldname.split('__'))
 
 
 def _get_instanceattr(instance, fieldname):
@@ -69,11 +73,14 @@ def modelinstance_to_dict(instance, fieldnames):
 
     :param instance: A django model instance.
     :param fieldname: List of fieldname names. Can also be foreign keys, such as
-        ``parentnode__parentnode__short_name``.
+        ``parentnode__parentnode__short_name``, or :class:`devilry.simplified.OneToMany`.
     """
     dct = {}
     for fieldname in fieldnames:
-        if "__" in fieldname:
+        if isinstance(fieldname, OneToMany):
+            onetomany = fieldname
+            dct[onetomany.related_field] = onetomany.as_list(instance)
+        elif "__" in fieldname:
             path = fieldname.split('__')
             dct[fieldname] = _recurse_getmodelattr(instance, path)
         else:
