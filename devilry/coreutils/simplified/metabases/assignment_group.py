@@ -1,5 +1,5 @@
 from devilry.apps.core import models
-from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
+from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs, OneToMany,
                                 ForeignFilterSpec, boolConverter, intConverter, noCandidateIdConverter,
                                 intOrNoneConverter, dateTimeConverter)
 
@@ -20,9 +20,10 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'latest_deadline_id',
                              'latest_deadline_deadline',
                              'number_of_deliveries',
-                             users=['candidates__identifier'],
-                             student_details=['candidates__full_name',
-                                              'candidates__email'],
+                             #users=['candidates__identifier'],
+                             #student_details=['candidates__full_name',
+                                              #'candidates__email'],
+                             candidates=[OneToMany('candidates', fields=['identifier', 'full_name', 'email'])],
                              feedback=['feedback__points',
                                        'feedback__grade',
                                        'feedback__is_passing_grade'],
@@ -43,6 +44,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                                       'parentnode__parentnode__parentnode__long_name',
                                       'parentnode__parentnode__parentnode__short_name']
                              )
+    orderbyfields = ['candidates__identifier', 'candidates__full_name', 'candidates__email']
     searchfields = FieldSpec('name',
                              'candidates__identifier',
                              # assignment
