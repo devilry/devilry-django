@@ -446,6 +446,44 @@ table.horizontalinfotable {
       padding: 1px 4px;
       white-space: nowrap; }
 
+.treeheading {
+  margin-bottom: 20px; }
+  .treeheading h1 {
+    font-size: 1.4em !important;
+    font-weight: bold;
+    padding: 0;
+    margin: 0 0 5px 0 !important;
+    display: inline-block; }
+    .treeheading h1:after {
+      content: ', '; }
+  .treeheading h2 {
+    font-size: 1.0em !important;
+    margin: 0 0 5px 10px !important;
+    display: inline-block;
+    padding: 0; }
+    .treeheading h2:after {
+      content: ', '; }
+  .treeheading h3 {
+    font-size: 1.0em !important;
+    font-style: italic;
+    margin: 0 0 5px 10px !important;
+    display: inline-block;
+    padding: 0; }
+  .treeheading ul li {
+    display: inline; }
+    .treeheading ul li:after {
+      content: ", "; }
+    .treeheading ul li:last-child:after {
+      content: ""; }
+  .treeheading a.email {
+    display: inline-block;
+    height: 18px;
+    padding-left: 19px;
+    color: #444;
+    background-image: url(icons/16x16/email.png);
+    background-repeat: no-repeat;
+    background-position: left center; }
+
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
   font-size: 12px;
@@ -1229,44 +1267,6 @@ div.section h3 {
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
-
-.treeheading {
-  margin-bottom: 30px; }
-  .treeheading h1 {
-    font-size: 1.4em !important;
-    font-weight: bold;
-    padding: 0;
-    margin: 0 0 5px 0 !important;
-    display: inline-block; }
-    .treeheading h1:after {
-      content: ', '; }
-  .treeheading h2 {
-    font-size: 1.0em !important;
-    margin: 0 0 5px 10px !important;
-    display: inline-block;
-    padding: 0; }
-    .treeheading h2:after {
-      content: ', '; }
-  .treeheading h3 {
-    font-size: 1.0em !important;
-    font-style: italic;
-    margin: 0 0 5px 10px !important;
-    display: inline-block;
-    padding: 0; }
-  .treeheading ul li {
-    display: inline; }
-    .treeheading ul li:after {
-      content: ", "; }
-    .treeheading ul li:last-child:after {
-      content: ""; }
-  .treeheading a.email {
-    display: inline-block;
-    height: 18px;
-    padding-left: 19px;
-    color: #444;
-    background-image: url(icons/16x16/email.png);
-    background-repeat: no-repeat;
-    background-position: left center; }
 
 #content-main {
   margin-top: 30px; }
