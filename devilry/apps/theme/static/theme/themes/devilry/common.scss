@@ -555,6 +555,15 @@ div.section {
     ul {
         @include inlineList();
     }
+    a.email {
+        display: inline-block;
+        height: 18px;
+        padding-left: 19px;
+        color: #444;
+        background-image: url(icons/16x16/email.png);
+        background-repeat: no-repeat;
+        background-position: left center;
+    }
 }
 
 #content-main {

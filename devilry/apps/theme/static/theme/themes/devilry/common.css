@@ -200,6 +200,9 @@ input, select {
 .icon-help-16 {
   background-image: url(icons/16x16/help.png) !important; }
 
+.icon-email-16 {
+  background-image: url(icons/16x16/email.png) !important; }
+
 .icon-help-32 {
   background-image: url(icons/32x32/help.png) !important; }
 
@@ -229,6 +232,9 @@ input, select {
 
 .icon-down-32 {
   background-image: url(icons/32x32/down.png) !important; }
+
+.icon-email-32 {
+  background-image: url(icons/32x32/email.png) !important; }
 
 .text_with_tooltip {
   text-decoration: underline;
@@ -1197,6 +1203,14 @@ div.section h3 {
       content: ", "; }
     .treeheading ul li:last-child:after {
       content: ""; }
+  .treeheading a.email {
+    display: inline-block;
+    height: 18px;
+    padding-left: 19px;
+    color: #444;
+    background-image: url(icons/16x16/email.png);
+    background-repeat: no-repeat;
+    background-position: left center; }
 
 #content-main {
   margin-top: 30px; }
