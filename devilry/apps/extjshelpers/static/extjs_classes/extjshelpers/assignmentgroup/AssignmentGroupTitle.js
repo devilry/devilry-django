@@ -11,9 +11,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
         '   {name}: ',
         '</tpl>',
         '<ul>',
-        '<tpl for="candidates__identifier">',
-        '   <li>{.}</li>',
+        '<tpl for="candidates">',
+        '   <li>{identifier} <tpl if="full_name">({full_name})</tpl></li>',
         '</tpl>',
-        '</ul>'
+        '</ul>',
+        '<tpl if="canExamine">',
+            '<tpl if="parentnode__anonymous == false">',
+                '<a href="mailto:',
+                    '<tpl for="candidates">',
+                        '{email}<tpl if="xindex &lt; xcount">,</tpl>',
+                    '</tpl>',
+                '?subject={parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__short_name}.{parentnode__short_name}',
+                '&body={url}',
+                '">',
+                'Send email</a>',
+            '</tpl>',
+        '</tpl>'
     )
 });

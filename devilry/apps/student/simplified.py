@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db.models import Count, Max
 import django.dispatch
 
-from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
+from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied, FieldSpec
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedPeriodMetaMixin,
                                                    SimplifiedAssignmentMetaMixin,
@@ -118,6 +118,9 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
         methods = ['search', 'read']
+
+        # TODO: Replace all uses of candidates__student__username with candidates in SimplifiedAssignmentGroupMetaMixin
+        resultfields = FieldSpec(users=['candidates__identifier']) +SimplifiedAssignmentGroupMetaMixin.resultfields
 
     @classmethod
     def create_searchqryset(cls, user):

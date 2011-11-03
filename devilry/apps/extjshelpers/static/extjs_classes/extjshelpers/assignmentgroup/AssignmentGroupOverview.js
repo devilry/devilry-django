@@ -195,7 +195,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             },
             items: [{
                 xtype: 'assignmentgrouptitle',
-                singlerecordontainer: this.assignmentgroup_recordcontainer
+                singlerecordontainer: this.assignmentgroup_recordcontainer,
+                extradata: {
+                    canExamine: this.canExamine,
+                    url: window.location.href
+                }
             }, {
                 xtype: 'container',
                 layout: 'border',

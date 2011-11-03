@@ -93,6 +93,9 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
         methods = ('search', 'read', 'update')
         editablefields = ('is_open',)
 
+        # TODO: Replace all uses of candidates__student__username with candidates in SimplifiedAssignmentGroupMetaMixin
+        resultfields = FieldSpec(users=['candidates__identifier']) +SimplifiedAssignmentGroupMetaMixin.resultfields
+
     @classmethod
     def create_searchqryset(cls, user):
         """ Returns all AssignmentGroup-objects where given ``user`` is examiners.
