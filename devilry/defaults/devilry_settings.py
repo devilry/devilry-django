@@ -29,6 +29,10 @@ DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment deliver
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
+## Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
+## to automatically set email to this pattern if it is not set when a user is saved.
+#DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
+
 
 
 ## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard

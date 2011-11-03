@@ -15,6 +15,7 @@ DATABASES = {"default": {
 
 INSTALLED_APPS += [
                    'devilry.apps.asminimalaspossible_gradeeditor',
+                   #'devilry.apps.autoset_empty_email_by_username',
                    #'django_jenkins',
                    #'devilry.apps.gradeform_gradeeditor',
                    #'devilry.projects.dev.apps.test',
