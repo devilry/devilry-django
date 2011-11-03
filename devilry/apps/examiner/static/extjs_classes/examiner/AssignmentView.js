@@ -1,5 +1,5 @@
 Ext.define('devilry.examiner.AssignmentView', {
-    extend: 'Ext.panel.Panel',
+    extend: 'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
     alias: 'widget.examiner-assignmentview',
 
     requires: [
@@ -21,9 +21,9 @@ Ext.define('devilry.examiner.AssignmentView', {
     },
 
     initComponent: function() {
-        this._todolist = Ext.widget('assignmentgrouptodolist', {
+        Ext.apply(this, {
+            title: 'Todo-list',
             store: this.assignmentgroupstore,
-            //height: 350,
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
@@ -57,13 +57,6 @@ Ext.define('devilry.examiner.AssignmentView', {
                 window.location.href = url;
             },
         });
-
-
-        Ext.apply(this, {
-            layout: 'fit',
-            title: 'Todo-list',
-            items: this._todolist
-        });
         this.callParent(arguments);
 
         var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
@@ -72,11 +65,7 @@ Ext.define('devilry.examiner.AssignmentView', {
             success: this.onLoadAssignmentSuccess,
             failure: this.onLoadAssignmentFailure
         });
-        this.loadTodoList();
-    },
-
-    loadTodoList: function() {
-        this._todolist.loadTodoListForAssignment(this.assignmentid);
+        this.loadTodoListForAssignment(this.assignmentid);
     },
 
     onLoadAssignmentSuccess: function(record) {

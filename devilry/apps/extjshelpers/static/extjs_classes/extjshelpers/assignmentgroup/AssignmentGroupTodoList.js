@@ -5,8 +5,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     requires: [
         'devilry.extjshelpers.formfields.StoreSearchField'
     ],
-    //frame: false,
-    //border: false,
 
     studentsColTpl: Ext.create('Ext.XTemplate',
         '<div class="section popuplistitem">',
@@ -87,7 +85,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 type: 'hbox',
                 align: 'stretch'
             },
-            border: false,
             items: [{
                 flex: 6,
                 xtype: 'grid',
