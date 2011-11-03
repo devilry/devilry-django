@@ -35,7 +35,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
      * @private
      */
     onRandomDistributeExaminers: function() {
-        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
         if(this.noneSelected()) {
             this.onSelectNone();
             return;
