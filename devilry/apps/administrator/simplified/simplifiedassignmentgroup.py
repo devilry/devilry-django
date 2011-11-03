@@ -21,7 +21,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         fake_editablefields = ('fake_examiners', 'fake_candidates', 'fake_tags')
         methods = ['create', 'read', 'update', 'delete', 'search']
         resultfields = \
-                FieldSpec(users=['candidates__student__username', 'examiners__user__username'],
+                FieldSpec(users=['candidates__student__username', 'candidates__identifier', 'examiners__user__username'],
                           students_full_name=['candidates__student__devilryuserprofile__full_name'],
                           tags=['tags__tag']) + \
                 SimplifiedAssignmentGroupMetaMixin.resultfields
