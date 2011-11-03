@@ -34,6 +34,12 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
                    click: this.onDownload
                }
             }],
+            listeners: {
+                scope: this,
+                show: function() {
+                    this._loadTodoList();
+                }
+            },
             
             helpTpl: Ext.create('Ext.XTemplate',
                 '<div class="section helpsection">',
