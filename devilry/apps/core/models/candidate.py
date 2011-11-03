@@ -40,6 +40,10 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
     identifier = models.CharField(max_length=30,
                                   help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
+    full_name = models.CharField(max_length=300, blank=True, null=True,
+                                 help_text='None if this is a candidate on an anonymous assignment, and full name if not.')
+    email = models.CharField(max_length=300, blank=True, null=True,
+                                 help_text='None if this is a candidate on an anonymous assignment, and email address if not.')
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod
@@ -54,11 +58,15 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
 
     def update_identifier(self, anonymous):
         if anonymous:
+            self.full_name = None
+            self.email = None
             if not self.candidate_id:
                 self.identifier = "candidate-id missing"
             else:
                 self.identifier = self.candidate_id
         else:
+            self.email = self.student.email
+            self.full_name = self.student.devilryuserprofile.full_name
             self.identifier = self.student.username
 
     #TODO delete this?
