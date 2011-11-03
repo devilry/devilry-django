@@ -35,8 +35,9 @@ class QryResultWrapper(object):
         The total number of matches before slicing (before applying start and
         limit).
     """
-    def __init__(self, resultfields, searchfields, django_qryset):
+    def __init__(self, resultfields, searchfields, django_qryset, orderbyfields=[]):
         self.resultfields = resultfields
+        self.orderbyfields = set(self.resultfields + orderbyfields)
         self.searchfields = searchfields
         self._insecure_django_qryset = django_qryset
         self._cached_valuesqryset = None
@@ -96,8 +97,8 @@ class QryResultWrapper(object):
         (including those prefixed with a character, such as '-')
         """
         def filter_test(orderfield):
-            return orderfield in self.resultfields or \
-                    (orderfield[1:] in self.resultfields and orderfield[0] == '-')
+            return orderfield in self.orderbyfields or \
+                    (orderfield[1:] in self.orderbyfields and orderfield[0] == '-')
         return filter(filter_test, orderby)
 
     def _order_queryset(self, orderby):

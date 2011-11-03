@@ -144,9 +144,10 @@ class SimplifiedModelApi(object):
                                                                         result_fieldgroups,
                                                                         search_fieldgroups,
                                                                         filters)
+        orderbyfields = cls._meta.orderbyfields
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
-        result = QryResultWrapper(resultfields, searchfields, qryset)
+        result = QryResultWrapper(resultfields, searchfields, qryset, orderbyfields)
         return result
 
     @classmethod
@@ -499,6 +500,9 @@ def simplified_modelapi(cls):
     _validate_fieldnameiterator(cls, 'Meta.resultfields', cls._meta.resultfields)
     _require_metaattr(cls, 'searchfields')
     _validate_fieldnameiterator(cls, 'Meta.searchfields', cls._meta.searchfields)
+    if not hasattr(cls._meta, 'orderbyfields'):
+        cls._meta.orderbyfields = []
+    cls._meta.orderbyfields = list(cls._meta.orderbyfields)
     if not hasattr(cls._meta, 'annotated_fields'):
         cls._meta.annotated_fields = tuple()
     _create_meta_ediablefields(cls)
