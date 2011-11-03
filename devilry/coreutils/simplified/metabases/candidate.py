@@ -9,6 +9,8 @@ class SimplifiedCandidateMetaMixin(object):
     model = models.Candidate
     resultfields = FieldSpec('id',
                              'identifier',
+                             'full_name',
+                             'email',
                              'assignment_group')
     searchfields = FieldSpec('identifier')
     filters = FilterSpecs(FilterSpec('id'),

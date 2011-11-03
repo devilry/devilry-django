@@ -22,6 +22,8 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'number_of_deliveries',
                              users=['examiners__user__username',
                                     'candidates__identifier'],
+                             student_details=['candidates__full_name',
+                                              'candidates__email'],
                              feedback=['feedback__points',
                                        'feedback__grade',
                                        'feedback__is_passing_grade'],
