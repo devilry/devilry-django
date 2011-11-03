@@ -49,7 +49,6 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
 
     _onLoadRecord: function() {
-        //this.heading.update(this.assignment_recordcontainer.record.data);
         Ext.getBody().unmask();
     }
 });

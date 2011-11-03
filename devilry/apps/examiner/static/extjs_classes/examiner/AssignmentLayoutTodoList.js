@@ -65,7 +65,6 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             success: this.onLoadAssignmentSuccess,
             failure: this.onLoadAssignmentFailure
         });
-        this.loadTodoListForAssignment(this.assignmentid);
     },
 
     onLoadAssignmentSuccess: function(record) {
@@ -73,12 +72,15 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
         //this.onStudents();
     },
 
+    _loadTodoList: function() {
+        this.loadTodoListForAssignment(this.assignmentid);
+    },
+
     onLoadAssignmentFailure: function() {
         throw "Failed to load assignment";
     },
 
     onStudents: function(button) {
-        this.hide();
         var studentswindow = Ext.create('Ext.window.Window', {
             title: 'Students',
             width: 926,
@@ -99,8 +101,7 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             listeners: {
                 scope: this,
                 close: function() {
-                    this.show();
-                    this.loadTodoList();
+                    this._loadTodoList();
                 }
             }
         });
