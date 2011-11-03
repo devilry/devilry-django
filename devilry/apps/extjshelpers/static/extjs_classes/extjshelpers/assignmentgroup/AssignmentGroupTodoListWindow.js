@@ -21,13 +21,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
             items: {
                 xtype: 'assignmentgrouptodolist',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                store: this.assignmentgroupstore,
-                helpTpl: Ext.create('Ext.XTemplate',
-                    '<div class="section helpsection">',
-                    '   {todohelptext}',
-                    '   <p>Choose <span class="menuref">Go to assignment</span> to show the assignment where you have access to all groups, and information about the assignment.</p>',
-                    '</div>'
-                ),
+                store: this.assignmentgroupstore
             }
         });
         this.callParent(arguments);
