@@ -2,6 +2,8 @@ from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
                                 PermissionDenied)
 from devilry.coreutils.simplified.metabases import SimplifiedDeliveryMetaMixin
 
+from devilry.apps.examiner.simplified import SimplifiedDelivery as ExaminerSimplifiedDelivery
+
 
 @simplified_modelapi
 class SimplifiedDelivery(SimplifiedModelApi):
