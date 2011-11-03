@@ -45,6 +45,7 @@ body {
 @import "mask";
 @import "statistics";
 @import "tables";
+@import "studentsmanager";
 
 
 @mixin commonHeaderElements() {
@@ -795,50 +796,6 @@ div.section {
 }
 
 
-.studentsmanager {
-    .widget-studentsmanager_studentsgrid {
-        td.x-grid-cell {
-            vertical-align: middle !important;
-        }
-        .infocolumn {
-            line-height: 1.8em;
-            .has_no_deadlines {
-                @include errorInlineItem();
-            }
-        }
-        .candidatescolumn, .examinerscolumn, .usernamescolumn {
-            //@include inlineList();
-            li {
-                list-style: none;
-            }
-        }   
-        .pointscolumn {
-            font-size: 30px;
-        }
-        .nofeedback, .nodeliveries {
-            color: #aaa;
-        }
-        .gradecolumn {
-            line-height: 1.8em;
-            .not_passing_grade {
-                @include warningInlineItem();
-            }
-            .passing_grade {
-                @include goodInlineItem();
-            }
-            .delivery_type {
-                font-style: italic;
-                font-weight: bold !important;
-                .alias {
-                    @include neutralInlineItem();
-                }
-                .unknown {
-                    @include errorInlineItem();
-                }
-            }
-        }
-    }
-}
 
 
 .widget-menuheader {

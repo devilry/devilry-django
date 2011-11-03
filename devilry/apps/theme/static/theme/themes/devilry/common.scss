@@ -37,6 +37,7 @@ $radiussize_small: 6px;
 @import "statistics";
 @import "inlinecommon";
 @import "tables";
+@import "studentsmanager";
 
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
@@ -579,43 +580,6 @@ div.section {
 
 .commaSeparatedList {
     @include inlineList();
-}
-
-
-.studentsmanager {
-    .widget-studentsmanager_studentsgrid {
-        td.x-grid-cell {
-            vertical-align: middle !important;
-        }
-        .infocolumn {
-            line-height: 1.8em;
-            .has_no_deadlines {
-                @include errorInlineItem();
-            }
-        }
-        .candidatescolumn, .examinerscolumn, .usernamescolumn {
-            @include inlineList();
-        }   
-        .pointscolumn {
-            font-size: 30px;
-        }
-        .nofeedback, .nodeliveries {
-            color: #aaa;
-        }
-        .gradecolumn {
-            line-height: 1.8em;
-            .delivery_type {
-                font-style: italic;
-                font-weight: bold !important;
-                .alias {
-                    @include neutralInlineItem();
-                }
-                .unknown {
-                    @include errorInlineItem();
-                }
-            }
-        }
-    }
 }
 
 
