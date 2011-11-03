@@ -45,8 +45,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     },
 
     initComponent: function() {
-        Ext.apply(this, {
-            bbar: [{
+        if(this.role != 'student') {
+            this.bbar = [{
                 xtype: 'button',
                 text: 'New deadline',
                 iconCls: 'icon-add-16',
@@ -54,8 +54,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                     scope: this,
                     click: this.onCreateNewDeadline
                 }
-            }]
-        });
+            }];
+        }
         this.callParent(arguments);
         this.on('render', function() {
             Ext.defer(function() {
