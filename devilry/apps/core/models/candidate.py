@@ -36,7 +36,6 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     assignment_group = models.ForeignKey('AssignmentGroup',
                                          related_name='candidates')
 
-    # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
     identifier = models.CharField(max_length=30,
                                   help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
@@ -69,7 +68,6 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
             self.full_name = self.student.devilryuserprofile.full_name
             self.identifier = self.student.username
 
-    #TODO delete this?
     def save(self, *args, **kwargs):
         anonymous = kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous)
         self.update_identifier(anonymous)
