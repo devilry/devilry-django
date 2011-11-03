@@ -1,5 +1,6 @@
 Ext.define('devilry.examiner.AssignmentView', {
     extend: 'Ext.Container',
+    alias: 'widget.examiner-assignmentview',
     frame: false,
     border: false,
 

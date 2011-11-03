@@ -1,11 +1,14 @@
-{% extends "examiner/base.django.html" %}
+{% extends "examiner/base.django.js" %}
 {% load extjs %}
 
 
-{% block headextra %}
-{{ block.super }}
+{% block imports %}
+    {{ block.super }}
+    Ext.require('devilry.examiner.AssignmentLayout');
+{% endblock %}
 
-<script>
+{% block appjs %}
+    {{ block.super }}
     {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }}
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"period,subject" }};
@@ -13,48 +16,66 @@
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+{% endblock %}
 
     
-    {#{{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,users;Graph" }};#}
-    {#var assignmentgroupGraphstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"Graph" }}; #}
-    Ext.require('devilry.examiner.AssignmentView');
-    Ext.onReady(function() {
-        var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+{% block onready %}
+    {{ block.super }}
+    //Ext.onReady(function() {
+        //var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
-        var heading = Ext.ComponentManager.create({
-            xtype: 'component',
-            renderTo: 'content-heading',
-            data: {},
-            tpl: [
-                '<tpl if="long_name">',
-                '   <h1>{parentnode__parentnode__long_name}</h1>',
-                '   <h2>{parentnode__long_name}</h2>',
-                '   <h3>{long_name} ({short_name})</h3>',
-                '</tpl>'
-            ]
-        });
+        //var heading = Ext.ComponentManager.create({
+            //xtype: 'component',
+            //renderTo: 'content-heading',
+            //data: {},
+            //tpl: [
+                //'<tpl if="long_name">',
+                //'   <h1>{parentnode__parentnode__long_name}</h1>',
+                //'   <h2>{parentnode__long_name}</h2>',
+                //'   <h3>{long_name} ({short_name})</h3>',
+                //'</tpl>'
+            //]
+        //});
 
-        var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
-            renderTo: 'content-main',
-            assignment_recordcontainer: assignment_recordcontainer,
+        //var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
+            //renderTo: 'content-main',
+            //assignment_recordcontainer: assignment_recordcontainer,
+            //assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            //assignmentid: {{ assignmentid }},
+            //assignmentgroupstore: assignmentgroupstore
+        //});
+
+        //assignment_recordcontainer.addListener('setRecord', function() {
+            //heading.update(assignment_recordcontainer.record.data);
+            //{#Ext.Function.defer(function() { assignmentview.onStudents(); }, 200);#}
+        //});
+    //});
+
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        cls: 'viewport',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'examiner'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'examiner-assignmentlayout',
+            margin: {left: 10, right: 10},
             assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             assignmentid: {{ assignmentid }},
             assignmentgroupstore: assignmentgroupstore
-            //assignmentgroupGraphstore: assignmentgroupGraphstore
-        });
-
-        assignment_recordcontainer.addListener('setRecord', function() {
-            heading.update(assignment_recordcontainer.record.data);
-            {#Ext.Function.defer(function() { assignmentview.onStudents(); }, 200);#}
-        });
+        }]
     });
-</script>
 {% endblock %}
 
-{% block main %}
+
+{% comment %}
 <div class="section treeheading" id="content-heading"></div>
 {{ block.super }}
 
 <div id="content-main"></div>
-
-{% endblock %}
+{% endcomment %}
