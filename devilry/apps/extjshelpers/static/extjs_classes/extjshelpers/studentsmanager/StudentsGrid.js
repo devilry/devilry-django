@@ -232,10 +232,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Examiners', dataIndex: 'examiners__username', flex: 3,
-                menuDisabled: true,
-                renderer: this.formatExaminersCol
-            }, {
                 text: 'Tags', dataIndex: 'tags__tag', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatTagsCol
@@ -244,6 +240,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true
             }]
         });
+        if(this.isAdministrator) {
+            Ext.Array.insert(this.columns, 3, [{
+                text: 'Examiners', dataIndex: 'examiners__username', flex: 3,
+                menuDisabled: true,
+                renderer: this.formatExaminersCol
+            }]);
+        }
         if(this.assignmentrecord.get('delivery_types') != 1) {
             this.columns.push({
                 text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
