@@ -22,16 +22,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
                 xtype: 'assignmentgrouptodolist',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 store: this.assignmentgroupstore,
-                toolbarExtra: ['->', {
-                    xtype: 'button',
-                    scale: 'large',
-                    text: 'Go to assignment',
-                    listeners: {
-                        scope: this,
-                        click: this.onGoToAssignmentsView
-                    }
-                }],
-
                 helpTpl: Ext.create('Ext.XTemplate',
                     '<div class="section helpsection">',
                     '   {todohelptext}',
@@ -41,15 +31,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
             }
         });
         this.callParent(arguments);
-    },
-
-    /**
-     * @private
-     */
-    onGoToAssignmentsView: function() {
-        var url = Ext.String.format('../assignment/{0}',
-            this.assignmentgroup_recordcontainer.record.data.parentnode
-        );
-        window.location.href = url;
-    },
+    }
 });
