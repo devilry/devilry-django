@@ -31,7 +31,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetails', {
         '    <tpl if="is_open">',
         '        <div class="section info-small">',
         '           <h1>Open</h1>',
-        '           <p>This assignment is open for more deliveries. You can add as many deliveries as you like, and you examiner(s) will normally correct your latest delivery.</p>',
+        '           <p>This assignment is open for more deliveries. You can add as many deliveries as you like, and your examiner(s) will normally correct your latest delivery.</p>',
         '        </div>',
         '    </tpl>',
         '    <tpl if="!is_open">',
