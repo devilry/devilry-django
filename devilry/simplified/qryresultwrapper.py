@@ -37,7 +37,7 @@ class QryResultWrapper(object):
     """
     def __init__(self, resultfields, searchfields, django_qryset, orderbyfields=[]):
         self.resultfields = resultfields
-        self.orderbyfields = set(self.resultfields + orderbyfields)
+        self.orderbyfields = set(list(self.resultfields) + orderbyfields)
         self.searchfields = searchfields
         self._insecure_django_qryset = django_qryset
         self._cached_valuesqryset = None
