@@ -1,19 +1,10 @@
 class OneToMany(object):
     def __init__(self, related_field, fields=[]):
         self.related_field = related_field
-        self.related_field_list = related_field.split('__')
         self.fields = fields
 
-    def _recursive_get_relatedfield(self, instance, remaining_fields):
-        if len(remaining_fields) == 1:
-            return instance, remaining_fields[0]
-        else:
-            first_field = remaining_fields[0]
-            return self._recursive_get_relatedfield(getattr(instance, first_field), remaining_fields[1:])
-
     def as_list(self, instance):
-        instance, field = self._recursive_get_relatedfield(instance, self.related_field_list)
-        relatedfield = getattr(instance, field)
+        relatedfield = getattr(instance, self.related_field)
         qry = relatedfield.values(*self.fields)
         return [x for x in qry]
 
