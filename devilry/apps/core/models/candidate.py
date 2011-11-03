@@ -75,12 +75,7 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
 
 def sync_candidate_with_user_on_change(sender, **kwargs):
     """
-    Signal handler which is invoked when an Assignment is created.
-
-    Create default grade Config for Assignment with ``config=''`` if the assignment
-    has no grade Config.
-
-    :param kwargs: Must have an *instance* key with an assignment object as value.
+    Signal handler which is invoked when a User is saved.
     """
     user = kwargs['instance']
     for candidate in Candidate.objects.filter(student=user):
