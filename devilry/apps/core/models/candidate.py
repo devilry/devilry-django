@@ -1,5 +1,4 @@
-from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -72,3 +71,20 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
         anonymous = kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous)
         self.update_identifier(anonymous)
         super(Candidate, self).save(*args, **kwargs)
+
+
+def sync_candidate_with_user_on_change(sender, **kwargs):
+    """
+    Signal handler which is invoked when an Assignment is created.
+
+    Create default grade Config for Assignment with ``config=''`` if the assignment
+    has no grade Config.
+
+    :param kwargs: Must have an *instance* key with an assignment object as value.
+    """
+    user = kwargs['instance']
+    for candidate in Candidate.objects.filter(student=user):
+        candidate.save()
+
+post_save.connect(sync_candidate_with_user_on_change,
+                  sender=User)
