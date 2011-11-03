@@ -21,36 +21,6 @@
     
 {% block onready %}
     {{ block.super }}
-    //Ext.onReady(function() {
-        //var assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-
-        //var heading = Ext.ComponentManager.create({
-            //xtype: 'component',
-            //renderTo: 'content-heading',
-            //data: {},
-            //tpl: [
-                //'<tpl if="long_name">',
-                //'   <h1>{parentnode__parentnode__long_name}</h1>',
-                //'   <h2>{parentnode__long_name}</h2>',
-                //'   <h3>{long_name} ({short_name})</h3>',
-                //'</tpl>'
-            //]
-        //});
-
-        //var assignmentview = Ext.create('devilry.examiner.AssignmentView', {
-            //renderTo: 'content-main',
-            //assignment_recordcontainer: assignment_recordcontainer,
-            //assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-            //assignmentid: {{ assignmentid }},
-            //assignmentgroupstore: assignmentgroupstore
-        //});
-
-        //assignment_recordcontainer.addListener('setRecord', function() {
-            //heading.update(assignment_recordcontainer.record.data);
-            //{#Ext.Function.defer(function() { assignmentview.onStudents(); }, 200);#}
-        //});
-    //});
-
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
         cls: 'viewport',
@@ -71,11 +41,3 @@
         }]
     });
 {% endblock %}
-
-
-{% comment %}
-<div class="section treeheading" id="content-heading"></div>
-{{ block.super }}
-
-<div id="content-main"></div>
-{% endcomment %}

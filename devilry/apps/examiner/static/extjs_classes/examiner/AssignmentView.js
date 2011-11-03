@@ -1,8 +1,6 @@
 Ext.define('devilry.examiner.AssignmentView', {
-    extend: 'Ext.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.examiner-assignmentview',
-    frame: false,
-    border: false,
 
     requires: [
         'devilry.extjshelpers.studentsmanager.StudentsManager',
@@ -25,7 +23,7 @@ Ext.define('devilry.examiner.AssignmentView', {
     initComponent: function() {
         this._todolist = Ext.widget('assignmentgrouptodolist', {
             store: this.assignmentgroupstore,
-            height: 350,
+            //height: 350,
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
@@ -62,25 +60,9 @@ Ext.define('devilry.examiner.AssignmentView', {
 
 
         Ext.apply(this, {
-            items: [{
-                xtype: 'panel',
-                title: 'To-do list',
-                frame: false,
-                items: [this._todolist]
-            }]
-                //xtype: 'panel',
-                //title: 'Overview',
-                //margin: {
-                    //top: 30
-                //},
-                //layout: 'fit',
-                //height: 800,
-                //width: "100%",
-                //items: {
-                    //xtype: 'chart_pointsofgroupsonsingleassignment',
-                    //store: this.assignmentgroupGraphstore
-                //}
-            //}]
+            layout: 'fit',
+            title: 'Todo-list',
+            items: this._todolist
         });
         this.callParent(arguments);
 
@@ -91,18 +73,6 @@ Ext.define('devilry.examiner.AssignmentView', {
             failure: this.onLoadAssignmentFailure
         });
         this.loadTodoList();
-
-
-        //this.assignmentgroupGraphstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            //field: 'parentnode',
-            //comp: 'exact',
-            //value: this.assignmentid
-        //}]);
-        //this.assignmentgroupGraphstore.load({
-            //callback: function(records) {
-                ////console.log(records[0].data);
-            //}
-        //});
     },
 
     loadTodoList: function() {

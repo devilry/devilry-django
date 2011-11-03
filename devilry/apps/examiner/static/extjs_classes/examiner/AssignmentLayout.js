@@ -38,6 +38,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             },
             items: [this.heading, {
                 xtype: 'examiner-assignmentview',
+                flex: 1,
                 assignmentid: this.assignmentid,
                 assignment_recordcontainer: this.assignment_recordcontainer,
                 assignmentmodelname: this.assignmentmodelname,

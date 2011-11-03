@@ -96,13 +96,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 frame: false,
                 border: false,
                 sortableColumns: false,
+                autoScroll: true,
                 columns: [{
                     header: 'Students',
                     dataIndex: 'id',
                     flex: 2,
                     menuDisabled: true,
                     renderer: function(value, metaData, grouprecord) {
-                        //console.log(grouprecord.data);
                         var data = {};
                         if(me.assignmentgroup_recordcontainer) {
                             data.current_assignment_group_id = me.assignmentgroup_recordcontainer.record.data.id;
@@ -122,6 +122,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             }, {
                 xtype: 'box',
                 width: 300,
+                autoScroll: true,
                 flex: 4,
                 html: this.helpTpl.apply({todohelptext: this.todohelptext})
             }],
