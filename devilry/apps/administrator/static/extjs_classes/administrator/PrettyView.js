@@ -257,7 +257,7 @@ Ext.define('devilry.administrator.PrettyView', {
             }
         });
         win.show();
-        win.alignTo(button, 'br?', [-win.width, 0]);
+        //win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
     /**

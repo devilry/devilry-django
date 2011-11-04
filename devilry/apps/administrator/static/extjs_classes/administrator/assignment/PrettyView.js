@@ -194,15 +194,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton, {
-                xtype: 'button',
+            relatedButtons: [this.studentsbutton, this.downloadbutton = Ext.widget('button', {
                 scale: 'large',
+                hidden: true,
                 text: 'Download all deliveries',
                 listeners: {
                     scope: this,
                     click: this.onDownload
                 }
-            }],
+            })],
             extraMeButtons: [this.gradeeditormenu],
         });
         this.callParent(arguments);
@@ -222,6 +222,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
+        if(this.record.get('delivery_types') == 0) {
+            this.downloadbutton.show();
+        }
         //this.onStudents();
     },
 
@@ -388,9 +391,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 }
             }
         });
-        this.setSizeToCoverBody(editwindow);
+        //this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        this.alignToCoverBody(editwindow);
+        //this.alignToCoverBody(editwindow);
     },
 
     onDownload: function() {
