@@ -41,7 +41,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
         emptyText: 'Example: Obligatory assignment 1'
     }, {
         name: "parentnode",
-        fieldLabel: "Period",
+        fieldLabel: "Period/semester",
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
         emptyText: 'Select a period',
