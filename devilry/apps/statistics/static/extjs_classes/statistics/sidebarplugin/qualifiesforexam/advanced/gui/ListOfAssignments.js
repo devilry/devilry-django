@@ -97,13 +97,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
 
     _onClickAdd: function() {
         var me = this;
-        //Ext.Msg.prompt('Assignment(s)', 'Please enter short name of one or more assignment(s) separated by comma:', function(btn, text){
-            //if(btn == 'ok'){
-                //var assignmentShortNames = me._parseAssignmentSpec(text);
-                //var assignmentIds = me._convertShortnamesToIds(assignmentShortNames);
-                //me._addToStore(assignmentIds);
-            //}
-        //});
         Ext.widget('window', {
             layout: 'fit',
             title: 'Select one or more assignment(s)',
