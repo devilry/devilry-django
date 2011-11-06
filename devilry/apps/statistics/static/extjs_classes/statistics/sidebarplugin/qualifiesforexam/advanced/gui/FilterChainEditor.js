@@ -79,9 +79,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     _onSaveFilter: function(filter) {
-        console.log(filter);
+        console.log('Filter', filter);
         this.filterchain.filters.push(filter);
-        console.log(this.filterchain);
+        //console.log(this.filterchain);
         this._syncStoreWithLabel();
     }
 });

@@ -29,7 +29,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
                 margin: {bottom: 10}
             }, this.defaultButtonPanel]
         });
-        console.log(this.settings);
 
         this.callParent(arguments);
     },

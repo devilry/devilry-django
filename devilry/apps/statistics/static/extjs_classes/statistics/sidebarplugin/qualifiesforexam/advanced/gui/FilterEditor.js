@@ -51,11 +51,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         }
         return Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
             must_pass: must_pass,
-            pointspec: pointspec
+            pointspecArgs: pointspec
         });
     },
 
     _onSave: function() {
-        this.fireEvent('save', this.getFilter());
+        var filter = this.getFilter();
+        this.fireEvent('save', filter);
     }
 });

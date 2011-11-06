@@ -100,9 +100,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     _getAssignmentRecordsFromIds: function(assignmentIds) {
         var assignmentRecords = [];
         Ext.each(assignmentIds, function(assignmentId, index) {
-            var assignmentRecord = assignment_store.findRecord('id', assignmentId);
+            var assignmentRecord = this.assignment_store.findRecord('id', assignmentId);
             assignmentRecords.push(assignmentRecord);
-        });
+        }, this);
         return assignmentRecords;
     },
 
