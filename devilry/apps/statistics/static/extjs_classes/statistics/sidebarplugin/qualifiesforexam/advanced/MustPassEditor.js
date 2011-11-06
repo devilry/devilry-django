@@ -1,8 +1,8 @@
-Ext.define('devilry.statistics.MustPassEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.MustPassEditor', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-mustpasseditor',
     requires: [
-        'devilry.statistics.ListOfAssignments'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.ListOfAssignments'
     ],
 
     config: {

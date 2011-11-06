@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.Filter', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
     config: {
         pointspec: undefined,
         must_pass: []

@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.ListOfAssignments', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.ListOfAssignments', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.statistics-listofassignments',
     hideHeaders: true,

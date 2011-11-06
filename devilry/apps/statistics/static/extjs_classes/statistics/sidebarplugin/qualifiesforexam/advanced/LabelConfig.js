@@ -1,10 +1,10 @@
-Ext.define('devilry.statistics.LabelConfig', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig', {
     config: {
         label: undefined
     },
     requires: [
-        'devilry.statistics.Filter',
-        'devilry.statistics.PointSpec'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
     ],
 
     constructor: function(config) {
@@ -13,7 +13,7 @@ Ext.define('devilry.statistics.LabelConfig', {
     },
 
     addFilter: function(filterConf) {
-        this.filters.push(Ext.create('devilry.statistics.Filter', filterConf));
+        this.filters.push(Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', filterConf));
     },
 
     match: function(loader, studentRecord) {

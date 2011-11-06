@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.PointSpec', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', {
     config: {
         assignments: [],
         min: undefined,

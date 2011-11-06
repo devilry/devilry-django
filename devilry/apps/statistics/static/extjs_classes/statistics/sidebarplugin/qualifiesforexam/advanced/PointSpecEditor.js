@@ -1,10 +1,10 @@
-Ext.define('devilry.statistics.PointSpecEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpecEditor', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-pointspeceditor',
     requires: [
-        'devilry.statistics.ListOfAssignments',
-        'devilry.statistics.RangeSelect',
-        'devilry.statistics.PointSpec'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.ListOfAssignments',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.RangeSelect',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
     ],
 
     config: {
@@ -41,7 +41,7 @@ Ext.define('devilry.statistics.PointSpecEditor', {
     getResult: function() {
         var range = this.down('statistics-rangeselect').getForm().getFieldValues();
         var assignments = this.down('statistics-listofassignments').getArrayOfAssignmentIds();
-        var pointSpec = Ext.create('devilry.statistics.PointSpec', {
+        var pointSpec = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', {
             assignments: assignments,
             min: range.min,
             max: range.max

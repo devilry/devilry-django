@@ -4,10 +4,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     layout: 'fit',
     requires: [
         'devilry.statistics.Loader',
-        'devilry.statistics.LabelConfig',
-        'devilry.statistics.FilterEditor',
-        'devilry.statistics.LabelOverview',
-        'devilry.statistics.LabelConfigEditor',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterEditor',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfigEditor',
         'devilry.statistics.SidebarPluginContainer',
         'devilry.statistics.dataview.DataView',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Main',
@@ -93,9 +92,9 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         });
 
 
-        var labelConfig = Ext.create('devilry.statistics.LabelConfig');
+        var labelConfig = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig');
         labelConfig.addFilter({
-            pointspec: Ext.create('devilry.statistics.PointSpec', {
+            pointspec: Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', {
                 assignments: [[loader.findAssignmentByShortName('extra').get('id')]],
                 min: 5,
                 max: undefined
