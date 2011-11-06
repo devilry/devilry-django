@@ -24,16 +24,13 @@ Ext.define('devilry.statistics.ChooseAssignmentsGrid', {
         Ext.apply(this, {
             columns: [{
                 header: 'Long name',  dataIndex: 'long_name', flex: 1
-            }],
-            listeners: {
-                scope: this,
-                render: function() {
-                    if(this.selectedAssignmentIds) {
-                        this._selectByIds(this.selectedAssignmentIds);
-                    }
-                }
-            }
+            }]
         });
+        this.on('render', function() {
+            if(this.selectedAssignmentIds) {
+                this._selectByIds(this.selectedAssignmentIds);
+            }
+        }, this);
         this.callParent(arguments);
     },
 

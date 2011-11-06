@@ -3,6 +3,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     alias: 'widget.statistics-listofassignments',
     hideHeaders: true,
 
+    requires: [
+        'devilry.statistics.ChooseAssignmentsGrid'
+    ],
+
     recordTpl: Ext.create('Ext.XTemplate',
         '<tpl if="assignmentRecords.length &gt; 1">',
         '    {prefix}',
@@ -34,11 +38,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
             idIndex: 0,
             fields: ['assignmentIds']
         });
-        this.store.add([{
-            assignmentIds: [1, 3]
-        }, {
-            assignmentIds: [2]
-        }])
+        //this.store.add([{
+            //assignmentIds: [1, 3]
+        //}, {
+            //assignmentIds: [2]
+        //}])
 
         Ext.apply(this, {
             columns: [{
@@ -93,13 +97,45 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
 
     _onClickAdd: function() {
         var me = this;
-        Ext.Msg.prompt('Assignment(s)', 'Please enter short name of one or more assignment(s) separated by comma:', function(btn, text){
-            if(btn == 'ok'){
-                var assignmentShortNames = me._parseAssignmentSpec(text);
-                var assignmentIds = me._convertShortnamesToIds(assignmentShortNames);
-                me._addToStore(assignmentIds);
-            }
-        });
+        //Ext.Msg.prompt('Assignment(s)', 'Please enter short name of one or more assignment(s) separated by comma:', function(btn, text){
+            //if(btn == 'ok'){
+                //var assignmentShortNames = me._parseAssignmentSpec(text);
+                //var assignmentIds = me._convertShortnamesToIds(assignmentShortNames);
+                //me._addToStore(assignmentIds);
+            //}
+        //});
+        Ext.widget('window', {
+            layout: 'fit',
+            title: 'Select one or more assignment(s)',
+            width: 500,
+            height: 350,
+            modal: true,
+            items: {
+                xtype: 'statistics-chooseassignmentsgrid',
+                hideHeaders: true,
+                store: this.assignment_store
+            },
+            bbar: ['->', {
+                xtype: 'button',
+                text: 'Add assignment(s)',
+                scale: 'large',
+                iconCls: 'icon-add-32',
+                listeners: {
+                    scope: this,
+                    click: this._onAdd
+                }
+            }]
+        }).show();
+    },
+
+    _onAdd: function(button) {
+        var win = button.up('window');
+        var grid = win.down('statistics-chooseassignmentsgrid');
+        if(grid.checkAtLeastOneSelected()) {
+            win.close();
+            var assignmentIds = grid.getIdOfSelected();
+            this._addToStore(assignmentIds);
+        }
     },
 
     _parseAssignmentSpec: function(assignmentShortNames) {
