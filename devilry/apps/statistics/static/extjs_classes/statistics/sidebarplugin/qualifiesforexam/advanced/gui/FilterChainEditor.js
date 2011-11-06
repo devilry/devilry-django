@@ -32,9 +32,17 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
                     return filter.toReadableSummary(this.assignment_store);
                 }
             }],
-            tbar: [{
+            tbar: [this.removeButton = Ext.widget('button', {
+                text: 'Remove',
+                iconCls: 'icon-delete-16',
+                disabled: true,
+                listeners: {
+                    scope: this,
+                    click: this._onClickDelete
+                }
+            }), {
                 xtype: 'button',
-                text: 'Add filter',
+                text: 'Add',
                 iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
@@ -42,7 +50,23 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
                 }
             }]
         });
+        this.on('select', this._onSelect, this);
         this.callParent(arguments);
+    },
+
+    _onSelect: function() {
+        this.removeButton.enable();
+    },
+
+    _onClickDelete: function() {
+        var selected = this.getSelectionModel().getSelection();
+        if(selected.length != 1) {
+            Ext.MessageBox('Error', 'Please select a row from the list.');
+            return;
+        }
+        var selectedItem = selected[0];
+        this.store.remove(selectedItem);
+        //this._syncStoreWithChain();
     },
 
     _syncStoreWithChain: function() {
@@ -78,9 +102,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     _onAddFilter: function(filter) {
-        console.log('Filter', filter);
         this.filterchain.filters.push(filter);
-        //console.log(this.filterchain);
         this._syncStoreWithChain();
     }
 });
