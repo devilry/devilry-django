@@ -3,6 +3,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
     requires: [
         'devilry.statistics.ChooseAssignmentsGrid'
     ],
+    autoScroll: true,
 
     initComponent: function() {
         Ext.apply(this, {

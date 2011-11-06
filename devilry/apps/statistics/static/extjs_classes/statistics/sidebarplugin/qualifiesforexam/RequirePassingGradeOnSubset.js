@@ -1,9 +1,9 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnSubset', {
     extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
-    layout: 'fit',
     requires: [
         'devilry.statistics.ChooseAssignmentsGrid'
     ],
+    autoScroll: true,
 
     initComponent: function() {
         Ext.apply(this, {
