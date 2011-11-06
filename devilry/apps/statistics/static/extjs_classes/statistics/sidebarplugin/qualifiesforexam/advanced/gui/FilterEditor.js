@@ -41,7 +41,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         this.callParent(arguments);
     },
 
-    getFilter: function() {
+    getFilterArgs: function() {
         var must_pass = this.down('statistics-mustpasseditor').getResult();
         try {
             var pointspec = this.down('statistics-pointspeceditor').getResult();
@@ -50,16 +50,16 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             Ext.MessageBox.alert('Error', e);
             return false;
         }
-        return Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
+        return {
             must_pass: must_pass,
             pointspecArgs: pointspec
-        });
+        };
     },
 
     _onAdd: function() {
-        var filter = this.getFilter();
-        if(filter != false) {
-            this.fireEvent('addFilter', filter);
+        var filterArgs = this.getFilterArgs();
+        if(filterArgs != false) {
+            this.fireEvent('addFilter', filterArgs);
         }
     }
 });

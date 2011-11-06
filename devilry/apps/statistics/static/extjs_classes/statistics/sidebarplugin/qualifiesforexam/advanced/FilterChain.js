@@ -1,7 +1,5 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain', {
-    config: {
-        label: undefined
-    },
+    extend: 'Ext.data.Store',
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter'
     ],
@@ -12,7 +10,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
 
     constructor: function(config) {
         this.initConfig(config);
-        this.filters = [];
+        this.fields = ['filter'];
+        this.callParent(arguments);
         if(this.filterArgsArray) {
             Ext.each(this.filterArgsArray, function(filterArgs, index) {
                 this.addFilter(filterArgs);
@@ -21,12 +20,15 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
     },
 
     addFilter: function(filterConf) {
-        this.filters.push(Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', filterConf));
+        this.add({
+            filter: Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', filterConf)
+        });
     },
 
     match: function(loader, studentRecord) {
         var matches = false;
-        Ext.each(this.filters, function(filter, index) {
+        Ext.each(this.data.items, function(record, index) {
+            var filter = record.get('filter');
             if(filter.match(studentRecord)) {
                 matches = true;
                 return false; // Break
@@ -37,7 +39,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
 
     toExportArray: function() {
         var result = [];
-        Ext.each(this.filters, function(filter, index) {
+        Ext.each(this.data.items, function(record, index) {
+            var filter = record.get('filter');
             result.push(filter.toExportObject());
         }, this);
         return result;

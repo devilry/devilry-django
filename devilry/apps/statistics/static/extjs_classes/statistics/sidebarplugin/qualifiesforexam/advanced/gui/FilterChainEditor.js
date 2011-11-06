@@ -18,12 +18,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     initComponent: function() {
-        this.store = Ext.create('Ext.data.ArrayStore', {
-            autoDestroy: true,
-            idIndex: 0,
-            fields: ['filters']
-        });
-        this._syncStoreWithChain();
+        this.store = this.filterchain;
 
         Ext.apply(this, {
             columns: [{
@@ -66,18 +61,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         }
         var selectedItem = selected[0];
         this.store.remove(selectedItem);
-        //this._syncStoreWithChain();
-    },
-
-    _syncStoreWithChain: function() {
-        this.store.removeAll();
-        Ext.defer(function() {
-            Ext.each(this.filterchain.filters, function(filter, index) {
-                this.store.add({
-                    filter: filter
-                });
-            }, this);
-        }, 200, this);
     },
 
     _onClickAddFilter: function() {
@@ -101,8 +84,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         win.show();
     },
 
-    _onAddFilter: function(filter) {
-        this.filterchain.filters.push(filter);
-        this._syncStoreWithChain();
+    _onAddFilter: function(filterArgs) {
+        this.filterchain.addFilter(filterArgs);
     }
 });
