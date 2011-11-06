@@ -91,6 +91,21 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 collapsible: true
             })]
         });
+
+
+        var labelConfig = Ext.create('devilry.statistics.LabelConfig');
+        labelConfig.addFilter({
+            //pointspec: Ext.create('devilry.statistics.PointSpec', {
+                //assignments: [],
+                //min: undefined,
+                //max: undefined
+            //}),
+            must_pass: [[loader.findAssignmentByShortName('week1')]]
+        });
+        Ext.each(loader.store.data.items, function(studentRecord, index) {
+            //console.log(studentRecord);
+            console.log(labelConfig.match(studentRecord));
+        }, this);
     },
 
     _onSelectStudent: function(record) {

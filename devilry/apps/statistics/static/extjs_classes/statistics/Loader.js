@@ -422,5 +422,9 @@ Ext.define('devilry.statistics.Loader', {
             icon: Ext.Msg.ERROR,
             closable: false
         });
+    },
+
+    findAssignmentByShortName: function(short_name) {
+        return this.assignment_store.findRecord('short_name', short_name);
     }
 });
