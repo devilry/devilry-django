@@ -1,10 +1,10 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpecEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.PointSpecEditor', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-pointspeceditor',
     requires: [
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.ListOfAssignments',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.RangeSelect',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListOfAssignments',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.RangeSelect',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.PointSpec'
     ],
 
     config: {

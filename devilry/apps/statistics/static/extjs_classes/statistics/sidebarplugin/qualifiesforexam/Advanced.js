@@ -3,18 +3,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
     layout: 'fit',
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterEditor',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChainEditor'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.FilterChainEditor'
     ],
 
     initComponent: function() {
-        Ext.apply(this, {
-            items: [this.defaultButtonPanel]
-        });
-        console.log(this.settings);
-
-        this.labelConfig = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain');
-        this.labelConfig.addFilter({
+        this.filterchain = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain');
+        this.filterchain.addFilter({
             pointspecArgs: {
                 assignments: [[this.loader.findAssignmentByShortName('extra').get('id')]],
                 min: 5,
@@ -23,14 +17,24 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
             must_pass: [[this.loader.findAssignmentByShortName('week1').get('id')]]
         });
 
+        Ext.apply(this, {
+            items: [{
+                xtype: 'statistics-filterchaineditor',
+                filterchain: this.filterchain,
+                assignment_store: this.loader.assignment_store,
+                margin: {bottom: 15}
+            }, this.defaultButtonPanel]
+        });
+        console.log(this.settings);
+
         this.callParent(arguments);
     },
 
     getSettings: function() {
-        return this.labelConfig.toExportArray();
+        return this.filterchain.toExportArray();
     },
 
     filter: function(studentRecord) {
-        return this.labelConfig.match(this.loader, studentRecord);
+        return this.filterchain.match(this.loader, studentRecord);
     }
 });

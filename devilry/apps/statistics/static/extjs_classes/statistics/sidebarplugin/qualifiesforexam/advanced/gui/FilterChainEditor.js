@@ -1,10 +1,10 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChainEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.FilterChainEditor', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.statistics-labelconfigeditor',
+    alias: 'widget.statistics-filterchaineditor',
     hideHeaders: true,
 
     config: {
-        label: undefined,
+        filterchain: undefined,
         assignment_store: undefined
     },
 
@@ -22,7 +22,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
         this._syncStoreWithLabel();
 
         Ext.apply(this, {
-            title: Ext.String.format('Label: {0}', this.label.label),
+            title: Ext.String.format('Label: {0}', this.filterchain.label),
             columns: [{
                 header: 'Filters', dataIndex: 'filter', flex: 1,
                 renderer: function(filter, p, record) {
@@ -45,7 +45,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
     _syncStoreWithLabel: function() {
         this.store.removeAll();
         Ext.defer(function() {
-            Ext.each(this.label.filters, function(filter, index) {
+            Ext.each(this.filterchain.filters, function(filter, index) {
                 this.store.add({
                     filter: filter
                 });
@@ -76,7 +76,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
 
     _onSaveFilter: function(filter) {
         console.log(filter);
-        this.label.filters.push(filter);
+        this.filterchain.filters.push(filter);
         this._syncStoreWithLabel();
     }
 });

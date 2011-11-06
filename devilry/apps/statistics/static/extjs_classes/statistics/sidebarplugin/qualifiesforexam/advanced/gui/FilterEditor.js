@@ -1,9 +1,9 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.FilterEditor', {
     extend: 'Ext.tab.Panel',
     alias: 'widget.statistics-filtereditor',
     requires: [
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.MustPassEditor',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpecEditor'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.MustPassEditor',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.PointSpecEditor'
     ],
 
     config: {

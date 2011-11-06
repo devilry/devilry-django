@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.RangeSelect', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.RangeSelect', {
     extend: 'Ext.form.Panel',
     alias: 'widget.statistics-rangeselect',
 
