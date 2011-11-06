@@ -4,9 +4,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     layout: 'fit',
     requires: [
         'devilry.statistics.Loader',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterEditor',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfigEditor',
         'devilry.statistics.SidebarPluginContainer',
         'devilry.statistics.dataview.DataView',
         'devilry.statistics.sidebarplugin.qualifiesforexam.Main',
@@ -90,20 +87,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 collapsible: true
             })]
         });
-
-
-        var labelConfig = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig');
-        labelConfig.addFilter({
-            pointspec: Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', {
-                assignments: [[loader.findAssignmentByShortName('extra').get('id')]],
-                min: 5,
-                max: undefined
-            }),
-            must_pass: [[loader.findAssignmentByShortName('week1').get('id')]]
-        });
-        Ext.each(loader.store.data.items, function(studentRecord, index) {
-            console.log(labelConfig.match(loader, studentRecord));
-        }, this);
     },
 
     _onSelectStudent: function(record) {
