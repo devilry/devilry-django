@@ -22,6 +22,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
                 xtype: 'statistics-filterchaineditor',
                 filterchain: this.filterchain,
                 assignment_store: this.loader.assignment_store,
+                height: 160,
                 margin: {bottom: 15}
             }, this.defaultButtonPanel]
         });

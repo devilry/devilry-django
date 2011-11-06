@@ -49,7 +49,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             this.down('statistics-pointspeceditor').show();
             Ext.MessageBox.alert('Error', e);
         }
-        return Ext.create('devilry.statistics.Filter', {
+        return Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
             must_pass: must_pass,
             pointspec: pointspec
         });

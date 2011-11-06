@@ -54,6 +54,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
             bbar: [{
                 xtype: 'button',
                 text: 'Add assignment',
+                iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
                     click: this._onClickAdd
@@ -65,7 +66,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
 
     _onClickAdd: function() {
         var me = this;
-        Ext.Msg.prompt('Assignment(s)', 'Please enter assignment(s):', function(btn, text){
+        Ext.Msg.prompt('Assignment(s)', 'Please enter short name of one or more assignment(s) separated by comma:', function(btn, text){
             if(btn == 'ok'){
                 var assignmentShortNames = me._parseAssignmentSpec(text);
                 var assignmentIds = me._convertShortnamesToIds(assignmentShortNames);
@@ -82,6 +83,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
         var ids = [];
         Ext.each(assignmentShortNames, function(short_name, index) {
             var assignmentRecord = this.assignment_store.findRecord('short_name', short_name);
+            if(!assignmentRecord) {
+                throw Ext.String.format("Invalid short name: {0}", short_name);
+            }
             ids.push(assignmentRecord.get('id'));
         }, this);
         return ids;

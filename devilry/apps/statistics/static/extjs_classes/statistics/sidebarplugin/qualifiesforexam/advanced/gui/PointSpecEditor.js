@@ -4,7 +4,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Point
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListOfAssignments',
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.RangeSelect',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.PointSpec'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
     ],
 
     config: {

@@ -8,6 +8,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         assignment_store: undefined
     },
 
+    requires: [
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.FilterEditor'
+    ],
+
     constructor: function(config) {
         this.callParent([config]);
         this.initConfig(config);
@@ -57,8 +61,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         var win = Ext.widget('window', {
             layout: 'fit',
             modal: true,
-            width: 800,
-            height: 600,
+            width: 600,
+            height: 400,
             items: {
                 xtype: 'statistics-filtereditor',
                 assignment_store: this.assignment_store,
@@ -77,6 +81,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     _onSaveFilter: function(filter) {
         console.log(filter);
         this.filterchain.filters.push(filter);
+        console.log(this.filterchain);
         this._syncStoreWithLabel();
     }
 });
