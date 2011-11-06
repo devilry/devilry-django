@@ -18,7 +18,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec
         Ext.each(this.assignments, function(assignment_ids, index) {
             tot_scaled_points += this._findAssignmentWithMostScaledPoints(student, assignment_ids);
         }, this);
-        console.log(student.username, this.assignments, tot_scaled_points);
+        //console.log(student.username, this.assignments, tot_scaled_points);
         if(this.min != undefined && tot_scaled_points < this.min) {
             return false;
         }
