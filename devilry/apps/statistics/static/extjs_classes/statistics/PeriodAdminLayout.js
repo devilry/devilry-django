@@ -100,11 +100,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 //min: undefined,
                 //max: undefined
             //}),
-            must_pass: [[loader.findAssignmentByShortName('week1')]]
+            must_pass: [[loader.findAssignmentByShortName('week1').get('id')]]
         });
         Ext.each(loader.store.data.items, function(studentRecord, index) {
-            //console.log(studentRecord);
-            console.log(labelConfig.match(studentRecord));
+            console.log(labelConfig.match(loader, studentRecord));
         }, this);
     },
 

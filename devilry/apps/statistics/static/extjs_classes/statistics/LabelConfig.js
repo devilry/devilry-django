@@ -16,10 +16,10 @@ Ext.define('devilry.statistics.LabelConfig', {
         this.filters.push(Ext.create('devilry.statistics.Filter', filterConf));
     },
 
-    match: function(loader, student) {
+    match: function(loader, studentRecord) {
         var matches = false;
         Ext.each(this.filters, function(filter, index) {
-            if(filter.match(student)) {
+            if(filter.match(studentRecord)) {
                 matches = true;
                 return false; // Break
             }

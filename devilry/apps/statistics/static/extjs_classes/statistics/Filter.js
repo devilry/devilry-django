@@ -61,17 +61,17 @@ Ext.define('devilry.statistics.Filter', {
         return arrayOfArrayOfAssignmentRecords;
     },
 
-    match: function(student) {
-        return this._matchIsPassingGrade(student) && this._matchPointspec(student);
+    match: function(studentRecord) {
+        return this._matchIsPassingGrade(studentRecord) && this._matchPointspec(studentRecord);
     },
 
-    _matchIsPassingGrade: function(student) {
+    _matchIsPassingGrade: function(studentRecord) {
         if(this.must_pass.length === 0) {
             return true;
         }
         var matches = true;
         Ext.each(this.must_pass, function(assignment_ids, index) {
-            var one_of_them_is_passing = this._passesOneOfManyAssignments(student, assignment_ids);
+            var one_of_them_is_passing = studentRecord.passesAssignments(assignment_ids);
             if(!one_of_them_is_passing) {
                 matches = false;
                 return false; // Break
@@ -80,25 +80,11 @@ Ext.define('devilry.statistics.Filter', {
         return matches;
     },
 
-    _passesOneOfManyAssignments: function(student, assignment_ids) {
-        var one_of_them_is_passing = false;
-        Ext.each(assignment_ids, function(assignment_id, index) {
-            var group = student.groupsByAssignmentId[assignment_id];
-            if(group) {
-                if(group.is_passing_grade) {
-                    one_of_them_is_passing = true;
-                    return false; // Break
-                }
-            }
-        }, this);
-        return one_of_them_is_passing;
-    },
-
-    _matchPointspec: function(student) {
+    _matchPointspec: function(studentRecord) {
         if(!this.pointspec) {
             return true;
         }
-        return this.pointspec.match(student);
+        return this.pointspec.match(studentRecord);
     }
 
 });
