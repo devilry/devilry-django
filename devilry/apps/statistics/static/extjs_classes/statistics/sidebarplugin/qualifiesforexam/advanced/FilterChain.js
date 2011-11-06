@@ -6,9 +6,18 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter'
     ],
 
+    config: {
+        filterArgsArray: undefined
+    },
+
     constructor: function(config) {
-        this.filters = [];
         this.initConfig(config);
+        this.filters = [];
+        if(this.filterArgsArray) {
+            Ext.each(this.filterArgsArray, function(filterArgs, index) {
+                this.addFilter(filterArgs);
+            }, this);
+        };
     },
 
     addFilter: function(filterConf) {

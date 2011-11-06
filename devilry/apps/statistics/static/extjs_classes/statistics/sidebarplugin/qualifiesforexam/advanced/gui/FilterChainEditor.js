@@ -23,7 +23,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             idIndex: 0,
             fields: ['filters']
         });
-        this._syncStoreWithLabel();
+        this._syncStoreWithChain();
 
         Ext.apply(this, {
             title: Ext.String.format('Label: {0}', this.filterchain.label),
@@ -46,7 +46,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         this.callParent(arguments);
     },
 
-    _syncStoreWithLabel: function() {
+    _syncStoreWithChain: function() {
         this.store.removeAll();
         Ext.defer(function() {
             Ext.each(this.filterchain.filters, function(filter, index) {
@@ -82,6 +82,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         console.log('Filter', filter);
         this.filterchain.filters.push(filter);
         //console.log(this.filterchain);
-        this._syncStoreWithLabel();
+        this._syncStoreWithChain();
     }
 });

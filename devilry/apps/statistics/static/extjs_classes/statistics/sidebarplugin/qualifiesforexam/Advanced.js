@@ -6,15 +6,18 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
     ],
 
     initComponent: function() {
-        this.filterchain = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain');
-        this.filterchain.addFilter({
-            pointspecArgs: {
-                assignments: [[this.loader.findAssignmentByShortName('extra').get('id')]],
-                min: 5,
-                max: undefined
-            },
-            must_pass: [[this.loader.findAssignmentByShortName('week1').get('id')]]
+        this.filterchain = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain', {
+            filterArgsArray: this.settings.filterArgsArray
         });
+        //this.filterchain.addFilter({
+            //pointspecArgs: {
+                //assignments: [[this.loader.findAssignmentByShortName('extra').get('id')]],
+                //min: 5,
+                //max: undefined
+            //},
+            //must_pass: [[this.loader.findAssignmentByShortName('week1').get('id')]]
+        //});
+        //console.log(this.settings);
 
         Ext.apply(this, {
             layout: {
@@ -34,7 +37,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
     },
 
     getSettings: function() {
-        return this.filterchain.toExportArray();
+        return {
+            filterArgsArray: this.filterchain.toExportArray()
+        };
     },
 
     filter: function(studentRecord) {
