@@ -1,8 +1,12 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
     config: {
-        pointspec: undefined,
+        pointspecArgs: undefined,
         must_pass: []
     },
+
+    requires: [
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
+    ],
 
     strTpl: Ext.create('Ext.XTemplate',
         '<div style="white-space: normal">',
@@ -39,7 +43,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
 
     constructor: function(config) {
         this.initConfig(config);
-        this.callParent([config]);
+        this.pointspec = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', this.pointspecArgs);
     },
 
     toString: function(assignment_store) {
@@ -85,6 +89,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
             return true;
         }
         return this.pointspec.match(studentRecord);
-    }
+    },
 
+    toExportObject: function() {
+        return {
+            must_pass: this.must_pass,
+            pointspecArgs: this.pointspec.toExportObject()
+        };
+    }
 });

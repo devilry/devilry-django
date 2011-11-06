@@ -3,8 +3,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConf
         label: undefined
     },
     requires: [
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter'
     ],
 
     constructor: function(config) {
@@ -25,5 +24,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConf
             }
         }, this);
         return matches;
+    },
+
+    toExportArray: function() {
+        var result = [];
+        Ext.each(this.filters, function(filter, index) {
+            result.push(filter.toExportObject());
+        }, this);
+        return result;
     }
 });

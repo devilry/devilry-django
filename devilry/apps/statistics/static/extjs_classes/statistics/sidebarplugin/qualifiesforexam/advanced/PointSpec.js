@@ -38,5 +38,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec
             }
         });
         return max;
+    },
+
+    toExportObject: function() {
+        return {
+            assignments: this.assignments,
+            min: this.min,
+            max: this.max
+        }
     }
 });
