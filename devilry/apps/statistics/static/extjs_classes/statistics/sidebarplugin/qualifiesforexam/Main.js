@@ -85,6 +85,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             }
         });
         this._main = Ext.widget('container', {
+            flex: 1,
             layout: 'fit'
         });
         Ext.apply(this, {

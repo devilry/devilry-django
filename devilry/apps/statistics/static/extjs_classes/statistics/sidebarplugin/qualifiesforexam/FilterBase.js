@@ -39,7 +39,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
                 type: 'hbox',
                 align: 'top'
             },
-            height: 60
+            height: 40
         });
         this.initConfig(config); // Must come before _loadSettings
         this._loadSettings(); // Must come before callParent, because callParent calls initComponent (which needs settings)

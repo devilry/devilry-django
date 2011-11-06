@@ -98,7 +98,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     },
 
     _getAssignmentRecordsFromIds: function(assignmentIds) {
-        return this.statics().getAssignmentRecordsFromIds(this.assignment_store, assignmentIds);
+        var assignmentRecords = [];
+        Ext.each(assignmentIds, function(assignmentId, index) {
+            var assignmentRecord = assignment_store.findRecord('id', assignmentId);
+            assignmentRecords.push(assignmentRecord);
+        });
+        return assignmentRecords;
     },
 
     getArrayOfAssignmentIds: function() {
@@ -107,16 +112,5 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
             ids.push(record.get('assignmentIds'));
         }, this);
         return ids;
-    },
-
-    statics: {
-        getAssignmentRecordsFromIds: function(assignment_store, assignmentIds) {
-            var assignmentRecords = [];
-            Ext.each(assignmentIds, function(assignmentId, index) {
-                var assignmentRecord = assignment_store.findRecord('id', assignmentId);
-                assignmentRecords.push(assignmentRecord);
-            });
-            return assignmentRecords;
-        }
     }
 });

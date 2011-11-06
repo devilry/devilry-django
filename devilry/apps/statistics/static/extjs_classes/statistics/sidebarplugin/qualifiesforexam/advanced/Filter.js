@@ -5,8 +5,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
     },
 
     requires: [
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListOfAssignments'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
     ],
 
     strTpl: Ext.create('Ext.XTemplate',
@@ -60,7 +59,11 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
     _assignmentIdListToAssignmentRecords: function(assignment_store, arrayOfArrayOfassignmentIds) {
         var arrayOfArrayOfAssignmentRecords = [];
         Ext.each(arrayOfArrayOfassignmentIds, function(assignmentIds, index) {
-            var assignmentRecords = devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListOfAssignments.getAssignmentRecordsFromIds(assignment_store, assignmentIds);
+            var assignmentRecords = [];
+            Ext.each(assignmentIds, function(assignmentId, index) {
+                var assignmentRecord = assignment_store.findRecord('id', assignmentId);
+                assignmentRecords.push(assignmentRecord);
+            });
             arrayOfArrayOfAssignmentRecords.push(assignmentRecords);
         });
         return arrayOfArrayOfAssignmentRecords;

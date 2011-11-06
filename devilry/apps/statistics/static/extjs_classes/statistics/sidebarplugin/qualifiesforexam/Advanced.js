@@ -1,6 +1,5 @@
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
     extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
-    layout: 'fit',
     requires: [
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain',
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.FilterChainEditor'
@@ -18,12 +17,16 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
         });
 
         Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [{
                 xtype: 'statistics-filterchaineditor',
                 filterchain: this.filterchain,
                 assignment_store: this.loader.assignment_store,
-                height: 160,
-                margin: {bottom: 15}
+                flex: 1,
+                margin: {bottom: 10}
             }, this.defaultButtonPanel]
         });
         console.log(this.settings);
