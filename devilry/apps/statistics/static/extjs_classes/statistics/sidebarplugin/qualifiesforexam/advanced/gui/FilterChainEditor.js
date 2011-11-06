@@ -26,7 +26,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         this._syncStoreWithChain();
 
         Ext.apply(this, {
-            title: Ext.String.format('Label: {0}', this.filterchain.label),
             columns: [{
                 header: 'Filters', dataIndex: 'filter', flex: 1,
                 renderer: function(filter, p, record) {

@@ -51,9 +51,17 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
                     });
                 }
             }],
-            bbar: [{
+            tbar: [this.removeButton = Ext.widget('button', {
+                text: 'Remove',
+                iconCls: 'icon-delete-16',
+                disabled: true,
+                listeners: {
+                    scope: this,
+                    click: this._onClickDelete
+                }
+            }), {
                 xtype: 'button',
-                text: 'Add assignment',
+                text: 'Add',
                 iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
@@ -61,7 +69,22 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
                 }
             }]
         });
+        this.on('select', this._onSelect, this);
         this.callParent(arguments);
+    },
+
+    _onSelect: function() {
+        this.removeButton.enable();
+    },
+
+    _onClickDelete: function() {
+        var selected = this.getSelectionModel().getSelection();
+        if(selected.length != 1) {
+            Ext.MessageBox('Error', 'Please select a row from the list.');
+            return;
+        }
+        var selectedItem = selected[0];
+        this.store.remove(selectedItem);
     },
 
     _onClickAdd: function() {
