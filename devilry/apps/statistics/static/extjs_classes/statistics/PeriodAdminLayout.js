@@ -95,11 +95,11 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
         var labelConfig = Ext.create('devilry.statistics.LabelConfig');
         labelConfig.addFilter({
-            //pointspec: Ext.create('devilry.statistics.PointSpec', {
-                //assignments: [],
-                //min: undefined,
-                //max: undefined
-            //}),
+            pointspec: Ext.create('devilry.statistics.PointSpec', {
+                assignments: [[loader.findAssignmentByShortName('extra').get('id')]],
+                min: 5,
+                max: undefined
+            }),
             must_pass: [[loader.findAssignmentByShortName('week1').get('id')]]
         });
         Ext.each(loader.store.data.items, function(studentRecord, index) {

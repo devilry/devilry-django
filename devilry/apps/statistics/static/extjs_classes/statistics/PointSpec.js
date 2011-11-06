@@ -15,8 +15,8 @@ Ext.define('devilry.statistics.PointSpec', {
 
     match: function(student) {
         var tot_scaled_points = 0;
-        Ext.each(this.assignments, function(assignment_short_names, index) {
-            tot_scaled_points += this._findAssignmentWithMostScaledPoints(student, assignment_short_names);
+        Ext.each(this.assignments, function(assignment_ids, index) {
+            tot_scaled_points += this._findAssignmentWithMostScaledPoints(student, assignment_ids);
         }, this);
         //console.log(student.username, this.assignments, tot_scaled_points);
         if(this.min != undefined && tot_scaled_points < this.min) {
@@ -28,14 +28,13 @@ Ext.define('devilry.statistics.PointSpec', {
         return true;
     },
 
-    _findAssignmentWithMostScaledPoints: function(student, assignment_short_names) {
+    _findAssignmentWithMostScaledPoints: function(student, assignment_ids) {
         var max = 0;
-        Ext.each(assignment_short_names, function(assignment_id, index) {
+        Ext.each(assignment_ids, function(assignment_id, index) {
             var group = student.groupsByAssignmentId[assignment_id];
-            if(group) {
-                if(max < group.scaled_points) {
-                    max = group.scaled_points;
-                }
+            var scaled_points = student.getScaledPoints(assignment_id);
+            if(max < scaled_points) {
+                max = scaled_points;
             }
         });
         return max;
