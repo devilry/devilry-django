@@ -45,18 +45,22 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
                 }
             }]
         });
-        this.on('select', this._onSelect, this);
+        this.on('selectionchange', this._onSelectionChange, this);
         this.callParent(arguments);
     },
 
-    _onSelect: function() {
-        this.removeButton.enable();
+    _onSelectionChange: function(grid, selected) {
+        if(selected.length === 0) {
+            this.removeButton.disable();
+        } else {
+            this.removeButton.enable();
+        }
     },
 
     _onClickDelete: function() {
         var selected = this.getSelectionModel().getSelection();
         if(selected.length != 1) {
-            Ext.MessageBox('Error', 'Please select a row from the list.');
+            Ext.MessageBox.alert('Error', 'Please select a row from the list.');
             return;
         }
         var selectedItem = selected[0];
