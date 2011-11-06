@@ -29,12 +29,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
 
             bbar: ['->', {
                 xtype: 'button',
-                text: 'Save filter',
-                iconCls: 'icon-save-32',
+                text: 'Add filter',
+                iconCls: 'icon-add-32',
                 scale: 'large',
                 listeners: {
                     scope: this,
-                    click: this._onSave
+                    click: this._onAdd
                 }
             }]
         });
@@ -48,6 +48,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         } catch(e) {
             this.down('statistics-pointspeceditor').show();
             Ext.MessageBox.alert('Error', e);
+            return false;
         }
         return Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
             must_pass: must_pass,
@@ -55,8 +56,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         });
     },
 
-    _onSave: function() {
+    _onAdd: function() {
         var filter = this.getFilter();
-        this.fireEvent('save', filter);
+        if(filter != false) {
+            this.fireEvent('addFilter', filter);
+        }
     }
 });

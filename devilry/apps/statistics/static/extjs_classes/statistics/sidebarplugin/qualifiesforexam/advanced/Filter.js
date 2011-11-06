@@ -46,7 +46,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
         this.pointspec = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', this.pointspecArgs);
     },
 
-    toString: function(assignment_store) {
+    toReadableSummary: function(assignment_store) {
         var data = {
             must_pass: this._assignmentIdListToAssignmentRecords(assignment_store, this.must_pass),
             min: this.pointspec.min,

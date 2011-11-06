@@ -30,7 +30,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             columns: [{
                 header: 'Filters', dataIndex: 'filter', flex: 1,
                 renderer: function(filter, p, record) {
-                    return filter.toString(this.assignment_store);
+                    return filter.toReadableSummary(this.assignment_store);
                 }
             }],
             tbar: [{
@@ -68,9 +68,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
                 assignment_store: this.assignment_store,
                 listeners: {
                     scope: this,
-                    save: function(filter) {
+                    addFilter: function(filter) {
                         win.close();
-                        this._onSaveFilter(filter);
+                        this._onAddFilter(filter);
                     }
                 }
             }
@@ -78,7 +78,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         win.show();
     },
 
-    _onSaveFilter: function(filter) {
+    _onAddFilter: function(filter) {
         console.log('Filter', filter);
         this.filterchain.filters.push(filter);
         //console.log(this.filterchain);
