@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfigEditor', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChainEditor', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.statistics-labelconfigeditor',
     hideHeaders: true,

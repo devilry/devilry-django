@@ -1,4 +1,4 @@
-Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig', {
+Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain', {
     config: {
         label: undefined
     },

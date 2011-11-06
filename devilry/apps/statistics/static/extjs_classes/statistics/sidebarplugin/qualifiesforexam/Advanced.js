@@ -2,9 +2,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
     extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
     layout: 'fit',
     requires: [
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig',
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain',
         'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterEditor',
-        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfigEditor'
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChainEditor'
     ],
 
     initComponent: function() {
@@ -13,7 +13,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
         });
         console.log(this.settings);
 
-        this.labelConfig = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.LabelConfig');
+        this.labelConfig = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain');
         this.labelConfig.addFilter({
             pointspecArgs: {
                 assignments: [[this.loader.findAssignmentByShortName('extra').get('id')]],
