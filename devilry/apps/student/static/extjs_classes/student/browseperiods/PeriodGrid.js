@@ -15,8 +15,8 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.student.simplified.SimplifiedPeriod',
-            remoteFilter: true,
-            remoteSort: true,
+            remoteFilter: false,
+            remoteSort: false,
             autoSync: true
         });
         this.store.proxy.setDevilryOrderby(['parentnode__short_name', '-start_time']);

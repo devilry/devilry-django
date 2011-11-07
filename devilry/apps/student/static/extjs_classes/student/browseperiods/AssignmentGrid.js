@@ -74,11 +74,11 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
                 renderer: function(value, m, record) {
                     return this.assignmentTpl.apply(record.data);
                 }
-            }, {
-                header: 'Points', dataIndex: 'feedback__points', flex: 1,
-                renderer: function(value, m, record) {
-                    return this.pointsTpl.apply(record.data);
-                }
+            //}, {
+                //header: 'Points', dataIndex: 'feedback__points', flex: 1,
+                //renderer: function(value, m, record) {
+                    //return this.pointsTpl.apply(record.data);
+                //}
             }, {
                 header: 'Grade', dataIndex: 'feedback__grade', flex: 2,
                 renderer: function(value, m, record) {

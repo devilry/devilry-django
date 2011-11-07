@@ -57,9 +57,6 @@
             xtype: 'tabpanel',
             bodyPadding: 10,
             items: [{
-                xtype: 'student-browseperiods',
-                title: 'Browse'
-            }, {
                 xtype: 'panel',
                 title: 'Dashboard',
                 autoScroll: true,
@@ -78,6 +75,9 @@
                     width: 800, // Needed to avoid layout issue in FF3.6
                     items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
                 }]
+            }, {
+                xtype: 'student-browseperiods',
+                title: 'Browse all'
             }]
         });
     }
