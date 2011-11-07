@@ -381,7 +381,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     copyExaminersFromOtherGroups: function(matchingRecordPairs) {
         this._finishedSavingGroupCount = 0;
         Ext.each(matchingRecordPairs, function(recordPair, index) {
-            this.setExaminers(recordPair.current, index, matchingRecordPairs.length, recordPair.other.data.examiners__username, false);
+            this.setExaminers(recordPair.current, index, matchingRecordPairs.length, recordPair.other.data.examiners__user__username, false);
         }, this);
     },
 
