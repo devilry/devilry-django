@@ -6,6 +6,7 @@
     Ext.require('devilry.student.StudentSearchWidget');
     Ext.require('devilry.extjshelpers.PermissionChecker');
     Ext.require('devilry.student.AddDeliveriesGrid');
+    Ext.require('devilry.student.browseperiods.BrowsePeriods');
 {% endblock %}
 
 {% block appjs %}
@@ -27,8 +28,11 @@
         autoSync: true
     });
 
-    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }}
-    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }}
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment" }};
+
+    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
+    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }};
     function createGrids() {
         var addDeliveriesGrid = Ext.create('devilry.student.AddDeliveriesGrid', {
             store: ag_store,
@@ -49,17 +53,33 @@
             dashboard_url: DASHBOARD_URL,
             flex: 1
         });
-        Ext.getCmp('assignmentcontainer').add([addDeliveriesGrid, {
-            xtype: 'container',
-            margin: {top: 10},
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
-            },
-            height: 200,
-            width: 800, // Needed to avoid layout issue in FF3.6
-            items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
-        }]);
+        Ext.getCmp('assignmentcontainer').add({
+            xtype: 'tabpanel',
+            bodyPadding: 10,
+            items: [{
+                xtype: 'student-browseperiods',
+                title: 'Browse'
+            }, {
+                xtype: 'panel',
+                title: 'Dashboard',
+                autoScroll: true,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [addDeliveriesGrid, {
+                    xtype: 'container',
+                    margin: {top: 10},
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    height: 200,
+                    width: 800, // Needed to avoid layout issue in FF3.6
+                    items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
+                }]
+            }]
+        });
     }
 {% endblock %}
 
@@ -105,11 +125,7 @@
             items: [searchwidget, permchecker, {xtype:'box', height: 20}, {
                 xtype: 'panel',
                 flex: 1,
-                autoScroll: true,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
+                layout: 'fit',
                 border: false,
                 id: 'assignmentcontainer'
             }]
