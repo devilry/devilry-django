@@ -9,15 +9,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
         this.filterchain = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain', {
             filterArgsArray: this.settings.filterArgsArray
         });
-        //this.filterchain.addFilter({
-            //pointspecArgs: {
-                //assignments: [[this.loader.findAssignmentByShortName('extra').get('id')]],
-                //min: 5,
-                //max: undefined
-            //},
-            //must_pass: [[this.loader.findAssignmentByShortName('week1').get('id')]]
-        //});
-        //console.log(this.settings);
 
         Ext.apply(this, {
             layout: {
@@ -25,11 +16,16 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
                 align: 'stretch'
             },
             items: [{
+                xtype: 'box',
+                cls: 'readable-section',
+                html: Ext.String.format('Advanced filters have a dedicated guide in the Administrator section of the <a href="{0}" target="_blank">Help</a>.', DevilrySettings.DEVILRY_HELP_URL),
+            }, {
                 xtype: 'statistics-filterchaineditor',
+                title: 'Rules',
                 filterchain: this.filterchain,
                 assignment_store: this.loader.assignment_store,
                 flex: 1,
-                margin: {bottom: 10}
+                margin: {top: 10, bottom: 10}
             }, this.defaultButtonPanel]
         });
 

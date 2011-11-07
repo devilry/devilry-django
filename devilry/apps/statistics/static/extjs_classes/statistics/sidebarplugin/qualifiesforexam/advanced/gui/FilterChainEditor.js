@@ -70,6 +70,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     _onClickAddFilter: function() {
         var win = Ext.widget('window', {
             layout: 'fit',
+            title: 'Edit rule',
+            onEsc: Ext.emptyFn,
             modal: true,
             width: 600,
             height: 400,
