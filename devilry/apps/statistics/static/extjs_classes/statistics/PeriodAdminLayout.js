@@ -12,6 +12,8 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
 
     config: {
         periodid: undefined,
+        defaultViewClsname: 'devilry.statistics.dataview.FullGridView',
+        hidesidebar: false,
 
         sidebarplugins: [
             'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
@@ -65,12 +67,14 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 title: 'Label students',
                 region: 'east',
                 collapsible: true,
+                collapsed: this.hidesidebar,
                 width: 300,
                 autoScroll: true,
                 loader: loader,
                 sidebarplugins: this.sidebarplugins
             }, this._dataview = Ext.widget('statistics-dataview', {
                 //flex: 7,
+                defaultViewClsname: this.defaultViewClsname,
                 region: 'center',
                 loader: loader,
                 listeners: {
