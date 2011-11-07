@@ -33,6 +33,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     initComponent: function() {
+        Ext.getBody().mask('Loading overview', 'page-load-mask');
         this._createStore();
         this._createAndLoadPeriodStore();
         Ext.apply(this, {
@@ -253,6 +254,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     _handleLoadError: function(op, title) {
+        Ext.getBody().unmask();
         devilry.extjshelpers.RestProxy.showErrorMessagePopup(op, title);
     },
 
@@ -273,6 +275,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             storeRecord.set('qualifies_for_exam_ready_for_export', appKeyValueRecord.data);
             storeRecord.commit(); // Removed red corner
         }, this);
+        Ext.getBody().unmask();
     },
 
     _sendEmailsToVisible: function() {
