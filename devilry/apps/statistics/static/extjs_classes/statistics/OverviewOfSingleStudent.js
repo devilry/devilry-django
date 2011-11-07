@@ -7,9 +7,6 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
     ],
     
     config: {
-        username: undefined,
-        full_name: undefined,
-        labels: undefined,
         assignmentgroups: undefined,
         assignment_store: undefined,
         labelKeys: undefined
