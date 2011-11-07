@@ -29,7 +29,7 @@
     });
 
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,feedback" }};
 
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
     var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }};

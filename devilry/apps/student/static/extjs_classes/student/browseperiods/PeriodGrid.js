@@ -26,9 +26,8 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     initComponent: function() {
         Ext.apply(this, {
             cls: 'selectable-grid',
-            hideHeaders: true,
             columns: [{
-                header: 'Subject', dataIndex: 'parentnode__short_name', flex: 1,
+                header: 'Subject/course', dataIndex: 'parentnode__short_name', flex: 1,
                 renderer: function(value, m, record) {
                     return this.cellTpl.apply(record.data);
                 }

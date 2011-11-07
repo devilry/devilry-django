@@ -3,7 +3,8 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
     alias: 'widget.student-browseperiods',
     requires: [
         'devilry.student.browseperiods.PeriodGrid',
-        'devilry.student.browseperiods.AssignmentGrid'
+        'devilry.student.browseperiods.AssignmentGrid',
+        'devilry.statistics.OverviewOfSingleStudent'
     ],
     
     initComponent: function() {
@@ -18,24 +19,12 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
                     select: this._onSelectPeriod
                 }
             }, {
-                xtype: 'panel',
+                xtype: 'student-browseperiods-assignmentgrid',
                 region: 'center',
-                layout: 'border',
-                items: [{
-                    xtype: 'student-browseperiods-assignmentgrid',
-                    region: 'center',
-                    listeners: {
-                        scope: this,
-                        select: this._onSelectAssignment
-                    }
-                }, {
-                    xtype: 'panel',
-                    region: 'south',
-                    title: '',
-                    collapsible: true,
-                    height: 200,
-                    html: 'Overview'
-                }]
+                listeners: {
+                    scope: this,
+                    select: this._onSelectAssignment
+                }
             }]
         });
         this.callParent(arguments);
