@@ -8,7 +8,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
 
     config: {
         assignment_store: undefined,
-        filter: undefined
+        filterRecord: undefined
     },
 
     constructor: function(config) {
@@ -17,22 +17,26 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     initComponent: function() {
+        var filter = undefined;
+        if(this.filterRecord) {
+            filter = this.filterRecord.get('filter');
+        }
         Ext.apply(this, {
             items: [{
                 xtype: 'statistics-mustpasseditor',
                 title: 'Must pass',
-                must_pass: this.filter? this.filter.must_pass: undefined,
+                must_pass: filter? filter.must_pass: undefined,
                 assignment_store: this.assignment_store
             }, {
                 xtype: 'statistics-pointspeceditor',
                 title: 'Must have points',
-                pointspec: this.filter? this.filter.pointspec: undefined,
+                pointspec: filter? filter.pointspec: undefined,
                 assignment_store: this.assignment_store
             }],
 
             bbar: ['->', {
                 xtype: 'button',
-                text: 'Add filter',
+                text: 'Add rule',
                 iconCls: 'icon-add-32',
                 scale: 'large',
                 listeners: {
@@ -62,7 +66,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     _onAdd: function() {
         var filterArgs = this.getFilterArgs();
         if(filterArgs != false) {
-            this.fireEvent('addFilter', filterArgs);
+            this.fireEvent('addFilter', filterArgs, this.filterRecord);
         }
     }
 });

@@ -21,8 +21,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
 
     addFilter: function(filterConf) {
         this.add({
-            filter: Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', filterConf)
+            filter: this.createFilter(filterConf)
         });
+    },
+
+    createFilter: function(filterConf) {
+        return Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', filterConf);
     },
 
     match: function(loader, studentRecord) {

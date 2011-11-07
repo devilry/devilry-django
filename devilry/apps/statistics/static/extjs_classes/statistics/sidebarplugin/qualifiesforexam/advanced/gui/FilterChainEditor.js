@@ -50,9 +50,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         this.callParent(arguments);
     },
 
-    _onItemDblClick: function(grid, record) {
-        var filter = record.get('filter');
-        this._editFilter(filter);
+    _onItemDblClick: function(grid, filterRecord) {
+        this._editFilter(filterRecord);
     },
 
     _onSelectionChange: function(grid, selected) {
@@ -77,7 +76,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         this._editFilter();
     },
 
-    _editFilter: function(filter) {
+    _editFilter: function(filterRecord) {
         var win = Ext.widget('window', {
             layout: 'fit',
             title: 'Edit rule',
@@ -87,13 +86,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             height: 400,
             items: {
                 xtype: 'statistics-filtereditor',
-                filter: filter,
+                filterRecord: filterRecord,
                 assignment_store: this.assignment_store,
                 listeners: {
                     scope: this,
-                    addFilter: function(filter) {
+                    addFilter: function(filterArgs, filterRecord) {
                         win.close();
-                        this._onAddFilter(filter);
+                        this._onAddFilter(filterArgs, filterRecord);
                     }
                 }
             }
@@ -101,7 +100,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
         win.show();
     },
 
-    _onAddFilter: function(filterArgs) {
-        this.filterchain.addFilter(filterArgs);
+    _onAddFilter: function(filterArgs, filterRecord) {
+        if(filterRecord) {
+            filterRecord.set('filter', this.filterchain.createFilter(filterArgs));
+            filterRecord.commit();
+        } else {
+            this.filterchain.addFilter(filterArgs);
+        }
     }
 });
