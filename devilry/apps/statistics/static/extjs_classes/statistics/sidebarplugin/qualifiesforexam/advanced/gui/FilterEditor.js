@@ -36,8 +36,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
 
             bbar: ['->', {
                 xtype: 'button',
-                text: 'Add rule',
-                iconCls: 'icon-add-32',
+                text: this.filterRecord? 'Update rule': 'Add rule',
+                iconCls: this.filterRecord? 'icon-save-32': 'icon-add-32',
                 scale: 'large',
                 listeners: {
                     scope: this,

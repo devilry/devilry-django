@@ -7,7 +7,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
 
     initComponent: function() {
         this.filterchain = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterChain', {
-            filterArgsArray: this.settings.filterArgsArray
+            filterArgsArray: this.settings? this.settings.filterArgsArray: undefined
         });
 
         Ext.apply(this, {
