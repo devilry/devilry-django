@@ -8,7 +8,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Point
     ],
 
     config: {
-        assignment_store: undefined
+        assignment_store: undefined,
+        pointspec: undefined
     },
 
     constructor: function(config) {
@@ -25,11 +26,14 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Point
             items: [{
                 xtype: 'statistics-rangeselect',
                 height: 160,
-                title: 'Require the following amount of points:'
+                title: 'Require the following amount of points:',
+                initialMin: this.pointspec? this.pointspec.min: undefined,
+                initialMax: this.pointspec? this.pointspec.max: undefined
             }, {
                 xtype: 'statistics-listofassignments',
                 assignment_store: this.assignment_store,
                 flex: 1,
+                selected_assignments: this.pointspec? this.pointspec.assignments: undefined,
                 title: '... in total on the following assignments:',
                 rowPrefix: 'Highest score of: ',
                 rowSplitter: ', '

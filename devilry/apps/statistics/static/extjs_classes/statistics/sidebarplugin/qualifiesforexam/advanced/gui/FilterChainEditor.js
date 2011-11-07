@@ -46,7 +46,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             }]
         });
         this.on('selectionchange', this._onSelectionChange, this);
+        this.on('itemdblclick', this._onItemDblClick, this);
         this.callParent(arguments);
+    },
+
+    _onItemDblClick: function(grid, record) {
+        var filter = record.get('filter');
+        this._editFilter(filter);
     },
 
     _onSelectionChange: function(grid, selected) {
@@ -68,6 +74,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     _onClickAddFilter: function() {
+        this._editFilter();
+    },
+
+    _editFilter: function(filter) {
         var win = Ext.widget('window', {
             layout: 'fit',
             title: 'Edit rule',
@@ -77,6 +87,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             height: 400,
             items: {
                 xtype: 'statistics-filtereditor',
+                filter: filter,
                 assignment_store: this.assignment_store,
                 listeners: {
                     scope: this,

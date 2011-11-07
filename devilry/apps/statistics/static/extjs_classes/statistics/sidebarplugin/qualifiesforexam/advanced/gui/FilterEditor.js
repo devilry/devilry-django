@@ -7,12 +7,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     ],
 
     config: {
-        assignment_store: undefined
+        assignment_store: undefined,
+        filter: undefined
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
@@ -20,10 +21,12 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
             items: [{
                 xtype: 'statistics-mustpasseditor',
                 title: 'Must pass',
+                must_pass: this.filter? this.filter.must_pass: undefined,
                 assignment_store: this.assignment_store
             }, {
                 xtype: 'statistics-pointspeceditor',
                 title: 'Must have points',
+                pointspec: this.filter? this.filter.pointspec: undefined,
                 assignment_store: this.assignment_store
             }],
 

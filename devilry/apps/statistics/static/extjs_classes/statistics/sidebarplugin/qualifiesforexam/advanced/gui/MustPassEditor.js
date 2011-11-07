@@ -6,7 +6,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.MustP
     ],
 
     config: {
-        assignment_store: undefined
+        assignment_store: undefined,
+        must_pass: undefined
     },
 
     constructor: function(config) {
@@ -20,6 +21,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.MustP
             items: {
                 xtype: 'statistics-listofassignments',
                 title: 'Require passing grade on the following assignments:',
+                selected_assignments: this.must_pass,
                 assignment_store: this.assignment_store
             }
         });

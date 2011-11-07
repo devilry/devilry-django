@@ -24,20 +24,29 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     config: {
         rowPrefix: '',
         rowSplitter: ' OR ',
-        assignment_store: undefined
+        assignment_store: undefined,
+        selected_assignments: undefined
     },
 
     constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
-
-    initComponent: function() {
         this.store = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,
             idIndex: 0,
             fields: ['assignmentIds']
         });
+
+        this.callParent([config]);
+        this.initConfig(config);
+        if(this.selected_assignments) {
+            Ext.each(this.selected_assignments, function(assignmentIds, index) {
+                this.store.add({
+                    assignmentIds: assignmentIds
+                });
+            }, this);
+        }
+    },
+
+    initComponent: function() {
         //this.store.add([{
             //assignmentIds: [1, 3]
         //}, {
