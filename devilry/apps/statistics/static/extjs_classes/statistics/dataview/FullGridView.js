@@ -10,7 +10,11 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
         '</tpl>'
     ),
 
-    _getGridColumns: function() {
+    loadData: function() {
+        this.loader.requireCompleteDataset();
+    },
+
+    getGridColumns: function() {
         var gridColumns = this.callParent();
         gridColumns.push({
             flex: 1,

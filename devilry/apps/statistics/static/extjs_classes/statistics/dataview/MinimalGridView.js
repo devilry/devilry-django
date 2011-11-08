@@ -9,7 +9,7 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         '</ul>'
     ),
 
-    _getGridColumns: function() {
+    getGridColumns: function() {
         var me = this;
         var gridColumns = [{
             header: 'Username', dataIndex: 'username',
@@ -29,8 +29,12 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         return gridColumns;
     },
 
+    loadData: function() {
+    },
+
     refresh: function() {
-        var gridColumns = this._getGridColumns();
+        this.loadData();
+        var gridColumns = this.getGridColumns();
         this.removeAll();
         this.grid = this.add({
             xtype: 'grid',

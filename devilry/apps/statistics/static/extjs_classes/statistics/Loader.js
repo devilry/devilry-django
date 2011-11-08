@@ -315,17 +315,28 @@ Ext.define('devilry.statistics.Loader', {
         }, this);
     },
 
-    _mergeDataIntoStore: function() {
+    _mergeMinimalDatasetIntoStore: function() {
         this._addAllRelatedStudentsToStore();
         this._addLabelsToStore();
+    },
+
+    _mergeCompleteDatasetIntoStore: function() {
+        console.log('Merge complete data');
         this._addAssignmentsToStore();
         this._addGroupsToStore();
+    },
+
+    requireCompleteDataset: function() {
+        if(!this._completeDatasetLoaded) {
+            this._mergeCompleteDatasetIntoStore();
+            this._completeDatasetLoaded = true;
+        }
     },
 
     _onLoaded: function() {
         this._createStore();
         this.store.suspendEvents();
-        this._mergeDataIntoStore();
+        this._mergeMinimalDatasetIntoStore();
         this.updateScaledPoints();
         this.store.resumeEvents();
         this.store.fireEvent('datachanged');
