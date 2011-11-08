@@ -145,7 +145,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         allStaticFeedbacks.push(staticFeedbackRecords[0]);
                     }
                     if(loadedStaticFeedbackStores === deliveryRecords.length) {
-                        this.sortStaticfeedbacks(allStaticFeedbacks);
+                        this._sortStaticfeedbacks(allStaticFeedbacks);
                         var activeFeedback = allStaticFeedbacks[0];
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
@@ -157,7 +157,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     /**
      * @private
      */
-    sortStaticfeedbacks: function(allStaticFeedbacks) {
+    _sortStaticfeedbacks: function(allStaticFeedbacks) {
         allStaticFeedbacks.sort(function(a, b) {
             if(a.data.save_timestamp > b.data.save_timestamp) {
                 return -1;
@@ -184,20 +184,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         this._tmp_active_feedbacks.push(activeFeedback);
 
         if(this._tmp_deliveriespanels.length === deadlineRecords.length) {
-            this.sortDeliveryPanels();
-            this.sortStaticfeedbacks(this._tmp_active_feedbacks);
-            var latestStaticFeedback = this._tmp_active_feedbacks[0];
-            Ext.each(this._tmp_deliveriespanels, function(deliveriespanel, index) {
-                Ext.each(deliveriespanel.deliveriesStore.data.items, function(deliveryRecord, index) {
-                    if(deliveryRecord.data.id === latestStaticFeedback.get('delivery')) {
-                        deliveryRecord.hasLatestFeedback = true;
-                    }
-                }, this);
-            }, this);
+            this._sortDeliveryPanels();
+            this._findAndMarkActiveFeedback();
             this.add(this._tmp_deliveriespanels);
             this.getEl().unmask();
             this.isLoading = false;
         }
+    },
+
+    _findAndMarkActiveFeedback: function() {
+        this._sortStaticfeedbacks(this._tmp_active_feedbacks);
+        var latestStaticFeedback = this._tmp_active_feedbacks[0];
+        Ext.each(this._tmp_deliveriespanels, function(deliveriespanel, index) {
+            Ext.each(deliveriespanel.deliveriesStore.data.items, function(deliveryRecord, index) {
+                if(deliveryRecord.data.id === latestStaticFeedback.get('delivery')) {
+                    deliveryRecord.hasLatestFeedback = true;
+                }
+            }, this);
+        }, this);
     },
 
     /**
@@ -205,7 +209,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      * Sort delivery panels, since they are added on response from an
      * asynchronous operation. Sorted descending by deadline datetime.
      */
-    sortDeliveryPanels: function() {
+    _sortDeliveryPanels: function() {
         this._tmp_deliveriespanels.sort(function(a, b) {
             if(a.deadlineRecord.data.deadline > b.deadlineRecord.data.deadline) {
                 return -1;
