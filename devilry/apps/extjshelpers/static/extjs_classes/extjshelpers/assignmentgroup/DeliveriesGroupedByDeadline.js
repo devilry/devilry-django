@@ -80,6 +80,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     loadAllDeadlines: function() {
         this.isLoading = true;
         this._tmp_deliveriespanels = [];
+        this._tmp_active_feedbacks = [];
         this.addLoadMask();
         this.removeAll();
         var deadlinestore = devilry.extjshelpers.RestFactory.createStore(this.role, 'Deadline', {
@@ -144,7 +145,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         allStaticFeedbacks.push(staticFeedbackRecords[0]);
                     }
                     if(loadedStaticFeedbackStores === deliveryRecords.length) {
-                        this.sortAllStaticFeedbacks(allStaticFeedbacks);
+                        this.sortStaticfeedbacks(allStaticFeedbacks);
                         var activeFeedback = allStaticFeedbacks[0];
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
@@ -156,7 +157,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     /**
      * @private
      */
-    sortAllStaticFeedbacks: function(allStaticFeedbacks) {
+    sortStaticfeedbacks: function(allStaticFeedbacks) {
         allStaticFeedbacks.sort(function(a, b) {
             if(a.data.save_timestamp > b.data.save_timestamp) {
                 return -1;
@@ -180,14 +181,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
             activeFeedback: activeFeedback
         });
+        this._tmp_active_feedbacks.push(activeFeedback);
 
         if(this._tmp_deliveriespanels.length === deadlineRecords.length) {
             this.sortDeliveryPanels();
+            this.sortStaticfeedbacks(this._tmp_active_feedbacks);
+            var latestStaticFeedback = this._tmp_active_feedbacks[0];
+            Ext.each(this._tmp_deliveriespanels, function(deliveriespanel, index) {
+                Ext.each(deliveriespanel.deliveriesStore.data.items, function(deliveryRecord, index) {
+                    if(deliveryRecord.data.id === latestStaticFeedback.get('delivery')) {
+                        deliveryRecord.hasLatestFeedback = true;
+                    }
+                }, this);
+                if(deliveriespanel.activeFeedback === latestStaticFeedback) {
+                    deliveriespanel.isLastestFeedback = true;
+                }
+            }, this);
             this.add(this._tmp_deliveriespanels);
             this.getEl().unmask();
             this.isLoading = false;
-
-            
         }
     },
 

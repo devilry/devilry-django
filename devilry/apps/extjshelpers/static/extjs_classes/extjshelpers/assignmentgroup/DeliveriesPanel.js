@@ -10,7 +10,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         delivery_recordcontainer: undefined,
         deadlineRecord: undefined,
         deliveriesStore: undefined,
-        activeFeedback: undefined
+        activeFeedback: undefined,
+        isLastestFeedback: false
     },
 
     titleTpl: Ext.create('Ext.XTemplate',
@@ -19,10 +20,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         '        <tpl if="assignmentgroup.parentnode__delivery_types !== 1">{deadline.deadline:date}</tpl>',
         '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">Not defined in Devilry</tpl>',
         '    </div>',
-        '    <div>',
-        //'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
-        '        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
-        '    </div>',
+        //'    <div>',
+        ////'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
+        //'        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
+        //'    </div>',
         '<div>'
     ),
 
@@ -32,16 +33,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
     },
 
     initComponent: function() {
-        var extra = '(No feedback)';
-        if(this.activeFeedback) {
-            extra = Ext.String.format('(Latest feedback: {0})', this.activeFeedback.data.grade);
-        }
+        //var extra = '(No feedback)';
+        //if(this.activeFeedback) {
+            //extra = Ext.String.format('(Latest feedback: {0})', this.activeFeedback.data.grade);
+        //}
 
         Ext.apply(this, {
             title: this.titleTpl.apply({
                 deadline: this.deadlineRecord.data,
-                assignmentgroup: this.assignmentgroup_recordcontainer.record.data,
-                extra: extra
+                assignmentgroup: this.assignmentgroup_recordcontainer.record.data
+                //extra: extra
             }),
             layout: 'fit',
             border: false,
