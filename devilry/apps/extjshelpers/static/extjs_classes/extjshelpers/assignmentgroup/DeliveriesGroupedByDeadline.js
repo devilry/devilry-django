@@ -126,7 +126,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
         var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-        if(deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
+        if(this.role != 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
             this._onExpiredNoDeliveries();
         }
     },
