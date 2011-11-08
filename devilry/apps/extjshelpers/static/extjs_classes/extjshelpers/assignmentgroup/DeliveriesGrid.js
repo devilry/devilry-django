@@ -13,7 +13,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
         '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
         '    <span class="time_of_delivery">{delivery.time_of_delivery:date}</span>',
         '    <tpl if="delivery.time_of_delivery &gt; deadline.deadline">',
-        '       <span class="after-deadline">(After deadline)</span>',
+        '       <span class="warningInlineItem">After deadline</span>',
         '    </tpl>',
         '</tpl>',
         '<tpl if="hasLatestFeedback">',

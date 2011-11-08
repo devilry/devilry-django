@@ -193,9 +193,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         deliveryRecord.hasLatestFeedback = true;
                     }
                 }, this);
-                if(deliveriespanel.activeFeedback === latestStaticFeedback) {
-                    deliveriespanel.isLastestFeedback = true;
-                }
             }, this);
             this.add(this._tmp_deliveriespanels);
             this.getEl().unmask();

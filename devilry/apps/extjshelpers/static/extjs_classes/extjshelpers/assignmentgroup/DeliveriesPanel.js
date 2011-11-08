@@ -10,8 +10,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         delivery_recordcontainer: undefined,
         deadlineRecord: undefined,
         deliveriesStore: undefined,
-        activeFeedback: undefined,
-        isLastestFeedback: false
+        activeFeedback: undefined
     },
 
     titleTpl: Ext.create('Ext.XTemplate',
