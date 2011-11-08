@@ -332,27 +332,6 @@ Ext.define('devilry.statistics.Loader', {
         this.fireEvent('loaded', this);
     },
 
-    /**
-     * @private
-     */
-    //_addGroupToStudent: function(username, grouprecord) {
-        //if(!this._students[username]) {
-            ////console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
-            //return;
-        //}
-        //var student = this._students[username];
-        //var assignmentRecord = this.assignment_store.getById(grouprecord.data.parentnode);
-        //student.groupsByAssignmentId[grouprecord.data.parentnode] = {
-            //parentnode: grouprecord.get('parentnode'),
-            //points: grouprecord.data.feedback__points,
-            //is_passing_grade: grouprecord.data.feedback__is_passing_grade
-        //};
-    //},
-
-    //_onDataChanged: function() {
-    //},
-
-
     _createModel: function() {
         var fields = ['userid', 'username', 'full_name', 'labelKeys', 'totalScaledPoints'];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
@@ -374,19 +353,6 @@ Ext.define('devilry.statistics.Loader', {
             autoSync: false,
             proxy: 'memory'
         });
-
-        //Ext.Object.each(this._students, function(username, student, index) {
-            //var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentBase', this.assignment_store, {
-                //username: username,
-                //full_name: student.relatedstudent.get('user__devilryuserprofile__full_name'),
-                //relatedstudent: student.relatedstudent,
-                //labelKeys: Ext.Object.getKeys(student.labels),
-                //groupsByAssignmentId: student.groupsByAssignmentId,
-                //labels: student.labels
-            //});
-            //store.add(record);
-        //}, this);
-        //return store;
     },
 
     updateScaledPoints: function() {
