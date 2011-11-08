@@ -79,6 +79,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 xtype: 'deliveriesgrid',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                deadlineRecord: this.deadlineRecord,
                 store: this.deliveriesStore
             };
         }

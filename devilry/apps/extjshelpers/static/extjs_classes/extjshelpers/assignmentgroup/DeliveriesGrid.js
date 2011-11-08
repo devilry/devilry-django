@@ -11,7 +11,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
         '</tpl>',
         '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
         '    <span class="time_of_delivery">{delivery.time_of_delivery:date}</span>',
-        '    <tpl if="delivery.time_of_delivery &gt; deadline__deadline">',
+        '    <tpl if="delivery.time_of_delivery &gt; deadline.deadline">',
         '       <span class="after-deadline">(After deadline)</span>',
         '    </tpl>',
         '</tpl>',
@@ -22,6 +22,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
 
     config: {
         assignmentgroup_recordcontainer: undefined,
+        deadlineRecord: undefined,
 
         /**
          * @cfg
@@ -49,6 +50,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                     var staticfeedbackStore = deliveryrecord.staticfeedbacks();
                     return this.rowTpl.apply({
                         delivery: deliveryrecord.data,
+                        deadline: this.deadlineRecord.data,
                         assignmentgroup: this.assignmentgroup_recordcontainer.record.data,
                         feedback: staticfeedbackStore.count() > 0? staticfeedbackStore.data.items[0].data: undefined
                     });
