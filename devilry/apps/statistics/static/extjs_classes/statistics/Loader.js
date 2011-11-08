@@ -24,23 +24,25 @@ Ext.define('devilry.statistics.Loader', {
         });
         this.assignment_ids = [];
 
-        this.addEvents('loaded', 'datachange', 'filterApplied', 'filterCleared');
+        this.addEvents('completeDatasetLoaded', 'minimalDatasetLoaded', 'filterApplied', 'filterCleared');
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
 
         Ext.getBody().mask('Loading all data about all students on the period', 'page-load-mask');
-        this.callParent(arguments);        
+        this.callParent(arguments);
 
+        this._minimalDatasetLoaders = [
+            this._loadPeriod,
+            this._loadAllStudentLabels,
+            this._loadAllRelatedStudents
+        ];
         this._completeDatasetLoaders = [
             this._loadAssignments,
             this._loadAllGroupsInPeriod,
-            this._loadPeriod,
-            this._loadAllStudentLabels,
             this._loadAllCandidatesInPeriod,
-            this._loadAllRelatedStudents
-        ]
-        this._checkLoadCompleteDatasetComplete();
+        ];
+        this._checkLoadMinimalDatasetComplete();
     },
 
     _checkLoadCompleteDatasetComplete: function() {
@@ -49,6 +51,15 @@ Ext.define('devilry.statistics.Loader', {
             Ext.bind(loader, this)();
         } else {
             this._onCompleteDatasetLoaded();
+        }
+    },
+
+    _checkLoadMinimalDatasetComplete: function() {
+        if(this._minimalDatasetLoaders.length > 0) {
+            var loader = this._minimalDatasetLoaders.pop();
+            Ext.bind(loader, this)();
+        } else {
+            this._onMinimalDatasetLoaded();
         }
     },
 
@@ -113,7 +124,7 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load related students', op);
             return;
         }
-        this._checkLoadCompleteDatasetComplete();
+        this._checkLoadMinimalDatasetComplete();
     },
 
     /** 
@@ -181,7 +192,7 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load labels', op);
             return;
         }
-        this._checkLoadCompleteDatasetComplete();
+        this._checkLoadMinimalDatasetComplete();
     },
 
     /**
@@ -196,7 +207,7 @@ Ext.define('devilry.statistics.Loader', {
                     return;
                 }
                 this.periodRecord = record;
-                this._checkLoadCompleteDatasetComplete();
+                this._checkLoadMinimalDatasetComplete();
             }
         });
     },
@@ -317,14 +328,22 @@ Ext.define('devilry.statistics.Loader', {
         }
     },
 
-    _onCompleteDatasetLoaded: function() {
+    _onMinimalDatasetLoaded: function() {
         this._createStore();
         this.store.suspendEvents();
         this._mergeMinimalDatasetIntoStore();
+        this.store.resumeEvents();
+        this.store.fireEvent('datachanged');
+        this.fireEvent('minimalDatasetLoaded', this);
+    },
+
+    _onCompleteDatasetLoaded: function() {
+        this.store.suspendEvents();
+        this._mergeCompleteDatasetIntoStore();
         this.updateScaledPoints();
         this.store.resumeEvents();
         this.store.fireEvent('datachanged');
-        this.fireEvent('loaded', this);
+        this.fireEvent('completeDatasetLoaded', this);
     },
 
     _createModel: function() {

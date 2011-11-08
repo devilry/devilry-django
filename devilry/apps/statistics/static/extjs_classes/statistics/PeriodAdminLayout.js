@@ -47,12 +47,12 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         Ext.create('devilry.statistics.Loader', this.periodid, {
             listeners: {
                 scope: this,
-                loaded: this._onLoaded
+                minimalDatasetLoaded: this._onMinimalDatasetLoaded
             }
         });
     },
 
-    _onLoaded: function(loader) {
+    _onMinimalDatasetLoaded: function(loader) {
         Ext.getBody().unmask();
 
         var title = this.titleTpl.apply(loader.periodRecord.data);
