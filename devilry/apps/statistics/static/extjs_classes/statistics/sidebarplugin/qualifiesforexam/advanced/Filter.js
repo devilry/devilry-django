@@ -47,6 +47,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
     },
 
     toReadableSummary: function(assignment_store) {
+        this.loader.requireCompleteDataset();
         var data = {
             must_pass: this._assignmentIdListToAssignmentRecords(assignment_store, this.must_pass),
             min: this.pointspec.min,
