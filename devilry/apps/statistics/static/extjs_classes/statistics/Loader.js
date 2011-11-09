@@ -193,6 +193,38 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load related students', op);
             return;
         }
+        this._loadAssignments();
+    },
+
+    /**
+     * @private
+     */
+    _loadAssignments: function() {
+        this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.assignment_store.proxy.setDevilryFilters([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
+        this.assignment_store.load({
+            scope: this,
+            callback: this._onAssignmentsLoaded
+        });
+    },
+
+    /**
+     * @private
+     */
+    _onAssignmentsLoaded: function(assignmentrecords, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load assignments', op);
+            return;
+        }
+        this._tmpAssignmentsWithAllGroupsLoaded = 0;
+        Ext.each(assignmentrecords, function(assignmentrecord, index) {
+            this.assignment_ids.push(assignmentrecord.get('id'));
+        }, this);
         this._onMinimalDatasetLoaded();
     },
 
@@ -206,12 +238,14 @@ Ext.define('devilry.statistics.Loader', {
     ////////////////////////////////////////////////
 
     _onMinimalDatasetLoaded: function() {
-        Ext.getBody().unmask();
+        Ext.getBody().mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
         this._minimalDatasetLoaded = true;
         this._createStore();
         this.store.suspendEvents();
         this._mergeMinimalDatasetIntoStore();
         this.store.resumeEvents();
+        Ext.getBody().unmask();
+
         this.store.fireEvent('datachanged');
         this.fireEvent('minimalDatasetLoaded', this);
     },
@@ -271,40 +305,8 @@ Ext.define('devilry.statistics.Loader', {
                 Ext.bind(callback, scope, args)();
             }, this, {single: true});
             Ext.getBody().mask('Loading all results for all students', 'page-load-mask');
-            this._loadAssignments();
+            this._loadAllGroupsInPeriod();
         }
-    },
-
-    /**
-     * @private
-     */
-    _loadAssignments: function() {
-        this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
-        this.assignment_store.proxy.setDevilryFilters([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.periodid
-        }]);
-        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
-        this.assignment_store.load({
-            scope: this,
-            callback: this._onAssignmentsLoaded
-        });
-    },
-
-    /**
-     * @private
-     */
-    _onAssignmentsLoaded: function(assignmentrecords, op) {
-        if(!op.success) {
-            this._handleLoadError('Failed to load assignments', op);
-            return;
-        }
-        this._tmpAssignmentsWithAllGroupsLoaded = 0;
-        Ext.each(assignmentrecords, function(assignmentrecord, index) {
-            this.assignment_ids.push(assignmentrecord.get('id'));
-        }, this);
-        this._loadAllGroupsInPeriod();
     },
 
     /**
@@ -390,7 +392,6 @@ Ext.define('devilry.statistics.Loader', {
 
     _mergeCompleteDatasetIntoStore: function() {
         Ext.getBody().mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
-        //console.log('full');
 
         this.store.suspendEvents();
         this._addAssignmentsToStore();
@@ -401,6 +402,8 @@ Ext.define('devilry.statistics.Loader', {
         this._completeDatasetLoaded = true;
         this.store.fireEvent('datachanged');
         this.fireEvent('completeDatasetLoaded', this);
+
+        Ext.getBody().unmask();
     },
 
     _addAssignmentsToStore: function() {

@@ -72,8 +72,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
     },
 
     _onSaveYes: function() {
-        this.main.saveSettings(this.path, this.getSettings(), function() {
-            this._saveLabels();
+        this.loader.requireCompleteDataset(function() {
+            this.main.saveSettings(this.path, this.getSettings(), function() {
+                this._saveLabels();
+            }, this);
         }, this);
     },
 
@@ -89,8 +91,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 
     _onPreview: function() {
         if(this.validInput()) {
-            this.loader.clearFilter();
-            this.loader.filterBy(this.title, this.filter, this);
+            this.loader.requireCompleteDataset(function() {
+                this.loader.clearFilter();
+                this.loader.filterBy(this.title, this.filter, this);
+            }, this);
         }
     },
 
