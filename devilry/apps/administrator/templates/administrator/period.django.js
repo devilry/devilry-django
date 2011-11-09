@@ -95,9 +95,8 @@
                     xtype: 'statistics-periodadminlayout',
                     periodid: {{ objectid }},
                     hidesidebar: false,
-                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView',
-                    //defaultViewClsname: minimal_layout? 'devilry.statistics.dataview.MinimalGridView': 'devilry.statistics.dataview.FullGridView',
-                    //hidesidebar: hidesidebar
+                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
+                    //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
                 }, prettyview]
             }]
         }]

@@ -1,5 +1,6 @@
 Ext.define('devilry.statistics.dataview.MinimalGridView', {
     extend: 'devilry.statistics.dataview.BaseView',
+    layout: 'fit',
 
     labelTpl: Ext.create('Ext.XTemplate',
         '<ul class="labels-list">',
@@ -38,11 +39,10 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         this.refreshView();
     },
 
-    refreshView: function() {
+    createGrid: function() {
         var gridColumns = this.getGridColumns();
-        this.removeAll();
-        this.grid = this.add({
-            xtype: 'grid',
+        return Ext.widget('grid', {
+            region: 'center',
             multiSelect: true,
             autoScroll: true,
             store: this.loader.store,
@@ -54,6 +54,15 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
                 }
             }
         });
+    },
+
+    createLayout: function() {
+        this.add(this.createGrid());
+    },
+
+    refreshView: function() {
+        this.removeAll();
+        this.createLayout();
     },
 
     getSelectedStudents: function() {

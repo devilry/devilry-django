@@ -24,10 +24,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         '{parentnode__long_name:ellipsis(60)} &mdash; {long_name}'
     ),
 
-    selectedStudentTitleTpl: Ext.create('Ext.XTemplate',
-        '{full_name} ({username})'
-    ),
-
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
@@ -63,7 +59,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             layout: 'border',
             items: [{
                 xtype: 'statistics-sidebarplugincontainer',
-                //flex: 3,
                 title: 'Label students',
                 region: 'east',
                 collapsible: true,
@@ -73,45 +68,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 loader: loader,
                 sidebarplugins: this.sidebarplugins
             }, this._dataview = Ext.widget('statistics-dataview', {
-                //flex: 7,
                 defaultViewClsname: this.defaultViewClsname,
                 region: 'center',
-                loader: loader,
-                listeners: {
-                    scope: this,
-                    selectStudent: this._onSelectStudent
-                }
-            }), this._detailsPanel = Ext.widget('panel', {
-                title: 'Select a student to view their details',
-                region: 'south',
-                autoScroll: true,
-                layout: 'fit',
-                height: 200,
-                collapsed: true,
-                collapsible: true
+                loader: loader
             })]
-        });
-    },
-
-    _onSelectStudent: function(record) {
-        this._detailsPanel.removeAll();
-        this._detailsPanel.expand();
-        var assignmentgroups = [];
-        Ext.Object.each(record.groupsByAssignmentId, function(assignmentid, group) {
-            if(group.assignmentGroupRecord != null) {
-                assignmentgroups.push(group.assignmentGroupRecord.data);
-            }
-        }, this);
-        this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
-        this._detailsPanel.add({
-            xtype: 'statistics-overviewofsinglestudent',
-            assignment_store: record.assignment_store,
-            assignmentgroups: assignmentgroups,
-            username: record.get('username'),
-            full_name: record.get('full_name'),
-            labelKeys: record.get('labelKeys'),
-            border: false,
-            frame: false
         });
     }
 });
