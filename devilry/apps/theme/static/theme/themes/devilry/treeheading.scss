@@ -15,6 +15,9 @@
         padding: 0;
         &:after { content: ', '; }
     }
+    .endoflist {
+        &:after { content: '' !important; }
+    }
     h3 {
         font-size: 1.0em !important;
         font-style: italic;

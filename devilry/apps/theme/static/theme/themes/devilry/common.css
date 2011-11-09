@@ -463,6 +463,8 @@ table.horizontalinfotable {
     padding: 0; }
     .treeheading h2:after {
       content: ', '; }
+  .treeheading h2.endoflist:after {
+    content: ''; }
   .treeheading h3 {
     font-size: 1.0em !important;
     font-style: italic;
