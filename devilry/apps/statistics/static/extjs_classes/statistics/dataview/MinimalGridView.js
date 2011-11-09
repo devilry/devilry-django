@@ -29,11 +29,16 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         return gridColumns;
     },
 
-    loadData: function() {
-    },
 
     refresh: function() {
         this.loadData();
+    },
+
+    loadData: function() {
+        this.refreshView();
+    },
+
+    refreshView: function() {
         var gridColumns = this.getGridColumns();
         this.removeAll();
         this.grid = this.add({

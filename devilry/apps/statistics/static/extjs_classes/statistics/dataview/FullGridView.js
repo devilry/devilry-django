@@ -11,7 +11,9 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
     ),
 
     loadData: function() {
-        this.loader.requireCompleteDataset();
+        this.loader.requireCompleteDataset(function() {
+            this.refreshView();
+        }, this);
     },
 
     getGridColumns: function() {

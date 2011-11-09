@@ -95,7 +95,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     _onRenderChoices: function() {
-        this._loadSettings();
+        this.loader.requireCompleteDataset(this._loadSettings, this);
     },
 
     _pluginSelected: function(pluginObj) {
