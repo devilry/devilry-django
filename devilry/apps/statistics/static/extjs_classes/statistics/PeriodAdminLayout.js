@@ -56,7 +56,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         Ext.getBody().unmask();
 
         var title = this.titleTpl.apply(loader.periodRecord.data);
-        this.up('window').setTitle(title);
+        //this.up('window').setTitle(title);
             
         this.add({
             xtype: 'panel',

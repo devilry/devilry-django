@@ -6,6 +6,7 @@
     Ext.require('devilry.administrator.period.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.forms.administrator.Period');
+    Ext.require('devilry.statistics.PeriodAdminLayout');
 {% endblock %}
 
 
@@ -24,8 +25,8 @@
 {% block onready %}
     {{ block.super }}
     var prettyview = Ext.create('devilry.administrator.period.PrettyView', {
-        //renderTo: 'content-main',
         flex: 1,
+        title: 'Administer',
         modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
         objectid: {{ objectid }},
         dashboardUrl: DASHBOARD_URL
@@ -33,7 +34,6 @@
 
     var heading = Ext.ComponentManager.create({
         xtype: 'component',
-        //renderTo: 'content-heading',
         data: {},
         cls: 'section treeheading',
         tpl: [
@@ -82,13 +82,24 @@
         }, {
             region: 'center',
             xtype: 'container',
+            padding: {left: 20, right: 20},
             layout: {
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [heading, prettyview],
-            padding: {left: 20, right: 20}
+            items: [heading, {
+                xtype: 'tabpanel',
+                flex: 1,
+                items: [{
+                    title: 'Students',
+                    xtype: 'statistics-periodadminlayout',
+                    periodid: {{ objectid }},
+                    hidesidebar: false,
+                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView',
+                    //defaultViewClsname: minimal_layout? 'devilry.statistics.dataview.MinimalGridView': 'devilry.statistics.dataview.FullGridView',
+                    //hidesidebar: hidesidebar
+                }, prettyview]
+            }]
         }]
-        //}]
     });
 {% endblock %}
