@@ -182,6 +182,27 @@ input, select {
     .header > .administrator li.administrator-navitem a {
       background-color: #cc4400; }
 
+.x-mask {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70) !important;
+  opacity: 0.7 !important;
+  background-color: #000 !important;
+  width: 100% !important; }
+
+.page-load-mask {
+  padding: 20px !important;
+  border-radius: 20px;
+  background-color: #000 !important;
+  border: none !important; }
+  .page-load-mask div {
+    background-color: transparent !important;
+    color: #eee !important;
+    border: none !important;
+    font-size: 1.2em !important; }
+
+.x-window-maximized {
+  width: 100% !important; }
+
 .icon-delete-16 {
   background-image: url(icons/16x16/delete.png) !important; }
 
@@ -463,8 +484,8 @@ table.horizontalinfotable {
     padding: 0; }
     .treeheading h2:after {
       content: ', '; }
-  .treeheading h2.endoflist:after {
-    content: ''; }
+  .treeheading .endoflist:after {
+    content: '' !important; }
   .treeheading h3 {
     font-size: 1.0em !important;
     font-style: italic;
