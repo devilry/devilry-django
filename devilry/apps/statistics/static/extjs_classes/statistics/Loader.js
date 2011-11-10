@@ -391,7 +391,11 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _mergeCompleteDatasetIntoStore: function() {
-        Ext.getBody().mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
+        if(this._completeDatasetLoaded) {
+            return;
+        }
+        this._completeDatasetLoaded = true;
+        Ext.getBody().mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
 
         this.store.suspendEvents();
         this._addAssignmentsToStore();
@@ -399,7 +403,6 @@ Ext.define('devilry.statistics.Loader', {
         this.updateScaledPoints();
         this.store.resumeEvents();
 
-        this._completeDatasetLoaded = true;
         this.store.fireEvent('datachanged');
         this.fireEvent('completeDatasetLoaded', this);
 

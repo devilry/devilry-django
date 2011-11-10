@@ -59,7 +59,13 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
     },
 
     createLayout: function() {
-        var grid = this.createGrid();
+        var grid = this.createGrid({
+            region: 'center',
+            listeners: {
+                scope: this,
+                select: this._onSelectStudent
+            }
+        });
         this._detailsPanel = Ext.widget('panel', {
             title: 'Select a student to view their details',
             region: 'south',
@@ -74,10 +80,10 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
             layout: 'border',
             items: [grid, this._detailsPanel]
         });
-        this.up('statistics-dataview').on('selectStudent', this._onSelectStudent, this);
+        //this.up('statistics-dataview').on('selectStudent', this._onSelectStudent, this);
     },
 
-    _onSelectStudent: function(record) {
+    _onSelectStudent: function(grid, record) {
         this._detailsPanel.removeAll();
         this._detailsPanel.expand();
         var assignmentgroups = [];
