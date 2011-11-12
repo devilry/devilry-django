@@ -4,7 +4,7 @@
 {% block imports %}
     {{ block.super }}
     Ext.require([
-        'devilry.administrator.PeriodAdminLayout'
+        'devilry.administrator.period.Layout'
     ]);
 {% endblock %}
 
@@ -37,7 +37,7 @@
             xtype: 'pagefooter'
         }, {
             region: 'center',
-            xtype: 'administrator-periodadminlayout',
+            xtype: 'administrator-periodlayout',
             periodid: {{ objectid }},
             padding: {left: 20, right: 20}
         }]

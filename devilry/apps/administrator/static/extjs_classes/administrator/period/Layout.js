@@ -1,6 +1,6 @@
-Ext.define('devilry.administrator.PeriodAdminLayout', {
+Ext.define('devilry.administrator.period.Layout', {
     extend: 'Ext.container.Container',
-    alias: 'widget.administrator-periodadminlayout',
+    alias: 'widget.administrator-periodlayout',
 
     requires: [
         'devilry.administrator.period.PrettyView',
