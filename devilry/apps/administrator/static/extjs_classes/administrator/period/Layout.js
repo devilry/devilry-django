@@ -6,7 +6,8 @@ Ext.define('devilry.administrator.period.Layout', {
         'devilry.administrator.period.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.Period',
-        'devilry.statistics.PeriodAdminLayout'
+        'devilry.statistics.PeriodAdminLayout',
+        'devilry.administrator.period.ListOfAssignments'
     ],
     
     config: {
@@ -37,21 +38,28 @@ Ext.define('devilry.administrator.period.Layout', {
             }), {
                 xtype: 'tabpanel',
                 flex: 1,
-                items: [{
-                    title: 'Students',
-                    xtype: 'statistics-periodadminlayout',
+                items: [
+                {
+                    xtype: 'administrator-period-listofassignments',
                     periodid: this.periodid,
-                    hidesidebar: false,
-                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
-                    //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
-                }, this.prettyview = Ext.widget('administrator_periodprettyview', {
+                    title: 'Assignments'
+                },
+                //{
+                    //title: 'Students',
+                    //xtype: 'statistics-periodadminlayout',
+                    //periodid: this.periodid,
+                    //hidesidebar: false,
+                    //defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
+                    ////defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
+                //},
+                this.prettyview = Ext.widget('administrator_periodprettyview', {
                     title: 'Administer',
                     modelname: this.periodmodel_name,
                     objectid: this.periodid,
                     dashboardUrl: DASHBOARD_URL,
                     listeners: {
                         scope: this,
-                        loadmodel: this._onLoadModel,
+                        loadmodel: this._onLoadRecord,
                         edit: this._onEdit
                     }
                 })]
@@ -60,7 +68,7 @@ Ext.define('devilry.administrator.period.Layout', {
         this.callParent(arguments);
     },
 
-    _onLoadModel: function(record) {
+    _onLoadRecord: function(record) {
         this.heading.update(record.data);
     },
 
