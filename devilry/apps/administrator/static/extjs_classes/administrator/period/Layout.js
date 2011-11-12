@@ -44,14 +44,14 @@ Ext.define('devilry.administrator.period.Layout', {
                     periodid: this.periodid,
                     title: 'Assignments'
                 },
-                //{
-                    //title: 'Students',
-                    //xtype: 'statistics-periodadminlayout',
-                    //periodid: this.periodid,
-                    //hidesidebar: false,
-                    //defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
-                    ////defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
-                //},
+                {
+                    title: 'Students',
+                    xtype: 'statistics-periodadminlayout',
+                    periodid: this.periodid,
+                    hidesidebar: false,
+                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
+                    //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
+                },
                 this.prettyview = Ext.widget('administrator_periodprettyview', {
                     title: 'Administer',
                     modelname: this.periodmodel_name,

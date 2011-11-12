@@ -38,7 +38,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     constructor: function(config) {
-        Ext.getBody().mask('Loading current settings', 'page-load-mask');
         this.initConfig(config);
         this.callParent([config]);
     },
@@ -106,6 +105,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
 
     _loadSettings: function() {
+        Ext.getBody().mask('Loading current settings', 'page-load-mask');
         this.periodapplicationkeyvalue_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue',
             remoteFilter: true,
