@@ -4,6 +4,10 @@ Ext.define('devilry.administrator.period.ListOfAssignments', {
     cls: 'selectable-grid',
     hideHeaders: true,
 
+    mixins: [
+        'devilry.extjshelpers.AddPagerIfNeeded'
+    ],
+
     config: {
         periodid: undefined
     },
@@ -28,23 +32,25 @@ Ext.define('devilry.administrator.period.ListOfAssignments', {
             remoteFilter: true,
             remoteSort: true
         });
+        //this.store.pageSize = 2; // Uncomment to test paging
         this._loadAssignments();
         Ext.apply(this, {
             columns: [{
                 header: 'Long name',  dataIndex: 'long_name', flex: 1
             }],
-            dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: true
-            }],
+            //dockedItems: [{
+                //xtype: 'pagingtoolbar',
+                //store: this.store,
+                //dock: 'bottom',
+                //displayInfo: true
+            //}],
             listeners: {
                 scope: this,
                 select: this._onSelect
             }
         });
         this.callParent(arguments);
+        this.addPagerIfNeeded();
     },
 
     _onSelect: function(grid, record) {
