@@ -3,6 +3,7 @@ Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
     bodyPadding: 0,
+    layout: 'fit',
 
     requires: [
         'devilry.extjshelpers.SetListOfUsers',
@@ -116,6 +117,7 @@ Ext.define('devilry.administrator.PrettyView', {
         }
 
         this.bodyBox = Ext.widget('box', {
+            autoScroll: true,
             padding: 20
         });
         Ext.apply(this, {
