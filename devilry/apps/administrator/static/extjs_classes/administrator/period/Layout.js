@@ -40,17 +40,17 @@ Ext.define('devilry.administrator.period.Layout', {
                 flex: 1,
                 items: [
                 {
+                    xtype: 'administrator-period-listofassignments',
+                    periodid: this.periodid,
+                    title: 'Assignments'
+                },
+                {
                     title: 'Students',
                     xtype: 'statistics-periodadminlayout',
                     periodid: this.periodid,
                     hidesidebar: false,
                     defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
                     //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
-                },
-                {
-                    xtype: 'administrator-period-listofassignments',
-                    periodid: this.periodid,
-                    title: 'Assignments'
                 },
                 this.prettyview = Ext.widget('administrator_periodprettyview', {
                     title: 'Administer',

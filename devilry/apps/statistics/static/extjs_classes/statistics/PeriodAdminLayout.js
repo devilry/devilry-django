@@ -43,7 +43,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
             data: {msg: 'Loading'},
             listeners: {
                 scope: this,
-                height: 100,
                 afterrender: this._onAfterRender
             }
         });
