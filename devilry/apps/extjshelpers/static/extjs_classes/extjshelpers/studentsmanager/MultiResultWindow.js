@@ -3,8 +3,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
     layout: 'fit',
     closeAction: 'hide',
     closable: false,
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 400,
     modal: true,
     maximizable: true,
 
