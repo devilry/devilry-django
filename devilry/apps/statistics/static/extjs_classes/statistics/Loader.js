@@ -77,7 +77,7 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _handleLoadError: function(details, op) {
-        Ext.getBody().unmask();
+        this._unmask();
         var httperror = 'Lost connection with server';
         if(op.error.status !== 0) {
             httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
@@ -107,7 +107,7 @@ Ext.define('devilry.statistics.Loader', {
     ////////////////////////////////////////////////
 
     _loadMinimalDataset: function() {
-        Ext.getBody().mask('Loading all data about all students on the period', 'page-load-mask');
+        this._mask('Loading all data about all students on the period', 'page-load-mask');
         this._loadPeriod();
     },
 
@@ -238,13 +238,13 @@ Ext.define('devilry.statistics.Loader', {
     ////////////////////////////////////////////////
 
     _onMinimalDatasetLoaded: function() {
-        Ext.getBody().mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
+        this._mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
         this._minimalDatasetLoaded = true;
         this._createStore();
         this.store.suspendEvents();
         this._mergeMinimalDatasetIntoStore();
         this.store.resumeEvents();
-        Ext.getBody().unmask();
+        this._unmask();
 
         this.store.fireEvent('datachanged');
         this.fireEvent('minimalDatasetLoaded', this);
@@ -304,7 +304,7 @@ Ext.define('devilry.statistics.Loader', {
             this.addListener('completeDatasetLoaded', function() {
                 Ext.bind(callback, scope, args)();
             }, this, {single: true});
-            Ext.getBody().mask('Loading all results for all students', 'page-load-mask');
+            this._mask('Loading all results for all students', 'page-load-mask');
             this._loadAllGroupsInPeriod();
         }
     },
@@ -382,7 +382,7 @@ Ext.define('devilry.statistics.Loader', {
     //////////////////////////////////////////////
 
     _onCompleteDatasetLoaded: function() {
-        Ext.getBody().unmask();
+        this._unmask();
         if(this._minimalDatasetLoaded) {
             this._mergeCompleteDatasetIntoStore();
         } else {
@@ -395,7 +395,7 @@ Ext.define('devilry.statistics.Loader', {
             return;
         }
         this._completeDatasetLoaded = true;
-        Ext.getBody().mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
+        this._mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
 
         this.store.suspendEvents();
         this._addAssignmentsToStore();
@@ -406,7 +406,7 @@ Ext.define('devilry.statistics.Loader', {
         this.store.fireEvent('datachanged');
         this.fireEvent('completeDatasetLoaded', this);
 
-        Ext.getBody().unmask();
+        this._unmask();
     },
 
     _addAssignmentsToStore: function() {
@@ -440,5 +440,13 @@ Ext.define('devilry.statistics.Loader', {
                 group.assignmentGroupRecord = assignmentGroupRecord; // This will be overwritten for each candidate, but that does not matter, since they overwrite with the same record
             }
         }, this);
+    },
+
+    _mask: function(msg) {
+        this.fireEvent('mask', this, msg);
+    },
+
+    _unmask: function() {
+        this.fireEvent('unmask', this);
     }
 });

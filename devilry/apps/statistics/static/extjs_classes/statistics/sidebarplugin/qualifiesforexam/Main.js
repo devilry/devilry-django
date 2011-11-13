@@ -105,7 +105,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
 
 
     _loadSettings: function() {
-        Ext.getBody().mask('Loading current settings', 'page-load-mask');
+        this._mask('Loading current settings', 'page-load-mask');
         this.periodapplicationkeyvalue_store = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedPeriodApplicationKeyValue',
             remoteFilter: true,
@@ -133,7 +133,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     _onLoadSettings: function(records, op) {
-        Ext.getBody().unmask();
+        this._unmask();
         if(!op.success) {
             this._handleComError('Save settings', op);
             return;
@@ -167,7 +167,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     saveSettings: function(path, settings, callback, scope) {
-        Ext.getBody().mask('Saving current settings', 'page-load-mask');
+        this._mask('Saving current settings', 'page-load-mask');
         var settingData = {
             path: path,
             settings: settings
@@ -176,7 +176,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         this.settingsRecord.save({
             scope: this,
             callback: function(record, op) {
-                Ext.getBody().unmask();
+                this._unmask();
                 if(!op.success) {
                     this._handleComError('Save settings', op);
                     return;
@@ -188,7 +188,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     _saveReadyForExportRecord: function(callback, scope) {
-        Ext.getBody().mask('Marking as ready for export', 'page-load-mask');
+        this._mask('Marking as ready for export', 'page-load-mask');
         this.readyForExportRecord.set('value', Ext.JSON.encode({
             isready: 'yes',
             savetime: devilry.extjshelpers.DateTime.restfulNow()
@@ -196,7 +196,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
         this.readyForExportRecord.save({
             scope: this,
             callback: function(record, op) {
-                Ext.getBody().unmask();
+                this._unmask();
                 if(!op.success) {
                     this._handleComError('Mark ready for export', op);
                     return;
@@ -207,7 +207,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
     },
 
     _handleComError: function(details, op) {
-        Ext.getBody().unmask();
+        this._unmask();
         var httperror = 'Lost connection with server';
         if(op.error.status !== 0) {
             httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
@@ -220,5 +220,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Main', {
             icon: Ext.Msg.ERROR,
             closable: false
         });
+    },
+
+    _mask: function(msg) {
+        this.getEl().mask(msg);
+    },
+
+    _unmask: function() {
+        this.getEl().unmask();
     }
 });

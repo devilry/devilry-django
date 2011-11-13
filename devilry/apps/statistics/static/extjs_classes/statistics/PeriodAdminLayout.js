@@ -1,5 +1,5 @@
 Ext.define('devilry.statistics.PeriodAdminLayout', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-periodadminlayout', // NOTE: devilry.statistics.sidebarplugin.qualifiesforexam.Manual depends on this alias
     layout: 'fit',
     requires: [
@@ -10,52 +10,101 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         'devilry.statistics.OverviewOfSingleStudent'
     ],
 
-    config: {
-        periodid: undefined,
-        defaultViewClsname: 'devilry.statistics.dataview.FullGridView',
-        hidesidebar: false,
+    /**
+     * @cfg
+     */
+    periodid: undefined,
 
-        sidebarplugins: [
-            'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
-        ]
-    },
+    /**
+     * @cfg
+     */
+    defaultViewClsname: 'devilry.statistics.dataview.FullGridView',
+
+    /**
+     * @cfg
+     */
+    hidesidebar: false,
+
+    sidebarplugins: [
+        'devilry.statistics.sidebarplugin.qualifiesforexam.Main'
+    ],
 
     titleTpl: Ext.create('Ext.XTemplate',
         '{parentnode__long_name:ellipsis(60)} &mdash; {long_name}'
     ),
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
+    constructor: function() {
+        this.callParent(arguments);
     },
     
     initComponent: function() {
+        this._loadMaskBox = Ext.widget('box', {
+            tpl: '<strong>{msg}...</strong>',
+            data: {msg: 'Loading'},
+            listeners: {
+                scope: this,
+                height: 100,
+                afterrender: this._onAfterRender
+            }
+        });
         Ext.apply(this, {
-            style: 'background-color: transparent',
-            items: []
+            //style: 'background-color: transparent',
+            items: [this._loadMaskBox],
+            frame: false,
+            border: false
         });
         this.callParent(arguments);
         this._loadStudents();
     },
 
     _loadStudents: function() {
-        Ext.getBody().mask("Loading page", 'page-load-mask');
         Ext.create('devilry.statistics.Loader', this.periodid, {
             listeners: {
                 scope: this,
-                minimalDatasetLoaded: this._onMinimalDatasetLoaded
+                minimalDatasetLoaded: this._onMinimalDatasetLoaded,
+                mask: this._onMask,
+                unmask: this._onUnmask
             }
         });
     },
 
+    _onAfterRender: function() {
+        Ext.defer(function() {
+            this._rendered = true;
+            if(this._unappliedMask) {
+                this._mask(this._unappliedMask);
+                this._unappliedMask = null;
+            }
+        }, 100, this);
+    },
+    _onMask: function(loader, msg) {
+        if(this._rendered) {
+            this._mask(msg);
+        } else {
+            this._unappliedMask = msg;
+        }
+    },
+    _onUnmask: function() {
+        this._unappliedMask = null;
+        if(this._rendered) {
+            this._unmask();
+        }
+    },
+    _mask: function(msg) {
+        this._loadMaskBox.getEl().mask(msg);
+    },
+    _unmask: function() {
+        this._loadMaskBox.update('');
+    },
+
     _onMinimalDatasetLoaded: function(loader) {
-        Ext.getBody().unmask();
 
         var title = this.titleTpl.apply(loader.periodRecord.data);
-        //this.up('window').setTitle(title);
-            
+        this.removeAll();
         this.add({
             xtype: 'panel',
+            border: false,
+            frame: false,
             layout: 'border',
             items: [{
                 xtype: 'statistics-sidebarplugincontainer',
