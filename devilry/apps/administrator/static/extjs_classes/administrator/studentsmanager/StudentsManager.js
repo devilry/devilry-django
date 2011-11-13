@@ -22,11 +22,11 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     initComponent: function() {
         this.addStudentsButton = Ext.widget('button', {
-            text: 'Create groups',
+            text: 'Add students',
             iconCls: 'icon-add-32',
             scale: 'large',
             menu: [{
-                text: Ext.String.format('One group for each student registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                text: Ext.String.format('Import students registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
                 listeners: {
                     scope: this,
                     click: this.onOneGroupForEachRelatedStudent
