@@ -59,11 +59,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
                     }
                 }), this.studentstab = Ext.widget('panel', {
                     title: 'Students',
-                    layout: 'fit',
-                    listeners: {
-                        scope: this,
-                        activate: this._onStudents
-                    }
+                    layout: 'fit'
                 })]
             }]
         });
@@ -73,6 +69,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
     _onLoadRecord: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
         this.heading.update(assignmentRecord.data);
+        this._onStudents();
     },
 
     _onEdit: function(record, button) {
