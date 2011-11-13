@@ -1,12 +1,19 @@
-{% extends "administrator/single-base.django.html" %}
+{% extends "administrator/base.django.js" %}
 {% load extjs %}
 
-{% block title %}Assignment - {{ block.super }}{% endblock %}
+{% block imports %}
+    {{ block.super }}
+    Ext.require([
+        //'devilry.administrator.assignment.Layout'
+        'devilry.administrator.assignment.PrettyView',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel',
+        'devilry.extjshelpers.forms.administrator.Assignment'
+    ]);
+{% endblock %}
 
-{% block headextra %}
-{{ block.super }}
 
-<script>
+{% block appjs %}
+    {{ block.super }}
     {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }}
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }}
     {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }}
@@ -18,47 +25,58 @@
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
 
-    {% comment %}
-    // Used for previously approved
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users;PrevApproved" }};
-    var assignmentgroupPrevApprovedStore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PrevApproved" }};
-    {% endcomment %}
-
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,users,tags;Import" }};
+{% endblock %}
 
-    Ext.require('devilry.administrator.assignment.PrettyView');
-    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
-    Ext.onReady(function() {
-        var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
-            renderTo: 'content-main',
-            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-            objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL,
-            assignmentgroupstore: assignmentgroupstore
-            //assignmentgroupPrevApprovedStore: assignmentgroupPrevApprovedStore
-        });
+{% block onready %}
+    {{ block.super }}
+    Ext.getBody().unmask();
 
-        var heading = Ext.ComponentManager.create({
-            xtype: 'component',
-            renderTo: 'content-heading',
-            data: {},
-            tpl: [
-                '<tpl if="long_name">',
-                '   <h1>{parentnode__parentnode__long_name}</h1>',
-                '   <h2>{parentnode__long_name}</h2>',
-                '   <h3>{long_name} ({short_name})</h3>',
-                '</tpl>'
-            ]
-        });
-
-        prettyview.addListener('loadmodel', function(record) {
-            heading.update(record.data);
-            {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
-            {# Ext.Function.defer(function() { prettyview.onStudents(); }, 200); #}
-            {# Ext.Function.defer(function() { Ext.ComponentQuery.query('studentsmanager')[0].onPreviouslyPassed(); }, 1000); #}
-            {# Ext.Function.defer(function() { prettyview.onEdit(prettyview.editbutton); }, 200); #}
-        });
+    var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
+        //renderTo: 'content-main',
+        modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+        objectid: {{ objectid }},
+        dashboardUrl: DASHBOARD_URL,
+        assignmentgroupstore: assignmentgroupstore
+        //assignmentgroupPrevApprovedStore: assignmentgroupPrevApprovedStore
     });
-</script>
+
+    var heading = Ext.ComponentManager.create({
+        xtype: 'component',
+        //renderTo: 'content-heading',
+        data: {},
+        tpl: [
+            '<tpl if="long_name">',
+            '   <h1>{parentnode__parentnode__long_name}</h1>',
+            '   <h2>{parentnode__long_name}</h2>',
+            '   <h3>{long_name} ({short_name})</h3>',
+            '</tpl>'
+        ]
+    });
+
+    prettyview.addListener('loadmodel', function(record) {
+        heading.update(record.data);
+    });
+
+
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            //region: 'center',
+            //xtype: 'administrator-periodlayout',
+            //periodid: {{ objectid }},
+            //padding: {left: 20, right: 20}
+            xtype: 'panel',
+            region: 'center',
+            items: [heading, prettyview]
+        }]
+    });
 {% endblock %}
