@@ -41,8 +41,8 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
 
     createGrid: function(extraOpts) {
         var gridColumns = this.getGridColumns();
-        this.loader.on('filterCleared', this._onFilterChange, this);
-        this.loader.on('filterApplied', this._onFilterChange, this);
+        this.loader.mon(this, 'filterCleared', this._onFilterChange, this);
+        this.loader.mon(this, 'filterApplied', this._onFilterChange, this);
         var gridOpts = Ext.apply({
             multiSelect: true,
             autoScroll: true,
