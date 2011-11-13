@@ -282,22 +282,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             flex: 1,
                             listeners: {
                                 scope: this,
-                                loadComplete: function(deliveriesgroupedbydeadline) {
-                                    var latestDelivery = deliveriesgroupedbydeadline.getLatestDelivery();
-                                    if(!latestDelivery) {
-                                        return;
-                                    }
-                                    if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
-                                        latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
-                                        if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
-                                            deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
-                                        } else {
-                                            deliveriesgroupedbydeadline.selectDelivery(deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('delivery'));
-                                        }
-                                    } else {
-                                        deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
-                                    }
-                                }
+                                loadComplete: this._selectAppropriateDelivery
                             }
                         }]
                     }]
@@ -315,6 +300,39 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     /**
      * @private
+     *
+     * Select most natural delivery:
+     *  - The one with active feedback
+     *  - ... unless a delivery with timestamp after the latest feedback.
+     */
+    _selectMostNaturalDelivery: function(deliveriesgroupedbydeadline) {
+        var latestDelivery = deliveriesgroupedbydeadline.getLatestDelivery();
+        if(!latestDelivery) {
+            return;
+        }
+        if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
+            latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
+            if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
+                deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+            } else {
+                deliveriesgroupedbydeadline.selectDelivery(deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('delivery'));
+            }
+        } else {
+            deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+        }
+    },
+
+    _selectAppropriateDelivery: function(deliveriesgroupedbydeadline) {
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(query.deliveryid) {
+            deliveriesgroupedbydeadline.selectDelivery(query.deliveryid);
+        } else {
+            this._selectMostNaturalDelivery(deliveriesgroupedbydeadline);
+        }
+    },
+
+    /**
+     * @private
      */
     _onGoToAssignmentsView: function() {
         var url = Ext.String.format('../assignment/{0}',
@@ -327,22 +345,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     selectDeliveryIfInQueryString: function() {
-        var query = Ext.Object.fromQueryString(window.location.search);
-        if(query.deliveryid) {
-            var deliveryid = parseInt(query.deliveryid);
-            var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
-            deliverymodel.load(deliveryid, {
-                scope: this,
-                success: function(record) {
-                    this.delivery_recordcontainer.setRecord(record);
-                },
-                failure: function() {
-                    // TODO: Handle errors
-                }
-            });
-        } else {
+        //var query = Ext.Object.fromQueryString(window.location.search);
+        //if(query.deliveryid) {
+            //var deliveryid = parseInt(query.deliveryid);
+            //var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
+            //deliverymodel.load(deliveryid, {
+                //scope: this,
+                //success: function(record) {
+                    //this.delivery_recordcontainer.setRecord(record);
+                //},
+                //failure: function() {
+                    //// TODO: Handle errors
+                //}
+            //});
+        //} else {
             //console.log(delivery);
             //this.down('deliveryinfo').onOtherDeliveries();
-        }
+        //}
     }
 });
