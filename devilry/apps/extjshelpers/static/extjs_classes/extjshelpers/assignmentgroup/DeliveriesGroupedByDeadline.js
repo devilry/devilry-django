@@ -114,7 +114,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
      */
     handleSingleDeadline: function(deadlineRecord, index, deadlineRecords) {
         var deliveriesStore = deadlineRecord.deliveries();
-        //deliveriesStore.pageSize = 1; // Uncomment to test paging
+        deliveriesStore.pageSize = 1000;
         deliveriesStore.load({
             scope: this,
             callback: function(deliveryRecords) {

@@ -3,6 +3,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     alias: 'widget.deliveriesgrid',
     cls: 'widget-deliveriesgrid selectable-grid',
     hideHeaders: true, // Hide column header
+    mixins: [
+        'devilry.extjshelpers.AddPagerIfNeeded'
+    ],
 
     rowTpl: Ext.create('Ext.XTemplate',
         '<div style="white-space:normal; line-height: 1.5em !important;">',
@@ -69,37 +72,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
             }
         });
 
-        this._addPagerIfNeeded();
+        this.addPagerIfNeeded();
         this.callParent(arguments);
-    },
-
-    /**
-     * @private
-     * Make sure we show pager if needed.
-     */
-    _addPagerIfNeeded: function() {
-        if(this._hasPager) {
-            return;
-        }
-        this._hasPager = true;
-        if(this.store.count() < this.store.getTotalCount()) {
-            this._addPager();
-        };
-    },
-
-    _addPager: function() {
-        try {
-            this.addDocked({
-                xtype: 'pagingtoolbar',
-                store: this.store,
-                dock: 'bottom',
-                displayInfo: false
-            });
-        } catch(e) {
-            Ext.defer(function() {
-                this._addPager();
-            }, 250, this);
-        }
     },
 
     /**
