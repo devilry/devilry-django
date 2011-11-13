@@ -96,7 +96,6 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
 
     _onMinimalDatasetLoaded: function(loader) {
-
         var title = this.titleTpl.apply(loader.periodRecord.data);
         this.removeAll();
         this.add({

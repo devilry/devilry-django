@@ -7,6 +7,7 @@ Ext.define('devilry.statistics.Loader', {
     ],
 
     constructor: function(periodid, config) {
+        this._completeDatasetStatus = {loaded: false}; // NOTE: When this is a boolean instead of an object, the attribute does not seem to update everywhere, which leads to multiple loads of complete dataset.
         this._students_by_releatedid = {};
         this.periodid = periodid;
         this.labelManager = Ext.create('devilry.statistics.LabelManager', {
@@ -31,6 +32,7 @@ Ext.define('devilry.statistics.Loader', {
 
         this.callParent(arguments);
         this._loadMinimalDataset();
+        //this.requireCompleteDataset(Ext.emptyFn);
     },
 
 
@@ -63,7 +65,6 @@ Ext.define('devilry.statistics.Loader', {
             studentRecord.updateScaledPoints();
         }, this);
         this.store.resumeEvents();
-        this.store.fireEvent('datachanged');
     },
 
     filterBy: function(description, fn, scope) {
@@ -246,7 +247,6 @@ Ext.define('devilry.statistics.Loader', {
         this.store.resumeEvents();
         this._unmask();
 
-        this.store.fireEvent('datachanged');
         this.fireEvent('minimalDatasetLoaded', this);
     },
 
@@ -299,9 +299,11 @@ Ext.define('devilry.statistics.Loader', {
     ////////////////////////////////////////////////////
 
     requireCompleteDataset: function(callback, scope, args) {
-        if(this._completeDatasetLoaded) {
+        if(this._completeDatasetStatus.loaded) {
+            //console.log('Already loaded complete', this);
             Ext.bind(callback, scope, args)();
         } else {
+            //console.log('Load the complete set', this);
             this.addListener('completeDatasetLoaded', function() {
                 Ext.bind(callback, scope, args)();
             }, this, {single: true});
@@ -392,10 +394,10 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _mergeCompleteDatasetIntoStore: function() {
-        if(this._completeDatasetLoaded) {
+        if(this._completeDatasetStatus.loaded) {
             return;
         }
-        this._completeDatasetLoaded = true;
+        this._completeDatasetStatus.loaded = true;
         this._mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
 
         this.store.suspendEvents();
@@ -404,7 +406,6 @@ Ext.define('devilry.statistics.Loader', {
         this.updateScaledPoints();
         this.store.resumeEvents();
 
-        this.store.fireEvent('datachanged');
         this.fireEvent('completeDatasetLoaded', this);
 
         this._unmask();

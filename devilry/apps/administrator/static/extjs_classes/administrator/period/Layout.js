@@ -10,16 +10,17 @@ Ext.define('devilry.administrator.period.Layout', {
         'devilry.administrator.period.ListOfAssignments'
     ],
     
-    config: {
-        periodid: undefined
-    },
+    /**
+     * @cfg
+     */
+    periodid: undefined,
 
     periodmodel_name: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
     
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    //constructor: function(config) {
+        //this.initConfig(config);
+        //this.callParent([config]);
+    //},
     
     initComponent: function() {
         var query = Ext.Object.fromQueryString(window.location.search);
