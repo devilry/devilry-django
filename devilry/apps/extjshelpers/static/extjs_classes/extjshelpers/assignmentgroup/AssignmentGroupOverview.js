@@ -337,6 +337,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         var url = Ext.String.format('../assignment/{0}',
             this.assignmentgroup_recordcontainer.record.data.parentnode
         );
+        if(this.isAdministrator) {
+            url += '?open_students=yes';
+        }
         window.location.href = url;
     }
 });
