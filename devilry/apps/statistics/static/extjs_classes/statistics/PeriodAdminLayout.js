@@ -38,22 +38,21 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
     },
     
     initComponent: function() {
-        this._loadMaskBox = Ext.widget('box', {
-            tpl: '<strong>{msg}...</strong>',
-            data: {msg: 'Loading'},
-            listeners: {
-                scope: this,
-                afterrender: this._onAfterRender
-            }
-        });
+        this._isLoaded = false;
         Ext.apply(this, {
-            //style: 'background-color: transparent',
-            items: [this._loadMaskBox],
+            items: [],
             frame: false,
             border: false
         });
+        this.on('afterrender', this._onAfterRender, this);
         this.callParent(arguments);
-        this._loadStudents();
+    },
+
+    loadIfNotLoaded: function() {
+        if(!this._isLoaded) {
+            this._isLoaded = true;
+            this._loadStudents();
+        }
     },
 
     _loadStudents: function() {
@@ -90,10 +89,10 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
         }
     },
     _mask: function(msg) {
-        this._loadMaskBox.getEl().mask(msg);
+        this.getEl().mask(msg);
     },
     _unmask: function() {
-        this._loadMaskBox.update('');
+        this.getEl().unmask();
     },
 
     _onMinimalDatasetLoaded: function(loader) {

@@ -49,7 +49,13 @@ Ext.define('devilry.administrator.period.Layout', {
                     xtype: 'statistics-periodadminlayout',
                     periodid: this.periodid,
                     hidesidebar: false,
-                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView'
+                    defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView',
+                    listeners: {
+                        activate: function(tab) {
+                            tab.loadIfNotLoaded();
+                            tab.doLayout();
+                        }
+                    }
                     //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
                 },
                 this.prettyview = Ext.widget('administrator_periodprettyview', {
