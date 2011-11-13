@@ -95,6 +95,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             topBarItems.push({
                 xtype: 'button',
                 text: 'Download all deliveries',
+                iconCls: 'icon-save-16',
                 listeners: {
                     scope: this,
                     click: this._onDownload
