@@ -180,15 +180,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.downloadbutton = Ext.widget('button', {
-                scale: 'large',
-                hidden: true,
-                text: 'Download all deliveries',
-                listeners: {
-                    scope: this,
-                    click: this.onDownload
-                }
-            })],
             extraMeButtons: [this.gradeeditormenu],
         });
         this.callParent(arguments);
@@ -208,10 +199,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
-        if(this.record.get('delivery_types') == 0) {
-            this.downloadbutton.show();
-        }
-        //this.onStudents();
     },
 
     checkStudents: function() {
@@ -333,16 +320,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 close: function() {
-                    button.toggle(false);
+                    window.location.href = window.location.href; // NOTE: Required because some stuff in studentmanager check delivery_types, and we do not check for changes
                 }
             }
         });
-        //this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        //this.alignToCoverBody(editwindow);
-    },
-
-    onDownload: function() {
-        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.objectid);
     }
 });
