@@ -68,7 +68,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.createLayout();
         this.callParent(arguments);
         this.loadAssignmentgroupRecord(); // NOTE: Must come after createLayout() because components listen for the setRecord event
-        this.selectDeliveryIfInQueryString();
     },
 
     /**
@@ -339,28 +338,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             this.assignmentgroup_recordcontainer.record.data.parentnode
         );
         window.location.href = url;
-    },
-
-    /**
-     * @private
-     */
-    selectDeliveryIfInQueryString: function() {
-        //var query = Ext.Object.fromQueryString(window.location.search);
-        //if(query.deliveryid) {
-            //var deliveryid = parseInt(query.deliveryid);
-            //var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
-            //deliverymodel.load(deliveryid, {
-                //scope: this,
-                //success: function(record) {
-                    //this.delivery_recordcontainer.setRecord(record);
-                //},
-                //failure: function() {
-                    //// TODO: Handle errors
-                //}
-            //});
-        //} else {
-            //console.log(delivery);
-            //this.down('deliveryinfo').onOtherDeliveries();
-        //}
     }
 });
