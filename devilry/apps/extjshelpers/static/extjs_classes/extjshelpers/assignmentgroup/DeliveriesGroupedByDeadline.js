@@ -195,6 +195,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _findAndMarkActiveFeedback: function() {
         this._sortStaticfeedbacks(this._tmp_active_feedbacks);
         var latestStaticFeedback = this._tmp_active_feedbacks[0];
+        if(!latestStaticFeedback) {
+            return;
+        }
         Ext.each(this._tmp_deliveriespanels, function(deliveriespanel, index) {
             Ext.each(deliveriespanel.deliveriesStore.data.items, function(deliveryRecord, index) {
                 if(deliveryRecord.data.id === latestStaticFeedback.get('delivery')) {
