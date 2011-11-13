@@ -130,16 +130,11 @@ Ext.define('devilry.administrator.PrettyView', {
             success: this.onModelLoadSuccess,
             failure: this.onModelLoadFailure
         });
-
-        this.addListener('render', function() {
-            Ext.getBody().mask('Loading period', 'page-load-mask');
-        }, this);
     },
 
     onModelLoadSuccess: function(record) {
         this.record = record;
         this.refreshBody();
-        Ext.getBody().unmask();
         this.fireEvent('loadmodel', record);
     },
 
