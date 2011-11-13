@@ -9,6 +9,14 @@ Ext.define('devilry.administrator.period.Layout', {
         'devilry.statistics.PeriodAdminLayout',
         'devilry.administrator.period.ListOfAssignments'
     ],
+
+    mainHelpTpl: Ext.create('Ext.XTemplate',
+        '<div class="helpsection">',
+        '<p>On the left hand side all assignments within this period/semester are listed. Click an assignment to manage the assignment.</p>',
+        '<p>In the <span class="menuref">Students</span> tab you can view an overview of all students, and select the criteria that must be met to qualify for final examinations.</p>',
+        '<p>Use the <span class="menuref">Administer</span> tab to change the properties of this period/semester, such as administrators and its timespan.</p>',
+        '</div>'
+    ),
     
     /**
      * @cfg
@@ -16,11 +24,6 @@ Ext.define('devilry.administrator.period.Layout', {
     periodid: undefined,
 
     periodmodel_name: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
-    
-    //constructor: function(config) {
-        //this.initConfig(config);
-        //this.callParent([config]);
-    //},
     
     initComponent: function() {
         var query = Ext.Object.fromQueryString(window.location.search);
@@ -43,11 +46,25 @@ Ext.define('devilry.administrator.period.Layout', {
                 activeTab: query.open_students == 'yes'? 1: 0,
                 items: [
                 {
-                    xtype: 'administrator-period-listofassignments',
-                    periodid: this.periodid,
-                    title: 'Assignments'
-                },
-                {
+                    xtype: 'panel',
+                    title: 'Assignments',
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    items: [{
+                        xtype: 'administrator-period-listofassignments',
+                        periodid: this.periodid,
+                        flex: 7,
+                        frame: false,
+                        border: false
+                    }, {
+                        xtype: 'box',
+                        flex: 3,
+                        html: this.mainHelpTpl.apply({}),
+                        autoScroll: true
+                    }]
+                }, {
                     title: 'Students',
                     xtype: 'statistics-periodadminlayout',
                     periodid: this.periodid,
@@ -60,8 +77,7 @@ Ext.define('devilry.administrator.period.Layout', {
                         }
                     }
                     //defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
-                },
-                this.prettyview = Ext.widget('administrator_periodprettyview', {
+                }, this.prettyview = Ext.widget('administrator_periodprettyview', {
                     title: 'Administer',
                     modelname: this.periodmodel_name,
                     objectid: this.periodid,
