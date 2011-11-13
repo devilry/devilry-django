@@ -279,7 +279,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             role: this.role,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
-                            flex: 1
+                            flex: 1,
+                            listeners: {
+                                scope: this,
+                                loadComplete: function(deliveriesgroupedbydeadline) {
+                                    var latestDelivery = deliveriesgroupedbydeadline.getLatestDelivery();
+                                    if(!latestDelivery) {
+                                        return;
+                                    }
+                                    if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
+                                        latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
+                                        if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
+                                            deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+                                        } else {
+                                            deliveriesgroupedbydeadline.selectDelivery(deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('delivery'));
+                                        }
+                                    } else {
+                                        deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+                                    }
+                                }
+                            }
                         }]
                     }]
                 }, this.centerArea = Ext.widget('container', {

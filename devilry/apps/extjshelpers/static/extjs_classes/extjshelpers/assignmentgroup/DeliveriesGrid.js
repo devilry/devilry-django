@@ -64,7 +64,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
             }],
             listeners: {
                 scope: this,
-                itemmouseup: this.onSelectDelivery
+                select: this.onSelectDelivery
             }
         });
 
