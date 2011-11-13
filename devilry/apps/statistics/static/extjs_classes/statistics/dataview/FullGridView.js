@@ -3,6 +3,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
     cellTpl: Ext.create('Ext.XTemplate',
         '<tpl if="has_feedback">',
         '   {scaled_points:number("0.00")}',
+        '   <span class="grade"> ({grade})</span>',
+        '   <tpl if="is_passing_grade"> <span class="passing_grade">passed</span></tpl>',
         '   <tpl if="!is_passing_grade"> <span class="not_passing_grade">failed</span></tpl>',
         '</tpl>',
         '<tpl if="!has_feedback">',
@@ -39,7 +41,7 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 flex: 1,
-                minWidth: 80,
+                minWidth: 140,
                 sortable: true,
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.groupsByAssignmentId[assignment_id];
@@ -47,7 +49,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                         return me.cellTpl.apply({
                             scaled_points: scaled_points,
                             has_feedback: group.assignmentGroupRecord.get('feedback') != null,
-                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade')
+                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade'),
+                            grade: group.assignmentGroupRecord.get('feedback__grade')
                         });
                     } else {
                         return '';
