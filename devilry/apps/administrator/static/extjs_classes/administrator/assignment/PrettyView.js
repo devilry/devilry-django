@@ -14,10 +14,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.NotificationManager'
     ],
 
-    config: {
-        assignmentgroupstore: undefined,
-        assignmentgroupPrevApprovedStore: undefined
-    },
+    /**
+     * @cfg
+     */
+    assignmentgroupstore: undefined,
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="section">',
@@ -118,11 +118,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '    </tpl>',
         '</div>'
     ),
-
-    constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
 
     getExtraBodyData: function(record) {
         return {
@@ -351,7 +346,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             items: {
                 xtype: 'administrator_studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
-                assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
                 assignmentid: this.objectid,
                 assignmentrecord: this.record,
                 periodid: this.record.data.parentnode,
