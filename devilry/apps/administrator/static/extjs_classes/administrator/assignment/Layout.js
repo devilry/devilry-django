@@ -21,6 +21,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
     assignmentmodel_name: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
     
     initComponent: function() {
+        this.studentsLoaded = false;
         var query = Ext.Object.fromQueryString(window.location.search);
         Ext.apply(this, {
             layout: {
@@ -49,7 +50,19 @@ Ext.define('devilry.administrator.assignment.Layout', {
                     listeners: {
                         scope: this,
                         loadmodel: this._onLoadRecord,
-                        edit: this._onEdit
+                        edit: this._onEdit,
+                        activate: function() {
+                            if(this.prettyview.record) {
+                                this.prettyview.refreshBody();
+                            }
+                        }
+                    }
+                }), this.studentstab = Ext.widget('panel', {
+                    title: 'Students',
+                    layout: 'fit',
+                    listeners: {
+                        scope: this,
+                        activate: this._onStudents
                     }
                 })]
             }]
@@ -57,8 +70,9 @@ Ext.define('devilry.administrator.assignment.Layout', {
         this.callParent(arguments);
     },
 
-    _onLoadRecord: function(record) {
-        this.heading.update(record.data);
+    _onLoadRecord: function(assignmentRecord) {
+        this.assignmentRecord = assignmentRecord;
+        this.heading.update(assignmentRecord.data);
     },
 
     _onEdit: function(record, button) {
@@ -73,5 +87,23 @@ Ext.define('devilry.administrator.assignment.Layout', {
             prettyview: this.prettyview
         });
         editwindow.show();
+    },
+
+
+    _onStudents: function() {
+        if(this.studentsLoaded) {
+            return;
+        }
+        this.studentsLoaded = true;
+        this.studentstab.add({
+            xtype: 'administrator_studentsmanager',
+            assignmentgroupstore: this.assignmentgroupstore,
+            assignmentid: this.assignmentid,
+            assignmentrecord: this.assignmentRecord,
+            periodid: this.assignmentRecord.data.parentnode,
+            deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
+            gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
+            isAdministrator: true
+        });
     }
 });

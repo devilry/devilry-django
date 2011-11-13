@@ -141,15 +141,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             this.addListener('loadmodel', this.onLoadRecord, this);
         }
 
-        this.studentsbutton = Ext.create('Ext.button.Button', {
-            text: 'Manage assignment groups (students)',
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onStudents
-            }
-        });
-
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
             scale: 'large',
@@ -189,7 +180,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton, this.downloadbutton = Ext.widget('button', {
+            relatedButtons: [this.downloadbutton = Ext.widget('button', {
                 scale: 'large',
                 hidden: true,
                 text: 'Download all deliveries',
@@ -327,45 +318,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
         }).show();
     },
-
-    onStudents: function() {
-        this.hide();
-        var studentswindow = Ext.widget('maximizablewindow', {
-            title: Ext.create('Ext.XTemplate',
-                'Manage assignment groups (students) for ',
-                '{parentnode__parentnode__short_name}.',
-                '{parentnode__short_name}.{short_name}'
-            ).apply(this.record.data),
-            width: 926,
-            height: 500,
-            layout: 'fit',
-            maximizable: false,
-            maximized: true,
-            modal: true,
-            onEsc: Ext.emptyFn,
-            items: {
-                xtype: 'administrator_studentsmanager',
-                assignmentgroupstore: this.assignmentgroupstore,
-                assignmentid: this.objectid,
-                assignmentrecord: this.record,
-                periodid: this.record.data.parentnode,
-                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
-                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
-                isAdministrator: true
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    this.show();
-                    this.refreshBody();
-                }
-            }
-        });
-        //this.setSizeToCoverBody(studentswindow);
-        studentswindow.show();
-        //this.alignToCoverBody(studentswindow);
-    },
-
 
     onEdit: function(button) {
         var editpanel = Ext.ComponentManager.create({
