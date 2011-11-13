@@ -256,6 +256,7 @@ Ext.define('devilry.statistics.Loader', {
     },
 
     _addAllRelatedStudentsToStore: function() {
+        this.totalStudents = this.relatedstudent_store.data.items.length;
         Ext.each(this.relatedstudent_store.data.items, function(relatedStudentRecord, index) {
             var userid = relatedStudentRecord.get('user')
             var username = relatedStudentRecord.get('user__username')

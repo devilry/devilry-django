@@ -22,6 +22,7 @@ Ext.define('devilry.administrator.period.Layout', {
     },
     
     initComponent: function() {
+        var query = Ext.Object.fromQueryString(window.location.search);
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -38,6 +39,7 @@ Ext.define('devilry.administrator.period.Layout', {
             }), {
                 xtype: 'tabpanel',
                 flex: 1,
+                activeTab: query.open_studentsgrid == 'yes'? 1: 0,
                 items: [
                 {
                     xtype: 'administrator-period-listofassignments',
