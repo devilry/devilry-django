@@ -401,22 +401,23 @@ Ext.define('devilry.statistics.Loader', {
         this._mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
 
         this.store.suspendEvents();
-        this._addAssignmentsToStore();
-        this._addGroupsToStore();
-        this.updateScaledPoints();
-        this.store.resumeEvents();
+        this._addAssignmentsToStore(function() {
+            this._addGroupsToStore(function() {
+                this.updateScaledPoints();
+                this.store.resumeEvents();
 
-        this.fireEvent('completeDatasetLoaded', this);
-
-        this._unmask();
+                this.fireEvent('completeDatasetLoaded', this);
+                this._unmask();
+            });
+        });
     },
 
-    _addAssignmentsToStore: function() {
+    _addAssignmentsToStore: function(onComplete) {
         var assignment_ids = [];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             assignment_ids.push(assignmentRecord.get('id'));
         }, this);
-        Ext.each(this.store.data.items, function(studentRecord, index) {
+        this._iterateWithDeferYields(this.store.data.items, function(studentRecord, index) {
             Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
                 studentRecord.groupsByAssignmentId[assignmentRecord.get('id')] = {
                     candidates: [],
@@ -425,11 +426,11 @@ Ext.define('devilry.statistics.Loader', {
                 };
             }, this);
             studentRecord.assignment_ids = assignment_ids;
-        }, this);
+        }, this, onComplete);
     },
 
-    _addGroupsToStore: function() {
-        Ext.each(this.candidate_store.data.items, function(candidateRecord, index) {
+    _addGroupsToStore: function(onComplete) {
+        this._iterateWithDeferYields(this.candidate_store.data.items, function(candidateRecord, index) {
             var student_id = candidateRecord.get('student');
             var studentRecord = this.store.getById(student_id);
             if(studentRecord) {
@@ -441,7 +442,37 @@ Ext.define('devilry.statistics.Loader', {
                 group.candidates.push(candidateRecord); // This will add only unique candidate records, since we only fetch distinct candidates
                 group.assignmentGroupRecord = assignmentGroupRecord; // This will be overwritten for each candidate, but that does not matter, since they overwrite with the same record
             }
-        }, this);
+        }, this, onComplete);
+    },
+
+    /**
+     * @private
+     * Almost drop-in replacement for Ext.Array.each that uses Ext.defer on
+     * every 200 item to yield control back to the browser, which prevents
+     * "stop script" popups.
+     *
+     * The primary difference from Ext.Array.each is that this function is
+     * asynchronous. Therefore it takes the onComplete parameter which is a
+     * callback function that is invoked when the iteration is complete.
+     */
+    _iterateWithDeferYields: function(items, callback, scope, onComplete, start) {
+        if(start === undefined) {
+            start = 0;
+        }
+        var index;
+        for(index=start; index<items.length; index++) {
+            Ext.bind(callback, scope)(items[index], index);
+            if(index > 0 && index % 200 === 0) {
+                //console.log(index);
+                Ext.defer(function() {
+                    this._iterateWithDeferYields(items, callback, scope, onComplete, index+1);
+                }, 5, this);
+                break;
+            }
+        }
+        if(index === items.length) {
+            Ext.bind(onComplete, scope)();
+        }
     },
 
     _mask: function(msg) {
