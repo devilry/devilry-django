@@ -40,7 +40,7 @@ Ext.define('devilry.administrator.period.Layout', {
             }), {
                 xtype: 'tabpanel',
                 flex: 1,
-                activeTab: query.open_studentsgrid == 'yes'? 1: 0,
+                activeTab: query.open_students == 'yes'? 1: 0,
                 items: [
                 {
                     xtype: 'administrator-period-listofassignments',
@@ -51,7 +51,7 @@ Ext.define('devilry.administrator.period.Layout', {
                     title: 'Students',
                     xtype: 'statistics-periodadminlayout',
                     periodid: this.periodid,
-                    hidesidebar: false,
+                    hidesidebar: query.students_hidesidebar == 'yes',
                     defaultViewClsname: 'devilry.statistics.dataview.MinimalGridView',
                     listeners: {
                         activate: function(tab) {
