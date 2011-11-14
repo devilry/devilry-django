@@ -443,6 +443,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             items: {
                 xtype: 'panel',
                 border: false,
+                autoScroll: true,
                 html: msg
             },
             dockedItems: [{

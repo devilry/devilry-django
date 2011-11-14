@@ -71,6 +71,38 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }, this.giveFeedbackToSelectedArgs));
 
         var me = this;
+
+        var topBarItems = [{
+            xtype: 'searchfield',
+            width: 500,
+            emptyText: 'Search...'
+        }, {
+            xtype: 'button',
+            text: 'x',
+            handler: function() { me.setFilter(''); }
+        }, {
+            xtype: 'button',
+            text: 'Filter',
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                items: this.getFilters()
+            }
+        }, '->'];
+
+
+        if(this.assignmentrecord.get('delivery_types') == 0) {
+            topBarItems.push({
+                xtype: 'button',
+                text: 'Download all deliveries',
+                iconCls: 'icon-save-16',
+                listeners: {
+                    scope: this,
+                    click: this._onDownload
+                }
+            });
+        }
+
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -92,23 +124,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     dockedItems: [{
                         xtype: 'toolbar',
                         dock: 'top',
-                        items: [{
-                            xtype: 'searchfield',
-                            width: 500,
-                            emptyText: 'Search...'
-                        }, {
-                            xtype: 'button',
-                            text: 'x',
-                            handler: function() { me.setFilter(''); }
-                        }, {
-                            xtype: 'button',
-                            text: 'Filter',
-                            menu: {
-                                xtype: 'menu',
-                                plain: true,
-                                items: this.getFilters()
-                            }
-                        }]
+                        items: topBarItems
                     }]
                 }],
 
@@ -138,6 +154,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.loadFirstPage();
     },
 
+    _onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.assignmentid);
+    },
 
     getFilters: function() {
         var me = this;

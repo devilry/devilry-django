@@ -3,6 +3,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
     cellTpl: Ext.create('Ext.XTemplate',
         '<tpl if="has_feedback">',
         '   {scaled_points:number("0.00")}',
+        '   <span class="grade"> ({grade})</span>',
+        '   <tpl if="is_passing_grade"> <span class="passing_grade">passed</span></tpl>',
         '   <tpl if="!is_passing_grade"> <span class="not_passing_grade">failed</span></tpl>',
         '</tpl>',
         '<tpl if="!has_feedback">',
@@ -10,7 +12,17 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
         '</tpl>'
     ),
 
-    _getGridColumns: function() {
+    selectedStudentTitleTpl: Ext.create('Ext.XTemplate',
+        '{full_name} ({username})'
+    ),
+
+    loadData: function() {
+        this.loader.requireCompleteDataset(function() {
+            this.refreshView();
+        }, this);
+    },
+
+    getGridColumns: function() {
         var gridColumns = this.callParent();
         gridColumns.push({
             flex: 1,
@@ -29,7 +41,7 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 text: assignmentRecord.get('short_name'),
                 dataIndex: scaledPointdataIndex,
                 flex: 1,
-                minWidth: 80,
+                minWidth: 140,
                 sortable: true,
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.groupsByAssignmentId[assignment_id];
@@ -37,7 +49,8 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                         return me.cellTpl.apply({
                             scaled_points: scaled_points,
                             has_feedback: group.assignmentGroupRecord.get('feedback') != null,
-                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade')
+                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade'),
+                            grade: group.assignmentGroupRecord.get('feedback__grade')
                         });
                     } else {
                         return '';
@@ -46,5 +59,52 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
             });
         }, this);
         return gridColumns;
+    },
+
+    createLayout: function() {
+        var grid = this.createGrid({
+            region: 'center',
+            listeners: {
+                scope: this,
+                select: this._onSelectStudent
+            }
+        });
+        this._detailsPanel = Ext.widget('panel', {
+            title: 'Select a student to view their details',
+            region: 'south',
+            autoScroll: true,
+            layout: 'fit',
+            height: 200,
+            collapsed: true,
+            collapsible: true
+        });
+        this.add({
+            xtype: 'container',
+            layout: 'border',
+            items: [grid, this._detailsPanel]
+        });
+        //this.up('statistics-dataview').on('selectStudent', this._onSelectStudent, this);
+    },
+
+    _onSelectStudent: function(grid, record) {
+        this._detailsPanel.removeAll();
+        this._detailsPanel.expand();
+        var assignmentgroups = [];
+        Ext.Object.each(record.groupsByAssignmentId, function(assignmentid, group) {
+            if(group.assignmentGroupRecord != null) {
+                assignmentgroups.push(group.assignmentGroupRecord.data);
+            }
+        }, this);
+        this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
+        this._detailsPanel.add({
+            xtype: 'statistics-overviewofsinglestudent',
+            assignment_store: record.assignment_store,
+            assignmentgroups: assignmentgroups,
+            username: record.get('username'),
+            full_name: record.get('full_name'),
+            labelKeys: record.get('labelKeys'),
+            border: false,
+            frame: false
+        });
     }
 });

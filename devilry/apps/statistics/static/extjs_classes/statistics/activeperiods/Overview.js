@@ -104,7 +104,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             listeners: {
                 scope: this,
                 itemmouseup: function(view, record) {
-                    var url = Ext.String.format('{0}/administrator/period/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
+                    var url = Ext.String.format('{0}/administrator/period/{1}?open_students=yes&students_hidesidebar=yes', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
                     window.open(url, '_blank');
                 }
             }

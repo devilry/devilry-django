@@ -55,28 +55,28 @@ Ext.define('devilry.administrator.period.PrettyView', {
     },
 
     initComponent: function() {
-        Ext.apply(this, {
-            relatedButtons: [{
-                xtype: 'splitbutton',
-                scale: 'large',
-                text: 'Overview of all students',
-                listeners: {
-                    scope: this,
-                    click: function() {
-                        this._onPeriodOverview(false, false);
-                    }
-                },
-                menu: [{
-                    text: 'Open in minimal view mode',
-                    listeners: {
-                        scope: this,
-                        click: function() {
-                            this._onPeriodOverview(true, true);
-                        }
-                    }
-                }]
-            }]
-        });
+        //Ext.apply(this, {
+            //relatedButtons: [{
+                //xtype: 'splitbutton',
+                //scale: 'large',
+                //text: 'Overview of all students',
+                //listeners: {
+                    //scope: this,
+                    //click: function() {
+                        //this._onPeriodOverview(false, false);
+                    //}
+                //},
+                //menu: [{
+                    //text: 'Open in minimal view mode',
+                    //listeners: {
+                        //scope: this,
+                        //click: function() {
+                            //this._onPeriodOverview(true, true);
+                        //}
+                    //}
+                //}]
+            //}]
+        //});
         this.callParent(arguments);
         if(this.record) {
             this._onLoadRecord();
@@ -86,29 +86,5 @@ Ext.define('devilry.administrator.period.PrettyView', {
     },
 
     _onLoadRecord: function() {
-        var querystring = Ext.Object.fromQueryString(window.location.search);
-        if(querystring.open_overview === 'yes') {
-            this._onPeriodOverview(
-                querystring.overview_minimal === 'yes',
-                querystring.overview_hidesidebar === 'yes'
-            );
-        }
-    },
-
-    _onPeriodOverview: function(minimal_layout, hidesidebar) {
-        Ext.widget('window', {
-            width: 800,
-            height: 600,
-            maximized: true,
-            maximizable: true,
-            layout: 'fit',
-            onEsc: Ext.emptyFn,
-            items: {
-                xtype: 'statistics-periodadminlayout',
-                periodid: this.record.get('id'),
-                defaultViewClsname: minimal_layout? 'devilry.statistics.dataview.MinimalGridView': 'devilry.statistics.dataview.FullGridView',
-                hidesidebar: hidesidebar
-            }
-        }).show();
     }
 });

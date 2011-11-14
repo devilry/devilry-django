@@ -14,18 +14,18 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.NotificationManager'
     ],
 
-    config: {
-        assignmentgroupstore: undefined,
-        assignmentgroupPrevApprovedStore: undefined
-    },
+    /**
+     * @cfg
+     */
+    assignmentgroupstore: undefined,
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="section">',
         '    <tpl if="totalAssignmentGroups == 0">',
         '        <div class="section error">',
-        '            <h1>No assignment groups</h1>',
+        '            <h1>No students</h1>',
         '            <p>',
-        '               Students have to be organized in <em>assignment groups</em> before they can add any deliveries. A students belongs to a group even when they deliver individual deliveries. Students that is not in any assignment group do not even see the assignment. Please choose <span class="menuref">Manage assignment groups</span> to bring up the assignment group manager, and select <span class="menuref">Create groups</span>.',
+        '               Students have to be added to the assignment before they can add any deliveries. Please choose the <span class="menuref">Students</span> tab and select <span class="menuref">Add students</span>.',
         '            </p>',
         '        </div>',
         '    </tpl>',
@@ -119,11 +119,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '</div>'
     ),
 
-    constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
-
     getExtraBodyData: function(record) {
         return {
             published: record.data.publishing_time < Ext.Date.now(),
@@ -145,15 +140,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         } else {
             this.addListener('loadmodel', this.onLoadRecord, this);
         }
-
-        this.studentsbutton = Ext.create('Ext.button.Button', {
-            text: 'Manage assignment groups (students)',
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onStudents
-            }
-        });
 
         this.selectgradeeditorbutton = Ext.widget('menuitem', {
             text: 'Change grade editor',
@@ -194,15 +180,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
 
         Ext.apply(this, {
-            relatedButtons: [this.studentsbutton, this.downloadbutton = Ext.widget('button', {
-                scale: 'large',
-                hidden: true,
-                text: 'Download all deliveries',
-                listeners: {
-                    scope: this,
-                    click: this.onDownload
-                }
-            })],
             extraMeButtons: [this.gradeeditormenu],
         });
         this.callParent(arguments);
@@ -222,10 +199,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
-        if(this.record.get('delivery_types') == 0) {
-            this.downloadbutton.show();
-        }
-        //this.onStudents();
     },
 
     checkStudents: function() {
@@ -333,46 +306,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         }).show();
     },
 
-    onStudents: function() {
-        this.hide();
-        var studentswindow = Ext.widget('maximizablewindow', {
-            title: Ext.create('Ext.XTemplate',
-                'Manage assignment groups (students) for ',
-                '{parentnode__parentnode__short_name}.',
-                '{parentnode__short_name}.{short_name}'
-            ).apply(this.record.data),
-            width: 926,
-            height: 500,
-            layout: 'fit',
-            maximizable: false,
-            maximized: true,
-            modal: true,
-            onEsc: Ext.emptyFn,
-            items: {
-                xtype: 'administrator_studentsmanager',
-                assignmentgroupstore: this.assignmentgroupstore,
-                assignmentgroupPrevApprovedStore: this.assignmentgroupPrevApprovedStore,
-                assignmentid: this.objectid,
-                assignmentrecord: this.record,
-                periodid: this.record.data.parentnode,
-                deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
-                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
-                isAdministrator: true
-            },
-            listeners: {
-                scope: this,
-                close: function() {
-                    this.show();
-                    this.refreshBody();
-                }
-            }
-        });
-        //this.setSizeToCoverBody(studentswindow);
-        studentswindow.show();
-        //this.alignToCoverBody(studentswindow);
-    },
-
-
     onEdit: function(button) {
         var editpanel = Ext.ComponentManager.create({
             xtype: 'restfulsimplified_editpanel',
@@ -387,16 +320,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             listeners: {
                 scope: this,
                 close: function() {
-                    button.toggle(false);
+                    window.location.href = window.location.href; // NOTE: Required because some stuff in studentmanager check delivery_types, and we do not check for changes
                 }
             }
         });
-        //this.setSizeToCoverBody(editwindow);
         editwindow.show();
-        //this.alignToCoverBody(editwindow);
-    },
-
-    onDownload: function() {
-        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.objectid);
     }
 });

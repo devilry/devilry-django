@@ -7,6 +7,7 @@ Ext.define('devilry.statistics.Loader', {
     ],
 
     constructor: function(periodid, config) {
+        this._completeDatasetStatus = {loaded: false}; // NOTE: When this is a boolean instead of an object, the attribute does not seem to update everywhere, which leads to multiple loads of complete dataset.
         this._students_by_releatedid = {};
         this.periodid = periodid;
         this.labelManager = Ext.create('devilry.statistics.LabelManager', {
@@ -24,144 +25,108 @@ Ext.define('devilry.statistics.Loader', {
         });
         this.assignment_ids = [];
 
-        this.addEvents('loaded', 'datachange', 'filterApplied', 'filterCleared');
+        this.addEvents('completeDatasetLoaded', 'minimalDatasetLoaded', 'filterApplied', 'filterCleared');
         // Copy configured listeners into *this* object so that the base class's
         // constructor will add them.
         this.listeners = config.listeners;
 
-        Ext.getBody().mask('Loading all data about all students on the period', 'page-load-mask');
-        this.callParent(arguments);        
-
-        // NOTE: Commented out this code, and the code in _checkLoadComplete
-        // because it causes issues on windows (or perhaps all remote clients).
-        // It works locally though. It is supposed to enable loading of all
-        // elements in parallel.
-        //this._loadedCount = 0;
-        //this._loadAssignments();
-        //this._loadAllGroupsInPeriod();
-        //this._loadPeriod();
-        //this._loadAllStudentLabels();
-        //this._loadAllCandidatesInPeriod();
-        //this._loadAllRelatedStudents();
-
-        this._loaders = [
-            this._loadAssignments,
-            this._loadAllGroupsInPeriod,
-            this._loadPeriod,
-            this._loadAllStudentLabels,
-            this._loadAllCandidatesInPeriod,
-            this._loadAllRelatedStudents
-        ]
-        this._checkLoadComplete();
+        this.callParent(arguments);
+        this._loadMinimalDataset();
+        //this.requireCompleteDataset(Ext.emptyFn);
     },
 
-    _checkLoadComplete: function() {
-        //this._loadedCount ++;
-        //if(this._loadedCount >= 6) {
-            //this._onLoaded();
-        //};
-        if(this._loaders.length > 0) {
-            var loader = this._loaders.pop();
-            Ext.bind(loader, this)();
-        } else {
-            this._onLoaded();
-        }
-    },
 
-    /**
-     * @private
-     */
-    _loadAssignments: function() {
-        this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
-        this.assignment_store.proxy.setDevilryFilters([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.periodid
-        }]);
-        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
-        this.assignment_store.load({
-            scope: this,
-            callback: this._onAssignmentsLoaded
-        });
-    },
-
-    /**
-     * @private
-     */
-    _onAssignmentsLoaded: function(assignmentrecords, op) {
-        if(!op.success) {
-            this._handleLoadError('Failed to load assignments', op);
-            return;
-        }
-        this._tmpAssignmentsWithAllGroupsLoaded = 0;
-        Ext.each(assignmentrecords, function(assignmentrecord, index) {
-            this.assignment_ids.push(assignmentrecord.get('id'));
+    _createModel: function() {
+        var fields = ['userid', 'username', 'full_name', 'labelKeys', 'totalScaledPoints'];
+        Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
+            fields.push(assignmentRecord.get('short_name'));
+            var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
+            fields.push(scaledPointdataIndex);
         }, this);
-        this._checkLoadComplete();
-    },
-
-    /**
-     * @private
-     */
-    _loadAllRelatedStudents: function() {
-        this.relatedstudent_store = Ext.create('Ext.data.Store', {
-            model: 'devilry.apps.administrator.simplified.SimplifiedRelatedStudent',
-            remoteFilter: true,
-            remoteSort: true
-        });
-        this.relatedstudent_store.pageSize = 100000; // TODO: avoid UGLY hack
-        this.relatedstudent_store.proxy.setDevilryFilters([{
-            field: 'period',
-            comp: 'exact',
-            value: this.periodid
-        }]);
-        this.relatedstudent_store.load({
-            scope: this,
-            callback: this._onLoadAllRelatedStudents
+        var model = Ext.define('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
+            extend: 'devilry.statistics.AggregatedPeriodDataForStudentBase',
+            idProperty: 'userid',
+            fields: fields
         });
     },
 
-    /**
-     * @private
-     */
-    _onLoadAllRelatedStudents: function(records, op) {
-        if(!op.success) {
-            this._handleLoadError('Failed to load related students', op);
-            return;
+    _createStore: function() {
+        this._createModel();
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'devilry.statistics.AggregatedPeriodDataForStudentGenerated',
+            autoSync: false,
+            proxy: 'memory'
+        });
+    },
+
+    updateScaledPoints: function() {
+        this.store.suspendEvents(); // without suspendEvents/resumeEvents, each record change fires an update event, which makes updateScaledPoints take forever for huge datasets.
+        Ext.each(this.store.data.items, function(studentRecord, index) {
+            studentRecord.updateScaledPoints();
+        }, this);
+        this.store.resumeEvents();
+    },
+
+    filterBy: function(description, fn, scope) {
+        this.store.filterBy(fn, scope);
+        this.fireEvent('filterApplied', this, description);
+    },
+
+    clearFilter: function() {
+        this.store.clearFilter();
+        this.fireEvent('filterCleared', this);
+    },
+
+    _handleLoadError: function(details, op) {
+        this._unmask();
+        var httperror = 'Lost connection with server';
+        if(op.error.status !== 0) {
+            httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
         }
-        this._checkLoadComplete();
+        Ext.MessageBox.show({
+            title: 'Failed to load the period overview',
+            msg: '<p>This is usually caused by an unstable server connection. <strong>Try reloading the page</strong>.</p>' +
+                Ext.String.format('<p>Error details: {0}: {1}</p>', httperror, details),
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            closable: false
+        });
     },
 
-    /** 
-     * @private
-     */
-    _loadAllCandidatesInPeriod: function() {
-        this.candidate_store = Ext.create('Ext.data.Store', {
-            model: 'devilry.apps.administrator.simplified.SimplifiedCandidate',
-            remoteFilter: true,
-            remoteSort: true
-        });
-        this.candidate_store.pageSize = 100000; // TODO: avoid UGLY hack
-        this.candidate_store.proxy.setDevilryFilters([{
-            field: 'assignment_group__parentnode__parentnode',
-            comp: 'exact',
-            value: this.periodid
-        }]);
-        this.candidate_store.load({
-            scope: this,
-            callback: this._onLoadAllCandidatesInPeriod
-        });
+    findAssignmentByShortName: function(short_name) {
+        return this.assignment_store.findRecord('short_name', short_name);
+    },
+
+
+
+
+
+    ////////////////////////////////////////////////
+    //
+    // Minimal dataset loaders
+    //
+    ////////////////////////////////////////////////
+
+    _loadMinimalDataset: function() {
+        this._mask('Loading all data about all students on the period', 'page-load-mask');
+        this._loadPeriod();
     },
 
     /**
      * @private
      */
-    _onLoadAllCandidatesInPeriod: function(records, op) {
-        if(!op.success) {
-            this._handleLoadError('Failed to load candidates', op);
-            return;
-        }
-        this._checkLoadComplete();
+    _loadPeriod: function() {
+        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
+            scope: this,
+            callback: function(record, op) {
+                if(!op.success) {
+                    this._handleLoadError('Failed to load period', op);
+                    return;
+                }
+                this.periodRecord = record;
+                this._loadAllStudentLabels();
+            }
+        });
     },
 
     /**
@@ -197,24 +162,154 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load labels', op);
             return;
         }
-        this._checkLoadComplete();
+        this._loadAllRelatedStudents();
     },
 
     /**
      * @private
      */
-    _loadPeriod: function() {
-        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load(this.periodid, {
-            scope: this,
-            callback: function(record, op) {
-                if(!op.success) {
-                    this._handleLoadError('Failed to load period', op);
-                    return;
-                }
-                this.periodRecord = record;
-                this._checkLoadComplete();
-            }
+    _loadAllRelatedStudents: function() {
+        this.relatedstudent_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedRelatedStudent',
+            remoteFilter: true,
+            remoteSort: true
         });
+        this.relatedstudent_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.relatedstudent_store.proxy.setDevilryFilters([{
+            field: 'period',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        this.relatedstudent_store.load({
+            scope: this,
+            callback: this._onLoadAllRelatedStudents
+        });
+    },
+
+    /**
+     * @private
+     */
+    _onLoadAllRelatedStudents: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load related students', op);
+            return;
+        }
+        this._loadAssignments();
+    },
+
+    /**
+     * @private
+     */
+    _loadAssignments: function() {
+        this.assignment_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.assignment_store.proxy.setDevilryFilters([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        this.assignment_store.proxy.setDevilryOrderby(['publishing_time']);
+        this.assignment_store.load({
+            scope: this,
+            callback: this._onAssignmentsLoaded
+        });
+    },
+
+    /**
+     * @private
+     */
+    _onAssignmentsLoaded: function(assignmentrecords, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load assignments', op);
+            return;
+        }
+        this._tmpAssignmentsWithAllGroupsLoaded = 0;
+        Ext.each(assignmentrecords, function(assignmentrecord, index) {
+            this.assignment_ids.push(assignmentrecord.get('id'));
+        }, this);
+        this._onMinimalDatasetLoaded();
+    },
+
+
+
+
+    ////////////////////////////////////////////////
+    //
+    // AFTER Minimal dataset loaded
+    //
+    ////////////////////////////////////////////////
+
+    _onMinimalDatasetLoaded: function() {
+        this._mask('Rendering table of all results. May take some time for many students.', 'page-load-mask');
+        this._minimalDatasetLoaded = true;
+        this._createStore();
+        this.store.suspendEvents();
+        this._mergeMinimalDatasetIntoStore();
+        this.store.resumeEvents();
+        this._unmask();
+
+        this.fireEvent('minimalDatasetLoaded', this);
+    },
+
+    _mergeMinimalDatasetIntoStore: function() {
+        this._addAllRelatedStudentsToStore();
+        this._addLabelsToStore();
+    },
+
+    _addAllRelatedStudentsToStore: function() {
+        this.totalStudents = this.relatedstudent_store.data.items.length;
+        Ext.each(this.relatedstudent_store.data.items, function(relatedStudentRecord, index) {
+            var userid = relatedStudentRecord.get('user')
+            var username = relatedStudentRecord.get('user__username')
+            var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
+                userid: userid,
+                username: username,
+                full_name: relatedStudentRecord.get('user__devilryuserprofile__full_name'),
+                labelKeys: []
+            });
+            this.store.add(record);
+            record.labels = [];
+            record.assignment_store = this.assignment_store;
+            record.relatedStudentRecord = relatedStudentRecord;
+            record.groupsByAssignmentId = {};
+            this._students_by_releatedid[relatedStudentRecord.get('id')] = record;
+        }, this);
+    },
+
+    _addLabelsToStore: function() {
+        Ext.each(this.relatedstudentkeyvalue_store.data.items, function(appKeyValueRecord, index) {
+            var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
+            var label = appKeyValueRecord.get('key');
+            var labelDescription = appKeyValueRecord.get('value');
+            var studentRecord = this._students_by_releatedid[relatedstudent_id];
+            studentRecord.labels[label] = appKeyValueRecord;
+            studentRecord.setLabelKeysFromLabels();
+        }, this);
+    },
+
+
+
+
+
+
+
+    ////////////////////////////////////////////////////
+    //
+    // Complete dataset loaders
+    //
+    ////////////////////////////////////////////////////
+
+    requireCompleteDataset: function(callback, scope, args) {
+        if(this._completeDatasetStatus.loaded) {
+            //console.log('Already loaded complete', this);
+            Ext.bind(callback, scope, args)();
+        } else {
+            //console.log('Load the complete set', this);
+            this.addListener('completeDatasetLoaded', function() {
+                Ext.bind(callback, scope, args)();
+            }, this, {single: true});
+            this._mask('Loading all results for all students', 'page-load-mask');
+            this._loadAllGroupsInPeriod();
+        }
     },
 
     /**
@@ -246,185 +341,145 @@ Ext.define('devilry.statistics.Loader', {
             this._handleLoadError('Failed to load assignment groups', op);
             return;
         }
-        this._checkLoadComplete();
+        this._loadAllCandidatesInPeriod();
     },
 
+    /** 
+     * @private
+     */
+    _loadAllCandidatesInPeriod: function() {
+        this.candidate_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.administrator.simplified.SimplifiedCandidate',
+            remoteFilter: true,
+            remoteSort: true
+        });
+        this.candidate_store.pageSize = 100000; // TODO: avoid UGLY hack
+        this.candidate_store.proxy.setDevilryFilters([{
+            field: 'assignment_group__parentnode__parentnode',
+            comp: 'exact',
+            value: this.periodid
+        }]);
+        this.candidate_store.load({
+            scope: this,
+            callback: this._onLoadAllCandidatesInPeriod
+        });
+    },
 
-    _addAllRelatedStudentsToStore: function() {
-        Ext.each(this.relatedstudent_store.data.items, function(relatedStudentRecord, index) {
-            var userid = relatedStudentRecord.get('user')
-            var username = relatedStudentRecord.get('user__username')
-            var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
-                userid: userid,
-                username: username,
-                full_name: relatedStudentRecord.get('user__devilryuserprofile__full_name'),
-                labelKeys: []
+    /**
+     * @private
+     */
+    _onLoadAllCandidatesInPeriod: function(records, op) {
+        if(!op.success) {
+            this._handleLoadError('Failed to load candidates', op);
+            return;
+        }
+        this._onCompleteDatasetLoaded();
+    },
+
+    
+
+    //////////////////////////////////////////////
+    //
+    // AFTER complete dataset loaded
+    //
+    //////////////////////////////////////////////
+
+    _onCompleteDatasetLoaded: function() {
+        this._unmask();
+        if(this._minimalDatasetLoaded) {
+            this._mergeCompleteDatasetIntoStore();
+        } else {
+            this.addListener('minimalDatasetLoaded', this._mergeCompleteDatasetIntoStore, this, {single: true});
+        }
+    },
+
+    _mergeCompleteDatasetIntoStore: function() {
+        if(this._completeDatasetStatus.loaded) {
+            return;
+        }
+        this._completeDatasetStatus.loaded = true;
+        this._mask('Calculating table of all results. May take some time for many students.', 'page-load-mask');
+
+        this.store.suspendEvents();
+        this._addAssignmentsToStore(function() {
+            this._addGroupsToStore(function() {
+                this.updateScaledPoints();
+                this.store.resumeEvents();
+
+                this.fireEvent('completeDatasetLoaded', this);
+                this._unmask();
             });
-            this.store.add(record);
-            record.labels = [];
-            record.assignment_store = this.assignment_store;
-            record.relatedStudentRecord = relatedStudentRecord;
-            record.groupsByAssignmentId = {};
-            this._students_by_releatedid[relatedStudentRecord.get('id')] = record;
-        }, this);
+        });
     },
 
-    _addLabelsToStore: function() {
-        Ext.each(this.relatedstudentkeyvalue_store.data.items, function(appKeyValueRecord, index) {
-            var relatedstudent_id = appKeyValueRecord.get('relatedstudent');
-            var label = appKeyValueRecord.get('key');
-            var labelDescription = appKeyValueRecord.get('value');
-            var studentRecord = this._students_by_releatedid[relatedstudent_id];
-            studentRecord.labels[label] = appKeyValueRecord;
-            studentRecord.setLabelKeysFromLabels();
-        }, this);
-    },
-
-    _addAssignmentsToStore: function() {
+    _addAssignmentsToStore: function(onComplete) {
         var assignment_ids = [];
         Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
             assignment_ids.push(assignmentRecord.get('id'));
         }, this);
-        Ext.each(this.store.data.items, function(studentRecord, index) {
-            var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
+        this._iterateWithDeferYields(this.store.data.items, function(studentRecord, index) {
             Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
-                groupsByAssignmentId[assignmentRecord.get('id')] = {
+                studentRecord.groupsByAssignmentId[assignmentRecord.get('id')] = {
                     candidates: [],
                     assignmentGroupRecord: null,
                     scaled_points: null
                 };
             }, this);
             studentRecord.assignment_ids = assignment_ids;
-        }, this);
+        }, this, onComplete);
     },
 
-    _addGroupsToStore: function() {
-        Ext.each(this.candidate_store.data.items, function(candidateRecord, index) {
+    _addGroupsToStore: function(onComplete) {
+        this._iterateWithDeferYields(this.candidate_store.data.items, function(candidateRecord, index) {
             var student_id = candidateRecord.get('student');
             var studentRecord = this.store.getById(student_id);
             if(studentRecord) {
                 var assignmentgroup_id = candidateRecord.get('assignment_group');
                 var assignmentGroupRecord = this.assignmentgroup_store.getById(assignmentgroup_id);
 
-                var groupsByAssignmentId = studentRecord.groupsByAssignmentId;
                 var assignment_id = assignmentGroupRecord.get('parentnode');
-                var group = groupsByAssignmentId[assignment_id];
+                var group = studentRecord.groupsByAssignmentId[assignment_id];
                 group.candidates.push(candidateRecord); // This will add only unique candidate records, since we only fetch distinct candidates
                 group.assignmentGroupRecord = assignmentGroupRecord; // This will be overwritten for each candidate, but that does not matter, since they overwrite with the same record
             }
-        }, this);
-    },
-
-    _mergeDataIntoStore: function() {
-        this._addAllRelatedStudentsToStore();
-        this._addLabelsToStore();
-        this._addAssignmentsToStore();
-        this._addGroupsToStore();
-    },
-
-    _onLoaded: function() {
-        this._createStore();
-        this.store.suspendEvents();
-        this._mergeDataIntoStore();
-        this.updateScaledPoints();
-        this.store.resumeEvents();
-        this.store.fireEvent('datachanged');
-        this.fireEvent('loaded', this);
+        }, this, onComplete);
     },
 
     /**
      * @private
+     * Almost drop-in replacement for Ext.Array.each that uses Ext.defer on
+     * every 200 item to yield control back to the browser, which prevents
+     * "stop script" popups.
+     *
+     * The primary difference from Ext.Array.each is that this function is
+     * asynchronous. Therefore it takes the onComplete parameter which is a
+     * callback function that is invoked when the iteration is complete.
      */
-    //_addGroupToStudent: function(username, grouprecord) {
-        //if(!this._students[username]) {
-            ////console.error(Ext.String.format('Skipped {0} because the user is not a related student.', username));
-            //return;
-        //}
-        //var student = this._students[username];
-        //var assignmentRecord = this.assignment_store.getById(grouprecord.data.parentnode);
-        //student.groupsByAssignmentId[grouprecord.data.parentnode] = {
-            //parentnode: grouprecord.get('parentnode'),
-            //points: grouprecord.data.feedback__points,
-            //is_passing_grade: grouprecord.data.feedback__is_passing_grade
-        //};
-    //},
-
-    //_onDataChanged: function() {
-    //},
-
-
-    _createModel: function() {
-        var fields = ['userid', 'username', 'full_name', 'labelKeys', 'totalScaledPoints'];
-        Ext.each(this.assignment_store.data.items, function(assignmentRecord, index) {
-            fields.push(assignmentRecord.get('short_name'));
-            var scaledPointdataIndex = assignmentRecord.get('id') + '::scaledPoints';
-            fields.push(scaledPointdataIndex);
-        }, this);
-        var model = Ext.define('devilry.statistics.AggregatedPeriodDataForStudentGenerated', {
-            extend: 'devilry.statistics.AggregatedPeriodDataForStudentBase',
-            idProperty: 'userid',
-            fields: fields
-        });
-    },
-
-    _createStore: function() {
-        this._createModel();
-        this.store = Ext.create('Ext.data.Store', {
-            model: 'devilry.statistics.AggregatedPeriodDataForStudentGenerated',
-            autoSync: false,
-            proxy: 'memory'
-        });
-
-        //Ext.Object.each(this._students, function(username, student, index) {
-            //var record = Ext.create('devilry.statistics.AggregatedPeriodDataForStudentBase', this.assignment_store, {
-                //username: username,
-                //full_name: student.relatedstudent.get('user__devilryuserprofile__full_name'),
-                //relatedstudent: student.relatedstudent,
-                //labelKeys: Ext.Object.getKeys(student.labels),
-                //groupsByAssignmentId: student.groupsByAssignmentId,
-                //labels: student.labels
-            //});
-            //store.add(record);
-        //}, this);
-        //return store;
-    },
-
-    updateScaledPoints: function() {
-        this.store.suspendEvents(); // without suspendEvents/resumeEvents, each record change fires an update event, which makes updateScaledPoints take forever for huge datasets.
-        Ext.each(this.store.data.items, function(studentRecord, index) {
-            studentRecord.updateScaledPoints();
-        }, this);
-        this.store.resumeEvents();
-        this.store.fireEvent('datachanged');
-    },
-
-    filterBy: function(description, fn, scope) {
-        this.store.filterBy(fn, scope);
-        this.fireEvent('filterApplied', this, description);
-    },
-
-    clearFilter: function() {
-        this.store.clearFilter();
-        this.fireEvent('filterCleared', this);
-    },
-
-    _handleLoadError: function(details, op) {
-        Ext.getBody().unmask();
-        var httperror = 'Lost connection with server';
-        if(op.error.status !== 0) {
-            httperror = Ext.String.format('{0} {1}', op.error.status, op.error.statusText);
+    _iterateWithDeferYields: function(items, callback, scope, onComplete, start) {
+        if(start === undefined) {
+            start = 0;
         }
-        Ext.MessageBox.show({
-            title: 'Failed to load the period overview',
-            msg: '<p>This is usually caused by an unstable server connection. <strong>Try reloading the page</strong>.</p>' +
-                Ext.String.format('<p>Error details: {0}: {1}</p>', httperror, details),
-            buttons: Ext.Msg.OK,
-            icon: Ext.Msg.ERROR,
-            closable: false
-        });
+        var index;
+        for(index=start; index<items.length; index++) {
+            Ext.bind(callback, scope)(items[index], index);
+            if(index > 0 && index % 200 === 0) {
+                //console.log(index);
+                Ext.defer(function() {
+                    this._iterateWithDeferYields(items, callback, scope, onComplete, index+1);
+                }, 5, this);
+                break;
+            }
+        }
+        if(index === items.length) {
+            Ext.bind(onComplete, scope)();
+        }
     },
 
-    findAssignmentByShortName: function(short_name) {
-        return this.assignment_store.findRecord('short_name', short_name);
+    _mask: function(msg) {
+        this.fireEvent('mask', this, msg);
+    },
+
+    _unmask: function() {
+        this.fireEvent('unmask', this);
     }
 });
