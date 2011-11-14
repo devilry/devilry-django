@@ -37,8 +37,17 @@ Ext.define('devilry.administrator.period.Layout', {
                 data: {},
                 cls: 'section treeheading',
                 tpl: [
-                    '<h1>{long_name}</h1>',
-                    '<h2 class="endoflist">{parentnode__long_name}</h2>'
+                    '<tpl if="!hasdata">',
+                    '   <span class="loading">Loading...</span>',
+                    '</tpl>',
+                    '<tpl if="hasdata">',
+                    '    <h1>',
+                    '       {period.long_name}',
+                    '    </h1>',
+                    '    <h2 class="endoflist"><a href="{DEVILRY_URLPATH_PREFIX}/administrator/subject/{period.parentnode}">',
+                    '       {period.parentnode__long_name}',
+                    '    </a></h2>',
+                    '</tpl>'
                 ]
             }), {
                 xtype: 'tabpanel',
@@ -94,7 +103,11 @@ Ext.define('devilry.administrator.period.Layout', {
     },
 
     _onLoadRecord: function(record) {
-        this.heading.update(record.data);
+        this.heading.update({
+            hasdata: true,
+            period: record.data,
+            DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
+        });
     },
 
     _onEdit: function(record, button) {
