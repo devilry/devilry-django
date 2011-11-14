@@ -6,7 +6,8 @@ Ext.define('devilry.administrator.node.Layout', {
         'devilry.administrator.node.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.Node',
-        'devilry.administrator.ListOfChildnodes'
+        'devilry.administrator.ListOfChildnodes',
+        'devilry.statistics.activeperiods.Overview'
     ],
     
     /**
@@ -49,6 +50,16 @@ Ext.define('devilry.administrator.node.Layout', {
                         loadmodel: this._onLoadRecord,
                         edit: this._onEdit
                     }
+                }), this.activePeriodsTab = Ext.widget('panel', {
+                    title: 'Active periods/semesters (loading...)',
+                    frame: false,
+                    border: false,
+                    layout: 'fit',
+                    disabled: true,
+                    listeners: {
+                        scope: this,
+                        activate: this._onActivePeriods
+                    }
                 }), {
                     xtype: 'administrator-listofchildnodes',
                     title: 'Direct childnodes',
@@ -70,9 +81,23 @@ Ext.define('devilry.administrator.node.Layout', {
     },
 
     _onLoadRecord: function(nodeRecord) {
+        this.nodeRecord = nodeRecord;
+        this.activePeriodsTab.enable();
+        this.activePeriodsTab.setTitle('Active periods/semesters');
         this.heading.update({
             hasdata: true,
             node: nodeRecord.data
+        });
+    },
+
+    _onActivePeriods: function(tab) {
+        if(this.activePeriodsLoaded) {
+            return;
+        }
+        this.activePeriodsLoaded = true;
+        this.activePeriodsTab.add({
+            xtype: 'activeperiods-overview',
+            node: this.nodeRecord
         });
     },
 
