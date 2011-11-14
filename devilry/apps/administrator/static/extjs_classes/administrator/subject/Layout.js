@@ -45,6 +45,7 @@ Ext.define('devilry.administrator.subject.Layout', {
                     parentnodeid: this.subjectid,
                     orderby: 'start_time',
                     modelname: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
+                    readable_type: 'period/semester',
                     urlrolepart: 'period'
                 }, this.prettyview = Ext.widget('administrator_subjectprettyview', {
                     title: 'Administer',

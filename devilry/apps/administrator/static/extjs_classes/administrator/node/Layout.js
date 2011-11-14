@@ -66,6 +66,7 @@ Ext.define('devilry.administrator.node.Layout', {
                     parentnodeid: this.nodeid,
                     orderby: 'short_name',
                     modelname: 'devilry.apps.administrator.simplified.SimplifiedNodeList',
+                    readable_type: 'node',
                     urlrolepart: 'node'
                 }, {
                     xtype: 'administrator-listofchildnodes',
@@ -73,6 +74,7 @@ Ext.define('devilry.administrator.node.Layout', {
                     parentnodeid: this.nodeid,
                     orderby: 'short_name',
                     modelname: 'devilry.apps.administrator.simplified.SimplifiedSubjectList',
+                    readable_type: 'subject',
                     urlrolepart: 'subject'
                 }]
             }]

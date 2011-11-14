@@ -4,6 +4,15 @@ Ext.define('devilry.administrator.ListOfChildnodes', {
     cls: 'selectable-grid',
     hideHeaders: true,
 
+    requires: [
+        'devilry.extjshelpers.forms.administrator.Node',
+        'devilry.extjshelpers.forms.administrator.Subject',
+        'devilry.extjshelpers.forms.administrator.Period',
+        'devilry.extjshelpers.forms.administrator.Assignment',
+        'devilry.administrator.DefaultCreateWindow',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel'
+    ],
+
     mixins: [
         'devilry.extjshelpers.AddPagerIfNeeded'
     ],
@@ -31,6 +40,12 @@ Ext.define('devilry.administrator.ListOfChildnodes', {
      * The part of the url that identifies this childnode type, such as "node" or "assignment".
      */
     urlrolepart: undefined,
+
+    /**
+     * @cfg
+     * Readable type description.
+     */
+    readable_type: undefined,
     
     initComponent: function() {
         this.store = Ext.create('Ext.data.Store', {
@@ -47,7 +62,16 @@ Ext.define('devilry.administrator.ListOfChildnodes', {
             listeners: {
                 scope: this,
                 select: this._onSelect
-            }
+            },
+            bbar: [{
+                xtype: 'button',
+                iconCls: 'icon-add-16',
+                text: Ext.String.format('Add {0}', this.readable_type),
+                listeners: {
+                    scope: this,
+                    click: this._onAdd
+                }
+            }]
         });
         this.callParent(arguments);
         this.addPagerIfNeeded();
@@ -66,5 +90,21 @@ Ext.define('devilry.administrator.ListOfChildnodes', {
     _onSelect: function(grid, record) {
         var url = Ext.String.format('{0}/administrator/{1}/{2}', DevilrySettings.DEVILRY_URLPATH_PREFIX, this.urlrolepart, record.get('id'));
         window.location.href = url;
+    },
+
+    _onAdd: function() {
+        var successUrlPrefix = Ext.String.format('{0}/administrator/{1}/', DevilrySettings.DEVILRY_URLPATH_PREFIX, this.urlrolepart);
+        Ext.create('devilry.administrator.DefaultCreateWindow', {
+            title: Ext.String.format('Create new {0}', this.readable_type),
+            editpanel: Ext.ComponentManager.create({
+                xtype: 'restfulsimplified_editpanel',
+                model: this.modelname,
+                editform: Ext.widget(Ext.String.format('administrator_{0}form', this.urlrolepart)),
+                record: Ext.create(this.modelname, {
+                    parentnode: this.parentnodeid
+                })
+            }),
+            successUrlTpl: Ext.create('Ext.XTemplate', successUrlPrefix + '{id}')
+        }).show();
     }
 });

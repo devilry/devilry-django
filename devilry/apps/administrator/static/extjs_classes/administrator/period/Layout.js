@@ -67,6 +67,7 @@ Ext.define('devilry.administrator.period.Layout', {
                         orderby: 'publishing_time',
                         modelname: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
                         urlrolepart: 'assignment',
+                        readable_type: 'assignment',
                         flex: 7,
                         frame: false,
                         border: false
