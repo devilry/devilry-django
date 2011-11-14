@@ -44,6 +44,8 @@ class SimplifiedAssignmentGroupMetaMixin(object):
     orderbyfields = ['candidates__identifier', 'candidates__full_name', 'candidates__email']
     searchfields = FieldSpec('name',
                              'candidates__identifier',
+                             'candidates__full_name',
+                             'candidates__email',
                              # assignment
                              'parentnode__long_name',
                              'parentnode__short_name',

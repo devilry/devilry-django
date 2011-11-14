@@ -68,7 +68,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.createLayout();
         this.callParent(arguments);
         this.loadAssignmentgroupRecord(); // NOTE: Must come after createLayout() because components listen for the setRecord event
-        this.selectDeliveryIfInQueryString();
     },
 
     /**
@@ -279,7 +278,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             role: this.role,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
-                            flex: 1
+                            flex: 1,
+                            listeners: {
+                                scope: this,
+                                loadComplete: this._selectAppropriateDelivery
+                            }
                         }]
                     }]
                 }, this.centerArea = Ext.widget('container', {
@@ -296,34 +299,47 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     /**
      * @private
+     *
+     * Select most natural delivery:
+     *  - The one with active feedback
+     *  - ... unless a delivery with timestamp after the latest feedback.
      */
-    _onGoToAssignmentsView: function() {
-        var url = Ext.String.format('../assignment/{0}',
-            this.assignmentgroup_recordcontainer.record.data.parentnode
-        );
-        window.location.href = url;
+    _selectMostNaturalDelivery: function(deliveriesgroupedbydeadline) {
+        var latestDelivery = deliveriesgroupedbydeadline.getLatestDelivery();
+        if(!latestDelivery) {
+            return;
+        }
+        if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
+            latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
+            if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
+                deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+            } else {
+                deliveriesgroupedbydeadline.selectDelivery(deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('delivery'));
+            }
+        } else {
+            deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
+        }
+    },
+
+    _selectAppropriateDelivery: function(deliveriesgroupedbydeadline) {
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(query.deliveryid) {
+            deliveriesgroupedbydeadline.selectDelivery(query.deliveryid);
+        } else {
+            this._selectMostNaturalDelivery(deliveriesgroupedbydeadline);
+        }
     },
 
     /**
      * @private
      */
-    selectDeliveryIfInQueryString: function() {
-        var query = Ext.Object.fromQueryString(window.location.search);
-        if(query.deliveryid) {
-            var deliveryid = parseInt(query.deliveryid);
-            var deliverymodel = devilry.extjshelpers.RestFactory.getModel(this.role, 'Delivery');
-            deliverymodel.load(deliveryid, {
-                scope: this,
-                success: function(record) {
-                    this.delivery_recordcontainer.setRecord(record);
-                },
-                failure: function() {
-                    // TODO: Handle errors
-                }
-            });
-        } else {
-            //console.log(delivery);
-            //this.down('deliveryinfo').onOtherDeliveries();
+    _onGoToAssignmentsView: function() {
+        var url = Ext.String.format('../assignment/{0}',
+            this.assignmentgroup_recordcontainer.record.data.parentnode
+        );
+        if(this.isAdministrator) {
+            url += '?open_students=yes';
         }
+        window.location.href = url;
     }
 });

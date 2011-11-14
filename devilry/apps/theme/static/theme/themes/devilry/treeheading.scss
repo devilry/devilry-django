@@ -15,6 +15,9 @@
         padding: 0;
         &:after { content: ', '; }
     }
+    .endoflist {
+        &:after { content: '' !important; }
+    }
     h3 {
         font-size: 1.0em !important;
         font-style: italic;
@@ -33,5 +36,18 @@
         background-image: url(icons/16x16/email.png);
         background-repeat: no-repeat;
         background-position: left center;
+    }
+    h1, h2, h3 {
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+    span.loading {
+        font-weight: bold;
+        color: #777;
     }
 }

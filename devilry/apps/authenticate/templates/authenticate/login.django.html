@@ -1,25 +1,37 @@
-{% extends "theme/base.django.html" %}
-{% load i18n %}
+{% extends "theme/common.django.html" %}
 
-{% block title %}{% trans "Log in" %}{% endblock %}
-{% block heading %}{% trans "Log in" %}{% endblock %}
+{% block title %}Log in{% endblock %}
 
-{% block breadcrumbs %}
+{% block onready %}
+    Ext.getBody().unmask();
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'box',
+            padding: {left: 20, right: 20},
+            html:
+                {% if login_failed %}
+                    '<p class="error">Invalid username or password.</p>' +
+                {% endif %}
+                '<form method="post" action="{% url login %}">' +
+                '    <table>' +
+                '    {{ form.as_table|escapejs }}' +
+                '    </table>' +
+                '    <p>' +
+                '       <input type="submit" name="login" value="Log in"/>' +
+                '    </p>' +
+                '</form>'
+        }]
+    });
 {% endblock %}
 
-{% block main %}
-
-{% if login_failed %}
-	<p class='error'>{% trans "Invalid username or password." %}</p>
-{% endif %}
-
-<form method='post' action='{% url login %}'>
-  <table>
-		{{ form.as_table}}
-	</table>
-	<p>
-		<input type='submit' name='login' value='{% trans "Log in" %}'/>
-	</p>
-</form>
-
+{% block bodyContent %}
 {% endblock %}

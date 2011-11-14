@@ -14,11 +14,11 @@ Ext.define('devilry.statistics.dataview.DataView', {
     config: {
         loader: undefined,
         availableViews: [{
-            clsname: 'devilry.statistics.dataview.FullGridView',
-            label: 'Detailed view'
-        }, {
             clsname: 'devilry.statistics.dataview.MinimalGridView',
             label: 'Minimal view'
+        }, {
+            clsname: 'devilry.statistics.dataview.FullGridView',
+            label: 'Detailed view'
         }],
         defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
     },
@@ -26,7 +26,6 @@ Ext.define('devilry.statistics.dataview.DataView', {
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
-        this.addEvents('selectStudent');
     },
     
     initComponent: function() {

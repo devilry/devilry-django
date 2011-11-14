@@ -3,6 +3,7 @@ Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
     bodyPadding: 0,
+    layout: 'fit',
 
     requires: [
         'devilry.extjshelpers.SetListOfUsers',
@@ -73,7 +74,7 @@ Ext.define('devilry.administrator.PrettyView', {
         this.setadminsbutton = Ext.create('Ext.button.Button', {
             text: 'Manage administrators',
             scale: 'large',
-            enableToggle: true,
+            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onSetadministrators
@@ -84,7 +85,7 @@ Ext.define('devilry.administrator.PrettyView', {
         this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
             scale: 'large',
-            enableToggle: true,
+            //enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -93,7 +94,7 @@ Ext.define('devilry.administrator.PrettyView', {
 
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
-            enableToggle: true,
+            //enableToggle: true,
             scale: 'large',
             listeners: {
                 scope: this,
@@ -116,6 +117,7 @@ Ext.define('devilry.administrator.PrettyView', {
         }
 
         this.bodyBox = Ext.widget('box', {
+            autoScroll: true,
             padding: 20
         });
         Ext.apply(this, {
@@ -130,16 +132,11 @@ Ext.define('devilry.administrator.PrettyView', {
             success: this.onModelLoadSuccess,
             failure: this.onModelLoadFailure
         });
-
-        this.addListener('render', function() {
-            this.getEl().mask('Loading');
-        }, this);
     },
 
     onModelLoadSuccess: function(record) {
         this.record = record;
         this.refreshBody();
-        this.getEl().unmask();
         this.fireEvent('loadmodel', record);
     },
 
@@ -190,10 +187,8 @@ Ext.define('devilry.administrator.PrettyView', {
                 if(btn == 'yes') {
                     me.deleteObject();
                 }
-                button.toggle(false);
             }
         });
-        win.alignTo(button, 'br?', [-win.width, 0]);
     },
 
     /**
@@ -241,11 +236,6 @@ Ext.define('devilry.administrator.PrettyView', {
             height: 300,
             maximizable: true,
             layout: 'fit',
-            listeners: {
-                close: function() {
-                    button.toggle(false);
-                }
-            },
             items: {
                 xtype: 'setlistofusers',
                 usernames: this.record.data.admins__username,
@@ -273,7 +263,6 @@ Ext.define('devilry.administrator.PrettyView', {
                 record.data.admins__username = usernames
                 this.onModelLoadSuccess(record)
                 setlistofusersobj.up('window').close();
-                this.setadminsbutton.toggle(false);
                 devilry.extjshelpers.NotificationManager.show({
                     title: 'Save successful',
                     message: 'Updated adminstrators.'
