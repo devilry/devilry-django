@@ -506,6 +506,14 @@ table.horizontalinfotable {
     background-image: url(icons/16x16/email.png);
     background-repeat: no-repeat;
     background-position: left center; }
+  .treeheading h1 a, .treeheading h2 a, .treeheading h3 a {
+    text-decoration: none;
+    color: #000; }
+  .treeheading h1 a:hover, .treeheading h2 a:hover, .treeheading h3 a:hover {
+    text-decoration: underline; }
+  .treeheading span.loading {
+    font-weight: bold;
+    color: #777; }
 
 body {
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;

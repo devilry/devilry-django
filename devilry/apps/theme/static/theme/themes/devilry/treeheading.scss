@@ -37,4 +37,17 @@
         background-repeat: no-repeat;
         background-position: left center;
     }
+    h1, h2, h3 {
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+    span.loading {
+        font-weight: bold;
+        color: #777;
+    }
 }

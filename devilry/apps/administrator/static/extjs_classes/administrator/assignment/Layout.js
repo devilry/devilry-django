@@ -30,12 +30,21 @@ Ext.define('devilry.administrator.assignment.Layout', {
             },
             items: [this.heading = Ext.ComponentManager.create({
                 xtype: 'component',
-                data: {},
+                data: {hasdata: false},
                 cls: 'section treeheading',
                 tpl: [
-                    '<h1>{long_name}</h1>',
-                    '<h2>{parentnode__long_name}</h2>',
-                    '<h3 class="endoflist">{parentnode__parentnode__long_name}</h2>'
+                    '<tpl if="!hasdata">',
+                    '   <span class="loading">Loading...</span>',
+                    '</tpl>',
+                    '<tpl if="hasdata">',
+                    '    <h1>{assignment.long_name}</h1>',
+                    '    <h2><a href="{DEVILRY_URLPATH_PREFIX}/administrator/period/{assignment.parentnode}">',
+                    '       {assignment.parentnode__long_name}',
+                    '    </a></h2>',
+                    '    <h3 class="endoflist"><a href="{DEVILRY_URLPATH_PREFIX}/administrator/subject/{assignment.parentnode__parentnode}">',
+                    '       {assignment.parentnode__parentnode__long_name}',
+                    '    </a></h2>',
+                    '</tpl>'
                 ]
             }), {
                 xtype: 'tabpanel',
@@ -68,7 +77,11 @@ Ext.define('devilry.administrator.assignment.Layout', {
 
     _onLoadRecord: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this.heading.update(assignmentRecord.data);
+        this.heading.update({
+            hasdata: true,
+            assignment: assignmentRecord.data,
+            DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
+        });
         this._onStudents();
     },
 
