@@ -7,7 +7,7 @@ Ext.define('devilry.administrator.period.Layout', {
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.Period',
         'devilry.statistics.PeriodAdminLayout',
-        'devilry.administrator.period.ListOfAssignments'
+        'devilry.administrator.ListOfChildnodes'
     ],
 
     mainHelpTpl: Ext.create('Ext.XTemplate',
@@ -62,8 +62,11 @@ Ext.define('devilry.administrator.period.Layout', {
                         align: 'stretch'
                     },
                     items: [{
-                        xtype: 'administrator-period-listofassignments',
-                        periodid: this.periodid,
+                        xtype: 'administrator-listofchildnodes',
+                        parentnodeid: this.periodid,
+                        orderby: 'publishing_time',
+                        modelname: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+                        urlrolepart: 'assignment',
                         flex: 7,
                         frame: false,
                         border: false
