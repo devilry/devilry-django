@@ -1,57 +1,39 @@
-{% extends "administrator/single-base.django.html" %}
+{% extends "administrator/base.django.js" %}
 {% load extjs %}
 
-{% block title %}Subject - {{ block.super }}{% endblock %}
+{% block imports %}
+    {{ block.super }}
+    Ext.require([
+        'devilry.administrator.subject.Layout'
+    ]);
+{% endblock %}
 
-{% block headextra %}
-{{ block.super }}
 
-<script>
+{% block appjs %}
+    {{ block.super }}
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }}
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }}
+{% endblock %}
 
-    Ext.require('devilry.administrator.subject.PrettyView');
-    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.forms.administrator.Subject');
-    Ext.onReady(function() {
-        var prettyview = Ext.create('devilry.administrator.subject.PrettyView', {
-            renderTo: 'content-main',
-            modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-            objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL
-        });
+{% block onready %}
+    {{ block.super }}
 
-        var heading = Ext.ComponentManager.create({
-            xtype: 'component',
-            renderTo: 'content-heading',
-            data: {},
-            tpl: [
-                '<h1>{long_name} ({short_name})</h1>'
-            ]
-        });
-
-        prettyview.addListener('loadmodel', function(record) {
-            heading.update(record.data);
-        });
-
-        prettyview.addListener('edit', function(record, button) {
-            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                editpanel: Ext.ComponentManager.create({
-                    xtype: 'restfulsimplified_editpanel',
-                    model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                    editform: Ext.widget('administrator_subjectform'),
-                    record: record
-                }),
-                prettyview: prettyview,
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        button.toggle(false);
-                    }
-                }
-            });
-            editwindow.show();
-        });
+    Ext.getBody().unmask();
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'administrator-subjectlayout',
+            subjectid: {{ objectid }},
+            padding: {left: 20, right: 20}
+        }]
     });
-</script>
 {% endblock %}
