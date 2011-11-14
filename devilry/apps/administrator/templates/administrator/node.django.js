@@ -1,62 +1,41 @@
-{% extends "administrator/single-base.django.html" %}
+{% extends "administrator/base.django.js" %}
 {% load extjs %}
 
-{% block title %}Node - {{ block.super }}{% endblock %}
+{% block imports %}
+    {{ block.super }}
+    Ext.require([
+        'devilry.administrator.node.Layout'
+    ]);
+{% endblock %}
 
-{% block headextra %}
-{{ block.super }}
 
-<script>
+{% block appjs %}
+    {{ block.super }}
     {{ restfulapi.RestfulSimplifiedNode|extjs_model:"admins" }}
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }}
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }}
     {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }}
+{% endblock %}
 
-    Ext.require('devilry.administrator.node.PrettyView');
-    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.forms.administrator.Node');
-    Ext.onReady(function() {
-        var prettyview = Ext.create('devilry.administrator.node.PrettyView', {
-            renderTo: 'content-main',
-            modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
-            objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL
-        });
+{% block onready %}
+    {{ block.super }}
 
-        var heading = Ext.ComponentManager.create({
-            xtype: 'component',
-            renderTo: 'content-heading',
-            data: {},
-            tpl: [
-                '<h1>{long_name} ({short_name})</h1>'
-            ]
-        });
-
-        function showEditWindow(record, button) {
-            var editpanel = Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
-                model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
-                editform: Ext.widget('administrator_nodeform'),
-                record: record
-            });
-            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                editpanel: editpanel,
-                prettyview: prettyview,
-                listeners: {
-                    scope: this,
-                    close: function() {
-                        button.toggle(false);
-                    }
-                }
-            });
-            editwindow.show();
-        }
-
-        prettyview.addListener('edit', showEditWindow);
-        prettyview.addListener('loadmodel', function(record) {
-            heading.update(record.data);
-            //showEditWindow(record);
-        });
+    Ext.getBody().unmask();
+    Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        style: 'background-color: transparent',
+        items: [{
+            region: 'north',
+            xtype: 'pageheader',
+            navclass: 'administrator'
+        }, {
+            region: 'south',
+            xtype: 'pagefooter'
+        }, {
+            region: 'center',
+            xtype: 'administrator-nodelayout',
+            nodeid: {{ objectid }},
+            padding: {left: 20, right: 20}
+        }]
     });
-</script>
 {% endblock %}
