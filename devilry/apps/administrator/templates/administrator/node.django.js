@@ -11,10 +11,13 @@
 
 {% block appjs %}
     {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedNode|extjs_model:"admins" }}
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }}
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }}
-    {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model:"admins" }};
+    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }};
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }};
+    {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }};
+
+    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:";List" }};
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model:";List" }};
 {% endblock %}
 
 {% block onready %}

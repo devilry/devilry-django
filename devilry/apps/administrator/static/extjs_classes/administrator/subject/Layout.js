@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.subject.Layout', {
     requires: [
         'devilry.administrator.subject.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.Subject'
+        'devilry.extjshelpers.forms.administrator.Subject',
+        'devilry.administrator.ListOfChildnodes'
     ],
     
     /**
@@ -38,7 +39,14 @@ Ext.define('devilry.administrator.subject.Layout', {
             }), {
                 xtype: 'tabpanel',
                 flex: 1,
-                items: [this.prettyview = Ext.widget('administrator_subjectprettyview', {
+                items: [{
+                    xtype: 'administrator-listofchildnodes',
+                    title: 'Periods/semesters',
+                    parentnodeid: this.subjectid,
+                    orderby: 'start_time',
+                    modelname: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
+                    urlrolepart: 'period'
+                }, this.prettyview = Ext.widget('administrator_subjectprettyview', {
                     title: 'Administer',
                     modelname: this.subjectmodel_name,
                     objectid: this.subjectid,

@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.node.Layout', {
     requires: [
         'devilry.administrator.node.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.Node'
+        'devilry.extjshelpers.forms.administrator.Node',
+        'devilry.administrator.ListOfChildnodes'
     ],
     
     /**
@@ -48,7 +49,21 @@ Ext.define('devilry.administrator.node.Layout', {
                         loadmodel: this._onLoadRecord,
                         edit: this._onEdit
                     }
-                })]
+                }), {
+                    xtype: 'administrator-listofchildnodes',
+                    title: 'Direct childnodes',
+                    parentnodeid: this.nodeid,
+                    orderby: 'short_name',
+                    modelname: 'devilry.apps.administrator.simplified.SimplifiedNodeList',
+                    urlrolepart: 'node'
+                }, {
+                    xtype: 'administrator-listofchildnodes',
+                    title: 'Subjects',
+                    parentnodeid: this.nodeid,
+                    orderby: 'short_name',
+                    modelname: 'devilry.apps.administrator.simplified.SimplifiedSubjectList',
+                    urlrolepart: 'subject'
+                }]
             }]
         });
         this.callParent(arguments);
