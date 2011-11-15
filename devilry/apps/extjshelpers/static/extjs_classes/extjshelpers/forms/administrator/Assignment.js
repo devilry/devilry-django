@@ -88,6 +88,10 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
                 {value:true, label:"Yes"}
             ]
         })
+    }, {
+        xtype: 'hiddenfield',
+        name: 'scale_points_percent',
+        value: 100
     }],
 
     help: [
