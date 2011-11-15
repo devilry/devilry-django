@@ -37,33 +37,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     todohelptext: '<p>This is your to-do list on this assignment. It shows all <em>open</em> groups. An <em>open</em> group is a group that is still waiting for deliveries or feedback.</p>',
 
-    config: {
-        /**
-         * @cfg
-         * AssignmentGroup ``Ext.data.Store``. (Required).
-         */
-        store: undefined,
+    /**
+    * @cfg
+    * AssignmentGroup ``Ext.data.Store``. (Required).
+    */
+    store: undefined,
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup. (Optional).
-         *
-         * Used to show current assignmentgroup.
-         */
-        assignmentgroup_recordcontainer: undefined,
+    /**
+    * @cfg
+    * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup. (Optional).
+    *
+    * Used to show current assignmentgroup.
+    */
+    assignmentgroup_recordcontainer: undefined,
 
-        pageSize: 7,
-        toolbarExtra: undefined,
+    /**
+     * @cfg
+     */
+    pageSize: 7,
 
-        helpTpl: Ext.create('Ext.XTemplate',
-            '<div class="section helpsection">{todohelptext}</div>'
-        )
-    },
+    /**
+     * @cfg
+     */
+    toolbarExtra: undefined,
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg
+     */
+    helpTpl: Ext.create('Ext.XTemplate',
+        '<div class="section helpsection">{todohelptext}</div>'
+    ),
 
 
     initComponent: function() {
@@ -72,7 +75,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             xtype: 'storesearchfield',
             emptyText: 'Search...',
             store: this.store,
-            pageSize: this.pageSize || 7, // TODO: Fix config order to avoid this hack
+            pageSize: this.pageSize,
             width: 300,
             autoLoadStore: false
         }];

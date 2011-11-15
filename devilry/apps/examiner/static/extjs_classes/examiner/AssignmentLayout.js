@@ -7,20 +7,38 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry.extjshelpers.SingleRecordView'
     ],
     
-    config: {
-        assignmentid: undefined,
-        assignmentmodelname: undefined,
-        assignmentgroupstore: undefined
-    },
+    /**
+     * @cfg
+     */
+    assignmentid: undefined,
+    
+    /**
+     * @cfg
+     */
+    assignmentmodelname: undefined,
+    
+    /**
+     * @cfg
+     */
+    assignmentgroupstore: undefined,
+    
+    /**
+     * @cfg
+     */
+    assignmentmodelname_todolist: undefined,
     
     constructor: function(config) {
-        this.initConfig(config);
         this.assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.assignment_recordcontainer.on('setRecord', this._onLoadRecord, this);
-        this.callParent([config]);
+        this.callParent(arguments);
     },
     
     initComponent: function() {
+        this.todostore = Ext.create('Ext.data.Store', {
+            model: this.assignmentmodelname_todolist,
+            remoteFilter: true,
+            remoteSort: true
+        });
         var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
         assignmentmodel.load(this.assignmentid, {
             scope: this,
@@ -73,9 +91,10 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         return {
             xtype: 'examiner-assignmentlayout-todolist',
             assignmentid: this.assignmentid,
+            pageSize: 30,
             assignment_recordcontainer: this.assignment_recordcontainer,
-            assignmentmodelname: this.assignmentmodelname,
-            assignmentgroupstore: this.assignmentgroupstore
+            assignmentmodelname: this.assignmentmodelname_todolist,
+            assignmentgroupstore: this.todostore
         };
     },
 

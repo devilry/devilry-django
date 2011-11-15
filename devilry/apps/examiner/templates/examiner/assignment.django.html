@@ -16,6 +16,8 @@
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,candidates;Todolist" }};
 {% endblock %}
 
     
@@ -35,9 +37,10 @@
             region: 'center',
             xtype: 'examiner-assignmentlayout',
             margin: {left: 10, right: 10},
-            assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             assignmentid: {{ assignmentid }},
-            assignmentgroupstore: assignmentgroupstore
+            assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            assignmentgroupstore: assignmentgroupstore,
+            assignmentmodelname_todolist: 'devilry.apps.examiner.simplified.SimplifiedAssignmentGroupTodolist'
         }]
     });
 {% endblock %}
