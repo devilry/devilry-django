@@ -280,7 +280,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     _sendEmailsToVisible: function() {
         var emailAddresses = this._getAdminEmailAddresses().join(',');
-        window.location.href = this.emailLinkTpl.apply({
+        window.location = this.emailLinkTpl.apply({
             emailAddresses: emailAddresses
         });
     },

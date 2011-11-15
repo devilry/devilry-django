@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from optparse import make_option
+import sys
 
 
 class UserModCommand(BaseCommand):
@@ -78,5 +79,5 @@ class Command(UserModCommand):
             profile = user.get_profile()
             full_name = options.get('full_name')
             if full_name:
-                profile.full_name = full_name
+                profile.full_name = unicode(full_name, sys.stdin.encoding)
             self.save_profile(profile)

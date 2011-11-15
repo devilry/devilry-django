@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from optparse import make_option
+import sys
 
 
 class Command(BaseCommand):
@@ -56,5 +57,8 @@ class Command(BaseCommand):
                                                  attr=getattr(user, attrname))
         profile = user.get_profile()
         for attrname in ('full_name',):
+            attr = getattr(profile, attrname)
+            if isinstance(attr, str) or isinstance(attr, unicode):
+                attr = attr.encode(sys.stdout.encoding)
             print '   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=getattr(profile, attrname))
+                                                 attr=attr)
