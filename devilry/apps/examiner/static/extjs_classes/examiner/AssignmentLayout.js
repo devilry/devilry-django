@@ -91,6 +91,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         return {
             xtype: 'examiner-assignmentlayout-todolist',
             assignmentid: this.assignmentid,
+            pageSize: 30,
             assignment_recordcontainer: this.assignment_recordcontainer,
             assignmentmodelname: this.assignmentmodelname_todolist,
             assignmentgroupstore: this.todostore
