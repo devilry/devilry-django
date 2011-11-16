@@ -62,7 +62,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     constructor: function(config) {
         this.callParent(arguments);
-        this.defaultPageSize = this.assignmentgroupstore.pageSize;
+        this.defaultPageSize = 30;
 
         this.role = this.isAdministrator? 'administrator': 'examiner';
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
