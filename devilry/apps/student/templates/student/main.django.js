@@ -19,7 +19,7 @@
     var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
     var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
 
-    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users,feedback,feedbackdelivery" }};
     var ag_store = Ext.create('Ext.data.Store', {
         model: ag_model,
         id: 'devilry.apps.student.AddDeliveriesStore',
@@ -29,7 +29,6 @@
     });
 
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"assignment,feedback" }};
 
     var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
     var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }};
