@@ -33,8 +33,7 @@ DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 ## to automatically set email to this pattern if it is not set when a user is saved.
 #DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
 
-## When sorting by fullname, would you like to sort by last name? Affects grids
-## where one can sort by clicking the  full name column.
+## When sorting by fullname, would you like to sort by last name? Currently only affects the overview over an entire period.
 DEVILRY_SORT_FULL_NAME_BY_LASTNAME = True
 
 ## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
