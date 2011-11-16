@@ -22,8 +22,8 @@ Ext.define('devilry.extjshelpers.SortByLastnameColumn', {
     },
 
     _sorter: function(a, b) {
-        afull = a.get('full_name');
-        bfull = b.get('full_name');
+        afull = a.get(this.dataIndex);
+        bfull = b.get(this.dataIndex);
         if(Ext.typeOf(afull) != 'string') {
             return 1;
         } else if(Ext.typeOf(bfull) != 'string') {
