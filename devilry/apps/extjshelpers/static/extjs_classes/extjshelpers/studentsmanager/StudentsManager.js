@@ -22,25 +22,47 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         addDeliveries: 'devilry.administrator.studentsmanager.AddDeliveriesMixin'
     },
 
-    config: {
-        /**
-         * @cfg
-         * Use the administrator RESTful interface to store drafts? If this is
-         * ``false``, we use the examiner RESTful interface.
-         */
-        isAdministrator: false,
-        gradeeditor_config_model: undefined,
-        deadlinemodel: undefined,
-        assignmentid: undefined,
-        assignmentrecord: undefined,
-        assignmentgroupstore: undefined,
+    /**
+    * @cfg
+    * Use the administrator RESTful interface to store drafts? If this is
+    * ``false``, we use the examiner RESTful interface.
+    */
+    isAdministrator: false,
 
-        periodid: undefined
-    },
+    /**
+     * @cfg
+     */
+    gradeeditor_config_model: undefined,
+
+    /**
+     * @cfg
+     */
+    deadlinemodel: undefined,
+
+    /**
+     * @cfg
+     */
+    assignmentid: undefined,
+
+    /**
+     * @cfg
+     */
+    assignmentrecord: undefined,
+
+    /**
+     * @cfg
+     */
+    assignmentgroupstore: undefined,
+
+    /**
+     * @cfg
+     */
+    periodid: undefined,
+
 
     constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
+        this.callParent(arguments);
+        this.defaultPageSize = this.assignmentgroupstore.pageSize;
 
         this.role = this.isAdministrator? 'administrator': 'examiner';
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
@@ -87,6 +109,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 xtype: 'menu',
                 plain: true,
                 items: this.getFilters()
+            }
+        }, {
+            xtype: 'button',
+            text: 'All on one page',
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                toggle: function(btn, pressed) {
+                    this.assignmentgroupstore.pageSize = pressed? 100000: this.defaultPageSize;
+                    if(pressed) {
+                        this.assignmentgroupstore.currentPage = 1;
+                    }
+                    this.assignmentgroupstore.load();
+                }
             }
         }, '->'];
 
