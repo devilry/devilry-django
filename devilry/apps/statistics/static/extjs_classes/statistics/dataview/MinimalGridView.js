@@ -1,6 +1,9 @@
 Ext.define('devilry.statistics.dataview.MinimalGridView', {
     extend: 'devilry.statistics.dataview.BaseView',
     layout: 'fit',
+    requires: [
+        'devilry.extjshelpers.SortFullNameByGlobalPolicyColumn'
+    ],
 
     labelTpl: Ext.create('Ext.XTemplate',
         '<ul class="labels-list">',
@@ -17,9 +20,10 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             width: 100,
             locked: true
         }, {
+            xtype: 'sortfullnamebyglobalpolicycolumn',
             header: 'Full name', dataIndex: 'full_name',
             minWidth: 140,
-            flex: 2,
+            flex: 2
         }, {
             header: 'Labels', dataIndex: 'labelKeys',
             width: 150,
@@ -29,7 +33,6 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         }];
         return gridColumns;
     },
-
 
     refresh: function() {
         this.loadData();
