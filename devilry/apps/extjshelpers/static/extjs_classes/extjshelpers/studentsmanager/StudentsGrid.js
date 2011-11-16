@@ -135,7 +135,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '        <div class="delivery_type">',
         '            <tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
         '            <tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type == 2"><span class="alias">From previous period</span></tpl>',
+        '            <tpl if="feedback__delivery__delivery_type == 2"><span class="alias">From previous period (semester)</span></tpl>',
         '            <tpl if="feedback__delivery__delivery_type &gt; 2"><span class="unknown">Unknown delivery type</span></tpl>',
         '       </div>',
         '   </tpl>',

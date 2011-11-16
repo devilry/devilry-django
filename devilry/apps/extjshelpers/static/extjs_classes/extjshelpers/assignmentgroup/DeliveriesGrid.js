@@ -24,7 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
         '    </tpl>',
         '</tpl>',
         '<tpl if="delivery.delivery_type == 2">',
-        '   <span class="neutralInlineItem">From previous period</span>',
+        '   <span class="neutralInlineItem">From previous period (semester)</span>',
         '</tpl>',
         '<tpl if="hasLatestFeedback">',
         '   <span class="neutralInlineItem">active feedback</span>',
