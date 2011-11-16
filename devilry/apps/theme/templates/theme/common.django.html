@@ -40,6 +40,7 @@
                 DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}',
                 DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
                 DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
+                DEVILRY_SORT_FULL_NAME_BY_LASTNAME: {{ DEVILRY_SORT_FULL_NAME_BY_LASTNAME|yesno:"true,false" }},
                 DEVILRY_LOGIN_URL: '{% url login %}'
             });
 

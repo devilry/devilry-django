@@ -15,6 +15,12 @@ Ext.define('devilry.extjshelpers.SortByLastnameColumn', {
         return sp[sp.length - 1];
     },
 
+    compare: function(afull, bfull) {
+        var alast = this._getLastName(afull);
+        var blast = this._getLastName(bfull);
+        return alast.localeCompare(blast);
+    },
+
     _sorter: function(a, b) {
         afull = a.get('full_name');
         bfull = b.get('full_name');
@@ -23,9 +29,7 @@ Ext.define('devilry.extjshelpers.SortByLastnameColumn', {
         } else if(Ext.typeOf(bfull) != 'string') {
             return -1;
         } else {
-            var alast = this._getLastName(afull);
-            var blast = this._getLastName(bfull);
-            return alast.localeCompare(blast);
+            return this.compare(afull, bfull);
         }
     }
 });
