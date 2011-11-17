@@ -113,14 +113,12 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
 
     _filterQualifiesForExamYes: function() {
-        this.store.filterBy(function(record) {
-            return record.get('qualifies_for_exam_ready_for_export');
-        });
+        this.store.clearFilter();
+        this.store.filter('qualifies_for_exam_ready_for_export', true);
     },
     _filterQualifiesForExamNo: function() {
-        this.store.filterBy(function(record) {
-            return !record.get('qualifies_for_exam_ready_for_export');
-        });
+        this.store.clearFilter();
+        this.store.filter('qualifies_for_exam_ready_for_export', false);
     },
     _clearFilters: function() {
         this.store.clearFilter();
