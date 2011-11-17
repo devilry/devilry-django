@@ -4,19 +4,27 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     frame: false,
     border: false,
     autoScroll: true,
-    cls: 'selectable-grid',
+    //cls: 'selectable-grid',
 
     requires: [
         'devilry.extjshelpers.DateTime',
         'devilry.statistics.activeperiods.AggregatedPeriodModel',
         'devilry.extjshelpers.RestProxy',
-        'devilry.extjshelpers.SearchField'
+        'devilry.extjshelpers.SearchField',
+        'devilry.extjshelpers.GridSelectionModel'
     ],
     
     /**
      * @cfg
      */
     nodeRecord: undefined,
+
+
+    linkTpl: Ext.create('Ext.XTemplate',
+        '<a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/administrator/period/{data.period_id}?open_students=yes&students_hidesidebar=yes">',
+        '{data.subject_long_name} ({data.period_long_name})',
+        '</a>'
+    ),
 
     readyForExportTpl: Ext.create('Ext.XTemplate',
         '<tpl if="qualifies_for_exam_ready_for_export"><span class="goodInlineItem">yes</span></tpl>',
@@ -30,6 +38,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     
     initComponent: function() {
         this._createStore();
+        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            checkOnly: true
+        });
+
         Ext.apply(this, {
             tbar: [
                 //xtype: 'searchfield',
@@ -82,11 +94,13 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             columns: [{
                 text: 'Subject',
                 dataIndex: 'subject_long_name',
-                flex: 30
-            },{
-                text: 'Period',
-                dataIndex: 'period_long_name',
-                flex: 20
+                flex: 30,
+                renderer: function(v, m, record) {
+                    return this.linkTpl.apply({
+                        data: record.data,
+                        DevilrySettings: DevilrySettings
+                    });
+                }
             },{
                 text: '&laquo;Qualifies for exam&raquo; ready for export?',
                 dataIndex: 'qualifies_for_exam_ready_for_export',
@@ -97,10 +111,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             }],
             listeners: {
                 scope: this,
-                itemmouseup: function(view, record) {
-                    var url = Ext.String.format('{0}/administrator/period/{1}?open_students=yes&students_hidesidebar=yes', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
-                    window.open(url, '_blank');
-                },
+                //itemmouseup: function(view, record) {
+                    //var url = Ext.String.format('{0}/administrator/period/{1}?open_students=yes&students_hidesidebar=yes', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
+                    //window.open(url, '_blank');
+                //},
                 render: function() {
                     Ext.defer(function() {
                         this._createAndLoadPeriodStore();
