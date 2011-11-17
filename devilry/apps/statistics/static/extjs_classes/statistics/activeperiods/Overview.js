@@ -55,6 +55,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 //}
             {
                 xtype: 'button',
+                iconCls: 'icon-email-16',
                 text: 'Send email to admin(s) on selected',
                 listeners: {
                     scope: this,
@@ -104,7 +105,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             },{
                 text: '&laquo;Qualifies for exam&raquo; ready for export?',
                 dataIndex: 'qualifies_for_exam_ready_for_export',
-                flex: 20,
+                width: 230,
                 renderer: function(value, m, record) {
                     return this.readyForExportTpl.apply(record.data);
                 }
@@ -301,6 +302,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     _sendEmailsToSelected: function() {
         var selected = this.getSelectionModel().getSelection();
+        if(selected.length === 0) {
+            Ext.MessageBox.alert('Error', 'Please select at least one row.');
+            return;
+        }
         var emailAddresses = this._getAdminEmailAddressesFromRecords(selected).join(',');
         window.location = this.emailLinkTpl.apply({
             emailAddresses: emailAddresses
