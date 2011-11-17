@@ -114,12 +114,12 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
 
     _filterQualifiesForExamYes: function() {
         this.store.filterBy(function(record) {
-            return record.get('qualifies_for_exam_ready_for_export') !== null;
+            return record.get('qualifies_for_exam_ready_for_export');
         });
     },
     _filterQualifiesForExamNo: function() {
         this.store.filterBy(function(record) {
-            return record.get('qualifies_for_exam_ready_for_export') === null;
+            return !record.get('qualifies_for_exam_ready_for_export');
         });
     },
     _clearFilters: function() {
@@ -264,7 +264,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 'period_id': periodRecord.get('id'),
                 'subject_long_name': periodRecord.get('parentnode__long_name'),
                 'period_long_name': periodRecord.get('long_name'),
-                'qualifies_for_exam_ready_for_export': null
+                'qualifies_for_exam_ready_for_export': false
             });
         }, this);
 
@@ -272,7 +272,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             var period_id = appKeyValueRecord.get('period');
             var periodRecord = this.periodstore.getById(period_id);
             var storeRecord = this.store.getById(period_id);
-            storeRecord.set('qualifies_for_exam_ready_for_export', appKeyValueRecord.data);
+            storeRecord.set('qualifies_for_exam_ready_for_export', true);
             storeRecord.commit(); // Removed red corner
         }, this);
         this.getEl().unmask();
