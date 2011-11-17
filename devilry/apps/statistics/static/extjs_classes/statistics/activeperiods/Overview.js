@@ -55,10 +55,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 //}
             {
                 xtype: 'button',
-                text: 'Send email to admin(s) on visible',
+                text: 'Send email to admin(s) on selected',
                 listeners: {
                     scope: this,
-                    click: this._sendEmailsToVisible
+                    click: this._sendEmailsToSelected
                 }
             }, '->', {
                 xtype: 'combobox',
@@ -292,16 +292,24 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         this.store.sort('subject_long_name', 'ASC');
     },
 
-    _sendEmailsToVisible: function() {
-        var emailAddresses = this._getAdminEmailAddresses().join(',');
+    //_sendEmailsToVisible: function() {
+        //var emailAddresses = this._getAdminEmailAddressesFromRecords(this.store.data.items).join(',');
+        //window.location = this.emailLinkTpl.apply({
+            //emailAddresses: emailAddresses
+        //});
+    //},
+
+    _sendEmailsToSelected: function() {
+        var selected = this.getSelectionModel().getSelection();
+        var emailAddresses = this._getAdminEmailAddressesFromRecords(selected).join(',');
         window.location = this.emailLinkTpl.apply({
             emailAddresses: emailAddresses
         });
     },
 
-    _getAdminEmailAddresses: function() {
+    _getAdminEmailAddressesFromRecords: function(records) {
         var emails = [];
-        Ext.each(this.store.data.items, function(record, index) {
+        Ext.each(records, function(record, index) {
             var periodRecord = this.periodstore.getById(record.get('period_id'));
             var subjectid = periodRecord.get('parentnode');
             var subjectRecord = this.subjectstore.getById(subjectid);
