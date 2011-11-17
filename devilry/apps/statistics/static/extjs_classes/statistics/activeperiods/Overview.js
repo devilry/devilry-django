@@ -35,6 +35,9 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         'mailto:{from}?',
         'bcc={emailAddresses}'
     ),
+
+    emailTooltip: 'Opens your email application to send email to all admins on selected rows. Use the checkbox in the upper left corner to select all visible rows.' +
+        (Ext.isIE8? '<p>WARNING: Your browser, Internet Explorer, can not handle email links containing many addresses. Use another browser if you encounter this problem.</p>': ''),
     
     initComponent: function() {
         this._createStore();
@@ -59,7 +62,16 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 text: 'Send email to admin(s) on selected',
                 listeners: {
                     scope: this,
-                    click: this._sendEmailsToSelected
+                    click: this._sendEmailsToSelected,
+                    render: function(button) {
+                        Ext.tip.QuickTipManager.register({
+                            target: button.getEl(),
+                            title: 'Click to send email to admins on selected',
+                            text: this.emailTooltip,
+                            width: 350,
+                            dismissDelay: 30000 // Hide after 30 seconds hover
+                        });
+                    }
                 }
             }, '->', {
                 xtype: 'combobox',
