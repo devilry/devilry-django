@@ -392,6 +392,16 @@ input, select {
   padding: 1px 4px;
   white-space: nowrap; }
 
+a {
+  text-decoration: none;
+  color: #0b5a9d; }
+
+a:visited {
+  color: #0b5a9d; }
+
+a:hover {
+  text-decoration: underline; }
+
 table.horizontalinfotable {
   border-collapse: collapse;
   border: 1px solid #D4D2CE; }

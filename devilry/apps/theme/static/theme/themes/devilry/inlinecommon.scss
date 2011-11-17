@@ -29,3 +29,14 @@
 .neutralInlineItem {
     @include neutralInlineItem();
 }
+
+a {
+    text-decoration: none;
+    color: $linkcolor;
+}
+a:visited {
+    color: $linkcolor;
+}
+a:hover{
+    text-decoration: underline;
+}
