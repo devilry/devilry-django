@@ -13,9 +13,10 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         'devilry.extjshelpers.SearchField'
     ],
     
-    config: {
-        node: undefined
-    },
+    /**
+     * @cfg
+     */
+    nodeRecord: undefined,
 
     readyForExportTpl: Ext.create('Ext.XTemplate',
         '<tpl if="qualifies_for_exam_ready_for_export"><span class="goodInlineItem">yes</span></tpl>',
@@ -27,15 +28,8 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         'bcc={emailAddresses}'
     ),
     
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
-
     initComponent: function() {
-        Ext.getBody().mask('Loading overview', 'page-load-mask');
         this._createStore();
-        this._createAndLoadPeriodStore();
         Ext.apply(this, {
             tbar: [
                 //xtype: 'searchfield',
@@ -106,6 +100,11 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
                 itemmouseup: function(view, record) {
                     var url = Ext.String.format('{0}/administrator/period/{1}?open_students=yes&students_hidesidebar=yes', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('period_id'));
                     window.open(url, '_blank');
+                },
+                render: function() {
+                    Ext.defer(function() {
+                        this._createAndLoadPeriodStore();
+                    }, 100, this);
                 }
             }
         });
@@ -144,6 +143,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     _createAndLoadPeriodStore: function() {
+        this.getEl().mask('Loading overview');
         this.periodstore = Ext.create('Ext.data.Store', {
             model: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
             remoteFilter: true,
@@ -154,7 +154,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         this.periodstore.proxy.setDevilryFilters([{
             field: 'parentnode__parentnode',
             comp: 'exact',
-            value: this.node.get('id')
+            value: this.nodeRecord.get('id')
         }, {
             field: 'start_time',
             comp: '<',
@@ -191,7 +191,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         this.periodappkeyvalue_store.proxy.setDevilryFilters([{
             field: 'period__parentnode__parentnode',
             comp: 'exact',
-            value: this.node.get('id')
+            value: this.nodeRecord.get('id')
         }, {
             field: 'period__start_time',
             comp: '<',
@@ -236,7 +236,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
         this.subjectstore.proxy.setDevilryFilters([{
             field: 'parentnode',
             comp: 'exact',
-            value: this.node.get('id')
+            value: this.nodeRecord.get('id')
         }]);
         this.subjectstore.pageSize = 100000;
         this.subjectstore.load({
@@ -254,7 +254,7 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
     },
 
     _handleLoadError: function(op, title) {
-        Ext.getBody().unmask();
+        this.getEl().unmask();
         devilry.extjshelpers.RestProxy.showErrorMessagePopup(op, title);
     },
 
@@ -275,7 +275,9 @@ Ext.define('devilry.statistics.activeperiods.Overview', {
             storeRecord.set('qualifies_for_exam_ready_for_export', appKeyValueRecord.data);
             storeRecord.commit(); // Removed red corner
         }, this);
-        Ext.getBody().unmask();
+        this.getEl().unmask();
+
+        this.store.sort('subject_long_name', 'ASC');
     },
 
     _sendEmailsToVisible: function() {

@@ -99,7 +99,7 @@ Ext.define('devilry.administrator.node.Layout', {
         this.activePeriodsLoaded = true;
         this.activePeriodsTab.add({
             xtype: 'activeperiods-overview',
-            node: this.nodeRecord
+            nodeRecord: this.nodeRecord
         });
     },
 
