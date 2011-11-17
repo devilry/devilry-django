@@ -19,7 +19,16 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             flex: 1,
             listeners: {
                 scope: this,
-                click: this._onSave
+                click: this._onSave,
+                render: function(button) {
+                    Ext.tip.QuickTipManager.register({
+                        target: button.getEl(),
+                        title: 'Save',
+                        text: 'Adds labels to students according to your current settings, and marks this period (semester) as ready for export to external systems.',
+                        width: 350,
+                        dismissDelay: 10000 // Hide after 10 seconds hover
+                    });
+                }
             }
         });
         this.previewButton = Ext.widget('button', {
@@ -29,7 +38,16 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             flex: 1,
             listeners: {
                 scope: this,
-                click: this._onPreview
+                click: this._onPreview,
+                render: function(button) {
+                    Ext.tip.QuickTipManager.register({
+                        target: button.getEl(),
+                        title: 'Show matching students',
+                        text: 'Adds a filter to the table that limits visible rows to the ones matching this rule.',
+                        width: 350,
+                        dismissDelay: 10000 // Hide after 10 seconds hover
+                    });
+                }
             }
         });
 
