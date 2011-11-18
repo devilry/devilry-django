@@ -86,6 +86,6 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
     },
 
     getSelectedStudents: function() {
-        return this.grid.getSelectionModel().getSelection();
+        return this.down('grid').getSelectionModel().getSelection();
     }
 });
