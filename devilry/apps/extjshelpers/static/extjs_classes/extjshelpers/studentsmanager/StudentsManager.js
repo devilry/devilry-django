@@ -60,6 +60,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     periodid: undefined,
 
 
+    feedbackTooltip: Ext.create('Ext.XTemplate',
+        'Select one or more students/groups and click this button to give them feedback.',
+        '<tpl if="delivery_types == 0">',
+        '   You should only use this in simple cases.',
+        '   <tpl if="isAdministrator">',
+        '       We reccommend that you set yourself, or someone else, as examiner, and use the examiner interface.',
+        '   </tpl>',
+        '   <tpl if="!isAdministrator">',
+        '       We reccommend that you use the Todo-list unless you need to give feedback to many students in bulk.',
+        '   </tpl>',
+        '</tpl>'
+    ),
+
+
     constructor: function(config) {
         this.callParent(arguments);
         this.defaultPageSize = 30;
@@ -85,6 +99,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     if(!this.registryitem_recordcontainer.record) {
                         button.getEl().mask('Loading'); // TODO: Only mask the affected buttons
                     }
+                    var tip = Ext.create('Ext.tip.ToolTip', {
+                        target: button.getEl(),
+                        title: 'Give feedback to selected',
+                        html: this.feedbackTooltip.apply({
+                            delivery_types: this.assignmentrecord.get('delivery_types'),
+                            isAdministrator: this.isAdministrator
+                        }),
+                        width: 350,
+                        anchor: 'top',
+                        dismissDelay: 30000 // Hide after 30 seconds hover
+                    });
                 }
             }
         };
