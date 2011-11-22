@@ -96,9 +96,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             title: 'Click to give feedback on this delivery',
             anchor: 'top',
             target: button.getEl().id,
-            html: 'You add feedback to a specific delivery. The latest feedback you publish on any delivery made by this group on this assignment becomes the active feedback/grade for this assignment group.',
+            html: 'You add feedback to a specific delivery. The latest feedback you publish on any delivery on this assignment becomes their active feedback/grade on the assignment.',
             width: 415,
-            dismissDelay: 10000,
+            dismissDelay: 35000,
             autoHide: true
         });
     },
