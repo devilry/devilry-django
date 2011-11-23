@@ -9,16 +9,16 @@
 }
 
 @mixin goodInlineItem() {
-    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+    @include inlineItem(#fff, $goodcolor_bg, $goodcolor_hoverbg);
 }
 @mixin neutralInlineItem() {
-    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+    @include inlineItem(#fff, $neutralcolor_bg, $neutralcolor_hoverbg);
 }
 @mixin warningInlineItem() {
-    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+    @include inlineItem(#fff, $warningcolor_bg, $warningcolor_hoverbg);
 }
 @mixin errorInlineItem() {
-    @include inlineItem($errorcolor_bg, $errorcolor_fg, $errorcolor_hoverbg);
+    @include inlineItem(#fff, $errorcolor_bg, $errorcolor_hoverbg);
 }
 @mixin inlineList($separator:", ") {
     li {
