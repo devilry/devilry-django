@@ -51,13 +51,15 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.groupsByAssignmentId[assignment_id];
                     if(group.assignmentGroupRecord) {
-                        return me.cellTpl.apply({
+                        var tpldata = {
                             scaled_points: scaled_points,
                             has_feedback: group.assignmentGroupRecord.get('feedback') != null,
                             is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade'),
                             is_open: group.assignmentGroupRecord.get('is_open'),
                             grade: group.assignmentGroupRecord.get('feedback__grade')
-                        });
+                        };
+                        var result = me.cellTpl.apply(tpldata);
+                        return result;
                     } else {
                         return '';
                     }

@@ -25,7 +25,8 @@
             Ext.Loader.setConfig({
                 enabled: {% if debug %}true{% else %}false{% endif %},
                 paths: {
-                    'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes'
+                    'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
+                    'Ext': '{{ DEVILRY_STATIC_URL }}/extjsux'
                 }
             });
 
@@ -40,6 +41,7 @@
                 DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}',
                 DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
                 DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
+                DEVILRY_COMMON_CSS: '{{DEVILRY_THEME_URL }}/common.css',
                 DEVILRY_SORT_FULL_NAME_BY_LASTNAME: {{ DEVILRY_SORT_FULL_NAME_BY_LASTNAME|yesno:"true,false" }},
                 DEVILRY_LOGIN_URL: '{% url login %}'
             });

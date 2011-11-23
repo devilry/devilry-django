@@ -2,7 +2,8 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
     extend: 'devilry.statistics.dataview.BaseView',
     layout: 'fit',
     requires: [
-        'devilry.extjshelpers.SortFullNameByGlobalPolicyColumn'
+        'devilry.extjshelpers.SortFullNameByGlobalPolicyColumn',
+        'Ext.ux.grid.Printer'
     ],
 
     labelTpl: Ext.create('Ext.XTemplate',
@@ -27,7 +28,7 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         }, {
             header: 'Labels', dataIndex: 'labelKeys',
             width: 150,
-            renderer: function(value, p, record) {
+            renderer: function(labelKeys, p, record) {
                 return me.labelTpl.apply(record.data);
             }
         }];
@@ -49,7 +50,14 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             autoScroll: true,
             store: this.loader.store,
             columns: gridColumns,
-            bbar: ['->', {
+            bbar: [{
+                xtype: 'button',
+                text: 'Print',
+                listeners: {
+                    scope: this,
+                    click: this._onPrint
+                }
+            }, '->', {
                 xtype: 'tbtext',
                 text: this._getTbText()
             }]
@@ -59,8 +67,8 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
         }
         this.mon(this.loader, 'filterCleared', this._onFilterChange, this);
         this.mon(this.loader, 'filterApplied', this._onFilterChange, this);
-        var grid = Ext.widget('grid', gridOpts);
-        return grid;
+        this.grid = Ext.widget('grid', gridOpts);
+        return this.grid;
     },
 
     _getTbText: function() {
@@ -87,5 +95,9 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
 
     getSelectedStudents: function() {
         return this.down('grid').getSelectionModel().getSelection();
+    },
+
+    _onPrint: function() {
+        Ext.ux.grid.Printer.print(this.grid);
     }
 });
