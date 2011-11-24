@@ -66,39 +66,75 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
-                click: this.onReplaceExaminers
+                click: this.onReplaceExaminers,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Replace examiners',
+                        html: 'Replace examiners to the selected groups (removes current examiners).'
+                    });
+                }
             }
         }, {
             text: 'Add',
             iconCls: 'icon-add-16',
             listeners: {
                 scope: this,
-                click: this.onAddExaminers
+                click: this.onAddExaminers,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Add examiners',
+                        html: 'Add examiners to the selected groups.'
+                    });
+                }
             }
         }, {
             text: 'Random distribute',
             listeners: {
                 scope: this,
-                click: this.onRandomDistributeExaminers
+                click: this.onRandomDistributeExaminers,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Random distribute',
+                        html: 'Random distribute a list of examiners to the selected groups. Replaces current examiners on the selected groups.'
+                    });
+                }
             }
         }, {
             text: 'Copy from another assignment',
             listeners: {
                 scope: this,
-                click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod
+                click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Copy from another assignment',
+                        html: 'Lets you choose another assignment, and import examiners. Replaces current examiners on the selected groups.'
+                    });
+                }
             }
         }, {
-            text: 'Match tagged examiners to equally tagged groups',
+            text: 'Automatically',
             listeners: {
                 scope: this,
-                click: this.onSetExaminersFromTags
+                click: this.onSetExaminersFromTags,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Automatically set examiners',
+                        html: Ext.String.format('Match tagged examiners to equally tagged groups. Tags are normally imported from {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM)
+                    });
+                }
             }
         }, {
             text: 'Clear',
             iconCls: 'icon-delete-16',
             listeners: {
                 scope: this,
-                click: this.onClearExaminers
+                click: this.onClearExaminers,
+                render: function(menuitem) {
+                    this._addMenuItemTooltip(menuitem, {
+                        title: 'Clear',
+                        html: 'Remove all examiners on selected groups.'
+                    });
+                }
             }
         }];
     },
@@ -175,6 +211,15 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         return menu;
     },
 
+    _addMenuItemTooltip: function(menuitem, args) {
+        Ext.create('Ext.tip.ToolTip', Ext.apply(args, {
+            target: menuitem.getEl(),
+            showDelay: 50,
+            width: 300,
+            anchor: 'left',
+            dismissDelay: 30000 // Hide after 30 seconds hover
+        }));
+    },
 
     statics: {
         getAllGroupsInAssignment: function(assignmentid, action) {
