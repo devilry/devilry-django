@@ -36,8 +36,12 @@ Ext.define("Ext.ux.grid.Printer", {
 		/**
 		 * Prints the passed grid. Reflects on the grid's column model to build a table, and fills it using the store
 		 * @param {Ext.grid.Panel} grid The grid to print
+         *
+         * @param {Boolean} printAutomatically True to open the print dialog
+         *      automatically and close the window after printing. False to simply
+         *      open the print version of the grid (defaults to true)
 		 */
-		print: function(grid) {
+		print: function(grid, printAutomatically) {
 			//We generate an XTemplate here by using 2 intermediary XTemplates - one to create the header,
 			//the other to create the body (see the escaped {} below)
 			var columns = grid.columns;
@@ -49,14 +53,12 @@ Ext.define("Ext.ux.grid.Printer", {
 
                 var rowData = [];
                 Ext.each(columns, function(column) {
-                    console.log(item, column.dataIndex);
                     var cellValue = item.data[column.dataIndex];
                     var renderedCell = column.renderer? column.renderer(cellValue, undefined, item): cellValue;
                     rowData.push({renderedCell: renderedCell});
                 }, this);
                 data.push(rowData);
 			});
-            console.log(columns);
 
 			//use the headerTpl and bodyTpl markups to create the main XTemplate below
 			var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
@@ -93,9 +95,11 @@ Ext.define("Ext.ux.grid.Printer", {
 
 			win.document.write(html);
 
-			if (this.printAutomatically){
-				win.print();
-				win.close();
+			if (printAutomatically){
+                Ext.defer(function() {
+                    win.print();
+                    win.close();
+                }, 200);
 			}
 		},
 
@@ -105,14 +109,6 @@ Ext.define("Ext.ux.grid.Printer", {
 		 * The path at which the print stylesheet can be found (defaults to 'ux/grid/gridPrinterCss/print.css')
 		 */
 		stylesheetPath: DevilrySettings.DEVILRY_STATIC_URL + '/extjsux/ux/grid/print.css',
-		
-		/**
-		 * @property printAutomatically
-		 * @type Boolean
-		 * True to open the print dialog automatically and close the window after printing. False to simply open the print version
-		 * of the grid (defaults to true)
-		 */
-		printAutomatically: false,
 		
 		/**
 		 * @property headerTpl
