@@ -3,7 +3,8 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
     layout: 'fit',
     requires: [
         'devilry.extjshelpers.SortFullNameByGlobalPolicyColumn',
-        'Ext.ux.grid.Printer'
+        'Ext.ux.grid.Printer',
+        'devilry.extjshelpers.GridPrintButton'
     ],
 
     labelTpl: Ext.create('Ext.XTemplate',
@@ -51,11 +52,11 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             store: this.loader.store,
             columns: gridColumns,
             bbar: [{
-                xtype: 'button',
-                text: 'Print',
+                xtype: 'gridprintbutton',
                 listeners: {
                     scope: this,
-                    click: this._onPrint
+                    print: this._onPrint,
+                    printformat: this._onPrintFormat
                 }
             }, '->', {
                 xtype: 'tbtext',
@@ -98,6 +99,10 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
     },
 
     _onPrint: function() {
-        Ext.ux.grid.Printer.print(this.grid);
+        Ext.ux.grid.Printer.print(this.grid, true);
+    },
+
+    _onPrintFormat: function() {
+        Ext.ux.grid.Printer.print(this.grid, false);
     }
 });
