@@ -224,6 +224,9 @@ input, select {
 .icon-email-16 {
   background-image: url(icons/16x16/email.png) !important; }
 
+.icon-print-16 {
+  background-image: url(icons/16x16/print.png) !important; }
+
 .icon-help-32 {
   background-image: url(icons/32x32/help.png) !important; }
 
@@ -256,6 +259,9 @@ input, select {
 
 .icon-email-32 {
   background-image: url(icons/32x32/email.png) !important; }
+
+.icon-print-32 {
+  background-image: url(icons/32x32/print.png) !important; }
 
 .text_with_tooltip {
   text-decoration: underline;

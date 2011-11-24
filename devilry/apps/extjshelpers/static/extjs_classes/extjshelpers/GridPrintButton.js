@@ -6,6 +6,7 @@ Ext.define('devilry.extjshelpers.GridPrintButton', {
     initComponent: function() {
         Ext.apply(this, {
             text: 'Print',
+            iconCls: 'icon-print-16',
             tooltip: {
                 title: 'Open print formatted table in new window.',
                 text: 'Use the print button/menu item in your browser to print the table.'
