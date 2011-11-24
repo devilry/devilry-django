@@ -17,18 +17,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             iconCls: 'icon-save-32',
             scale: 'large',
             flex: 1,
+            tooltip: {
+                title: 'Save',
+                text: Ext.String.format('Adds labels to students according to your current settings, and marks this period (semester) as ready for export to {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM),
+            },
             listeners: {
                 scope: this,
-                click: this._onSave,
-                render: function(button) {
-                    Ext.tip.QuickTipManager.register({
-                        target: button.getEl(),
-                        title: 'Save',
-                        text: 'Adds labels to students according to your current settings, and marks this period (semester) as ready for export to external systems.',
-                        width: 350,
-                        dismissDelay: 10000 // Hide after 10 seconds hover
-                    });
-                }
+                click: this._onSave
             }
         });
         this.previewButton = Ext.widget('button', {
@@ -36,18 +31,13 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             //iconCls: '',
             scale: 'large',
             flex: 1,
+            tooltip: {
+                title: 'Show matching students',
+                text: 'Adds a filter to the table that limits visible rows to the ones matching this rule.',
+            },
             listeners: {
                 scope: this,
-                click: this._onPreview,
-                render: function(button) {
-                    Ext.tip.QuickTipManager.register({
-                        target: button.getEl(),
-                        title: 'Show matching students',
-                        text: 'Adds a filter to the table that limits visible rows to the ones matching this rule.',
-                        width: 350,
-                        dismissDelay: 10000 // Hide after 10 seconds hover
-                    });
-                }
+                click: this._onPreview
             }
         });
 
@@ -76,7 +66,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
         }
         Ext.MessageBox.show({
             title: 'Save?',
-            msg: 'Are you sure you want to save? Students will be able to see if they are qualified for final exams. It will also mark <em>qualifies for exam</em> as <strong>ready for export</strong> to related systems.',
+            msg: Ext.String.format('Are you sure you want to save? Students will be able to see if they are qualified for final exams. It will also mark <em>qualifies for exam</em> as <strong>ready for export</strong> to {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM),
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             closable: false,
