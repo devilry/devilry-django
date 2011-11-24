@@ -45,20 +45,16 @@ Ext.define("Ext.ux.grid.Printer", {
 			//build a useable array of store data for the XTemplate
 			var data = [];
 			grid.store.data.each(function(item) {
-				var convertedData = [];
+				//var convertedData = [];
 
-				//apply renderers from column model
-				for (var key in item.data) {
-					var value = item.data[key];
-
-					Ext.each(columns, function(column) {
-						if (column.dataIndex == key) {
-							convertedData[key] = column.renderer ? column.renderer(value, undefined, item) : value;
-						}
-					}, this);
-				}
-
-				data.push(convertedData);
+                var rowData = [];
+                Ext.each(columns, function(column) {
+                    console.log(item, column.dataIndex);
+                    var cellValue = item.data[column.dataIndex];
+                    var renderedCell = column.renderer? column.renderer(cellValue, undefined, item): cellValue;
+                    rowData.push({renderedCell: renderedCell});
+                }, this);
+                data.push(rowData);
 			});
             console.log(columns);
 
@@ -79,7 +75,11 @@ Ext.define("Ext.ux.grid.Printer", {
 				    '<table>',
 				      headings,
 				      '<tpl for=".">',
-				        body,
+                        '<tr>',
+                            '<tpl for=".">',
+                                '<td>{renderedCell}</td>',
+                            '</tpl>',
+                        '</tr>',
 				      '</tpl>',
 				    '</table>',
 				  '</body>',
@@ -123,20 +123,6 @@ Ext.define("Ext.ux.grid.Printer", {
 			'<tr>',
 				'<tpl for=".">',
 					'<th>{text}</th>',
-				'</tpl>',
-			'</tr>'
-		],
-
-		/**
-		 * @property bodyTpl
-		 * @type {Object/Array} values
-		 * The XTemplate used to create each row. This is used inside the 'print' function to build another XTemplate, to which the data
-		 * are then applied (see the escaped dataIndex attribute here - this ends up as "{dataIndex}")
-		 */
-		bodyTpl: [
-			'<tr>',
-				'<tpl for=".">',
-					'<td>{dataIndex}</td>',
 				'</tpl>',
 			'</tr>'
 		]
