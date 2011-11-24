@@ -12,7 +12,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         'devilry.gradeeditors.EditManyDraftEditorWindow',
         'devilry.extjshelpers.studentsmanager.MultiResultWindow',
         'devilry.extjshelpers.MenuHeader',
-        'devilry.extjshelpers.HelpWindow'
+        'devilry.extjshelpers.HelpWindow',
+        'Ext.ux.grid.Printer',
+        'devilry.extjshelpers.GridPrintButton'
     ],
 
     mixins: {
@@ -121,7 +123,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         var topBarItems = [{
             xtype: 'searchfield',
-            width: 500,
+            width: 400,
             emptyText: 'Search...'
         }, {
             xtype: 'button',
@@ -149,7 +151,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     this.assignmentgroupstore.load();
                 }
             }
-        }, '->'];
+        }, '->'
+        //{
+            //xtype: 'gridprintbutton',
+            //listeners: {
+                //scope: this,
+                //print: this._onPrint,
+                //printformat: this._onPrintFormat
+            //}
+        //}
+        ];
 
 
         if(this.assignmentrecord.get('delivery_types') == 0) {
@@ -217,6 +228,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     _onDownload: function() {
         window.location.href = Ext.String.format('compressedfiledownload/{0}', this.assignmentid);
+    },
+
+    _onPrint: function() {
+        Ext.ux.grid.Printer.print(this.down('studentsmanager_studentsgrid'), true);
+    },
+
+    _onPrintFormat: function() {
+        Ext.ux.grid.Printer.print(this.down('studentsmanager_studentsgrid'), false);
     },
 
     getFilters: function() {
