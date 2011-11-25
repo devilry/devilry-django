@@ -1,7 +1,6 @@
-from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
+from devilry.simplified import SimplifiedModelApi, PermissionDenied
 
 
-@simplified_modelapi
 class IsRelatedStudentBase(SimplifiedModelApi):
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

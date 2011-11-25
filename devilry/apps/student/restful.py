@@ -1,9 +1,9 @@
-from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
-from ..extjshelpers import extjs_restful_modelapi
+from devilry.restful import restful_modelapi, ModelRestfulView, RestfulManager
+from devilry.apps.extjshelpers import extjs_restful_modelapi
 from simplified import (SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
-                        SimplifiedStaticFeedback, SimplifiedFileMeta)
+                        SimplifiedStaticFeedback, SimplifiedFileMeta, SimplifiedRelatedStudentKeyValue)
 from devilry.coreutils.restful.metabases import (DeadlineExtjsModelMeta,
                                                  AssignmentGroupExtjsModelMeta,
                                                  DeliveryExtjsModelMeta,
@@ -13,7 +13,7 @@ __all__ = ('RestfulSimplifiedSubject',
            'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
-           'RestfulSimplifiedStaticFeedback')
+           'RestfulSimplifiedStaticFeedback', 'RestfulSimplifiedRelatedStudentKeyValue')
 
 
 student_restful = RestfulManager()
@@ -34,6 +34,13 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriod
         foreignkey_fields = {'parentnode': RestfulSimplifiedSubject}
+
+@student_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedRelatedStudentKeyValue(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedRelatedStudentKeyValue
 
 
 @student_restful.register

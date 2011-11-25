@@ -2,7 +2,7 @@ from datetime import datetime
 from django.db.models import Count, Max
 import django.dispatch
 
-from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied, FieldSpec
+from devilry.simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied, FieldSpec
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedPeriodMetaMixin,
                                                    SimplifiedAssignmentMetaMixin,
@@ -13,6 +13,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.core.models import AssignmentGroup, Delivery
 from isrelatedstudentbase import IsRelatedStudentBase
+from simplifiedrelatedstudentkeyvalue import SimplifiedRelatedStudentKeyValue
 
 
 successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
