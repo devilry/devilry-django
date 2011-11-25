@@ -154,6 +154,15 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
 
+    @classmethod
+    def where_is_relatedstudent(cls, user_obj):
+        return cls.objects.filter(cls.q_is_relatedstudent(user_obj)).distinct()
+
+    @classmethod
+    def q_is_relatedstudent(cls, user_obj):
+        return Q(relatedstudent__user=user_obj)
+
+
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific Period. """
