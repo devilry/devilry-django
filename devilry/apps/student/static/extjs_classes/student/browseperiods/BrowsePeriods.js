@@ -20,11 +20,7 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
                 }
             }, {
                 xtype: 'student-browseperiods-assignmentgrid',
-                region: 'center',
-                listeners: {
-                    scope: this,
-                    select: this._onSelectAssignment
-                }
+                region: 'center'
             }]
         });
         this.callParent(arguments);
@@ -33,9 +29,5 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
     _onSelectPeriod: function(grid, periodRecord) {
         var assignmentGrid = this.down('student-browseperiods-assignmentgrid');
         assignmentGrid.loadGroupsInPeriod(periodRecord);
-    },
-
-    _onSelectAssignment: function(grid, record) {
-        console.log('hei');
     }
 });
