@@ -62,7 +62,15 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
             comp: 'exact',
             value: periodRecord.get('id')
         }])
-        this.store.load();
+        this.store.load({
+            scope: this,
+            callback: function(records, op) {
+                this.getEl().unmask();
+                if(records.length === 0) {
+                    this.getEl().mask('You are not registered on any assignments within this period/semester. This may not be an issue if your subject/course do not have assignments, if no assignments have been published yet, or if they only use Devilry to register final results.', 'information-mask');
+                }
+            }
+        });
     },
     
     initComponent: function() {
