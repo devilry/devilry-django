@@ -12,6 +12,8 @@
 {% block appjs %}
     {{ block.super }}
 
+    {{ restfulapi.RestfulSimplifiedRelatedStudentKeyValue|extjs_model }};
+
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
     var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
     assignmentgroup_permcheckstore.pageSize = 1;
@@ -85,6 +87,7 @@
 {% block onready %}
     {{ block.super }}
 
+    {% comment %}
     var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
         stores: [assignmentgroup_permcheckstore],
         emptyHtml: '<div class="section info-small extravisible-small"><h1>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG.title }}</h1>' +
@@ -94,14 +97,14 @@
                 Ext.getBody().unmask();
             },
             hasPermission: function() {
-                searchwidget.show();
-                createGrids();
             }
         }
     });
     assignmentgroup_permcheckstore.load();
+    {% endcomment %}
 
 
+    Ext.getBody().unmask();
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
         style: 'background-color: transparent',
@@ -121,7 +124,7 @@
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [searchwidget, permchecker, {xtype:'box', height: 20}, {
+            items: [searchwidget, {xtype:'box', height: 20}, {
                 xtype: 'panel',
                 flex: 1,
                 layout: 'fit',
@@ -130,4 +133,6 @@
             }]
         }]
     });
+    searchwidget.show();
+    createGrids();
 {% endblock %}
