@@ -1,5 +1,4 @@
 from datetime import datetime
-from django.conf import settings
 from django.db.models import Count, Max
 import django.dispatch
 
@@ -13,6 +12,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
 from devilry.apps.core.models import AssignmentGroup, Delivery
+from isrelatedstudentbase import IsRelatedStudentBase
 
 
 successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
@@ -145,34 +145,11 @@ class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(SimplifiedModelApi):
+class SimplifiedPeriod(IsRelatedStudentBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
         """ Defines what methods a Student can use on a Period object using the Simplified API """
         methods = ['search', 'read']
-
-    @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        """ Returns all objects of this type that matches arguments
-        given in ``\*\*kwargs`` where ``user`` is a related student.
-
-        :param user: A django user object.
-        :param \*\*kwargs: A dict containing search-parameters.
-        :rtype: a django queryset
-        """
-        return cls._meta.model.where_is_relatedstudent(user)
-
-    @classmethod
-    def read_authorize(cls, user, obj):
-        """ Checks if the given ``user`` is an student in the given
-        ``obj``, and raises ``PermissionDenied`` if not.
-
-        :param user: A django user object.
-        :param obj: An object of the type this method is used in.
-        :throws PermissionDenied:
-        """
-        if not cls._meta.model.where_is_relatedstudent(user).filter(id=obj.id):
-            raise PermissionDenied()
 
 
 @simplified_modelapi
