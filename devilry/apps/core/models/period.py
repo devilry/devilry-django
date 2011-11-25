@@ -170,4 +170,4 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
                 Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
-        return '{0}: {1}'.format(self.period, super(RelatedStudentKeyValue, self).__unicode__())
+        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())
