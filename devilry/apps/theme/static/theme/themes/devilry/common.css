@@ -189,16 +189,20 @@ input, select {
   background-color: #000 !important;
   width: 100% !important; }
 
-.page-load-mask {
+.page-load-mask, .information-mask {
   padding: 20px !important;
   border-radius: 20px;
   background-color: #000 !important;
-  border: none !important; }
-  .page-load-mask div {
+  border: none !important;
+  margin: 20px !important; }
+  .page-load-mask div, .information-mask div {
     background-color: transparent !important;
     color: #eee !important;
     border: none !important;
     font-size: 1.2em !important; }
+
+.information-mask div {
+  background-image: none !important; }
 
 .x-window-maximized {
   width: 100% !important; }

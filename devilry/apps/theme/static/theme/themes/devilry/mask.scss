@@ -9,18 +9,25 @@
 .x-mask {
     @include overlayMask(0.7);
 }
-.page-load-mask {
+.page-load-mask, .information-mask {
     //width: 600px !important;
     //height: 400px !important;
     padding: 20px !important;
     border-radius: 20px;
     background-color: #000 !important;
     border: none !important;
+    margin: 20px !important;
     div {
         background-color: transparent !important;
         color: #eee !important;
         border: none !important;
         font-size: 1.2em !important;
+    }
+}
+
+.information-mask {
+    div {
+        background-image: none !important;
     }
 }
 .x-window-maximized {
