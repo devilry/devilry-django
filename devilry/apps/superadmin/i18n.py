@@ -15,30 +15,33 @@ DEFAULT_FILE = DEFAULT_KEY + '.yaml'
 
 
 
-class I18nError(Exception):
+class ErrorBase(Exception):
     """ """
-class MissingDefaultFile(I18nError):
+class MissingDefaultFile(ErrorBase):
     """ """
-class InvalidProperty(I18nError):
+class InvalidProperty(ErrorBase):
     """ """
 
 
-def flatformatencode(data, pretty=False):
+def flatformat_encode(data, pretty=False):
     if pretty:
         indent = 2
     else:
         indent = None
     return json.dumps(data, ensure_ascii=False, encoding='utf-8', indent=indent)
 
+def flatformat_decode(stringdata):
+    return json.loads(stringdata)
+
 
 def originalformat_encode(data):
-    return yaml.dump(data, indent=4, default_flow_style=False)
+    return yaml.safe_dump(data, indent=4, default_flow_style=False, encoding='utf-8')
 
 def originalformat_decode(stringdata):
     return yaml.load(stringdata)
 
 
-class I18nBase(object):
+class Base(object):
 
     def load_messagefile(self, i18ndir, langcode=None):
         filename = DEFAULT_KEY
@@ -51,7 +54,7 @@ class I18nBase(object):
         return self.load_messagefile(i18ndir)
 
 
-class I18nLoader(I18nBase):
+class Loader(Base):
     def __init__(self):
         self._data = {}
         self._i18ndirs = self._find_i18ndirs_in_installedapps()
@@ -90,7 +93,7 @@ class I18nLoader(I18nBase):
         self._data[appname] = self.load_default_messagefile(i18ndir)
 
 
-class I18nFlatten(I18nBase):
+class Flatten(Base):
     """ Flatten all translations into a single dict that can be exported as a single file for each toplevel key. """
     def __init__(self, loader):
         self.result = {DEFAULT_KEY: {}}
@@ -133,7 +136,7 @@ class I18nFlatten(I18nBase):
 
     def iter_flatformatencoded(self, pretty=False):
         for setname, data in self.iter_merged():
-            outdata = flatformatencode(data, pretty)
+            outdata = flatformat_encode(data, pretty)
             yield setname, outdata
 
     def print_result(self):
@@ -143,7 +146,7 @@ class I18nFlatten(I18nBase):
             print flatformatdata
 
 
-class I18nDecoupleFlattened(object):
+class DecoupleFlattened(object):
     def __init__(self, loader, data_for_singlelangcode):
         self.result = {}
         self.loader = loader
