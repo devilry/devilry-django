@@ -1,6 +1,7 @@
 from os.path import join, dirname, isdir, exists
 from os import listdir
 import re
+import json
 
 import yaml
 
@@ -56,7 +57,7 @@ class I18nLoader(I18nBase):
 
 
 class I18nMerge(I18nBase):
-    """ Merge all translations into a single map that can be exported as a single file. """
+    """ Merge all translations into a single dict that can be exported as a single file for each toplevel key. """
     def __init__(self, loader):
         self.result = {'messages': {}}
         for appname, i18ndir, default_messages in loader.iterdata():
@@ -81,9 +82,34 @@ class I18nMerge(I18nBase):
         else:
             self.result[setname] = messages
 
+    def _get_merged_data_for_subset(self, setname):
+        merged_data = {}
+        merged_data.update(self.result['messages'])
+        merged_data.update(self.result[setname])
+        return merged_data
+
+    def iter_merged(self):
+        for setname in self.result:
+            if setname == "messages":
+                data = self.result[setname]
+            else:
+                data = self._get_merged_data_for_subset(setname)
+            yield setname, data
+
+    def iter_jsonencoded(self, pretty=False):
+        if pretty:
+            indent = 2
+        else:
+            indent = None
+        for setname, data in self.iter_merged():
+            jsondata = json.dumps(data, ensure_ascii=False, encoding='utf-8', indent=indent)
+            yield setname, jsondata
+
     def print_result(self):
-        from pprint import pprint
-        pprint(self.result)
+        for name, jsondata in self.iter_jsonencoded(pretty=True):
+            print
+            print "##", name
+            print jsondata
 
 
 class Command(BaseCommand):
