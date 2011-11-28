@@ -4,7 +4,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 
-from devilry.apps.superadmin import i18n
+from devilry.apps.i18n import i18n
 
 
 class Command(BaseCommand):

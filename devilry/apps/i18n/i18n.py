@@ -170,8 +170,8 @@ class Flatten(Base):
         if settings.DEVILRY_I18N_EXPORTDIR:
             return settings.DEVILRY_I18N_EXPORTDIR
         else:
-            extjshelpers_dir = dirname(import_module('devilry.apps.extjshelpers').__file__)
-            return join(extjshelpers_dir, 'static', 'i18n')
+            thisappdir = dirname(import_module('devilry.apps.i18n').__file__)
+            return join(thisappdir, 'static', 'i18n')
 
     def save(self):
         exportdir = self._get_exportddir()
