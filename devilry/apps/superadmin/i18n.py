@@ -11,7 +11,10 @@ from django.conf import settings
 
 
 DEFAULT_KEY = 'messages'
-DEFAULT_FILE = DEFAULT_KEY + '.yaml'
+ORIGINALFORMAT_SUFFIX = '.yaml'
+ORIGINALFORMAT_FILEPATT = '(?P<setname>messages_\w+)\.yaml'
+DEFAULT_FILE = DEFAULT_KEY + ORIGINALFORMAT_SUFFIX
+EXPORTFILE_SUFFIX = '.json'
 
 
 
@@ -57,7 +60,7 @@ def get_messagesfilename(langcode=None):
     filename = DEFAULT_KEY
     if langcode:
         filename += '_' + langcode
-    filename += '.yaml'
+    filename += ORIGINALFORMAT_SUFFIX
     return filename
 
 
@@ -104,7 +107,7 @@ class Loader(Base):
             yield appname, i18ndir, self._data[appname]
 
     def _load_defaultmessages(self, appname, i18ndir):
-        messagesfile = join(i18ndir, DEFAULT_KEY + '.yaml')
+        messagesfile = join(i18ndir, DEFAULT_KEY + ORIGINALFORMAT_SUFFIX)
         if not exists(messagesfile):
             raise MissingDefaultFile('i18n directory, {i18ndir}, does not contain '
                                      'the required {DEFAULT_FILE}.'.format(DEFAULT_FILE=DEFAULT_FILE, **vars()))
@@ -122,7 +125,7 @@ class Flatten(Base):
     def _parse_all_subsets(self, i18ndir, default_messages):
         """ Add all subsets (I.E: messages_en.yaml, messages_nb.yaml, ...) to results. """
         for filename in listdir(i18ndir):
-            match = re.match('(?P<setname>messages_\w+)\.yaml', filename)
+            match = re.match(ORIGINALFORMAT_FILEPATT, filename)
             if match:
                 setname = match.groupdict()['setname']
                 self._add_to_set(setname, join(i18ndir, filename), default_messages)
@@ -162,6 +165,20 @@ class Flatten(Base):
             print
             print "##", name
             print flatformatdata
+
+    def _get_exportddir(self):
+        if settings.DEVILRY_I18N_EXPORTDIR:
+            return settings.DEVILRY_I18N_EXPORTDIR
+        else:
+            extjshelpers_dir = dirname(import_module('devilry.apps.extjshelpers').__file__)
+            return join(extjshelpers_dir, 'static', 'i18n')
+
+    def save(self):
+        exportdir = self._get_exportddir()
+        for name, flatformatdata in self.iter_flatformatencoded(pretty=True):
+            filename = join(exportdir, name + EXPORTFILE_SUFFIX)
+            logging.info('Writing ' + filename)
+            open(filename, 'w').write(flatformatdata.encode('utf-8'))
 
 
 class DecoupleFlattened(object):

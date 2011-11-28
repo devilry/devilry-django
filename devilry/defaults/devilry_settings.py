@@ -47,6 +47,12 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
                                            'body': 'You are not registered as an administrator on any Node, Subject/Course, Period/Semester or Assignment in Devilry. If this is wrong, please contact the system administrator.'}
 
 
+## Override this with a path to a directory to export translations to a non-default location.
+## The default location is devilry/apps/extjshelpers/i18n/ (relative to the Devilry source repository root)
+## As long as "collectstatic" is executed after "devilry_i18nmerge export", the default will work as intended
+## and export translations into the i18n/ directory in the static file root.
+DEVILRY_I18N_EXPORTDIR = None
+
 
 #################################################
 # Settings without a default value
