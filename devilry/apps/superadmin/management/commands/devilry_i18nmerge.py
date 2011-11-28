@@ -1,6 +1,7 @@
 from os import linesep
 from os.path import join, dirname
 import logging
+from optparse import make_option
 
 from django.utils.importlib import import_module
 from django.core.management.base import BaseCommand, CommandError
@@ -9,12 +10,17 @@ from devilry.apps.superadmin import i18n
 
 
 class Command(BaseCommand):
+    help = 'Create new subject.'
     args = ('{linesep}'
             '{indent}load <langcode> <infile>{linesep}'
-            '{indent}export{linesep}'
-            '{indent}export_preview').format(linesep=linesep, indent='         ')
-
-    help = 'Create new subject.'
+            '{indent}export').format(linesep=linesep, indent='         ')
+    option_list = BaseCommand.option_list + (
+        make_option('--preview',
+            action='store_true',
+            dest='preview',
+            default=False,
+            help='Preview action instead of storing results on the filesystem.'),
+        )
 
     def handle(self, *args, **options):
         verbosity = int(options.get('verbosity', '1'))
@@ -34,17 +40,15 @@ class Command(BaseCommand):
 
         try:
             loader = i18n.Loader()
-        except i18n.Error, e:
+        except i18n.ErrorBase, e:
             raise CommandError(str(e))
 
-        if action.startswith('export'):
+        if action == 'export':
             try:
                 flattened = i18n.Flatten(loader)
-            except i18n.Error, e:
+            except i18n.ErrorBase, e:
                 raise CommandError(str(e))
-            if action == 'export':
-                pass
-            else:
+            if options['preview']:
                 flattened.print_result()
         elif action == 'load':
             if len(args) < 3:
@@ -54,6 +58,9 @@ class Command(BaseCommand):
             indata = i18n.flatformat_decode(open(infilename).read())
             try:
                 decoupled = i18n.DecoupleFlattened(loader, indata)
-                decoupled.print_result()
-            except i18n.Error, e:
+                if options['preview']:
+                    decoupled.print_result()
+                else:
+                    decoupled.save(langcode)
+            except i18n.ErrorBase, e:
                 raise CommandError(str(e))

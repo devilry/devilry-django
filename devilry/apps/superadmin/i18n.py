@@ -41,13 +41,30 @@ def originalformat_decode(stringdata):
     return yaml.load(stringdata)
 
 
+def get_moduledir(modulename):
+    mod = import_module(modulename)
+    return dirname(mod.__file__)
+def get_appmodule(appname):
+    for appmodule in settings.INSTALLED_APPS:
+        if appmodule.endswith(appname):
+            return appmodule
+def get_appdir(appname):
+    return get_moduledir(get_appmodule(appname))
+def get_i18ndir(appdir, appname):
+    return join(appdir, 'static', appname, 'i18n')
+
+def get_messagesfilename(langcode=None):
+    filename = DEFAULT_KEY
+    if langcode:
+        filename += '_' + langcode
+    filename += '.yaml'
+    return filename
+
+
 class Base(object):
 
     def load_messagefile(self, i18ndir, langcode=None):
-        filename = DEFAULT_KEY
-        if langcode:
-            filename += '_' + langcode
-        filename += '.yaml'
+        filename = get_messagesfilename(langcode)
         return originalformat_decode(open(join(i18ndir, filename)).read())
 
     def load_default_messagefile(self, i18ndir):
@@ -68,7 +85,8 @@ class Loader(Base):
                 mod = import_module(app)
                 if exists(mod.__file__) and isdir(dirname(mod.__file__)):
                     moddir = dirname(mod.__file__)
-                    i18ndir = join(moddir, 'static', appname, 'i18n')
+                    i18ndir = get_i18ndir(moddir, appname)
+
                     if exists(i18ndir):
                         i18ndirs.append([appname, i18ndir])
         return i18ndirs
@@ -179,6 +197,14 @@ class DecoupleFlattened(object):
 
     def print_result(self):
         for appname, formatteddata in self._iter_originalformat():
+            print
             print "##", appname
             print formatteddata
 
+    def save(self, langcode):
+        for appname, formatteddata in self._iter_originalformat():
+            appdir = get_appdir(appname)
+            i18ndir = get_i18ndir(appdir, appname)
+            filename = join(i18ndir, get_messagesfilename(langcode))
+            logging.info('Writing ' + filename)
+            open(filename, 'w').write(formatteddata.encode('utf-8'))
