@@ -11,6 +11,7 @@ from django.conf import settings
 
 
 class I18nBase(object):
+    DEFAULT_KEY = 'messages'
     def find_i18ndirs_in_installedapps(self):
         i18ndirs = []
         for app in settings.INSTALLED_APPS:
@@ -25,7 +26,7 @@ class I18nBase(object):
         return i18ndirs
 
     def load_messagefile(self, i18ndir, langcode=None):
-        filename = 'messages'
+        filename = self.DEFAULT_KEY
         if langcode:
             filename += '_' + langcode
         filename += '.yaml'
@@ -50,18 +51,19 @@ class I18nLoader(I18nBase):
             yield appname, i18ndir, self.data[appname]
 
     def _load_defaultmessages(self, appname, i18ndir):
-        messagesfile = join(i18ndir, 'messages.yaml')
+        messagesfile = join(i18ndir, self.DEFAULT_KEY + '.yaml')
         if not exists(messagesfile):
-            raise CommandError('i18n directory, {i18ndir}, does not contain the required messages.yaml.'.format(**vars()))
+            raise CommandError('i18n directory, {i18ndir}, does not contain the required {DEFAULT_KEY}.yaml.'.format(i18ndir=i18ndir,
+                                                                                                                     DEFAULT_KEY=self.DEFAULT_KEY))
         self.data[appname] = self.load_default_messagefile(i18ndir)
 
 
 class I18nMerge(I18nBase):
     """ Merge all translations into a single dict that can be exported as a single file for each toplevel key. """
     def __init__(self, loader):
-        self.result = {'messages': {}}
+        self.result = {self.DEFAULT_KEY: {}}
         for appname, i18ndir, default_messages in loader.iterdata():
-            self.result['messages'].update(default_messages)
+            self.result[self.DEFAULT_KEY].update(default_messages)
             self._parse_all_subsets(i18ndir, default_messages)
 
     def _parse_all_subsets(self, i18ndir, default_messages):
@@ -76,7 +78,10 @@ class I18nMerge(I18nBase):
         messages = yaml.load(open(messagesfile).read())
         for key in messages:
             if not key in default_messages:
-                raise CommandError("{messagesfile} contains property, '{key}', that is not in 'messages.yaml'.".format(**vars()))
+                raise CommandError("{messagesfile} contains property, '{key}', "
+                                   "that is not in '{DEFAULT_KEY}.yaml'.".format(messagesfile=messagesfile,
+                                                                                 key=key,
+                                                                                 DEFAULT_KEY=self.DEFAULT_KEY))
         if setname in self.result:
             self.result[setname].update(messages)
         else:
@@ -84,13 +89,13 @@ class I18nMerge(I18nBase):
 
     def _get_merged_data_for_subset(self, setname):
         merged_data = {}
-        merged_data.update(self.result['messages'])
+        merged_data.update(self.result[self.DEFAULT_KEY])
         merged_data.update(self.result[setname])
         return merged_data
 
     def iter_merged(self):
         for setname in self.result:
-            if setname == "messages":
+            if setname == self.DEFAULT_KEY:
                 data = self.result[setname]
             else:
                 data = self._get_merged_data_for_subset(setname)
