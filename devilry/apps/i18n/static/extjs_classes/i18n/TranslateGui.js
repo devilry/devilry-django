@@ -4,7 +4,8 @@ Ext.define('devilry.i18n.TranslateGui', {
     requires: [
         'devilry.i18n.TranslateGuiModel',
         'devilry.i18n.TranslateGuiGrid',
-        'devilry.jsfiledownload.JsFileDownload'
+        'devilry.jsfiledownload.JsFileDownload',
+        'devilry.i18n.LoadFileForm'
     ],
 
     initComponent: function() {
@@ -31,6 +32,13 @@ Ext.define('devilry.i18n.TranslateGui', {
                 listeners: {
                     scope: this,
                     click: this._onSave
+                }
+            }, {
+                xtype: 'button',
+                text: 'Load',
+                listeners: {
+                    scope: this,
+                    click: this._onLoad
                 }
             }]
         });
@@ -114,6 +122,26 @@ Ext.define('devilry.i18n.TranslateGui', {
     _onSave: function() {
         var result = this._exportJson();
         devilry.jsfiledownload.JsFileDownload.saveas('devilry-translation.json', result);
+    },
+
+    _onLoad: function() {
+        Ext.widget('window', {
+            modal: true,
+            title: 'Load from file',
+            width: 300,
+            height: 200,
+            layout: 'fit',
+            items: [{
+                xtype: 'i18n-loadfileform',
+                url: devilry.jsfiledownload.JsFileDownload.getOpenUrl()
+                //listeners: {
+                    //scope: this,
+                    //successfulUpload: function(fileform, result) {
+                        //console.log(result);
+                    //}
+                //}
+            }]
+        }).show();
     },
 
     _exportJson: function() {
