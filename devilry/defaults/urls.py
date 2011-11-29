@@ -6,4 +6,5 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^gradeeditors/', include('devilry.apps.gradeeditors.urls')),
                 (r'^markup/', include('devilry.apps.markup.urls')),
                 (r'^i18n/', include('devilry.apps.i18n.urls')),
+                (r'^jsfiledownload/', include('devilry.apps.jsfiledownload.urls')),
                 (r'^authenticate/', include('devilry.apps.authenticate.urls')))
