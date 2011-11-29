@@ -1,2 +1,6 @@
 core.subject: Course
 core.period: Semester
+core.periods.active: Active semesters
+core.periods.noactive.title: No active semesters
+core.periods.noactive.body: You are not registered on any active semesters. You can find inactive semesters using the search box.
+core.assignments.withinactiveperiod: Assignments in an active semester
