@@ -113,8 +113,7 @@ Ext.define('devilry.i18n.TranslateGui', {
 
     _onSave: function() {
         var result = this._exportJson();
-        console.log(result);
-        devilry.jsfiledownload.JsFileDownload.saveas('trans.json', result);
+        devilry.jsfiledownload.JsFileDownload.saveas('devilry-translation.json', result);
     },
 
     _exportJson: function() {
