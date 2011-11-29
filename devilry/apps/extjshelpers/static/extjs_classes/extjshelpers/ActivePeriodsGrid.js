@@ -71,7 +71,7 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
         });
         this.add({
             xtype: 'box',
-            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>', translate('core.periods.active'))
+            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>', translate('extjshelpers.periods.active'))
         });
         this.add(activePeriodsGrid);
     }

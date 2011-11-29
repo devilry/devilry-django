@@ -3,6 +3,3 @@ core.subject: Subject
 core.period: Period
 core.assignment: Assignment
 core.periods.active: Active periods
-core.periods.noactive.title: No active periods
-core.periods.noactive.body: You are not registered on any active periods. You can find inactive periods using the search box.
-core.assignments.withinactiveperiod: Assignments in an active period
