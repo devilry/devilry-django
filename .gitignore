@@ -61,5 +61,3 @@ productionenv/
 devilry_all_uncompiled.js
 devilryrestfullib/build/
 devilryrestfullib/devilryrestfullib.egg-info/
-devilry/apps/i18n/static/i18n/messages*.js
-devilry/apps/i18n/static/i18n/messages*.json
