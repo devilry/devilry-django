@@ -157,11 +157,11 @@ class Flatten(Base):
 
     def iter_flatformatencoded(self, pretty=False):
         for setname, data in self.iter_merged():
-            outdata = flatformat_encode(data, pretty)
-            yield setname, outdata
+            formatteddata = flatformat_encode(data, pretty)
+            yield setname, formatteddata, data
 
     def print_result(self):
-        for name, flatformatdata in self.iter_flatformatencoded(pretty=True):
+        for name, flatformatdata, data in self.iter_flatformatencoded(pretty=True):
             print
             print "##", name
             print flatformatdata
@@ -175,10 +175,16 @@ class Flatten(Base):
 
     def save(self):
         exportdir = self._get_exportddir()
-        for name, flatformatdata in self.iter_flatformatencoded(pretty=True):
+        for name, flatformatdata, data in self.iter_flatformatencoded(pretty=True):
             filename = join(exportdir, name + EXPORTFILE_SUFFIX)
             logging.info('Writing ' + filename)
-            open(filename, 'w').write(flatformatdata.encode('utf-8'))
+            flatformatdata = flatformatdata.encode('utf-8')
+            open(filename, 'w').write(flatformatdata)
+
+            jsfilename = join(exportdir, name + '.js')
+            logging.info('Writing ' + jsfilename)
+            jsdata = 'var i18n = {0};\n'.format(flatformatdata)
+            open(jsfilename, 'w').write(jsdata)
 
 
 class DecoupleFlattened(object):
