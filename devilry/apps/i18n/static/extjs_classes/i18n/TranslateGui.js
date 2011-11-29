@@ -22,6 +22,16 @@ Ext.define('devilry.i18n.TranslateGui', {
                     itemdblclick: this._onDblClick
                 }
             }],
+
+            tbar: [{
+                xtype: 'button',
+                iconCls: 'icon-save-16',
+                text: 'Save',
+                listeners: {
+                    scope: this,
+                    click: this._onSave
+                }
+            }]
         });
         this.callParent(arguments);
         this._loadDefaults();
@@ -98,5 +108,22 @@ Ext.define('devilry.i18n.TranslateGui', {
                 defaultvalue: value
             });
         }, this);
+    },
+
+    _onSave: function() {
+        var result = this._exportJson();
+        console.log(result);
+    },
+
+    _exportJson: function() {
+        var result = new Object();
+        Ext.each(this.store.data.items, function(record, index) {
+            var translation = Ext.String.trim(record.get('translation'));
+            if(translation) {
+                var key = record.get('key');
+                result[key] = translation;
+            }
+        }, this);
+        return Ext.JSON.encode(result);
     }
 });
