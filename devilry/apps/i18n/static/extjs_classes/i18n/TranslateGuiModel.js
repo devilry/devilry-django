@@ -3,7 +3,7 @@ Ext.define('devilry.i18n.TranslateGuiModel', {
     idProperty: 'key',
     fields: [
         {name: 'key', type: 'string'},
-        {name: 'default', type: 'string'},
+        {name: 'defaultvalue', type: 'string'},
         {name: 'translation', type: 'string'}
     ]
 });

@@ -16,11 +16,70 @@ Ext.define('devilry.i18n.TranslateGui', {
             layout: 'fit',
             items: [{
                 xtype: 'translategui-grid',
-                store: this.store
+                store: this.store,
+                listeners: {
+                    scope: this,
+                    itemdblclick: this._onDblClick
+                }
             }],
         });
         this.callParent(arguments);
         this._loadDefaults();
+    },
+
+    _onDblClick: function(view, record) {
+        var editform = Ext.widget('form', {
+            title: 'Translation',
+            bodyPadding: 5,
+            layout: 'fit',
+            flex: 1,
+            items: [{
+                xtype: 'textarea',
+                name: 'translation'
+            }],
+            buttons: [{
+                text: 'Cancel',
+                handler: function() {
+                    var form = this.up('form').getForm();
+                    var translation = form.getValues().translation;
+                    if(translation === record.get('translation')) {
+                        this.up('window').close();
+                    } else {
+                        Ext.MessageBox.confirm('Close without saving?', 'This will loose any changes you have made to the translation.', function(btn) {
+                            if(btn === 'yes') {
+                                this.up('window').close();
+                            }
+                        }, this);
+                    }
+                }
+            }, {
+                text: 'Save',
+                handler: function() {
+                    var form = this.up('form').getForm();
+                    form.updateRecord(record);
+                    this.up('window').close();
+                }
+            }]
+        });
+        editform.loadRecord(record);
+
+        Ext.widget('window', {
+            modal: true,
+            title: 'Edit - ' + record.get('key'),
+            width: 600,
+            height: 400,
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'panel',
+                title: 'Default value',
+                bodyPadding: 5,
+                flex: 1,
+                html: record.get('defaultvalue')
+            }, editform]
+        }).show();
     },
 
     _loadDefaults: function() {
