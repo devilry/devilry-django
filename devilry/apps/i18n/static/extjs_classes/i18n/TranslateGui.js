@@ -3,7 +3,8 @@ Ext.define('devilry.i18n.TranslateGui', {
     alias: 'widget.i18n-translategui',
     requires: [
         'devilry.i18n.TranslateGuiModel',
-        'devilry.i18n.TranslateGuiGrid'
+        'devilry.i18n.TranslateGuiGrid',
+        'devilry.jsfiledownload.JsFileDownload'
     ],
 
     initComponent: function() {
@@ -113,6 +114,7 @@ Ext.define('devilry.i18n.TranslateGui', {
     _onSave: function() {
         var result = this._exportJson();
         console.log(result);
+        devilry.jsfiledownload.JsFileDownload.saveas('trans.json', result);
     },
 
     _exportJson: function() {
