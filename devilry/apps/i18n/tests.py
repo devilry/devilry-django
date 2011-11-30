@@ -1,5 +1,5 @@
 from django.test import TestCase
-from devilry.apps.superadmin import i18n
+import i18n
 
 
 class TestI18n(TestCase):
