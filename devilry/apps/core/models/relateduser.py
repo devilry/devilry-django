@@ -47,6 +47,9 @@ class RelatedStudent(RelatedUserBase):
     candidate_id = models.CharField(max_length=30, blank=True, null=True,
                                     help_text="If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.")
 
+    def __unicode__(self):
+        return '{0}:candidate_id={1}'.format(super(RelatedStudent, self).__unicode__(), self.candidate_id)
+
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific RelatedStudent. """
