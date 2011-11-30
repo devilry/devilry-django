@@ -1,6 +1,8 @@
 Ext.define('devilry.i18n.TranslateGui', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.i18n-translategui',
+    title: 'Translate Devilry',
+    bodyPadding: 5,
     requires: [
         'devilry.i18n.TranslateGuiModel',
         'devilry.i18n.TranslateGuiGrid',
@@ -16,15 +18,17 @@ Ext.define('devilry.i18n.TranslateGui', {
             proxy: 'memory'
         });
         Ext.apply(this, {
-            layout: 'fit',
-            items: [{
+            layout: 'border',
+            items: {
                 xtype: 'translategui-grid',
                 store: this.store,
+                region: 'center',
+                autoScroll: true,
                 listeners: {
                     scope: this,
                     itemdblclick: this._onDblClick
                 }
-            }],
+            },
 
             listeners: {
                 scope: this,
