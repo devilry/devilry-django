@@ -41,10 +41,10 @@ Ext.define('devilry.i18n.TranslateGui', {
             tbar: [{
                 xtype: 'button',
                 iconCls: 'icon-save-16',
-                text: 'Save',
+                text: 'Export',
                 listeners: {
                     scope: this,
-                    click: this._onSave
+                    click: this._onExport
                 }
             }, {
                 xtype: 'button',
@@ -100,7 +100,7 @@ Ext.define('devilry.i18n.TranslateGui', {
         this._loadIndex();
     },
 
-    _onSave: function() {
+    _onExport: function() {
         var result = this._exportJson();
         devilry.jsfiledownload.JsFileDownload.saveas('devilry-translation.json', result);
     },
