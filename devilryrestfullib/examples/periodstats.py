@@ -152,10 +152,11 @@ def get_all_examiners_in_period(period):
     the key, and the value is a list of examiners. (for efficient lookup of
     examiner when you have a group). """
     examiners = SimplifiedExaminer.search(logincookie,
+                                          limit=100000,
                                           filters=[{'field':'assignmentgroup__parentnode__parentnode',
                                                     'comp':'exact',
                                                     'value':period['id']}],
-                                            result_fieldgroups=['userdetails']) # Include username, fullname, ...
+                                          result_fieldgroups=['userdetails']) # Include username, fullname, ...
     result = {}
     for examiner in examiners['items']:
         groupid = examiner['assignmentgroup']
