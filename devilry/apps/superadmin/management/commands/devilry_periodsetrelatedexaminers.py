@@ -51,7 +51,7 @@ class RelatedBaseCommand(BaseCommand):
                 return False
             else:
                 for key, value in kw.iteritems():
-                    setattr(user, key, value)
+                    setattr(reluser, key, value)
                 self._save_reluser(reluser, 'Updated')
                 return True
 
