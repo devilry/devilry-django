@@ -72,7 +72,9 @@ def field_to_help_text(field):
         return 'List of many values.'
     help_text = field.help_text
     if not help_text or help_text.strip() == '':
-        raise ValueError('Missing help for: {0}.{1}'.format(get_clspath(field.model), field.name))
+        classpath = get_clspath(field.model)
+        if not classpath.startswith('django'):
+            raise ValueError('Missing help for: {0}.{1}'.format(classpath, field.name))
     return help_text
 
 
@@ -172,7 +174,10 @@ class Docstring(object):
             if fieldname in self.restfulcls._meta.simplified._meta.annotated_fields:
                 info = self._fieldinfo_dict_for_annotatedfield()
             else:
-                info = self._fieldinfo_dict(self._get_field(fieldname))
+                field = self._get_field(fieldname)
+                if not field:
+                    continue
+                info = self._fieldinfo_dict(field)
             info['fieldname'] = fieldname
             infolist.append(info)
         return infolist
