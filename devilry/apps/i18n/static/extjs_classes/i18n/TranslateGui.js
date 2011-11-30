@@ -5,7 +5,8 @@ Ext.define('devilry.i18n.TranslateGui', {
         'devilry.i18n.TranslateGuiModel',
         'devilry.i18n.TranslateGuiGrid',
         'devilry.jsfiledownload.JsFileDownload',
-        'devilry.i18n.LoadFileForm'
+        'devilry.i18n.LoadTranslationPanel',
+        'devilry.i18n.EditRecordForm'
     ],
 
     initComponent: function() {
@@ -47,41 +48,6 @@ Ext.define('devilry.i18n.TranslateGui', {
     },
 
     _onDblClick: function(view, record) {
-        var editform = Ext.widget('form', {
-            title: 'Translation',
-            bodyPadding: 5,
-            layout: 'fit',
-            flex: 1,
-            items: [{
-                xtype: 'textarea',
-                name: 'translation'
-            }],
-            buttons: [{
-                text: 'Cancel',
-                handler: function() {
-                    var form = this.up('form').getForm();
-                    var translation = form.getValues().translation;
-                    if(translation === record.get('translation')) {
-                        this.up('window').close();
-                    } else {
-                        Ext.MessageBox.confirm('Close without saving?', 'This will loose any changes you have made to the translation.', function(btn) {
-                            if(btn === 'yes') {
-                                this.up('window').close();
-                            }
-                        }, this);
-                    }
-                }
-            }, {
-                text: 'Save',
-                handler: function() {
-                    var form = this.up('form').getForm();
-                    form.updateRecord(record);
-                    this.up('window').close();
-                }
-            }]
-        });
-        editform.loadRecord(record);
-
         Ext.widget('window', {
             modal: true,
             title: 'Edit - ' + record.get('key'),
@@ -97,7 +63,10 @@ Ext.define('devilry.i18n.TranslateGui', {
                 bodyPadding: 5,
                 flex: 1,
                 html: record.get('defaultvalue')
-            }, editform]
+            }, {
+                xtype: 'i18n-editrecordform',
+                record: record
+            }]
         }).show();
     },
 
@@ -127,20 +96,13 @@ Ext.define('devilry.i18n.TranslateGui', {
     _onLoad: function() {
         Ext.widget('window', {
             modal: true,
-            title: 'Load from file',
-            width: 300,
-            height: 200,
+            title: 'Load translation',
+            width: 600,
+            height: 400,
             layout: 'fit',
-            items: [{
-                xtype: 'i18n-loadfileform',
-                url: devilry.jsfiledownload.JsFileDownload.getOpenUrl()
-                //listeners: {
-                    //scope: this,
-                    //successfulUpload: function(fileform, result) {
-                        //console.log(result);
-                    //}
-                //}
-            }]
+            items: {
+                xtype: 'i18n-loadtranslationpanel'
+            }
         }).show();
     },
 
