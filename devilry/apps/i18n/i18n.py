@@ -15,6 +15,7 @@ ORIGINALFORMAT_SUFFIX = '.yaml'
 ORIGINALFORMAT_FILEPATT = '(?P<setname>messages_\w+)\.yaml'
 DEFAULT_FILE = DEFAULT_KEY + ORIGINALFORMAT_SUFFIX
 EXPORTFILE_SUFFIX = '.json'
+INDEXFILE_NAME = 'index.json'
 
 
 
@@ -175,16 +176,24 @@ class Flatten(Base):
 
     def save(self):
         exportdir = self._get_exportddir()
+        names = []
         for name, flatformatdata, data in self.iter_flatformatencoded(pretty=True):
+            names.append(name)
             filename = join(exportdir, name + EXPORTFILE_SUFFIX)
             logging.info('Writing ' + filename)
             flatformatdata = flatformatdata.encode('utf-8')
             open(filename, 'w').write(flatformatdata)
 
+            # Save as Javascript for convenience
             jsfilename = join(exportdir, name + '.js')
             logging.info('Writing ' + jsfilename)
             jsdata = 'var i18n = {0};\n'.format(flatformatdata)
             open(jsfilename, 'w').write(jsdata)
+
+        # Save index for easier GUI integration
+        indexfile = join(exportdir, INDEXFILE_NAME)
+        logging.info('Writing ' + indexfile)
+        open(indexfile, 'w').write(json.dumps(names))
 
 
 class DecoupleFlattened(object):
