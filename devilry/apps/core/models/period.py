@@ -166,7 +166,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific Period. """
-    period = models.ForeignKey(Period)
+    period = models.ForeignKey(Period, help_text="The period where this metadata belongs.")
 
     class Meta:
         unique_together = ('period', 'application', 'key')
