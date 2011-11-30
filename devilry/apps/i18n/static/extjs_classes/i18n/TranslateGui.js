@@ -26,6 +26,14 @@ Ext.define('devilry.i18n.TranslateGui', {
                 }
             }],
 
+            listeners: {
+                scope: this,
+                render: function() {
+                    this.getEl().mask('Loading...');
+                    this._loadDefaults();
+                }
+            },
+
             tbar: [{
                 xtype: 'button',
                 iconCls: 'icon-save-16',
@@ -44,7 +52,6 @@ Ext.define('devilry.i18n.TranslateGui', {
             }]
         });
         this.callParent(arguments);
-        this._loadDefaults();
     },
 
     _onDblClick: function(view, record) {
@@ -86,6 +93,7 @@ Ext.define('devilry.i18n.TranslateGui', {
                 defaultvalue: value
             });
         }, this);
+        this._loadIndex();
     },
 
     _onSave: function() {
@@ -102,6 +110,7 @@ Ext.define('devilry.i18n.TranslateGui', {
             layout: 'fit',
             items: {
                 xtype: 'i18n-loadtranslationpanel',
+                index: this.index,
                 listeners: {
                     scope: this,
                     exportdataLoaded: this._loadExistingTranslation
@@ -115,6 +124,7 @@ Ext.define('devilry.i18n.TranslateGui', {
         Ext.Object.each(translation, function(key, value) {
             var record = this.store.getById(key);
             record.set('translation', value);
+            record.commit();
         }, this);
     },
 
@@ -128,5 +138,16 @@ Ext.define('devilry.i18n.TranslateGui', {
             }
         }, this);
         return Ext.JSON.encode(result);
+    },
+
+    _loadIndex: function() {
+        Ext.Ajax.request({
+            url: Ext.String.format('{0}/i18n/index.json', DevilrySettings.DEVILRY_STATIC_URL),
+            scope: this,
+            success: function(response) {
+                this.index = Ext.JSON.decode(response.responseText);
+                this.getEl().unmask();
+            }
+        });
     }
 });
