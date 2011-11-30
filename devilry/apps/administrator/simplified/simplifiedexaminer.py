@@ -12,7 +12,10 @@ class SimplifiedExaminer(CanSaveBase):
         """ Defines what methods an Administrator can use on an Examiner object using the Simplified API """
         methods = ('create', 'read', 'update', 'delete', 'search')
         editablefields = ('user', 'assignmentgroup')
-        resultfields = FieldSpec('user',) + SimplifiedExaminerMetaMixin.resultfields
+        resultfields = FieldSpec('user',
+                                 userdetails=['user__username', 'user__email',
+                                              'user__devilryuserprofile__full_name']) \
+                + SimplifiedExaminerMetaMixin.resultfields
         filters = FilterSpecs(FilterSpec('user')) + SimplifiedExaminerMetaMixin.filters
 
     @classmethod
