@@ -25,7 +25,6 @@ Ext.define('devilry.jsfiledownload.JsFileDownload', {
         if(content_type) {
             args.content_type = content_type;
         }
-        console.log(args);
         this._post_to_url(this.getSaveAsUrl(), args);
     },
 
