@@ -42,6 +42,7 @@ restful_factory = RestfulFactory(devilry_url)
 SimplifiedPeriod = restful_factory.make('/administrator/restfulsimplifiedperiod/')
 SimplifiedAssignment = restful_factory.make('/administrator/restfulsimplifiedassignment/')
 SimplifiedAssignmentGroup = restful_factory.make('/administrator/restfulsimplifiedassignmentgroup/')
+SimplifiedExaminer = restful_factory.make('/administrator/restfulsimplifiedexaminer/')
 
 
 ####################################################################
@@ -146,11 +147,86 @@ def create_table_from_points_aggregate(students, all_assignments):
         print ' {0:<20}'.format(total)
 
 
+def get_all_examiners_in_period(period):
+    """ Get all examiners in the period as a dict where the assignmentgroup is
+    the key, and the value is a list of examiners. (for efficient lookup of
+    examiner when you have a group). """
+    examiners = SimplifiedExaminer.search(logincookie,
+                                          filters=[{'field':'assignmentgroup__parentnode__parentnode',
+                                                    'comp':'exact',
+                                                    'value':period['id']}],
+                                            result_fieldgroups=['userdetails']) # Include username, fullname, ...
+    result = {}
+    for examiner in examiners['items']:
+        groupid = examiner['assignmentgroup']
+        if not groupid in result:
+            result[groupid] = []
+        result[groupid].append(examiner)
+    return result
+
+def get_all_assignmentgroups_in_period(period):
+    search = SimplifiedAssignmentGroup.search(logincookie,
+                                            limit=100000,
+                                            filters=[{'field':'parentnode__parentnode',
+                                                      'comp':'exact',
+                                                      'value':period['id']}],
+                                            result_fieldgroups=['assignment']) # Include info about the assignment in the result
+    return search['items']
+
+def list_number_of_assignments_corrected_by_examiners(period):
+    examiners = get_all_examiners_in_period(period)
+    groups = get_all_assignmentgroups_in_period(period)
+    assignment_shortnames = ['TOTAL']
+    result = {}
+
+    # Count corrected assignments and store them by examiner->assignment->count in ``result``
+    for group in get_all_assignmentgroups_in_period(period):
+        assignment_shortname = group['parentnode__short_name']
+        if not assignment_shortname in assignment_shortnames:
+            assignment_shortnames.append(assignment_shortname)
+        groupid = group['id']
+        if groupid in examiners:
+            groupexaminers = examiners[groupid]
+            for examiner in groupexaminers:
+                examiner_username = examiner['user__username']
+                if not examiner_username in result:
+                    result[examiner_username] = {'TOTAL': 0}
+                result[examiner_username]['TOTAL'] += 1
+                if assignment_shortname in result[examiner_username]:
+                    result[examiner_username][assignment_shortname] += 1
+                else:
+                    result[examiner_username][assignment_shortname] = 1
+        else:
+            pass # Group has no examiners, and perhaps you want to print a warning?
+
+    # Print result in a table
+    stringformat = '{:<14} | '
+    headerrow = stringformat.format('Examiner')
+    for assignment_shortname in assignment_shortnames:
+        headerrow += stringformat.format(assignment_shortname)
+    print headerrow
+    for examiner_username, count_by_assignment in result.iteritems():
+        row = stringformat.format(examiner_username)
+        for assignment_shortname in assignment_shortnames:
+            count = count_by_assignment.get(assignment_shortname, '')
+            row += stringformat.format(count)
+        print row
+
 try:
     period = find_period()
 except HttpResponseBadRequest, e:
     raise SystemExit('ERROR: Could not find requested period: {0}.{1}'.format(subject_short_name, period_short_name))
 else:
-    print 'Found requested period: {0}.{1}'.format(subject_short_name, period_short_name)
+    print '** Found requested period: {0}.{1}'.format(subject_short_name, period_short_name)
+
+    print
+    print "** Loop over all groups in period"
     simple_loop_over_all_assignments(period)
+
+    print
+    print "** Period overview"
     create_table_from_points_aggregate(*aggregate_points_for_each_student(period))
+
+    print
+    print "** Number of groups corrected by each examiner"
+    list_number_of_assignments_corrected_by_examiners(period)
