@@ -14,9 +14,10 @@ from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 class RelatedUserBase(models.Model, AbstractIsAdmin):
     period = models.ForeignKey(Period,
-                               verbose_name='Period')
-    user = models.ForeignKey(User)
-    tags = models.TextField(blank=True, null=True)
+                               verbose_name='Period',
+                               help_text="The period.")
+    user = models.ForeignKey(User, help_text="The related user.")
+    tags = models.TextField(blank=True, null=True, help_text="Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z and 0-9. Each word is separated by a comma, and no whitespace.")
 
     tags_patt = re.compile('^(?:[a-z0-9]+,)*[a-z0-9]+$')
 
