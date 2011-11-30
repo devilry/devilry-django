@@ -13,13 +13,31 @@ Ext.define('devilry.i18n.LoadTranslationPanel', {
             },
             items: [{
                 xtype: 'textarea',
-                title: 'Default value',
+                name: 'exportdata',
                 flex: 7
             }, {
                 xtype: 'box',
                 cls: 'helpsection',
                 html: this.help,
                 flex: 3
+            }],
+
+            buttons: [{
+                text: 'Cancel',
+                handler: function() {
+                    this.up('window').close();
+                }
+            }, {
+                text: 'Load',
+                listeners: {
+                    scope: this,
+                    click: function() {
+                        var form = this.getForm();
+                        var exportdata = form.getValues().exportdata;
+                        this.fireEvent('exportdataLoaded', exportdata);
+                        this.up('window').close();
+                    }
+                }
             }]
         });
         this.callParent(arguments);

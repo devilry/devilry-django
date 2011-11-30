@@ -101,9 +101,21 @@ Ext.define('devilry.i18n.TranslateGui', {
             height: 400,
             layout: 'fit',
             items: {
-                xtype: 'i18n-loadtranslationpanel'
+                xtype: 'i18n-loadtranslationpanel',
+                listeners: {
+                    scope: this,
+                    exportdataLoaded: this._loadExistingTranslation
+                }
             }
         }).show();
+    },
+
+    _loadExistingTranslation: function(jsondata) {
+        var translation = Ext.JSON.decode(jsondata);
+        Ext.Object.each(translation, function(key, value) {
+            var record = this.store.getById(key);
+            record.set('translation', value);
+        }, this);
     },
 
     _exportJson: function() {
