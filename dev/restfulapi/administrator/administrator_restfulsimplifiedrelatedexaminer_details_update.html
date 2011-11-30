@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>PUT /administrator/restfulsimplifiedrelatedexaminer/id &mdash; Devilry v1.0 documentation</title>
+    <title>PUT /administrator/restfulsimplifiedrelatedexaminer/id &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
     <link rel="next" title="DELETE /administrator/restfulsimplifiedrelatedexaminer/id" href="administrator_restfulsimplifiedrelatedexaminer_details_delete.html" />
     <link rel="prev" title="POST /administrator/restfulsimplifiedrelatedexaminer/" href="administrator_restfulsimplifiedrelatedexaminer_details_create.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="administrator_restfulsimplifiedrelatedexaminer_details_create.html" title="POST /administrator/restfulsimplifiedrelatedexaminer/"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
       </ul>
@@ -60,7 +63,7 @@
 <p>The underlying data model where the item is updated is defined in
 <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt>.
 The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
-<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedRelatedExaminer.update()</span></tt>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.simplifiedrelatedexaminer.SimplifiedRelatedExaminer.update()</span></tt>.</p>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="example">
@@ -68,8 +71,8 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">PUT</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiedrelatedexaminer</span><span class="o">/</span><span class="nx">id</span>
 
 <span class="p">{</span>
-    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-    <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span>
+    <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">user</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -86,22 +89,22 @@ URL. You will typically get this id in response from a search.</p>
 <h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.</p>
-<div class="section" id="userspec">
-<h4>userspec<a class="headerlink" href="#userspec" title="Permalink to this headline">¶</a></h4>
-<dl class="docutils">
-<dt>Actual location of the field:</dt>
-<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt></dd>
-<dt>About the field:</dt>
-<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
-<dt>Type</dt>
-<dd>String</dd>
-</dl>
-</div>
 <div class="section" id="period">
 <h4>period<a class="headerlink" href="#period" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+<div class="section" id="user">
+<h4>user<a class="headerlink" href="#user" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
 <dt>About the field:</dt>
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
@@ -119,8 +122,8 @@ request body as shown in the example above.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="mi">200</span> <span class="nx">OK</span>
 
 <span class="p">{</span>
-    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
     <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">user</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -157,8 +160,8 @@ have been changed due to logic performed on the server before saving.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
-<li><a class="reference internal" href="#userspec">userspec</a></li>
 <li><a class="reference internal" href="#period">period</a></li>
+<li><a class="reference internal" href="#user">user</a></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +193,7 @@ have been changed due to logic performed on the server before saving.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -219,14 +222,14 @@ have been changed due to logic performed on the server before saving.</p>
         <li class="right" >
           <a href="administrator_restfulsimplifiedrelatedexaminer_details_create.html" title="POST /administrator/restfulsimplifiedrelatedexaminer/"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Administrator</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

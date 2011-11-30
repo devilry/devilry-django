@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>PUT /administrator/restfulsimplifiedassignment/id &mdash; Devilry v1.0 documentation</title>
+    <title>PUT /administrator/restfulsimplifiedassignment/id &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
     <link rel="next" title="DELETE /administrator/restfulsimplifiedassignment/id" href="administrator_restfulsimplifiedassignment_details_delete.html" />
     <link rel="prev" title="POST /administrator/restfulsimplifiedassignment/" href="administrator_restfulsimplifiedassignment_details_create.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="administrator_restfulsimplifiedassignment_details_create.html" title="POST /administrator/restfulsimplifiedassignment/"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
       </ul>
@@ -60,7 +63,7 @@
 <p>The underlying data model where the item is updated is defined in
 <a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a>.
 The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
-<a class="reference internal" href="../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.update" title="devilry.apps.administrator.simplified.SimplifiedAssignment.update"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedAssignment.update()</span></tt></a>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.simplifiedassignment.SimplifiedAssignment.update()</span></tt>.</p>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="example">
@@ -68,13 +71,13 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">PUT</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiedassignment</span><span class="o">/</span><span class="nx">id</span>
 
 <span class="p">{</span>
-    <span class="nx">must_pass</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
     <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
     <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
     <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-    <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">scale_points_percent</span><span class="o">:</span> <span class="mi">20</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -91,17 +94,6 @@ URL. You will typically get this id in response from a search.</p>
 <h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.</p>
-<div class="section" id="must-pass">
-<h4>must_pass<a class="headerlink" href="#must-pass" title="Permalink to this headline">¶</a></h4>
-<dl class="docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>Each student must get a passing grade on this assignment to get a passing grade on the period.</dd>
-<dt>Type</dt>
-<dd>Boolean</dd>
-</dl>
-</div>
 <div class="section" id="short-name">
 <h4>short_name<a class="headerlink" href="#short-name" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
@@ -168,6 +160,17 @@ request body as shown in the example above.</p>
 <dd>Boolean</dd>
 </dl>
 </div>
+<div class="section" id="scale-points-percent">
+<h4>scale_points_percent<a class="headerlink" href="#scale-points-percent" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
 </div>
 </div>
 <div class="section" id="response">
@@ -179,13 +182,13 @@ request body as shown in the example above.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="mi">200</span> <span class="nx">OK</span>
 
 <span class="p">{</span>
-    <span class="nx">must_pass</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
     <span class="nx">publishing_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
     <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
     <span class="nx">delivery_types</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
     <span class="nx">anonymous</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">scale_points_percent</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -222,13 +225,13 @@ have been changed due to logic performed on the server before saving.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
-<li><a class="reference internal" href="#must-pass">must_pass</a></li>
 <li><a class="reference internal" href="#short-name">short_name</a></li>
 <li><a class="reference internal" href="#publishing-time">publishing_time</a></li>
 <li><a class="reference internal" href="#parentnode">parentnode</a></li>
 <li><a class="reference internal" href="#delivery-types">delivery_types</a></li>
 <li><a class="reference internal" href="#long-name">long_name</a></li>
 <li><a class="reference internal" href="#anonymous">anonymous</a></li>
+<li><a class="reference internal" href="#scale-points-percent">scale_points_percent</a></li>
 </ul>
 </li>
 </ul>
@@ -260,7 +263,7 @@ have been changed due to logic performed on the server before saving.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -289,14 +292,14 @@ have been changed due to logic performed on the server before saving.</p>
         <li class="right" >
           <a href="administrator_restfulsimplifiedassignment_details_create.html" title="POST /administrator/restfulsimplifiedassignment/"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Administrator</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

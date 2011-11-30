@@ -9,7 +9,7 @@ Update a assignment group.
 The underlying data model where the item is updated is defined in
 :class:`devilry.apps.core.models.AssignmentGroup`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.update`.
+:meth:`devilry.apps.administrator.simplified.simplifiedassignmentgroup.SimplifiedAssignmentGroup.update`.
 
 
 

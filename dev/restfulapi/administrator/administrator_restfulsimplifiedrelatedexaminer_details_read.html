@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GET /administrator/restfulsimplifiedrelatedexaminer/id &mdash; Devilry v1.0 documentation</title>
+    <title>GET /administrator/restfulsimplifiedrelatedexaminer/id &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,10 +25,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
     <link rel="next" title="GET /administrator/restfulsimplifiedrelatedexaminer/" href="administrator_restfulsimplifiedrelatedexaminer_details_search.html" />
-    <link rel="prev" title="DELETE /administrator/restfulsimplifiedperiod/id" href="administrator_restfulsimplifiedperiod_details_delete.html" /> 
+    <link rel="prev" title="DELETE /administrator/restfulsimplifiedperiodapplicationkeyvalue/id" href="administrator_restfulsimplifiedperiodapplicationkeyvalue_details_delete.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,9 +44,9 @@
           <a href="administrator_restfulsimplifiedrelatedexaminer_details_search.html" title="GET /administrator/restfulsimplifiedrelatedexaminer/"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="administrator_restfulsimplifiedperiod_details_delete.html" title="DELETE /administrator/restfulsimplifiedperiod/id"
+          <a href="administrator_restfulsimplifiedperiodapplicationkeyvalue_details_delete.html" title="DELETE /administrator/restfulsimplifiedperiodapplicationkeyvalue/id"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
       </ul>
@@ -60,7 +63,7 @@
 <p>The underlying data model where the item is retrieved from is defined in
 <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt>.
 The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
-<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedRelatedExaminer.read()</span></tt>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.simplifiedrelatedexaminer.SimplifiedRelatedExaminer.read()</span></tt>.</p>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="example">
@@ -88,8 +91,12 @@ this id in response from a search.</p>
 
 <span class="p">{</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
-    <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-    <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span>
+    <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">user</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">tags</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+    <span class="nx">user__username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">user__devilryuserprofile__full_name</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;an&quot;</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">],</span>
+    <span class="nx">user__email</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -111,16 +118,6 @@ The result always contains the following fields:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>userspec</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt></dd>
-<dt>About the field:</dt>
-<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
-<dt>Type</dt>
-<dd>String</dd>
-</dl>
-</dd>
 <dt>period</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -129,6 +126,57 @@ The result always contains the following fields:</p>
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
 <dd>Integer</dd>
+</dl>
+</dd>
+<dt>user</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>tags</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedExaminer</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z and 0-9. Each word is separated by a comma, and no whitespace.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>user__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Required. 30 characters or fewer. Letters, numbers and &#64;/./+/-/_ characters</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>user__devilryuserprofile__full_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.DevilryUserProfile</span></tt></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>user__email</dt>
+<dd><dl class="first docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+</dl>
+<p>About the field:</p>
+<dl class="last docutils">
+<dt>Type</dt>
+<dd>String</dd>
 </dl>
 </dd>
 </dl>
@@ -173,8 +221,8 @@ The result always contains the following fields:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="administrator_restfulsimplifiedperiod_details_delete.html"
-                        title="previous chapter">DELETE /administrator/restfulsimplifiedperiod/id</a></p>
+  <p class="topless"><a href="administrator_restfulsimplifiedperiodapplicationkeyvalue_details_delete.html"
+                        title="previous chapter">DELETE /administrator/restfulsimplifiedperiodapplicationkeyvalue/id</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="administrator_restfulsimplifiedrelatedexaminer_details_search.html"
                         title="next chapter">GET /administrator/restfulsimplifiedrelatedexaminer/</a></p>
@@ -186,7 +234,7 @@ The result always contains the following fields:</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -213,16 +261,16 @@ The result always contains the following fields:</p>
           <a href="administrator_restfulsimplifiedrelatedexaminer_details_search.html" title="GET /administrator/restfulsimplifiedrelatedexaminer/"
              >next</a> |</li>
         <li class="right" >
-          <a href="administrator_restfulsimplifiedperiod_details_delete.html" title="DELETE /administrator/restfulsimplifiedperiod/id"
+          <a href="administrator_restfulsimplifiedperiodapplicationkeyvalue_details_delete.html" title="DELETE /administrator/restfulsimplifiedperiodapplicationkeyvalue/id"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Administrator</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

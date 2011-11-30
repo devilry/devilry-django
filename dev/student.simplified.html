@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.student.simplified — Simplifed API for students &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.apps.student.simplified — Simplifed API for students &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="index.html" />
     <link rel="next" title="Public RESTful API" href="public_restful_api.html" />
     <link rel="prev" title="devilry.apps.examiner.simplified — Simplifed API for examiners" href="examiner.simplified.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="examiner.simplified.html" title="devilry.apps.examiner.simplified — Simplifed API for examiners"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -87,14 +90,54 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedSubject.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedSubject.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedSubject.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedSubject.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -112,7 +155,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -121,7 +164,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedSubject.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedSubject.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -152,7 +195,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -160,8 +203,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -178,14 +221,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -199,7 +242,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -219,17 +262,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedSubject.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedSubject.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -244,8 +308,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -259,7 +323,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.student.simplified.SimplifiedPeriod">
 <em class="property">class </em><tt class="descclassname">devilry.apps.student.simplified.</tt><tt class="descname">SimplifiedPeriod</tt><a class="reference internal" href="_modules/devilry/apps/student/simplified.html#SimplifiedPeriod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplified.PublishedWhereIsCandidateMixin</span></tt></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplified.isrelatedstudentbase.IsRelatedStudentBase</span></tt></p>
 <p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a>.</p>
 <dl class="class">
 <dt id="devilry.apps.student.simplified.SimplifiedPeriod.Meta">
@@ -278,19 +342,59 @@ this check is not performed. If the check fails,
 <dt id="devilry.apps.student.simplified.SimplifiedPeriod.create_searchqryset">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod.create_searchqryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all objects of this type that matches arguments
-given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is a student.</p>
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is a related student.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedPeriod.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedPeriod.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -308,7 +412,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -317,7 +421,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedPeriod.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -348,7 +452,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -356,8 +460,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -374,14 +478,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -395,7 +499,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -415,17 +519,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedPeriod.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedPeriod.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -440,8 +565,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -479,14 +604,54 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignment.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignment.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignment.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignment.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -504,7 +669,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -513,7 +678,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedAssignment.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignment.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -544,7 +709,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -552,8 +717,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -570,14 +735,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -591,7 +756,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -611,17 +776,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignment.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignment.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -636,8 +822,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -674,9 +860,49 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignmentGroup.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignmentGroup.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -694,7 +920,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -703,7 +929,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedAssignmentGroup.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -734,7 +960,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -742,8 +968,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -760,14 +986,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -781,7 +1007,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -801,17 +1027,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedAssignmentGroup.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedAssignmentGroup.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -826,8 +1073,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -857,6 +1104,46 @@ this check is not performed. If the check fails,
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDeadline.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDeadline.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDeadline.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDeadline.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedDeadline.handle_fieldgroups">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDeadline.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Can be overridden to change fieldgroups before they are sent into the
@@ -868,7 +1155,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -877,7 +1164,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedDeadline.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDeadline.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -908,7 +1195,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -916,8 +1203,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -934,14 +1221,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -955,7 +1242,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -975,17 +1262,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDeadline.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDeadline.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1000,8 +1308,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -1039,14 +1347,14 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1060,14 +1368,14 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
 </tr>
-<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+<tr class="field-even field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
 if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
 is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
 </tr>
@@ -1084,14 +1392,54 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDelivery.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDelivery.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDelivery.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDelivery.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1109,7 +1457,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -1118,7 +1466,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedDelivery.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDelivery.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -1132,7 +1480,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -1140,8 +1488,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -1158,14 +1506,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1179,7 +1527,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -1199,16 +1547,16 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
 </tr>
 </tbody>
@@ -1223,23 +1571,44 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+<tr class="field-even field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
 if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
 is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedDelivery.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedDelivery.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1277,14 +1646,54 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedStaticFeedback.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedStaticFeedback.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedStaticFeedback.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedStaticFeedback.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1302,7 +1711,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -1311,7 +1720,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedStaticFeedback.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedStaticFeedback.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -1342,7 +1751,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -1350,8 +1759,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -1368,14 +1777,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1389,7 +1798,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -1409,17 +1818,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedStaticFeedback.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedStaticFeedback.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1434,8 +1864,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -1472,14 +1902,14 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
 </tr>
-<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+<tr class="field-even field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
 if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
 is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
 </tr>
@@ -1496,14 +1926,54 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedFileMeta.createmany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">createmany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedFileMeta.createmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt>).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the created objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedFileMeta.deletemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">deletemany</tt><big>(</big><em>user</em>, <em>*list_of_pks</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedFileMeta.deletemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_pks
+List of primary-keys/ids of the objects to delete.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the deleted objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1521,7 +1991,7 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
 </table>
@@ -1530,7 +2000,7 @@ that assignment is not anonymous.</p>
 <dl class="classmethod">
 <dt id="devilry.apps.student.simplified.SimplifiedFileMeta.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedFileMeta.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p>Check if the given obj is empty. Defaults to returning <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
@@ -1561,7 +2031,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; Django user object.</li>
 <li><strong>pk</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
 <li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
@@ -1569,8 +2039,8 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -1587,14 +2057,14 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user</strong> &#8211; A django user object.</li>
 <li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1608,7 +2078,7 @@ if the object does not exist.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>query</strong> &#8211; A string to search for within the model specified in
 <tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
 <tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
@@ -1628,17 +2098,38 @@ fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
-<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="xref docutils literal"><span class="pre">None</span></tt>),
+<li><strong>exact_number_of_results</strong> &#8211; Expect this exact number of results. If unspecified (<tt class="docutils literal"><span class="pre">None</span></tt>),
 this check is not performed. If the check fails,
 <a class="reference internal" href="simplified.html#devilry.simplified.InvalidNumberOfResults" title="devilry.simplified.InvalidNumberOfResults"><tt class="xref py py-exc docutils literal"><span class="pre">devilry.simplified.InvalidNumberOfResults</span></tt></a> is raised.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.student.simplified.SimplifiedFileMeta.updatemany">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">updatemany</tt><big>(</big><em>user</em>, <em>*list_of_field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.student.simplified.SimplifiedFileMeta.updatemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update many.</p>
+<p>This does the same as calling <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt> many times, except that it
+does it all in a single transaction. This means that the database rolls
+back the changes unless they all succeed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">list_of_field_values
+List of field_values dicts (see <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>). Each dict _must_
+have a _pk_ key that maps to the primary-key/id value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the primary keys of the updated objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1653,8 +2144,8 @@ this check is not performed. If the check fails,
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -1704,7 +2195,7 @@ this check is not performed. If the check fails,
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1733,12 +2224,12 @@ this check is not performed. If the check fails,
         <li class="right" >
           <a href="examiner.simplified.html" title="devilry.apps.examiner.simplified — Simplifed API for examiners"
              >previous</a> |</li>
-        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

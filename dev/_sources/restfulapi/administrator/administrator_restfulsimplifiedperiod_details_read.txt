@@ -9,7 +9,7 @@ Retrieve a Period.
 The underlying data model where the item is retrieved from is defined in
 :class:`devilry.apps.core.models.Period`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedPeriod.read`.
+:meth:`devilry.apps.administrator.simplified.simplifiedperiod.SimplifiedPeriod.read`.
 
 
 ********
@@ -63,6 +63,14 @@ resulting data. The following group names are available:
         *Expands to the following fields:*
         
             admins__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
+            admins__email
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:

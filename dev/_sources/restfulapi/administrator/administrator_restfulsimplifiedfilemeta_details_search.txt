@@ -8,7 +8,7 @@ Search for FileMetas.
 
 The underlying data model searched is defined in :class:`devilry.apps.core.models.FileMeta`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedFileMeta.search`.
+:meth:`devilry.apps.administrator.simplified.simplifiedfilemeta.SimplifiedFileMeta.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery", comp:"startswith", value:15},
-                      {field:"filename", comp:"icontains", value:"My example value"},
-                      {field:"id", comp:"icontains", value:15}],
+        filters: [{field:"delivery", comp:">=", value:15},
+                      {field:"filename", comp:"<=", value:"My example value"},
+                      {field:"id", comp:"startswith", value:15}],
         orderby: ["filename", "-size", "id", "delivery"],
         start: 10,
         limit: 100
@@ -137,9 +137,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery", comp:"startswith", value:15},
-         {field:"filename", comp:"icontains", value:"My example value"},
-         {field:"id", comp:"icontains", value:15}]
+        [{field:"delivery", comp:">=", value:15},
+         {field:"filename", comp:"<=", value:"My example value"},
+         {field:"id", comp:"startswith", value:15}]
 
 FileMetas can be filtered on the following *fields*:
 

@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.simplified.utils &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.simplified.utils &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../../index.html" />
     <link rel="up" title="devilry.simplified" href="../simplified.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../simplified.html" accesskey="U">devilry.simplified</a> &raquo;</li> 
       </ul>
@@ -51,6 +54,8 @@
 <span class="sd">proves useful outside this module, they should me moved to ``devilry.utils``. &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
 <span class="kn">from</span> <span class="nn">django.db.models.fields</span> <span class="kn">import</span> <span class="n">FieldDoesNotExist</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Max</span><span class="p">,</span> <span class="n">Count</span>
+<span class="kn">from</span> <span class="nn">fieldspec</span> <span class="kn">import</span> <span class="n">OneToMany</span>
 
 
 <span class="k">def</span> <span class="nf">get_clspath</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
@@ -69,7 +74,10 @@
             <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">parentmodel</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">field</span>
-    <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">OneToMany</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
@@ -117,11 +125,14 @@
 
 <span class="sd">    :param instance: A django model instance.</span>
 <span class="sd">    :param fieldname: List of fieldname names. Can also be foreign keys, such as</span>
-<span class="sd">        ``parentnode__parentnode__short_name``.</span>
+<span class="sd">        ``parentnode__parentnode__short_name``, or :class:`devilry.simplified.OneToMany`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">fieldnames</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">OneToMany</span><span class="p">):</span>
+            <span class="n">onetomany</span> <span class="o">=</span> <span class="n">fieldname</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">onetomany</span><span class="o">.</span><span class="n">related_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">onetomany</span><span class="o">.</span><span class="n">as_list</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
             <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -131,8 +142,24 @@
                 <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span> <span class="c"># This is an annotated field (or something is seriously wrong)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="c"># Annotated field</span>
-                <span class="k">continue</span> <span class="c"># If we fail here, it will not work to user this for both read (which does not support annotated fields) and search</span>
-    <span class="k">return</span> <span class="n">dct</span></div>
+                <span class="k">continue</span> <span class="c"># If we fail here, it will not work to use this for both read (which does not support annotated fields) and search</span>
+    <span class="k">return</span> <span class="n">dct</span>
+
+</div>
+<div class="viewcode-block" id="fix_expected_data_missing_database_fields"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.utils.fix_expected_data_missing_database_fields">[docs]</a><span class="k">def</span> <span class="nf">fix_expected_data_missing_database_fields</span><span class="p">(</span><span class="n">test_groups</span><span class="p">,</span> <span class="n">expected_res</span><span class="p">,</span> <span class="n">search_res</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; For internal test use ONLY. &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">test_groups</span><span class="p">)):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">test_groups</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get_active_deadline</span><span class="p">()</span>
+        <span class="n">expected_res</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;latest_deadline_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deadline</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">expected_res</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;latest_deadline_deadline&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deadline</span><span class="o">.</span><span class="n">deadline</span>
+        <span class="n">expected_res</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;number_of_deliveries&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deadline</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">deadline</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">max_id</span> <span class="o">=</span> <span class="n">deadline</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">Max</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">))</span>
+            <span class="n">expected_res</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;latest_delivery_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deadline</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">max_id</span><span class="p">[</span><span class="s">&#39;id__max&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+            <span class="c">#expected_res[i][&#39;latest_delivery_id&#39;] = deadline.deliveries.all()[0].id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expected_res</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;latest_delivery_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span></div>
 </pre></div>
 
           </div>
@@ -143,7 +170,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -166,14 +193,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../simplified.html" >devilry.simplified</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

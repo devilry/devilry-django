@@ -9,7 +9,7 @@ Retrieve a Deadline.
 The underlying data model where the item is retrieved from is defined in
 :class:`devilry.apps.core.models.Deadline`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedDeadline.read`.
+:meth:`devilry.apps.administrator.simplified.simplifieddeadline.SimplifiedDeadline.read`.
 
 
 ********
@@ -70,6 +70,14 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
+            assignment_group__parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
+        
             assignment_group__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
@@ -109,14 +117,6 @@ resulting data. The following group names are available:
 
     assignment_group_users
         *Expands to the following fields:*
-        
-            assignment_group__examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    List of strings
         
             assignment_group__candidates__identifier
                 Actual location of the field:

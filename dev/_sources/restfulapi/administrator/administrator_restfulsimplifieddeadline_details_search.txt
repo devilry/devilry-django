@@ -8,7 +8,7 @@ Search for Deadlines.
 
 The underlying data model searched is defined in :class:`devilry.apps.core.models.Deadline`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedDeadline.search`.
+:meth:`devilry.apps.administrator.simplified.simplifieddeadline.SimplifiedDeadline.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -33,8 +33,8 @@ Request example
     {
         query: 'a query string',
         filters: [{field:"assignment_group", comp:"startswith", value:15},
-                      {field:"assignment_group__is_open", comp:"iexact", value:true},
-                      {field:"assignment_group__name", comp:"startswith", value:"My example value"}],
+                      {field:"assignment_group__is_open", comp:">", value:true},
+                      {field:"assignment_group__name", comp:"exact", value:"My example value"}],
         orderby: ["id", "-text", "deadline", "assignment_group", "number_of_deliveries", "feedbacks_published"],
         start: 10,
         limit: 100
@@ -138,8 +138,8 @@ Example:
     .. code-block:: javascript
 
         [{field:"assignment_group", comp:"startswith", value:15},
-         {field:"assignment_group__is_open", comp:"iexact", value:true},
-         {field:"assignment_group__name", comp:"startswith", value:"My example value"}]
+         {field:"assignment_group__is_open", comp:">", value:true},
+         {field:"assignment_group__name", comp:"exact", value:"My example value"}]
 
 Deadlines can be filtered on the following *fields*:
 
@@ -171,6 +171,16 @@ Deadlines can be filtered on the following *fields*:
             An optional name for the group. Typically used a project name on project assignments.
         Type
             String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__delivery_types
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+        Type
+            Integer
         Supported comparison operators:
             ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
@@ -339,6 +349,14 @@ results of the search. The following group names are available:
                 Type
                     Integer
         
+            assignment_group__parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
+        
             assignment_group__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
@@ -378,14 +396,6 @@ results of the search. The following group names are available:
 
     assignment_group_users
         *Expands to the following fields:*
-        
-            assignment_group__examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    List of strings
         
             assignment_group__candidates__identifier
                 Actual location of the field:

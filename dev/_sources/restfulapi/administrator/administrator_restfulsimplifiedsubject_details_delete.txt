@@ -8,7 +8,7 @@ Delete a Subject.
 
 The underlying data model where the item is deleted from is defined in :class:`devilry.apps.core.models.Subject`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedSubject.delete`.
+:meth:`devilry.apps.administrator.simplified.simplifiedsubject.SimplifiedSubject.delete`.
 
 
 ********

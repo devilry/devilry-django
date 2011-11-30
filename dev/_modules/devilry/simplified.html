@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.simplified &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.simplified &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -49,17 +52,17 @@
 <span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedException</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">InvalidUsername</span><span class="p">,</span>
                         <span class="n">InvalidNumberOfResults</span><span class="p">,</span> <span class="n">FilterValidationError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">qryresultwrapper</span> <span class="kn">import</span> <span class="n">QryResultWrapper</span>
-<span class="kn">from</span> <span class="nn">fieldspec</span> <span class="kn">import</span> <span class="n">FieldSpec</span>
+<span class="kn">from</span> <span class="nn">fieldspec</span> <span class="kn">import</span> <span class="n">FieldSpec</span><span class="p">,</span> <span class="n">OneToMany</span>
 <span class="kn">from</span> <span class="nn">modelapi</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">UnsupportedCrudsMethod</span>
 <span class="kn">from</span> <span class="nn">filterspec</span> <span class="kn">import</span> <span class="p">(</span><span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span><span class="p">,</span>
-                        <span class="n">PatternFilterSpec</span><span class="p">,</span> <span class="n">boolConverter</span><span class="p">,</span> <span class="n">intConverter</span><span class="p">,</span>
+                        <span class="n">PatternFilterSpec</span><span class="p">,</span> <span class="n">boolConverter</span><span class="p">,</span> <span class="n">intConverter</span><span class="p">,</span> <span class="n">noCandidateIdConverter</span><span class="p">,</span>
                         <span class="n">intOrNoneConverter</span><span class="p">,</span> <span class="n">dateTimeConverter</span><span class="p">,</span> <span class="n">stringOrNoneConverter</span><span class="p">)</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SimplifiedException&#39;</span><span class="p">,</span> <span class="s">&#39;PermissionDenied&#39;</span><span class="p">,</span> <span class="s">&#39;InvalidNumberOfResults&#39;</span><span class="p">,</span> <span class="s">&#39;InvalidUsername&#39;</span><span class="p">,</span>
-           <span class="s">&#39;FilterValidationError&#39;</span><span class="p">,</span> <span class="s">&#39;QryResultWrapper&#39;</span><span class="p">,</span> <span class="s">&#39;FieldSpec&#39;</span><span class="p">,</span>
+           <span class="s">&#39;FilterValidationError&#39;</span><span class="p">,</span> <span class="s">&#39;QryResultWrapper&#39;</span><span class="p">,</span> <span class="s">&#39;FieldSpec&#39;</span><span class="p">,</span> <span class="s">&#39;OneToMany&#39;</span><span class="p">,</span>
            <span class="s">&#39;simplified_modelapi&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedModelApi&#39;</span><span class="p">,</span> <span class="s">&#39;FilterSpecs&#39;</span><span class="p">,</span> <span class="s">&#39;FilterSpec&#39;</span><span class="p">,</span>
-           <span class="s">&#39;ForeignFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;PatternFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;boolConverter&#39;</span><span class="p">,</span> <span class="s">&#39;intConverter&#39;</span><span class="p">,</span>
+           <span class="s">&#39;ForeignFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;PatternFilterSpec&#39;</span><span class="p">,</span> <span class="s">&#39;boolConverter&#39;</span><span class="p">,</span> <span class="s">&#39;intConverter&#39;</span><span class="p">,</span> <span class="s">&#39;noCandidateIdConverter&#39;</span><span class="p">,</span>
            <span class="s">&#39;intOrNoneConverter&#39;</span><span class="p">,</span> <span class="s">&#39;dateTimeConverter&#39;</span><span class="p">,</span> <span class="s">&#39;stringOrNoneConverter&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -71,7 +74,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -94,13 +97,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

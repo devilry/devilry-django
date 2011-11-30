@@ -8,7 +8,7 @@ Delete a assignment group.
 
 The underlying data model where the item is deleted from is defined in :class:`devilry.apps.core.models.AssignmentGroup`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.delete`.
+:meth:`devilry.apps.administrator.simplified.simplifiedassignmentgroup.SimplifiedAssignmentGroup.delete`.
 
 
 ********

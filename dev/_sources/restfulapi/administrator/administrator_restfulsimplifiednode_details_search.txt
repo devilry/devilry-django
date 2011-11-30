@@ -8,7 +8,7 @@ Search for Nodes.
 
 The underlying data model searched is defined in :class:`devilry.apps.core.models.Node`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedNode.search`.
+:meth:`devilry.apps.administrator.simplified.simplifiednode.SimplifiedNode.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -33,8 +33,8 @@ Request example
     {
         query: 'a query string',
         filters: [{field:"long_name", comp:">=", value:"My example value"},
-                      {field:"parentnode", comp:"contains", value:15},
-                      {field:"short_name", comp:"contains", value:"my_example001_value"}],
+                      {field:"parentnode", comp:"endswith", value:15},
+                      {field:"short_name", comp:"startswith", value:"my_example001_value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name"],
         start: 10,
         limit: 100
@@ -98,8 +98,8 @@ Example:
     .. code-block:: javascript
 
         [{field:"long_name", comp:">=", value:"My example value"},
-         {field:"parentnode", comp:"contains", value:15},
-         {field:"short_name", comp:"contains", value:"my_example001_value"}]
+         {field:"parentnode", comp:"endswith", value:15},
+         {field:"short_name", comp:"startswith", value:"my_example001_value"}]
 
 Nodes can be filtered on the following *fields*:
 

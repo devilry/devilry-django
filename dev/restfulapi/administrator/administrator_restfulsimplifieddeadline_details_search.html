@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GET /administrator/restfulsimplifieddeadline/ &mdash; Devilry v1.0 documentation</title>
+    <title>GET /administrator/restfulsimplifieddeadline/ &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
     <link rel="next" title="POST /administrator/restfulsimplifieddeadline/" href="administrator_restfulsimplifieddeadline_details_create.html" />
     <link rel="prev" title="GET /administrator/restfulsimplifieddeadline/id" href="administrator_restfulsimplifieddeadline_details_read.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="administrator_restfulsimplifieddeadline_details_read.html" title="GET /administrator/restfulsimplifieddeadline/id"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
       </ul>
@@ -59,7 +62,7 @@
 <p>Search for Deadlines.</p>
 <p>The underlying data model searched is defined in <a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a>.
 The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
-<a class="reference internal" href="../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.search" title="devilry.apps.administrator.simplified.SimplifiedDeadline.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedDeadline.search()</span></tt></a>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.simplifieddeadline.SimplifiedDeadline.search()</span></tt>.</p>
 <p>The request parameters (below) all modify the result of the search. They are
 applied in the following order:</p>
 <blockquote>
@@ -79,8 +82,8 @@ applied in the following order:</p>
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
     <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-text&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;assignment_group&quot;</span><span class="p">,</span> <span class="s2">&quot;number_of_deliveries&quot;</span><span class="p">,</span> <span class="s2">&quot;feedbacks_published&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -192,8 +195,8 @@ list of filters, where each filter is a map with the following entries:</p>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__is_open&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -232,6 +235,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd>An optional name for the group. Typically used a project name on project assignments.</dd>
 <dt>Type</dt>
 <dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>assignment_group__parentnode__delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
 <dt>Supported comparison operators:</dt>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
@@ -424,6 +439,16 @@ results of the search. The following group names are available:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
+<dt>assignment_group__parentnode__delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
 <dt>assignment_group__parentnode__short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -478,16 +503,6 @@ results of the search. The following group names are available:</p>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
 <div><dl class="docutils">
-<dt>assignment_group__examiners__username</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>List of many values.</dd>
-<dt>Type</dt>
-<dd>List of strings</dd>
-</dl>
-</dd>
 <dt>assignment_group__candidates__identifier</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -675,7 +690,7 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
 <dt>About the field:</dt>
-<dd>If this is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the student can see all StaticFeedbacks associated with this Deadline</dd>
+<dd>If this is <tt class="docutils literal"><span class="pre">True</span></tt>, the student can see all StaticFeedbacks associated with this Deadline</dd>
 <dt>Type</dt>
 <dd>Boolean</dd>
 </dl>
@@ -743,7 +758,7 @@ request parameter.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -772,14 +787,14 @@ request parameter.</p>
         <li class="right" >
           <a href="administrator_restfulsimplifieddeadline_details_read.html" title="GET /administrator/restfulsimplifieddeadline/id"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Administrator</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

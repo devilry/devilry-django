@@ -8,7 +8,7 @@ Search for Assignments.
 
 The underlying data model searched is defined in :class:`devilry.apps.core.models.Assignment`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedAssignment.search`.
+:meth:`devilry.apps.administrator.simplified.simplifiedassignment.SimplifiedAssignment.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -32,10 +32,10 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery_types", comp:"<", value:20},
-                      {field:"long_name", comp:">", value:"My example value"},
-                      {field:"parentnode", comp:"endswith", value:15}],
-        orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time", "delivery_types"],
+        filters: [{field:"anonymous", comp:"startswith", value:true},
+                      {field:"delivery_types", comp:"startswith", value:20},
+                      {field:"long_name", comp:"iexact", value:"My example value"}],
+        orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time", "delivery_types", "anonymous", "scale_points_percent"],
         start: 10,
         limit: 100
     }
@@ -129,12 +129,22 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery_types", comp:"<", value:20},
-         {field:"long_name", comp:">", value:"My example value"},
-         {field:"parentnode", comp:"endswith", value:15}]
+        [{field:"anonymous", comp:"startswith", value:true},
+         {field:"delivery_types", comp:"startswith", value:20},
+         {field:"long_name", comp:"iexact", value:"My example value"}]
 
 Assignments can be filtered on the following *fields*:
 
+
+    anonymous
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            Specifies if this assignment is anonymous.
+        Type
+            Boolean
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     delivery_types
         Actual location of the field:
@@ -346,26 +356,6 @@ results of the search. The following group names are available:
                     Integer
         
 
-    pointfields
-        *Expands to the following fields:*
-        
-            anonymous
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    Specifies if this assignment is anonymous.
-                Type
-                    Boolean
-        
-            must_pass
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Assignment`
-                About the field:
-                    Each student must get a passing grade on this assignment to get a passing grade on the period.
-                Type
-                    Boolean
-        
-
     subject
         *Expands to the following fields:*
         
@@ -421,13 +411,17 @@ example is generated from a non-varying dataset.*
               short_name: "my_example001_value",
               long_name: "My example value",
               publishing_time: "2010-02-22 22:32:10",
-              delivery_types: 20 },
+              delivery_types: 20,
+              anonymous: true,
+              scale_points_percent: 20 },
             { id: 15,
               parentnode: 15,
               short_name: "my_example001_value",
               long_name: "My example value",
               publishing_time: "2010-02-22 22:32:10",
-              delivery_types: 20 },
+              delivery_types: 20,
+              anonymous: true,
+              scale_points_percent: 20 },
             ...
         ]
     }
@@ -488,6 +482,22 @@ the *value* for that field. The result always contains the following fields:
                 :class:`devilry.apps.core.models.Assignment`
             About the field:
                 This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+            Type
+                Integer
+    
+        anonymous
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Specifies if this assignment is anonymous.
+            Type
+                Boolean
+    
+        scale_points_percent
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
             Type
                 Integer
     

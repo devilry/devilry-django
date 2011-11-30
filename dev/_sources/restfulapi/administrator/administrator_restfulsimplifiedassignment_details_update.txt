@@ -9,7 +9,7 @@ Update a Assignment.
 The underlying data model where the item is updated is defined in
 :class:`devilry.apps.core.models.Assignment`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedAssignment.update`.
+:meth:`devilry.apps.administrator.simplified.simplifiedassignment.SimplifiedAssignment.update`.
 
 
 
@@ -26,13 +26,13 @@ Example
     PUT /administrator/restfulsimplifiedassignment/id
 
     {
-        must_pass: true,
         short_name: "my_example001_value",
         publishing_time: "2010-02-22 22:32:10",
         parentnode: 15,
         delivery_types: 20,
         long_name: "My example value",
-        anonymous: true
+        anonymous: true,
+        scale_points_percent: 20
     }
 
 
@@ -52,17 +52,6 @@ Required request parameters
 The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.
 
-
-
-must_pass
---------------------------------------------------
-
-Actual location of the field:
-    :class:`devilry.apps.core.models.Assignment`
-About the field:
-    Each student must get a passing grade on this assignment to get a passing grade on the period.
-Type
-    Boolean
 
 
 short_name
@@ -131,6 +120,17 @@ Type
     Boolean
 
 
+scale_points_percent
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.Assignment`
+About the field:
+    Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
+Type
+    Integer
+
+
 
 
 **************
@@ -148,13 +148,13 @@ Example
     200 OK
 
     {
-        must_pass: true,
         short_name: "my_example001_value",
         publishing_time: "2010-02-22 22:32:10",
         parentnode: 15,
         delivery_types: 20,
         long_name: "My example value",
         anonymous: true,
+        scale_points_percent: 20,
         id: 15
     }
 

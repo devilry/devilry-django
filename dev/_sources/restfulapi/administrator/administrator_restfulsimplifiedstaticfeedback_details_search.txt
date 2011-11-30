@@ -8,7 +8,7 @@ Search for Static feedbacks.
 
 The underlying data model searched is defined in :class:`devilry.apps.core.models.StaticFeedback`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedStaticFeedback.search`.
+:meth:`devilry.apps.administrator.simplified.simplifiedstaticfeedback.SimplifiedStaticFeedback.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery", comp:"startswith", value:15},
-                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"endswith", value:"2010-02-22 22:32:10"},
-                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"<=", value:"2010-02-22 22:32:10"}],
+        filters: [{field:"delivery", comp:"<=", value:15},
+                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"exact", value:"2010-02-22 22:32:10"},
+                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"contains", value:"2010-02-22 22:32:10"}],
         orderby: ["id", "-grade", "is_passing_grade", "saved_by", "save_timestamp", "delivery", "rendered_view"],
         start: 10,
         limit: 100
@@ -115,14 +115,6 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 Integer
     
-        delivery__deadline__assignment_group__examiners__username
-            Actual location of the field:
-                :class:`devilry.apps.core.models.AssignmentGroup`
-            About the field:
-                List of many values.
-            Type
-                List of strings
-    
 
 
 
@@ -145,9 +137,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery", comp:"startswith", value:15},
-         {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"endswith", value:"2010-02-22 22:32:10"},
-         {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"<=", value:"2010-02-22 22:32:10"}]
+        [{field:"delivery", comp:"<=", value:15},
+         {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"exact", value:"2010-02-22 22:32:10"},
+         {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"contains", value:"2010-02-22 22:32:10"}]
 
 Static feedbacks can be filtered on the following *fields*:
 

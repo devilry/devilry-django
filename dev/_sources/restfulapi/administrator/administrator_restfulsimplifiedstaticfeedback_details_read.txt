@@ -9,7 +9,7 @@ Retrieve a Static feedback.
 The underlying data model where the item is retrieved from is defined in
 :class:`devilry.apps.core.models.StaticFeedback`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read`.
+:meth:`devilry.apps.administrator.simplified.simplifiedstaticfeedback.SimplifiedStaticFeedback.read`.
 
 
 ********

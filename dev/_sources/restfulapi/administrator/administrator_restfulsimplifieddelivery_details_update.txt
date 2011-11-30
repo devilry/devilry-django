@@ -9,7 +9,7 @@ Update a Delivery.
 The underlying data model where the item is updated is defined in
 :class:`devilry.apps.core.models.Delivery`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedDelivery.update`.
+:meth:`devilry.apps.administrator.simplified.simplifieddelivery.SimplifiedDelivery.update`.
 
 
 

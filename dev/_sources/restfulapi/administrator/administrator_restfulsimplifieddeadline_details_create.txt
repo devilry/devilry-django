@@ -9,7 +9,7 @@ Create a Deadline.
 The underlying data model where the item is created is defined in
 :class:`devilry.apps.core.models.Deadline`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedDeadline.create`.
+:meth:`devilry.apps.administrator.simplified.simplifieddeadline.SimplifiedDeadline.create`.
 
 
 ********

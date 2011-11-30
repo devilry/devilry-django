@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GET /administrator/restfulsimplifiedrelatedstudent/ &mdash; Devilry v1.0 documentation</title>
+    <title>GET /administrator/restfulsimplifiedrelatedstudent/ &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
     <link rel="next" title="POST /administrator/restfulsimplifiedrelatedstudent/" href="administrator_restfulsimplifiedrelatedstudent_details_create.html" />
     <link rel="prev" title="GET /administrator/restfulsimplifiedrelatedstudent/id" href="administrator_restfulsimplifiedrelatedstudent_details_read.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="administrator_restfulsimplifiedrelatedstudent_details_read.html" title="GET /administrator/restfulsimplifiedrelatedstudent/id"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
       </ul>
@@ -59,7 +62,7 @@
 <p>Search for related students.</p>
 <p>The underlying data model searched is defined in <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt>.
 The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
-<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedRelatedStudent.search()</span></tt>.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.simplifiedrelatedstudent.SimplifiedRelatedStudent.search()</span></tt>.</p>
 <p>The request parameters (below) all modify the result of the search. They are
 applied in the following order:</p>
 <blockquote>
@@ -78,9 +81,10 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;userspec&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-userspec&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;candidate_id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-period&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="s2">&quot;user__username&quot;</span><span class="p">,</span> <span class="s2">&quot;user__devilryuserprofile__full_name&quot;</span><span class="p">,</span> <span class="s2">&quot;user__email&quot;</span><span class="p">,</span> <span class="s2">&quot;candidate_id&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -101,12 +105,32 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <em>case-insensitive</em> matches within the following fields:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>userspec</dt>
+<dt>user__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Required. 30 characters or fewer. Letters, numbers and &#64;/./+/-/_ characters</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>user__devilryuserprofile__full_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.DevilryUserProfile</span></tt></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>candidate_id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
 <dt>About the field:</dt>
-<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
+<dd>If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.</dd>
 <dt>Type</dt>
 <dd>String</dd>
 </dl>
@@ -130,14 +154,39 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;userspec&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;candidate_id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>related students can be filtered on the following <em>fields</em>:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt>candidate_id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
+<dt>About the field:</dt>
+<dd>If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">exact</span></tt>.</dd>
+</dl>
+</dd>
 <dt>period</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -147,19 +196,19 @@ list of filters, where each filter is a map with the following entries:</p>
 <dt>Type</dt>
 <dd>Integer</dd>
 <dt>Supported comparison operators:</dt>
-<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+<dd><tt class="docutils literal"><span class="pre">exact</span></tt>.</dd>
 </dl>
 </dd>
-<dt>userspec</dt>
+<dt>user</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
-<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
 <dt>About the field:</dt>
-<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
+<dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
-<dd>String</dd>
+<dd>Integer</dd>
 <dt>Supported comparison operators:</dt>
-<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+<dd><tt class="docutils literal"><span class="pre">exact</span></tt>.</dd>
 </dl>
 </dd>
 </dl>
@@ -202,11 +251,21 @@ example is generated from a non-varying dataset.</em></p>
     <span class="nx">total</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
-          <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-          <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">user</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">tags</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+          <span class="nx">user__username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+          <span class="nx">user__devilryuserprofile__full_name</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;an&quot;</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">],</span>
+          <span class="nx">user__email</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+          <span class="nx">candidate_id</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span> <span class="p">},</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
-          <span class="nx">userspec</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
-          <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">period</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">user</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">tags</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+          <span class="nx">user__username</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+          <span class="nx">user__devilryuserprofile__full_name</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;an&quot;</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">],</span>
+          <span class="nx">user__email</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+          <span class="nx">candidate_id</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span> <span class="p">},</span>
         <span class="p">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -232,16 +291,6 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>userspec</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
-<dt>About the field:</dt>
-<dd>One or more usernames prefixed by an optional name and followed by optional tags. Format: Group name:: usernameA, ...., usernameN (tag1, tag2, ..., tagN). For RelatedExaminer, only a single username is allowed. For RelatedExaminer, group name can not be specified.</dd>
-<dt>Type</dt>
-<dd>String</dd>
-</dl>
-</dd>
 <dt>period</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -250,6 +299,67 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
 <dd>Integer</dd>
+</dl>
+</dd>
+<dt>user</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>tags</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z and 0-9. Each word is separated by a comma, and no whitespace.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>user__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+<dt>About the field:</dt>
+<dd>Required. 30 characters or fewer. Letters, numbers and &#64;/./+/-/_ characters</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>user__devilryuserprofile__full_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.DevilryUserProfile</span></tt></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>user__email</dt>
+<dd><dl class="first docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.models.User</span></tt></dd>
+</dl>
+<p>About the field:</p>
+<dl class="last docutils">
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>candidate_id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.relateduser.RelatedStudent</span></tt></dd>
+<dt>About the field:</dt>
+<dd>If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.</dd>
+<dt>Type</dt>
+<dd>String</dd>
 </dl>
 </dd>
 </dl>
@@ -312,7 +422,7 @@ the <em>value</em> for that field. The result always contains the following fiel
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -341,14 +451,14 @@ the <em>value</em> for that field. The result always contains the following fiel
         <li class="right" >
           <a href="administrator_restfulsimplifiedrelatedstudent_details_read.html" title="GET /administrator/restfulsimplifiedrelatedstudent/id"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Administrator</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

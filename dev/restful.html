@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Low level RESTful web service API &mdash; Devilry v1.0 documentation</title>
+    <title>Low level RESTful web service API &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="index.html" />
     <link rel="next" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" />
     <link rel="prev" title="Simplified API" href="simplified.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="simplified.html" title="Simplified API"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -211,10 +214,8 @@ methods, which subclasses can implement. <tt class="docutils literal"><span clas
 <dt id="devilry.restful.RestfulView.get_rest_url">
 <em class="property">classmethod </em><tt class="descname">get_rest_url</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.get_rest_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the reverse url for this view. Shortcut for:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span>
-<span class="n">reverse</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">urlname</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>from django.core.urlresolvers import reverse
+reverse(cls._meta.urlname, args=args, kwargs=kwargs)</p>
 </dd></dl>
 
 <dl class="method">
@@ -250,7 +251,7 @@ keyword arguments, and other things.</p>
 
 <dl class="method">
 <dt id="devilry.restful.ModelRestfulView.crud_delete">
-<tt class="descname">crud_delete</tt><big>(</big><em>request</em>, <em>id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_delete" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">crud_delete</tt><big>(</big><em>request</em>, <em>id=None</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maps to the <tt class="docutils literal"><span class="pre">delete</span></tt> method of the simplified class.</p>
 </dd></dl>
 
@@ -268,21 +269,21 @@ keyword arguments, and other things.</p>
 
 <dl class="method">
 <dt id="devilry.restful.ModelRestfulView.crud_update">
-<tt class="descname">crud_update</tt><big>(</big><em>request</em>, <em>id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_update" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">crud_update</tt><big>(</big><em>request</em>, <em>id=None</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maps to the <tt class="docutils literal"><span class="pre">update</span></tt> method of the simplified class.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="devilry.restful.ModelRestfulView.extra_create_or_replace_responsedata">
 <tt class="descname">extra_create_or_replace_responsedata</tt><big>(</big><em>obj_id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.extra_create_or_replace_responsedata" title="Permalink to this definition">¶</a></dt>
-<dd><p>If this does not return <tt class="xref docutils literal"><span class="pre">None</span></tt>, the return-value is added to the
+<dd><p>If this does not return <tt class="docutils literal"><span class="pre">None</span></tt>, the return-value is added to the
 <tt class="docutils literal"><span class="pre">extra_responsedata</span></tt> attribute of the data returned on <tt class="docutils literal"><span class="pre">create()</span></tt> or
 <tt class="docutils literal"><span class="pre">update()</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj_id</strong> &#8211; The id of the object changed by the create or update call.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj_id</strong> &#8211; The id of the object changed by the create or update call.</td>
 </tr>
 </tbody>
 </table>
@@ -328,7 +329,7 @@ and rather use <a class="reference internal" href="#devilry.restful.RestfulView.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restapi</strong> &#8211; A subclass of <a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restapi</strong> &#8211; A subclass of <a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -372,7 +373,7 @@ and rather use <a class="reference internal" href="#devilry.restful.RestfulView.
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -401,12 +402,12 @@ and rather use <a class="reference internal" href="#devilry.restful.RestfulView.
         <li class="right" >
           <a href="simplified.html" title="Simplified API"
              >previous</a> |</li>
-        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

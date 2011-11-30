@@ -32,10 +32,10 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"feedback", comp:"startswith", value:15},
-                      {field:"feedback__delivery__delivery_type", comp:"exact", value:20},
-                      {field:"feedback__delivery__number", comp:"<=", value:20}],
-        orderby: ["id", "-name", "is_open", "status", "parentnode", "feedback", "latest_delivery_id", "latest_deadline_id", "latest_deadline_deadline", "number_of_deliveries"],
+        filters: [{field:"candidates__identifier", comp:"iexact", value:["this", "is", "an", "example"]},
+                      {field:"feedback", comp:"<=", value:15},
+                      {field:"feedback__delivery__delivery_type", comp:"startswith", value:20}],
+        orderby: ["id", "-name", "is_open", "parentnode", "feedback", "latest_delivery_id", "latest_deadline_id", "latest_deadline_deadline", "number_of_deliveries"],
         start: 10,
         limit: 100
     }
@@ -67,15 +67,23 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        examiners__username
+        candidates__identifier
             Actual location of the field:
-                :class:`devilry.apps.core.models.AssignmentGroup`
+                :class:`devilry.apps.core.models.Candidate`
             About the field:
                 List of many values.
             Type
                 List of strings
     
-        candidates__identifier
+        candidates__full_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Candidate`
+            About the field:
+                List of many values.
+            Type
+                List of strings
+    
+        candidates__email
             Actual location of the field:
                 :class:`devilry.apps.core.models.Candidate`
             About the field:
@@ -153,12 +161,22 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"feedback", comp:"startswith", value:15},
-         {field:"feedback__delivery__delivery_type", comp:"exact", value:20},
-         {field:"feedback__delivery__number", comp:"<=", value:20}]
+        [{field:"candidates__identifier", comp:"iexact", value:["this", "is", "an", "example"]},
+         {field:"feedback", comp:"<=", value:15},
+         {field:"feedback__delivery__delivery_type", comp:"startswith", value:20}]
 
 assignment groups can be filtered on the following *fields*:
 
+
+    candidates__identifier
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Candidate`
+        About the field:
+            List of many values.
+        Type
+            List of strings
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     feedback
         Actual location of the field:
@@ -437,14 +455,6 @@ results of the search. The following group names are available:
     users
         *Expands to the following fields:*
         
-            examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    List of strings
-        
             candidates__identifier
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Candidate`
@@ -480,6 +490,14 @@ results of the search. The following group names are available:
                     Specifies if this assignment is anonymous.
                 Type
                     Boolean
+        
+            parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
         
             parentnode__publishing_time
                 Actual location of the field:
@@ -582,6 +600,10 @@ results of the search. The following group names are available:
                     Integer
         
 
+    candidates
+        *Expands to the following fields:*
+        
+
     feedback_rendered_view
         *Expands to the following fields:*
         
@@ -655,7 +677,6 @@ example is generated from a non-varying dataset.*
             { id: 15,
               name: "My example value",
               is_open: true,
-              status: 20,
               parentnode: 15,
               feedback: 15,
               latest_delivery_id: No example-value available for this field,
@@ -665,7 +686,6 @@ example is generated from a non-varying dataset.*
             { id: 15,
               name: "My example value",
               is_open: true,
-              status: 20,
               parentnode: 15,
               feedback: 15,
               latest_delivery_id: No example-value available for this field,
@@ -710,14 +730,6 @@ the *value* for that field. The result always contains the following fields:
                 If this is checked, the group can add deliveries.
             Type
                 Boolean
-    
-        status
-            Actual location of the field:
-                :class:`devilry.apps.core.models.AssignmentGroup`
-            About the field:
-                Status number.
-            Type
-                Integer
     
         parentnode
             Actual location of the field:

@@ -9,7 +9,7 @@ Retrieve a assignment group.
 The underlying data model where the item is retrieved from is defined in
 :class:`devilry.apps.core.models.AssignmentGroup`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.read`.
+:meth:`devilry.apps.administrator.simplified.simplifiedassignmentgroup.SimplifiedAssignmentGroup.read`.
 
 
 ********
@@ -33,7 +33,7 @@ Another example, this one uses the optional *result_fieldgroups* parameter.
     GET /administrator/restfulsimplifiedassignmentgroup/id
 
     {
-        result_fieldgroups: ["feedback", "tags", "assignment", "feedbackdelivery", "period", "users", "feedback_rendered_view", "subject"]
+        result_fieldgroups: ["feedback", "tags", "assignment", "feedbackdelivery", "period", "candidates", "users", "feedback_rendered_view", "students_full_name", "subject"]
     }
 
 
@@ -126,6 +126,14 @@ resulting data. The following group names are available:
                 Type
                     Boolean
         
+            parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
+        
             parentnode__publishing_time
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
@@ -199,6 +207,10 @@ resulting data. The following group names are available:
                     String
         
 
+    candidates
+        *Expands to the following fields:*
+        
+
     users
         *Expands to the following fields:*
         
@@ -210,17 +222,17 @@ resulting data. The following group names are available:
                 Type
                     List of strings
         
-            examiners__username
+            candidates__identifier
                 Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
+                    :class:`devilry.apps.core.models.Candidate`
                 About the field:
                     List of many values.
                 Type
                     List of strings
         
-            candidates__identifier
+            examiners__user__username
                 Actual location of the field:
-                    :class:`devilry.apps.core.models.Candidate`
+                    :class:`devilry.apps.core.models.Examiner`
                 About the field:
                     List of many values.
                 Type
@@ -237,6 +249,18 @@ resulting data. The following group names are available:
                     A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.
                 Type
                     String
+        
+
+    students_full_name
+        *Expands to the following fields:*
+        
+            candidates__student__devilryuserprofile__full_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Candidate`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
         
 
     subject
@@ -289,7 +313,6 @@ Example
         id: 15,
         name: "My example value",
         is_open: true,
-        status: 20,
         parentnode: 15,
         feedback: 15,
         latest_delivery_id: No example-value available for this field,
@@ -329,14 +352,6 @@ The result always contains the following fields:
                 If this is checked, the group can add deliveries.
             Type
                 Boolean
-    
-        status
-            Actual location of the field:
-                :class:`devilry.apps.core.models.AssignmentGroup`
-            About the field:
-                Status number.
-            Type
-                Integer
     
         parentnode
             Actual location of the field:

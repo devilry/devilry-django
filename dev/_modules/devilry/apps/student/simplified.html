@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.student.simplified &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.apps.student.simplified &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -47,11 +50,10 @@
             
   <h1>Source code for devilry.apps.student.simplified</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span><span class="p">,</span> <span class="n">Max</span>
 <span class="kn">import</span> <span class="nn">django.dispatch</span>
 
-<span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">PermissionDenied</span>
+<span class="kn">from</span> <span class="nn">devilry.simplified</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span>
 <span class="kn">from</span> <span class="nn">devilry.coreutils.simplified.metabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
                                                    <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span>
                                                    <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span>
@@ -61,6 +63,8 @@
                                                    <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span>
                                                    <span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">devilry.apps.core.models</span> <span class="kn">import</span> <span class="n">AssignmentGroup</span><span class="p">,</span> <span class="n">Delivery</span>
+<span class="kn">from</span> <span class="nn">isrelatedstudentbase</span> <span class="kn">import</span> <span class="n">IsRelatedStudentBase</span>
+<span class="kn">from</span> <span class="nn">simplifiedrelatedstudentkeyvalue</span> <span class="kn">import</span> <span class="n">SimplifiedRelatedStudentKeyValue</span>
 
 
 <span class="n">successful_delivery_signal</span> <span class="o">=</span> <span class="n">django</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">providing_args</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;delivery&quot;</span><span class="p">])</span>
@@ -166,6 +170,9 @@
 <div class="viewcode-block" id="SimplifiedAssignmentGroup.Meta"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods a Student can use on an AssignmentGroup object using the Simplified API &quot;&quot;&quot;</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+
+        <span class="c"># TODO: Replace all uses of candidates__student__username with candidates in SimplifiedAssignmentGroupMetaMixin</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;candidates__identifier&#39;</span><span class="p">])</span> <span class="o">+</span><span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="o">.</span><span class="n">resultfields</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup.create_searchqryset"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
@@ -190,7 +197,7 @@
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
-<div class="viewcode-block" id="SimplifiedPeriod"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedPeriod</span><span class="p">(</span><span class="n">PublishedWhereIsCandidateMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplifiedPeriod"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedPeriod</span><span class="p">(</span><span class="n">IsRelatedStudentBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Period`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedPeriod.Meta"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedPeriodMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods a Student can use on a Period object using the Simplified API &quot;&quot;&quot;</span>
@@ -213,7 +220,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -236,13 +243,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -9,7 +9,7 @@ Update a Period.
 The underlying data model where the item is updated is defined in
 :class:`devilry.apps.core.models.Period`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedPeriod.update`.
+:meth:`devilry.apps.administrator.simplified.simplifiedperiod.SimplifiedPeriod.update`.
 
 
 

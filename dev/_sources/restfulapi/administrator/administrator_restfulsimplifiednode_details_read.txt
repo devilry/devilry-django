@@ -9,7 +9,7 @@ Retrieve a Node.
 The underlying data model where the item is retrieved from is defined in
 :class:`devilry.apps.core.models.Node`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedNode.read`.
+:meth:`devilry.apps.administrator.simplified.simplifiednode.SimplifiedNode.read`.
 
 
 ********

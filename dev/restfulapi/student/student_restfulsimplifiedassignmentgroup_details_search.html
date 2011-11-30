@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GET /student/restfulsimplifiedassignmentgroup/ &mdash; Devilry v1.0 documentation</title>
+    <title>GET /student/restfulsimplifiedassignmentgroup/ &mdash; Devilry 1.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="top" title="Devilry 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Student" href="index.html" />
     <link rel="next" title="GET /student/restfulsimplifieddelivery/id" href="student_restfulsimplifieddelivery_details_read.html" />
     <link rel="prev" title="GET /student/restfulsimplifiedassignmentgroup/id" href="student_restfulsimplifiedassignmentgroup_details_read.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="student_restfulsimplifiedassignmentgroup_details_read.html" title="GET /student/restfulsimplifiedassignmentgroup/id"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Student</a> &raquo;</li> 
       </ul>
@@ -78,10 +81,10 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__number&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_delivery_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;number_of_deliveries&quot;</span><span class="p">],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;candidates__identifier&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;an&quot;</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">]},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_delivery_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_id&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_deadline_deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;number_of_deliveries&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -112,17 +115,27 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <dd>String</dd>
 </dl>
 </dd>
-<dt>examiners__username</dt>
+<dt>candidates__identifier</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
 <dt>About the field:</dt>
 <dd>List of many values.</dd>
 <dt>Type</dt>
 <dd>List of strings</dd>
 </dl>
 </dd>
-<dt>candidates__identifier</dt>
+<dt>candidates__full_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>candidates__email</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
@@ -211,15 +224,27 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__number&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;candidates__identifier&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;an&quot;</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">]},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;feedback__delivery__delivery_type&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">20</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>assignment groups can be filtered on the following <em>fields</em>:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt>candidates__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 <dt>feedback</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -542,16 +567,6 @@ results of the search. The following group names are available:</p>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
 <div><dl class="docutils">
-<dt>examiners__username</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>List of many values.</dd>
-<dt>Type</dt>
-<dd>List of strings</dd>
-</dl>
-</dd>
 <dt>candidates__identifier</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -597,6 +612,16 @@ results of the search. The following group names are available:</p>
 <dd>Specifies if this assignment is anonymous.</dd>
 <dt>Type</dt>
 <dd>Boolean</dd>
+</dl>
+</dd>
+<dt>parentnode__delivery_types</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
 </dl>
 </dd>
 <dt>parentnode__publishing_time</dt>
@@ -733,6 +758,8 @@ results of the search. The following group names are available:</p>
 </dl>
 </div></blockquote>
 </dd>
+<dt>candidates</dt>
+<dd><em>Expands to the following fields:</em></dd>
 <dt>feedback_rendered_view</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
@@ -808,7 +835,6 @@ example is generated from a non-varying dataset.</em></p>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
           <span class="nx">is_open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-          <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">latest_delivery_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
@@ -818,7 +844,6 @@ example is generated from a non-varying dataset.</em></p>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
           <span class="nx">is_open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-          <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
           <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">latest_delivery_id</span><span class="o">:</span> <span class="nx">No</span> <span class="nx">example</span><span class="o">-</span><span class="nx">value</span> <span class="nx">available</span> <span class="k">for</span> <span class="k">this</span> <span class="nx">field</span><span class="p">,</span>
@@ -868,16 +893,6 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd>If this is checked, the group can add deliveries.</dd>
 <dt>Type</dt>
 <dd>Boolean</dd>
-</dl>
-</dd>
-<dt>status</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>Status number.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
 </dl>
 </dd>
 <dt>parentnode</dt>
@@ -1003,7 +1018,7 @@ request parameter.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1032,14 +1047,14 @@ request parameter.</p>
         <li class="right" >
           <a href="student_restfulsimplifiedassignmentgroup_details_read.html" title="GET /student/restfulsimplifiedassignmentgroup/id"
              >previous</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
           <li><a href="index.html" >Student</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

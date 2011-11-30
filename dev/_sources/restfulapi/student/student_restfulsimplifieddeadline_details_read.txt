@@ -70,6 +70,14 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
+            assignment_group__parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
+        
             assignment_group__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
@@ -109,14 +117,6 @@ resulting data. The following group names are available:
 
     assignment_group_users
         *Expands to the following fields:*
-        
-            assignment_group__examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    List of strings
         
             assignment_group__candidates__identifier
                 Actual location of the field:

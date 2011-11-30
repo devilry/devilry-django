@@ -33,7 +33,7 @@ Another example, this one uses the optional *result_fieldgroups* parameter.
     GET /examiner/restfulsimplifiedassignmentgroup/id
 
     {
-        result_fieldgroups: ["users", "assignment", "feedback", "period", "feedbackdelivery", "feedback_rendered_view", "subject"]
+        result_fieldgroups: ["users", "assignment", "feedback", "period", "feedbackdelivery", "candidates", "feedback_rendered_view", "subject"]
     }
 
 
@@ -61,14 +61,6 @@ resulting data. The following group names are available:
 
     users
         *Expands to the following fields:*
-        
-            examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    List of strings
         
             candidates__identifier
                 Actual location of the field:
@@ -105,6 +97,14 @@ resulting data. The following group names are available:
                     Specifies if this assignment is anonymous.
                 Type
                     Boolean
+        
+            parentnode__delivery_types
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.
+                Type
+                    Integer
         
             parentnode__publishing_time
                 Actual location of the field:
@@ -207,6 +207,10 @@ resulting data. The following group names are available:
                     Integer
         
 
+    candidates
+        *Expands to the following fields:*
+        
+
     feedback_rendered_view
         *Expands to the following fields:*
         
@@ -269,7 +273,6 @@ Example
         id: 15,
         name: "My example value",
         is_open: true,
-        status: 20,
         parentnode: 15,
         feedback: 15,
         latest_delivery_id: No example-value available for this field,
@@ -309,14 +312,6 @@ The result always contains the following fields:
                 If this is checked, the group can add deliveries.
             Type
                 Boolean
-    
-        status
-            Actual location of the field:
-                :class:`devilry.apps.core.models.AssignmentGroup`
-            About the field:
-                Status number.
-            Type
-                Integer
     
         parentnode
             Actual location of the field:

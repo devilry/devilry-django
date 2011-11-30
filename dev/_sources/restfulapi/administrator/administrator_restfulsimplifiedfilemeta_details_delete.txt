@@ -8,7 +8,7 @@ Delete a FileMeta.
 
 The underlying data model where the item is deleted from is defined in :class:`devilry.apps.core.models.FileMeta`.
 The :ref:`simplified` that the server forwards this request to is
-:meth:`devilry.apps.administrator.simplified.SimplifiedFileMeta.delete`.
+:meth:`devilry.apps.administrator.simplified.simplifiedfilemeta.SimplifiedFileMeta.delete`.
 
 
 ********
