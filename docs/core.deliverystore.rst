@@ -76,8 +76,68 @@ like this::
             delivery.finish()
 
 
+
+The recommended production deliverystore
+#######################################################
+
+The recommended DeliveryStore is :class:`devilry.apps.core.deliverystore.FsHierDeliveryStore`.
+
+It stores files in a filesystem hierarcy with one directory for each
+Delivery, with the delivery-id as name. In each delivery-directory, the
+files are stored by FileMeta id.
+
+Directory hierachy
+==================
+
+The delivery directories are stored in a
+hierarchy with two parent directories. The parent directories are numeric intervals.
+We have one top-level directory for each N in ``interval_size*interval_size*N``. Within each
+toplevel directory, we have one subdirectory for each N in
+``interval_size*N``.
+
+
+Directory hierarchy example
+===========================
+
+For ``interval_size`` of ``1000``, this will use the following hierarchy::
+
+
+    0/
+        0/
+            0/
+            1/
+            .
+            .
+        1/
+            1000/
+            2000/
+            .
+            .
+        2/
+        .
+        .
+        999/
+    1/
+        0/
+            1000000/
+            1000001/
+            .
+            .
+        1/
+            1001000/
+            1001001/
+        2/
+        .
+        .
+        999/
+    2/
+    .
+    .
+    999/
+
+
 API
 ###########################################################
 
 .. automodule:: devilry.apps.core.deliverystore
-
+    :members: F

@@ -2,7 +2,7 @@ from django.utils.importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from os.path import join, exists
-from os import mkdir, remove
+from os import makedirs, remove
 from StringIO import StringIO
 import dumbdbm
 
@@ -127,7 +127,7 @@ class FsDeliveryStore(DeliveryStoreInterface):
     def write_open(self, filemeta_obj):
         dirpath = self._get_dirpath(filemeta_obj.delivery)
         if not exists(dirpath):
-            mkdir(dirpath)
+            makedirs(dirpath)
         return open(self._get_filepath(filemeta_obj), 'wb')
 
     def remove(self, filemeta_obj):
@@ -139,6 +139,48 @@ class FsDeliveryStore(DeliveryStoreInterface):
     def exists(self, filemeta_obj):
         filepath = self._get_filepath(filemeta_obj)
         return exists(filepath)
+
+
+class FsHierDeliveryStore(FsDeliveryStore):
+    """ Filesystem-based DeliveryStore suitable for production use with huge
+    amounts of deliveries.
+    """
+    def __init__(self, root=None, interval=None):
+        """
+        :param root: The root-directory where files are stored. Defaults to
+            the value of the ``DEVILRY_FSHIERDELIVERYSTORE_ROOT``-setting.
+        :param interval: The interval. Defaults to
+            the value of the ``DEVILRY_FSHIERDELIVERYSTORE_INTERVAL``-setting.
+        """
+        self.root = root or settings.DEVILRY_FSHIERDELIVERYSTORE_ROOT
+        self.interval = interval or settings.DEVILRY_FSHIERDELIVERYSTORE_INTERVAL
+
+    def get_path_from_deliveryid(self, deliveryid):
+        """
+        >>> fs = FsHierDeliveryStore('/stuff/', interval=1000)
+        >>> fs.get_path_from_deliveryid(deliveryid=2001000)
+        (2, 1)
+        >>> fs.get_path_from_deliveryid(deliveryid=1000)
+        (0, 1)
+        >>> fs.get_path_from_deliveryid(deliveryid=1005)
+        (0, 1)
+        >>> fs.get_path_from_deliveryid(deliveryid=2005)
+        (0, 2)
+        >>> fs.get_path_from_deliveryid(deliveryid=0)
+        (0, 0)
+        >>> fs.get_path_from_deliveryid(deliveryid=1)
+        (0, 0)
+        >>> fs.get_path_from_deliveryid(deliveryid=1000000)
+        (1, 0)
+        """
+        interval_size = 1000
+        toplevel = deliveryid / (self.interval*self.interval)
+        sublevel = (deliveryid - (toplevel*self.interval*self.interval)) / self.interval
+        return toplevel, sublevel
+
+    def _get_dirpath(self, delivery_obj):
+        toplevel, sublevel = self.get_path_from_deliveryid(delivery_obj.pk)
+        return join(self.root, str(toplevel), str(sublevel), str(delivery_obj.pk))
 
 
 class DbmDeliveryStore(DeliveryStoreInterface):
@@ -228,3 +270,11 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
 
     def exists(self, filemeta_obj):
         return filemeta_obj.id in self.files
+
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
