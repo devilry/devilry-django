@@ -25,16 +25,12 @@ Ext.define('devilry.statistics.ClearFilters', {
     },
     
     initComponent: function() {
-        Ext.apply(this, {
-            listeners: {
-                scope: this,
-                click: this._onClick
-            }
-        });
+        this.on('click', this._onClick, this);
         this.callParent(arguments);
     },
 
     _onClick: function() {
+        this.fireEvent('filterClearedPressed');
         this.loader.clearFilter();
     },
 
