@@ -173,7 +173,6 @@ class FsHierDeliveryStore(FsDeliveryStore):
         >>> fs.get_path_from_deliveryid(deliveryid=1000000)
         (1, 0)
         """
-        interval_size = 1000
         toplevel = deliveryid / (self.interval*self.interval)
         sublevel = (deliveryid - (toplevel*self.interval*self.interval)) / self.interval
         return toplevel, sublevel
