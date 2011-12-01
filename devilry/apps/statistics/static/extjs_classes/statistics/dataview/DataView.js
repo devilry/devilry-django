@@ -50,7 +50,9 @@ Ext.define('devilry.statistics.dataview.DataView', {
                 text: 'x',
                 listeners: {
                     scope: this,
-                    click: function() { this._search() }
+                    click: function() {
+                        this.down('searchfield').setValue('');
+                    }
                 }
             }, '->', {
                 xtype: 'statistics-clearfilters',
