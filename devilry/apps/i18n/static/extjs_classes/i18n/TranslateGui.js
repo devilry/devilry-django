@@ -125,6 +125,10 @@ Ext.define('devilry.i18n.TranslateGui', {
 
     _loadExistingTranslation: function(jsondata) {
         var translation = Ext.JSON.decode(jsondata);
+        Ext.each(this.store.data.items, function(record, index) {
+            record.set('translation', '');
+            record.commit();
+        });
         Ext.Object.each(translation, function(key, value) {
             var record = this.store.getById(key);
             record.set('translation', value);
