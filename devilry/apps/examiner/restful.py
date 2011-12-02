@@ -31,7 +31,7 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriod
-        foreignkey_fields = {'parentnode': RestfulSimplifiedSubject}
+        belongs_to = RestfulSimplifiedSubject
 
 
 @examiner_restful.register
@@ -40,7 +40,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
 class RestfulSimplifiedAssignment(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignment
-        foreignkey_fields = {'parentnode': RestfulSimplifiedPeriod}
+        belongs_to = RestfulSimplifiedPeriod
 
     class ExtjsModelMeta(restfulmetabases.AssignmentExtjsModelMeta):
         """ Metadata for javascript. """
@@ -52,7 +52,7 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
 class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroup
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
+        belongs_to = RestfulSimplifiedAssignment
 
     class ExtjsModelMeta(restfulmetabases.AssignmentGroupExtjsModelMeta):
         """ Metadata for javascript. """
@@ -64,7 +64,7 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
 class RestfulSimplifiedDeadline(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDeadline
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup
 
     class ExtjsModelMeta(restfulmetabases.DeadlineExtjsModelMeta):
         """ Metadata for javascript. """
@@ -76,7 +76,7 @@ class RestfulSimplifiedDeadline(ModelRestfulView):
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDelivery
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup
 
     class ExtjsModelMeta(restfulmetabases.DeliveryExtjsModelMeta):
         """ Metadata for javascript. """
@@ -88,7 +88,7 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
 class RestfulSimplifiedStaticFeedback(ModelRestfulView):
     class Meta:
         simplified = SimplifiedStaticFeedback
-        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery
 
 
 @examiner_restful.register
@@ -97,4 +97,4 @@ class RestfulSimplifiedStaticFeedback(ModelRestfulView):
 class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
         simplified = SimplifiedFileMeta
-        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery

@@ -31,7 +31,8 @@ administrator_restful = RestfulManager()
 class RestfulSimplifiedNode(ModelRestfulView):
     class Meta:
         simplified = SimplifiedNode
-        foreignkey_fields = {'parentnode': 'RestfulSimplifiedNode'}
+        belongs_to = 'RestfulSimplifiedNode'
+        has_many = 'RestfulSimplifiedSubject'
 
     class ExtjsModelMeta:
         combobox_displayfield = 'short_name'
@@ -46,7 +47,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
         simplified = SimplifiedSubject
-        foreignkey_fields = {'parentnode': RestfulSimplifiedNode}
+        belongs_to = RestfulSimplifiedNode
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -60,7 +61,7 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriod
-        foreignkey_fields = {'parentnode': RestfulSimplifiedSubject}
+        belongs_to = RestfulSimplifiedSubject
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -77,7 +78,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
 class RestfulSimplifiedPeriodApplicationKeyValue(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriodApplicationKeyValue
-        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
+        belongs_to = RestfulSimplifiedPeriod
 
 
 @administrator_restful.register
@@ -86,7 +87,7 @@ class RestfulSimplifiedPeriodApplicationKeyValue(ModelRestfulView):
 class RestfulSimplifiedRelatedExaminer(ModelRestfulView):
     class Meta:
         simplified = SimplifiedRelatedExaminer
-        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
+        belongs_to = RestfulSimplifiedPeriod
 
 
 @administrator_restful.register
@@ -95,7 +96,7 @@ class RestfulSimplifiedRelatedExaminer(ModelRestfulView):
 class RestfulSimplifiedRelatedStudent(ModelRestfulView):
     class Meta:
         simplified = SimplifiedRelatedStudent
-        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
+        belongs_to = RestfulSimplifiedPeriod
 
 
 @administrator_restful.register
@@ -104,7 +105,7 @@ class RestfulSimplifiedRelatedStudent(ModelRestfulView):
 class RestfulSimplifiedRelatedStudentKeyValue(ModelRestfulView):
     class Meta:
         simplified = SimplifiedRelatedStudentKeyValue
-        foreignkey_fields = {'relatedstudent': RestfulSimplifiedRelatedStudent}
+        belongs_to = RestfulSimplifiedRelatedStudent
 
 
 @administrator_restful.register
@@ -113,7 +114,7 @@ class RestfulSimplifiedRelatedStudentKeyValue(ModelRestfulView):
 class RestfulSimplifiedAssignment(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignment
-        foreignkey_fields = {'parentnode': RestfulSimplifiedPeriod}
+        belongs_to = RestfulSimplifiedPeriod
 
     class ExtjsModelMeta(restfulmetabases.AssignmentExtjsModelMeta):
         """ Metadata for javascript. """
@@ -124,7 +125,7 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
 class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroup
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
+        belongs_to = RestfulSimplifiedAssignment
 
     class ExtjsModelMeta(restfulmetabases.AssignmentGroupExtjsModelMeta):
         """ Metadata for javascript. """
@@ -136,7 +137,7 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
 class RestfulSimplifiedDeadline(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDeadline
-        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup
 
 
 @administrator_restful.register
@@ -145,7 +146,7 @@ class RestfulSimplifiedDeadline(ModelRestfulView):
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDelivery
-        foreignkey_fields = {'deadline': RestfulSimplifiedDeadline}
+        belongs_to = RestfulSimplifiedDeadline
 
     class ExtjsModelMeta(restfulmetabases.DeliveryExtjsModelMeta):
         """ Metadata for javascript. """
@@ -157,7 +158,7 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
 class RestfulSimplifiedStaticFeedback(ModelRestfulView):
     class Meta:
         simplified = SimplifiedStaticFeedback
-        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery
 
 
 @administrator_restful.register
@@ -166,7 +167,7 @@ class RestfulSimplifiedStaticFeedback(ModelRestfulView):
 class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
         simplified = SimplifiedFileMeta
-        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery
 
 @administrator_restful.register
 @extjs_restful_modelapi
@@ -174,7 +175,7 @@ class RestfulSimplifiedFileMeta(ModelRestfulView):
 class RestfulSimplifiedCandidate(ModelRestfulView):
     class Meta:
         simplified = SimplifiedCandidate
-        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup
 
 @administrator_restful.register
 @extjs_restful_modelapi
@@ -182,7 +183,7 @@ class RestfulSimplifiedCandidate(ModelRestfulView):
 class RestfulSimplifiedExaminer(ModelRestfulView):
     class Meta:
         simplified = SimplifiedExaminer
-        foreignkey_fields = {'assignmentgroup': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup
 
 @administrator_restful.register
 @extjs_restful_modelapi
@@ -190,4 +191,4 @@ class RestfulSimplifiedExaminer(ModelRestfulView):
 class RestfulSimplifiedAssignmentGroupTag(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroupTag
-        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+        belongs_to = RestfulSimplifiedAssignmentGroup

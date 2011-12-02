@@ -16,7 +16,7 @@ administrator_restful = RestfulManager()
 class RestfulSimplifiedConfig(ModelRestfulView):
     class Meta:
         simplified = SimplifiedConfig
-        foreignkey_fields = {'assignment': RestfulSimplifiedAssignment}
+        belongs_to = RestfulSimplifiedAssignment
 
 
 @administrator_restful.register
@@ -25,4 +25,4 @@ class RestfulSimplifiedConfig(ModelRestfulView):
 class RestfulSimplifiedFeedbackDraft(RestfulSimplifiedFeedbackDraftCommon, ModelRestfulView):
     class Meta:
         simplified = SimplifiedFeedbackDraft
-        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery

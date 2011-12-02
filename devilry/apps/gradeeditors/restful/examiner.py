@@ -17,7 +17,7 @@ examiner_restful = RestfulManager()
 class RestfulSimplifiedConfig(ModelRestfulView):
     class Meta:
         simplified = SimplifiedConfig
-        foreignkey_fields = {'assignment': RestfulSimplifiedAssignment}
+        belongs_to = RestfulSimplifiedAssignment
 
 
 class RestfulSimplifiedFeedbackDraftCommon(object):
@@ -37,4 +37,4 @@ class RestfulSimplifiedFeedbackDraftCommon(object):
 class RestfulSimplifiedFeedbackDraft(RestfulSimplifiedFeedbackDraftCommon, ModelRestfulView):
     class Meta:
         simplified = SimplifiedFeedbackDraft
-        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
+        belongs_to = RestfulSimplifiedDelivery
