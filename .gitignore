@@ -12,7 +12,6 @@ target/
 nbactions.xml
 *.vpp~*
 *.ipr
-*.iml
 *.iws
 *.log
 .classpath
@@ -61,3 +60,8 @@ productionenv/
 devilry_all_uncompiled.js
 devilryrestfullib/build/
 devilryrestfullib/devilryrestfullib.egg-info/
+
+# Intellij files
+# see: http://devnet.jetbrains.net/docs/DOC-1186
+workspace.xml
+tasks.xml
