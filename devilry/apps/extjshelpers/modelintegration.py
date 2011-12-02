@@ -67,11 +67,6 @@ def get_extjs_modelname(restfulcls, modelnamesuffix=''):
                                                           modelnamesuffix=modelnamesuffix)
     return modelname
 
-
-def indent(string, spaces):
-    indent = '\n' + ' ' * spaces
-    return indent.join(string.split('\n'))
-
 def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=''):
     """
     Create an extjs model from the given restful class.
@@ -94,14 +89,11 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         modelfields.append({'name': fake_fieldname, 'type': 'auto'})
     modelmeta = restfulcls._meta.simplified._meta.model._meta
     js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
-    extra = ''
-    
     return """Ext.define('{modelname}', {{
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
     fields: {modelfields},
     idProperty: '{idprop}',
-    {extra}
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
         url: '{resturl}',
         extraParams: {{
@@ -118,11 +110,87 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         }}
     }})
 }})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
-              modelfields = indent(json.dumps(modelfields, indent=4), spaces=4),
+              modelfields = json.dumps(modelfields),
               idprop = modelmeta.pk.name,
-              extra = extra,
               resturl = restfulcls.get_rest_url(),
               js_result_fieldgroups=js_result_fieldgroups)
+
+
+
+def _indent(string, spaces):
+    indent = '\n' + ' ' * spaces
+    return indent.join(string.split('\n'))
+
+def _get_belongsto():
+    pass
+
+def export_restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=''):
+    """
+    Create an extjs model from the given restful class.
+
+    :param restfulcls: A class defined using the :ref:`RESTful API <restful>`.
+    :param result_fieldgroups:
+        ``result_fieldgroups`` is added as additional parameters to the proxy,
+        which means that the parameter is forwarded to
+        :meth:`devilry.simplified.SimplifiedModelApi.search` on the server after
+        passing through validations in the RESTful wrapper.
+    :param modelnamesuffix:
+        See :func:`~devilry.apps.extjshelpers.modelintegration.get_extjs_modelname`.
+    """
+    modelfields = []
+    for fieldname, exttype in _iter_fields(restfulcls._meta.simplified,
+                                           result_fieldgroups):
+        exttype['name'] = fieldname
+        modelfields.append(exttype)
+    for fake_fieldname in restfulcls._meta.simplified._meta.fake_editablefields:
+        modelfields.append({'name': fake_fieldname, 'type': 'auto'})
+    modelmeta = restfulcls._meta.simplified._meta.model._meta
+    js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
+
+    extra = ''
+    belongs_to = restfulcls._meta.get_belongs_to()
+    if belongs_to:
+        extra += 'belongsTo: "{0}",\n'.format(get_extjs_modelname(belongs_to))
+    has_many = restfulcls._meta.get_has_many()
+    if has_many:
+        relname = has_many._meta.simplified._meta.model.__name__.lower() + '_set'
+        foreignkey = restfulcls._meta.simplified._meta.model.__name__.lower()
+        hasmany_prop = dict(
+            model = get_extjs_modelname(has_many),
+            name = relname,
+            foreignKey = foreignkey
+        )
+        extra += 'hasMany: {0},\n'.format(json.dumps(hasmany_prop))
+    
+
+    
+    return """Ext.define('{modelname}', {{
+    extend: 'Ext.data.Model',
+    requires: ['devilry.extjshelpers.RestProxy'],
+    fields: {modelfields},
+    idProperty: '{idprop}',
+    {extra}proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
+        url: '{resturl}',
+        extraParams: {{
+            getdata_in_qrystring: true,
+            result_fieldgroups: '{js_result_fieldgroups}'
+        }},
+        reader: {{
+            type: 'json',
+            root: 'items',
+            totalProperty: 'total'
+        }},
+        writer: {{
+            type: 'json'
+        }}
+    }})
+}})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
+              modelfields = _indent(json.dumps(modelfields, indent=4), spaces=4),
+              idprop = modelmeta.pk.name,
+              extra = _indent(extra, spaces=4),
+              resturl = restfulcls.get_rest_url(),
+              js_result_fieldgroups=js_result_fieldgroups)
+
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls, modelnamesuffix=''):
