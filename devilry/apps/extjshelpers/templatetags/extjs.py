@@ -3,8 +3,6 @@ from django.utils.safestring import mark_safe
 from ..modelintegration import (restfulcls_to_extjsmodel, get_extjs_modelname,
                                 restfulcls_to_extjscomboboxmodel)
 from ..storeintegration import (restfulcls_to_extjsstore, get_extjs_storeid)
-from ..formintegration import (restfulcls_to_extjsformitems,
-                               restfulcls_to_foreignkeylist)
 
 register = template.Library()
 
@@ -54,24 +52,6 @@ def extjs_store(restfulcls, storeidsuffix=''):
     :param storeidsuffix: Forwarded directly to :func:`~devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore`.
     """
     js = restfulcls_to_extjsstore(restfulcls, storeidsuffix=storeidsuffix)
-    return mark_safe(js)
-
-@register.filter
-def extjs_form_items(restfulcls):
-    """
-    Wrapper for
-    :func:`~devilry.apps.extjshelpers.formintegration.restfulcls_to_extjsformitems`.
-    """
-    js = restfulcls_to_extjsformitems(restfulcls)
-    return mark_safe(js)
-
-@register.filter
-def extjs_foreignkeys(restfulcls):
-    """
-    Wrapper for
-    :func:`~devilry.apps.extjshelpers.formintegration.restfulcls_to_foreignkeylist`.
-    """
-    js = restfulcls_to_foreignkeylist(restfulcls)
     return mark_safe(js)
 
 @register.filter

@@ -94,11 +94,14 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         modelfields.append({'name': fake_fieldname, 'type': 'auto'})
     modelmeta = restfulcls._meta.simplified._meta.model._meta
     js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
+    extra = ''
+    
     return """Ext.define('{modelname}', {{
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
     fields: {modelfields},
     idProperty: '{idprop}',
+    {extra}
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
         url: '{resturl}',
         extraParams: {{
@@ -117,6 +120,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
 }})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
               modelfields = indent(json.dumps(modelfields, indent=4), spaces=4),
               idprop = modelmeta.pk.name,
+              extra = extra,
               resturl = restfulcls.get_rest_url(),
               js_result_fieldgroups=js_result_fieldgroups)
 
