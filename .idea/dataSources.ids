@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?><component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Django default" product="SQLite" version="3.6.14.2" jdbc-version="2.1" driver-version="native" uuid="a606b426-84d3-4435-8341-d4690e863424">
+    <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+    <jdbc-url>jdbc:sqlite:/Volumes/viktig/code/devilry-django/devilry/projects/dev/db.sqlite3</jdbc-url>
+    <libraries>
+      <library>
+        <url>file://$USER_HOME$/Library/Preferences/PyCharm10/jdbc-drivers/zentus-sqlite-license.txt</url>
+      </library>
+      <library>
+        <url>jar://$USER_HOME$/Library/Preferences/PyCharm10/jdbc-drivers/sqlitejdbc-v056.jar!/</url>
+      </library>
+    </libraries>
+    <table name="AUTH_GROUP" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="name" sqlType="VARCHAR(80)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_GROUP_PERMISSIONS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="group_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="permission_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_MESSAGE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="message" sqlType="TEXT" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_PERMISSION" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="name" sqlType="VARCHAR(50)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="content_type_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="codename" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_USER" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="username" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="first_name" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="last_name" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="email" sqlType="VARCHAR(75)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="password" sqlType="VARCHAR(128)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="is_staff" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="is_active" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="is_superuser" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="last_login" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="date_joined" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_USER_GROUPS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="group_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="AUTH_USER_USER_PERMISSIONS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="permission_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_ASSIGNMENT" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="short_name" sqlType="VARCHAR(20)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="long_name" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="parentnode_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="publishing_time" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="anonymous" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="students_can_see_points" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="examiners_publish_feedbacks_directly" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivery_types" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="scale_points_percent" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_ASSIGNMENTGROUP" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="parentnode_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="name" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="is_open" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="feedback_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_ASSIGNMENTGROUPTAG" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignment_group_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="tag" sqlType="VARCHAR(20)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_ASSIGNMENTGROUP_EXAMINERS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignmentgroup_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_ASSIGNMENT_ADMINS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignment_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_CANDIDATE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="student_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignment_group_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="candidate_id" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="identifier" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="full_name" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="email" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_DEADLINE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignment_group_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="deadline" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="text" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="deliveries_available_before_deadline" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="feedbacks_published" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_DELIVERY" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivery_type" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="time_of_delivery" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="deadline_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="number" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="successful" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivered_by_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="alias_delivery_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_DEVILRYUSERPROFILE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="full_name" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_FILEMETA" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivery_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="filename" sqlType="VARCHAR(255)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="size" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_NODE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="short_name" sqlType="VARCHAR(20)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="long_name" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="parentnode_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_NODE_ADMINS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="node_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_PERIOD" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="short_name" sqlType="VARCHAR(20)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="long_name" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="parentnode_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="start_time" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="end_time" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="minimum_points" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_PERIODAPPLICATIONKEYVALUE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="application" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="key" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="value" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="period_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_PERIOD_ADMINS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="period_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_RELATEDEXAMINER" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="period_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="tags" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_RELATEDSTUDENT" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="period_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="tags" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="candidate_id" sqlType="VARCHAR(30)" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_RELATEDSTUDENTKEYVALUE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="application" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="key" sqlType="VARCHAR(300)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="value" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <column name="relatedstudent_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="student_can_read" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_STATICFEEDBACK" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivery_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="rendered_view" sqlType="TEXT" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="grade" sqlType="VARCHAR(12)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="points" sqlType="INTEGER UNSIGNED" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="is_passing_grade" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="save_timestamp" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="saved_by_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_SUBJECT" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="short_name" sqlType="VARCHAR(20)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="long_name" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="parentnode_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="etag" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="CORE_SUBJECT_ADMINS" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="subject_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="user_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="DJANGO_CONTENT_TYPE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="name" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="app_label" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="model" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="DJANGO_SESSION" schema="" catalog="" type="TABLE">
+      <column name="session_key" sqlType="VARCHAR(40)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="session_data" sqlType="TEXT" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="expire_date" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="session_key" />
+    </table>
+    <table name="DJANGO_SITE" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="domain" sqlType="VARCHAR(100)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="name" sqlType="VARCHAR(50)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+    <table name="GRADEEDITORS_CONFIG" schema="" catalog="" type="TABLE">
+      <column name="gradeeditorid" sqlType="VARCHAR(50)" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="assignment_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="config" sqlType="TEXT" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="assignment_id" />
+    </table>
+    <table name="GRADEEDITORS_FEEDBACKDRAFT" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="delivery_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="draft" sqlType="TEXT" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="save_timestamp" sqlType="DATETIME" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="saved_by_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="published" sqlType="BOOL" length="2000000000" precision="10" nullable="false" jdbcType="12" />
+      <column name="staticfeedback_id" sqlType="INTEGER" length="2000000000" precision="10" nullable="true" jdbcType="12" />
+      <primary-key columns="id" />
+    </table>
+  </data-source>
+</component>
