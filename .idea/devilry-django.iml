@@ -4,7 +4,7 @@
     <facet type="django" name="Django">
       <configuration>
         <option name="rootFolder" value="$MODULE_DIR$/devilry" />
-        <option name="templatesFolders" value="$MODULE_DIR$/devilry/apps/administrator/templates:/Volumes/viktig/code/devilry-django/devilry/apps/authenticate/templates:/Volumes/viktig/code/devilry-django/devilry/apps/examiner/templates:/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/templates:/Volumes/viktig/code/devilry-django/devilry/apps/markup/templates:/Volumes/viktig/code/devilry-django/devilry/apps/student/templates:/Volumes/viktig/code/devilry-django/devilry/apps/theme/templates" />
+        <option name="templatesFolders" value="$MODULE_DIR$/devilry/apps/administrator/templates:$MODULE_DIR$/devilry/apps/authenticate/templates:$MODULE_DIR$/devilry/apps/examiner/templates:$MODULE_DIR$/devilry/apps/extjshelpers/templates:$MODULE_DIR$/devilry/apps/markup/templates:$MODULE_DIR$/devilry/apps/student/templates:$MODULE_DIR$/devilry/apps/theme/templates" />
         <option name="settingsModule" value="projects/dev/settings.py" />
         <option name="manageScript" value="" />
         <option name="djangoInJs" value="true" />
