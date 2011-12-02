@@ -47,29 +47,57 @@ class RestUser(ModelRestfulView):
 
 class TestModelIntegration(TestCase):
     def test_to_extjsmodel(self):
-        js = restfulcls_to_extjsmodel(RestUser)
+        actual = restfulcls_to_extjsmodel(RestUser)
         expected = """Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
-            extend: 'Ext.data.Model',
-            requires: ['devilry.extjshelpers.RestProxy'],
-            fields: [{"type": "int", "name": "id"}, {"type": "auto", "name": "first"}, {"type": "auto", "name": "last"}, {"type": "auto", "name": "email"}, {"type": "int", "name": "score"}],
-            idProperty: 'id',
-            proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-                url: '/restuser',
-                extraParams: {
-                    getdata_in_qrystring: true,
-                    result_fieldgroups: '[]'
-                },
-                reader: {
-                    type: 'json',
-                    root: 'items',
-                    totalProperty: 'total'
-                },
-                writer: {
-                    type: 'json'
-                }
-            })
-        })"""
-        self.assertEquals(js, expected)
+    extend: 'Ext.data.Model',
+    requires: ['devilry.extjshelpers.RestProxy'],
+    fields: [
+        {
+            "type": "int",
+            "name": "id"
+        },
+        {
+            "type": "auto",
+            "name": "first"
+        },
+        {
+            "type": "auto",
+            "name": "last"
+        },
+        {
+            "type": "auto",
+            "name": "email"
+        },
+        {
+            "type": "int", 
+            "name": "score"
+        }
+    ],
+    idProperty: 'id',
+    
+    proxy: Ext.create('devilry.extjshelpers.RestProxy', {
+        url: '/restuser',
+        extraParams: {
+            getdata_in_qrystring: true,
+            result_fieldgroups: '[]'
+        },
+        reader: {
+            type: 'json',
+            root: 'items',
+            totalProperty: 'total'
+        },
+        writer: {
+            type: 'json'
+        }
+    })
+})"""
+        actual = actual.split('\n')
+        expected = expected.split('\n')
+        for index, actualline in enumerate(actual):
+            expectedline = expected[index]
+            #print "#{0}#".format(actualline)
+            #print "#{0}#".format(expectedline)
+            self.assertEqual(actualline.strip(), expectedline.strip())
 
     def test_to_extjsmodel_fieldgroups(self):
         js = restfulcls_to_extjsmodel(RestUser)
