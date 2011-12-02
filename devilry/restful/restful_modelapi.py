@@ -17,25 +17,34 @@ def _copy_supports_metaattrs_from_simplified(cls):
         setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
 
 
-def _create_get_foreignkey_fieldcls_method(cls):
-    def get_foreignkey_fieldcls(cls, fkfieldname):
-        """ Get the class stored at the ``fkfieldname`` key in the
-        ``cls.foreignkey_fields``.
+def _get_clsref_even_if_string(cls, attrname):
+    if not hasattr(cls, attrname):
+        return None
+    attr = getattr(cls, attrname)
+    if isinstance(attr, str):
+        module = getmodule(cls)
+        return getattr(module, attr)
+    else:
+        return attr
 
-        :return: None if not found, and a restful class if found.
+def _create_belongs_to_method(cls):
+    def get_belongs_to(cls):
+        """ Get the belongs_to attribute as a class, or None (if no belongs_to is defined).
+
+        If belongs_to is a string, look up the string in the module.
         """
-        if not hasattr(cls, 'foreignkey_fields'):
-            return None
-        if not fkfieldname in cls.foreignkey_fields:
-            return None
-        fkrestfulcls = cls.foreignkey_fields[fkfieldname]
-        if isinstance(fkrestfulcls, str): # Support giving the class name as string if in the same module. For recursive foreign keys, such as Node.parentnode.
-            module = getmodule(cls)
-            return getattr(module, fkrestfulcls)
-        else:
-            return fkrestfulcls
-    setattr(cls._meta, get_foreignkey_fieldcls.__name__, MethodType(get_foreignkey_fieldcls, cls._meta))
+        return _get_clsref_even_if_string(cls, 'belongs_to')
+    setattr(cls._meta, get_belongs_to.__name__, MethodType(get_belongs_to, cls._meta))
 
+
+def _create_has_many_method(cls):
+    def get_has_many(cls):
+        """ Get the has_many attribute as a class, or None (if no has_many is defined).
+
+        If has_many is a string, look up the string in the module.
+        """
+        return _get_clsref_even_if_string(cls, 'has_many')
+    setattr(cls._meta, get_has_many.__name__, MethodType(get_has_many, cls._meta))
 
 def restful_modelapi(cls):
     """
@@ -75,6 +84,7 @@ def restful_modelapi(cls):
         cls._meta.fake_editablefields_formfields = {}
     _create_editform(cls)
     _copy_supports_metaattrs_from_simplified(cls)
-    _create_get_foreignkey_fieldcls_method(cls)
+    _create_belongs_to_method(cls)
+    _create_has_many_method(cls)
 
     return cls
