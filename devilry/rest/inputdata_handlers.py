@@ -2,7 +2,12 @@ def flatten_querydata(querydata):
     """
     GET/POST data are lists. This function maps the first item in the list to its key.
     """
-    return dict((key, value[0]) for key, value in querydata.iteritems())
+    def flatten(value):
+        if isinstance(value, tuple):
+            return value[0]
+        else:
+            return value
+    return dict((key, flatten(value)) for key, value in querydata.iteritems())
 
 def getqrystring_inputdata_handler(request, input_content_type, dataconverters):
     """

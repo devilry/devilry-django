@@ -1,3 +1,4 @@
+import inspect
 from devilry.rest.error import InvalidParameterTypeError
 
 def subdict(dct, *keys):
@@ -12,17 +13,18 @@ def todict(obj, *attrs):
 def force_paramtypes(**params):
     def check_types(func, params = params):
         def modified(*args, **kw):
-            arg_names = func.func_code.co_varnames
-            kw.update(zip(arg_names, args))
+            argspec = inspect.getargspec(func)
+            kw.update(zip(argspec.args, args))
             for name, type in params.iteritems():
-                param = kw[name]
+                param = kw.get(name)
                 if param == None:
-                    return
+                    continue
                 elif not isinstance(param, type):
                     try:
                         kw[name] = type(param)
                     except:
                         raise InvalidParameterTypeError("Parameter '{0}' should be type '{1}'".format(name, type.__name__))
+            print kw
             return func(**kw)
         return modified
     return check_types

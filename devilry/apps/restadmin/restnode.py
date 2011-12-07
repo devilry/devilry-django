@@ -27,7 +27,7 @@ class RestNode(RestBase):
     def crud_update(self, id, short_name, long_name):
         return self.todict(self.nodedao.update(id, short_name, long_name))
 
-#    @force_paramtypes(parentnode=int)
+    @force_paramtypes(parentnode=int)
     def crud_list(self, parentnode=None):
         items = self.get_items(parentnode)
         return dict(
