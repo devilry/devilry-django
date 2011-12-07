@@ -12,6 +12,7 @@ DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP = {
 }
 
 DEFAULT_INPUTDATA_HANDLERS = [
+    inputdata_handlers.getqrystring_inputdata_handler,
     inputdata_handlers.rawbody_inputdata_handler
 ]
 DEFAULT_DATACONVERTERS = {

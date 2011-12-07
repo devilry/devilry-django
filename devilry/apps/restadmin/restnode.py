@@ -31,6 +31,9 @@ class RestNode(RestBase):
     def crud_list(self, parentnode=None):
         items = self.get_items(parentnode)
         return dict(
+            params=dict(
+                parentnode=parentnode
+            ),
             links=self.get_links(),
             items=items,
             total=len(items)
