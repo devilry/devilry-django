@@ -5,7 +5,7 @@ from devilry.rest.restbase import RestBase
 
 
 class RestNode(RestBase):
-    read_fields = "id", "short_name", "long_name"#, "etag"
+    read_fields = "id", "short_name", "long_name", "etag"
 
     def __init__(self, nodedaocls=NodeDao):
         self.nodedao = nodedaocls()
