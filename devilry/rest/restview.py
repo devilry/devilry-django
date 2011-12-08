@@ -30,6 +30,28 @@ class RestView():
                  inputdata_handlers=DEFAULT_INPUTDATA_HANDLERS,
                  dataconverters=DEFAULT_DATACONVERTERS,
                  response_handlers=DEFAULT_RESPONSEHANDLERS):
+        """
+        :param restapicls:
+            A class implementing :class:`devilry.rest.restbase.RestBase`.
+        :param suffix_to_content_type_map:
+            Maps suffix to content type. Used to determine content-type from url-suffix.
+        :param default_content_type:
+            Default in/out content-type.
+        :param inputdata_handlers:
+            Input data handlers convert input data into a dict.
+            Must be a list of callables with the following signature:
+            ``f(request, input_content_type, dataconverters)``.
+            See :mod:`devilry.rest.inputdata_handlers` for implementations.
+            
+            Input data can come in many different formats and from different sources.
+            Examples are such XML in request body, query string and JSON embedded in
+            a query string parameter.
+        :param dataconverters:
+            A list of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
+            Data converters convert between python and some other format, such as JSON or XML.
+        :param response_handlers:
+            Response handlers are responsible for creating responses.
+        """
         self.restapi = restapicls()
         self.suffix_to_content_type_map = suffix_to_content_type_map
         self.default_content_type = default_content_type
@@ -112,10 +134,12 @@ class RestView():
                                                self.output_content_type, encoded_output)
             if match:
                 return response
-        raise ValueError("No matching response_handler. You should provide one that always matches at the end of the chain.")
+        raise ValueError(
+            "No matching response_handler. You should provide one that always matches at the end of the chain.")
 
     def encode_output(self, output):
-        dataconverter = self.dataconverters.get(self.output_content_type, self.dataconverters[self.default_content_type])
+        dataconverter = self.dataconverters.get(self.output_content_type,
+                                                self.dataconverters[self.default_content_type])
         return dataconverter.fromPython(output)
 
 

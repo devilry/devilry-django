@@ -5,7 +5,7 @@ from devilry.rest.restbase import RestBase
 
 
 class RestNode(RestBase):
-    read_fields = "id", "short_name", "long_name", "etag"
+    read_fields = "id", "short_name", "long_name", "etag", "parentnode_id"
 
     def __init__(self, nodedaocls=NodeDao):
         self.nodedao = nodedaocls()
@@ -27,20 +27,20 @@ class RestNode(RestBase):
     def crud_update(self, id, short_name, long_name):
         return self.todict(self.nodedao.update(id, short_name, long_name))
 
-    @force_paramtypes(parentnode=int)
-    def crud_list(self, parentnode=None):
-        items = self.get_items(parentnode)
+    @force_paramtypes(parentnode_id=int)
+    def crud_list(self, parentnode_id=None):
+        items = self.get_items(parentnode_id)
         return dict(
             params=dict(
-                parentnode=parentnode
+                parentnode_id=parentnode_id
             ),
             links=self.get_links(),
             items=items,
             total=len(items)
         )
 
-    def get_items(self, parentnode):
-        return [self.todict(item) for item in self.nodedao.list(parentnode)]
+    def get_items(self, parentnode_id):
+        return [self.todict(item) for item in self.nodedao.list(parentnode_id)]
 
     def get_links(self):
         return dict(
