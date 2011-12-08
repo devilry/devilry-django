@@ -133,9 +133,9 @@ class RestView():
 
     def create_response(self, encoded_output, restapimethodname):
         for response_handler in self.response_handlers:
-            match, response = response_handler(self.request, restapimethodname,
+            response = response_handler(self.request, restapimethodname,
                                                self.output_content_type, encoded_output)
-            if match:
+            if response:
                 return response
         raise ValueError(
             "No matching response_handler. You should provide one that always matches at the end of the chain.")
