@@ -9,5 +9,5 @@ setup(
     author = 'The Devilry developers',
     packages = find_packages(),
     install_requires = ['setuptools', 'Django==1.3.1', 'Markdown>=2.0.3',
-                        'Pygments==1.4', 'flup==1.0.2']
+                        'Pygments==1.4', 'flup==1.0.2', 'PyYAML==3.10']
 )
