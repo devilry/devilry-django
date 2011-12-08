@@ -1,9 +1,12 @@
 import json
 from devilry.dataconverter.dataconverter import DataConverter
 
+from utils import str_format_datetime
+
+
 def json_serialize_handler(obj):
     if hasattr(obj, 'isoformat'):
-        return obj.strftime('%Y-%m-%dT%H:%M:%S')
+        return str_format_datetime(obj)
     else:
         raise TypeError('Object of type %s with value of %s is not JSON serializable' % (
             type(obj), repr(obj)))

@@ -1,7 +1,7 @@
 from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponse
 
-from devilry.rest.error import NotFoundError
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
+from devilry.dataconverter.xmldataconverter import XmlDataConverter
 import inputdata_handlers
 import responsehandlers
 import restmethod_roters
@@ -17,7 +17,7 @@ DEFAULT_INPUTDATA_HANDLERS = [
     inputdata_handlers.rawbody_inputdata_handler
 ]
 DEFAULT_DATACONVERTERS = {
-    "application/xml": None,
+    "application/xml": XmlDataConverter,
     "application/json": JsonDataConverter
 }
 DEFAULT_RESTMETHOD_ROUTES = [
