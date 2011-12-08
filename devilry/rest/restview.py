@@ -34,6 +34,7 @@ DEFAULT_RESPONSEHANDLERS = [
 
 class RestView():
     def __init__(self, restapicls,
+                 apipath, apiversion,
                  suffix_to_content_type_map=DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP,
                  default_content_type="application/json",
                  inputdata_handlers=DEFAULT_INPUTDATA_HANDLERS,
@@ -80,7 +81,7 @@ class RestView():
 
             The first response handler returning ``bool(response) == True`` is used.
         """
-        self.restapi = restapicls()
+        self.restapi = restapicls(apipath, apiversion)
         self.suffix_to_content_type_map = suffix_to_content_type_map
         self.default_content_type = default_content_type
         self.inputdata_handlers = inputdata_handlers
@@ -88,10 +89,10 @@ class RestView():
         self.restmethod_routers = restmethod_routers
         self.response_handlers = response_handlers
 
-    def view(self, request, id=None, suffix=None):
-        self.suffix = suffix
+    def view(self, request, id_and_suffix=None):
+        id, suffix = self.parse_id_and_suffix(id_and_suffix)
         self.request = request
-        self.detect_content_types()
+        self.detect_content_types(suffix)
         input_data = self.parse_input()
 
         method = request.method
@@ -106,6 +107,17 @@ class RestView():
                     return HttpResponse("'{0}' is not supported.".format(restapimethodname), status=406)
         return HttpResponse("No restmethod route found.", status=406)
 
+    def parse_id_and_suffix(self, id_and_suffix):
+        id = None
+        suffix = None
+        if id_and_suffix:
+            split = id_and_suffix.split('.', 1)
+            id = split[0]
+            if id == "":
+                id = None
+            if len(split) == 2:
+                suffix = split[1]
+        return id, suffix
 
     def call_restapi(self, restapimethodname, args, kwargs):
         try:
@@ -116,15 +128,15 @@ class RestView():
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 
-    def detect_content_types(self):
+    def detect_content_types(self, suffix):
         """
         Detect input/output content types.
         """
-        self.output_content_type = self.get_output_content_type()
+        self.output_content_type = self.get_output_content_type(suffix)
         self.input_content_type = self.get_input_content_type()
 
-    def get_output_content_type(self):
-        return self.suffix_to_content_type_map.get(self.suffix, self.default_content_type)
+    def get_output_content_type(self, suffix):
+        return self.suffix_to_content_type_map.get(suffix, self.default_content_type)
 
     def get_input_content_type(self):
         return self.request.META.get('CONTENT_TYPE', self.output_content_type)
@@ -158,8 +170,8 @@ class RestView():
 
     @classmethod
     def as_view(cls, *initargs, **initkwargs):
-        def view(request, id=None, suffix=None):
+        def view(request, id_and_suffix):
             self = cls(*initargs, **initkwargs)
-            return self.view(request, id)
+            return self.view(request, id_and_suffix)
 
         return view

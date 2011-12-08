@@ -1,7 +1,40 @@
+from devilry.rest.restview import RestView
+from django.conf.urls.defaults import url
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+
+
 class RestBase(object):
     """
-    RESTful interface.
+    Abstract superclass for RESTful APIs.
     """
+
+    def __init__(self, apipath, apiversion):
+        self.apipath = apipath
+        self.apiversion = apiversion
+
+    @classmethod
+    def create_url(cls, apipath, apiversion):
+        urlpattern = r'^(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(**vars())
+        return url(urlpattern,
+                   login_required(RestView.as_view(cls, apipath, apiversion)),
+                   name=cls.get_urlname(apipath, apiversion))
+
+    @classmethod
+    def get_urlname(cls, apipath, apiversion):
+        name = cls.__name__
+        return '{apipath}-{apiversion}-{name}'.format(**vars())
+
+    @staticmethod
+    def reverse_url(restcls, apipath, apiversion, id=None, suffix=None):
+        id_and_suffix = ""
+        if id:
+            id_and_suffix += id
+        if suffix:
+            id_and_suffix += "." + suffix
+        return reverse(restcls.get_urlname(), args=[],
+                       kwargs=dict(id_and_suffix=id_and_suffix))
+
 
     def create(self, **data):
         """
