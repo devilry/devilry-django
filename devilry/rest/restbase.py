@@ -21,9 +21,11 @@ class RestBase(object):
         """
         raise UnsupportedHttpMethodError()
 
-    def read(self, id):
+    def read(self, id, **data):
         """
         Read and return the object identified by ``id``.
+
+        May use ``data`` to limit/customize the response, however it _must_ work without ``data``.
         """
         raise UnsupportedHttpMethodError()
 
@@ -35,9 +37,11 @@ class RestBase(object):
         """
         raise UnsupportedHttpMethodError()
 
-    def delete(self, id):
+    def delete(self, id, **data):
         """
         Delete the object identified by ``id``.
+
+        May use ``data`` to customize the behavior, however it _must_ work without ``data``.
         """
         raise UnsupportedHttpMethodError()
 

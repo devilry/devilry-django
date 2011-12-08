@@ -1,9 +1,10 @@
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
 
 from devilry.rest.error import NotFoundError
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
 import inputdata_handlers
 import responsehandlers
+import restmethod_roters
 
 
 DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP = {
@@ -19,6 +20,14 @@ DEFAULT_DATACONVERTERS = {
     "application/xml": None,
     "application/json": JsonDataConverter
 }
+DEFAULT_RESTMETHOD_ROUTES = [
+    restmethod_roters.post_to_create,
+    restmethod_roters.get_with_id_to_read,
+    restmethod_roters.put_with_id_to_update,
+    restmethod_roters.delete_to_delete,
+    restmethod_roters.get_without_id_to_list,
+    restmethod_roters.put_without_id_to_batch
+]
 DEFAULT_RESPONSEHANDLERS = [
     responsehandlers.stricthttp
 ]
@@ -29,6 +38,7 @@ class RestView():
                  default_content_type="application/json",
                  inputdata_handlers=DEFAULT_INPUTDATA_HANDLERS,
                  dataconverters=DEFAULT_DATACONVERTERS,
+                 restmethod_routers=DEFAULT_RESTMETHOD_ROUTES,
                  response_handlers=DEFAULT_RESPONSEHANDLERS):
         """
         :param restapicls:
@@ -49,6 +59,15 @@ class RestView():
         :param dataconverters:
             A list of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
             Data converters convert between python and some other format, such as JSON or XML.
+        :param restmethod_routers:
+            A list of callables with the following signature::
+
+                restapimethodname, args, kwargs = f(request, id, input_data)
+
+            ``None`` must be returned if the route does not match.
+
+            Restmetod routes takes determines which method in the :class:`devilry.rest.restbase.RestBase`
+            interface to call, and the arguments to use for the call.
         :param response_handlers:
             Response handlers are responsible for creating responses.
         """
@@ -57,54 +76,35 @@ class RestView():
         self.default_content_type = default_content_type
         self.inputdata_handlers = inputdata_handlers
         self.dataconverters = dataconverters
+        self.restmethod_routers = restmethod_routers
         self.response_handlers = response_handlers
-
-    def get(self, id):
-        if id == None:
-            self.crud_method = 'list'
-            try:
-                return self.restapi.list(**self.input_data)
-            except NotImplementedError:
-                raise NotFoundError('GET method with no identifier (list) is not supported.')
-        else:
-            self.crud_method = 'read'
-            try:
-                return self.restapi.read(id, **self.input_data)
-            except NotImplementedError:
-                raise NotFoundError('GET method with identifier (read) is not supported.')
-
-    def post(self):
-        self.crud_method = 'create'
-        return self.restapi.create(**self.input_data)
-
-    def put(self, id):
-        if id == None:
-            return self.restapi.batch(**self.input_data)
-        else:
-            self.crud_method = 'update'
-            return self.restapi.update(id, **self.input_data)
-
-    def delete(self, id):
-        self.crud_method = 'delete'
-        return self.restapi.delete(id, **self.input_data)
 
     def view(self, request, id=None, suffix=None):
         self.suffix = suffix
         self.request = request
         self.detect_content_types()
-        self.input_data = self.parse_input()
+        input_data = self.parse_input()
 
         method = request.method
         output = None
-        if method in self.restapi.supported_methods:
-            try:
-                output = getattr(self, method.lower())(id)
-            except Exception, e:
-                return self.error_handler(e)
+        if request.method in self.restapi.supported_methods:
+            for restmethod_route in self.restmethod_routers:
+                match = restmethod_route(request, id, input_data)
+                if match:
+                    restapimethodname, args, kwargs = match
+                    return self.call_restapi(restapimethodname, args, kwargs)
+            return HttpResponseBadRequest("No restmethod route found.")
         else:
             return HttpResponseNotAllowed(self.restapi.suppored_methods)
-        encoded_output = self.encode_output(output)
-        return self.create_response(encoded_output)
+
+    def call_restapi(self, restapimethodname, args, kwargs):
+        try:
+            output = getattr(self.restapi, restapimethodname)(*args, **kwargs)
+        except Exception, e:
+            return self.error_handler(e)
+        else:
+            encoded_output = self.encode_output(output)
+            return self.create_response(encoded_output, restapimethodname)
 
     def detect_content_types(self):
         """
@@ -131,9 +131,9 @@ class RestView():
     def error_handler(self, error):
         raise # Will result in server error unless catched by some middleware
 
-    def create_response(self, encoded_output):
+    def create_response(self, encoded_output, restapimethodname):
         for response_handler in self.response_handlers:
-            match, response = response_handler(self.request, self.crud_method,
+            match, response = response_handler(self.request, restapimethodname,
                                                self.output_content_type, encoded_output)
             if match:
                 return response

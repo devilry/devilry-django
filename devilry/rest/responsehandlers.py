@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 
-def stricthttp(request, crud_method, output_content_type, encoded_output):
-    if crud_method == "create":
+def stricthttp(request, restapimethodname, output_content_type, encoded_output):
+    if restapimethodname == "create":
         status = 201
     else:
         status = 200
