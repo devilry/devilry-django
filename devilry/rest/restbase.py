@@ -13,7 +13,7 @@ class RestBase(object):
     """
     supported_methods = "GET", "POST", "PUT", "DELETE"
 
-    def crud_create(self, **data):
+    def create(self, **data):
         """
         Create object from the input ``data``.
 
@@ -21,13 +21,13 @@ class RestBase(object):
         """
         raise UnsupportedHttpMethodError()
 
-    def crud_read(self, id):
+    def read(self, id):
         """
         Read and return the object identified by ``id``.
         """
         raise UnsupportedHttpMethodError()
 
-    def crud_update(self, id, **data):
+    def update(self, id, **data):
         """
         Update object identified by ``id`` from the input ``data``.
 
@@ -35,7 +35,7 @@ class RestBase(object):
         """
         raise UnsupportedHttpMethodError()
 
-    def crud_delete(self, id):
+    def delete(self, id):
         """
         Delete the object identified by ``id``.
         """

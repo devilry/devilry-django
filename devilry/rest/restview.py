@@ -63,27 +63,27 @@ class RestView():
         if id == None:
             self.crud_method = 'list'
             try:
-                return self.restapi.crud_list(**self.input_data)
+                return self.restapi.list(**self.input_data)
             except NotImplementedError:
                 raise NotFoundError('GET method with no identifier (list) is not supported.')
         else:
             self.crud_method = 'read'
             try:
-                return self.restapi.crud_read(id, **self.input_data)
+                return self.restapi.read(id, **self.input_data)
             except NotImplementedError:
                 raise NotFoundError('GET method with identifier (read) is not supported.')
 
     def post(self):
         self.crud_method = 'create'
-        return self.restapi.crud_create(**self.input_data)
+        return self.restapi.create(**self.input_data)
 
     def put(self, id):
         self.crud_method = 'update'
-        return self.restapi.crud_update(id, **self.input_data)
+        return self.restapi.update(id, **self.input_data)
 
     def delete(self, id):
         self.crud_method = 'delete'
-        return self.restapi.crud_delete(id, **self.input_data)
+        return self.restapi.delete(id, **self.input_data)
 
     def view(self, request, id=None, suffix=None):
         self.suffix = suffix

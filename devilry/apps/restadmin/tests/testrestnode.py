@@ -10,8 +10,8 @@ class TestRestNode(TestCase):
         self.restnode = RestNode(self.nodedao)
 
     def test_crud_read(self):
-        result = self.restnode.crud_read(10)
-        self.assertRaises(InvalidParameterTypeError, self.restnode.crud_read, "invalid")
+        result = self.restnode.read(10)
+        self.assertRaises(InvalidParameterTypeError, self.restnode.read, "invalid")
         self.assertEquals(1, len(self.nodedao.calls("read", 10)))
         result_keys = result.keys()
         self.assertEquals(set(result_keys), set(['long_name', 'etag', 'id', 'short_name']))

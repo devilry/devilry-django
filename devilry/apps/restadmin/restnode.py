@@ -17,18 +17,18 @@ class RestNode(RestBase):
         return todict(node, *self.read_fields)
 
     @force_paramtypes(id=int)
-    def crud_read(self, id):
+    def read(self, id):
         return self.todict(self.nodedao.read(id))
 
-    def crud_create(self, short_name, long_name):
+    def create(self, short_name, long_name):
         return self.todict(self.nodedao.create(short_name, long_name))
 
     @force_paramtypes(id=int)
-    def crud_update(self, id, short_name, long_name):
+    def update(self, id, short_name, long_name):
         return self.todict(self.nodedao.update(id, short_name, long_name))
 
     @force_paramtypes(parentnode_id=int)
-    def crud_list(self, parentnode_id=None):
+    def list(self, parentnode_id=None):
         items = self.get_items(parentnode_id)
         return dict(
             params=dict(
