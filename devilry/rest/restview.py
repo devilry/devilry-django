@@ -1,4 +1,4 @@
-from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
+from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponse
 
 from devilry.rest.error import NotFoundError
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
@@ -96,15 +96,16 @@ class RestView():
 
         method = request.method
         output = None
-        if request.method in self.restapi.supported_methods:
-            for restmethod_route in self.restmethod_routers:
-                match = restmethod_route(request, id, input_data)
-                if match:
-                    restapimethodname, args, kwargs = match
+        for restmethod_route in self.restmethod_routers:
+            match = restmethod_route(request, id, input_data)
+            if match:
+                restapimethodname, args, kwargs = match
+                try:
                     return self.call_restapi(restapimethodname, args, kwargs)
-            return HttpResponseBadRequest("No restmethod route found.")
-        else:
-            return HttpResponseNotAllowed(self.restapi.suppored_methods)
+                except NotImplementedError:
+                    return HttpResponse("'{0}' is not supported.".format(restapimethodname), status=406)
+        return HttpResponse("No restmethod route found.", status=406)
+
 
     def call_restapi(self, restapimethodname, args, kwargs):
         try:

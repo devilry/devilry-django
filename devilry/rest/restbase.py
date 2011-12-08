@@ -1,17 +1,7 @@
-from django.core.urlresolvers import reverse
-from django.views.generic import View
-from django.conf.urls.defaults import url
-
-from error import UnsupportedHttpMethodError
-
-
 class RestBase(object):
     """
     RESTful interface.
-
-    :cvar supported_methods: Supported HTTP methods.
     """
-    supported_methods = "GET", "POST", "PUT", "DELETE"
 
     def create(self, **data):
         """
@@ -19,7 +9,7 @@ class RestBase(object):
 
         Should return a representation of the created object.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
 
     def read(self, id, **data):
         """
@@ -27,7 +17,7 @@ class RestBase(object):
 
         May use ``data`` to limit/customize the response, however it _must_ work without ``data``.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
 
     def update(self, id, **data):
         """
@@ -35,7 +25,7 @@ class RestBase(object):
 
         Should return a representation of the updated object.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
 
     def delete(self, id, **data):
         """
@@ -43,13 +33,13 @@ class RestBase(object):
 
         May use ``data`` to customize the behavior, however it _must_ work without ``data``.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
 
     def list(self, **data):
         """
         List objects. Use data to provide the ability to limit the results.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
 
     def batch(self, create=[], update=[], delete=[]):
         """
@@ -58,4 +48,4 @@ class RestBase(object):
         The advantage of this approach over many create, update and delete requests are
         efficiency and the ability to do all operations in one transaction.
         """
-        raise UnsupportedHttpMethodError()
+        raise NotImplementedError()
