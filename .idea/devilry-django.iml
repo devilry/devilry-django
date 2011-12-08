@@ -4,10 +4,8 @@
     <facet type="django" name="Django">
       <configuration>
         <option name="rootFolder" value="$MODULE_DIR$/devilry" />
-        <option name="templatesFolders" value="$MODULE_DIR$/devilry/apps/administrator/templates:/Volumes/viktig/code/devilry-django/devilry/apps/authenticate/templates:/Volumes/viktig/code/devilry-django/devilry/apps/examiner/templates:/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/templates:/Volumes/viktig/code/devilry-django/devilry/apps/markup/templates:/Volumes/viktig/code/devilry-django/devilry/apps/student/templates:/Volumes/viktig/code/devilry-django/devilry/apps/theme/templates" />
         <option name="settingsModule" value="projects/dev/settings.py" />
-        <option name="manageScript" value="" />
-        <option name="djangoInJs" value="true" />
+        <option name="manageScript" value="$MODULE_DIR$/devenv/bin/django_dev.py" />
       </configuration>
     </facet>
     <facet type="buildout-python" name="Buildout Support">
@@ -16,11 +14,26 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 2.7.1 (/System/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Buildout Eggs" level="project" />
+  </component>
+  <component name="TemplatesService">
+    <option name="templateLanguage" value="Django" />
+    <option name="TEMPLATE_CONFIGURATION" value="Django" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/devilry/apps/administrator/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/authenticate/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/examiner/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/extjshelpers/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/markup/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/student/templates" />
+        <option value="$MODULE_DIR$/devilry/apps/theme/templates" />
+      </list>
+    </option>
   </component>
 </module>
 
