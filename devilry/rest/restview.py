@@ -78,8 +78,11 @@ class RestView():
         return self.restapi.create(**self.input_data)
 
     def put(self, id):
-        self.crud_method = 'update'
-        return self.restapi.update(id, **self.input_data)
+        if id == None:
+            return self.restapi.batch(**self.input_data)
+        else:
+            self.crud_method = 'update'
+            return self.restapi.update(id, **self.input_data)
 
     def delete(self, id):
         self.crud_method = 'delete'

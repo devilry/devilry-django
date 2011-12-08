@@ -46,3 +46,12 @@ class RestBase(object):
         List objects. Use data to provide the ability to limit the results.
         """
         raise UnsupportedHttpMethodError()
+
+    def batch(self, create=[], update=[], delete=[]):
+        """
+        Create, update and/or delete many items in a single operation.
+
+        The advantage of this approach over many create, update and delete requests are
+        efficiency and the ability to do all operations in one transaction.
+        """
+        raise UnsupportedHttpMethodError()
