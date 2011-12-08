@@ -18,7 +18,6 @@ def getqrystring_inputdata_handler(request, input_content_type, dataconverters):
     if use_qrystring:
         querydata = flatten_querydata(request.GET)
         del querydata[key]
-        print querydata
         return True, querydata
     else:
         return False, None

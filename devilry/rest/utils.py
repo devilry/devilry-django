@@ -24,7 +24,6 @@ def force_paramtypes(**params):
                         kw[name] = type(param)
                     except:
                         raise InvalidParameterTypeError("Parameter '{0}' should be type '{1}'".format(name, type.__name__))
-            print kw
             return func(**kw)
         return modified
     return check_types
