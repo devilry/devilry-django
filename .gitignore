@@ -60,6 +60,7 @@ productionenv/
 devilry_all_uncompiled.js
 devilryrestfullib/build/
 devilryrestfullib/devilryrestfullib.egg-info/
+devilry/projects/dev/deliverystorehier/
 
 # Intellij files
 # see: http://devnet.jetbrains.net/docs/DOC-1186
