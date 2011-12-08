@@ -1,5 +1,7 @@
-from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponse
-from devilry.dataconverter.dataconverter import DataConverter
+"""
+
+"""
+from django.http import HttpResponse
 
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
 from devilry.dataconverter.xmldataconverter import XmlDataConverter
@@ -37,6 +39,9 @@ DEFAULT_RESPONSEHANDLERS = [
 ]
 
 class RestView():
+    """
+    Django view that handles input/output to :class:`devilry.rest.restbase.RestBase`.
+    """
     def __init__(self, restapicls,
                  apipath, apiversion,
                  suffix_to_content_type_map=DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP,
@@ -140,9 +145,17 @@ class RestView():
         self.input_content_type = self.get_input_content_type()
 
     def get_output_content_type(self, suffix):
+        """
+        Detect the output (response) content type.
+        """
+#        print self.request.META.get("HTTP_ACCEPT")
         return self.suffix_to_content_type_map.get(suffix, self.default_content_type)
 
     def get_input_content_type(self):
+        """
+        Detect input (request) content type. Checks the "content-type" header of the request, and falls back on the output content
+        type detected by :meth:`get_output_content_type`.
+        """
         return self.request.META.get('CONTENT_TYPE', self.output_content_type)
 
     def parse_input(self):

@@ -8,6 +8,7 @@
 
     simplified
     restful
+    rest
     extjshelpers
 
     apps.gradeeditors
@@ -58,6 +59,7 @@ RESTful API
 ######################################################################
 
 * :ref:`restful`
+* :ref:`rest`
 * :ref:`public_restful_api`
 * :ref:`public_restful_api_examples`
 * Check out the Wiki_ for community docs such as:
