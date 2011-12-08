@@ -49,8 +49,12 @@ class RestView():
             Default in/out content-type.
         :param inputdata_handlers:
             Input data handlers convert input data into a dict.
-            Must be a list of callables with the following signature:
-            ``f(request, input_content_type, dataconverters)``.
+            Must be a list of callables with the following signature::
+
+                match, data = f(request, input_content_type, dataconverters)
+
+            The first input data handler returning ``match==True`` is be used.
+                
             See :mod:`devilry.rest.inputdata_handlers` for implementations.
             
             Input data can come in many different formats and from different sources.
@@ -70,6 +74,11 @@ class RestView():
             interface to call, and the arguments to use for the call.
         :param response_handlers:
             Response handlers are responsible for creating responses.
+            Signature::
+
+                reponse = f(request, restapimethodname, output_content_type, encoded_output)
+
+            The first response handler returning ``bool(response) == True`` is used.
         """
         self.restapi = restapicls()
         self.suffix_to_content_type_map = suffix_to_content_type_map
