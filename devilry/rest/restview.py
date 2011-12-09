@@ -3,45 +3,10 @@
 """
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from devilry.dataconverter.jsondataconverter import JsonDataConverter
-from devilry.dataconverter.xmldataconverter import XmlDataConverter
-from devilry.dataconverter.yamldataconverter import YamlDataConverter
-from devilry.dataconverter.htmldataconverter import HtmlDataConverter
 from devilry.rest.error import InvalidContentTypeError
 from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
-import inputdata_handlers
-import responsehandlers
-import restmethod_roters
+import default
 
-
-DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP = {
-    "xml": "application/xml",
-    "yaml": "application/yaml",
-    "json": "application/json",
-    "html": "text/html"
-}
-
-DEFAULT_INPUTDATA_HANDLERS = [
-    inputdata_handlers.getqrystring_inputdata_handler,
-    inputdata_handlers.rawbody_inputdata_handler
-]
-DEFAULT_DATACONVERTERS = {
-    "application/xml": XmlDataConverter,
-    "application/yaml": YamlDataConverter,
-    "application/json": JsonDataConverter,
-    "text/html": HtmlDataConverter
-}
-DEFAULT_RESTMETHOD_ROUTES = [
-    restmethod_roters.post_to_create,
-    restmethod_roters.get_with_id_to_read,
-    restmethod_roters.put_with_id_to_update,
-    restmethod_roters.delete_to_delete,
-    restmethod_roters.get_without_id_to_list,
-    restmethod_roters.put_without_id_to_batch
-]
-DEFAULT_RESPONSEHANDLERS = [
-    responsehandlers.stricthttp
-]
 
 class RestView():
     """
@@ -49,12 +14,12 @@ class RestView():
     """
     def __init__(self, restapicls,
                  apipath, apiversion,
-                 suffix_to_content_type_map=DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP,
+                 suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
                  default_content_type="application/json",
-                 inputdata_handlers=DEFAULT_INPUTDATA_HANDLERS,
-                 dataconverters=DEFAULT_DATACONVERTERS,
-                 restmethod_routers=DEFAULT_RESTMETHOD_ROUTES,
-                 response_handlers=DEFAULT_RESPONSEHANDLERS):
+                 inputdata_handlers=default.INPUTDATA_HANDLERS,
+                 dataconverters=default.DATACONVERTERS,
+                 restmethod_routers=default.RESTMETHOD_ROUTES,
+                 response_handlers=default.RESPONSEHANDLERS):
         """
         :param restapicls:
             A class implementing :class:`devilry.rest.restbase.RestBase`.
@@ -199,7 +164,7 @@ class RestView():
     def create_response(self, encoded_output, restapimethodname):
         for response_handler in self.response_handlers:
             response = response_handler(self.request, restapimethodname,
-                                               self.output_content_type, encoded_output)
+                                        self.output_content_type, encoded_output)
             if response:
                 return response
         raise ValueError(
@@ -208,7 +173,7 @@ class RestView():
     def encode_output(self, output):
         dataconverter = self.dataconverters.get(self.output_content_type,
                                                 self.dataconverters[self.default_content_type])
-        return dataconverter.fromPython(output)
+        return dataconverter.fromPython(output, self.dataconverters.keys())
 
 
     @classmethod

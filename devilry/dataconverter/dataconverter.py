@@ -3,7 +3,7 @@ class DataConverter(object):
     Data converter interface.
     """
     @classmethod
-    def toPython(cls, obj):
+    def toPython(cls, obj, alternative_formats=[]):
         """
         Convert ``obj`` to python.
         """

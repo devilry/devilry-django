@@ -49,7 +49,7 @@ class ToXml(object):
 
 class XmlDataConverter(DataConverter):
     @classmethod
-    def fromPython(cls, obj):
+    def fromPython(cls, obj, alternative_formats=[]):
         return ToXml(obj).encode()
 
     @classmethod

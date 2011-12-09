@@ -3,7 +3,7 @@ import yaml
 
 class YamlDataConverter(DataConverter):
     @classmethod
-    def fromPython(cls, obj):
+    def fromPython(cls, obj, alternative_formats=[]):
         return yaml.safe_dump(obj, indent=4, default_flow_style=False, encoding='utf-8')
 
     @classmethod
