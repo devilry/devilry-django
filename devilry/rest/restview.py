@@ -1,11 +1,13 @@
 """
 
 """
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
 from devilry.dataconverter.xmldataconverter import XmlDataConverter
 from devilry.dataconverter.yamldataconverter import YamlDataConverter
+from devilry.rest.error import InvalidContentTypeError
+from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
 import inputdata_handlers
 import responsehandlers
 import restmethod_roters
@@ -101,7 +103,11 @@ class RestView():
     def view(self, request, id_and_suffix=None):
         id, suffix = self.parse_id_and_suffix(id_and_suffix)
         self.request = request
-        self.detect_content_types(suffix)
+        try:
+            self.output_content_type = self.get_output_content_type(suffix)
+        except InvalidContentTypeError, e:
+            return HttpResponseBadRequest(str(e))
+        self.input_content_type = self.get_input_content_type()
         input_data = self.parse_input()
 
         method = request.method
@@ -137,24 +143,41 @@ class RestView():
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 
-    def detect_content_types(self, suffix):
-        """
-        Detect input/output content types.
-        """
-        self.output_content_type = self.get_output_content_type(suffix)
-        self.input_content_type = self.get_input_content_type()
-
     def get_output_content_type(self, suffix):
         """
-        Detect the output (response) content type.
+        Detect the output (response) content type:
+
+        1. Use suffix (I.E. ".json", ".xml", ...) if it matches any of the content_types in ``suffix_to_content_type_map``.
+           If a suffix is specified, but no match is found, InvalidContentTypeError is raised.
+        2. Check for ``_devilry_accept`` in request.GET, and use that value instead of the ACCEPT header
+           (see 3. for more about the ACCEPT header).
+        3. Match the accept header. This uses :class:`devilry.rest.httpacceptheaderparser.HttpAcceptHeaderParser`,
+           which can handle ``q`` parameters.
+        4. If no match is found, raise ``InvalidContentTypeError``.
+
+        ``InvalidContentTypeError`` results in a ``HttpResponseBadRequest`` with the cause in the response body.
         """
-        print self.request.META.get("HTTP_ACCEPT")
-        return self.suffix_to_content_type_map.get(suffix, self.default_content_type)
+        if suffix:
+            try:
+                return self.suffix_to_content_type_map[suffix]
+            except KeyError:
+                raise InvalidContentTypeError('Invalid suffix: {0}'.format(suffix))
+        else:
+            acceptheader = self.request.GET.get('_devilry_accept', self.request.META.get("HTTP_ACCEPT"))
+            if not acceptheader:
+                raise InvalidContentTypeError('No output content type specified. You must specify one using the suffix '
+                                              '(.xml, .json, ...), or through the HTTP ACCEPT request header. '
+                                              'If you are unable to send and ACCEPT header, you can send it through the '
+                                              '"_devilry_accept" parameter in the querystring.')
+            parser = HttpAcceptHeaderParser()
+            parser.parse(acceptheader)
+            content_type = parser.match(*self.dataconverters.keys())
+            return content_type
 
     def get_input_content_type(self):
         """
-        Detect input (request) content type. Checks the "content-type" header of the request, and falls back on the output content
-        type detected by :meth:`get_output_content_type`.
+        Detect input (request) content type. Checks the "content-type" header of the request, and falls back
+        on the output content type detected by :meth:`get_output_content_type`.
         """
         return self.request.META.get('CONTENT_TYPE', self.output_content_type)
 

@@ -18,3 +18,9 @@ class InvalidParameterTypeError(RestError):
     """
     Invalid input parameter type.
     """
+
+
+class InvalidContentTypeError(RestError):
+    """
+    Invalid content type.
+    """

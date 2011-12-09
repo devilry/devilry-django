@@ -1,7 +1,7 @@
 from django.test import TestCase
 from dingus import Dingus
 
-from devilry.apps.restadmin import RestNode
+from devilry.apps.restadmin.restnode import RestNode
 from devilry.rest.error import InvalidParameterTypeError
 
 class TestRestNode(TestCase):
