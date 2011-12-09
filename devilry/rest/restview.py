@@ -148,7 +148,7 @@ class RestView():
         """
         Detect the output (response) content type.
         """
-#        print self.request.META.get("HTTP_ACCEPT")
+        print self.request.META.get("HTTP_ACCEPT")
         return self.suffix_to_content_type_map.get(suffix, self.default_content_type)
 
     def get_input_content_type(self):

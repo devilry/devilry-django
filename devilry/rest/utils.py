@@ -1,4 +1,3 @@
-from collections import deque
 import inspect
 import re
 from devilry.rest.error import InvalidParameterTypeError
