@@ -17,16 +17,35 @@ class RestNode(RestBase):
     def todict(self, node):
         return todict(node, *self.read_fields)
 
+    def to_listingdict(self, node):
+        item = self.todict(node)
+        return dict(
+            item=item,
+            url=self.geturl(node.id)
+        )
+
+    def to_singledict(self, node):
+        item = self.todict(node)
+
+        urls = {}
+        if node.parentnode_id != None:
+            urls['parentnode'] = self.geturl(node.parentnode_id)
+        urls['childnodes'] = self.geturl(params={'parentnode_id': node.id})
+        return dict(
+            item=item,
+            urls=urls
+        )
+
     @force_paramtypes(id=int)
     def read(self, id):
-        return self.todict(self.nodedao.read(id))
+        return self.to_singledict(self.nodedao.read(id))
 
     def create(self, short_name, long_name):
-        return self.todict(self.nodedao.create(short_name, long_name))
+        return self.to_singledict(self.nodedao.create(short_name, long_name))
 
     @force_paramtypes(id=int)
     def update(self, id, short_name, long_name):
-        return self.todict(self.nodedao.update(id, short_name, long_name))
+        return self.to_singledict(self.nodedao.update(id, short_name, long_name))
 
     @force_paramtypes(parentnode_id=int)
     def list(self, parentnode_id=None):
@@ -35,7 +54,7 @@ class RestNode(RestBase):
             params=dict(
                 parentnode_id=parentnode_id
             ),
-            links=self.get_links(),
+            links=self.get_links(parentnode_id),
             items=items,
             total=len(items)
         )
@@ -49,9 +68,10 @@ class RestNode(RestBase):
             self.delete(**kw)
 
     def get_items(self, parentnode_id):
-        return [self.todict(item) for item in self.nodedao.list(parentnode_id)]
+        return [self.to_listingdict(item) for item in self.nodedao.list(parentnode_id)]
 
-    def get_links(self):
-        return dict(
-            admins="http://admins...."
-        )
+    def get_links(self, parentnode_id):
+        links = {}
+        if parentnode_id:
+            links['parentnode'] = self.geturl(parentnode_id)
+        return links

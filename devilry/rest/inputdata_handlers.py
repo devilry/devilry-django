@@ -14,17 +14,14 @@ def flatten_querydata(querydata):
 
 def getqrystring_inputdata_handler(request, input_content_type, dataconverters):
     """
-    If the ``_devilry_qrystringindata`` key is available in the querystring (``request.GET``), this
-    input handler will fetch input data from the querystring. This is mainly useful for debugging.
+    Use ``request.GET`` if method is GET and the request body is empty.
     """
-    key = "_devilry_qrystringindata"
-    use_qrystring = request.GET.get(key)
-    if use_qrystring:
-        querydata = flatten_querydata(request.GET)
-        del querydata[key]
-        return True, querydata
-    else:
-        return False, None
+    if request.method == "GET":
+        use_qrystring = request.raw_post_data.strip() == ""
+        if use_qrystring:
+            querydata = flatten_querydata(request.GET)
+            return True, querydata
+    return False, None
 
 
 def rawbody_inputdata_handler(request, input_content_type, dataconverters):

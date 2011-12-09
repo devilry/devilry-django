@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
 from devilry.dataconverter.xmldataconverter import XmlDataConverter
 from devilry.dataconverter.yamldataconverter import YamlDataConverter
+from devilry.dataconverter.htmldataconverter import HtmlDataConverter
 from devilry.rest.error import InvalidContentTypeError
 from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
 import inputdata_handlers
@@ -16,7 +17,8 @@ import restmethod_roters
 DEFAULT_SUFFIX_TO_CONTENT_TYPE_MAP = {
     "xml": "application/xml",
     "yaml": "application/yaml",
-    "json": "application/json"
+    "json": "application/json",
+    "html": "text/html"
 }
 
 DEFAULT_INPUTDATA_HANDLERS = [
@@ -26,7 +28,8 @@ DEFAULT_INPUTDATA_HANDLERS = [
 DEFAULT_DATACONVERTERS = {
     "application/xml": XmlDataConverter,
     "application/yaml": YamlDataConverter,
-    "application/json": JsonDataConverter
+    "application/json": JsonDataConverter,
+    "text/html": HtmlDataConverter
 }
 DEFAULT_RESTMETHOD_ROUTES = [
     restmethod_roters.post_to_create,

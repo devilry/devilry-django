@@ -78,6 +78,9 @@ testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
                          'duck3580:admin(clarabelle):ln(DUCK3580 - Making the web work)',
                          'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff - avoiding permanent psychological scarring of most of the students)'],
                periods=['spring01:admin(fethry,gus,gladstone):ln(Spring year zero)'])
+testhelper.add(nodes='duckburgh.highschool')
+testhelper.add(nodes='metropolis')
+testhelper.add(nodes='arkhamcity.college')
 
 if args.duckburghusers:
     add_extra_relatedusers(testhelper.duck1100_spring01)

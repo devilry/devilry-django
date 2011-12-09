@@ -1,3 +1,4 @@
+from urllib import urlencode
 from devilry.rest.restview import RestView
 from django.conf.urls.defaults import url
 from django.contrib.auth.decorators import login_required
@@ -32,9 +33,17 @@ class RestBase(object):
             id_and_suffix += id
         if suffix:
             id_and_suffix += "." + suffix
-        return reverse(restcls.get_urlname(), args=[],
+        return reverse(restcls.get_urlname(apipath, apiversion), args=[],
                        kwargs=dict(id_and_suffix=id_and_suffix))
 
+
+    def geturl(self, id=None, params={}):
+        url = RestBase.reverse_url(self.__class__, self.apipath, self.apiversion)
+        if id != None:
+            url += str(id)
+        if params:
+            url += '?{0}'.format(urlencode(params))
+        return url
 
     def create(self, **data):
         """
