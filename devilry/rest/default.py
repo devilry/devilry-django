@@ -4,7 +4,7 @@ from devilry.dataconverter.yamldataconverter import YamlDataConverter
 from devilry.dataconverter.htmldataconverter import HtmlDataConverter
 import inputdata_handlers
 import responsehandlers
-import restmethod_roters
+import restmethod_routers
 
 
 SUFFIX_TO_CONTENT_TYPE_MAP = {
@@ -25,12 +25,12 @@ DATACONVERTERS = {
     "text/html": HtmlDataConverter
 }
 RESTMETHOD_ROUTES = [
-    restmethod_roters.post_to_create,
-    restmethod_roters.get_with_id_to_read,
-    restmethod_roters.put_with_id_to_update,
-    restmethod_roters.delete_to_delete,
-    restmethod_roters.get_without_id_to_list,
-    restmethod_roters.put_without_id_to_batch
+    restmethod_routers.post_to_create,
+    restmethod_routers.get_with_id_to_read,
+    restmethod_routers.put_with_id_to_update,
+    restmethod_routers.delete_to_delete,
+    restmethod_routers.get_without_id_to_list,
+    restmethod_routers.put_without_id_to_batch
 ]
 RESPONSEHANDLERS = [
     responsehandlers.stricthttp

@@ -1,6 +1,6 @@
 from devilry.apps.coredao.active import NodeDao
 from devilry.apps.core.models.node import Node
-from devilry.rest.utils import subdict, todict, force_paramtypes
+from devilry.rest.utils import subdict, todict, force_paramtypes, indata
 from devilry.rest.restbase import RestBase
 
 
@@ -36,18 +36,19 @@ class RestNode(RestBase):
             urls=urls
         )
 
-    @force_paramtypes(id=int)
-    def read(self, id):
+    @indata(id=int, stuff=int, saker=str, ting=unicode)
+    def read(self, id, stuff=10, saker=20, ting=None):
         return self.to_singledict(self.nodedao.read(id))
 
+    @indata(short_name=unicode, long_name=unicode)
     def create(self, short_name, long_name):
         return self.to_singledict(self.nodedao.create(short_name, long_name))
 
-    @force_paramtypes(id=int)
+    @indata(id=int, short_name=unicode, long_name=unicode)
     def update(self, id, short_name, long_name):
         return self.to_singledict(self.nodedao.update(id, short_name, long_name))
 
-    @force_paramtypes(parentnode_id=int)
+    @indata(parentnode_id=int)
     def list(self, parentnode_id=None):
         items = self.get_items(parentnode_id)
         return dict(
@@ -59,6 +60,7 @@ class RestNode(RestBase):
             total=len(items)
         )
 
+#    @indata(parentnode_id=force_list)
     def batch(self, create=[], update=[], delete=[]):
         for kw in create:
             self.create(**kw)

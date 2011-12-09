@@ -1,4 +1,6 @@
 import inspect
+from functools import wraps
+
 from devilry.rest.error import InvalidParameterTypeError
 
 def subdict(dct, *keys):
@@ -27,3 +29,13 @@ def force_paramtypes(**params):
             return func(**kw)
         return modified
     return check_types
+
+def indata(**indataspec):
+    def dec(targetfunc):
+        targetfunc.indataspec = indataspec
+
+        @wraps(targetfunc)
+        def wrapper(*args, **kwargs):
+            return targetfunc(*args, **kwargs)
+        return wrapper
+    return dec

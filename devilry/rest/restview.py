@@ -1,11 +1,13 @@
 """
 
 """
+import inspect
 from django.http import HttpResponse, HttpResponseBadRequest
 
 from devilry.rest.error import InvalidContentTypeError
 from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
 import default
+from devilry.rest.utils import subdict
 
 
 class RestView():
@@ -83,9 +85,9 @@ class RestView():
         for restmethod_route in self.restmethod_routers:
             match = restmethod_route(request, id, input_data)
             if match:
-                restapimethodname, args, kwargs = match
+                restapimethodname, kwargs = match
                 try:
-                    return self.call_restapi(restapimethodname, args, kwargs)
+                    return self.call_restapi(restapimethodname, kwargs)
                 except NotImplementedError:
                     return HttpResponse("'{0}' is not supported.".format(restapimethodname), status=406)
         return HttpResponse("No restmethod route found.", status=406)
@@ -102,14 +104,32 @@ class RestView():
                 suffix = split[1]
         return id, suffix
 
-    def call_restapi(self, restapimethodname, args, kwargs):
+    def call_restapi(self, restapimethodname, kwargs):
+        restmethod = getattr(self.restapi, restapimethodname)
         try:
-            output = getattr(self.restapi, restapimethodname)(*args, **kwargs)
+            kwargs = self.filter_kwargs(restmethod, kwargs)
+        except ValueError, e:
+            return HttpResponseBadRequest(str(e))
+        try:
+            output = restmethod(**kwargs)
         except Exception, e:
             return self.error_handler(e)
         else:
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
+
+    def filter_kwargs(self, restmethod, kwargs):
+        converted_kwargs = {}
+        for paramname, convert in restmethod.indataspec.iteritems():
+            if paramname in kwargs:
+                value = kwargs[paramname]
+                try:
+                    converted_value = convert(value)
+                except ValueError, e:
+                    raise ValueError('Could not convert parameter "{0}" to correct type: {1}'.format(paramname, convert.__name__))
+                else:
+                    converted_kwargs[paramname] = converted_value
+        return converted_kwargs
 
     def get_output_content_type(self, suffix):
         """
