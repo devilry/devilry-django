@@ -10,7 +10,7 @@
     </facet>
     <facet type="buildout-python" name="Buildout Support">
       <configuration>
-        <option name="script" value="$MODULE_DIR$/devenv/bin/python" />
+        <option name="script" value="$MODULE_DIR$/devenv/bin/django_dev.py" />
       </configuration>
     </facet>
   </component>
