@@ -106,10 +106,10 @@ class RestView():
 
     def call_restapi(self, restapimethodname, kwargs):
         restmethod = getattr(self.restapi, restapimethodname)
-        try:
-            kwargs = self.filter_kwargs(restmethod, kwargs)
-        except ValueError, e:
-            return HttpResponseBadRequest(str(e))
+#        try:
+#            kwargs = self.filter_kwargs(restmethod, kwargs)
+#        except ValueError, e:
+#            return HttpResponseBadRequest(str(e))
         try:
             output = restmethod(**kwargs)
         except Exception, e:
@@ -118,18 +118,18 @@ class RestView():
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 
-    def filter_kwargs(self, restmethod, kwargs):
-        converted_kwargs = {}
-        for paramname, convert in restmethod.indataspec.iteritems():
-            if paramname in kwargs:
-                value = kwargs[paramname]
-                try:
-                    converted_value = convert(value)
-                except ValueError, e:
-                    raise ValueError('Could not convert parameter "{0}" to correct type: {1}'.format(paramname, convert.__name__))
-                else:
-                    converted_kwargs[paramname] = converted_value
-        return converted_kwargs
+#    def filter_kwargs(self, restmethod, kwargs):
+#        converted_kwargs = {}
+#        for paramname, convert in restmethod.indataspec.iteritems():
+#            if paramname in kwargs:
+#                value = kwargs[paramname]
+#                try:
+#                    converted_value = convert(value)
+#                except ValueError, e:
+#                    raise ValueError('Could not convert parameter "{0}" to correct type: {1}'.format(paramname, convert.__name__))
+#                else:
+#                    converted_kwargs[paramname] = converted_value
+#        return converted_kwargs
 
     def get_output_content_type(self, suffix):
         """
