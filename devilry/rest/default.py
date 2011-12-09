@@ -1,7 +1,7 @@
 from devilry.dataconverter.jsondataconverter import JsonDataConverter
 from devilry.dataconverter.xmldataconverter import XmlDataConverter
 from devilry.dataconverter.yamldataconverter import YamlDataConverter
-from htmldataconverter import HtmlDataConverter
+from devilry.dataconverter.htmldataconverter import HtmlDataConverter
 import inputdata_handlers
 import responsehandlers
 import restmethod_roters

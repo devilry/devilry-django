@@ -1,6 +1,3 @@
-"""
-HTML data converter. Located in the rest module because it is tightly coupled with this module.
-"""
 from urllib import urlencode
 from urlparse import urlparse
 from xml.etree import ElementTree
