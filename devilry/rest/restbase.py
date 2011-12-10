@@ -19,10 +19,11 @@ class RestBase(object):
     Abstract superclass for RESTful APIs.
     """
 
-    def __init__(self, apipath, apiversion, url_reverse=django_reverse_url):
+    def __init__(self, apipath, apiversion, user, url_reverse=django_reverse_url):
         self.apipath = apipath
         self.apiversion = apiversion
         self.reverse_url = url_reverse
+        self.user = user
 
     @classmethod
     def create_url(cls, apipath, apiversion):

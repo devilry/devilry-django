@@ -6,22 +6,18 @@ from devilry.rest.restbase import RestBase
 
 
 class RestNode(RestBase):
-    read_fields = "id", "short_name", "long_name", "etag", "parentnode_id"
 
-    def __init__(self, apipath, apiversion, nodedaocls=NodeDao, **basekwargs):
-        super(RestNode, self).__init__(apipath, apiversion, **basekwargs)
+    def __init__(self, nodedaocls=NodeDao, **basekwargs):
+        super(RestNode, self).__init__(**basekwargs)
         self.nodedao = nodedaocls()
 
-    def fromdict(self, dct):
-        return Node(subdict(dct, *self.read_fields))
-
     def todict(self, node):
-        item = todict(node, *self.read_fields)
+        item = node
         links = {}
-        if node.parentnode_id != None:
-            links['parentnode'] = self.geturl(node.parentnode_id)
-        links['childnodes'] = self.geturl(params={'parentnode_id': node.id})
-        links['item'] = self.geturl(node.id)
+        if node['parentnode_id'] != None:
+            links['parentnode'] = self.geturl(node['parentnode_id'])
+        links['childnodes'] = self.geturl(params={'parentnode_id': node['id']})
+        links['item'] = self.geturl(node['id'])
         return dict(
             item=item,
             links=links

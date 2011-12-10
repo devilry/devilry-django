@@ -62,7 +62,9 @@ class RestView():
 
             The first response handler returning ``bool(response) == True`` is used.
         """
-        self.restapi = restapicls(apipath, apiversion)
+        self.restapicls = restapicls
+        self.apipath = apipath
+        self.apiversion = apiversion
         self.suffix_to_content_type_map = suffix_to_content_type_map
         self.default_content_type = default_content_type
         self.inputdata_handlers = inputdata_handlers
@@ -105,11 +107,8 @@ class RestView():
         return id, suffix
 
     def call_restapi(self, restapimethodname, kwargs):
-        restmethod = getattr(self.restapi, restapimethodname)
-#        try:
-#            kwargs = self.filter_kwargs(restmethod, kwargs)
-#        except ValueError, e:
-#            return HttpResponseBadRequest(str(e))
+        restapi = self.restapicls(apipath=self.apipath, apiversion=self.apiversion, user=self.request.user)
+        restmethod = getattr(restapi, restapimethodname)
         try:
             output = restmethod(**kwargs)
         except Exception, e:
@@ -118,18 +117,6 @@ class RestView():
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 
-#    def filter_kwargs(self, restmethod, kwargs):
-#        converted_kwargs = {}
-#        for paramname, convert in restmethod.indataspec.iteritems():
-#            if paramname in kwargs:
-#                value = kwargs[paramname]
-#                try:
-#                    converted_value = convert(value)
-#                except ValueError, e:
-#                    raise ValueError('Could not convert parameter "{0}" to correct type: {1}'.format(paramname, convert.__name__))
-#                else:
-#                    converted_kwargs[paramname] = converted_value
-#        return converted_kwargs
 
     def get_output_content_type(self, suffix):
         """
