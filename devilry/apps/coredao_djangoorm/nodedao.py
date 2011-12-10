@@ -15,7 +15,8 @@ class NodeDao(object):
 
     def update(self, user, id, short_name, long_name, parentnode_id=None):
         node = self.read(id)
-        nodeadmin_required(user, "Must be admin on the current parentnode and the new parentnode to update a node.", node.parentnode_id, parentnode_id)
+        nodeadmin_required(user, "Must be admin on the current parentnode and the new parentnode to update a node.",
+                           node.parentnode_id, parentnode_id)
         node.short_name = short_name
         node.long_name = long_name
         node.parentnode_id = parentnode_id
@@ -33,6 +34,6 @@ class NodeDao(object):
         nodeadmin_required(user, "Must be admin on parentnode to delete a Node.", node.parentnode_id)
         node.delete()
 
-    def list(self, user, parentnode_id):
-        nodeadmin_required(user, "Must be admin on a node to list its content.", parentnode_id)
-        return [self._todict(node) for node in Node.object.filter(parentnode=parentnode_id)]
+    def list(self, user, id):
+        nodeadmin_required(user, "Must be admin on a node to list its content.", id)
+        return [self._todict(node) for node in Node.objects.filter(parentnode=id)]
