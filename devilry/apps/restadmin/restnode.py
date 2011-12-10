@@ -17,8 +17,8 @@ class RestNode(RestBase):
         links['toplevel-nodes'] = self.geturl()
         if node['parentnode_id'] != None:
             links['parentnode'] = self.geturl(node['parentnode_id'])
-        links['childnodes'] = self.geturl(params={'parentnode_id': node['id']})
-        links['item'] = self.geturl(node['id'])
+        links['childnodes'] = self.geturl(params={'id': node['id']})
+        links['node'] = self.geturl(node['id'])
         return dict(
             item=item,
             links=links
@@ -36,14 +36,14 @@ class RestNode(RestBase):
     def update(self, id, short_name, long_name):
         return self.todict(self.nodedao.update(self.user, id, short_name, long_name))
 
-    @indata(parentnode_id=int)
-    def list(self, parentnode_id=None):
-        items = self._get_items(parentnode_id)
+    @indata(id=int)
+    def list(self, id=None):
+        items = self._get_items(id)
         return dict(
             params=dict(
-                parentnode_id=parentnode_id
+                parentnode_id=id
             ),
-            links=self.get_links(parentnode_id),
+            links=self.get_links(id),
             items=items,
             total=len(items)
         )
@@ -60,8 +60,8 @@ class RestNode(RestBase):
     def _get_items(self, parentnode_id):
         return [self.todict(item) for item in self.nodedao.list(self.user, parentnode_id)]
 
-    def get_links(self, parentnode_id):
+    def get_links(self, id):
         links = {}
-        if parentnode_id:
-            links['parentnode'] = self.geturl(parentnode_id)
+        if id:
+            links['node'] = self.geturl(id)
         return links
