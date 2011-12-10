@@ -26,15 +26,15 @@ class RestNode(RestBase):
 
     @indata(id=int)
     def read(self, id):
-        return self.todict(self.nodedao.read(id))
+        return self.todict(self.nodedao.read(self.user, id))
 
     @indata(short_name=unicode, long_name=unicode)
     def create(self, short_name, long_name):
-        return self.todict(self.nodedao.create(short_name, long_name))
+        return self.todict(self.nodedao.create(self.user, short_name, long_name))
 
     @indata(id=int, short_name=unicode, long_name=unicode)
     def update(self, id, short_name, long_name):
-        return self.todict(self.nodedao.update(id, short_name, long_name))
+        return self.todict(self.nodedao.update(self.user, id, short_name, long_name))
 
     @indata(parentnode_id=int)
     def list(self, parentnode_id=None):

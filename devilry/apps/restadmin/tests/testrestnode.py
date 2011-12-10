@@ -16,7 +16,7 @@ class TestRestNode(TestCase):
     def test_read(self):
         result = self.restnode.read(id=10)
         self.assertRaises(InvalidIndataError, self.restnode.read, id="invalid")
-        self.assertEquals(1, len(self.nodedao.calls("read", 10)))
+        self.assertEquals(1, len(self.nodedao.calls("read", self.restnode.user, 10)))
         self.assertEqual(set(result.keys()), set(['item', 'links']))
 
     def test_list(self):
