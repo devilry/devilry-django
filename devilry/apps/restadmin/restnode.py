@@ -16,37 +16,28 @@ class RestNode(RestBase):
         return Node(subdict(dct, *self.read_fields))
 
     def todict(self, node):
-        return todict(node, *self.read_fields)
-
-    def to_listingdict(self, node):
-        item = self.todict(node)
-        return dict(
-            item=item,
-            url=self.geturl(node.id)
-        )
-
-    def to_singledict(self, node):
-        item = self.todict(node)
-        urls = {}
+        item = todict(node, *self.read_fields)
+        links = {}
         if node.parentnode_id != None:
-            urls['parentnode'] = self.geturl(node.parentnode_id)
-        urls['childnodes'] = self.geturl(params={'parentnode_id': node.id})
+            links['parentnode'] = self.geturl(node.parentnode_id)
+        links['childnodes'] = self.geturl(params={'parentnode_id': node.id})
+        links['item'] = self.geturl(node.id)
         return dict(
             item=item,
-            urls=urls
+            links=links
         )
 
     @indata(id=int)
     def read(self, id):
-        return self.to_singledict(self.nodedao.read(id))
+        return self.todict(self.nodedao.read(id))
 
     @indata(short_name=unicode, long_name=unicode)
     def create(self, short_name, long_name):
-        return self.to_singledict(self.nodedao.create(short_name, long_name))
+        return self.todict(self.nodedao.create(short_name, long_name))
 
     @indata(id=int, short_name=unicode, long_name=unicode)
     def update(self, id, short_name, long_name):
-        return self.to_singledict(self.nodedao.update(id, short_name, long_name))
+        return self.todict(self.nodedao.update(id, short_name, long_name))
 
     @indata(parentnode_id=int)
     def list(self, parentnode_id=None):
@@ -60,7 +51,7 @@ class RestNode(RestBase):
             total=len(items)
         )
 
-#    @indata(parentnode_id=force_list)
+    #    @indata(parentnode_id=force_list)
     def batch(self, create=[], update=[], delete=[]):
         for kw in create:
             self.create(**kw)
@@ -70,7 +61,7 @@ class RestNode(RestBase):
             self.delete(**kw)
 
     def get_items(self, parentnode_id):
-        return [self.to_listingdict(item) for item in self.nodedao.list(parentnode_id)]
+        return [self.todict(item) for item in self.nodedao.list(parentnode_id)]
 
     def get_links(self, parentnode_id):
         links = {}
