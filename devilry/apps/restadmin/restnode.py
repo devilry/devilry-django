@@ -14,6 +14,7 @@ class RestNode(RestBase):
     def todict(self, node):
         item = node
         links = {}
+        links['toplevel-nodes'] = self.geturl()
         if node['parentnode_id'] != None:
             links['parentnode'] = self.geturl(node['parentnode_id'])
         links['childnodes'] = self.geturl(params={'parentnode_id': node['id']})
@@ -37,7 +38,7 @@ class RestNode(RestBase):
 
     @indata(parentnode_id=int)
     def list(self, parentnode_id=None):
-        items = self.get_items(parentnode_id)
+        items = self._get_items(parentnode_id)
         return dict(
             params=dict(
                 parentnode_id=parentnode_id
@@ -56,8 +57,8 @@ class RestNode(RestBase):
         for kw in delete:
             self.delete(**kw)
 
-    def get_items(self, parentnode_id):
-        return [self.todict(item) for item in self.nodedao.list(parentnode_id)]
+    def _get_items(self, parentnode_id):
+        return [self.todict(item) for item in self.nodedao.list(self.user, parentnode_id)]
 
     def get_links(self, parentnode_id):
         links = {}

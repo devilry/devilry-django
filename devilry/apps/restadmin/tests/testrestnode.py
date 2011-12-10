@@ -21,7 +21,7 @@ class TestRestNode(TestCase):
 
     def test_list(self):
         result = self.restnode.list(parentnode_id=5)
-        self.assertEqual(1, len(self.nodedao.calls("list", 5)))
+        self.assertEqual(1, len(self.nodedao.calls("list", self.restnode.user, 5)))
         self.assertEqual(set(result.keys()), set(['items', 'links', 'total', 'params']))
         self.assertEqual(result['params']['parentnode_id'], 5)
         self.assertEqual(set(result['items'][0].keys()), set(['item', 'links']))

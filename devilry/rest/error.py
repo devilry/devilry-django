@@ -18,3 +18,8 @@ class InvalidContentTypeError(RestError):
     """
     Invalid content type.
     """
+
+class PermissionDeniedError(RestError):
+    """
+    Permission denied.
+    """

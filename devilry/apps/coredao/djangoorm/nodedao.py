@@ -15,8 +15,8 @@ class NodeDao(object):
         node.save()
         return self._todict(node)
 
-    def create(self, short_name, long_name):
-        node = Node(short_name=short_name, long_name=long_name)
+    def create(self, short_name, long_name, parentnode_id=None):
+        node = Node(short_name=short_name, long_name=long_name, parentnode_id=parentnode_id)
         node.save()
         return self._todict(node)
 
@@ -24,5 +24,5 @@ class NodeDao(object):
         node = Node.objects.get(pk=id)
         node.delete()
 
-    def list(self, parentnode):
-        return [self._todict(node) for node in Node.objects.filter(parentnode=parentnode)]
+    def list(self, user, parentnode_id):
+        return [self._todict(node) for node in Node.where_is_admin_or_superadmin(user).filter(parentnode=parentnode_id)]
