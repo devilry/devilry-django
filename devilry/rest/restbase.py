@@ -5,42 +5,40 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
 
+def django_reverse_url(restcls, apipath, apiversion, id=None):
+    id_and_suffix = ''
+    if id != None:
+        id_and_suffix = str(id)
+    return reverse(restcls.get_urlname(apipath, apiversion), args=[],
+        kwargs=dict(id_and_suffix=id_and_suffix))
+
+
+
 class RestBase(object):
     """
     Abstract superclass for RESTful APIs.
     """
 
-    def __init__(self, apipath, apiversion):
+    def __init__(self, apipath, apiversion, url_reverse=django_reverse_url):
         self.apipath = apipath
         self.apiversion = apiversion
+        self.reverse_url = url_reverse
 
     @classmethod
     def create_url(cls, apipath, apiversion):
         urlpattern = r'^(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(**vars())
         return url(urlpattern,
-                   login_required(RestView.as_view(cls, apipath, apiversion)),
-                   name=cls.get_urlname(apipath, apiversion))
+            login_required(RestView.as_view(cls, apipath, apiversion)),
+            name=cls.get_urlname(apipath, apiversion))
 
     @classmethod
     def get_urlname(cls, apipath, apiversion):
         name = cls.__name__
         return '{apipath}-{apiversion}-{name}'.format(**vars())
 
-    @staticmethod
-    def reverse_url(restcls, apipath, apiversion, id=None, suffix=None):
-        id_and_suffix = ""
-        if id:
-            id_and_suffix += id
-        if suffix:
-            id_and_suffix += "." + suffix
-        return reverse(restcls.get_urlname(apipath, apiversion), args=[],
-                       kwargs=dict(id_and_suffix=id_and_suffix))
-
 
     def geturl(self, id=None, params={}):
-        url = RestBase.reverse_url(self.__class__, self.apipath, self.apiversion)
-        if id != None:
-            url += str(id)
+        url = self.reverse_url(self.__class__, self.apipath, self.apiversion, id)
         if params:
             url += '?{0}'.format(urlencode(params))
         return url

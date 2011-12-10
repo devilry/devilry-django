@@ -8,8 +8,8 @@ from devilry.rest.restbase import RestBase
 class RestNode(RestBase):
     read_fields = "id", "short_name", "long_name", "etag", "parentnode_id"
 
-    def __init__(self, apipath, apiversion, nodedaocls=NodeDao):
-        super(RestNode, self).__init__(apipath, apiversion)
+    def __init__(self, apipath, apiversion, nodedaocls=NodeDao, **basekwargs):
+        super(RestNode, self).__init__(apipath, apiversion, **basekwargs)
         self.nodedao = nodedaocls()
 
     def fromdict(self, dct):
@@ -27,7 +27,6 @@ class RestNode(RestBase):
 
     def to_singledict(self, node):
         item = self.todict(node)
-
         urls = {}
         if node.parentnode_id != None:
             urls['parentnode'] = self.geturl(node.parentnode_id)
