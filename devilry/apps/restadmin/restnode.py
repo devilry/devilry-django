@@ -37,8 +37,8 @@ class RestNode(RestBase):
             urls=urls
         )
 
-    @indata(id=int, stuff=int, saker=str, ting=unicode)
-    def read(self, id, stuff=10, saker=20, ting=None):
+    @indata(id=int)
+    def read(self, id):
         return self.to_singledict(self.nodedao.read(id))
 
     @indata(short_name=unicode, long_name=unicode)
