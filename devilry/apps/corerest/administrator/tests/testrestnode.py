@@ -10,7 +10,7 @@ def dummy_urlreverse(restcls, apipath, apiversion, id=None):
 
 class TestRestNode(TestCase):
     def setUp(self):
-        self.restnode = RestNode(nodedaocls=Dingus, apipath='api', apiversion='1.0', user=None, url_reverse=dummy_urlreverse)
+        self.restnode = RestNode(nodedaocls=Dingus, apiname='api', apiversion='1.0', user=None, url_reverse=dummy_urlreverse)
         self.nodedao = self.restnode.nodedao
 
     def test_read(self):

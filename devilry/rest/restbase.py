@@ -19,27 +19,41 @@ class RestBase(object):
     Abstract superclass for RESTful APIs.
     """
 
-    def __init__(self, apipath, apiversion, user, url_reverse=django_reverse_url):
-        self.apipath = apipath
+    def __init__(self, apiname, apiversion, user, url_reverse=django_reverse_url):
+        self.apiname = apiname
         self.apiversion = apiversion
         self.reverse_url = url_reverse
         self.user = user
 
     @classmethod
-    def create_url(cls, prefix, apipath, apiversion):
-        urlpattern = r'^{prefix}/(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(**vars())
+    def create_url(cls, prefix, apiname, apiversion):
+        """
+        The url is created as::
+
+            ^{prefix}/(optional-id.optional-suffix)$
+
+        The url is named using :meth:`get_urlname`. This means that apiname and apiversion is
+        only used for naming. Name and version is decoupled to make it easy to create new api versions
+        mixing unchanged and new classes (I.E. rest-classes can be in multiple API versions).
+        """
+        urlpattern = r'^{prefix}/(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(prefix=prefix)
         return url(urlpattern,
-            login_required(RestView.as_view(cls, apipath, apiversion)),
-            name=cls.get_urlname(apipath, apiversion))
+            login_required(RestView.as_view(cls, apiname, apiversion)),
+            name=cls.get_urlname(apiname, apiversion))
 
     @classmethod
-    def get_urlname(cls, apipath, apiversion):
+    def get_urlname(cls, apiname, apiversion):
+        """
+        Get url name. The name is::
+
+            {apiname}-{apiversion}-{cls.__name__}
+        """
         name = cls.__name__
-        return '{apipath}-{apiversion}-{name}'.format(**vars())
+        return '{apiname}-{apiversion}-{name}'.format(**vars())
 
 
     def geturl(self, id=None, params={}):
-        url = self.reverse_url(self.__class__, self.apipath, self.apiversion, id)
+        url = self.reverse_url(self.__class__, self.apiname, self.apiversion, id)
         if params:
             url += '?{0}'.format(urlencode(params))
         return url

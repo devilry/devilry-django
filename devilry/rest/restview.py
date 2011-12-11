@@ -15,7 +15,7 @@ class RestView():
     Django view that handles input/output to :class:`devilry.rest.restbase.RestBase`.
     """
     def __init__(self, restapicls,
-                 apipath, apiversion,
+                 apiname, apiversion,
                  suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
                  output_content_type_detectors=default.OUTPUT_CONTENT_TYPE_DETECTORS,
                  input_content_type_detectors=default.INPUT_CONTENT_TYPE_DETECTORS,
@@ -93,7 +93,7 @@ class RestView():
             The first response handler returning ``bool(response) == True`` is used.
         """
         self.restapicls = restapicls
-        self.apipath = apipath
+        self.apiname = apiname
         self.apiversion = apiversion
         self.output_content_type_detectors = output_content_type_detectors
         self.input_content_type_detectors = input_content_type_detectors
@@ -138,7 +138,7 @@ class RestView():
         return id, suffix
 
     def call_restapi(self, restapimethodname, kwargs):
-        restapi = self.restapicls(apipath=self.apipath, apiversion=self.apiversion, user=self.request.user)
+        restapi = self.restapicls(apiname=self.apiname, apiversion=self.apiversion, user=self.request.user)
         restmethod = getattr(restapi, restapimethodname)
         try:
             output = restmethod(**kwargs)
