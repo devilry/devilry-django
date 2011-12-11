@@ -128,7 +128,7 @@ class RestView():
         self.request = request
         try:
             self.output_content_type = self.get_output_content_type(suffix)
-            self.input_content_type = self.get_input_content_type(suffix)
+            self.input_content_type, self.input_charset = self.get_input_content_type(suffix)
         except InvalidContentTypeError, e:
             return HttpResponseBadRequest(str(e))
         input_data = self.parse_input()
