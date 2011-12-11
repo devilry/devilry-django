@@ -2,6 +2,8 @@ from devilry.dataconverter.jsondataconverter import JsonDataConverter
 from devilry.dataconverter.xmldataconverter import XmlDataConverter
 from devilry.dataconverter.yamldataconverter import YamlDataConverter
 from devilry.dataconverter.htmldataconverter import HtmlDataConverter
+from devilry.rest import input_content_type_detectors
+from devilry.rest import output_content_type_detectors
 import inputdata_handlers
 import responsehandlers
 import restmethod_routers
@@ -13,6 +15,20 @@ SUFFIX_TO_CONTENT_TYPE_MAP = {
     "json": "application/json",
     "html": "text/html"
 }
+
+OUTPUT_CONTENT_TYPE_DETECTORS = [
+    # This order is chosen because the "common" case is to use accept header, however when
+    # the user does something special, like adding a querystring param or suffix, they do
+    # it intentially.
+    output_content_type_detectors.devilry_accept_querystringparam,
+    output_content_type_detectors.suffix,
+    output_content_type_detectors.from_acceptheader
+]
+
+INPUT_CONTENT_TYPE_DETECTORS = [
+    input_content_type_detectors.from_content_type_header,
+    input_content_type_detectors.use_output_content_type
+]
 
 INPUTDATA_HANDLERS = [
     inputdata_handlers.getqrystring_inputdata_handler,

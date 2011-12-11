@@ -17,6 +17,8 @@ class RestView():
     def __init__(self, restapicls,
                  apipath, apiversion,
                  suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
+                 output_content_type_detectors=default.OUTPUT_CONTENT_TYPE_DETECTORS,
+                 input_content_type_detectors=default.INPUT_CONTENT_TYPE_DETECTORS,
                  inputdata_handlers=default.INPUTDATA_HANDLERS,
                  dataconverters=default.DATACONVERTERS,
                  restmethod_routers=default.RESTMETHOD_ROUTES,
@@ -26,8 +28,35 @@ class RestView():
             A class implementing :class:`devilry.rest.restbase.RestBase`.
         :param suffix_to_content_type_map:
             Maps suffix to content type. Used to determine content-type from url-suffix.
+
+        :param output_content_type_detectors:
+            Input content type detectors detect the content type of the request data.
+            Must be a list of callables with the following signature::
+
+                content_type  = f(request, suffix)
+
+            The first content_type that is not ``bool(content_type)==False`` will
+             be used.
+        :param input_content_type_detectors:
+            Similar to ``output_content_type_detectors``, except for input/request
+            instead of for output/response. Furthermore, the the callbacks take the
+            output content-type as the third argument::
+
+                content_type  = f(request, suffix, output_content_type)
+
+            This is because few clients send the CONTENT_TYPE header, and falling back on
+            output content-type is a mostly sane default.
+
         :param inputdata_handlers:
-            Input data handlers convert input data into a dict.
+            Input data handlers convert input data into a dict. Input data can come from several sources:
+
+                - Querystring
+                - Paramater in querystring
+                - Request body
+
+            Therefore, we need to check for data in several places. Instead of hardcoding this
+            checking, we accept a list of callables that does the checking.
+
             Must be a list of callables with the following signature::
 
                 match, data = f(request, input_content_type, dataconverters)
@@ -40,8 +69,12 @@ class RestView():
             Examples are such XML in request body, query string and JSON embedded in
             a query string parameter.
         :param dataconverters:
-            A list of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
-            Data converters convert between python and some other format, such as JSON or XML.
+            A dict of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
+            The key is a content-type. Data converters convert between python and some other format,
+            such as JSON or XML.
+
+            Typically used by ``input_datahandlers`` and ``response_handlers`` to convert data
+             input the content_type detected by one of the ``output_content_type_detectors``.
         :param restmethod_routers:
             A list of callables with the following signature::
 
@@ -62,6 +95,8 @@ class RestView():
         self.restapicls = restapicls
         self.apipath = apipath
         self.apiversion = apiversion
+        self.output_content_type_detectors = output_content_type_detectors
+        self.input_content_type_detectors = input_content_type_detectors
         self.suffix_to_content_type_map = suffix_to_content_type_map
         self.inputdata_handlers = inputdata_handlers
         self.dataconverters = dataconverters
@@ -73,9 +108,9 @@ class RestView():
         self.request = request
         try:
             self.output_content_type = self.get_output_content_type(suffix)
+            self.input_content_type = self.get_input_content_type(suffix, self.output_content_type)
         except InvalidContentTypeError, e:
             return HttpResponseBadRequest(str(e))
-        self.input_content_type = self.get_input_content_type()
         input_data = self.parse_input()
 
         method = request.method
@@ -114,43 +149,26 @@ class RestView():
             return self.create_response(encoded_output, restapimethodname)
 
 
+    def _get_content_type(self, detectors, suffix, *extraargs):
+        for content_type_detector in detectors:
+            content_type = content_type_detector(self.request, suffix,
+                                                 self.suffix_to_content_type_map,
+                                                 self.dataconverters.keys(), *extraargs)
+            if content_type:
+                return content_type
+        return None
+
     def get_output_content_type(self, suffix):
-        """
-        Detect the output (response) content type:
+        content_type = self._get_content_type(self.output_content_type_detectors, suffix)
+        if not content_type:
+            raise InvalidContentTypeError('Not output content type detected.')
+        return content_type
 
-        1. Use suffix (I.E. ".json", ".xml", ...) if it matches any of the content_types in ``suffix_to_content_type_map``.
-           If a suffix is specified, but no match is found, InvalidContentTypeError is raised.
-        2. Check for ``_devilry_accept`` in request.GET, and use that value instead of the ACCEPT header
-           (see 3. for more about the ACCEPT header).
-        3. Match the accept header. This uses :class:`devilry.rest.httpacceptheaderparser.HttpAcceptHeaderParser`,
-           which can handle ``q`` parameters.
-        4. If no match is found, raise ``InvalidContentTypeError``.
-
-        ``InvalidContentTypeError`` results in a ``HttpResponseBadRequest`` with the cause in the response body.
-        """
-        if suffix:
-            try:
-                return self.suffix_to_content_type_map[suffix]
-            except KeyError:
-                raise InvalidContentTypeError('Invalid suffix: {0}'.format(suffix))
-        else:
-            acceptheader = self.request.GET.get('_devilry_accept', self.request.META.get("HTTP_ACCEPT"))
-            if not acceptheader:
-                raise InvalidContentTypeError('No output content type specified. You must specify one using the suffix '
-                                              '(.xml, .json, ...), or through the HTTP ACCEPT request header. '
-                                              'If you are unable to send and ACCEPT header, you can send it through the '
-                                              '"_devilry_accept" parameter in the querystring.')
-            parser = HttpAcceptHeaderParser()
-            parser.parse(acceptheader)
-            content_type = parser.match(*self.dataconverters.keys())
-            return content_type
-
-    def get_input_content_type(self):
-        """
-        Detect input (request) content type. Checks the "content-type" header of the request, and falls back
-        on the output content type detected by :meth:`get_output_content_type`.
-        """
-        return self.request.META.get('CONTENT_TYPE', self.output_content_type)
+    def get_input_content_type(self, suffix, output_content_type):
+        content_type = self._get_content_type(self.input_content_type_detectors, suffix, output_content_type)
+        if not content_type:
+            raise InvalidContentTypeError('Not input content type detected.')
+        return content_type
 
     def parse_input(self):
         for input_data_handler in self.inputdata_handlers:
