@@ -17,7 +17,6 @@ class RestView():
     def __init__(self, restapicls,
                  apipath, apiversion,
                  suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
-                 default_content_type="application/json",
                  inputdata_handlers=default.INPUTDATA_HANDLERS,
                  dataconverters=default.DATACONVERTERS,
                  restmethod_routers=default.RESTMETHOD_ROUTES,
@@ -27,8 +26,6 @@ class RestView():
             A class implementing :class:`devilry.rest.restbase.RestBase`.
         :param suffix_to_content_type_map:
             Maps suffix to content type. Used to determine content-type from url-suffix.
-        :param default_content_type:
-            Default in/out content-type.
         :param inputdata_handlers:
             Input data handlers convert input data into a dict.
             Must be a list of callables with the following signature::
@@ -66,7 +63,6 @@ class RestView():
         self.apipath = apipath
         self.apiversion = apiversion
         self.suffix_to_content_type_map = suffix_to_content_type_map
-        self.default_content_type = default_content_type
         self.inputdata_handlers = inputdata_handlers
         self.dataconverters = dataconverters
         self.restmethod_routers = restmethod_routers
@@ -178,8 +174,7 @@ class RestView():
             "No matching response_handler. You should provide one that always matches at the end of the chain.")
 
     def encode_output(self, output):
-        dataconverter = self.dataconverters.get(self.output_content_type,
-                                                self.dataconverters[self.default_content_type])
+        dataconverter = self.dataconverters[self.output_content_type]
         return dataconverter.fromPython(output, self.dataconverters.keys())
 
 
