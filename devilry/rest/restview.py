@@ -32,14 +32,20 @@ class RestView():
             Maps suffix to content type. Used to determine content-type from url-suffix.
 
         :param input_data_preprocessors:
-            Dict of input data post-processor callbacks by content-type. If the input content-type
-            matches a key in the dict, the corresponding callback is called with the input data
-            as argument. Together with ``output_data_postprocessors`` this allows for wrapping
-            certain content-types with extra data. Example of use is to add data that is requried
+            List of input data post-processor callbacks. The callbacks have the following signature::
+
+                match, data = f(request, output_data)
+
+            The data of the first matching callback will be used. If no processor matches,
+            the unchanged data will be used.
+
+            Together with ``output_data_postprocessors`` this allows for wrapping
+            certain content-types with extra data. Example of use is to add data that is required
             by a javascript library, such as the successful attribute required by ExtJS.
         :param output_data_postprocessors:
-            Dict of output data post-processor callbacks by content-type. See ``input_data_preprocessors``
-            for more details.
+            List of input data post-processor callbacks. See ``input_data_preprocessors``
+            for more details. Note that the callbacks take one additional argument, a boolean
+            telling if the restful method completed without error.
 
         :param output_content_type_detectors:
             Input content type detectors detect the content type of the request data.
@@ -141,17 +147,18 @@ class RestView():
         return HttpResponse("No restmethod route found.", status=406)
 
 
-    def _process_data(self, processormap, content_type, data):
-        processor = processormap.get(content_type)
-        if processor:
-            data = processor(data)
+    def _process_data(self, processorlist, content_type, data, *extraargs):
+        for processor in processorlist:
+            match, processed_data = processor(self.request, data, *extraargs)
+            if match:
+                return processed_data
         return data
 
     def preprocess_input_data(self, input_data):
         return self._process_data(self.input_data_preprocessors, self.input_content_type, input_data)
 
-    def postprocess_output_data(self, output_data):
-        return self._process_data(self.output_data_postprocessors, self.output_content_type, output_data)
+    def postprocess_output_data(self, output_data, successful):
+        return self._process_data(self.output_data_postprocessors, self.output_content_type, output_data, successful)
 
     def parse_id_and_suffix(self, id_and_suffix):
         id = None
@@ -173,7 +180,7 @@ class RestView():
         except Exception, e:
             return self.error_handler(e)
         else:
-            output = self.postprocess_output_data(output)
+            output = self.postprocess_output_data(output, successful=True)
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 

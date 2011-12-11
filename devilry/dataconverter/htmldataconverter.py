@@ -74,6 +74,9 @@ class ToHtml(object):
     def encode_NoneType(self, parent, data):
         parent.text = 'None'
 
+    def encode_bool(self, parent, data):
+        parent.text = str(data)
+
 
 class HtmlDataConverter(DataConverter):
     @classmethod

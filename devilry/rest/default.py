@@ -14,15 +14,14 @@ SUFFIX_TO_CONTENT_TYPE_MAP = {
     "xml": "application/xml",
     "yaml": "application/yaml",
     "json": "application/json",
-    "extjs.json": "application/json+extjs",
+    "extjs.json": "application/extjsjson",
     "html": "text/html"
 }
 
-INPUT_DATA_PREPROCESSORS = {
-}
-OUTPUT_DATA_POSTPROCESSORS = {
-    "application/json+extjs": output_data_postprocessors.extjs
-}
+INPUT_DATA_PREPROCESSORS = []
+OUTPUT_DATA_POSTPROCESSORS = [
+    output_data_postprocessors.extjs
+]
 
 OUTPUT_CONTENT_TYPE_DETECTORS = [
     # This order is chosen because the "common" case is to use accept header, however when
@@ -47,7 +46,7 @@ DATACONVERTERS = {
     "application/xml": XmlDataConverter,
     "application/yaml": YamlDataConverter,
     "application/json": JsonDataConverter,
-    "application/json+extjs": JsonDataConverter,
+    "application/extjsjson": JsonDataConverter,
     "text/html": HtmlDataConverter
 }
 RESTMETHOD_ROUTES = [
