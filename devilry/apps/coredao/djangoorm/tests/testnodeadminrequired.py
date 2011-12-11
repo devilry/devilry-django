@@ -1,9 +1,7 @@
 from django.test import TestCase
-from dingus import Dingus
-from devilry.apps.core.models.node import Node
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.coredao.errors import PermissionDeniedError
-from devilry.apps.coredao_djangoorm.nodedao import nodeadmin_required
+from devilry.apps.coredao.djangoorm.nodedao import nodeadmin_required
 
 
 

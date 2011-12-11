@@ -1,6 +1,6 @@
 from devilry.apps.core.models.node import Node
-from devilry.apps.coredao.errors import PermissionDeniedError, NotPermittedToDeleteNonEmptyError
-from devilry.apps.coredao_djangoorm.nodeadmin_required import nodeadmin_required
+from devilry.apps.coredao.djangoorm import nodeadmin_required
+from devilry.apps.coredao.errors import  NotPermittedToDeleteNonEmptyError
 from devilry.utils.dictutils import todict
 
 

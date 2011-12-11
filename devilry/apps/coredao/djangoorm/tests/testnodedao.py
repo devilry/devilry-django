@@ -1,8 +1,8 @@
 from django.test import TestCase
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.coredao.errors import NotPermittedToDeleteNonEmptyError
-from devilry.apps.coredao_djangoorm.nodeadmin_required import NodeAdminRequiredError
-from devilry.apps.coredao_djangoorm.nodedao import NodeDao
+from devilry.apps.coredao.djangoorm.nodeadmin_required import NodeAdminRequiredError
+from devilry.apps.coredao.djangoorm.nodedao import NodeDao
 
 
 class TestNodeDao(TestCase):
