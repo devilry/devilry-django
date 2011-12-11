@@ -13,6 +13,7 @@ SUFFIX_TO_CONTENT_TYPE_MAP = {
     "xml": "application/xml",
     "yaml": "application/yaml",
     "json": "application/json",
+    "extjs.json": "application/json+extjs",
     "html": "text/html"
 }
 
@@ -38,6 +39,7 @@ DATACONVERTERS = {
     "application/xml": XmlDataConverter,
     "application/yaml": YamlDataConverter,
     "application/json": JsonDataConverter,
+#    "application/json+extjs": ExtjsJsonDataConverter,
     "text/html": HtmlDataConverter
 }
 RESTMETHOD_ROUTES = [

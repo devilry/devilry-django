@@ -1,0 +1,38 @@
+<html>
+<head>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 30px;
+        }
+        body>dl>dt {
+            border-top: 3px solid #eee;
+            color: #888;
+            margin-top: 30px;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        body>dl>dd {
+            margin-left: 0;
+        }
+        body>dl>dd dt {
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/javascript">
+        function open_alternative_format(content_type) {
+            var search = window.location.search;
+            var regex = /\&?_devilry_accept=[a-zA-Z0-9+\/-]+/;
+            var newsearch = search.replace(regex, '');
+            newsearch += '';
+            if(!newsearch.match(/^\?.*/)) {
+                newsearch = '?' + newsearch;
+            }
+            newsearch += '&_devilry_accept=' + content_type;
+            window.location.href = newsearch;
+        }
+    </script>
+</head>
+{{ body|safe }}
+</html>

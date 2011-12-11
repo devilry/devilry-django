@@ -32,6 +32,7 @@
         <option value="$MODULE_DIR$/devilry/apps/markup/templates" />
         <option value="$MODULE_DIR$/devilry/apps/student/templates" />
         <option value="$MODULE_DIR$/devilry/apps/theme/templates" />
+        <option value="$MODULE_DIR$/devilry/dataconverter/templates" />
       </list>
     </option>
   </component>
