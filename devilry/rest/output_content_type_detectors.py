@@ -11,7 +11,6 @@ def suffix(request, suffix, suffix_to_content_type_map, valid_content_types):
 
 def _parse_acceptheader(acceptheader, valid_content_types):
     parser = HttpAcceptHeaderParser()
-    print acceptheader, valid_content_types
     parser.parse(acceptheader)
     return parser.match(*valid_content_types)
 
@@ -19,7 +18,6 @@ def from_acceptheader(request, suffix, suffix_to_content_type_map, valid_content
     acceptheader = request.META.get("HTTP_ACCEPT")
     if not acceptheader:
         return None
-    print acceptheader
     return _parse_acceptheader(acceptheader, valid_content_types)
 
 def devilry_accept_querystringparam(request, suffix, suffix_to_content_type_map, valid_content_types):
