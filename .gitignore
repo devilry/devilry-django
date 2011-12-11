@@ -43,6 +43,7 @@ docs/restfulapi/
 */bin/buildout
 */bin/django_*.py
 */bin/django_*.py.wsgi
+*/bin/nosetests*
 */bin/seleniumrc
 */bin/python
 */bin/*-script.py
@@ -66,3 +67,4 @@ devilry/projects/dev/deliverystorehier/
 # see: http://devnet.jetbrains.net/docs/DOC-1186
 workspace.xml
 tasks.xml
+.idea/libraries/
