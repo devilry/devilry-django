@@ -1,5 +1,5 @@
 from devilry.apps.core.models.node import Node
-from devilry.apps.coredao.djangoorm import nodeadmin_required
+from devilry.apps.coredao.djangoorm.nodeadmin_required import nodeadmin_required
 from devilry.apps.coredao.errors import  NotPermittedToDeleteNonEmptyError
 from devilry.utils.dictutils import todict
 
