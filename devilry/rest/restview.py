@@ -108,7 +108,7 @@ class RestView():
         self.request = request
         try:
             self.output_content_type = self.get_output_content_type(suffix)
-            self.input_content_type = self.get_input_content_type(suffix, self.output_content_type)
+            self.input_content_type = self.get_input_content_type(suffix)
         except InvalidContentTypeError, e:
             return HttpResponseBadRequest(str(e))
         input_data = self.parse_input()
@@ -164,8 +164,8 @@ class RestView():
             raise InvalidContentTypeError('Not output content type detected.')
         return content_type
 
-    def get_input_content_type(self, suffix, output_content_type):
-        content_type = self._get_content_type(self.input_content_type_detectors, suffix, output_content_type)
+    def get_input_content_type(self, suffix):
+        content_type = self._get_content_type(self.input_content_type_detectors, suffix, self.output_content_type)
         if not content_type:
             raise InvalidContentTypeError('Not input content type detected.')
         return content_type
