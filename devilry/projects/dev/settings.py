@@ -60,6 +60,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = join(this_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
+DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'
 
 ## If you want to test with a "real" smtp server instead of the file backend, see:
 ##     https://docs.djangoproject.com/en/dev/topics/email/#testing-email-sending
