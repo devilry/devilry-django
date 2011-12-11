@@ -7,14 +7,17 @@ from devilry.utils.dictutils import todict
 
 class NodeDao(object):
     def _todict(self, node):
-        return todict(node, 'id', 'short_name', 'long_name', 'etag', 'parentnode_id')
+        return todict(node, 'id', 'short_name', 'long_name', 'parentnode_id')
+
+    def _read(self, id):
+        return Node.objects.get(pk=id)
 
     def read(self, user, id):
         nodeadmin_required(user, "Must be admin on a node to view it.", id)
-        return self._todict(Node.objects.get(pk=id))
+        return self._todict(self._read(id))
 
     def update(self, user, id, short_name, long_name, parentnode_id=None):
-        node = self.read(id)
+        node = self._read(id)
         nodeadmin_required(user, "Must be admin on the current parentnode and the new parentnode to update a node.",
                            node.parentnode_id, parentnode_id)
         node.short_name = short_name

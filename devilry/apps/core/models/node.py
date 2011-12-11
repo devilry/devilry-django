@@ -43,7 +43,7 @@ class Node(models.Model, BaseNode, Etag):
                                    related_name='child_nodes',
                                    verbose_name=_('Parent'))
     admins = models.ManyToManyField(User, blank=True)
-    etag = models.DateTimeField(auto_now_add=True)
+    etag = models.DateTimeField(auto_now=True)
 
     class Meta:
         app_label = 'core'
