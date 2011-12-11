@@ -27,3 +27,6 @@ def devilry_accept_querystringparam(request, suffix, suffix_to_content_type_map,
     if not acceptheader:
         return None
     return _parse_acceptheader(acceptheader, valid_content_types)
+
+#def extjsjson(request, suffix, suffix_to_content_type_map, valid_content_types):
+#    print

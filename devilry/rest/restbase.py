@@ -26,8 +26,8 @@ class RestBase(object):
         self.user = user
 
     @classmethod
-    def create_url(cls, apipath, apiversion):
-        urlpattern = r'^(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(**vars())
+    def create_url(cls, prefix, apipath, apiversion):
+        urlpattern = r'^{prefix}/(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(**vars())
         return url(urlpattern,
             login_required(RestView.as_view(cls, apipath, apiversion)),
             name=cls.get_urlname(apipath, apiversion))
