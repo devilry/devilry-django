@@ -19,7 +19,7 @@ SUFFIX_TO_CONTENT_TYPE_MAP = {
 OUTPUT_CONTENT_TYPE_DETECTORS = [
     # This order is chosen because the "common" case is to use accept header, however when
     # the user does something special, like adding a querystring param or suffix, they do
-    # it intentially.
+    # it intentionally.
     output_content_type_detectors.devilry_accept_querystringparam,
     output_content_type_detectors.suffix,
     output_content_type_detectors.from_acceptheader
