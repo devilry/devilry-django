@@ -7,6 +7,7 @@ from devilry.rest import output_content_type_detectors
 import inputdata_handlers
 import responsehandlers
 import restmethod_routers
+import output_data_postprocessors
 
 
 SUFFIX_TO_CONTENT_TYPE_MAP = {
@@ -15,6 +16,12 @@ SUFFIX_TO_CONTENT_TYPE_MAP = {
     "json": "application/json",
     "extjs.json": "application/json+extjs",
     "html": "text/html"
+}
+
+INPUT_DATA_PREPROCESSORS = {
+}
+OUTPUT_DATA_POSTPROCESSORS = {
+    "application/json+extjs": output_data_postprocessors.extjs
 }
 
 OUTPUT_CONTENT_TYPE_DETECTORS = [
@@ -35,11 +42,12 @@ INPUTDATA_HANDLERS = [
     inputdata_handlers.getqrystring_inputdata_handler,
     inputdata_handlers.rawbody_inputdata_handler
 ]
+
 DATACONVERTERS = {
     "application/xml": XmlDataConverter,
     "application/yaml": YamlDataConverter,
     "application/json": JsonDataConverter,
-#    "application/json+extjs": ExtjsJsonDataConverter,
+    "application/json+extjs": JsonDataConverter,
     "text/html": HtmlDataConverter
 }
 RESTMETHOD_ROUTES = [

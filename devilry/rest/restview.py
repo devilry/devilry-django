@@ -17,6 +17,8 @@ class RestView():
     def __init__(self, restapicls,
                  apiname, apiversion,
                  suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
+                 input_data_preprocessors=default.INPUT_DATA_PREPROCESSORS,
+                 output_data_postprocessors=default.OUTPUT_DATA_POSTPROCESSORS,
                  output_content_type_detectors=default.OUTPUT_CONTENT_TYPE_DETECTORS,
                  input_content_type_detectors=default.INPUT_CONTENT_TYPE_DETECTORS,
                  inputdata_handlers=default.INPUTDATA_HANDLERS,
@@ -28,6 +30,16 @@ class RestView():
             A class implementing :class:`devilry.rest.restbase.RestBase`.
         :param suffix_to_content_type_map:
             Maps suffix to content type. Used to determine content-type from url-suffix.
+
+        :param input_data_preprocessors:
+            Dict of input data post-processor callbacks by content-type. If the input content-type
+            matches a key in the dict, the corresponding callback is called with the input data
+            as argument. Together with ``output_data_postprocessors`` this allows for wrapping
+            certain content-types with extra data. Example of use is to add data that is requried
+            by a javascript library, such as the successful attribute required by ExtJS.
+        :param output_data_postprocessors:
+            Dict of output data post-processor callbacks by content-type. See ``input_data_preprocessors``
+            for more details.
 
         :param output_content_type_detectors:
             Input content type detectors detect the content type of the request data.
@@ -95,6 +107,8 @@ class RestView():
         self.restapicls = restapicls
         self.apiname = apiname
         self.apiversion = apiversion
+        self.input_data_preprocessors = input_data_preprocessors
+        self.output_data_postprocessors = output_data_postprocessors
         self.output_content_type_detectors = output_content_type_detectors
         self.input_content_type_detectors = input_content_type_detectors
         self.suffix_to_content_type_map = suffix_to_content_type_map
@@ -112,6 +126,7 @@ class RestView():
         except InvalidContentTypeError, e:
             return HttpResponseBadRequest(str(e))
         input_data = self.parse_input()
+        input_data = self.preprocess_input_data(input_data)
 
         method = request.method
         output = None
@@ -124,6 +139,19 @@ class RestView():
                 except NotImplementedError:
                     return HttpResponse("'{0}' is not supported.".format(restapimethodname), status=406)
         return HttpResponse("No restmethod route found.", status=406)
+
+
+    def _process_data(self, processormap, content_type, data):
+        processor = processormap.get(content_type)
+        if processor:
+            data = processor(data)
+        return data
+
+    def preprocess_input_data(self, input_data):
+        return self._process_data(self.input_data_preprocessors, self.input_content_type, input_data)
+
+    def postprocess_output_data(self, output_data):
+        return self._process_data(self.output_data_postprocessors, self.output_content_type, output_data)
 
     def parse_id_and_suffix(self, id_and_suffix):
         id = None
@@ -145,6 +173,7 @@ class RestView():
         except Exception, e:
             return self.error_handler(e)
         else:
+            output = self.postprocess_output_data(output)
             encoded_output = self.encode_output(output)
             return self.create_response(encoded_output, restapimethodname)
 
