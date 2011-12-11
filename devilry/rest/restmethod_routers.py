@@ -15,13 +15,13 @@ def get_without_id_to_list(request, id, input_data):
 
 
 def put_with_id_to_update(request, id, input_data):
-    if request.method == "UPDATE" and id != None:
+    if request.method == "PUT" and id != None:
         input_data['id'] = id
         return "update", input_data
 
 
 def put_without_id_to_batch(request, id, input_data):
-    if request.method == "UPDATE" and id == None:
+    if request.method == "PUT" and id == None:
         return "batch", input_data
 
 
