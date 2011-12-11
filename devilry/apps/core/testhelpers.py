@@ -96,7 +96,7 @@ def create_from_path(path):
     return last
 
 
-class TestDeliveryStoreMixin(TestHelper):
+class DeliveryStoreTestMixin(TestHelper):
     """ Mixin-class that tests if
     :class:`devilry.core.deliverystore.DeliveryStoreInterface` is
     implemented correctly.

@@ -3,10 +3,10 @@ from tempfile import mkdtemp
 from shutil import rmtree
 from os.path import join
 
-from ..testhelpers import TestDeliveryStoreMixin
+from ..testhelpers import DeliveryStoreTestMixin
 from ..deliverystore import DbmDeliveryStore
 
-class TestDbmDeliveryStore(TestDeliveryStoreMixin, TestCase):
+class TestDbmDeliveryStore(DeliveryStoreTestMixin, TestCase):
     def setUp(self):
         self.root = mkdtemp()
         super(TestDbmDeliveryStore, self).setUp()
