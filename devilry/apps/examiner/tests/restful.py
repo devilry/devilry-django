@@ -3,7 +3,7 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
-from ..examiner import RestfulSimplifiedSubject, RestfulSimplifiedPeriod, RestfulSimplifiedAssignment
+from devilry.apps.examiner.restful import RestfulSimplifiedSubject, RestfulSimplifiedPeriod, RestfulSimplifiedAssignment
 
 
 
