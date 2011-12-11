@@ -1,7 +1,7 @@
 from django.test import TestCase
-from dingus import Dingus, DontCare
+from dingus import Dingus
 
-from devilry.apps.restadmin.restnode import RestNode
+from devilry.apps.corerest.administrator.restnode import RestNode
 from devilry.rest.indata import InvalidIndataError
 
 def dummy_urlreverse(restcls, apipath, apiversion, id=None):
@@ -20,7 +20,7 @@ class TestRestNode(TestCase):
         self.assertEqual(set(result.keys()), set(['item', 'links']))
 
     def test_list(self):
-        result = self.restnode.list(parentnode_id=5)
+        result = self.restnode.list(id=5)
         self.assertEqual(1, len(self.nodedao.calls("list", self.restnode.user, 5)))
         self.assertEqual(set(result.keys()), set(['items', 'links', 'total', 'params']))
         self.assertEqual(result['params']['parentnode_id'], 5)
