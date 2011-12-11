@@ -15,8 +15,18 @@ class TestNodeDao(TestCase):
 
     def test_superuser(self):
         # The only difference for superuser is auth, so the normal user tests cover everything but these sanity tests
+        self.nodedao.create(self.testhelper.superuser, 'tst', "Test")
+        self.nodedao.create(self.testhelper.superuser, 'tst2', "Test2", parentnode_id=self.testhelper.rootnode_subnode_subsubnode.id)
+
         self.nodedao.read(self.testhelper.superuser, self.testhelper.rootnode.id)
         self.nodedao.read(self.testhelper.superuser, self.testhelper.rootnode_subnode_subsubnode.id)
+
+        self.nodedao.update(self.testhelper.superuser, self.testhelper.rootnode.id, 'tstupdated', "Test updated")
+        self.nodedao.update(self.testhelper.superuser, self.testhelper.rootnode_subnode_subsubnode.id, 'tst2', "Test2",
+                            parentnode_id=self.testhelper.rootnode_subnode.id)
+
+        self.nodedao.delete(self.testhelper.superuser, self.testhelper.rootnode_subnode_subsubnode.id)
+        self.nodedao.delete(self.testhelper.superuser, self.testhelper.rootnode.id)
 
     def test_create_normaluser(self):
         with self.assertRaises(PermissionDeniedError):
