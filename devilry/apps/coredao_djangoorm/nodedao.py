@@ -1,6 +1,8 @@
 from devilry.apps.core.models.node import Node
+from devilry.apps.coredao.errors import PermissionDeniedError, NotPermittedToDeleteNonEmptyError
 from devilry.apps.coredao_djangoorm.nodeadmin_required import nodeadmin_required
 from devilry.utils.dictutils import todict
+
 
 
 
@@ -32,9 +34,14 @@ class NodeDao(object):
         node.save()
         return self._todict(node)
 
+    def _is_empty(self, node):
+        return (node.child_nodes.count() + node.subjects.count()) == 0
+
     def delete(self, user, id):
         node = Node.objects.get(pk=id)
         nodeadmin_required(user, "Must be admin on parentnode to delete a Node.", node.parentnode_id)
+        if not user.is_superuser and not self._is_empty(node):
+            raise NotPermittedToDeleteNonEmptyError("Must be superuser to delete a node containing childnodes or subjects.")
         node.delete()
 
     def list(self, user, id):

@@ -49,13 +49,13 @@ class RestNode(RestBase):
         )
 
     #    @indata(parentnode_id=force_list)
-    def batch(self, create=[], update=[], delete=[]):
-        for kw in create:
-            self.create(**kw)
-        for kw in update:
-            self.update(**kw)
-        for kw in delete:
-            self.delete(**kw)
+#    def batch(self, create=[], update=[], delete=[]):
+#        for kw in create:
+#            self.create(**kw)
+#        for kw in update:
+#            self.update(**kw)
+#        for kw in delete:
+#            self.delete(**kw)
 
     def _get_items(self, parentnode_id):
         return [self.todict(item) for item in self.nodedao.list(self.user, parentnode_id)]
