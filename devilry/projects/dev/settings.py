@@ -24,9 +24,10 @@ INSTALLED_APPS += [
                    'devilry.utils',
                    'devilry.restful',
                    'devilry.rest',
-                   'devilry.simplified']
+                   'devilry.simplified',
+                   'django_nose']
 
-
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
