@@ -5,6 +5,12 @@ from devilry.rest.utils import subdict, todict
 from devilry.rest.restbase import RestBase
 
 
+def int_minusone_is_none(data):
+    data = int(data)
+    if data == -1:
+        return None
+    return data
+
 class RestNode(RestBase):
 
     def __init__(self, nodedaocls=NodeDao, **basekwargs):
@@ -36,7 +42,7 @@ class RestNode(RestBase):
     def update(self, id, short_name, long_name):
         return self.todict(self.nodedao.update(self.user, id, short_name, long_name))
 
-    @indata(id=int)
+    @indata(id=int_minusone_is_none)
     def list(self, id=None):
         items = self._get_items(id)
         return dict(
