@@ -11,8 +11,7 @@ Ext.define('devilry.corerest.administrator.Node', {
         type: 'rest',
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/corerest/administrator/node/',
         extraParams: {
-            '_devilry_extjs': 'yes',
-            '_devilry_accept': 'application/json'
+            _devilry_accept: 'application/json'
         },
         reader: {
             type: 'json',
