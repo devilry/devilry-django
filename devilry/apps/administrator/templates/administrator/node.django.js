@@ -4,7 +4,8 @@
 {% block imports %}
     {{ block.super }}
     Ext.require([
-        'devilry.administrator.node.Layout'
+        'devilry.administrator.node.Layout',
+        'devilry.administrator.NodeBrowser'
     ]);
 {% endblock %}
 
@@ -41,4 +42,11 @@
             padding: {left: 20, right: 20}
         }]
     });
+    Ext.widget('window', {
+        layout: 'fit',
+        width: 500,
+        height: 400,
+//        items: [Ext.create('devilry.administrator.NodeBrowser')]
+        items: [Ext.create('devilry.administrator.NodeTree')]
+    }).show();
 {% endblock %}
