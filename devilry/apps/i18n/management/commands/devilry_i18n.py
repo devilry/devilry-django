@@ -27,6 +27,14 @@ class Command(BaseCommand):
                   'use this for translations that are to be added to '
                   'the Devilry distribution.')
         ),
+        make_option('-o', '--overwrite',
+            action='store_true',
+            dest='overwrite',
+            default=False,
+            help=('Overwrite existing translations with the same language-code '
+                  'with your provided translation. Without this, the "load" '
+                  'command will refuse to overwrite any existing translations.')
+        ),
     )
 
     def handle(self, *args, **options):
@@ -50,7 +58,11 @@ class Command(BaseCommand):
             langcode = args[1]
             self._validate_langcode(langcode)
             infilename = args[2]
-            self.handle_load(loader, langcode, infilename, options['preview'], options['use_local_prefix'])
+            self.handle_load(loader,
+                             self._get_actual_langcode(langcode, options['use_local_prefix']),
+                             infilename,
+                             options['preview'],
+                             options['overwrite'])
 
 
     def _validate_langcode(self, langcode):
@@ -78,13 +90,22 @@ class Command(BaseCommand):
         else:
             flattened.save()
 
-    def handle_load(self, loader, langcode, infilename, preview, use_local_prefix):
+    def handle_load(self, loader, langcode, infilename, preview, overwrite):
             indata = i18n.flatformat_decode(open(infilename).read())
             try:
                 decoupled = i18n.DecoupleFlattened(loader, indata)
                 if preview:
-                    decoupled.print_result(langcode, use_local_prefix)
+                    decoupled.print_result(langcode)
                 else:
-                    files_written = decoupled.save(langcode, use_local_prefix)
+                    if decoupled.langcode_exists(langcode) and not overwrite:
+                        raise CommandError('"{0}" exists. Use --overwrite to overwrite the existing '
+                                           'translation with your translation.'.format(langcode))
+                    files_written = decoupled.save(langcode)
             except i18n.ErrorBase, e:
                 raise CommandError(str(e))
+
+    def _get_actual_langcode(self, langcode, use_local_prefix):
+        if use_local_prefix:
+            return 'local-' + langcode
+        else:
+            return langcode

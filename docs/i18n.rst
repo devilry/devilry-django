@@ -25,13 +25,13 @@ Using the GUI
 -------------
 
 If you want to make an entirely new translation, just start adding translations
-to the _translation_ column. The original English text is in the _Default_ column.
+to the *Translation*-column. The original English text is in the *Default*-column.
 
 
 Saving your changes
 -------------------
 
-Save your changes using the _export_ button. This will download the current
+Save your changes using the **Export**-button. This will download the current
 translation to you machine.
 
 
@@ -39,8 +39,8 @@ Load a translation
 ------------------
 
 If you want to change an existing translation, one you have saved, or one of
-the translations provided by Devilry, click the _Load_ button. Paste the contents
-of a file you have exported (see previous section), or choose _Load from server_.
+the translations provided by Devilry, click the **Load**-button. Paste the contents
+of a file you have exported (see previous section), or choose *Load from server*.
 
 
 
@@ -76,6 +76,9 @@ Where ``<language-code>`` is a single word (lower-case english letters, numbers,
 bit of information, such as what files are created.
 
 
+.. _i18n-avoid-collision:
+
+
 How do I avoid collisions with builtin translations?
 ----------------------------------------------------
 
@@ -85,9 +88,27 @@ collisions with builtin devilry translations. Developers may check out ``--help`
 to see how to get rid of the prefix.
 
 
+Prepare translations for the web
+--------------------------------
+
+TODO
+
+
+
 .. _i18n-geek:
 
 Geek mode --- Edit the translation files
 ########################################
 
-TODO
+Each application (in ``devilry/apps/``) keeps their translations in
+``static/APPNME/i18n/``. Just copy ``messages.yaml`` into a file named
+``messages_<langcode>.yaml`` where ``<langcode>`` is a unique identfier for
+your translation. For translations for local use (not intended to be
+distributed with Devilry), the ``<langcode>`` should be prefixed with
+``local-`` (See: :ref:`i18n-avoid-collision`).
+
+Example
+-------
+
+A good example is the translations for the ``core`` app, which lives in
+``devilry/apps/core/static/core/i18n/``.

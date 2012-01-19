@@ -226,14 +226,11 @@ class DecoupleFlattened(object):
             if not self.loader.key_exists(key):
                 logging.warning('{key} does not exists in any "{DEFAULT_FILE}"'.format(DEFAULT_FILE=DEFAULT_FILE, **vars()))
 
-    def _iter_exportdata(self, langcode, use_local_prefix):
-        prefix = ''
-        if use_local_prefix:
-            prefix = 'local-'
+    def _iter_exportdata(self, langcode):
         for appname, data in self.result.iteritems():
             appdir = get_appdir(appname)
             i18ndir = get_i18ndir(appdir, appname)
-            filename = join(i18ndir, prefix + get_messagesfilename(langcode))
+            filename = join(i18ndir, get_messagesfilename(langcode))
             yield appname, originalformat_encode(data), filename
 
 
@@ -244,14 +241,20 @@ class DecoupleFlattened(object):
                                           formatteddata=formatteddata,
                                           linesep=linesep)
 
-    def print_result(self, langcode, use_local_prefix):
-        for data in self._iter_exportdata(langcode, use_local_prefix):
+    def print_result(self, langcode):
+        for data in self._iter_exportdata(langcode):
             print
             print self._prettyformat_result(*data)
 
-    def save(self, langcode, use_local_prefix):
+    def langcode_exists(self, langcode):
+        for appname, formatteddata, filename in self._iter_exportdata(langcode):
+            if exists(filename):
+                return True
+        return False
+
+    def save(self, langcode):
         files_written = []
-        for appname, formatteddata, filename in self._iter_exportdata(langcode, use_local_prefix):
+        for appname, formatteddata, filename in self._iter_exportdata(langcode):
             open(filename, 'w').write(formatteddata.encode('utf-8'))
             files_written.append(filename)
             logging.info('Saved: %s%s', linesep, self._prettyformat_result(appname, formatteddata, filename))
