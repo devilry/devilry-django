@@ -19,6 +19,7 @@ class DevilryUserProfile(models.Model):
     """
     user = models.OneToOneField(User) # This field is required, and it must be named ``user`` (because the model is used as a AUTH_PROFILE_MODULE)
     full_name = models.CharField(max_length=300, blank=True, null=True)
+    languagecode = models.CharField(max_length=100)
 
     class Meta:
         app_label = 'core'
