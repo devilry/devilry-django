@@ -55,14 +55,16 @@ DEVILRY_I18N_EXPORTDIR = None
 
 
 # Default language.
-DEVILRY_I18N_DEFAULT_LANGCODE = 'en'
+DEVILRY_I18N_DEFAULT_LANGCODE = 'DEFAULT'
 
 # Maps langcode to translation file
 # See: devilry/apps/i18n/static/i18n/messages*
-# for available translations.
+# for available translations
+# Use '' for the default locale.
 DEVILRY_I18N_LANGCODEMAPPING = {
-                                'en': '_en_higheredu',
-                                'en-US': '_en_higheredu',
+                                'DEFAULT': '',
+                                #'en': '_en_higheredu',
+                                #'en-US': '_en_higheredu'
                                }
 
 
