@@ -24,8 +24,9 @@ http://devilry.ifi.uio.no/i18n/translategui.
 Using the GUI
 -------------
 
-If you want to make an entirely new translation, just start adding translations
-to the *Translation*-column. The original English text is in the *Default*-column.
+If you want to make an entirely new translation, click the **New**-button and
+start adding translations to the *Translation*-column. The original English
+text is in the *Default*-column.
 
 
 Saving your changes
@@ -41,6 +42,12 @@ Load a translation
 If you want to change an existing translation, one you have saved, or one of
 the translations provided by Devilry, click the **Load**-button. Paste the contents
 of a file you have exported (see previous section), or choose *Load from server*.
+
+
+Edit long lines
+---------------
+
+Double click on the default text to open a window that lets you edit long lines.
 
 
 
