@@ -30,9 +30,6 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.extjshelpers',
                   'devilry.apps.extjsux',
                   'devilry.apps.developertools',
-                  'devilry.apps.coredao',
-                  'devilry.apps.corerest',
-                  'devilry.dataconverter', # Needs to be here since it uses templates
 
                   'devilry.apps.approved_gradeeditor',
                   'devilry.apps.manual_gradeeditor',
