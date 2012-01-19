@@ -1,0 +1,69 @@
+.. _i18n:
+
+============================
+Translating Devilry
+============================
+
+
+.. _i18n-gui:
+
+Easy mode --- using the web-interface
+#####################################
+
+Translating Devilry using the web-gui is very simple, all you need is to
+understand English, and the language you are translating Devilry into.
+
+Finding the translation web-gui
+-------------------------------
+
+The translation GUI is available at ``/i18n/translategui`` on any Devilry
+instance. So, for example if you have access to Devilry at
+http://devilry.ifi.uio.no, you can translate Devilry using
+http://devilry.ifi.uio.no/i18n/translategui.
+
+Using the GUI
+-------------
+
+If you want to make an entirely new translation, just start adding translations
+to the _translation_ column. The original English text is in the _Default_ column.
+
+
+Saving your changes
+-------------------
+
+Save your changes using the _export_ button. This will download the current
+translation to you machine.
+
+
+Load a translation
+------------------
+
+If you want to change an existing translation, one you have saved, or one of
+the translations provided by Devilry, click the _Load_ button. Paste the contents
+of a file you have exported (see previous section), or choose _Load from server_.
+
+
+
+.. _i18n-sysadmin:
+
+Add translations to Devilry
+###########################
+
+If you have translated Devilry using the GUI as explained in :ref:`i18n-gui`,
+you can send your translation file (``devilry-translation.json``), to your
+local Devilry administrator, and they can follow the instructions in the rest
+of this section.
+
+
+How translations work
+---------------------
+
+Devilry translations 
+
+
+.. _i18n-geek:
+
+Geek mode --- Edit the translation files
+########################################
+
+TODO

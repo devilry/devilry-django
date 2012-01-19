@@ -3,6 +3,7 @@
     
     core.models
     core.deliverystore
+    i18n
 
     plugins
 
@@ -44,6 +45,12 @@ Plugin development
 * **The basics:** :ref:`plugins`
 * **Grade editors:** :ref:`Overview <apps.gradeeditors>`
 
+
+Translating Devilry
+######################################################################
+
+* :ref:`i18n-gui`
+* :ref:`i18n-geek`
 
 
 Simplified API
