@@ -54,6 +54,18 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
 DEVILRY_I18N_EXPORTDIR = None
 
 
+# Default language.
+DEVILRY_I18N_DEFAULT_LANGCODE = 'en'
+
+# Maps langcode to translation file
+# See: devilry/apps/i18n/static/i18n/messages*
+# for available translations.
+DEVILRY_I18N_LANGCODEMAPPING = {
+                                'en': '_en_higheredu',
+                                'en-US': '_en_higheredu',
+                               }
+
+
 #################################################
 # Settings without a default value
 #################################################
