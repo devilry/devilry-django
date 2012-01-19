@@ -1,13 +1,10 @@
 """
 
 """
-import inspect
 from django.http import HttpResponse, HttpResponseBadRequest
 
 from devilry.rest.error import InvalidContentTypeError
-from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
 import default
-from devilry.rest.utils import subdict
 
 
 class RestView():
