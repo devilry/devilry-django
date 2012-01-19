@@ -16,6 +16,10 @@ class DevilryUserProfile(models.Model):
 
         Since we require support for _any_ name, we use our own full_name
         field, and ignore the one in Django.
+
+    .. attribute:: languagecode
+
+        Used to store the preferred language for a user.
     """
     user = models.OneToOneField(User) # This field is required, and it must be named ``user`` (because the model is used as a AUTH_PROFILE_MODULE)
     full_name = models.CharField(max_length=300, blank=True, null=True)
