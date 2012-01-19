@@ -4,6 +4,22 @@ from utils import get_languagecode
 
 class LocaleMiddleware(object):
     """
+    Locale middleware.
+
+    Detects the current locale in this order:
+
+        1. If ``settings.DEBUG`` is ``True`` and 'locale' GET header, use the
+           locale in the header.
+        2. Use the 'languagecode' in the GET header if it is valid. If the user
+           is authenticated, store the language code as their preferred language.
+        3. If the user has a valid languagecode in their preferences, use it.
+        4. Check the ACCEPT_LANGUAGE HTTP header.
+
+    **2** makes it possible to use ``?languagecode=LANGCODE`` to change the
+    language preference.  Valid language codes are those in
+    ``DEVILRY_I18N_LANGCODEMAPPING``.
+
+    Preferred language code is stored in the ``languagecode`` field on the user profile.
     """
     def process_request(self, request):
         # For easy debugging
