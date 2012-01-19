@@ -8,7 +8,7 @@ from devilry.apps.i18n import i18n
 
 
 class Command(BaseCommand):
-    help = 'Create new subject.'
+    help = 'Manage translations.'
     args = ('{linesep}'
             '{indent}load <langcode> <infile>{linesep}'
             '{indent}export').format(linesep=linesep, indent='         ')
