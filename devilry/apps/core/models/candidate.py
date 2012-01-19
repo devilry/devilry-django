@@ -35,7 +35,7 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     assignment_group = models.ForeignKey('AssignmentGroup',
                                          related_name='candidates')
 
-    candidate_id = models.CharField(max_length=30, blank=True, null=True)
+    candidate_id = models.CharField(max_length=30, blank=True, null=True, help_text='An optinal candidate id. This can be anything as long as it is less than 30 characters.')
     identifier = models.CharField(max_length=30,
                                   help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
     full_name = models.CharField(max_length=300, blank=True, null=True,

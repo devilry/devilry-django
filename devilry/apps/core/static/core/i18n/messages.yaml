@@ -1,0 +1,5 @@
+core.node: Node
+core.subject: Subject
+core.period: Period
+core.assignment: Assignment
+core.periods.active: Active periods
