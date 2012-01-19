@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/common.css"
             type="text/css" media="screen" charset="utf-8"/>
 
-        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages_en_higheredu.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages{{ DEVILRY_I18N_CURRENT_LOCALE }}.js"></script>
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
         <!-- ** ExtJS ** -->
@@ -45,6 +45,7 @@
                 DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
                 DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
                 DEVILRY_COMMON_CSS: '{{DEVILRY_THEME_URL }}/common.css',
+                DEVILRY_I18N_CURRENT_LOCALE: '{{ DEVILRY_I18N_CURRENT_LOCALE }}',
                 DEVILRY_SORT_FULL_NAME_BY_LASTNAME: {{ DEVILRY_SORT_FULL_NAME_BY_LASTNAME|yesno:"true,false" }},
                 DEVILRY_LOGIN_URL: '{% url login %}'
             });
