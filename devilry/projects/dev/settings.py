@@ -20,6 +20,11 @@ INSTALLED_APPS += [
                    #'devilry.apps.gradeform_gradeeditor',
                    #'devilry.projects.dev.apps.test',
 
+                  # Under development
+                  'devilry.apps.coredao',
+                  'devilry.apps.corerest',
+                  'devilry.dataconverter', # Needs to be here since it uses templates
+
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
                    'devilry.restful',
