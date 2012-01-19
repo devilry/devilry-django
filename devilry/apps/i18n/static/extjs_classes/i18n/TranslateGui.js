@@ -12,6 +12,7 @@ Ext.define('devilry.i18n.TranslateGui', {
     ],
 
     initComponent: function() {
+        this.translationspath = Ext.String.format('{0}/i18n/translations', DevilrySettings.DEVILRY_STATIC_URL);
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry.i18n.TranslateGuiModel',
             autoSync: false,
@@ -83,7 +84,7 @@ Ext.define('devilry.i18n.TranslateGui', {
 
     _loadDefaults: function() {
         Ext.Ajax.request({
-            url: Ext.String.format('{0}/i18n/messages.json', DevilrySettings.DEVILRY_STATIC_URL),
+            url: Ext.String.format('{0}/messages.json', this.translationspath),
             scope: this,
             success: this._onLoadDefaults
         });
@@ -115,6 +116,7 @@ Ext.define('devilry.i18n.TranslateGui', {
             items: {
                 xtype: 'i18n-loadtranslationpanel',
                 index: this.index,
+                translationspath: this.translationspath,
                 listeners: {
                     scope: this,
                     exportdataLoaded: this._loadExistingTranslation
@@ -150,7 +152,7 @@ Ext.define('devilry.i18n.TranslateGui', {
 
     _loadIndex: function() {
         Ext.Ajax.request({
-            url: Ext.String.format('{0}/i18n/index.json', DevilrySettings.DEVILRY_STATIC_URL),
+            url: Ext.String.format('{0}/index.json', this.translationspath),
             scope: this,
             success: function(response) {
                 this.index = Ext.JSON.decode(response.responseText);

@@ -8,6 +8,11 @@ Ext.define('devilry.i18n.LoadTranslationPanel', {
      * @cfg
      */
     index: undefined,
+
+    /**
+     * @cfg
+     */
+    translationspath: undefined,
     
     initComponent: function() {
         this._createIndexStore();
@@ -65,7 +70,7 @@ Ext.define('devilry.i18n.LoadTranslationPanel', {
         var record = records[0];
         var name = record.get('name');
         Ext.Ajax.request({
-            url: Ext.String.format('{0}/i18n/{1}.json', DevilrySettings.DEVILRY_STATIC_URL, name),
+            url: Ext.String.format('{0}/{1}.json', this.translationspath, name),
             scope: this,
             success: function(response) {
                 var data = response.responseText;
