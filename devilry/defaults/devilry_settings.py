@@ -26,7 +26,7 @@ DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
 DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
                   "Please do not respond to this email."
 
-DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
+DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 ## Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
