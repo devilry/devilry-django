@@ -1,5 +1,5 @@
 from os.path import join, dirname, isdir, exists
-from os import listdir, linesep
+from os import listdir, linesep, makedirs
 import re
 import json
 import logging
@@ -128,14 +128,17 @@ class Flatten(Base):
 
     def _parse_all_subsets(self, i18ndir, default_messages):
         """ Add all subsets (I.E: messages_en.yaml, messages_nb.yaml, ...) to results. """
-        for filename in listdir(i18ndir):
+        for filename in self._listdir(i18ndir):
             match = re.match(ORIGINALFORMAT_FILEPATT, filename)
             if match:
                 setname = match.groupdict()['setname']
                 self._add_to_set(setname, join(i18ndir, filename), default_messages)
 
+    def _listdir(self, i18ndir):
+        return listdir(i18ndir)
+
     def _add_to_set(self, setname, messagesfile, default_messages=None):
-        messages = originalformat_decode(open(messagesfile).read())
+        messages = self._read_messagesfile(messagesfile)
         for key in messages:
             if not key in default_messages:
                 raise InvalidProperty("{messagesfile} contains property, '{key}', "
@@ -144,6 +147,9 @@ class Flatten(Base):
             self.result[setname].update(messages)
         else:
             self.result[setname] = messages
+
+    def _read_messagesfile(self, messagesfile):
+        return originalformat_decode(open(messagesfile).read())
 
     def _get_merged_data_for_subset(self, setname):
         merged_data = {}
@@ -175,28 +181,43 @@ class Flatten(Base):
             return settings.DEVILRY_I18N_EXPORTDIR
         else:
             thisappdir = dirname(import_module('devilry.apps.i18n').__file__)
-            return join(thisappdir, 'static', 'i18n')
+            return join(thisappdir, 'static', 'i18n', 'translations')
+
+    def _create_exportdir(self, exportdir):
+        if not exists(exportdir):
+            makedirs(exportdir)
+
+    def _savefile(self, filename, content):
+        """ Wrap writes to make them easy to moch. """
+        open(filename, 'w').write(content)
+
+    def _save_js(self, exportdir, name, flatformatdata):
+        jsfilename = join(exportdir, name + '.js')
+        logging.info('Writing ' + jsfilename)
+        jsdata = 'var i18n = {0};\n'.format(flatformatdata)
+        self._savefile(jsfilename, jsdata)
+
+    def _save_json(self, exportdir, name, flatformatdata):
+        filename = join(exportdir, name + EXPORTFILE_SUFFIX)
+        logging.info('Writing ' + filename)
+        flatformatdata = flatformatdata.encode('utf-8')
+        self._savefile(filename, flatformatdata)
+
+    def _save_index(self, exportdir, names):
+        """ Save index for easier GUI integration. """
+        indexfile = join(exportdir, INDEXFILE_NAME)
+        logging.info('Writing ' + indexfile)
+        self._savefile(indexfile, json.dumps(names))
 
     def save(self):
         exportdir = self._get_exportddir()
+        self._create_exportdir(exportdir)
         names = []
         for name, flatformatdata, data in self.iter_flatformatencoded(pretty=True):
             names.append(name)
-            filename = join(exportdir, name + EXPORTFILE_SUFFIX)
-            logging.info('Writing ' + filename)
-            flatformatdata = flatformatdata.encode('utf-8')
-            open(filename, 'w').write(flatformatdata)
-
-            # Save as Javascript for convenience
-            jsfilename = join(exportdir, name + '.js')
-            logging.info('Writing ' + jsfilename)
-            jsdata = 'var i18n = {0};\n'.format(flatformatdata)
-            open(jsfilename, 'w').write(jsdata)
-
-        # Save index for easier GUI integration
-        indexfile = join(exportdir, INDEXFILE_NAME)
-        logging.info('Writing ' + indexfile)
-        open(indexfile, 'w').write(json.dumps(names))
+            self._save_js(exportdir, name, flatformatdata)
+            self._save_json(exportdir, name, flatformatdata)
+            self._save_index(exportdir, names)
 
 
 class DecoupleFlattened(object):
