@@ -4,6 +4,7 @@ Ext.define('devilry.i18n.TranslateGui', {
     title: 'Translate Devilry',
     bodyPadding: 5,
     requires: [
+        'devilry.i18n.MemoryStorageProxyWithExtraEvents',
         'devilry.i18n.TranslateGuiModel',
         'devilry.i18n.TranslateGuiGrid',
         'devilry.jsfiledownload.JsFileDownload',
@@ -11,12 +12,22 @@ Ext.define('devilry.i18n.TranslateGui', {
         'devilry.i18n.EditRecordForm'
     ],
 
+    localStorageKey: 'devilry-i18n-translategui',
+
     initComponent: function() {
+        if (typeof(localStorage) == 'undefined' ) {
+            alert('Your browser does not support HTML5 localStorage. Try upgrading.');
+            return;
+        }
         this.translationspath = Ext.String.format('{0}/i18n/translations', DevilrySettings.DEVILRY_STATIC_URL);
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry.i18n.TranslateGuiModel',
-            autoSync: false,
-            proxy: 'memory'
+            autoSync: true,
+            proxy: Ext.create('devilry.i18n.MemoryStorageProxyWithExtraEvents'),
+            listeners: {
+                scope: this,
+                datachanged: this._onDataChanged
+            }
         });
         Ext.apply(this, {
             layout: 'border',
@@ -34,7 +45,6 @@ Ext.define('devilry.i18n.TranslateGui', {
             listeners: {
                 scope: this,
                 render: function() {
-                    this.getEl().mask('Loading...');
                     this._loadDefaults();
                 }
             },
@@ -54,9 +64,39 @@ Ext.define('devilry.i18n.TranslateGui', {
                     scope: this,
                     click: this._onLoad
                 }
+            }, {
+                xtype: 'button',
+                text: 'New',
+                listeners: {
+                    scope: this,
+                    click: this._onNew
+                }
             }]
         });
         this.callParent(arguments);
+    },
+
+    _onNew: function() {
+        this._clear();
+        this._addDefaultsToStore();
+    },
+
+    _clear: function() {
+        this.store.removeAll();
+        localStorage.removeItem(this.localStorageKey);
+    },
+
+    _onDataChanged: function() {
+        localStorage.setItem(this.localStorageKey, this._exportJson());
+    },
+
+    _loadFromLocalStorage: function() {
+        if('localStorage' in window && window['localStorage'] !== null) {
+            
+        } else {
+            //localStorage.setItem("name", "Hello World!");
+            alert("Your browser does not support HTML5 localStorage. Try upgrading.");
+        }
     },
 
     _onDblClick: function(view, record) {
@@ -82,7 +122,15 @@ Ext.define('devilry.i18n.TranslateGui', {
         }).show();
     },
 
+    _onRequiredFilesLoaded: function() {
+        localData = localStorage.getItem(this.localStorageKey);
+        if(localData !== null) {
+            this._loadExistingTranslation(localData);
+        }
+    },
+
     _loadDefaults: function() {
+        this.getEl().mask('Loading...');
         Ext.Ajax.request({
             url: Ext.String.format('{0}/messages.json', this.translationspath),
             scope: this,
@@ -91,14 +139,20 @@ Ext.define('devilry.i18n.TranslateGui', {
     },
 
     _onLoadDefaults: function(response) {
-        var defaults = Ext.JSON.decode(response.responseText);
-        Ext.Object.each(defaults, function(key, value) {
+        this.defaults = Ext.JSON.decode(response.responseText);
+        this._loadIndex();
+    },
+
+    _addDefaultsToStore: function() {
+        this.store.suspendEvents();
+        Ext.Object.each(this.defaults, function(key, value) {
             this.store.add({
                 key: key,
                 defaultvalue: value
             });
         }, this);
-        this._loadIndex();
+        this.store.resumeEvents();
+        this.store.fireEvent('datachanged');
     },
 
     _onExport: function() {
@@ -126,7 +180,10 @@ Ext.define('devilry.i18n.TranslateGui', {
     },
 
     _loadExistingTranslation: function(jsondata) {
+        this._clear();
+        this._addDefaultsToStore();
         var translation = Ext.JSON.decode(jsondata);
+        this.store.suspendEvents();
         Ext.each(this.store.data.items, function(record, index) {
             record.set('translation', '');
             record.commit();
@@ -136,6 +193,8 @@ Ext.define('devilry.i18n.TranslateGui', {
             record.set('translation', value);
             record.commit();
         }, this);
+        this.store.resumeEvents();
+        this.store.fireEvent('datachanged');
     },
 
     _exportJson: function() {
@@ -157,6 +216,7 @@ Ext.define('devilry.i18n.TranslateGui', {
             success: function(response) {
                 this.index = Ext.JSON.decode(response.responseText);
                 this.getEl().unmask();
+                this._onRequiredFilesLoaded();
             }
         });
     }
