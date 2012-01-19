@@ -77,17 +77,17 @@ class TestFlatten(TestCase):
 
 class TestUtils(TestCase):
     def test_get_languagecode(self):
-        self.assertEquals(utils.get_languagecode('en-US,en;q=0.8', {'en-US': ''}),
+        self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en-US': ''}),
                           'en-US')
-        self.assertEquals(utils.get_languagecode('en-US,en;q=0.8', {'en': ''}),
+        self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en': ''}),
                           'en')
-        self.assertEquals(utils.get_languagecode('en-US,en;q=0.8', {'no-NB': ''}),
+        self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'no-NB': ''}),
                           None)
-        self.assertEquals(utils.get_languagecode('en-US,en;q=0.4,no-NB,no;q=0.8', {'no': '', 'en-US': ''}),
+        self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.4,no-NB,no;q=0.8', {'no': '', 'en-US': ''}),
                           'en-US')
-        self.assertEquals(utils.get_languagecode('en-US,en;q=0.4,no-NB,no;q=0.8', {'no': '', 'en': ''}),
+        self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.4,no-NB,no;q=0.8', {'no': '', 'en': ''}),
                           'no')
 
     #def test_get_languagecode(self):
-        #self.assertEquals(utils.get_languagecode('en-US,en;q=0.8', {'en-US': ''}),
+        #self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en-US': ''}),
                           #'en-US')
