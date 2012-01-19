@@ -68,3 +68,8 @@ devilry/projects/dev/deliverystorehier/
 workspace.xml
 tasks.xml
 .idea/libraries/
+
+
+# Translations
+devilry/apps/i18n/static/i18n/translations/
+messages_local-*
