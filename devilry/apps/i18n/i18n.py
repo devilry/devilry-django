@@ -1,5 +1,5 @@
 from os.path import join, dirname, isdir, exists
-from os import listdir
+from os import listdir, linesep
 import re
 import json
 import logging
@@ -72,6 +72,7 @@ class Base(object):
         return originalformat_decode(open(join(i18ndir, filename)).read())
 
     def load_default_messagefile(self, i18ndir):
+        logging.debug('Loading messages from: {0}'.format(i18ndir))
         return self.load_messagefile(i18ndir)
 
 
@@ -101,7 +102,9 @@ class Loader(Base):
 
     def key_exists(self, key):
         for appname, appdata in self._data.iteritems():
-            return key in appdata
+            if key in appdata:
+                return True
+        return False
 
     def iterdata(self):
         for appname, i18ndir in self._i18ndirs:
@@ -223,20 +226,33 @@ class DecoupleFlattened(object):
             if not self.loader.key_exists(key):
                 logging.warning('{key} does not exists in any "{DEFAULT_FILE}"'.format(DEFAULT_FILE=DEFAULT_FILE, **vars()))
 
-    def _iter_originalformat(self):
+    def _iter_exportdata(self, langcode, use_local_prefix):
+        prefix = ''
+        if use_local_prefix:
+            prefix = 'local-'
         for appname, data in self.result.iteritems():
-            yield appname, originalformat_encode(data)
-
-    def print_result(self):
-        for appname, formatteddata in self._iter_originalformat():
-            print
-            print "##", appname
-            print formatteddata
-
-    def save(self, langcode):
-        for appname, formatteddata in self._iter_originalformat():
             appdir = get_appdir(appname)
             i18ndir = get_i18ndir(appdir, appname)
-            filename = join(i18ndir, get_messagesfilename(langcode))
-            logging.info('Writing ' + filename)
+            filename = join(i18ndir, prefix + get_messagesfilename(langcode))
+            yield appname, originalformat_encode(data), filename
+
+
+    def _prettyformat_result(self, appname, formatteddata, filename):
+        return ('## App: {appname}{linesep}'
+                '## Filename: {filename}{linesep}'
+                '{formatteddata}').format(appname=appname, filename=filename,
+                                          formatteddata=formatteddata,
+                                          linesep=linesep)
+
+    def print_result(self, langcode, use_local_prefix):
+        for data in self._iter_exportdata(langcode, use_local_prefix):
+            print
+            print self._prettyformat_result(*data)
+
+    def save(self, langcode, use_local_prefix):
+        files_written = []
+        for appname, formatteddata, filename in self._iter_exportdata(langcode, use_local_prefix):
             open(filename, 'w').write(formatteddata.encode('utf-8'))
+            files_written.append(filename)
+            logging.info('Saved: %s%s', linesep, self._prettyformat_result(appname, formatteddata, filename))
+        return files_written

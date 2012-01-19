@@ -58,7 +58,31 @@ of this section.
 How translations work
 ---------------------
 
-Devilry translations 
+Devilry is a set of independent Django applications. Each application manage
+its own translations. Before translations can be used in production, we merge
+translations from all apps into a single file for each language/locale.
+
+
+Decoupling translations from the GUI
+------------------------------------
+
+When you receive a translation created as explained in :ref:`i18n-gui`, you
+have to decouple the translation and choose the language name using
+the ``devilry_i18n`` command as so::
+
+    $ bin/django_production.py devilry_i18n load <language-code> /path/to/devilry-translation.json
+
+Where ``<language-code>`` is a single word (lower-case english letters, numbers, underscore and dash). Add ``-v2`` to show a
+bit of information, such as what files are created.
+
+
+How do I avoid collisions with builtin translations?
+----------------------------------------------------
+
+Your translation files will be prefixed with ``local-``. Translations
+with this prefix is never added to Devilry, and is therefore safe from future
+collisions with builtin devilry translations. Developers may check out ``--help``
+to see how to get rid of the prefix.
 
 
 .. _i18n-geek:
