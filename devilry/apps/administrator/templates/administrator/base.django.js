@@ -5,10 +5,6 @@
     {{ block.super }}
     var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/administrator/';
 
-    {% for RestfulCls in restfulapi.values %}
-        {{ RestfulCls|extjs_combobox_model:"Search" }};
-        {{ RestfulCls|extjs_store:"Search" }};
-    {% endfor %}
 {% endblock %}
 
 {% block onready %}

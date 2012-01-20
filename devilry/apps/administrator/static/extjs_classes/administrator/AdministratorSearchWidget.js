@@ -58,7 +58,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             searchResultItems: [{
                 xtype: 'searchresults',
                 title: 'Nodes',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedNodeStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedNode'),
                 filterconfig: {
                     type: 'node'
                 },
@@ -72,7 +72,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Subjects',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedSubjectStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedSubject'),
                 filterconfig: {
                     type: 'subject'
                 },
@@ -86,7 +86,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Periods',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedPeriodStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedPeriod'),
                 filterconfig: {
                     type: 'period'
                 },
@@ -100,7 +100,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedAssignment'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
                 resultitemConfig: {
                     tpl: this.assignmentRowTpl,
@@ -116,7 +116,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
                     tpl: this.assignmentgroupRowTpl,
@@ -128,7 +128,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Deliveries',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeliveryStoreSearch'),
+                store: this._createStore('devilry.apps.administrator.simplified.SimplifiedDelivery'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
                     tpl: this.deliveryRowTpl,
@@ -140,5 +140,16 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    _createStore: function(modelname) {
+        var model = Ext.ModelManager.getModel(modelname);
+        var store = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
+        });
+        return store;
     }
 });
