@@ -156,3 +156,6 @@ LOGGING = {
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_HOST = 'smtp.example.com'
 #EMAIL_PORT = 25
+
+#DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = None
+#DEVILRY_FSHIERDELIVERYSTORE_ROOT = None
