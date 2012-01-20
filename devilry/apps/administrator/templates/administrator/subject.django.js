@@ -9,10 +9,6 @@
 {% endblock %}
 
 
-{% block appjs %}
-    {{ block.super }}
-{% endblock %}
-
 {% block onready %}
     {{ block.super }}
 
