@@ -67,7 +67,7 @@ def get_extjs_modelname(restfulcls, modelnamesuffix=''):
                                                           modelnamesuffix=modelnamesuffix)
     return modelname
 
-def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=''):
+def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix='', pretty=False):
     """
     Create an extjs model from the given restful class.
 
@@ -79,6 +79,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         passing through validations in the RESTful wrapper.
     :param modelnamesuffix:
         See :func:`~devilry.apps.extjshelpers.modelintegration.get_extjs_modelname`.
+    :param pretty:
+        Prettyformat output.
     """
     modelfields = []
     for fieldname, exttype in _iter_fields(restfulcls._meta.simplified,
@@ -89,10 +91,14 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         modelfields.append({'name': fake_fieldname, 'type': 'auto'})
     modelmeta = restfulcls._meta.simplified._meta.model._meta
     js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
+    if pretty:
+        jsmodelfields = '\n    '.join(json.dumps(modelfields, indent=4).split('\n'))
+    else:
+        jsmodelfields = json.dumps(modelfields)
     return """Ext.define('{modelname}', {{
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
-    fields: {modelfields},
+    fields: {jsmodelfields},
     idProperty: '{idprop}',
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
         url: '{resturl}',
@@ -110,7 +116,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         }}
     }})
 }})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
-              modelfields = json.dumps(modelfields),
+              jsmodelfields = jsmodelfields,
               idprop = modelmeta.pk.name,
               resturl = restfulcls.get_rest_url(),
               js_result_fieldgroups=js_result_fieldgroups)
