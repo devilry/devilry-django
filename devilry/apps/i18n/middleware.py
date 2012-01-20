@@ -20,6 +20,8 @@ class LocaleMiddleware(object):
     ``DEVILRY_I18N_LANGCODEMAPPING``.
 
     Preferred language code is stored in the ``languagecode`` field on the user profile.
+
+    Uses :func:`devilry.apps.i18n.utils.get_languagecode`.
     """
     def process_request(self, request):
         # For easy debugging

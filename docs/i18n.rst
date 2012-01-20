@@ -128,3 +128,17 @@ Example
 
 A good example is the translations for the ``core`` app, which lives in
 ``devilry/apps/core/static/core/i18n/``.
+
+
+.. _i18n-middleware:
+
+Localization middleware
+#######################
+
+.. automodule:: devilry.apps.i18n.middleware
+
+
+Utils
+#######################
+
+.. automodule:: devilry.apps.i18n.utils
