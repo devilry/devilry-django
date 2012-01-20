@@ -6,6 +6,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 
 from devilry.apps.i18n import i18n
+from devilry.utils.command import setup_logging
 
 
 class Command(BaseCommand):
@@ -43,7 +44,7 @@ class Command(BaseCommand):
             raise CommandError('An action is required. See --help.')
         action = args[0]
 
-        self.setup_logging(verbosity)
+        setup_logging(verbosity)
         try:
             loader = i18n.Loader()
         except i18n.ErrorBase, e:
@@ -68,17 +69,6 @@ class Command(BaseCommand):
     def _validate_langcode(self, langcode):
         if not re.match('[a-z0-9_-]+', langcode):
             raise CommandError('<language-code> can only contain the following letters: "a-z0-9_-".')
-
-    def setup_logging(self, verbosity):
-        if verbosity < 1:
-            loglevel = logging.ERROR
-        elif verbosity == 1:
-            loglevel = logging.WARNING
-        elif verbosity == 2:
-            loglevel = logging.INFO
-        else:
-            loglevel = logging.DEBUG
-        logging.basicConfig(level=loglevel)
 
     def handle_export(self, loader, preview):
         try:
