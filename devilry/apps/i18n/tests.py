@@ -67,7 +67,6 @@ class TestFlatten(TestCase):
     def test_save(self):
         flatten = self.MochFlatten()
         flatten.save()
-        print flatten.saved_filecontents
         self.assertEquals(flatten.saved_filenames,
                           ['/exportdir/messages.js', '/exportdir/messages.json', '/exportdir/index.json'])
         self.assertEquals(len(flatten.saved_filecontents), 3)
@@ -76,7 +75,7 @@ class TestFlatten(TestCase):
 
 
 class TestUtils(TestCase):
-    def test_get_languagecode(self):
+    def test_get_languagecode_from_httpheader(self):
         self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en-US': ''}),
                           'en-US')
         self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en': ''}),
@@ -88,6 +87,41 @@ class TestUtils(TestCase):
         self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.4,no-NB,no;q=0.8', {'no': '', 'en': ''}),
                           'no')
 
-    #def test_get_languagecode(self):
-        #self.assertEquals(utils.get_languagecode_from_httpheader('en-US,en;q=0.8', {'en-US': ''}),
-                          #'en-US')
+    class MochUser(object):
+        class MochProfile(object):
+            def __init__(self, languagecode):
+                self.languagecode = languagecode
+        def __init__(self, is_authenticated, languagecode=None):
+            self._is_authenticated = is_authenticated
+            self._languagecode = languagecode
+        def is_authenticated(self):
+            return self._is_authenticated
+        def get_profile(self):
+            return self.MochProfile(self._languagecode)
+
+    def test_get_languagecode(self):
+        self.assertEquals(utils.get_languagecode(self.MochUser(is_authenticated=False),
+                                                 accept_language_header=None,
+                                                 languagecodemapping={},
+                                                 default_languagecode="DEFAULT"),
+                         "DEFAULT")
+        self.assertEquals(utils.get_languagecode(self.MochUser(is_authenticated=True, languagecode='en'),
+                                                 accept_language_header=None,
+                                                 languagecodemapping={'en': 'unused'},
+                                                 default_languagecode="DEFAULT"),
+                         "en")
+        self.assertEquals(utils.get_languagecode(self.MochUser(is_authenticated=True, languagecode='INVALID'),
+                                                 accept_language_header=None,
+                                                 languagecodemapping={'en': 'UNUSED'},
+                                                 default_languagecode="DEFAULT"),
+                         "DEFAULT")
+        self.assertEquals(utils.get_languagecode(self.MochUser(is_authenticated=False),
+                                                 accept_language_header='nb,en-US;q=1.0,en;q=0.1',
+                                                 languagecodemapping={'en': 'unused'},
+                                                 default_languagecode="DEFAULT"),
+                         "en")
+        self.assertEquals(utils.get_languagecode(self.MochUser(is_authenticated=False),
+                                                 accept_language_header='nb,en-US;q=1.0,en;q=0.1',
+                                                 languagecodemapping={'ru': 'unused'},
+                                                 default_languagecode="DEFAULT"),
+                         "DEFAULT")

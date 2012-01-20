@@ -40,6 +40,6 @@ class LocaleMiddleware(object):
                 return
 
         # Fall back on getting language code from request.user or HTTP_ACCEPT_LANGUAGE
-        languagecode = get_languagecode(request)
+        languagecode = get_languagecode(request.user, request.META.get('HTTP_ACCEPT_LANGUAGE'))
         locale = settings.DEVILRY_I18N_LANGCODEMAPPING[languagecode]
         request.currentlocale = locale

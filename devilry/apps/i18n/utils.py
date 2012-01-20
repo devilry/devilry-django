@@ -11,18 +11,29 @@ def get_languagecode_from_httpheader(accept_language_header, languagemapping):
     return None
 
 
-def get_languagecode(request):
-    if request.user.is_authenticated():
-        languagecode = request.user.get_profile().languagecode
-        if languagecode and languagecode in settings.DEVILRY_I18N_LANGCODEMAPPING:
+def get_languagecode(user, accept_language_header=None,
+                     languagecodemapping=settings.DEVILRY_I18N_LANGCODEMAPPING,
+                     default_languagecode=settings.DEVILRY_I18N_DEFAULT_LANGCODE):
+    """
+    Get the appropriate language code from the provided information:
+
+    1. If the user has a valid languagecode in their preferences, use it.
+    2. Check the ACCEPT_LANGUAGE HTTP header, and use it as long as parsing it yields a
+       language code that is is ``languagecodemapping``.
+    3. Return the default_languagecode as the last fallback.
+
+    As long as ``default_languagecode`` is in ``languagecodemapping``, this function
+    is guaranteed to yield a language code that is present as a key in
+    ``languagecodemapping``.
+    """
+    if user.is_authenticated():
+        languagecode = user.get_profile().languagecode
+        if languagecode and languagecode in languagecodemapping:
             return languagecode
 
-    if not languagecode:
-        accept = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-        if accept:
-            languagecode = get_languagecode_from_httpheader(accept, settings.DEVILRY_I18N_LANGCODEMAPPING)
-            if languagecode:
-                return languagecode
+    if accept_language_header:
+        languagecode = get_languagecode_from_httpheader(accept_language_header, languagecodemapping)
+        if languagecode:
+            return languagecode
 
-    if not languagecode:
-        return settings.DEVILRY_I18N_DEFAULT_LANGCODE
+    return default_languagecode
