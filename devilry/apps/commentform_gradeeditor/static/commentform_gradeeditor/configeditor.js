@@ -4,49 +4,41 @@
     frame: false,
     xtype: 'form', // Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.
     help: '<h1>Introduction:</h1><p>'+
-        'In this gradeeditor you define a set of fields that your examiners fill in when they give feeback to students.'+
+        'In this grade editor you define a list of positive and negative feedback to the students. The examiners may make any selection from the list and their selections will be presented to the students. Each feedback element may give or take a defined number of points which are added up and compared against a minimum to get the assignment approved.</p>\n'+
         '<h2>Points required to pass</h2>'+
         '<p>Fill in the number of points in total a student needs to pass the assignment. The points earned in the fields you define (see below) will be summed up and tested '+
         'against this number.</p>' +
-        '<h2>Specify fields</h2>' +
-        '\nFields are structured like this:</p><p>'+
-        '<pre>fieldtype : points : default\n'+
-        'fieldlabel\n'+
-        ';;\n</pre></p><p>'+
-        '\nThere are two different types of fields:'+
-        '</p>' +
-        '<h3>Field type: numberfield</h3><p>'+
-        'A numberfield is a field where an examiner sets the number of points earned in this part of the assignment. A numberfield is defined like this:'+
-        '</p><p>'+
-        '<pre>number : 42 : 0\n'+
-        'Enter number of points for part 1.1:\n'+
-        ';;\n</pre></p><p>'+
-        '\nIn this case <em>number</em> specifies that you want a numberfield, <em>42</em> is the maximum number of points one can achieve in this part of the assignment, and '+
-        '<em>Enter number of points for part 1.1:</em> is the information shown to the examiner for this field.'+
-        '</p>'+
-        '<h3>Field type: checkbox</h3><p>'+
-        'A checkbox is ideal for <em>Approved/Not approved</em> scenarios, since its either checked or not! A checkbox is defined much like the numberfield:'+
-        '</p><p>'+
-        '<pre>check : 42 : 1\n'+
-        'Is part 1.1 approved?\n'+
-        ';;</pre></p><p>'+
-        '\nBut here you type <em>check</em> to specify that you want a numberfield, and <em>42</em> is the number of points one will get if the examiner checks the checkbox! And '+
-        '<em>Is part 1.1 approved?</em> is the information shown to the examiner for this field.'+
-        '</p>' +
-        '<h3>Complete example</h3>' +
-        '<pre>'+
-        'number : 8 : 3\n' +
-        'Rate the solution to question 1 on a scale from 0 to 8\n' +
+        '<h2>Set up the feedback list</h2>\n' +
+        '<p>Each element in the feedback list is defined as a checkbox. This resembels the syntax in the Simple Schema/Form grade editor. A feedback element is structured like this:</p>\n' +
+        '<p><pre>check : points : default\n' +
+        'comment\n' +
+        ';;\n</pre></p>' +
+        '<p>The number of points may be any integer number, both positive and negative. The default may be either 0 or 1, to enable or disable the feedback element by default. The comment is visible for both the examiner and student.</p>\n' +
+        '<h2>Set up an adjustment field</h2>\n' +
+        '<p>In case you want to give the examiners an option to adjust the final number of given points, you may define a number field to adjust the sum calculated by the above feedback fields. This can for instance be used if the examiners finds errors or positive remarks that are not defined in the feedback list.</p>\n' +
+        '<p><pre>number : maxpoints : default\n' +
+        'comment\n' +
+        ';;\n</pre></p>' + 
+        '<p>The comment is in this case only shown to the examiner.</p>\n' +
+        '<h2>A working example</h2>\n' +
+        'Below is a working example that may be used as a reference for making your own feedback list.\n' +
+        '<p><pre>' +
+        'check : 10 : 1\n' +
+        'You have remembered to include a figure. That is good.\n' +
         ';;\n' +
-        'check : 20 : 1\n' +
-        'Is question 2 approved (20 points)?\n' +
+        'check : 20 : 0\n' +
+        'Your conclusion is well written. I believe you have understood the problem correctly.\n' +
         ';;\n' +
-        'number : 30 : 15\n' +
-        'Rate the overall quality of the solutions presented by the student on a scale from 0 to 30\n' +
+        'check : -10 : 0\n' +
+        'The program you have written does not compile.\n' +
         ';;\n' +
-        '</pre>',
-
-        
+        'check : -20 : 0\n' +
+        'You have not answered the discussion questions.\n' +
+        ';;\n' +
+        'number : 100 : 0\n' +
+        'Use this field to adjust the number of points given to the student.\n'+
+        ';;' +
+        '</pre></p>', 
     
     layout: {
         type: 'vbox',
