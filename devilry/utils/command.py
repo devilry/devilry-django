@@ -15,3 +15,7 @@ def setup_logging(verbosity):
     else:
         loglevel = logging.DEBUG
     logging.basicConfig(level=loglevel)
+
+
+def get_verbosity(options):
+    return int(options.get('verbosity', '1'))
