@@ -5,18 +5,13 @@
     {{ block.super }}
     Ext.require([
         'devilry.administrator.node.Layout',
-        'devilry.administrator.NodeBrowser'
+        //'devilry.administrator.NodeBrowser'
     ]);
 {% endblock %}
 
 
 {% block appjs %}
     {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedNode|extjs_model:"admins" }};
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }};
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }};
-    {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }};
-
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model:";List" }};
     {{ restfulapi.RestfulSimplifiedNode|extjs_model:";List" }};
 {% endblock %}
@@ -42,6 +37,8 @@
             padding: {left: 20, right: 20}
         }]
     });
+
+    {% comment %}
     Ext.widget('window', {
         layout: 'fit',
         width: 500,
@@ -49,4 +46,5 @@
 //        items: [Ext.create('devilry.administrator.NodeBrowser')]
         items: [Ext.create('devilry.administrator.NodeTree')]
     }).show();
+    {% endcomment %}
 {% endblock %}
