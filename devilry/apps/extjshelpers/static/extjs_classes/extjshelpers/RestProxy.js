@@ -67,6 +67,24 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         this.extraParams.getdata_in_qrystring = true;
     },
 
+
+    /**
+     * Copy the extraParams and url of this proxy into a config object. Apply
+     * the given options to the config, and create a new proxy object.
+     */
+    copy: function(options) {
+        var config = {
+            extraParams: this.extraParams,
+            url: this.url
+        };
+        if(options) {
+            Ext.apply(config, options);
+        }
+        var newproxy = Ext.create('devilry.extjshelpers.RestProxy', config);
+        return newproxy;
+    },
+    
+
     /**
      * Overrides error handling. Adds error information to the ``operation`` parameter.
      *
