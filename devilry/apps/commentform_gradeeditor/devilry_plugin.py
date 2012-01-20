@@ -13,17 +13,17 @@ from devilry.apps.markup.parse_markdown import markdown_full
 
 
 class CommentForm(JsonRegistryItem):
-"""
-The CommentForm grade editor is based on the Simple Schema/Form grade editor, 
-with the addition that comments to the students may be generated directly from 
-the selected checkboxes. An administrator may set the checkbox fields up with 
-a predefined number of points for each selected checkbox. The number of points 
-may be negative to give reduced points when errors are made by the student. 
-The number of points are summarized and a limit is set as to how many points 
-are needed for approval. General comments may be added in the usual feedback 
-box in addition to adjusting the number of point by an arbitrary positive
-or negative number.
-"""
+    """
+    The CommentForm grade editor is based on the Simple Schema/Form grade editor, 
+    with the addition that comments to the students may be generated directly from 
+    the selected checkboxes. An administrator may set the checkbox fields up with 
+    a predefined number of points for each selected checkbox. The number of points 
+    may be negative to give reduced points when errors are made by the student. 
+    The number of points are summarized and a limit is set as to how many points 
+    are needed for approval. General comments may be added in the usual feedback 
+    box in addition to adjusting the number of point by an arbitrary positive
+    or negative number.
+    """
     gradeeditorid = 'commentform'
     title = 'Comment form'
     description = '<p>Based on the Simple Schema/Form, with the addition of comments for each checkbox. It will generate an automated feedback to the student based on the selected checkboxes. You set up a very simple schema. This schema may contain multiple input fields. An input field is a text (<em>I.E: "Question 2.3"</em>) and corresponding input field (number-input or checkbox). You may choose the number of points required to pass the assignment.</p><p>Examiners fill out this schema and an optional feedback text. A numeric grade (I.E.: <em>64/100</em>) is calculated from their input.</p>'
