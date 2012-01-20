@@ -1,5 +1,6 @@
 """
-A plugin for the CommentForm grade editor. See the class documentation for more details.
+A plugin for the CommentForm grade editor. Based on the Simple Schema/Form grade
+editor. See the class documentation for more details.
 
 @author Svenn-Arne Dragly
 """
