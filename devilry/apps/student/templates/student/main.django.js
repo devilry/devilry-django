@@ -12,8 +12,6 @@
 {% block appjs %}
     {{ block.super }}
 
-    var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users,feedback,feedbackdelivery" }};
-
     function createGrids() {
         var ag_store = Ext.create('Ext.data.Store', {
             model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedAssignmentGroup'),
