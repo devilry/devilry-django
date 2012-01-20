@@ -11,9 +11,6 @@
 
 {% block appjs %}
     {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model }}
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:"admins" }}
-    {{ restfulapi.RestfulSimplifiedNode|extjs_model }}
 {% endblock %}
 
 {% block onready %}
