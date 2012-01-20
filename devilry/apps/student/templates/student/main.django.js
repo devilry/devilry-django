@@ -22,24 +22,10 @@
             xtype: 'pagefooter'
         }, {
             region: 'center',
-            xtype: 'container',
-            border: false,
+            xtype: 'student-dashboard',
+            dashboardUrl: DASHBOARD_URL,
             padding: {left: 20, right: 20},
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            items: [searchwidget, {xtype:'box', height: 20}, {
-                xtype: 'panel',
-                flex: 1,
-                layout: 'fit',
-                border: false,
-                items: [{
-                    xtype: 'student-dashboard'
-                }]
-            }]
+            border: false
         }]
     });
-    searchwidget.show();
-    //createGrids();
 {% endblock %}

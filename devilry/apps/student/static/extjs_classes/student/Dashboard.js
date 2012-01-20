@@ -1,5 +1,5 @@
 Ext.define('devilry.student.Dashboard', {
-    extend: 'Ext.tab.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.student-dashboard',
 
     requires: [
@@ -45,31 +45,53 @@ Ext.define('devilry.student.Dashboard', {
             flex: 1
         });
 
+        var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
+            urlPrefix: DASHBOARD_URL,
+            hidden: false
+        });
+
 
         Ext.apply(this, {
-            bodyPadding: 10,
-            items: [{
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [
+                searchwidget,
+                {xtype:'box', height: 20},
+            {
                 xtype: 'panel',
-                title: 'Dashboard',
-                autoScroll: true,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
-                items: [addDeliveriesGrid, {
-                    xtype: 'container',
-                    margin: {top: 10},
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                    },
-                    height: 200,
-                    width: 800, // Needed to avoid layout issue in FF3.6
-                    items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
+                flex: 1,
+                layout: 'fit',
+                border: false,
+                items: [{
+                    xtype: 'tabpanel',
+                    border: false,
+                    items: [{
+                        xtype: 'panel',
+                        title: 'Dashboard',
+                        bodyPadding: 10,
+                        autoScroll: true,
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch'
+                        },
+                        items: [addDeliveriesGrid, {
+                            xtype: 'container',
+                            margin: {top: 10},
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch'
+                            },
+                            height: 200,
+                            width: 800, // Needed to avoid layout issue in FF3.6
+                            items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
+                        }]
+                    }, {
+                        xtype: 'student-browseperiods',
+                        title: 'Browse all'
+                    }]
                 }]
-            }, {
-                xtype: 'student-browseperiods',
-                title: 'Browse all'
             }]
         });
         this.callParent(arguments);
