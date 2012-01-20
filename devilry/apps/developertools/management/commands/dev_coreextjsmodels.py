@@ -11,7 +11,7 @@ from devilry.apps.extjshelpers.modelintegration import (restfulcls_to_extjsmodel
                                                         get_extjs_modelname)
 
 class Command(BaseCommand):
-    help = 'Create a databse of static data for the selenium tests.'
+    help = 'Autogenerate ExtJS models from restful interfaces.'
     option_list = BaseCommand.option_list + (
         make_option('-r', '--devilry-reporoot',
             dest='reporoot',
