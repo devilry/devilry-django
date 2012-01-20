@@ -55,7 +55,6 @@ class Command(BaseCommand):
     def _create_files_for_module(self, moddir, restfulmodule, appname):
         modelnames = []
         dirname = self._create_extjsclass_dir(moddir, appname)
-        logging.info('')
         logging.info('Parsing app: %s', appname)
         self._get_restfulmanagers(restfulmodule)
         for restfulmanager in self._get_restfulmanagers(restfulmodule):
