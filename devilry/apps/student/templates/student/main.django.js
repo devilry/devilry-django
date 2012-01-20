@@ -12,29 +12,15 @@
 {% block appjs %}
     {{ block.super }}
 
-    {{ restfulapi.RestfulSimplifiedRelatedStudentKeyValue|extjs_model }};
-
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:";PermissionCheck" }};
-    var assignmentgroup_permcheckstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store:"PermissionCheck" }};
-    assignmentgroup_permcheckstore.pageSize = 1;
-
-    var deadlinemodel = {{ restfulapi.RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
-    var deadlinestore = {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
-
     var ag_model = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users,feedback,feedbackdelivery" }};
-    var ag_store = Ext.create('Ext.data.Store', {
-        model: ag_model,
-        id: 'devilry.apps.student.AddDeliveriesStore',
-        remoteFilter: true,
-        remoteSort: true,
-        autoSync: true
-    });
 
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }};
-
-    var dashboard_delivery_model = {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
-    var dashboard_feedback_model = {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model:"subject,period,assignment,assignment_group" }};
     function createGrids() {
+        var ag_store = Ext.create('Ext.data.Store', {
+            model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedAssignmentGroup'),
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
         var addDeliveriesGrid = Ext.create('devilry.student.AddDeliveriesGrid', {
             store: ag_store,
             dashboard_url: DASHBOARD_URL,
@@ -43,13 +29,13 @@
         });
 
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
-            model: dashboard_delivery_model,
+            model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedDelivery'),
             showStudentsCol: false,
             dashboard_url: DASHBOARD_URL,
             flex: 1
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
-            model: dashboard_feedback_model,
+            model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedStaticFeedback'),
             showStudentsCol: false,
             dashboard_url: DASHBOARD_URL,
             flex: 1
@@ -86,24 +72,6 @@
 
 {% block onready %}
     {{ block.super }}
-
-    {% comment %}
-    var permchecker = Ext.create('devilry.extjshelpers.PermissionChecker', {
-        stores: [assignmentgroup_permcheckstore],
-        emptyHtml: '<div class="section info-small extravisible-small"><h1>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG.title }}</h1>' +
-            '<p>{{ DEVILRY_STUDENT_NO_PERMISSION_MSG.body }}</p></div>',
-        listeners: {
-            allLoaded: function() {
-                Ext.getBody().unmask();
-            },
-            hasPermission: function() {
-            }
-        }
-    });
-    assignmentgroup_permcheckstore.load();
-    {% endcomment %}
-
-
     Ext.getBody().unmask();
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
