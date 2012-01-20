@@ -5,7 +5,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 
 from devilry.apps.i18n import i18n
-from devilry.utils.command import setup_logging
+from devilry.utils.command import setup_logging, get_verbosity
 
 
 class Command(BaseCommand):
@@ -38,7 +38,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        verbosity = int(options.get('verbosity', '1'))
+        verbosity = get_verbosity(options)
         if len(args) < 1:
             raise CommandError('An action is required. See --help.')
         action = args[0]
