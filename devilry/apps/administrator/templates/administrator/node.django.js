@@ -12,8 +12,6 @@
 
 {% block appjs %}
     {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model:";List" }};
-    {{ restfulapi.RestfulSimplifiedNode|extjs_model:";List" }};
 {% endblock %}
 
 {% block onready %}

@@ -48,10 +48,12 @@ Ext.define('devilry.administrator.ListOfChildnodes', {
     readable_type: undefined,
     
     initComponent: function() {
+        var model = Ext.ModelManager.getModel(this.modelname);
         this.store = Ext.create('Ext.data.Store', {
-            model: this.modelname,
+            model: model,
             remoteFilter: true,
-            remoteSort: true
+            remoteSort: true,
+            proxy: model.proxy.copy()
         });
         //this.store.pageSize = 2; // Uncomment to test paging
         this._loadStore();
