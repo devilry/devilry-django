@@ -1,12 +1,12 @@
 import logging
 from inspect import getmembers
-from optparse import make_option
-from os.path import join, abspath, exists, dirname, isdir
-from os import getcwd, makedirs
+from os.path import join, exists, dirname, isdir
+from os import makedirs
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils.importlib import import_module
+from devilry.apps import extjshelpers
 
 from devilry.restful import RestfulManager
 from devilry.utils.command import setup_logging, get_verbosity
@@ -43,7 +43,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         setup_logging(get_verbosity(options))
-        self._create_files_for_all_modules(get_restful_apps())
+        all_modelnames = self._create_files_for_all_modules(get_restful_apps())
+        self._create_requireall_file(all_modelnames)
 
     def _create_files_for_all_modules(self, restful_apps):
         all_modelnames = []
@@ -54,7 +55,7 @@ class Command(BaseCommand):
 
     def _create_files_for_module(self, moddir, restfulmodule, appname):
         modelnames = []
-        dirname = self._create_extjsclass_dir(moddir, appname)
+        directory = self._create_extjsclass_dir(moddir, appname)
         logging.info('Parsing app: %s', appname)
         self._get_restfulmanagers(restfulmodule)
         for restfulmanager in self._get_restfulmanagers(restfulmodule):
@@ -62,7 +63,7 @@ class Command(BaseCommand):
                 logging.debug('Generating JS code for: %s', restfulcls.__name__)
                 js = self._get_js_for_model(restfulcls)
                 modelname = get_extjs_modelname(restfulcls)
-                self._create_extjsclassfile(dirname, modelname, js)
+                self._create_extjsclassfile(directory, modelname, js)
                 modelnames.append(modelname)
         return modelnames
 
@@ -71,10 +72,18 @@ class Command(BaseCommand):
             return isinstance(obj, RestfulManager)
         return [manager for name, manager in getmembers(restfulmodule, is_restfulmananager_obj)]
 
-    def _create_requireall_file(self, dirname, modelnames):
+    def _create_requireall_file(self, modelnames):
+        extjshelpersdir = dirname(extjshelpers.__file__)
         requires = ',\n'.join(["    '{0}'".format(modelname) for modelname in modelnames])
-        content = '{0}\nExt.require([\n{1}\n]);'.format(self.fileheader, requires)
-        open(join(dirname, 'require_all.js'), 'w').write(content)
+        content = ('{{% comment %}}\n'
+                   '{0}\n'
+                   '// This is a Django template because we want to make it easy to dump it into the page template.\n'
+                   '{{% endcomment %}}'
+                   '\nExt.require([\n{1}\n]);').format(self.fileheader, requires)
+        path = join(extjshelpersdir, 'templates', 'extjshelpers', 'restful-generated-models.django.js')
+        logging.info('Creating: %s', path)
+        logging.debug('%s: %s', path, content)
+        open(path, 'w').write(content)
 
     def _get_js_for_model(self, restfulcls):
         result_fieldgroups =  restfulcls._meta.simplified._meta.resultfields.additional_aslist()
@@ -82,16 +91,16 @@ class Command(BaseCommand):
         return js + ';'
 
     def _create_extjsclass_dir(self, moddir, appname):
-        dirname = join(moddir, 'static', 'extjs_classes', 'apps', appname, 'simplified')
-        if not exists(dirname):
-            logging.info('Creating directory: %s', dirname)
-            makedirs(dirname)
-        return dirname
+        directory = join(moddir, 'static', 'extjs_classes', 'apps', appname, 'simplified')
+        if not exists(directory):
+            logging.info('Creating directory: %s', directory)
+            makedirs(directory)
+        return directory
 
-    def _create_extjsclassfile(self, dirname, modelname, js):
+    def _create_extjsclassfile(self, directory, modelname, js):
         clsname = modelname.split('.')[-1]
         data = '{0}\n{1}'.format(self.fileheader, js)
-        path = join(dirname, clsname + '.js')
+        path = join(directory, clsname + '.js')
         logging.info('Creating: %s', path)
         logging.debug('%s: %s', path, data)
         open(path, 'w').write(data)
