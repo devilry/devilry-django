@@ -61,14 +61,13 @@
             });
         </script>
 
-        {% if not debug %}
-            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
-        {% endif %}
-
-
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjs_classes/apps/student/simplified/require_all.js"></script>
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjs_classes/apps/examiner/simplified/require_all.js"></script>
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjs_classes/apps/administrator/simplified/require_all.js"></script>
+
+        {% if not debug %}
+            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
+        {% endif %}
 
         <script type="text/javascript">
             {% block imports %}
