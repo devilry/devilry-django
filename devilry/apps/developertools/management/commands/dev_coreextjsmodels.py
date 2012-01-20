@@ -47,7 +47,7 @@ class Command(BaseCommand):
 
     def _get_js_for_model(self, restfulcls):
         result_fieldgroups =  restfulcls._meta.simplified._meta.resultfields.additional_aslist()
-        js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups)
+        js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups, pretty=True)
         return js + ';'
 
 
