@@ -12,13 +12,7 @@
     var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
         //renderTo: 'searchwidget-container',
         hidden: true,
-        urlPrefix: DASHBOARD_URL,
-        nodeRowTpl: '{{ restfulapi.RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
-        subjectRowTpl: '{{ restfulapi.RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
-        periodRowTpl: '{{ restfulapi.RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
-        assignmentRowTpl: '{{ restfulapi.RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
-        assignmentgroupRowTpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
-        deliveryRowTpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+        urlPrefix: DASHBOARD_URL
     });
     searchwidget.loadInitialValues();
 {% endblock %}

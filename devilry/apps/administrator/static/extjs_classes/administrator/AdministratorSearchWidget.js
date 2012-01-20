@@ -9,49 +9,74 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
         'devilry.extjshelpers.searchwidget.FilterConfigDefaults',
     ],
 
-    config: {
-        /**
-         * @cfg
-         * Url prefix. Should be the absolute URL path to /administrator/.
-         */
-        urlPrefix: '',
+    nodeRowTpl: [
+        '<div class="section popuplistitem">',
+        '   <h1>{long_name:ellipsis(40)}</h1>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Node rows.
-         */
-        nodeRowTpl: '',
+    subjectRowTpl: [
+        '<div class="section popuplistitem">',
+        '   <h1>{long_name:ellipsis(40)}</h1>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Subject rows.
-         */
-        subjectRowTpl: '',
+    periodRowTpl: [
+        '<div class="section popuplistitem">',
+        '    <p class="path">{parentnode__short_name}</p>',
+        '    <h1>{long_name:ellipsis(40)}</h1>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Period rows.
-         */
-        periodRowTpl: '',
+    assignmentRowTpl: [
+        '<div class="section popuplistitem">',
+        '    <p class="path">',
+        '{parentnode__parentnode__short_name}.',
+        '{parentnode__short_name}',
+        '   </p>',
+        '   <h1>{long_name:ellipsis(40)}</h1>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Assignment rows.
-         */
-        assignmentRowTpl: '',
+    assignmentgroupRowTpl: [
+        '<div class="section popuplistitem">',
+        '   <p class="path">',
+        '{parentnode__parentnode__parentnode__short_name:ellipsis(60)}.',
+        '{parentnode__parentnode__short_name:ellipsis(60)}.',
+        '{parentnode__short_name:ellipsis(60)}',
+        '   </p>',
+        '   <tpl if="!is_student">',
+        '       <h1><ul class="useridlist"><tpl for="candidates__identifier"><li>{.}</li></tpl></ul></h1>',
+        '   </tpl>',
+        '   <p><tpl if="name">{name}</tpl><p>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for AssignmentGroup rows.
-         */
-        assignmentgroupRowTpl: '',
+    deliveryRowTpl: [
+        '<div class="section popuplistitem">',
+        '   <p class="path">',
+        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__short_name}',
+        '   </p>',
+        '   <tpl if="!is_student">',
+        '       <ul class="useridlist"><tpl for="deadline__assignment_group__candidates__identifier"><li>{.}</li></tpl></ul>',
+        '   </tpl>',
+        '   <tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>',
+        '   <div class="section dl_valueimportant">',
+        '      <div class="section">',
+        '          <h1>Delivery number</h1>',
+        '          {number}',
+        '      </div>',
+        '   </div>',
+        '</div>'
+    ],
 
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Delivery rows.
-         */
-        deliveryRowTpl: ''
-    },
+    /**
+    * @cfg
+    * Url prefix. Should be the absolute URL path to /administrator/.
+    */
+    urlPrefix: '',
 
     initComponent: function() {
         Ext.apply(this, {
