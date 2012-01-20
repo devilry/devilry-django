@@ -55,7 +55,6 @@ class Command(BaseCommand):
 
     def _create_files_for_module(self, moddir, restfulmodule, appname):
         modelnames = []
-        directory = self._create_extjsclass_dir(moddir, appname)
         logging.info('Parsing app: %s', appname)
         self._get_restfulmanagers(restfulmodule)
         for restfulmanager in self._get_restfulmanagers(restfulmodule):
@@ -63,7 +62,7 @@ class Command(BaseCommand):
                 logging.debug('Generating JS code for: %s', restfulcls.__name__)
                 js = self._get_js_for_model(restfulcls)
                 modelname = get_extjs_modelname(restfulcls)
-                self._create_extjsclassfile(directory, modelname, js)
+                self._create_extjsclassfile(moddir, modelname, js)
                 modelnames.append(modelname)
         return modelnames
 
@@ -90,14 +89,16 @@ class Command(BaseCommand):
         js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups, pretty=True)
         return js + ';'
 
-    def _create_extjsclass_dir(self, moddir, appname):
-        directory = join(moddir, 'static', 'extjs_classes', 'apps', appname, 'simplified')
+    def _create_extjsclass_dir(self, moddir, modelname):
+        path = modelname.split('.')[1:-1]
+        directory = join(moddir, 'static', 'extjs_classes', *path)
         if not exists(directory):
             logging.info('Creating directory: %s', directory)
             makedirs(directory)
         return directory
 
-    def _create_extjsclassfile(self, directory, modelname, js):
+    def _create_extjsclassfile(self, moddir, modelname, js):
+        directory = self._create_extjsclass_dir(moddir, modelname)
         clsname = modelname.split('.')[-1]
         data = '{0}\n{1}'.format(self.fileheader, js)
         path = join(directory, clsname + '.js')
