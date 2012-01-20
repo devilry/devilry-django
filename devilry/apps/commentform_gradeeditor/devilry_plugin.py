@@ -115,16 +115,18 @@ class CommentForm(JsonRegistryItem):
         confval = config['formValues']
         points = 0
 
-        feedback = ""
+        feedback = "<ul>\n"
 
         for i in xrange(0, len(draftval)):
             if confval[i][0]=='check':
                 if draftval[i]:
                     points+=int(confval[i][1])
-                    feedback += markdown_full(confval[i][3]) + "\n"
+                    feedback += "<li>" + markdown_full(confval[i][3]) + "</li>\n"
 
             elif confval[i][0] == 'number':
                 points+=draftval[i]
+
+        feedback += "</ul>\n"
 
         is_approved = False
         if points >= config['approvedLimit']:
