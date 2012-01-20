@@ -4,43 +4,20 @@
  * the current item.
  * */
 Ext.define('devilry.student.StudentSearchWidget', {
-    extend: 'devilry.extjshelpers.searchwidget.SearchWidget',
-    requires: [
-        'devilry.extjshelpers.searchwidget.FilterConfigDefaults',
-    ],
+    extend: 'devilry.extjshelpers.searchwidget.DashboardSearchWidget',
 
-    config: {
-        /**
-         * @cfg
-         * Url prefix. Should be the absolute URL path to /student/.
-         */
-        urlPrefix: '',
-
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for AssignmentGroup rows.
-         */
-        assignmentgroupRowTpl: '',
-
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Deadline rows.
-         */
-        deadlineRowTpl: '',
-
-        /**
-         * @cfg
-         * ``Ext.XTemplate`` for Delivery rows.
-         */
-        deliveryRowTpl: ''
-    },
+    /**
+     * @cfg
+     * Url prefix. Should be the absolute URL path to /student/.
+     */
+    urlPrefix: '',
 
     initComponent: function() {
         Ext.apply(this, {
             searchResultItems: [{
                 xtype: 'searchresults',
                 title: 'Deliveries',
-                store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeliveryStoreSearch'),
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedDelivery'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 itemtpldata: {
                     is_student: true
@@ -55,7 +32,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Open deadlines',
-                store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStoreSearch'),
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedDeadline'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.deadline,
                 itemtpldata: {
                     is_student: true
@@ -79,7 +56,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
-                store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedAssignmentGroupStoreSearch'),
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedAssignmentGroup'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 itemtpldata: {
                     is_student: true
@@ -94,5 +71,16 @@ Ext.define('devilry.student.StudentSearchWidget', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    _createStore: function(modelname) {
+        var model = Ext.ModelManager.getModel(modelname);
+        var store = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
+        });
+        return store;
     }
 });
