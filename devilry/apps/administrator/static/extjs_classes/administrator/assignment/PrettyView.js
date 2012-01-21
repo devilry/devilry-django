@@ -16,8 +16,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     /**
      * @cfg
+     * The name of the assignment group ``Ext.data.Model`` to use in the store
+     * (Required).  The store copies the proxy from this model.
      */
-    assignmentgroupstore: undefined,
+    assignmentgroupmodelname: undefined,
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="section">',
@@ -129,6 +131,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     initComponent: function() {
+        this._createAssignmentgroupStore();
         this.gradeeditorconfig_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditorconfig_recordcontainer.addListener('setRecord', this.onGradeEditorConfigLoad, this);
 
@@ -186,7 +189,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onLoadRecord: function() {
-        this.checkStudents();
+        this._checkStudents();
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
@@ -201,7 +204,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
     },
 
-    checkStudents: function() {
+    _checkStudents: function() {
         // Load a single records to get totalCount
         this.assignmentgroupstore.pageSize = 1;
         this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
@@ -216,6 +219,16 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                     this.refreshBody();
                 }
             }
+        });
+    },
+
+    _createAssignmentgroupStore: function() {
+        var model = Ext.ModelManager.getModel(this.assignmentgroupmodelname);
+        this.assignmentgroupstore = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
         });
     },
 
