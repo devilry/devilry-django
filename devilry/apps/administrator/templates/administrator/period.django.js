@@ -8,23 +8,7 @@
     ]);
 {% endblock %}
 
-
-{% block appjs %}
-    {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedSubject|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject,admins" }};
-    {{ restfulapi.RestfulSimplifiedRelatedStudent|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedRelatedStudentKeyValue|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback" }};
-    {{ restfulapi.RestfulSimplifiedCandidate|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedPeriodApplicationKeyValue|extjs_model }};
-{% endblock %}
-
 {% block onready %}
-    {{ block.super }}
-
-    Ext.getBody().unmask();
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
         style: 'background-color: transparent',
