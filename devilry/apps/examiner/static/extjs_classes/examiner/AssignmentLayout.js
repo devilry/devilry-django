@@ -12,20 +12,9 @@ Ext.define('devilry.examiner.AssignmentLayout', {
      */
     assignmentid: undefined,
     
-    /**
-     * @cfg
-     */
-    assignmentmodelname: undefined,
-    
-    /**
-     * @cfg
-     */
-    assignmentgroupstore: undefined,
-    
-    /**
-     * @cfg
-     */
-    assignmentmodelname_todolist: undefined,
+
+    assignmentmodelname: 'devilry.apps.examiner.simplified.SimplifiedAssignment',
+    assignmentgroupmodelname: 'devilry.apps.examiner.simplified.SimplifiedAssignmentGroup',
     
     constructor: function(config) {
         this.assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
@@ -34,11 +23,6 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
     
     initComponent: function() {
-        this.todostore = Ext.create('Ext.data.Store', {
-            model: this.assignmentmodelname_todolist,
-            remoteFilter: true,
-            remoteSort: true
-        });
         var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
         assignmentmodel.load(this.assignmentid, {
             scope: this,
@@ -78,7 +62,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         return {
             xtype: 'studentsmanager',
             title: 'Detailed overview of all students',
-            assignmentgroupstore: this.assignmentgroupstore,
+            assignmentgroupmodel: this.assignmentgroupmodelname,
             assignmentid: this.assignmentid,
             assignmentrecord: this.assignment_recordcontainer.record,
             deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
@@ -92,9 +76,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             xtype: 'examiner-assignmentlayout-todolist',
             assignmentid: this.assignmentid,
             pageSize: 30,
-            assignment_recordcontainer: this.assignment_recordcontainer,
-            assignmentmodelname: this.assignmentmodelname_todolist,
-            assignmentgroupstore: this.todostore
+            assignmentmodelname: this.assignmentmodelname,
+            assignmentgroupmodel: this.assignmentgroupmodelname
         };
     },
 

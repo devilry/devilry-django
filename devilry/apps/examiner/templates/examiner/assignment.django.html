@@ -7,14 +7,6 @@
     Ext.require('devilry.examiner.AssignmentLayout');
 {% endblock %}
 
-{% block appjs %}
-    {{ block.super }}
-    {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
-    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,candidates;Todolist" }};
-{% endblock %}
-
     
 {% block onready %}
     {{ block.super }}
@@ -32,10 +24,7 @@
             region: 'center',
             xtype: 'examiner-assignmentlayout',
             margin: {left: 10, right: 10},
-            assignmentid: {{ assignmentid }},
-            assignmentmodelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-            assignmentgroupstore: assignmentgroupstore,
-            assignmentmodelname_todolist: 'devilry.apps.examiner.simplified.SimplifiedAssignmentGroupTodolist'
+            assignmentid: {{ assignmentid }}
         }]
     });
 {% endblock %}
