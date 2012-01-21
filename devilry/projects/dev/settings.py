@@ -25,6 +25,9 @@ INSTALLED_APPS += [
                   'devilry.apps.corerest',
                   'devilry.dataconverter', # Needs to be here since it uses templates
 
+                  'devilry.apps.guibase',
+                  'devilry.apps.subjectadmingui',
+
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
                    'devilry.restful',
