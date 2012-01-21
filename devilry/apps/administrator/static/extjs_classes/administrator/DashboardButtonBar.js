@@ -12,30 +12,31 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
         'devilry.extjshelpers.ButtonBarButton'
     ],
 
-    config: {
-        node_modelname: undefined,
-        subject_modelname: undefined,
-        period_modelname: undefined,
-        assignment_modelname: undefined,
-        is_superuser: undefined,
-        nodestore: undefined,
-        subjectstore: undefined,
-        periodstore: undefined
-    },
+    node_modelname: 'devilry.apps.administrator.simplified.SimplifiedNode',
+    subject_modelname: 'devilry.apps.administrator.simplified.SimplifiedSubject',
+    period_modelname: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
+    assignment_modelname: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+
+    /**
+     * @cfg
+     * (Required)
+     */
+    is_superuser: undefined,
 
     initComponent: function() {
+        var nodestore_node = this._createStore(this.node_modelname);
+        var nodestore = this._createStore(this.node_modelname);
+        var subjectstore = this._createStore(this.subject_modelname);
+        var periodstore = this._createStore(this.period_modelname);
+        
         var me = this;
         Ext.apply(this, {
             items: [{
                 xtype: 'buttonbarbutton',
                 is_superuser: this.is_superuser,
                 text: 'Node',
-                store: this.nodestore,
+                store: nodestore_node,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
@@ -55,7 +56,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Subject',
-                store: this.nodestore,
+                store: nodestore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
@@ -75,7 +76,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Period/Semester',
-                store: this.subjectstore,
+                store: subjectstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
@@ -95,7 +96,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Assignment',
-                store: this.periodstore,
+                store: periodstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
@@ -115,5 +116,17 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
             }]
         });
         this.callParent(arguments);
-    }
+    },
+
+    _createStore: function(modelname) {
+        var model = Ext.ModelManager.getModel(modelname);
+        var store = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            pageSize: 1,
+            proxy: model.proxy.copy()
+        });
+        return store;
+    },
 });
