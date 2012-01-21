@@ -16,9 +16,15 @@ Ext.define('devilry.administrator.assignment.Layout', {
     /**
      * @cfg
      */
-    assignmentgroupstore: undefined,
+
+    /**
+     * @cfg
+     * 
+     */
+    dashboardUrl: undefined,
 
     assignmentmodel_name: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+    assignmentgroupmodelname: 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup',
     
     initComponent: function() {
         this.studentsLoaded = false;
@@ -54,8 +60,8 @@ Ext.define('devilry.administrator.assignment.Layout', {
                     title: 'Administer',
                     modelname: this.assignmentmodel_name,
                     objectid: this.assignmentid,
-                    dashboardUrl: DASHBOARD_URL,
-                    assignmentgroupstore: this.assignmentgroupstore,
+                    dashboardUrl: this.dashboardUrl,
+                    assignmentgroupmodelname: this.assignmentgroupmodelname,
                     listeners: {
                         scope: this,
                         loadmodel: this._onLoadRecord,
@@ -107,12 +113,12 @@ Ext.define('devilry.administrator.assignment.Layout', {
         this.studentsLoaded = true;
         this.studentstab.add({
             xtype: 'administrator_studentsmanager',
-            assignmentgroupstore: this.assignmentgroupstore,
             assignmentid: this.assignmentid,
             assignmentrecord: this.assignmentRecord,
             periodid: this.assignmentRecord.data.parentnode,
             deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
             gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
+            assignmentgroupmodelname: this.assignmentgroupmodelname,
             isAdministrator: true
         });
     }
