@@ -32,6 +32,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     /**
     * @cfg
+    * AssignmentGroup record container. The view is reloaded on the setRecord
+    * event.
     */
     assignmentgroup_recordcontainer: undefined,
 
@@ -42,14 +44,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     */
     delivery_recordcontainer: undefined,
 
-    constructor: function() {
+    constructor: function(config) {
         this.addEvents('loadComplete');
         this.callParent(arguments);
-        this.isLoading = true;
-        this.assignmentgroup_recordcontainer.on('setRecord', this.loadAllDeadlines, this);
     },
 
     initComponent: function() {
+        this.isLoading = true;
+        this.assignmentgroup_recordcontainer.on('setRecord', this.loadAllDeadlines, this);
+        if(this.assignmentgroup_recordcontainer.record) {
+            this.loadAllDeadlines();
+        }
         if(this.role != 'student') {
             this.bbar = [{
                 xtype: 'button',
