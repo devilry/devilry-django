@@ -63,7 +63,7 @@
         }
 
         this.feedback = Ext.widget('markdownfulleditor', {
-            flex: 0
+            height: 200
         });
         this.add(this.feedback);
     },
