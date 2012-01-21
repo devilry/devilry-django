@@ -4,19 +4,11 @@
 
 {% block imports %}
     {{ block.super }}
-    Ext.require('devilry.extjshelpers.PermissionChecker');
-    Ext.require('devilry.examiner.ActiveAssignmentsView');
-    Ext.require('devilry.administrator.DashboardButtonBar');
+    Ext.require('devilry.administrator.Dashboard');
 {% endblock %}
 
 
 {% block onready %}
-    {{ block.super }}
-
-    var buttonbar = Ext.create('devilry.administrator.DashboardButtonBar', {
-        is_superuser: DevilryUser.is_superuser
-    });
-
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
         style: 'background-color: transparent',
@@ -29,51 +21,10 @@
             xtype: 'pagefooter'
         }, {
             region: 'center',
-            xtype: 'container',
+            xtype: 'administrator-dashboard',
             border: false,
             padding: {left: 20, right: 20},
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            items: [searchwidget, {xtype:'box', height: 20}, buttonbar, {
-                xtype: 'container',
-                flex: 1,
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch'
-                },
-                items: [{
-                    xtype: 'panel',
-                    flex: 3,
-                    layout: 'fit',
-                    border: false,
-                    id: 'active-periods'
-                }, {
-                    xtype: 'box',
-                    width: 30
-                }, {
-                    xtype: 'panel',
-                    flex: 7,
-                    layout: 'fit',
-                    border: false,
-                    id: 'active-assignments'
-                }]
-            }]
+            dashboardUrl: DASHBOARD_URL
         }]
     });
-    Ext.getBody().unmask();
-    var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
-        model: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignment'),
-        dashboard_url: DASHBOARD_URL
-    });
-    Ext.getCmp('active-assignments').add(activeAssignmentsView);
-
-    var activePeriodsView = Ext.create('devilry.extjshelpers.ActivePeriodsGrid', {
-        model: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod'),
-        dashboard_url: DASHBOARD_URL
-    });
-    Ext.getCmp('active-periods').add(activePeriodsView);
-
-    searchwidget.show();
 {% endblock %}
