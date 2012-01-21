@@ -360,16 +360,17 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         var me = this;
         this.save(true, draftstring, {
             scope: this.getDraftEditor(),
-            callback: function() {
-                me.publishButton.getEl().unmask();
-            },
-            success: function(response) {
-                me.fireEvent('publishNewFeedback');
-                me.exit();
-                devilry.extjshelpers.NotificationManager.show({
-                    title: 'Published',
-                    message: 'The feedback has been saved and published.'
-                });
+            callback: function(unused, operation) {
+                if(operation.wasSuccessful()) {
+                    me.fireEvent('publishNewFeedback');
+                    me.exit();
+                    devilry.extjshelpers.NotificationManager.show({
+                        title: 'Published',
+                        message: 'The feedback has been saved and published.'
+                    });
+                } else {
+                    me.publishButton.getEl().unmask();
+                }
             },
             failure: onFailure
         });
