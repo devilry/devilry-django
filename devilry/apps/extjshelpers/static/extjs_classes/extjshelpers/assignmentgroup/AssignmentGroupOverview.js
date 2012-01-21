@@ -10,7 +10,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     cls: 'widget-assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
@@ -248,7 +247,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                                 scope: this,
                                 click: function() {
                                     Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
-                                        assignmentgroupstore: this.assignmentgroupstore,
+                                        assignmentgroupmodelname: this.getSimplifiedClassName('SimplifiedAssignmentGroup'),
                                         assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
                                     }).show();
                                 }
