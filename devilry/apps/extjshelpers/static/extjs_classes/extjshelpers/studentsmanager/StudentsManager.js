@@ -53,13 +53,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     /**
      * @cfg
-     * The name of the assignment group ``Ext.data.Model`` to use in the store
-     * (Required).  The store copies the proxy from this model.
-     */
-    assignmentgroupmodelname: undefined,
-
-    /**
-     * @cfg
      */
     periodid: undefined,
 
@@ -77,22 +70,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         '</tpl>'
     ),
 
-    constructor: function(config) {
-        this.defaultPageSize = 30;
-
-        this.role = this.isAdministrator? 'administrator': 'examiner';
-        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
-
-        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
-            isAdministrator: this.isAdministrator
-        });
-
-        this.callParent(arguments);
-    },
-
-
     _createAssignmentgroupStore: function() {
         var model = Ext.ModelManager.getModel(this.assignmentgroupmodelname);
         this.assignmentgroupstore = Ext.create('Ext.data.Store', {
@@ -104,7 +81,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     initComponent: function() {
+        this.defaultPageSize = 30;
+        this.role = this.isAdministrator? 'administrator': 'examiner';
+        this.assignmentgroupmodelname = Ext.String.format('devilry.apps.{0}.simplified.SimplifiedAssignmentGroup', this.role);
         this._createAssignmentgroupStore();
+        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
+
+        this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
+            isAdministrator: this.isAdministrator
+        });
+
         this.giveFeedbackToSelectedArgs = {
             text: 'Give feedback to selected',
             listeners: {
