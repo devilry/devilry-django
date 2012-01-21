@@ -54,6 +54,7 @@
             Ext.define('DevilryUser', {
                 singleton: true,
                 is_authenticated: {{ user.is_authenticated|yesno:"true,false" }},
+                is_superuser: {{ user.is_superuser|lower }},
                 username: '{{ user.username }}'
             });
 
