@@ -16,11 +16,6 @@ Ext.define('devilry.administrator.assignment.Layout', {
     /**
      * @cfg
      */
-
-    /**
-     * @cfg
-     * 
-     */
     dashboardUrl: undefined,
 
     assignmentmodel_name: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
