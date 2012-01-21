@@ -79,9 +79,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
-        //this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
-        this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
-        this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
+        this.filemetastore = this._createStore('SimplifiedFileMeta');
+        this.staticfeedbackstore = this._createStore('SimplifiedStaticFeedback');
         this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
 
         if(this.canExamine) {
@@ -89,9 +88,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 'devilry.apps.gradeeditors.simplified.{0}.SimplifiedConfig',
                 this.role
             ));
-
-            this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
         }
+    },
+
+
+    _createStore: function(shortmodelname) {
+        var modelname = this.getSimplifiedClassName(shortmodelname);
+        var model = Ext.ModelManager.getModel(modelname);
+        var store = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
+        });
+        return store;
     },
 
     /**
