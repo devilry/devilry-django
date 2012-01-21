@@ -5,23 +5,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow',
     width: 750,
     modal: true,
     layout: 'fit',
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList'
+    ],
 
-    config: {
-        assignmentgroupstore: undefined,
-        assignmentgroup_recordcontainer: undefined
-    },
+    /**
+     * @cfg
+     */
+    assignmentgroupmodelname: undefined,
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg
+     */
+    assignmentgroup_recordcontainer: undefined,
 
     initComponent: function() {
         Ext.apply(this, {
             items: {
                 xtype: 'assignmentgrouptodolist',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                store: this.assignmentgroupstore
+                assignmentgroupmodelname: this.assignmentgroupmodelname
             }
         });
         this.callParent(arguments);
