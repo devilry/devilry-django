@@ -156,3 +156,6 @@ LOGGING = {
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_HOST = 'smtp.example.com'
 #EMAIL_PORT = 25
+
+## Settings for the FsHierDeliveryStore
+#DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/path/to/directory/where/delivery-files/are/stored'
