@@ -54,7 +54,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @cfg
      */
-    assignmentgroupstore: undefined,
+    assignmentgroupmodel: undefined,
 
     /**
      * @cfg
@@ -75,9 +75,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         '</tpl>'
     ),
 
-
     constructor: function(config) {
-        this.callParent(arguments);
         this.defaultPageSize = 30;
 
         this.role = this.isAdministrator? 'administrator': 'examiner';
@@ -88,10 +86,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         this.progressWindow = Ext.create('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
             isAdministrator: this.isAdministrator
         });
+
+        this.callParent(arguments);
     },
 
 
+    _createAssignmentgroupStore: function() {
+        var model = Ext.ModelManager.getModel(this.assignmentgroupmodel);
+        this.assignmentgroupstore = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
+        });
+    },
+
     initComponent: function() {
+        this._createAssignmentgroupStore();
         this.giveFeedbackToSelectedArgs = {
             text: 'Give feedback to selected',
             listeners: {
