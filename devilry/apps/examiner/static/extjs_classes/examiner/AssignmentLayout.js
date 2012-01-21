@@ -62,7 +62,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         return {
             xtype: 'studentsmanager',
             title: 'Detailed overview of all students',
-            assignmentgroupmodel: this.assignmentgroupmodelname,
+            assignmentgroupmodelname: this.assignmentgroupmodelname,
             assignmentid: this.assignmentid,
             assignmentrecord: this.assignment_recordcontainer.record,
             deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
@@ -77,7 +77,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             assignmentid: this.assignmentid,
             pageSize: 30,
             assignmentmodelname: this.assignmentmodelname,
-            assignmentgroupmodel: this.assignmentgroupmodelname
+            assignmentgroupmodelname: this.assignmentgroupmodelname
         };
     },
 
