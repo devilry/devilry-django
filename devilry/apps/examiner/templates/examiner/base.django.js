@@ -11,11 +11,3 @@
     {{ block.super }}
     var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/examiner/';
 {% endblock %}
-
-{% block onready %}
-    {{ block.super }}
-    var searchwidget = Ext.create('devilry.examiner.ExaminerSearchWidget', {
-        urlPrefix: DASHBOARD_URL,
-        hidden: true
-    });
-{% endblock %}

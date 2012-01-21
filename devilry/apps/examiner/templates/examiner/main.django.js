@@ -14,9 +14,6 @@
 
 
 {% block onready %}
-    {{ block.super }}
-    Ext.getBody().unmask();
-
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
         style: 'background-color: transparent',
