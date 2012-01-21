@@ -10,17 +10,11 @@
 {% endblock %}
 
 
-{% block appjs %}
-    {{ block.super }}
-
-    var is_superuser = {{ user.is_superuser|lower }};
-{% endblock %}
-
 {% block onready %}
     {{ block.super }}
 
     var buttonbar = Ext.create('devilry.administrator.DashboardButtonBar', {
-        is_superuser: is_superuser
+        is_superuser: DevilryUser.is_superuser
     });
 
     Ext.create('Ext.container.Viewport', {
