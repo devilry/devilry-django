@@ -63,7 +63,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
                         edit: this._onEdit,
                         activate: function() {
                             if(this.prettyview.record) {
-                                this.prettyview.refreshBody();
+                                this.prettyview.checkStudentsAndRefreshBody();
                             }
                         }
                     }

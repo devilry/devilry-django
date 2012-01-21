@@ -189,7 +189,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onLoadRecord: function() {
-        this._checkStudents();
+        this.checkStudentsAndRefreshBody();
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
@@ -204,7 +204,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
     },
 
-    _checkStudents: function() {
+    checkStudentsAndRefreshBody: function() {
         // Load a single records to get totalCount
         this.assignmentgroupstore.pageSize = 1;
         this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
