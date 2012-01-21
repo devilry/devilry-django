@@ -1,3 +1,5 @@
+/** Assignment layout TODO-list. Reloads the TODO-list whenever it is shown (on
+ * the show-event). */
 Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
     extend: 'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
     alias: 'widget.examiner-assignmentlayout-todolist',
@@ -8,22 +10,15 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
         'devilry.extjshelpers.charts.PointsOfGroupsOnSingleAssignment'
     ],
 
-    config: {
-        assignment_recordcontainer: undefined,
-        assignmentmodelname: undefined,
-        assignmentid: undefined,
-        assignmentgroupstore: undefined
-    },
-
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg
+     * Assignment ID to show todo items within (Required).
+     */
+    assignmentid: undefined,
 
     initComponent: function() {
         Ext.apply(this, {
             title: 'Todo-list',
-            store: this.assignmentgroupstore,
             toolbarExtra: ['->', {
                xtype: 'button',
                scale: 'large',
