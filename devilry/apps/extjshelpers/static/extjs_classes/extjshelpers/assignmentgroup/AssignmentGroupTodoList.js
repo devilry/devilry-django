@@ -38,16 +38,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     todohelptext: '<p>This is your to-do list on this assignment. It shows all <em>open</em> groups. An <em>open</em> group is a group that is still waiting for deliveries or feedback.</p>',
 
     /**
-    * @cfg
-    * AssignmentGroup ``Ext.data.Store``. (Required).
-    */
-    store: undefined,
+     * @cfg
+     * The assignment group ``Ext.data.Model`` to use in the store (Required).
+     * The store copies the proxy from this model.
+     */
+    assignmentgroupmodel: undefined,
 
     /**
     * @cfg
     * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup. (Optional).
     *
-    * Used to show current assignmentgroup.
+    * This is optional, however if it is not provided, you will have to call
+    * loadTodoListForAssignment(assignmentid) manually to load data into the
+    * store.
     */
     assignmentgroup_recordcontainer: undefined,
 
@@ -58,18 +61,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     /**
      * @cfg
+     * (Optional)
      */
     toolbarExtra: undefined,
 
     /**
      * @cfg
+     * (Optional)
      */
     helpTpl: Ext.create('Ext.XTemplate',
         '<div class="section helpsection">{todohelptext}</div>'
     ),
 
-
     initComponent: function() {
+        this._createStore();
         var me = this;
         this.tbarItems = [{
             xtype: 'storesearchfield',
@@ -148,6 +153,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             }
             this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
         }
+    },
+
+    _createStore: function() {
+        var model = Ext.ModelManager.getModel(this.assignmentgroupmodel);
+        this.store = Ext.create('Ext.data.Store', {
+            model: model,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: model.proxy.copy()
+        });
     },
 
     onSelectGroup: function(grid, assignmentgroupRecord) {
