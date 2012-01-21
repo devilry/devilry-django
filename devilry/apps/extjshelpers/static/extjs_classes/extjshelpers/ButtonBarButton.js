@@ -40,7 +40,7 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
     
     initComponent: function() {
         var me = this;
-        this.loadStore();
+        this._loadStore();
         if(this.clickurl) {
             this.handler = function() {
                 window.location = me.clickurl;
@@ -61,7 +61,8 @@ Ext.define('devilry.extjshelpers.ButtonBarButton', {
         this.callParent(arguments);
     },
 
-    loadStore: function() {
+    _loadStore: function() {
+        this.store.load();
         this.store.on('load', function(store, records) {
             if(this.store.totalCount || this.is_superuser) {
                 this.show();
