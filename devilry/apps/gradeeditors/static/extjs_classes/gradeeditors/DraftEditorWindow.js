@@ -159,12 +159,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
 
         this.getDraftEditor().getEl().mask('Loading current draft');
 
+        var model = Ext.ModelManager.getModel(this.getSimplifiedFeedbackDraftModelName());
         var store = Ext.create('Ext.data.Store', {
-            model: this.getSimplifiedFeedbackDraftModelName(),
+            model: model,
             remoteFilter: true,
             remoteSort: true,
-            autoSync: true
-
+            autoSync: true,
+            proxy: model.proxy.copy()
         });
 
         store.proxy.extraParams.filters = Ext.JSON.encode([{
