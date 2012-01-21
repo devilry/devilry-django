@@ -73,3 +73,11 @@ tasks.xml
 # Translations
 devilry/apps/i18n/static/i18n/translations/
 messages_local-*
+
+
+# Generated ExtJS classes
+devilry/apps/administrator/static/extjs_classes/apps/
+devilry/apps/examiner/static/extjs_classes/apps/
+devilry/apps/extjshelpers/templates/extjshelpers/restful-generated-models.django.js
+devilry/apps/gradeeditors/static/extjs_classes/apps/
+devilry/apps/student/static/extjs_classes/apps/
