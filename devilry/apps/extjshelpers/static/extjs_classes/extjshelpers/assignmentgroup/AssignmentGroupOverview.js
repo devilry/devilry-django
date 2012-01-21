@@ -63,6 +63,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
 
     initComponent: function() {
+        this.assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
         this.createAttributes();
         this.createLayout();
         this.callParent(arguments);
@@ -73,9 +77,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     createAttributes: function() {
-        this.assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
