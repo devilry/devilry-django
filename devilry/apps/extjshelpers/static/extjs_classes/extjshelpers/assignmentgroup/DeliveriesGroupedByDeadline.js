@@ -21,9 +21,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     title: 'Deliveries grouped by deadline',
 
-    layout: {
-        type: 'accordion'
-    },
+    autoScroll: true,
 
     /**
     * @cfg
