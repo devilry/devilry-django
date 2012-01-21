@@ -39,10 +39,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     /**
      * @cfg
-     * The assignment group ``Ext.data.Model`` to use in the store (Required).
-     * The store copies the proxy from this model.
+     * The name of the assignment group ``Ext.data.Model`` to use in the store
+     * (Required).  The store copies the proxy from this model.
+     *
      */
-    assignmentgroupmodel: undefined,
+    assignmentgroupmodelname: undefined,
 
     /**
     * @cfg
@@ -156,7 +157,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     },
 
     _createStore: function() {
-        var model = Ext.ModelManager.getModel(this.assignmentgroupmodel);
+        var model = Ext.ModelManager.getModel(this.assignmentgroupmodelname);
         this.store = Ext.create('Ext.data.Store', {
             model: model,
             remoteFilter: true,
