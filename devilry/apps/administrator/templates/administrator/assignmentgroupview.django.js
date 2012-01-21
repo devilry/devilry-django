@@ -7,9 +7,7 @@
 
 {% block imports %}
     {{ block.super }}
-    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
-
 {% endblock %}
 
 
