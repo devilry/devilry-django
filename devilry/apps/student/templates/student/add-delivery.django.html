@@ -9,13 +9,6 @@
 {% endblock %}
 
 
-{% block appjs %}
-    {{ block.super }}
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
-    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model }};
-{% endblock %}
-
 {% block onready %}
     {{ block.super }}
     Ext.create('Ext.container.Viewport', {
@@ -34,10 +27,11 @@
             padding: {left: 20, right: 20},
             assignmentgroupid: {{ assignmentgroupid }},
             deadlineid: {{ deadlineid }},
-            deliverymodelname: {{ restfulapi.RestfulSimplifiedDelivery|extjs_modelname }},
-            latest_deadline: new Date({{ deadline_timestamp_milliseconds}}),
-            deadline_modelname: {{ restfulapi.RestfulSimplifiedDeadline|extjs_modelname }},
-            ag_modelname: {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_modelname }}
+            latest_deadline: new Date({{ deadline_timestamp_milliseconds }}),
+            deliverymodelname: 'devilry.apps.student.simplified.SimplifiedDelivery',
+            deadline_modelname: 'devilry.apps.student.simplified.SimplifiedDeadline',
+            ag_modelname: 'devilry.apps.student.simplified.SimplifiedAssignmentGroup'
+            
         }]
     });
 {% endblock %}
