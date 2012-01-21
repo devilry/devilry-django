@@ -223,12 +223,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     statics: {
         getAllGroupsInAssignment: function(assignmentid, action) {
-            assignmentGroupModel = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupImport');
+            var model = Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup');
             var assignmentGroupStore = Ext.create('Ext.data.Store', {
-                model: assignmentGroupModel,
-                proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-                    url: assignmentGroupModel.proxy.url
-                })
+                model: model,
+                remoteFilter: true,
+                remoteSort: true,
+                proxy: model.proxy.copy()
             });
             assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users', 'tags']);
 
