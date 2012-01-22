@@ -6,6 +6,6 @@ Ext.define('subjectadmin.controller.ShortcutsTestMock', {
     ],
 
     getActiveAssignmentsStore: function() {
-        return this.getActiveAssignmentsTestMochStore();
+        return this.getActiveAssignmentsTestMockStore();
     }
 });

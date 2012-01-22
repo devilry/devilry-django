@@ -3,7 +3,7 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     controllers: [
-        'ShortcutsTestMoch',
+        'ShortcutsTestMock',
     ],
 
     launch: function() {
