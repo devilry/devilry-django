@@ -1,4 +1,4 @@
-Ext.define('subjectadmingui.controller.Actions', {
+Ext.define('subjectadmin.controller.Actions', {
     extend: 'Ext.app.Controller',
 
     views: [

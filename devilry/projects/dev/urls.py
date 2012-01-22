@@ -18,7 +18,7 @@ urlpatterns = patterns('',
                        (r'^$', RedirectToFrontpage.as_view()),
                        (r'^test/', include('devilry.projects.dev.apps.test.urls')),
                        (r'^corerest/', include('devilry.apps.corerest.urls')),
-                       (r'^subjectadmin/', include('devilry.apps.subjectadmingui.urls')),
+                       (r'^subjectadmin/', include('devilry.apps.subjectadmin.urls')),
 
                        # Add the default Devilry urls
                        *devilry_urls

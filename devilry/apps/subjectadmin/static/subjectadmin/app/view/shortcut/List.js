@@ -1,4 +1,4 @@
-Ext.define('subjectadmingui.view.shortcut.List' ,{
+Ext.define('subjectadmin.view.shortcut.List' ,{
     extend: 'Ext.Component',
     alias: 'widget.shortcutlist',
     store: 'ActiveAssignments',

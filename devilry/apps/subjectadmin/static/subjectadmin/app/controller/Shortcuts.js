@@ -1,4 +1,4 @@
-Ext.define('subjectadmingui.controller.Shortcuts', {
+Ext.define('subjectadmin.controller.Shortcuts', {
     extend: 'Ext.app.Controller',
 
     views: [

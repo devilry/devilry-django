@@ -1,6 +1,6 @@
 Ext.application({
-    name: 'subjectadmingui',
-    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmingui/app',
+    name: 'subjectadmin',
+    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     controllers: [
         'ShortcutsTestMoch',

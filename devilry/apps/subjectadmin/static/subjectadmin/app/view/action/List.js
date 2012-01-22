@@ -1,4 +1,4 @@
-Ext.define('subjectadmingui.view.action.List' ,{
+Ext.define('subjectadmin.view.action.List' ,{
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
 

@@ -1,5 +1,5 @@
-Ext.define('subjectadmingui.controller.ShortcutsTestMoch', {
-    extend: 'subjectadmingui.controller.Shortcuts',
+Ext.define('subjectadmin.controller.ShortcutsTestMoch', {
+    extend: 'subjectadmin.controller.Shortcuts',
 
     stores: [
         'ActiveAssignmentsTestMoch'
