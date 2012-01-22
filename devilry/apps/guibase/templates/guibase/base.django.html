@@ -26,6 +26,13 @@
             // possible for model classes to use RestProxy at load time (when
             // the JS file is loaded).
             //Ext.syncRequire('devilry.extjshelpers.RestProxy');
+            Ext.Loader.setConfig({
+                enabled: {% if debug %}true{% else %}false{% endif %},
+                paths: {
+                    'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
+                    'Ext.ux': '{{ DEVILRY_STATIC_URL }}/extjsux'
+                }
+            });
         </script>
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/{% block appfile %}{% endblock %}"></script>
