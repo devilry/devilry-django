@@ -1,0 +1,25 @@
+{% extends "guibase/base.django.html" %}
+
+{% block translations %}
+    <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages{{ DEVILRY_I18N_CURRENT_LOCALE }}.js"></script>
+{% endblock %}
+
+{% block extjsfile %}ext-debug.js{% endblock %}
+
+{% block devilryjs %}
+    <script type="text/javascript">
+
+        var DevilrySettings = {
+            DEVILRY_STATIC_URL: '/static',
+            DEVILRY_URLPATH_PREFIX: '',
+            DEVILRY_SYNCSYSTEM: 'Example sync system',
+            DEVILRY_HELP_URL: 'http://help.example.com',
+            DEVILRY_COMMON_CSS: '/static/theme/themes/devilry/common.css',
+            DEVILRY_I18N_CURRENT_LOCALE: '',
+            DEVILRY_SORT_FULL_NAME_BY_LASTNAME: true,
+            DEVILRY_LOGOUT_URL: '/authenticate/logout',
+            DEVILRY_LOGIN_URL: '/authenticate/login'
+            
+        };
+    </script>
+{% endblock %}
