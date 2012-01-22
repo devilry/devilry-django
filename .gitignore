@@ -8,8 +8,6 @@
 .*.swo
 *~
 .DS_Store
-target/
-nbactions.xml
 *.vpp~*
 *.ipr
 *.iws
