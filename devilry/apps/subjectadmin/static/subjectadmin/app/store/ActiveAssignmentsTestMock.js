@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.store.ActiveAssignmentsTestMoch', {
+Ext.define('subjectadmin.store.ActiveAssignmentsTestMock', {
     extend: 'Ext.data.Store',
     fields: ['id', 'short_name', 'parentnode__short_name', 'parentnode__parentnode__short_name'],
     data: [{

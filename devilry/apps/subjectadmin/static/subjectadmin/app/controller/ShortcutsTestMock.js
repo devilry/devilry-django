@@ -1,8 +1,8 @@
-Ext.define('subjectadmin.controller.ShortcutsTestMoch', {
+Ext.define('subjectadmin.controller.ShortcutsTestMock', {
     extend: 'subjectadmin.controller.Shortcuts',
 
     stores: [
-        'ActiveAssignmentsTestMoch'
+        'ActiveAssignmentsTestMock'
     ],
 
     getActiveAssignmentsStore: function() {
