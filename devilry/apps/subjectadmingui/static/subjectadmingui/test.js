@@ -11,11 +11,7 @@ Ext.application({
         Ext.create('Ext.container.Viewport', {
             layout: 'fit',
             items: {
-                xtype: 'shortcutlist',
-                links: [{
-                    url: 'http://example.com',
-                    label: 'Create new ...'
-                }]
+                xtype: 'shortcutlist'
             }
         });
     }

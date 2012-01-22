@@ -28,7 +28,7 @@
             //Ext.syncRequire('devilry.extjshelpers.RestProxy');
         </script>
 
-        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/app.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/{% block appfile %}{% endblock %}"></script>
     </head>
 
     <body></body>
