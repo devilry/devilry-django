@@ -93,12 +93,13 @@ if profiler_middleware:
 DELAY_MIDDLEWARE_TIME = (20, 90) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
 delay_middleware = False
 if delay_middleware:
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+    MIDDLEWARE_CLASSES = + [
         'devilry.utils.delay_middleware.DelayMiddleware'
     ]
 
 
 
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.apps.developertools.middleware.FakeLoginMiddleware']
 
 
 #
