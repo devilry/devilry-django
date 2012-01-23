@@ -38,10 +38,12 @@ Ext.application({
         console.log('Assignment', subject, period, assignment);
     },
 
-    routeNotFound: function() {
+    routeNotFound: function(route) {
         this.setView({
-            xtype: 'component',
-            html: '<h1>Not found</h1><p>Route not found.</p>'
+            xtype: 'routenotfound',
+            data: {
+                route: route.token
+            }
         });
     },
 
