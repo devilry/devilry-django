@@ -44,11 +44,17 @@ Ext.define('guibase.Router', {
             var match = token.match(route.regex);
             if(match) {
                 var args = match.slice(1);
-                Ext.bind(this.handler[route.action], this.handler, args, true)(route.action);
+                Ext.bind(this.handler[route.action], this.handler, args, true)({
+                    action: route.action,
+                    token: token
+                });
                 return;
             }
         }
-        Ext.bind(this.handler['routeNotFound'], this.handler)();
+        Ext.bind(this.handler['routeNotFound'], this.handler)({
+            action: 'routeNotFound',
+            token: token
+        });
     },
 
     _initHistory: function() {
