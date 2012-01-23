@@ -7,13 +7,10 @@
         {% block translations %}
         {% endblock %}
 
-        <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/common.css"
-            type="text/css" media="screen" charset="utf-8"/>
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
         <!-- ** ExtJS ** -->
-        <link rel="stylesheet" type="text/css"
-                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
+        <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
         <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/{% block extjsfile %}{% endblock %}"></script>
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
