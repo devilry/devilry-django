@@ -39,6 +39,9 @@ Ext.define('guibase.Router', {
     },
 
     _trigger: function(token) {
+        if(token == null) {
+            token = '';
+        }
         for(var index in this.routes) {
             var route = this.routes[index];
             var match = token.match(route.regex);
