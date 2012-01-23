@@ -44,6 +44,7 @@ Ext.define('subjectadmin.controller.Shortcuts', {
                     displayName = Ext.String.format('{0}.{1}', record.get('parentnode__short_name'), displayName);
                 }
                 assignments.push({
+                    id: record.get('id'),
                     displayName: displayName
                 });
             });
