@@ -37,6 +37,8 @@ $include-default: false;
 @include extjs-drawcomponent;
 @include extjs-viewport;
 
+@import "bootstrap";
+
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
 // You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.
 // This only applies to new UIs. It does not apply to default component images (i.e. when changing $base-color)
