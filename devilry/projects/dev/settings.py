@@ -26,6 +26,7 @@ INSTALLED_APPS += [
                   'devilry.dataconverter', # Needs to be here since it uses templates
 
                   'devilry.apps.guibase',
+                  'devilry.apps.themebase',
                   'devilry.apps.subjectadmin',
 
                    # Not apps, but here for the Django test system to discover them:
