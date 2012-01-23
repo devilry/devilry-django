@@ -12,10 +12,10 @@ Ext.application({
         });
         this.route = Ext.create('guibase.Router', this);
         this.route.add("", 'shortcutlist');
-        this.route.add(/^\/shortcutlist$/, 'shortcutlist');
-        this.route.add(/^\/period\/(\d+)$/, 'period');
-        this.route.add(/^\/assignment\/(\d+)$/, 'assignment');
-        this.route.add("/browse/:subject/:period/:assignment", 'assignment');
+        this.route.add("/@@shortcutlist", 'shortcutlist');
+        this.route.add("/:subject/:period", 'period_show');
+        this.route.add("/:subject/:period/@@edit", 'period_edit');
+        this.route.add("/:subject/:period/:assignment", 'assignment_show');
         this.route.start();
     },
 
@@ -23,11 +23,14 @@ Ext.application({
         this.setView({xtype: 'shortcutlist'});
     },
 
-    period: function(action, id) {
-        console.log('PE', action, id);
+    period_show: function(action, subject, period) {
+        console.log('PE', action, subject, period);
+    },
+    period_edit: function(action, subject, period) {
+        console.log(action, subject, period);
     },
 
-    assignment: function(action, subject, period, assignment) {
+    assignment_show: function(action, subject, period, assignment) {
         console.log('Assignment', subject, period, assignment);
     },
 
