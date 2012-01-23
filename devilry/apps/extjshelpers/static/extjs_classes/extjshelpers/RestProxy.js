@@ -47,6 +47,12 @@ Ext.define('devilry.extjshelpers.RestProxy', {
     extend: 'Ext.data.proxy.Rest',
     alias: 'proxy.devilryrestproxy',
 
+    /**
+     * @cfg
+     * Forwarded to {@link #setDevilryResultFieldgroups}.
+     */
+    result_fieldgroups: undefined,
+
     constructor: function(config) {
         Ext.apply(this, {
             reader: {
@@ -65,6 +71,10 @@ Ext.define('devilry.extjshelpers.RestProxy', {
             this.extraParams = {};
         }
         this.extraParams.getdata_in_qrystring = true;
+
+        if(this.result_fieldgroups) {
+            this.setDevilryResultFieldgroups(this.result_fieldgroups)
+        }
     },
 
 
