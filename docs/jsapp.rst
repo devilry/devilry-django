@@ -36,7 +36,31 @@ Refer to ExtJS docs.
 
 
 
-Viewport
-#########
 
-Apps should inherit from ````
+
+Creating a new app
+###################
+
+Create disk layout
+------------------
+
+
+Need CSS?
+---------
+
+We reccommend Compass_::
+
+    $ cd <appname>/static/<appname>/
+    $ compass create resources
+    $ rm resources/sass/ie.scss resources/sass/screen.scss resources/sass/print.scss
+
+Add your styles to ``resources/sass/<appname>.scss`` and compile using::
+
+    $ compass compile
+
+You may also autocompile on file changes using::
+
+    $ compass watch
+
+
+.. _Compass: http://compass-style.org/
