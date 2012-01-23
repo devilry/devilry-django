@@ -9,9 +9,12 @@
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
-        <!-- ** ExtJS ** -->
         <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
+        {% if with_css %}
+            <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/{{ appname }}/resources/stylesheets/{{ appname }}.css" />
+        {% endif %}
         <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/{% block extjsfile %}{% endblock %}"></script>
+
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 
