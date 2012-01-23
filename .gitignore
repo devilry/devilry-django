@@ -52,6 +52,7 @@ docs/restfulapi/
 */parts
 */devilry.egg-info/
 */devilry-static-files/
+devenv/static/
 */example-productionenv/bin/
 devilry.egg-info/
 productionenv/
