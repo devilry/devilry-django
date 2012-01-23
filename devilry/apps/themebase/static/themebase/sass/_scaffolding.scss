@@ -7,12 +7,13 @@
 // STRUCTURAL LAYOUT
 // -----------------
 
-body {
-  background-color: $white;
-  margin: 0;
-  @include sans-serif-font(normal,$basefont,$baseline);
-  color: $grayDark;
-}
+// Defined in devilry.scss as ExtJS theme variables
+//body {
+  //background-color: $white;
+  //margin: 0;
+  //@include sans-serif-font(normal,$basefont,$baseline);
+  //color: $grayDark;
+//}
 
 // Container (centered, fixed-width layouts)
 .container {
