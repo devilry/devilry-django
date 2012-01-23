@@ -3,12 +3,14 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     requires: [
-        'guibase.RouteNotFound'
+        'guibase.Router',
+        'guibase.RouteNotFound',
+        'Ext.container.Viewport'
     ],
 
     controllers: [
-        'Actions',
-        'Shortcuts'
+        'Shortcuts',
+        'Dashboard'
     ],
 
     launch: function() {
