@@ -21,7 +21,6 @@ Ext.define('guibase.Router', {
             regex = pattern;
         } else if(Ext.typeOf(pattern) == 'string') {
             regex = this._patternToRegExp(pattern);
-            console.log(regex);
         } else {
             throw 'pattern must be regex.';
         }
