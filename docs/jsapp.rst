@@ -52,9 +52,10 @@ We reccommend Compass_::
 
     $ cd <appname>/static/<appname>/
     $ compass create resources
-    $ rm resources/sass/ie.scss resources/sass/screen.scss resources/sass/print.scss
+    $ cd resources
+    $ rm sass/ie.scss sass/screen.scss sass/print.scss
 
-Add your styles to ``resources/sass/<appname>.scss`` and compile using::
+Add your styles to ``sass/<appname>.scss`` and compile using::
 
     $ compass compile
 
