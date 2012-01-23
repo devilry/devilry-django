@@ -2,6 +2,10 @@ Ext.application({
     name: 'subjectadmin',
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
+    requires: [
+        'guibase.RouteNotFound'
+    ],
+
     controllers: [
         'Actions',
         'Shortcuts'
@@ -28,21 +32,23 @@ Ext.application({
         this.setView({xtype: 'shortcutlist'});
     },
 
-    period_show: function(action, subject, period) {
-        console.log('PE', action, subject, period);
+    period_show: function(route, subject, period) {
+        console.log('PE', route, subject, period);
     },
-    period_edit: function(action, subject, period) {
-        console.log(action, subject, period);
+    period_edit: function(route, subject, period) {
+        console.log(route, subject, period);
     },
 
-    assignment_show: function(action, subject, period, assignment) {
+    assignment_show: function(route, subject, period, assignment) {
         console.log('Assignment', subject, period, assignment);
     },
 
-    routeNotFound: function() {
+    routeNotFound: function(route) {
         this.setView({
-            xtype: 'component',
-            html: '<h1>Not found</h1><p>Route not found.</p>'
+            xtype: 'routenotfound',
+            data: {
+                route: route.token
+            }
         });
     },
 

@@ -27,14 +27,14 @@ Ext.application({
         this.setView({xtype: 'shortcutlist'});
     },
 
-    period_show: function(action, subject, period) {
-        console.log('PE', action, subject, period);
+    period_show: function(route, subject, period) {
+        console.log('PE', route, subject, period);
     },
-    period_edit: function(action, subject, period) {
-        console.log(action, subject, period);
+    period_edit: function(route, subject, period) {
+        console.log(route, subject, period);
     },
 
-    assignment_show: function(action, subject, period, assignment) {
+    assignment_show: function(route, subject, period, assignment) {
         console.log('Assignment', subject, period, assignment);
     },
 
