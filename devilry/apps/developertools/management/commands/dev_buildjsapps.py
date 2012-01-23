@@ -50,10 +50,16 @@ class Command(BaseCommand):
             dest='collectstatic',
             default=True,
             help='Do not run collectstatic before building.'),
+        make_option('--nocompress',
+            action='store_true',
+            dest='nocompressjs',
+            default=False,
+            help='Forwared to "sencha build". See "sencha help build".'),
         )
 
 
     def handle(self, *args, **options):
+        self.nocompressjs = options['nocompressjs']
         self.devenv = join(dirname(dirname(devilry.__file__)), 'devenv')
         if abspath(self.devenv) != abspath(getcwd()):
             raise CommandError('Must be in devenv/')
@@ -100,11 +106,11 @@ class Command(BaseCommand):
             path = fileinfo['path']
             if path.startswith('..'):
                 fileinfo['path'] = path[2:]
-        allclasses['target'] = join(outdir, 'all-classes.js')
+        #allclasses['target'] = join(outdir, 'all-classes.js')
 
     def _cleanJsbAppAllSection(self, config, outdir):
         appall = config['builds'][1]
-        appall['target'] = join(outdir, 'app-all.js')
+        #appall['target'] = join(outdir, 'app-all.js')
         for fileinfo in appall['files']:
             fileinfo['path'] = outdir
 
@@ -113,6 +119,8 @@ class Command(BaseCommand):
         tempconffile = 'temp-app.jsb3'
         open(tempconffile, 'w').write(cleanedJsbConfig)
         cmd = ['sencha', 'build', '-p', tempconffile, '-d', staticdir]
+        if self.nocompressjs:
+            cmd.append('--nocompress')
         log.debug('Running: %s', ' '.join(cmd))
         call(cmd)
         remove(tempconffile)
