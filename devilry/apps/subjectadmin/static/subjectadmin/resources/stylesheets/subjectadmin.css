@@ -1,0 +1,21 @@
+/* line 3, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist h2 {
+  color: #666666;
+  background-color: #EEEEEE;
+  padding: 15px 40px 10px 40px;
+  font-weight: normal;
+}
+/* line 9, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul {
+  list-style: none;
+  margin: 0;
+  padding: 40px 44px;
+}
+/* line 13, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li {
+  margin: 0 0 20px 0;
+}
+/* line 15, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li a {
+  min-width: 400px;
+}

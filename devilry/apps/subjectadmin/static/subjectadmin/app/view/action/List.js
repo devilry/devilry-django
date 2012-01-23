@@ -1,6 +1,7 @@
 Ext.define('subjectadmin.view.action.List' ,{
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
+    cls: 'actionlist',
 
     /**
      * @cfg
@@ -8,12 +9,14 @@ Ext.define('subjectadmin.view.action.List' ,{
      */
     links: [],
 
-    html: 'List',
-    
-    initComponent: function() {
-        Ext.Array.each(this.links, function(link) {
-            console.log(link);
-        });
-        this.callParent(arguments);
-    }
+    tpl: [
+        '<h2>{title}</h2>',
+        '<ul>',
+        '    <tpl for="links">',
+        '       <li>',
+        '           <a href="{url}" class="btn large primary">{text}</a>',
+        '       </li>',
+        '    </tpl>',
+        '<ul>'
+    ]
 });

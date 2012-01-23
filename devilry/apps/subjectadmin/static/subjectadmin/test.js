@@ -8,6 +8,7 @@ Ext.application({
 
     controllers: [
         'ShortcutsTestMock',
+        'Dashboard'
     ],
 
     launch: function() {
@@ -15,16 +16,29 @@ Ext.application({
             layout: 'fit'
         });
         this.route = Ext.create('guibase.Router', this);
-        this.route.add("", 'dashboard');
+        this.route.add("", 'actionlist');
         this.route.add("/@@dashboard/shortcutlist", 'shortcutlist');
+        this.route.add("/@@dashboard/actionlist", 'actionlist');
         this.route.add("/:subject/:period", 'period_show');
         this.route.add("/:subject/:period/@@edit", 'period_edit');
         this.route.add("/:subject/:period/:assignment", 'assignment_show');
         this.route.start();
     },
 
-    dashboard: function() {
-        this.setView({xtype: 'component', html: 'dashboard'});
+    actionlist: function() {
+        this.setView({
+            xtype: 'actionlist',
+            data: {
+                title: 'Action list test',
+                links: [{
+                    url: '#actionitem-1',
+                    text: 'Action item 1'
+                }, {
+                    url: '#actionitem-2',
+                    text: 'Action item 2'
+                }]
+            }
+        });
     },
 
     shortcutlist: function() {

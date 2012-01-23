@@ -1,0 +1,21 @@
+.subjectadmin {
+    .actionlist {
+        h2 {
+            color: #666666;
+            background-color: #EEEEEE;
+            padding: 15px 40px 10px 40px;
+            font-weight: normal;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 40px 44px;
+            li {
+                margin: 0 0 20px 0;
+                a {
+                    min-width: 400px;
+                }
+            }
+        }
+    }
+}
