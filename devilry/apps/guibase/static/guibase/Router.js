@@ -4,27 +4,12 @@ Ext.define('guibase.Router', {
         'Ext.util.History'
     ],
 
-    constructor: function(handler, config) {
+    constructor: function(handler) {
         this.handler = handler;
         this.routes = [];
         this.started = false;
-        //this._registerHashchangeHandler();
-
-        // Copy configured listeners into *this* object so that the base class's
-        // constructor will add them.
-        if(config) {
-            this.listeners = config.listeners;
-        }
-
-        // Call our superclass constructor to complete construction process.
-        this.callParent([config])
+        this.callParent();
     },
-
-    //_registerHashchangeHandler: function() {
-        //if ("onhashchange" in window) {
-            //window.addEventListener("hashchange", Ext.bind(this._onHashChange, this), false);
-        //}
-    //},
 
     add: function(regex, action) {
         if(!Ext.typeOf(regex, 'regex')) {
@@ -44,10 +29,6 @@ Ext.define('guibase.Router', {
         this._initHistory();
     },
 
-    _regexFromString: function(pattern) {
-        return new RegExp('^' + pattern + '$');
-    },
-
     _trigger: function(token) {
         for(var index in this.routes) {
             var route = this.routes[index];
@@ -60,10 +41,6 @@ Ext.define('guibase.Router', {
         }
         Ext.bind(this.handler['routeNotFound'], this.handler)();
     },
-
-    //_triggerFromHash: function() {
-        //this._trigger(window.location.hash.substring(1));
-    //},
 
     _initHistory: function() {
         Ext.getBody().createChild({
@@ -90,9 +67,4 @@ Ext.define('guibase.Router', {
     _onHistoryChange: function(token) {
         this._trigger(token);
     }
-
-    //_onHashChange: function() {
-        //console.log('hashchange');
-        //this._triggerFromHash();
-    //},
 });
