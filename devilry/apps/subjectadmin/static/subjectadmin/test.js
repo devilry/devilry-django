@@ -11,12 +11,16 @@ Ext.application({
             layout: 'fit'
         });
         this.route = Ext.create('guibase.Router', this);
-        this.route.add("", 'shortcutlist');
-        this.route.add("/@@shortcutlist", 'shortcutlist');
+        this.route.add("", 'dashboard');
+        this.route.add("/@@dashboard/shortcutlist", 'shortcutlist');
         this.route.add("/:subject/:period", 'period_show');
         this.route.add("/:subject/:period/@@edit", 'period_edit');
         this.route.add("/:subject/:period/:assignment", 'assignment_show');
         this.route.start();
+    },
+
+    dashboard: function() {
+        this.setView({xtype: 'component', html: 'dashboard'});
     },
 
     shortcutlist: function() {
