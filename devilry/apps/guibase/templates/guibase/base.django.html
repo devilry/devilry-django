@@ -30,7 +30,8 @@
                 enabled: {% if debug %}true{% else %}false{% endif %},
                 paths: {
                     'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
-                    'Ext.ux': '{{ DEVILRY_STATIC_URL }}/extjsux'
+                    'Ext.ux': '{{ DEVILRY_STATIC_URL }}/extjsux',
+                    'guibase': '{{ DEVILRY_STATIC_URL }}/guibase'
                 }
             });
         </script>
