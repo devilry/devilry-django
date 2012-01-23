@@ -2,6 +2,10 @@ Ext.application({
     name: 'subjectadmin',
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
+    requires: [
+        'guibase.RouteNotFound'
+    ],
+
     controllers: [
         'ShortcutsTestMock',
     ],
