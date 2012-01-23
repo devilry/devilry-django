@@ -4,6 +4,10 @@ Ext.define('guibase.Router', {
         'Ext.util.History'
     ],
 
+    namedParam: /:\w+/g,
+    splatParam: /\*\w+/g,
+    escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g,
+
     constructor: function(handler) {
         this.handler = handler;
         this.routes = [];
@@ -11,9 +15,15 @@ Ext.define('guibase.Router', {
         this.callParent();
     },
 
-    add: function(regex, action) {
-        if(!Ext.typeOf(regex, 'regex')) {
-            throw 'pattern must be regex.'
+    add: function(pattern, action) {
+        var regex;
+        if(Ext.typeOf(pattern) == 'regexp') {
+            regex = pattern;
+        } else if(Ext.typeOf(pattern) == 'string') {
+            regex = this._patternToRegExp(pattern);
+            console.log(regex);
+        } else {
+            throw 'pattern must be regex.';
         }
         this.routes.push({
             regex: regex,
@@ -66,5 +76,17 @@ Ext.define('guibase.Router', {
 
     _onHistoryChange: function(token) {
         this._trigger(token);
+    },
+
+    /**
+     * @private
+     * Convert a route string into a regular expression, suitable for matching
+     * against the current location hash.
+     */
+    _patternToRegExp: function(pattern) {
+        var regex = pattern.replace(this.escapeRegExp, '\\$&');
+        regex = regex.replace(this.namedParam, '([^\/]*)');
+        regex = regex.replace(this.splatParam, '(.*?)');
+        return new RegExp('^' + regex + '$');
     }
 });

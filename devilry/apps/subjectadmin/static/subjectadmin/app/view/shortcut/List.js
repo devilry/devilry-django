@@ -13,7 +13,7 @@ Ext.define('subjectadmin.view.shortcut.List' ,{
         '           <ul>',
         '           <tpl for="assignments">',
         '               <li class="shortcut-list-item">',
-        '                   <a href="#/assignment/{id}">{displayName}</a>',
+        '                   <a href="#/browse/{subject}/{period}/{assignment}">{displayName}</a>',
         '               </li>',
         '           </tpl>',
         '           </ul>',
