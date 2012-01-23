@@ -80,3 +80,7 @@ devilry/apps/examiner/static/extjs_classes/apps/
 devilry/apps/extjshelpers/templates/extjshelpers/restful-generated-models.django.js
 devilry/apps/gradeeditors/static/extjs_classes/apps/
 devilry/apps/student/static/extjs_classes/apps/
+
+
+# Generated ExtJS apps
+all-classes.js
