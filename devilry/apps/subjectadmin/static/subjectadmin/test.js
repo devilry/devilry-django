@@ -17,8 +17,8 @@ Ext.application({
         });
         this.route = Ext.create('guibase.Router', this);
         this.route.add("", 'dashboard');
-        this.route.add("/@@dashboard/shortcutlist", 'shortcutlist');
-        this.route.add("/@@dashboard/actionlist", 'actionlist');
+        this.route.add("@@dashboard/shortcutlist", 'shortcutlist');
+        this.route.add("@@dashboard/actionlist", 'actionlist');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
         //this.route.add("/:subject/:period/:assignment", 'assignment_show');
@@ -73,10 +73,10 @@ Ext.application({
             data: {
                 title: 'Action list test',
                 links: [{
-                    url: '#actionitem-1',
+                    url: '#@@actionitem-1',
                     text: 'Action item 1'
                 }, {
-                    url: '#actionitem-2',
+                    url: '#@@actionitem-2',
                     text: 'Action item 2'
                 }]
             }
