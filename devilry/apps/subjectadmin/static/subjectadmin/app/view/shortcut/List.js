@@ -5,7 +5,7 @@ Ext.define('subjectadmin.view.shortcut.List' ,{
 
     tpl: new Ext.XTemplate([
         '<h2>Shortcuts:</h2>',
-        '<ul>',
+        '<ul class="unstyled">',
         '    <tpl for="items">',
         '       <li>',
         '           <a href="#/{subject}">{subject}</a>',

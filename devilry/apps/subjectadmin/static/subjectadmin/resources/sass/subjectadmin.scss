@@ -1,21 +1,66 @@
+ul.unstyled {
+    margin: 0;
+}
+
+
 .subjectadmin {
-    .actionlist {
-        h2 {
-            color: #666666;
-            background-color: #EEEEEE;
-            padding: 15px 40px 10px 40px;
-            font-weight: normal;
+    .sidebarlayout {
+        .centercolumn {
+            .box {
+                h2.boxtitle {
+                    color: #666666;
+                    background-color: #EEEEEE;
+                    padding: 15px 40px 10px 40px;
+                    font-weight: normal;
+                }
+                .boxbody {
+                    margin: 0;
+                    padding: 40px 44px;
+                }
+            }
         }
+        .sidebarcolumn {
+            background-color: #191919;
+            padding: 40px;
+            color: #fff;
+            a {
+                color: #fff;
+                text-decoration: underline;
+                font-size: 120%;
+            }
+            h2 {
+                color: #999999;
+                padding: 15px 0 10px 0;
+                font-weight: normal;
+            }
+            ul.unstyled {
+                margin-left: 4px;
+                &> li {
+                    margin-bottom: 20px;
+                    li {
+                        margin: 6px 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .actionlist {
         ul {
             list-style: none;
-            margin: 0;
-            padding: 40px 44px;
             li {
                 margin: 0 0 20px 0;
                 a {
                     min-width: 400px;
                 }
             }
+        }
+    }
+
+    .sysadmin-messages {
+        p {
+            font-size: 15px;
+            color: #444444;
         }
     }
 }
