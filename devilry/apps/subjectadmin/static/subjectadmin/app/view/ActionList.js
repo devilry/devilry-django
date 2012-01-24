@@ -1,13 +1,7 @@
-Ext.define('subjectadmin.view.action.List' ,{
+Ext.define('subjectadmin.view.ActionList', {
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
     cls: 'actionlist',
-
-    /**
-     * @cfg
-     * 
-     */
-    links: [],
 
     tpl: [
         '<h2>{title}</h2>',

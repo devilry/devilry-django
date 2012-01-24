@@ -17,7 +17,7 @@ Ext.define('subjectadmin.controller.Shortcuts', {
 
     init: function() {
         this.control({
-            'viewport > shortcutlist': {
+            'viewport shortcutlist': {
                 render: function(list) {
                     this.getActiveAssignmentsStore().on('load', this._onActiveAssignmentsStoreLoad, this);
                     this.getActiveAssignmentsStore().load();

@@ -16,13 +16,55 @@ Ext.application({
             layout: 'fit'
         });
         this.route = Ext.create('guibase.Router', this);
-        this.route.add("", 'actionlist');
+        this.route.add("", 'dashboard');
         this.route.add("/@@dashboard/shortcutlist", 'shortcutlist');
         this.route.add("/@@dashboard/actionlist", 'actionlist');
-        this.route.add("/:subject/:period", 'period_show');
-        this.route.add("/:subject/:period/@@edit", 'period_edit');
-        this.route.add("/:subject/:period/:assignment", 'assignment_show');
+        //this.route.add("/:subject/:period", 'period_show');
+        //this.route.add("/:subject/:period/@@edit", 'period_edit');
+        //this.route.add("/:subject/:period/:assignment", 'assignment_show');
         this.route.start();
+    },
+
+    routeNotFound: function(route) {
+        this.setView({
+            xtype: 'routenotfound',
+            data: {
+                route: route.token
+            }
+        });
+    },
+
+    setView: function(component) {
+        this.viewport.removeAll();
+        this.viewport.add(component);
+    },
+
+
+    /*********************************************
+     * Moch the actual interface
+     ********************************************/
+    dashboard: function() {
+        this.setView({
+            xtype: 'dashboard'
+        });
+    },
+
+    //period_show: function(route, subject, period) {
+        //console.log('PE', route, subject, period);
+    //},
+    //period_edit: function(route, subject, period) {
+        //console.log(route, subject, period);
+    //},
+
+    //assignment_show: function(route, subject, period, assignment) {
+        //console.log('Assignment', subject, period, assignment);
+    //},
+
+    /*********************************************
+     * Only for testing.
+     ********************************************/
+    shortcutlist: function() {
+        this.setView({xtype: 'shortcutlist'});
     },
 
     actionlist: function() {
@@ -40,33 +82,4 @@ Ext.application({
             }
         });
     },
-
-    shortcutlist: function() {
-        this.setView({xtype: 'shortcutlist'});
-    },
-
-    period_show: function(route, subject, period) {
-        console.log('PE', route, subject, period);
-    },
-    period_edit: function(route, subject, period) {
-        console.log(route, subject, period);
-    },
-
-    assignment_show: function(route, subject, period, assignment) {
-        console.log('Assignment', subject, period, assignment);
-    },
-
-    routeNotFound: function(route) {
-        this.setView({
-            xtype: 'routenotfound',
-            data: {
-                route: route.token
-            }
-        });
-    },
-
-    setView: function(component) {
-        this.viewport.removeAll();
-        this.viewport.add(component);
-    }
 });
