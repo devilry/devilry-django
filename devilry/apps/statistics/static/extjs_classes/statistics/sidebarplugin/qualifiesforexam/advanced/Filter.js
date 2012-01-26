@@ -61,7 +61,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', 
         Ext.each(arrayOfArrayOfassignmentIds, function(assignmentIds, index) {
             var assignmentRecords = [];
             Ext.each(assignmentIds, function(assignmentId, index) {
-                var assignmentRecord = assignment_store.findRecord('id', assignmentId);
+                var assignmentRecordIndex = assignment_store.findExact('id', assignmentId);
+                var assignmentRecord = assignment_store.getAt(assignmentRecordIndex);
                 assignmentRecords.push(assignmentRecord);
             });
             arrayOfArrayOfAssignmentRecords.push(assignmentRecords);

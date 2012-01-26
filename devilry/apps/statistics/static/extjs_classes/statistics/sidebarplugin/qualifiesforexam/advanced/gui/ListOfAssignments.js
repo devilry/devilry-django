@@ -144,18 +144,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
         return assignmentShortNames.split(/\s*,\s*/);;
     },
 
-    _convertShortnamesToIds: function(assignmentShortNames) {
-        var ids = [];
-        Ext.each(assignmentShortNames, function(short_name, index) {
-            var assignmentRecord = this.assignment_store.findRecord('short_name', short_name);
-            if(!assignmentRecord) {
-                throw Ext.String.format("Invalid short name: {0}", short_name);
-            }
-            ids.push(assignmentRecord.get('id'));
-        }, this);
-        return ids;
-    },
-
     _addToStore: function(assignmentIds) {
         this.store.add({
             assignmentIds: assignmentIds
@@ -165,7 +153,8 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     _getAssignmentRecordsFromIds: function(assignmentIds) {
         var assignmentRecords = [];
         Ext.each(assignmentIds, function(assignmentId, index) {
-            var assignmentRecord = this.assignment_store.findRecord('id', assignmentId);
+            var assignmentRecordIndex = this.assignment_store.findExact('id', assignmentId);
+            var assignmentRecord = this.assignment_store.getAt(assignmentRecordIndex);
             assignmentRecords.push(assignmentRecord);
         }, this);
         return assignmentRecords;
