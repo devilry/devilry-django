@@ -1,0 +1,144 @@
+Ext.define('subjectadmin.view.createnewassignment.Form', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.createnewassignmentform',
+    cls: 'createnewassignmentform stackedform',
+    requires: [
+        //'devilry.extjshelpers.formfields.ForeignKeySelector',
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
+
+    layout: 'anchor',
+
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelStyle: 'font-weight:bold'
+    },
+    defaults: {
+        margin: {top: 20},
+        anchor:'50%'
+    },
+
+
+    items: [{
+        xtype: 'container',
+        anchor: '100%',
+        layout: 'anchor',
+        defaults: {anchor:'100%'},
+        items: [{
+            xtype: 'container',
+            layout: 'column',
+            items: [{
+                name: "long_name",
+                fieldLabel: "Long name",
+                xtype: 'textfield',
+                columnWidth: .7,
+                margin: {right: 40},
+                emptyText: 'Example: Obligatory assignment 1'
+            }, {
+                name: "short_name",
+                columnWidth: .3,
+                fieldLabel: "Short name",
+                xtype: 'textfield',
+                emptyText: 'Example: firstassignment'
+            }]
+        }, {
+            xtype: 'box',
+            cls: 'help',
+            html: [
+                'Choose the name of the assignment. Short name is ',
+                'used when the long name takes to much space. Short name can ',
+                'only contain english lower-case letters, numbers and underscore (_).'
+            ].join('')
+        }]
+
+    //}, {
+        //name: "parentnode",
+        //fieldLabel: "Period/semester",
+        //xtype: 'foreignkeyselector',
+        //model: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
+        //emptyText: 'Select a period',
+        //displayTpl: '{long_name} ({parentnode__short_name}.{short_name})',
+        //dropdownTpl: '<div class="important">{parentnode__short_name}.{short_name}</div>'+
+            //'<div class="unimportant">{parentnode__long_name}</div>' +
+            //'<div class="unimportant">{long_name}</div>'
+    }, {
+        xtype: 'container',
+        anchor: '100%',
+        layout: 'column',
+        items: [{
+            xtype: 'container',
+            layout: 'anchor',
+            defaults: {anchor:'100%'},
+            columnWidth: .5,
+            margin: {right: 40},
+            defaults: {
+                margin: {bottom: 20},
+                anchor:'100%'
+            },
+            items: [{
+                name: "publishing_time",
+                fieldLabel: "Publishing time",
+                xtype: 'devilrydatetimefield',
+                value: new Date()
+            }, {
+                name: "delivery_types",
+                flex: 1,
+                fieldLabel: "How to students add deliveries?",
+                xtype: 'combobox',
+                queryMode: 'local',
+                valueField: 'value',
+                displayField: 'label',
+                forceSelection: true,
+                editable: false,
+                value: 0,
+                store: Ext.create('Ext.data.Store', {
+                    fields: ['value', 'label'],
+                    data : [
+                        {value:0, label:"Electronically using Devilry"},
+                        {value:1, label:"Non-electronic (hand in on paper, oral examination, ...)"}
+                    ]
+                })
+            }, {
+                name: "anonymous",
+                flex: 1,
+                fieldLabel: "Anonymous?",
+                xtype: 'combobox',
+                queryMode: 'local',
+                valueField: 'value',
+                displayField: 'label',
+                forceSelection: true,
+                editable: false,
+                value: false,
+                store: Ext.create('Ext.data.Store', {
+                    fields: ['value', 'label'],
+                    data : [
+                        {value:false, label:"No"},
+                        {value:true, label:"Yes"}
+                    ]
+                })
+            }]
+        }, {
+            xtype: 'container',
+            layout: 'anchor',
+            columnWidth: .5,
+            defaults: {anchor:'100%'},
+            items: [{
+                xtype: 'box',
+                cls: 'fakelabel',
+                html: 'Period'
+            }, {
+                name: 'parentnode',
+                xtype: 'activeperiodslist',
+                height: 150
+            }, {
+                xtype: 'box',
+                cls: 'help',
+                html: 'Choose the period where this assignment should be added.'
+            }]
+        }]
+    }, {
+        xtype: 'hiddenfield',
+        name: 'scale_points_percent',
+        value: 100
+    }]
+});
