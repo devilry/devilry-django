@@ -16,7 +16,7 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
         this.commit();
     },
 
-    passesAssignments: function(assignment_ids) {
+    countPassingAssignments: function(assignment_ids) {
         var passes = 0;
         Ext.Object.each(this.groupsByAssignmentId, function(assignment_id, group) {
             if(group.assignmentGroupRecord && Ext.Array.contains(assignment_ids, parseInt(assignment_id))) {
@@ -25,7 +25,10 @@ Ext.define('devilry.statistics.AggregatedPeriodDataForStudentBase', {
                 }
             };
         }, this);
-        return passes === assignment_ids.length;
+        return passes;
+    },
+    passesAssignments: function(assignment_ids) {
+        return this.countPassingAssignments(assignment_ids) === assignment_ids.length;
     },
 
     passesAllAssignments: function() {

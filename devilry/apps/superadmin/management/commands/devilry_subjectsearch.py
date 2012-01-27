@@ -3,6 +3,7 @@ import sys
 from django.core.management.base import BaseCommand
 
 from devilry.apps.core.models import Subject
+from devilry.utils.management import make_output_encoding_option
 
 
 class NodeSearchBase(BaseCommand):
@@ -16,6 +17,7 @@ class NodeSearchBase(BaseCommand):
             dest='short_name_only',
             default=False,
             help='Only print short name (one line per short_name)'),
+        make_output_encoding_option()
     )
 
     def _print_details(self, record):
@@ -23,7 +25,7 @@ class NodeSearchBase(BaseCommand):
         for attrname in self.attrs:
             attr = getattr(record, attrname)
             try:
-                attr = attr.encode(sys.stdout.encoding)
+                attr = attr.encode(self.outputencoding)
             except:
                 attr = attr.encode('ascii', 'replace')
             print '   {attrname}: {attr}'.format(attrname=attrname,
@@ -41,6 +43,7 @@ class NodeSearchBase(BaseCommand):
                 self._print_details(record)
 
     def handle(self, *args, **options):
+        self.outputencoding = options['outputencoding']
         if len(args) == 1:
             qry = self.get_qry(args[0])
         else:
