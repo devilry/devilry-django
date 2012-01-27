@@ -92,10 +92,10 @@ Ext.application({
             data: {
                 title: 'Action list test',
                 links: [{
-                    url: '#@@actionitem-1',
+                    url: '#/@@actionitem-1',
                     text: 'Action item 1'
                 }, {
-                    url: '#@@actionitem-2',
+                    url: '#/@@actionitem-2',
                     text: 'Action item 2'
                 }]
             }

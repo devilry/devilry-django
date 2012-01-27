@@ -14,16 +14,16 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
             data: {
                 title: 'Actions',
                 links: [{
-                    url: '#@@create-new-assignment',
+                    url: '#/@@create-new-assignment/@@chooseperiod',
                     text: 'Create new assignment'
                 }, {
                     url: '#/',
                     text: 'Browse all'
                 }, {
-                    url: '#@@register-for-final-exams',
+                    url: '#/@@register-for-final-exams',
                     text: 'Register students that qualify for final exams'
                 }, {
-                    url: '#@@global-statistics',
+                    url: '#/@@global-statistics',
                     text: 'Statistics'
                 }]
             }
