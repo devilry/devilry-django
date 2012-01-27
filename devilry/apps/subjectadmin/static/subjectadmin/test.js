@@ -9,7 +9,8 @@ Ext.application({
     controllers: [
         'ShortcutsTestMock',
         'Dashboard',
-        'CreateNewAssignment'
+        'CreateNewAssignment',
+        'ChoosePeriodTestMock'
     ],
 
     launch: function() {
@@ -18,14 +19,15 @@ Ext.application({
         });
         this.route = Ext.create('guibase.Router', this);
         this.route.add("", 'dashboard');
-        this.route.add("@@create-new-assignment", 'create_new_assignment');
+        this.route.add("/@@create-new-assignment/@@chooseperiod", 'create_new_assignment_chooseperiod');
+        this.route.add("/@@create-new-assignment/:period", 'create_new_assignment');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
         //this.route.add("/:subject/:period/:assignment", 'assignment_show');
 
         // These views are only for unit tests
-        this.route.add("@@dashboard/shortcutlist", 'shortcutlist');
-        this.route.add("@@dashboard/actionlist", 'actionlist');
+        this.route.add("/@@dashboard/shortcutlist", 'shortcutlist');
+        this.route.add("/@@dashboard/actionlist", 'actionlist');
         this.route.start();
     },
 
@@ -61,7 +63,8 @@ Ext.application({
 
     create_new_assignment_chooseperiod: function() {
         this.setView({
-            xtype: 'chooseperiod'
+            xtype: 'chooseperiod',
+            nexturlformat: '/@@create-new-assignment/{0}'
         });
     },
 

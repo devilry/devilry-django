@@ -96,5 +96,10 @@ Ext.define('guibase.Router', {
         regex = regex.replace(this.namedParam, '([^\/]*)');
         regex = regex.replace(this.splatParam, '(.*?)');
         return new RegExp('^' + regex + '$');
+    },
+
+
+    navigate: function(token, triggerRoute) {
+        Ext.util.History.add(token);
     }
 });
