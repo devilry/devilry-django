@@ -20,6 +20,14 @@ The layout is basically the one reccommended by ExtJS, however since we route ap
                     view/
 
 
+
+
+Creating a new app
+###################
+
+Create disk layout
+==================
+
 models.py
 ---------
 TODO
@@ -27,7 +35,20 @@ TODO
 
 urls.py
 -------
-TODO
+
+Typically looks something like this::
+
+    from django.conf.urls.defaults import patterns
+    from devilry.apps.guibase.views import create_urls
+    urlpatterns = patterns('devilry.apps.myapp',
+                           *create_urls('myapp',
+                                        with_css=True,
+                                        libs=['guibase', 'themebase']))
+
+See :func:`devilry.apps.guibase.views.create_urls`. Notice that we specify two
+libs. You will usually need these two. ``guibase`` provides the architecture
+for the app framework, and ``themebase`` provides the default theme, re-usable
+layouts and common widgets.
 
 
 static/appname/
@@ -36,17 +57,17 @@ Refer to ExtJS docs.
 
 
 
-
-
-Creating a new app
-###################
-
-Create disk layout
-------------------
-
-
 Need CSS?
----------
+=========
+
+Add your CSS to
+``<appname>/static/<appname>/resources/stylesheets/<appname>.css`` and update
+``urls.py`` with the ``with_css=True`` argument to
+:func:`devilry.apps.guibase.views.create_urls`.
+
+
+CSS with compass
+================
 
 We reccommend Compass_::
 
@@ -62,7 +83,6 @@ Add your styles to ``sass/<appname>.scss`` and compile using::
 You may also autocompile on file changes using::
 
     $ compass watch
-
 
 .. _Compass: http://compass-style.org/
 
@@ -99,3 +119,10 @@ Libraries
 
 Libraries are just like apps, however they should put their data in extjs
 classes in ``lib/`` instead of ``app``.
+
+
+
+API
+###
+
+.. automodule:: devilry.apps.guibase.views
