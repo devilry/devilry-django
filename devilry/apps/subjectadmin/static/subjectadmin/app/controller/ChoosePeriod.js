@@ -4,7 +4,8 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
     views: [
         'NextButton',
         'chooseperiod.ActivePeriodsList',
-        'chooseperiod.ChoosePeriod'
+        'chooseperiod.ChoosePeriod',
+        'RightSidebarLayout'
     ],
 
     stores: [

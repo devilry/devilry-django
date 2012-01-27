@@ -1,14 +1,12 @@
 Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.chooseperiod',
-    cls: 'dashboard sidebarlayout',
 
-    layout: 'border',
+    layout: 'rightsidebar',
 
     items: [{
         xtype: 'container',
-        cls: 'centercolumn',
-        region: 'center',
+        region: 'main',
         items: [{
             xtype: 'box',
             cls: 'sysadmin-messages box',
@@ -28,8 +26,7 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
     }, {
         xtype: 'box',
         border: 'false',
-        region: 'east',
-        cls: 'sidebarcolumn',
+        region: 'sidebar',
         width: 400,
         html: 'Please choose a period and click <em>Next</em>.'
     }]
