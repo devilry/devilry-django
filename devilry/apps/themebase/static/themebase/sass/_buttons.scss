@@ -1,6 +1,8 @@
 
-$blueAlmostDark: lighten($blueDark, 3%);
-$blueDarkPlus: darken($blueDark, 3%);
+$primaryButtonColor: $blueDark;
+$primaryButtonColorOver: darken($blueDark, 5%);
+$primaryButtonColorPressed: darken($blueDark, 4%);
+$primaryButtonColorDisabled: lighten($blueDark, 25%);
 @include extjs-button-ui(
     /* UI + Scale */
     'primary-large',
@@ -8,26 +10,26 @@ $blueDarkPlus: darken($blueDark, 3%);
     $border-radius: $button-large-border-radius,
     $border-width: $button-large-border-width,  
 
-    $border-color: $blueAlmostDark,
-    $border-color-over: $blueAlmostDark,
-    $border-color-focus: $blueAlmostDark,
-    $border-color-pressed: $blueAlmostDark,
+    $border-color: $primaryButtonColor,
+    $border-color-over: $primaryButtonColor,
+    $border-color-focus: $primaryButtonColor,
+    $border-color-pressed: $primaryButtonColor,
     $border-color-disabled: transparent,
 
     $padding: $button-large-padding,
     $text-padding: $button-large-text-padding,
 
-    $background-color: $blueAlmostDark,
-    $background-color-over: $blueDark,
-    $background-color-focus: $blueDark,
-    $background-color-pressed: $blueDarkPlus,
-    $background-color-disabled: lighten($blueDark, 25%),
+    $background-color: $primaryButtonColor,
+    $background-color-over: $primaryButtonColorOver,
+    $background-color-focus: $primaryButtonColorOver,
+    $background-color-pressed: $primaryButtonColorPressed,
+    $background-color-disabled: $primaryButtonColorDisabled,
 
-    $background-gradient: $button-default-background-gradient,
-    $background-gradient-over: $button-default-background-gradient-over,
-    $background-gradient-focus: $button-default-background-gradient-focus,
-    $background-gradient-pressed: $button-default-background-gradient-pressed,
-    $background-gradient-disabled: $button-default-background-gradient-disabled,
+    $background-gradient: 'glossy',
+    $background-gradient-over: 'glossy',
+    $background-gradient-focus: 'glossy',
+    $background-gradient-pressed: 'matte-reverse',
+    $background-gradient-disabled: 'matte',
 
     $color: $white,
     $color-over: $white,
