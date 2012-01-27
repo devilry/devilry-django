@@ -13161,9 +13161,10 @@ input[type=submit].btn::-moz-focus-inner {
   font-size: 13px;
   line-height: 18px;
   color: #bfbfbf;
+  padding-left: 4px;
 }
 
-/* line 10, ../sass/_forms-port.scss */
+/* line 11, ../sass/_forms-port.scss */
 label,
 input,
 select,
@@ -13174,33 +13175,14 @@ textarea {
   line-height: normal;
 }
 
-/* line 14, ../sass/_forms-port.scss */
+/* line 15, ../sass/_forms-port.scss */
 label {
   font-size: 13px;
   line-height: 18px;
   color: #404040;
 }
 
-/* line 23, ../sass/_forms-port.scss */
-input,
-textarea,
-select {
-  display: inline-block;
-  height: 18px;
-  padding: 4px;
-  font-size: 13px;
-  line-height: 18px;
-  color: gray;
-  border: 1px solid #ccc;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
-}
-
-/* line 37, ../sass/_forms-port.scss */
+/* line 25, ../sass/_forms-port.scss */
 input,
 textarea {
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
@@ -13213,7 +13195,7 @@ textarea {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* line 43, ../sass/_forms-port.scss */
+/* line 31, ../sass/_forms-port.scss */
 input:focus,
 textarea:focus {
   outline: 0;
@@ -13224,7 +13206,7 @@ textarea:focus {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
-/* line 51, ../sass/_forms-port.scss */
+/* line 39, ../sass/_forms-port.scss */
 input[type=file]:focus,
 input[type=checkbox]:focus,
 select:focus {
@@ -13235,7 +13217,7 @@ select:focus {
   outline: 1px dotted #666;
 }
 
-/* line 58, ../sass/_forms-port.scss */
+/* line 46, ../sass/_forms-port.scss */
 .form-stacked label {
   display: block;
   float: none;
@@ -13244,4 +13226,16 @@ select:focus {
   text-align: left;
   line-height: 20px;
   padding-top: 0;
+}
+/* line 56, ../sass/_forms-port.scss */
+.form-stacked input.x-form-text {
+  color: #404040 !important;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
 }
