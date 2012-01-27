@@ -86,7 +86,7 @@ in a directory-like routing scheme::
 
 Cross cutting and non-hierarchial routes should use the following format::
 
-    #@@some-action
+    #/@@some-action
     #/someitem/@@some-action
 
 Prefixing with ``@@`` makes it clear to developers that these are not part of
