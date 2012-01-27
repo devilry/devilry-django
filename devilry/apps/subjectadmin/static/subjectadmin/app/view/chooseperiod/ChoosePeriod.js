@@ -21,11 +21,8 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
             items: [{
                 xtype: 'activeperiodslist',
             }, {
-                xtype: 'button',
-                scale: 'large',
-                cls: 'next',
-                margin: {top: 10},
-                text: 'Next'
+                xtype: 'nextbutton',
+                margin: {top: 10}
             }]
         }]
     }, {

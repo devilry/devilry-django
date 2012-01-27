@@ -2,6 +2,7 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
     extend: 'Ext.app.Controller',
 
     views: [
+        'NextButton',
         'chooseperiod.ActivePeriodsList',
         'chooseperiod.ChoosePeriod'
     ],
@@ -12,7 +13,7 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
 
     refs: [{
         ref: 'nextButton',
-        selector: 'button[cls=next]'
+        selector: 'nextbutton'
     }, {
         ref: 'choosePeriod',
         selector: 'chooseperiod'
@@ -28,7 +29,7 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
                 select: this._onSelectPeriod,
                 deselect: this._onDeSelectPeriod
             },
-            'viewport button[scale=large]': {
+            'viewport nextbutton': {
                 click: this._onNext
             }
         });
