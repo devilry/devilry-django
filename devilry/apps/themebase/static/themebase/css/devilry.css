@@ -12565,12 +12565,12 @@ input[type=submit].btn::-moz-focus-inner {
   background-color: #191919;
   padding: 40px;
   color: #fff;
+  font-size: 116%;
 }
-/* line 21, ../sass/_rightsidebarlayout.scss */
+/* line 22, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn a {
   color: #fff;
   text-decoration: underline;
-  font-size: 120%;
 }
 /* line 26, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn h2 {
