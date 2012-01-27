@@ -9,6 +9,7 @@ $linkColorHover:    darken($linkColor, 15);
 
 // Grays
 $black:             #000;
+$almostblack:       #191919;
 $grayDark:          lighten($black, 25%);
 $gray:              lighten($black, 50%);
 $grayLight:         lighten($black, 75%);
@@ -51,10 +52,3 @@ $analog1:           adjust-hue($baseColor, 22);   // Analogs colors
 $analog2:           adjust-hue($baseColor, -22);
 
 
-
-// More variables coming soon:
-// - @basefont to @baseFontSize
-// - @baseline to @baseLineHeight
-// - @baseFontFamily
-// - @primaryButtonColor
-// - anything else? File an issue on GitHub

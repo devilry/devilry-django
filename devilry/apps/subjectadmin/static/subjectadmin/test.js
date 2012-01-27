@@ -3,7 +3,8 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     requires: [
-        'guibase.RouteNotFound'
+        'guibase.RouteNotFound',
+        'subjectadmin.view.Breadcrumbs'
     ],
 
     controllers: [
@@ -14,8 +15,17 @@ Ext.application({
     ],
 
     launch: function() {
-        this.viewport = Ext.create('Ext.container.Viewport', {
+        this.breadcrumbs = Ext.widget('breadcrumbs', {
+            region: 'north',
+            //height: 30
+        });
+        this.contentContainer = Ext.widget('container', {
+            region: 'center',
             layout: 'fit'
+        });
+        this.viewport = Ext.create('Ext.container.Viewport', {
+            layout: 'border',
+            items: [this.breadcrumbs, this.contentContainer]
         });
         this.route = Ext.create('guibase.Router', this);
         this.route.add("", 'dashboard');
@@ -41,8 +51,8 @@ Ext.application({
     },
 
     setView: function(component) {
-        this.viewport.removeAll();
-        this.viewport.add(component);
+        this.contentContainer.removeAll();
+        this.contentContainer.add(component);
     },
 
 
@@ -61,7 +71,8 @@ Ext.application({
         });
     },
 
-    create_new_assignment_chooseperiod: function() {
+    create_new_assignment_chooseperiod: function(info) {
+        this.breadcrumbs.set([], translate('subjectadmin.chooseperiod.title'));
         this.setView({
             xtype: 'chooseperiod',
             nexturlformat: '/@@create-new-assignment/{0}'
@@ -100,5 +111,5 @@ Ext.application({
                 }]
             }
         });
-    },
+    }
 });

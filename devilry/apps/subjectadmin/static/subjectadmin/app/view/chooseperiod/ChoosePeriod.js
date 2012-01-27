@@ -1,8 +1,8 @@
 Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.chooseperiod',
     requires: [
-        'subjectadmin.layout.RightSidebar'
+        'themebase.layout.RightSidebar'
     ],
 
     layout: 'rightsidebar',

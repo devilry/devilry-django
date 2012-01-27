@@ -1,12 +1,13 @@
 Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.dashboard',
     cls: 'dashboard sidebarlayout',
     requires: [
-        'subjectadmin.layout.RightSidebar'
+        'themebase.layout.RightSidebar'
     ],
 
     layout: 'rightsidebar',
+    frame: false,
 
     items: [{
         xtype: 'container',
@@ -46,6 +47,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         }]
     }, {
         xtype: 'container',
+        border: false,
         region: 'sidebar',
         items: [{
             xtype: 'shortcutlist'

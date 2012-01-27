@@ -1,10 +1,10 @@
-Ext.define('subjectadmin.layout.RightSidebar', {
+Ext.define('themebase.layout.RightSidebar', {
     alias: ['layout.rightsidebar'],
     extend: 'Ext.layout.container.Border',
 
 
     /** Class added to the container using this layout. */
-    markerCls: 'sidebarlayout',
+    markerCls: 'rightsidebarlayout',
 
     /** Each item in the container will have their attributes overridden by
      * these values.  The value chosen is based on their ``region`` setting. */

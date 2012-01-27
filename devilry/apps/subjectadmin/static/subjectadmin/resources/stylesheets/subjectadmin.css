@@ -3,61 +3,19 @@ ul.unstyled {
   margin: 0;
 }
 
-/* line 10, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .centercolumn .box h2.boxtitle {
-  color: #666666;
-  background-color: #EEEEEE;
-  padding: 15px 40px 10px 40px;
-  font-weight: normal;
-}
-/* line 16, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .centercolumn .box .boxbody {
-  margin: 0;
-  padding: 40px 44px;
-}
-/* line 22, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn {
-  background-color: #191919;
-  padding: 40px;
-  color: #fff;
-}
-/* line 26, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn a {
-  color: #fff;
-  text-decoration: underline;
-  font-size: 120%;
-}
-/* line 31, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn h2 {
-  color: #999999;
-  padding: 15px 0 10px 0;
-  font-weight: normal;
-}
-/* line 36, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn ul.unstyled {
-  margin-left: 4px;
-}
-/* line 38, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn ul.unstyled > li {
-  margin-bottom: 20px;
-}
-/* line 40, ../sass/subjectadmin.scss */
-.subjectadmin .sidebarlayout .sidebarcolumn ul.unstyled > li li {
-  margin: 6px 0;
-}
-/* line 49, ../sass/subjectadmin.scss */
+/* line 8, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul {
   list-style: none;
 }
-/* line 51, ../sass/subjectadmin.scss */
+/* line 10, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li {
   margin: 0 0 20px 0;
 }
-/* line 53, ../sass/subjectadmin.scss */
+/* line 12, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li a {
   min-width: 400px;
 }
-/* line 61, ../sass/subjectadmin.scss */
+/* line 20, ../sass/subjectadmin.scss */
 .subjectadmin .sysadmin-messages p {
   font-size: 15px;
   color: #444444;
