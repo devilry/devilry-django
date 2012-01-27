@@ -6,6 +6,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         //'devilry.extjshelpers.formfields.ForeignKeySelector',
         'devilry.extjshelpers.formfields.DateTimeField'
     ],
+    ui: 'transparent',
 
     layout: 'anchor',
 

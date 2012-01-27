@@ -1,0 +1,20 @@
+@include extjs-panel-ui(
+    'transparent',
+
+    $ui-base-color: $panel-base-color,
+    $ui-border-width: $panel-border-width,
+    $ui-border-color: $panel-border-color,
+    $ui-border-radius: $panel-border-radius,
+
+    $ui-header-color: $panel-header-color,
+    $ui-header-font-size: $panel-header-font-size,
+    $ui-header-font-weight: $panel-header-font-weight,
+    $ui-header-border-color: $panel-header-border-color,
+    $ui-header-background-color: $panel-header-background-color,
+    $ui-header-background-gradient: $panel-header-background-gradient,
+
+    $ui-body-color: $panel-body-color,
+    $ui-body-border-color: $panel-body-border-color,
+    $ui-body-border-width: 0,
+    $ui-body-background-color: transparent
+);
