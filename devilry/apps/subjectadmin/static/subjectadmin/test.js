@@ -60,14 +60,9 @@ Ext.application({
      * Moch the actual interface
      ********************************************/
     dashboard: function() {
+        this.breadcrumbs.setHome();
         this.setView({
             xtype: 'dashboard'
-        });
-    },
-
-    create_new_assignment: function() {
-        this.setView({
-            xtype: 'createnewassignmentform'
         });
     },
 
@@ -76,6 +71,16 @@ Ext.application({
         this.setView({
             xtype: 'chooseperiod',
             nexturlformat: '/@@create-new-assignment/{0}'
+        });
+    },
+
+    create_new_assignment: function() {
+        this.breadcrumbs.set([{
+            url: '/@@create-new-assignment/@@chooseperiod',
+            text: translate('subjectadmin.chooseperiod.title')
+        }], translate('subjectadmin.createnewassignment.title'));
+        this.setView({
+            xtype: 'createnewassignment'
         });
     },
 

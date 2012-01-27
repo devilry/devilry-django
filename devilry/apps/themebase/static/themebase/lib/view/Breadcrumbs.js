@@ -3,7 +3,10 @@ Ext.define('themebase.view.Breadcrumbs', {
     alias: 'widget.breadcrumbs',
     cls: 'breadcrumb-component',
 
-    home: ['', 'Dashboard'],
+    home: {
+        url: '',
+        text: 'Dashboard'
+    },
 
     tpl: new Ext.XTemplate([
         '<ul class="breadcrumb">',
@@ -29,7 +32,7 @@ Ext.define('themebase.view.Breadcrumbs', {
     set: function(breadcrumbs, current) {
         this.clear();
         Ext.Array.each(breadcrumbs, function(breadcrumb) {
-            this.add(breadcrumb[0], breadcrumb[1]);
+            this.add(breadcrumb.url, breadcrumb.text);
         }, this);
         this.add('', current)
         this.draw();
@@ -44,12 +47,17 @@ Ext.define('themebase.view.Breadcrumbs', {
 
     clear: function() {
         this.breadcrumbs = [];
-        this.add(this.home[0], this.home[1]);
+        this.add(this.home.url, this.home.text);
     },
 
     draw: function() {
         this.update({
             breadcrumbs: this.breadcrumbs
         });
+    },
+
+    setHome: function() {
+        this.clear();
+        thissetHome();
     }
 });
