@@ -1,3 +1,8 @@
 function translate(key) {
-    return i18n[key];
+    var translation = i18n[key];
+    if(translation) {
+        return translation;
+    } else {
+        return key;
+    }
 }
