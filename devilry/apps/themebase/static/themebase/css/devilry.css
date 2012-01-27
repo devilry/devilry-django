@@ -3166,12 +3166,12 @@ input, textarea, select {
 
 /* line 58, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-large {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
   border-style: solid;
@@ -3202,7 +3202,7 @@ input, textarea, select {
   -khtml-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
-  background-position: 1100303px 1000303px;
+  background-position: 1100404px 1000404px;
 }
 /* line 147, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-default-large-tl,
@@ -3225,7 +3225,7 @@ input, textarea, select {
 }
 /* line 200, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-default-large-mc {
-  padding: 0px 0px 0px 0px;
+  padding: 0 0 0 0;
 }
 
 /* line 621, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4220,12 +4220,12 @@ input, textarea, select {
 
 /* line 58, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-large {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
   border-style: solid;
@@ -4248,7 +4248,7 @@ input, textarea, select {
   -khtml-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
-  background-position: 1100303px 1000303px;
+  background-position: 1100404px 1000404px;
 }
 /* line 147, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-default-toolbar-large-tl,
@@ -4268,7 +4268,7 @@ input, textarea, select {
 }
 /* line 200, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-default-toolbar-large-mc {
-  padding: 0px 0px 0px 0px;
+  padding: 0 0 0 0;
 }
 
 /* line 621, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12598,12 +12598,12 @@ input[type=submit].btn::-moz-focus-inner {
 
 /* line 58, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-primary-large {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
   border-style: solid;
@@ -12634,7 +12634,7 @@ input[type=submit].btn::-moz-focus-inner {
   -khtml-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
-  background-position: 1100303px 1000303px;
+  background-position: 1100404px 1000404px;
 }
 /* line 147, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-primary-large-tl,
@@ -12657,7 +12657,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 /* line 200, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-nbr .x-btn-primary-large-mc {
-  padding: 0px 0px 0px 0px;
+  padding: 0 0 0 0;
 }
 
 /* line 621, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12793,6 +12793,7 @@ input[type=submit].btn::-moz-focus-inner {
 
 /* line 771, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-primary-large-focus {
+  border-color: black;
   background-image: none;
   background-color: #0058b3;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #017dff), color-stop(50%, #0064cd), color-stop(51%, #0058b3), color-stop(100%, #004b9a));
@@ -12946,13 +12947,18 @@ input[type=submit].btn::-moz-focus-inner {
   background-image: url('../images/btn/btn-primary-large-disabled-bg.gif');
 }
 
+/* line 63, ../sass/_buttons.scss */
+.x-btn-focus {
+  outline: 1px dotted #666;
+}
+
 /* line 241, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-transparent {
+.x-panel-transparentpanel {
   border-color: #99bce8;
 }
 
 /* line 246, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent {
+.x-panel-header-transparentpanel {
   font-size: 12px;
   line-height: 15px;
   border-color: #99bce8;
@@ -12973,27 +12979,27 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 271, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-top {
-  background-image: url('../images/panel-header/panel-header-transparent-top-bg.gif');
+.x-nlg .x-panel-header-transparentpanel-top {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-top-bg.gif');
 }
 
 /* line 275, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-bottom {
-  background-image: url('../images/panel-header/panel-header-transparent-bottom-bg.gif');
+.x-nlg .x-panel-header-transparentpanel-bottom {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-bottom-bg.gif');
 }
 
 /* line 279, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-left {
-  background-image: url('../images/panel-header/panel-header-transparent-left-bg.gif');
+.x-nlg .x-panel-header-transparentpanel-left {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-left-bg.gif');
 }
 
 /* line 283, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-right {
-  background-image: url('../images/panel-header/panel-header-transparent-right-bg.gif');
+.x-nlg .x-panel-header-transparentpanel-right {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-right-bg.gif');
 }
 
 /* line 290, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-text-transparent {
+.x-panel-header-text-transparentpanel {
   color: #04408c;
   font-size: 12px;
   font-weight: bold;
@@ -13001,7 +13007,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 299, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-body-transparent {
+.x-panel-body-transparentpanel {
   background: transparent;
   border-color: #99bce8;
   color: black;
@@ -13010,19 +13016,19 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 314, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-window-header-transparent,
-.x-panel-collapsed .x-panel-header-transparent {
+.x-panel-collapsed .x-window-header-transparentpanel,
+.x-panel-collapsed .x-panel-header-transparentpanel {
   border-color: #99bce8;
 }
 
 /* line 319, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-vertical {
+.x-panel-header-transparentpanel-vertical {
   border-color: #99bce8;
 }
 
 /* line 326, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-left,
-.x-panel-header-transparent-right {
+.x-panel-header-transparentpanel-left,
+.x-panel-header-transparentpanel-right {
   background-image: none;
   background-color: #cbddf3;
   background-image: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #dae7f6), color-stop(45%, #cddef3), color-stop(46%, #abc7ec), color-stop(50%, #abc7ec), color-stop(51%, #b8cfee), color-stop(100%, #cbddf3));
@@ -13034,7 +13040,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 367, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparent-top {
+.x-panel-collapsed .x-panel-header-transparentpanel-top {
   -moz-border-radius-bottomleft: null;
   -webkit-border-bottom-left-radius: null;
   -o-border-bottom-left-radius: null;
@@ -13049,7 +13055,7 @@ input[type=submit].btn::-moz-focus-inner {
   border-bottom-right-radius: null;
 }
 /* line 371, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparent-right {
+.x-panel-collapsed .x-panel-header-transparentpanel-right {
   -moz-border-radius-topleft: null;
   -webkit-border-top-left-radius: null;
   -o-border-top-left-radius: null;
@@ -13064,7 +13070,7 @@ input[type=submit].btn::-moz-focus-inner {
   border-bottom-left-radius: null;
 }
 /* line 375, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparent-bottom {
+.x-panel-collapsed .x-panel-header-transparentpanel-bottom {
   -moz-border-radius-topleft: null;
   -webkit-border-top-left-radius: null;
   -o-border-top-left-radius: null;
@@ -13079,7 +13085,7 @@ input[type=submit].btn::-moz-focus-inner {
   border-top-right-radius: null;
 }
 /* line 379, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparent-left {
+.x-panel-collapsed .x-panel-header-transparentpanel-left {
   -moz-border-radius-topright: null;
   -webkit-border-top-right-radius: null;
   -o-border-top-right-radius: null;
@@ -13095,12 +13101,12 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 384, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-right {
+.x-nlg .x-panel-header-transparentpanel-right {
   background-position: top right;
 }
 
 /* line 388, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-top {
+.x-panel-header-transparentpanel-top {
   -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   -o-box-shadow: #f4f8fd 0 1px 0px 0 inset;
@@ -13108,7 +13114,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 392, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-right {
+.x-panel-header-transparentpanel-right {
   -moz-box-shadow: #f4f8fd -1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd -1px 0 0px 0 inset;
   -o-box-shadow: #f4f8fd -1px 0 0px 0 inset;
@@ -13116,7 +13122,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 396, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-bottom {
+.x-panel-header-transparentpanel-bottom {
   -moz-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
   -o-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
@@ -13124,7 +13130,7 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 400, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-left {
+.x-panel-header-transparentpanel-left {
   -moz-box-shadow: #f4f8fd 1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 1px 0 0px 0 inset;
   -o-box-shadow: #f4f8fd 1px 0 0px 0 inset;
@@ -13132,20 +13138,110 @@ input[type=submit].btn::-moz-focus-inner {
 }
 
 /* line 405, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparent-bottom {
+.x-nlg .x-panel-header-transparentpanel-bottom {
   background-position: bottom left;
 }
 
 /* line 439, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-right-tc,
-.x-panel-header-transparent-right-mc,
-.x-panel-header-transparent-right-bc {
+.x-panel-header-transparentpanel-right-tc,
+.x-panel-header-transparentpanel-right-mc,
+.x-panel-header-transparentpanel-right-bc {
   background-position: right 0;
 }
 
 /* line 445, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparent-bottom-tc,
-.x-panel-header-transparent-bottom-mc,
-.x-panel-header-transparent-bottom-bc {
+.x-panel-header-transparentpanel-bottom-tc,
+.x-panel-header-transparentpanel-bottom-mc,
+.x-panel-header-transparentpanel-bottom-bc {
   background-position: 0 bottom;
+}
+
+/* line 1, ../sass/_forms-port.scss */
+.formhelp {
+  font-size: 13px;
+  line-height: 18px;
+  color: #bfbfbf;
+}
+
+/* line 10, ../sass/_forms-port.scss */
+label,
+input,
+select,
+textarea {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+}
+
+/* line 14, ../sass/_forms-port.scss */
+label {
+  font-size: 13px;
+  line-height: 18px;
+  color: #404040;
+}
+
+/* line 23, ../sass/_forms-port.scss */
+input,
+textarea,
+select {
+  display: inline-block;
+  height: 18px;
+  padding: 4px;
+  font-size: 13px;
+  line-height: 18px;
+  color: gray;
+  border: 1px solid #ccc;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+}
+
+/* line 37, ../sass/_forms-port.scss */
+input,
+textarea {
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* line 43, ../sass/_forms-port.scss */
+input:focus,
+textarea:focus {
+  outline: 0;
+  border-color: rgba(82, 168, 236, 0.8);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+/* line 51, ../sass/_forms-port.scss */
+input[type=file]:focus,
+input[type=checkbox]:focus,
+select:focus {
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+  outline: 1px dotted #666;
+}
+
+/* line 58, ../sass/_forms-port.scss */
+.form-stacked label {
+  display: block;
+  float: none;
+  width: auto;
+  font-weight: bold;
+  text-align: left;
+  line-height: 20px;
+  padding-top: 0;
 }

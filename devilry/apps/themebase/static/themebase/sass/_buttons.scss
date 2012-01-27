@@ -12,7 +12,7 @@ $primaryButtonColorDisabled: lighten($blueDark, 25%);
 
     $border-color: $primaryButtonColor,
     $border-color-over: $primaryButtonColor,
-    $border-color-focus: $primaryButtonColor,
+    $border-color-focus: $black,
     $border-color-pressed: $primaryButtonColor,
     $border-color-disabled: transparent,
 
@@ -57,3 +57,9 @@ $primaryButtonColorDisabled: lighten($blueDark, 25%);
 
     $icon-size: $button-large-icon-size
 );
+
+
+// Focus state for keyboard and accessibility
+.x-btn-focus {
+    outline: 1px dotted #666;
+}
