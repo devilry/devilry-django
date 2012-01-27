@@ -118,23 +118,9 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
                 })
             }]
         }, {
-            xtype: 'container',
-            layout: 'anchor',
-            columnWidth: .5,
-            defaults: {anchor:'100%'},
-            items: [{
-                xtype: 'box',
-                cls: 'fakelabel',
-                html: 'Period'
-            }, {
-                name: 'parentnode',
-                xtype: 'activeperiodslist',
-                height: 150
-            }, {
-                xtype: 'box',
-                cls: 'help',
-                html: 'Choose the period where this assignment should be added.'
-            }]
+            xtype: 'box',
+            html: '', // Should put something here
+            columnWidth: .5
         }]
     }, {
         xtype: 'hiddenfield',

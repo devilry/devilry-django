@@ -2,8 +2,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
     extend: 'subjectadmin.controller.CreateNewAssignment',
 
     views: [
-        'createnewassignment.Form',
-        'createnewassignment.ActivePeriodsListTestMock'
+        'createnewassignment.Form'
     ],
 
     stores: [

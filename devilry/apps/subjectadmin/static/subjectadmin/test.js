@@ -9,7 +9,7 @@ Ext.application({
     controllers: [
         'ShortcutsTestMock',
         'Dashboard',
-        'CreateNewAssignmentTestMock'
+        'CreateNewAssignment'
     ],
 
     launch: function() {
@@ -56,6 +56,12 @@ Ext.application({
     create_new_assignment: function() {
         this.setView({
             xtype: 'createnewassignmentform'
+        });
+    },
+
+    create_new_assignment_chooseperiod: function() {
+        this.setView({
+            xtype: 'chooseperiod'
         });
     },
 
