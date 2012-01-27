@@ -1,18 +1,19 @@
 Ext.define('subjectadmin.view.createnewassignment.Form', {
     extend: 'Ext.form.Panel',
     alias: 'widget.createnewassignmentform',
-    cls: 'createnewassignmentform stackedform',
+    cls: 'createnewassignmentform form-stacked',
     requires: [
         //'devilry.extjshelpers.formfields.ForeignKeySelector',
-        'devilry.extjshelpers.formfields.DateTimeField'
+        'devilry.extjshelpers.formfields.DateTimeField',
+        'themebase.form.Help'
     ],
-    ui: 'transparent',
+    ui: 'transparentpanel',
 
     layout: 'anchor',
 
     fieldDefaults: {
         labelAlign: 'top',
-        labelStyle: 'font-weight:bold'
+        //labelStyle: 'font-weight:bold'
     },
     defaults: {
         margin: {top: 20},
@@ -43,25 +44,13 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
                 emptyText: 'Example: firstassignment'
             }]
         }, {
-            xtype: 'box',
-            cls: 'help',
+            xtype: 'formhelp',
             html: [
                 'Choose the name of the assignment. Short name is ',
                 'used when the long name takes to much space. Short name can ',
                 'only contain english lower-case letters, numbers and underscore (_).'
             ].join('')
         }]
-
-    //}, {
-        //name: "parentnode",
-        //fieldLabel: "Period/semester",
-        //xtype: 'foreignkeyselector',
-        //model: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
-        //emptyText: 'Select a period',
-        //displayTpl: '{long_name} ({parentnode__short_name}.{short_name})',
-        //dropdownTpl: '<div class="important">{parentnode__short_name}.{short_name}</div>'+
-            //'<div class="unimportant">{parentnode__long_name}</div>' +
-            //'<div class="unimportant">{long_name}</div>'
     }, {
         xtype: 'container',
         anchor: '100%',
