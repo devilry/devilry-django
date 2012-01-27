@@ -91,3 +91,11 @@ Cross cutting and non-hierarchial routes should use the following format::
 
 Prefixing with ``@@`` makes it clear to developers that these are not part of
 the normal hierarchy browsing.
+
+
+
+Libraries
+#########
+
+Libraries are just like apps, however they should put their data in extjs
+classes in ``lib/`` instead of ``app``.
