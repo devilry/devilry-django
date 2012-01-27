@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.RightSidebarLayout', {
+Ext.define('subjectadmin.layout.RightSidebar', {
     alias: ['layout.rightsidebar'],
     extend: 'Ext.layout.container.Border',
 
@@ -21,7 +21,7 @@ Ext.define('subjectadmin.view.RightSidebarLayout', {
 
     getLayoutItems: function() {
         var items = this.callParent(arguments);
-        this.owner.addClass('sidebarlayout');
+        this.owner.addClass(this.markerCls);
 
         // Map of regions
         var i = 0;
