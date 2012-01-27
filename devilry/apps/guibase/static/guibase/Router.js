@@ -99,7 +99,7 @@ Ext.define('guibase.Router', {
     },
 
 
-    navigate: function(token, triggerRoute) {
+    navigate: function(token) {
         Ext.util.History.add(token);
     }
 });
