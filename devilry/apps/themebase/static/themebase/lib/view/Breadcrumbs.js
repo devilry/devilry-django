@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.Breadcrumbs', {
+Ext.define('themebase.view.Breadcrumbs', {
     extend: 'Ext.Component',
     alias: 'widget.breadcrumbs',
     cls: 'breadcrumb-component',

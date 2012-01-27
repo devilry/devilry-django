@@ -4,7 +4,7 @@ Ext.application({
 
     requires: [
         'guibase.RouteNotFound',
-        'subjectadmin.view.Breadcrumbs'
+        'themebase.view.Breadcrumbs'
     ],
 
     controllers: [
