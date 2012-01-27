@@ -2,13 +2,16 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.dashboard',
     cls: 'dashboard sidebarlayout',
+    requires: [
+        'subjectadmin.layout.RightSidebar'
+    ],
 
-    layout: 'border',
+    layout: 'rightsidebar',
 
     items: [{
         xtype: 'container',
         cls: 'centercolumn',
-        region: 'center',
+        region: 'main',
         items: [{
             xtype: 'actionlist',
             data: {
@@ -43,10 +46,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         }]
     }, {
         xtype: 'container',
-        border: 'false',
-        region: 'east',
-        width: 400,
-        cls: 'sidebarcolumn',
+        region: 'sidebar',
         items: [{
             xtype: 'shortcutlist'
         }]

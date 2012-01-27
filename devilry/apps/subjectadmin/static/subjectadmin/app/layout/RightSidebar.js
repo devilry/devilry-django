@@ -11,11 +11,14 @@ Ext.define('subjectadmin.layout.RightSidebar', {
     regionMap: {
         'main': {
             region: 'center',
-            cls: 'centercolumn'
+            cls: 'centercolumn',
+            border: 'false'
         },
         'sidebar': {
             region: 'east',
-            cls: 'sidebarcolumn'
+            cls: 'sidebarcolumn',
+            border: 'false',
+            width: 400
         },
     },
 
@@ -32,7 +35,7 @@ Ext.define('subjectadmin.layout.RightSidebar', {
                 throw Ext.String.format(
                     "Invalid region: {0}. Must be one of: {1}",
                     config.region,
-                    Ext.Object.getKeys(regionMap).join(', ')
+                    Ext.Object.getKeys(this.regionMap).join(', ')
                 );
             }
             var cls = attrs.cls;

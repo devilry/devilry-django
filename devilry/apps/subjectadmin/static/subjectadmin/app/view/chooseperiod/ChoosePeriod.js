@@ -26,9 +26,7 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
         }]
     }, {
         xtype: 'box',
-        border: 'false',
         region: 'sidebar',
-        width: 400,
         html: translate('subjectadmin.chooseperiod.sidebarhelp')
     }]
 });
