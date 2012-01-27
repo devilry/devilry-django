@@ -2,7 +2,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'createnewassignment.Form'
+        'createnewassignment.Form',
+        'createnewassignment.CreateNewAssignment'
     ],
 
     refs: [{
