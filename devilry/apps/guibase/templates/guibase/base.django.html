@@ -23,10 +23,12 @@
                 Ext.Loader.setConfig({
                     enabled: {% if debug %}true{% else %}false{% endif %},
                     paths: {
-                        'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
-                        'Ext.ux': '{{ DEVILRY_STATIC_URL }}/extjsux',
-                        'themebase': '{{ DEVILRY_STATIC_URL }}/themebase/lib',
-                        'guibase': '{{ DEVILRY_STATIC_URL }}/guibase/lib'
+                        {% if include_old_exjsclasses %}
+                            'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
+                        {% endif %}
+                        {% for lib in libs %}
+                            '{{ lib }}': '{{ DEVILRY_STATIC_URL }}/{{ lib }}/lib',
+                        {% endfor %}
                     }
                 });
 
