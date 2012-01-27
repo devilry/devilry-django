@@ -9,6 +9,9 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.waitForCssSelector('.activeperiodslist')
         self.assertTrue('duck-mek2030.2012h' in self.driver.page_source)
         self.assertTrue('duck1100.2011h' in self.driver.page_source)
+        self.assertTrue('subjectadmin.chooseperiod.title' in self.driver.page_source)
+        self.assertTrue('subjectadmin.chooseperiod.sidebarhelp' in self.driver.page_source)
+        self.assertTrue('subjectadmin.next' in self.driver.page_source)
         periodlist = self.driver.find_element_by_class_name('activeperiodslist')
         self.assertEquals(len(periodlist.find_elements_by_css_selector('tr.x-grid-row')), 3)
 
