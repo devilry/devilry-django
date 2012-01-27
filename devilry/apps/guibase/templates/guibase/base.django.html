@@ -20,10 +20,6 @@
         {% if debug %}
             <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-debug.js"></script>
             <script type="text/javascript">
-                // Load RestProxy synchronously. This is required to make it
-                // possible for model classes to use RestProxy at load time (when
-                // the JS file is loaded).
-                //Ext.syncRequire('devilry.extjshelpers.RestProxy');
                 Ext.Loader.setConfig({
                     enabled: {% if debug %}true{% else %}false{% endif %},
                     paths: {
@@ -32,6 +28,11 @@
                         'guibase': '{{ DEVILRY_STATIC_URL }}/guibase'
                     }
                 });
+
+                // Load RestProxy synchronously. This is required to make it
+                // possible for model classes to use RestProxy at load time (when
+                // the JS file is loaded).
+                Ext.syncRequire('devilry.extjshelpers.RestProxy');
             </script>
             <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/{% block appfile %}{% endblock %}"></script>
         {% else %}
