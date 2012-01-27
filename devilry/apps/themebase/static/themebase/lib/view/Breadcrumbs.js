@@ -58,6 +58,6 @@ Ext.define('themebase.view.Breadcrumbs', {
 
     setHome: function() {
         this.clear();
-        thissetHome();
+        this.draw();
     }
 });

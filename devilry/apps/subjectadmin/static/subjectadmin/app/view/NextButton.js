@@ -3,5 +3,6 @@ Ext.define('subjectadmin.view.NextButton', {
     alias: 'widget.nextbutton',
     cls: 'nextbutton',
     scale: 'large',
+    ui: 'primary',
     text: translate('subjectadmin.next')
 });

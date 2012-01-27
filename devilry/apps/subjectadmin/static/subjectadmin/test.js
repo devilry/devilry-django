@@ -75,10 +75,7 @@ Ext.application({
     },
 
     create_new_assignment: function() {
-        this.breadcrumbs.set([{
-            url: '/@@create-new-assignment/@@chooseperiod',
-            text: translate('subjectadmin.chooseperiod.title')
-        }], translate('subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], translate('subjectadmin.createnewassignment.title'));
         this.setView({
             xtype: 'createnewassignment'
         });

@@ -12590,3 +12590,358 @@ input[type=submit].btn::-moz-focus-inner {
 .rightsidebarlayout .sidebarcolumn ul.unstyled > li li {
   margin: 6px 0;
 }
+
+/* line 615, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large {
+  border-color: #006bdc;
+}
+
+/* line 58, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-btn-primary-large {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  padding: 3px 3px 3px 3px;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #006bdc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #006bdc), color-stop(48%, #0066d0), color-stop(52%, #004fa2), color-stop(100%, #0054ac));
+  background-image: -webkit-linear-gradient(top, #006bdc, #0066d0 48%, #004fa2 52%, #0054ac);
+  background-image: -moz-linear-gradient(top, #006bdc, #0066d0 48%, #004fa2 52%, #0054ac);
+  background-image: -o-linear-gradient(top, #006bdc, #0066d0 48%, #004fa2 52%, #0054ac);
+  background-image: -ms-linear-gradient(top, #006bdc, #0066d0 48%, #004fa2 52%, #0054ac);
+  background-image: linear-gradient(top, #006bdc, #0066d0 48%, #004fa2 52%, #0054ac);
+}
+
+/* line 91, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-btn-primary-large-mc {
+  background-image: url('../images/btn/btn-primary-large-bg.gif');
+  background-color: #006bdc;
+}
+
+/* line 104, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-primary-large {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1100303px 1000303px;
+}
+/* line 147, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-primary-large-tl,
+.x-nbr .x-btn-primary-large-bl,
+.x-nbr .x-btn-primary-large-tr,
+.x-nbr .x-btn-primary-large-br,
+.x-nbr .x-btn-primary-large-tc,
+.x-nbr .x-btn-primary-large-bc,
+.x-nbr .x-btn-primary-large-ml,
+.x-nbr .x-btn-primary-large-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-primary-large-corners.gif');
+}
+/* line 168, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-primary-large-ml,
+.x-nbr .x-btn-primary-large-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-primary-large-sides.gif');
+  background-position: 0 0;
+}
+/* line 200, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-primary-large-mc {
+  padding: 0px 0px 0px 0px;
+}
+
+/* line 621, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large .x-btn-inner {
+  font-size: 12px;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: white;
+  background-repeat: no-repeat;
+  padding: 0 3px;
+}
+
+/* line 633, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon button,
+.x-btn-primary-large-icon .x-btn-inner,
+.x-btn-primary-large-noicon button,
+.x-btn-primary-large-noicon .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+}
+
+/* line 641, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon button {
+  padding: 0;
+  width: 32px !important;
+  height: 32px;
+}
+/* line 647, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon .x-btn-icon {
+  width: 32px;
+  height: 32px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* line 658, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-left button {
+  height: 32px;
+}
+/* line 661, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-left .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+  padding-left: 36px;
+}
+/* line 667, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-left .x-btn-icon {
+  width: 32px;
+  height: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: auto;
+}
+/* line 676, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-primary-large-icon-text-left .x-btn-icon, .x-quirks .x-btn-primary-large-icon-text-left .x-btn-icon {
+  height: 32px;
+}
+
+/* line 683, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-right button {
+  height: 32px;
+}
+/* line 686, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-right .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+  padding-right: 36px !important;
+}
+/* line 692, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-right .x-btn-icon {
+  width: 32px;
+  height: auto;
+  top: 0;
+  left: auto;
+  bottom: 0;
+  right: 0;
+}
+/* line 701, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-primary-large-icon-text-right .x-btn-icon, .x-quirks .x-btn-primary-large-icon-text-right .x-btn-icon {
+  height: 32px;
+}
+
+/* line 708, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-top .x-btn-inner {
+  padding-top: 36px;
+}
+/* line 712, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-top .x-btn-icon {
+  width: auto;
+  height: 32px;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  right: 0;
+}
+/* line 721, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-primary-large-icon-text-top .x-btn-icon, .x-quirks .x-ie .x-btn-primary-large-icon-text-top .x-btn-icon {
+  width: 32px;
+}
+
+/* line 728, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-bottom .x-btn-inner {
+  padding-bottom: 36px;
+}
+/* line 732, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-icon-text-bottom .x-btn-icon {
+  width: auto;
+  height: 32px;
+  top: auto;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+/* line 741, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-primary-large-icon-text-bottom .x-btn-icon, .x-quirks .x-ie .x-btn-primary-large-icon-text-bottom .x-btn-icon {
+  width: 32px;
+}
+
+/* line 747, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-over {
+  background-image: none;
+  background-color: #0064cd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0064cd), color-stop(48%, #0059c2), color-stop(52%, #1c4482), color-stop(100%, #17468f));
+  background-image: -webkit-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -moz-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -o-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -ms-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+}
+
+/* line 771, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-focus {
+  background-image: none;
+  background-color: #0064cd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0064cd), color-stop(48%, #0059c2), color-stop(52%, #1c4482), color-stop(100%, #17468f));
+  background-image: -webkit-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -moz-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -o-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: -ms-linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+  background-image: linear-gradient(top, #0064cd, #0059c2 48%, #1c4482 52%, #17468f);
+}
+
+/* line 796, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-menu-active,
+.x-btn-primary-large-pressed {
+  background-image: none;
+  background-color: #005dbe;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #005dbe), color-stop(48%, #0268c7), color-stop(52%, #0056a6), color-stop(100%, #005bb1));
+  background-image: -webkit-linear-gradient(top, #005dbe, #0268c7 48%, #0056a6 52%, #005bb1);
+  background-image: -moz-linear-gradient(top, #005dbe, #0268c7 48%, #0056a6 52%, #005bb1);
+  background-image: -o-linear-gradient(top, #005dbe, #0268c7 48%, #0056a6 52%, #005bb1);
+  background-image: -ms-linear-gradient(top, #005dbe, #0268c7 48%, #0056a6 52%, #005bb1);
+  background-image: linear-gradient(top, #005dbe, #0268c7 48%, #0056a6 52%, #005bb1);
+}
+
+/* line 820, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-primary-large-disabled {
+  border-color: transparent;
+  background-image: none;
+  background-color: #4da4ff;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #4da4ff), color-stop(48%, #419eff), color-stop(52%, #1386ff), color-stop(100%, #1d8bff));
+  background-image: -webkit-linear-gradient(top, #4da4ff, #419eff 48%, #1386ff 52%, #1d8bff);
+  background-image: -moz-linear-gradient(top, #4da4ff, #419eff 48%, #1386ff 52%, #1d8bff);
+  background-image: -o-linear-gradient(top, #4da4ff, #419eff 48%, #1386ff 52%, #1d8bff);
+  background-image: -ms-linear-gradient(top, #4da4ff, #419eff 48%, #1386ff 52%, #1d8bff);
+  background-image: linear-gradient(top, #4da4ff, #419eff 48%, #1386ff 52%, #1d8bff);
+}
+
+/* line 868, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-over .x-frame-tl,
+.x-nbr .x-btn-primary-large-over .x-frame-bl,
+.x-nbr .x-btn-primary-large-over .x-frame-tr,
+.x-nbr .x-btn-primary-large-over .x-frame-br,
+.x-nbr .x-btn-primary-large-over .x-frame-tc,
+.x-nbr .x-btn-primary-large-over .x-frame-bc {
+  background-image: url('../images/btn/btn-primary-large-over-corners.gif');
+}
+/* line 872, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-over .x-frame-ml,
+.x-nbr .x-btn-primary-large-over .x-frame-mr {
+  background-image: url('../images/btn/btn-primary-large-over-sides.gif');
+}
+/* line 875, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-over .x-frame-mc {
+  background-color: #0064cd;
+  background-image: url('../images/btn/btn-primary-large-over-bg.gif');
+}
+/* line 889, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-focus .x-frame-tl,
+.x-nbr .x-btn-primary-large-focus .x-frame-bl,
+.x-nbr .x-btn-primary-large-focus .x-frame-tr,
+.x-nbr .x-btn-primary-large-focus .x-frame-br,
+.x-nbr .x-btn-primary-large-focus .x-frame-tc,
+.x-nbr .x-btn-primary-large-focus .x-frame-bc {
+  background-image: url('../images/btn/btn-primary-large-focus-corners.gif');
+}
+/* line 893, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-focus .x-frame-ml,
+.x-nbr .x-btn-primary-large-focus .x-frame-mr {
+  background-image: url('../images/btn/btn-primary-large-focus-sides.gif');
+}
+/* line 896, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-focus .x-frame-mc {
+  background-color: #0064cd;
+  background-image: url('../images/btn/btn-primary-large-focus-bg.gif');
+}
+/* line 911, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-menu-active .x-frame-tl,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-bl,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-tr,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-br,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-tc,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-bc,
+.x-nbr .x-btn-primary-large-pressed .x-frame-tl,
+.x-nbr .x-btn-primary-large-pressed .x-frame-bl,
+.x-nbr .x-btn-primary-large-pressed .x-frame-tr,
+.x-nbr .x-btn-primary-large-pressed .x-frame-br,
+.x-nbr .x-btn-primary-large-pressed .x-frame-tc,
+.x-nbr .x-btn-primary-large-pressed .x-frame-bc {
+  background-image: url('../images/btn/btn-primary-large-pressed-corners.gif');
+}
+/* line 915, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-menu-active .x-frame-ml,
+.x-nbr .x-btn-primary-large-menu-active .x-frame-mr,
+.x-nbr .x-btn-primary-large-pressed .x-frame-ml,
+.x-nbr .x-btn-primary-large-pressed .x-frame-mr {
+  background-image: url('../images/btn/btn-primary-large-pressed-sides.gif');
+}
+/* line 918, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-menu-active .x-frame-mc,
+.x-nbr .x-btn-primary-large-pressed .x-frame-mc {
+  background-color: #005dbe;
+  background-image: url('../images/btn/btn-primary-large-pressed-bg.gif');
+}
+/* line 932, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-disabled .x-frame-tl,
+.x-nbr .x-btn-primary-large-disabled .x-frame-bl,
+.x-nbr .x-btn-primary-large-disabled .x-frame-tr,
+.x-nbr .x-btn-primary-large-disabled .x-frame-br,
+.x-nbr .x-btn-primary-large-disabled .x-frame-tc,
+.x-nbr .x-btn-primary-large-disabled .x-frame-bc {
+  background-image: url('../images/btn/btn-primary-large-disabled-corners.gif');
+}
+/* line 936, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-disabled .x-frame-ml,
+.x-nbr .x-btn-primary-large-disabled .x-frame-mr {
+  background-image: url('../images/btn/btn-primary-large-disabled-sides.gif');
+}
+/* line 939, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-primary-large-disabled .x-frame-mc {
+  background-color: #4da4ff;
+  background-image: url('../images/btn/btn-primary-large-disabled-bg.gif');
+}
+
+/* line 952, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-primary-large {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-primary-large-bg.gif');
+}
+
+/* line 961, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-primary-large-over {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-primary-large-over-bg.gif');
+}
+
+/* line 970, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-primary-large-focus {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-primary-large-focus-bg.gif');
+}
+
+/* line 980, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-primary-large-menu-active,
+.x-nlg .x-btn-primary-large-pressed {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-primary-large-pressed-bg.gif');
+}
+
+/* line 989, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-primary-large-disabled {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-primary-large-disabled-bg.gif');
+}

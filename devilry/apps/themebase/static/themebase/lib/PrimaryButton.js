@@ -6,5 +6,6 @@ Ext.define('themebase.PrimaryButton', {
     extend: 'Ext.button.Button',
     alias: 'widget.primarybutton',
     cls: 'primarybutton',
-    scale: 'large'
+    scale: 'large',
+    ui: 'primary'
 });
