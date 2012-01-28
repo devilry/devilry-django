@@ -22,8 +22,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         xtype: 'textfield',
         emptyText: 'Example: Obligatory assignment 1',
         allowBlank: false,
-        width: 400,
-        height: 60
+        width: 400
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
