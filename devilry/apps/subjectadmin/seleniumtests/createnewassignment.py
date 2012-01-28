@@ -1,4 +1,4 @@
-from devilry.apps.guibase.seleniumhelpers import SeleniumTestCase
+from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 
 
 class TestCreateNewAssignment(SeleniumTestCase):

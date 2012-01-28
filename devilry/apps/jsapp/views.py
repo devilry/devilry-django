@@ -17,7 +17,7 @@ class GuiBaseView(View):
         return cls.as_view(appname=appname, templatename=templatename, **kwargs)
 
     def get(self, request):
-        return render(request, 'guibase/{0}.django.html'.format(self.templatename),
+        return render(request, 'jsapp/{0}.django.html'.format(self.templatename),
                       {'appname': self.appname,
                        'with_css': self.with_css,
                        'libs': self.libs,

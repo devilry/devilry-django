@@ -40,14 +40,14 @@ urls.py
 Typically looks something like this::
 
     from django.conf.urls.defaults import patterns
-    from devilry.apps.guibase.views import create_urls
+    from devilry.apps.jsapp.views import create_urls
     urlpatterns = patterns('devilry.apps.myapp',
                            *create_urls('myapp',
                                         with_css=True,
-                                        libs=['guibase', 'themebase']))
+                                        libs=['jsapp', 'themebase']))
 
-See :func:`devilry.apps.guibase.views.create_urls`. Notice that we specify two
-libs. You will usually need these two. ``guibase`` provides the architecture
+See :func:`devilry.apps.jsapp.views.create_urls`. Notice that we specify two
+libs. You will usually need these two. ``jsapp`` provides the architecture
 for the app framework, and ``themebase`` provides the default theme, re-usable
 layouts and common widgets.
 
@@ -73,7 +73,7 @@ Need CSS?
 Add your CSS to
 ``<appname>/static/<appname>/resources/stylesheets/<appname>.css`` and update
 ``urls.py`` with the ``with_css=True`` argument to
-:func:`devilry.apps.guibase.views.create_urls`.
+:func:`devilry.apps.jsapp.views.create_urls`.
 
 
 CSS with compass
@@ -135,4 +135,4 @@ classes in ``lib/`` instead of ``app``.
 API
 ###
 
-.. automodule:: devilry.apps.guibase.views
+.. automodule:: devilry.apps.jsapp.views

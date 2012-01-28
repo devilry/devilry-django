@@ -25,7 +25,7 @@ INSTALLED_APPS += [
                   'devilry.apps.corerest',
                   'devilry.dataconverter', # Needs to be here since it uses templates
 
-                  'devilry.apps.guibase',
+                  'devilry.apps.jsapp',
                   'devilry.apps.themebase',
                   'devilry.apps.subjectadmin',
 

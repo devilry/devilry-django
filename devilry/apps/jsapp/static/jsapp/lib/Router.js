@@ -1,4 +1,4 @@
-Ext.define('guibase.Router', {
+Ext.define('jsapp.Router', {
     extend: 'Ext.util.Observable',
     requires: [
         'Ext.util.History'
