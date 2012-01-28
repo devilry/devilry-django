@@ -74,10 +74,11 @@ Ext.application({
         });
     },
 
-    create_new_assignment: function() {
+    create_new_assignment: function(info, periodId) {
         this.breadcrumbs.set([], translate('subjectadmin.createnewassignment.title'));
         this.setView({
-            xtype: 'createnewassignment'
+            xtype: 'createnewassignment',
+            periodId: periodId
         });
     },
 
