@@ -12,8 +12,9 @@ The layout is basically the one reccommended by ExtJS, however since we route ap
         ...
         static/
             appname/
-                app.js
                 app/
+                    Application.js
+                    TestApplication.js
                     controller/
                     model/
                     store/
@@ -54,6 +55,15 @@ layouts and common widgets.
 static/appname/
 ---------------
 Refer to ExtJS docs.
+
+
+static/appname/app/Application.js
+---------------------------------
+A subclass of ``Ext.app.Application``.
+
+static/appname/app/TestApplication.js
+---------------------------------
+A subclass of ``<appname>.Application``.
 
 
 
