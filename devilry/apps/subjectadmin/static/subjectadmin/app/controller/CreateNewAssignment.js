@@ -9,6 +9,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     stores: [
         'ActiveAssignments'
     ],
+    models: [
+        'Assignment'
+    ],
 
     refs: [{
         ref: 'form',
@@ -48,25 +51,43 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onSubmit: function() {
-        var form = this.getForm().getForm();
-        if(form.isValid()) {
-            var values = form.getFieldValues();
-            this._save(values);
+        if(this.getForm().getForm().isValid()) {
+            this._save();
         }
     },
 
-    _save: function(values) {
-        var periodId = this.getCreateNewAssignment().periodId;
-        values.parentnode = periodId;
-        var store = this.getActiveAssignmentsStore();
-        this.mon(store, 'datachanged', this._onStoreDataChanged, this, {
-            single: true
-        });
-        store.add(values);
-        store.sync();
+    _getFormValues: function() {
+        return this.getForm().getForm().getFieldValues();
     },
 
-    _onStoreDataChanged: function() {
-        console.log(this.getActiveAssignmentsStore().data.items);
+    _save: function() {
+        var values = this._getFormValues();
+        var periodId = this.getCreateNewAssignment().periodId;
+        values.parentnode = periodId;
+
+        var AssignmentModel = this.getAssignmentModel();
+        var assignment = new AssignmentModel(values);
+        this._mask();
+        assignment.save({
+            scope: this,
+            success: this._onSuccessfulSave,
+            failure: this._onFailedSave
+        });
+    },
+
+    _onSuccessfulSave: function() {
+        this._unmask();
+        console.log('success');
+    },
+
+    _onFailedSave: function(record, operation) {
+        console.log('error', record, operation);
+    },
+
+    _mask: function() {
+        this.getForm().getEl().mask(translate('themebase.saving'))
+    },
+    _unmask: function() {
+        this.getForm().getEl().unmask();
     }
 });

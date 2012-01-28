@@ -1,6 +1,6 @@
 Ext.define('subjectadmin.store.ActiveAssignments', {
     extend: 'Ext.data.Store',
-    model: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+    model: 'subjectadmin.model.Assignment',
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/restfulsimplifiedassignment/',

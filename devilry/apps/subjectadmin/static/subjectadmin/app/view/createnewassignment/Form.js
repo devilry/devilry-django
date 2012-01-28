@@ -18,7 +18,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
 
     items: [{
         name: "long_name",
-        fieldLabel: "Long name",
+        fieldLabel: "Name",
         xtype: 'textfield',
         emptyText: 'Example: Obligatory assignment 1',
         allowBlank: false,

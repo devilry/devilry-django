@@ -5,6 +5,10 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
         'ActiveAssignmentsTestMock'
     ],
 
+    models: [
+        'AssignmentTestMock'
+    ],
+
     _setInitialValues: function() {
         this.getForm().getForm().setValues({
             long_name: 'The first assignment',
@@ -14,5 +18,14 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
 
     getActiveAssignmentsStore: function() {
         return this.getActiveAssignmentsTestMockStore();
+    },
+
+    getAssignmentModel: function() {
+        return this.getAssignmentTestMockModel();
+    },
+
+    _save: function() {
+        this.callParent();
+        this._onSuccessfulSave(); // The memory proxy does not save anythin, so we have to fake success
     }
 });

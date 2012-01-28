@@ -1,6 +1,7 @@
 Ext.define('subjectadmin.store.ActiveAssignmentsTestMock', {
     extend: 'Ext.data.Store',
-    fields: ['id', 'short_name', 'parentnode__short_name', 'parentnode__parentnode__short_name'],
+    model: 'subjectadmin.model.AssignmentTestMock',
+    //fields: ['id', 'short_name', 'parentnode__short_name', 'parentnode__parentnode__short_name'],
     data: [{
         id: 0,
         parentnode__parentnode__short_name:'duck1100',
