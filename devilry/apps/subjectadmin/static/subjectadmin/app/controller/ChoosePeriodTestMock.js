@@ -2,7 +2,7 @@ Ext.define('subjectadmin.controller.ChoosePeriodTestMock', {
     extend: 'subjectadmin.controller.ChoosePeriod',
 
     views: [
-        'NextButton',
+        'themebase.NextButton',
         'chooseperiod.ActivePeriodsListTestMock',
         'chooseperiod.ChoosePeriod'
     ],

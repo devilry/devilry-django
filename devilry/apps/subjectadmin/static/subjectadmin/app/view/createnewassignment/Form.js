@@ -3,8 +3,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     alias: 'widget.createnewassignmentform',
     cls: 'createnewassignmentform form-stacked',
     requires: [
-        //'devilry.extjshelpers.formfields.ForeignKeySelector',
         'devilry.extjshelpers.formfields.DateTimeField',
+        'themebase.CreateButton',
         'themebase.form.Help'
     ],
     ui: 'transparentpanel',
@@ -113,9 +113,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         ui: 'footer',
         padding: 0,
         items: [{
-            xtype: 'primarybutton',
+            xtype: 'createbutton',
             margin: {top: 10},
-            text: translate('themebase.create'),
             formBind: true, //only enabled once the form is valid
             disabled: true
         }]

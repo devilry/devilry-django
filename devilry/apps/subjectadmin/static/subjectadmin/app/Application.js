@@ -5,7 +5,7 @@ Ext.define('subjectadmin.Application', {
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     requires: [
-        'guibase.RouteNotFound',
+        'themebase.RouteNotFound',
         'themebase.view.Breadcrumbs'
     ],
 

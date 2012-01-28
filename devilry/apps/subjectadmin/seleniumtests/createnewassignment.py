@@ -27,3 +27,12 @@ class TestCreateNewAssignment(SeleniumTestCase):
         firstperiod = periodlist.find_elements_by_css_selector('tr.x-grid-row')[0]
         firstperiod.click()
         self.assertTrue(buttonel.is_enabled())
+
+    def test_form_render(self):
+        self.browseTo('/@@create-new-assignment/1')
+        self.waitForCssSelector('.createnewassignmentform ')
+        self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
+        self.assertTrue('subjectadmin.createnewassignment.sidebarhelp' in self.driver.page_source)
+        self.assertTrue('subjectadmin.next' in self.driver.page_source)
+        periodlist = self.driver.find_element_by_class_name('activeperiodslist')
+        self.assertEquals(len(periodlist.find_elements_by_css_selector('tr.x-grid-row')), 3)

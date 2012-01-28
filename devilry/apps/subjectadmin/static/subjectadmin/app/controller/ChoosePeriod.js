@@ -2,7 +2,7 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'NextButton',
+        'themebase.NextButton',
         'chooseperiod.ActivePeriodsList',
         'chooseperiod.ChoosePeriod'
     ],

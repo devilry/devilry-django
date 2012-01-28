@@ -1,4 +1,4 @@
-Ext.define('guibase.RouteNotFound', {
+Ext.define('themebase.RouteNotFound', {
     extend: 'Ext.Component',
     alias: 'widget.routenotfound',
     

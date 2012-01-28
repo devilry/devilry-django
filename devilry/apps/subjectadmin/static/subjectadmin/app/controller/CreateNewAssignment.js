@@ -29,7 +29,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform textfield[name=long_name]': {
                 render: this._onRenderLongName,
             },
-            'viewport createnewassignmentform primarybutton': {
+            'viewport createnewassignmentform createbutton': {
                 click: this._onSubmit,
             }
         });
