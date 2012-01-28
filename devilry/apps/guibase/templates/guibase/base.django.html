@@ -29,6 +29,8 @@
                         {% for lib in libs %}
                             '{{ lib }}': '{{ DEVILRY_STATIC_URL }}/{{ lib }}/lib',
                         {% endfor %}
+                        // Add the app here to be able to require Application.js
+                        '{{ appname }}': '{{ DEVILRY_STATIC_URL }}/{{ appname }}/app'
                     }
                 });
 
@@ -37,12 +39,15 @@
                 // the JS file is loaded).
                 Ext.syncRequire('devilry.extjshelpers.RestProxy');
             </script>
-            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/{% block appfile %}{% endblock %}"></script>
+
+            
+            {# <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/{% block appfile %}{% endblock %}"></script> #}
         {% else %}
             <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext.js"></script>
             <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/app-all.js"></script>
         {% endif %}
 
+        {% block appjs %}{% endblock %}
     </head>
 
     <body class="{{ appname }}"></body>

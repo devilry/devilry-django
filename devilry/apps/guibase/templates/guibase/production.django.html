@@ -27,3 +27,13 @@
         };
     </script>
 {% endblock %}
+
+{% block appjs %}
+    <script type="text/javascript">
+        Ext.require('subjectadmin.Application');
+
+        Ext.onReady(function() {
+            Ext.create('subjectadmin.Application');
+        });
+    </script>
+{% endblock %}

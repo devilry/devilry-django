@@ -4,7 +4,7 @@
     <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages{{ DEVILRY_I18N_CURRENT_LOCALE }}.js"></script>
 {% endblock %}
 
-{% block appfile %}test.js{% endblock %}
+{# {% block appfile %}test.js{% endblock %} #}
 
 {% block devilryjs %}
     <script type="text/javascript">
@@ -21,5 +21,15 @@
             DEVILRY_LOGIN_URL: '/authenticate/login'
             
         };
+    </script>
+{% endblock %}
+
+{% block appjs %}
+    <script type="text/javascript">
+        Ext.require('subjectadmin.TestApplication');
+
+        Ext.onReady(function() {
+            Ext.create('subjectadmin.TestApplication');
+        });
     </script>
 {% endblock %}
