@@ -63,8 +63,8 @@ Ext.define('subjectadmin.Application', {
     setupExtraRoutes: Ext.emptyFn,
 
     routeNotFound: function(route) {
-        this.breadcrumbs.set([], translate('theme.routenotfound'));
-        this.breadcrumbs.set([], translate('subjectadmin.chooseperiod.title'));
+        this.breadcrumbs.set([], dtranslate('theme.routenotfound'));
+        this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'routenotfound',
             route: route.token
@@ -79,7 +79,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     create_new_assignment_chooseperiod: function(info) {
-        this.breadcrumbs.set([], translate('subjectadmin.chooseperiod.title'));
+        this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'chooseperiod',
             nexturlformat: '/@@create-new-assignment/{0}'
@@ -87,7 +87,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     create_new_assignment: function(info, periodId) {
-        this.breadcrumbs.set([], translate('subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
             periodId: periodId
