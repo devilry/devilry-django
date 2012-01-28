@@ -8,7 +8,7 @@ Ext.define('themebase.view.Breadcrumbs', {
         text: 'Dashboard'
     },
 
-    tpl: new Ext.XTemplate([
+    tpl: [
         '<ul class="breadcrumb">',
         '    <tpl for="breadcrumbs">',
         '       <tpl if="xindex != xcount">',
@@ -21,7 +21,7 @@ Ext.define('themebase.view.Breadcrumbs', {
         '       </tpl>',
         '    </tpl>',
         '<ul>'
-    ]),
+    ],
 
     initComponent: function() {
         this.clear();
