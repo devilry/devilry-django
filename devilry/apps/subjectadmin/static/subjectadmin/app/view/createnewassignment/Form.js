@@ -9,17 +9,12 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     ],
     ui: 'transparentpanel',
 
-    //layout: 'anchor',
-
     fieldDefaults: {
-        labelAlign: 'top',
-        //labelStyle: 'font-weight:bold'
+        labelAlign: 'top'
     },
     defaults: {
-        margin: {top: 20},
-        //anchor:'50%'
+        margin: {top: 20}
     },
-
 
     items: [{
         name: "long_name",
@@ -34,11 +29,11 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         margin: {top: 5},
         html: translate('subjectadmin.assignment.long_name.help')
 
-    // How deliveries
+    // How do students add deliveries
     }, {
         name: "delivery_types",
         flex: 1,
-        fieldLabel: "How to students add deliveries?",
+        fieldLabel: "How do students add deliveries?",
         xtype: 'combobox',
         queryMode: 'local',
         valueField: 'value',

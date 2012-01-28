@@ -6,6 +6,10 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         'createnewassignment.CreateNewAssignment'
     ],
 
+    stores: [
+        'ActiveAssignments'
+    ],
+
     refs: [{
         ref: 'form',
         selector: 'createnewassignmentform'
@@ -32,11 +36,15 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         field.focus();
     },
 
-    _onRenderForm: function(form) {
-        form.keyNav = Ext.create('Ext.util.KeyNav', form.el, {
+    _onRenderForm: function() {
+        this.getForm().keyNav = Ext.create('Ext.util.KeyNav', this.getForm().el, {
             enter: this._onSubmit,
             scope: this
         });
+        this._setInitialValues();
+    },
+
+    _setInitialValues: function() {
     },
 
     _onSubmit: function() {

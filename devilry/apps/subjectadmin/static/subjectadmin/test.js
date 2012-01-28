@@ -10,7 +10,7 @@ Ext.application({
     controllers: [
         'ShortcutsTestMock',
         'Dashboard',
-        'CreateNewAssignment',
+        'CreateNewAssignmentTestMock',
         'ChoosePeriodTestMock'
     ],
 
