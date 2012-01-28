@@ -19,11 +19,11 @@ Ext.define('subjectadmin.TestApplication', {
      * Only for testing.
      ********************************************/
     shortcutlist: function() {
-        this.setView({xtype: 'shortcutlist'});
+        this.setPrimaryContent({xtype: 'shortcutlist'});
     },
 
     actionlist: function() {
-        this.setView({
+        this.setPrimaryContent({
             xtype: 'actionlist',
             data: {
                 title: 'Action list test',
