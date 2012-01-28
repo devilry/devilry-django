@@ -14,11 +14,23 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     init: function() {
         this.control({
             'viewport createnewassignmentform': {
-                render: this._onRenderForm
+                render: this._onRenderForm,
             }
         });
     },
 
-    _onRenderForm: function() {
+    _onRenderForm: function(form) {
+        form.keyNav = Ext.create('Ext.util.KeyNav', form.el, {
+            enter: this._onEnterKey,
+            scope: this
+        });
+    },
+
+    _onEnterKey: function() {
+        var form = this.getForm().getForm();
+        if(form.isValid()) {
+            var values = form.getFieldValues();
+            console.log(values);
+        }
     }
 });

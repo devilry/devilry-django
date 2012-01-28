@@ -26,6 +26,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         fieldLabel: "Long name",
         xtype: 'textfield',
         emptyText: 'Example: Obligatory assignment 1',
+        allowBlank: false,
         width: 400,
         height: 60
     }, {
@@ -63,6 +64,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         name: "short_name",
         fieldLabel: "Short name",
         xtype: 'textfield',
+        allowBlank: false,
         emptyText: 'Example: assignment1'
     }, {
         xtype: 'formhelp',
@@ -74,6 +76,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         name: "publishing_time",
         fieldLabel: "Publishing time",
         xtype: 'devilrydatetimefield',
+        allowBlank: false,
         value: new Date()
     }, {
         xtype: 'formhelp',
@@ -108,5 +111,19 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         xtype: 'hiddenfield',
         name: 'scale_points_percent',
         value: 100
+    }],
+
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'bottom',
+        ui: 'footer',
+        padding: 0,
+        items: [{
+            xtype: 'primarybutton',
+            margin: {top: 10},
+            text: translate('themebase.create'),
+            formBind: true, //only enabled once the form is valid
+            disabled: true
+        }]
     }]
 });

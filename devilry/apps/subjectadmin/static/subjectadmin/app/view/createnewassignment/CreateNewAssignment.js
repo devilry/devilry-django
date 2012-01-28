@@ -19,15 +19,8 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
                 translate('subjectadmin.createnewassignment.title')
             ),
         }, {
-            xtype: 'container',
             margin: 40,
-            items: [{
-                xtype: 'createnewassignmentform',
-            }, {
-                xtype: 'primarybutton',
-                margin: {top: 10},
-                text: translate('themebase.create')
-            }]
+            xtype: 'createnewassignmentform'
         }]
     }, {
         xtype: 'box',
