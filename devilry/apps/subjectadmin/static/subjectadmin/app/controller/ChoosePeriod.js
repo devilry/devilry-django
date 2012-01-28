@@ -23,6 +23,7 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
     }],
 
     init: function() {
+        this.getActivePeriodsStore().load();
         this.control({
             'viewport activeperiodslist': {
                 render: this._onRender,
