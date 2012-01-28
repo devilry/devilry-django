@@ -53,6 +53,18 @@ Ext.define('devilry.extjshelpers.RestProxy', {
      */
     result_fieldgroups: undefined,
 
+    /**
+     * @cfg
+     * Forwarded to {@link #setDevilryOrderby}.
+     */
+    orderby: undefined,
+
+    /**
+     * @cfg
+     * Forwarded to {@link #setDevilryOrderby}.
+     */
+    filters: undefined,
+
     constructor: function(config) {
         Ext.apply(this, {
             reader: {
@@ -73,7 +85,13 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         this.extraParams.getdata_in_qrystring = true;
 
         if(this.result_fieldgroups) {
-            this.setDevilryResultFieldgroups(this.result_fieldgroups)
+            this.setDevilryResultFieldgroups(this.result_fieldgroups);
+        }
+        if(this.orderby) {
+            this.setDevilryOrderby(this.orderby);
+        }
+        if(this.filters) {
+            this.setDevilryFilters(this.filters);
         }
     },
 
