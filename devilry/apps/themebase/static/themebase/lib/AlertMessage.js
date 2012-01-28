@@ -12,11 +12,6 @@ Ext.define('themebase.AlertMessage', {
         '</div>'
     ],
 
-    data: {
-        title: dtranslate('themebase.routenotfound'),
-        gotodashboard: dtranslate('themebase.gotodashboard')
-    },
-
     /**
      * @cfg
      * Type of message. Valid values: 'error', 'warning', 'info' or 'success'.
@@ -33,9 +28,8 @@ Ext.define('themebase.AlertMessage', {
     message: '',
 
     initComponent: function() {
-        this.data.type = this.type;
-        this.data.message = this.message;
         this.callParent(arguments);
+        this.update(this.message, this.type);
     },
 
     /**
@@ -47,9 +41,9 @@ Ext.define('themebase.AlertMessage', {
             this.type = type;
         }
         this.message = message;
-        this.callParent({
+        this.callParent([{
             type: this.type,
             message: this.message
-        });
+        }]);
     }
 });
