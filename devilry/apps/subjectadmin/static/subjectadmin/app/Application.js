@@ -63,11 +63,11 @@ Ext.define('subjectadmin.Application', {
     setupExtraRoutes: Ext.emptyFn,
 
     routeNotFound: function(route) {
+        this.breadcrumbs.set([], translate('theme.routenotfound'));
+        this.breadcrumbs.set([], translate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'routenotfound',
-            data: {
-                route: route.token
-            }
+            route: route.token
         });
     },
 

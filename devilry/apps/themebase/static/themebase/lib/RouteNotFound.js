@@ -4,11 +4,27 @@ Ext.define('themebase.RouteNotFound', {
     
     tpl: [
         '<div class="alert-message block-message error">',
-        '  <h1>Route not found</h1>',
-        '  <p>The following route is not available: <strong>{route}</strong></p>',
+        '  <h1>{title}</h1>',
+        '  <p>{route}</p>',
         '  <div class="alert-actions">',
-        '    <a class="btn small" href="#">Go to dashboard</a>',
+        '    <a class="btn small" href="#">{gotodashboard}</a>',
         '  </div>',
         '</div>'
-    ]
+    ],
+
+    data: {
+        title: translate('themebase.routenotfound'),
+        gotodashboard: translate('themebase.gotodashboard')
+    },
+
+    /**
+     * @cfg
+     * The missed route.
+     */
+    route: undefined,
+
+    initComponent: function() {
+        this.data.route = this.route;
+        this.callParent(arguments);
+    }
 });
