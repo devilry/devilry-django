@@ -85,7 +85,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _mask: function() {
-        this.getForm().getEl().mask(translate('themebase.saving'))
+        this.getForm().getEl().mask(dtranslate('themebase.saving'))
     },
     _unmask: function() {
         this.getForm().getEl().unmask();

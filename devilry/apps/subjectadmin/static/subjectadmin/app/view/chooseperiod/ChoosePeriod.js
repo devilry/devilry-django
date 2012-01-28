@@ -13,7 +13,7 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
         items: [{
             xtype: 'box',
             cls: 'sysadmin-messages box',
-            html: Ext.String.format('<h2 class="boxtitle">{0}</h2>', translate('subjectadmin.chooseperiod.title')),
+            html: Ext.String.format('<h2 class="boxtitle">{0}</h2>', dtranslate('subjectadmin.chooseperiod.title')),
         }, {
             xtype: 'container',
             margin: 40,
@@ -27,6 +27,6 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
     }, {
         xtype: 'box',
         region: 'sidebar',
-        html: translate('subjectadmin.chooseperiod.sidebarhelp')
+        html: dtranslate('subjectadmin.chooseperiod.sidebarhelp')
     }]
 });

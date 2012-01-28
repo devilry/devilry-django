@@ -26,7 +26,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: translate('subjectadmin.assignment.long_name.help')
+        html: dtranslate('subjectadmin.assignment.long_name.help')
 
     // How do students add deliveries
     }, {
@@ -51,7 +51,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: translate('subjectadmin.assignment.delivery_types.help')
+        html: dtranslate('subjectadmin.assignment.delivery_types.help')
 
     // Short name
     }, {
@@ -63,7 +63,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: translate('subjectadmin.assignment.short_name.help')
+        html: dtranslate('subjectadmin.assignment.short_name.help')
 
     // Publishing time
     }, {
@@ -75,7 +75,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: translate('subjectadmin.assignment.publishing_time.help')
+        html: dtranslate('subjectadmin.assignment.publishing_time.help')
 
     // Anonymous?
     }, {
@@ -99,7 +99,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: translate('subjectadmin.assignment.anonymous.help')
+        html: dtranslate('subjectadmin.assignment.anonymous.help')
 
     }, {
         xtype: 'hiddenfield',

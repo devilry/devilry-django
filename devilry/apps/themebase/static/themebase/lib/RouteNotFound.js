@@ -13,8 +13,8 @@ Ext.define('themebase.RouteNotFound', {
     ],
 
     data: {
-        title: translate('themebase.routenotfound'),
-        gotodashboard: translate('themebase.gotodashboard')
+        title: dtranslate('themebase.routenotfound'),
+        gotodashboard: dtranslate('themebase.gotodashboard')
     },
 
     /**

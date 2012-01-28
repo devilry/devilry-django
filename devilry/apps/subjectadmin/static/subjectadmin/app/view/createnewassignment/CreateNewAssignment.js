@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
             cls: 'sysadmin-messages box',
             html: Ext.String.format(
                 '<h2 class="boxtitle">{0}</h2>',
-                translate('subjectadmin.createnewassignment.title')
+                dtranslate('subjectadmin.createnewassignment.title')
             ),
         }, {
             margin: 40,
@@ -25,6 +25,6 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
     }, {
         xtype: 'box',
         region: 'sidebar',
-        html: translate('subjectadmin.createnewassignment.sidebarhelp')
+        html: dtranslate('subjectadmin.createnewassignment.sidebarhelp')
     }]
 });
