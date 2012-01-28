@@ -19,10 +19,17 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform': {
                 render: this._onRenderForm,
             },
+            'viewport createnewassignmentform textfield[name=long_name]': {
+                render: this._onRenderLongName,
+            },
             'viewport createnewassignmentform primarybutton': {
                 click: this._onSubmit,
             }
         });
+    },
+
+    _onRenderLongName: function(field) {
+        field.focus();
     },
 
     _onRenderForm: function(form) {
