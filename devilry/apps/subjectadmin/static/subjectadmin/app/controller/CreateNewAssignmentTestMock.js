@@ -11,4 +11,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
             short_name: 'firstassignment'
         })
     },
+
+    getActiveAssignmentsStore: function() {
+        return this.getActiveAssignmentsTestMockStore();
+    }
 });

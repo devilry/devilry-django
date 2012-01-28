@@ -58,13 +58,15 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     _save: function(values) {
         var periodId = this.getCreateNewAssignment().periodId;
         values.parentnode = periodId;
-        console.log('save', values);
+        var store = this.getActiveAssignmentsStore();
+        this.mon(store, 'datachanged', this._onStoreDataChanged, this, {
+            single: true
+        });
+        store.add(values);
+        store.sync();
     },
 
-    _sendRestRequest: function(args) {
-        Ext.apply(args, {
-            url: Ext.String.format(),
-        });
-        Ext.Ajax.request(args);
+    _onStoreDataChanged: function() {
+        console.log(this.getActiveAssignmentsStore().data.items);
     }
 });
