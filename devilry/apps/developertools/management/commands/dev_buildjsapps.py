@@ -8,36 +8,21 @@ import json
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-from django.utils.importlib import import_module
 from django.core import management
 
-
-from devilry.utils.command import setup_logging, get_verbosity
+from devilry.utils.command import setup_logging, get_verbosity, get_installed_apps
 import devilry
 
 log = logging.getLogger('buildjsapps')
 
 
-def get_installed_apps():
-    installed_apps = []
-    checked = set()
-    for app in settings.INSTALLED_APPS:
-        if not app.startswith('django.') and not app in checked:
-            mod = import_module(app)
-            checked.add(app)
-            if exists(mod.__file__) and isdir(dirname(mod.__file__)):
-                moddir = dirname(mod.__file__)
-                installed_apps.append((moddir, mod, mod.__name__.split('.')[-1]))
-    return installed_apps
 
 def get_js_apps():
     apps = []
     for moddir, mod, appname in get_installed_apps():
         staticdir = join(moddir, 'static', appname)
-        appfile = join(staticdir, 'app.js')
         appdir = join(staticdir, 'app')
-        if exists(appfile) and isdir(appdir):
+        if isdir(appdir):
             apps.append((staticdir, appname))
     return apps
 
@@ -111,8 +96,9 @@ class Command(BaseCommand):
     def _cleanJsbAppAllSection(self, config, outdir):
         appall = config['builds'][1]
         #appall['target'] = join(outdir, 'app-all.js')
-        for fileinfo in appall['files']:
-            fileinfo['path'] = outdir
+        del appall['files'][1]
+        assert(len(appall['files']) == 1)
+        appall['files'][0]['path'] = outdir
 
 
     def _build(self, staticdir, cleanedJsbConfig):
