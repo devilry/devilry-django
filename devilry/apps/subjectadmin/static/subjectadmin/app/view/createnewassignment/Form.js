@@ -27,7 +27,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         margin: {top: 0},
         name: "long_name",
-        fieldLabel: "Name",
+        fieldLabel: dtranslate('subjectadmin.assignment.long_name.label'),
         xtype: 'textfield',
         emptyText: 'Example: Obligatory assignment 1',
         allowBlank: false,
@@ -41,7 +41,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         name: "delivery_types",
         flex: 1,
-        fieldLabel: "How do students add deliveries?",
+        fieldLabel: dtranslate('subjectadmin.assignment.delivery_types.label'),
         xtype: 'combobox',
         queryMode: 'local',
         valueField: 'value',
@@ -53,8 +53,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         store: Ext.create('Ext.data.Store', {
             fields: ['value', 'label'],
             data : [
-                {value:0, label:"Electronically using Devilry"},
-                {value:1, label:"Non-electronic (hand in on paper, oral examination, ...)"}
+                {value:0, label:"Using Devilry"},
+                {value:1, label:"Not through Devilry (hand in on paper, oral examination, ...)"}
             ]
         })
     }, {
@@ -65,7 +65,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     // Short name
     }, {
         name: "short_name",
-        fieldLabel: "Short name",
+        fieldLabel: dtranslate('subjectadmin.assignment.short_name.label'),
         xtype: 'textfield',
         allowBlank: false,
         emptyText: 'Example: assignment1'
@@ -77,7 +77,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     // Publishing time
     }, {
         name: "publishing_time",
-        fieldLabel: "Publishing time",
+        fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
         xtype: 'devilrydatetimefield',
         allowBlank: false,
         value: new Date()
@@ -90,7 +90,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         name: "anonymous",
         flex: 1,
-        fieldLabel: "Anonymous?",
+        fieldLabel: dtranslate('subjectadmin.assignment.anonymous.label'),
         xtype: 'combobox',
         queryMode: 'local',
         valueField: 'value',
