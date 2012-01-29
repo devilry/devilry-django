@@ -15,12 +15,12 @@
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
         <!-- ** ExtJS ** -->
-        <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
         {% comment %}
+        <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
+        {% endcomment %}
         <link rel="stylesheet" type="text/css"
                 {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
                 href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
-        {% endcomment %}
 
         <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
 
@@ -30,7 +30,6 @@
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
             Ext.Loader.setConfig({
                 enabled: {% if debug %}true{% else %}false{% endif %},
-//                enabled: true,
                 paths: {
                     'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
                     'Ext': '{{ DEVILRY_STATIC_URL }}/extjsux'
