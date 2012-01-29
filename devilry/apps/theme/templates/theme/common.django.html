@@ -66,15 +66,17 @@
             });
 
 
-            // Load RestProxy synchronously. This is required to make it
-            // possible for model classes to use RestProxy at load time (when
-            // the JS file is loaded).
-            Ext.syncRequire('devilry.extjshelpers.RestProxy');
-
-            {% include "extjshelpers/restful-generated-models.django.js" %}
         </script>
 
-        {% if not debug %}
+        {% if debug %}
+            <script type="text/javascript">
+                // Load RestProxy synchronously. This is required to make it
+                // possible for model classes to use RestProxy at load time (when
+                // the JS file is loaded).
+                Ext.syncRequire('devilry.extjshelpers.RestProxy');
+                {% include "extjshelpers/restful-generated-models.django.js" %}
+            </script>
+        {% else %}
             <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
         {% endif %}
 
