@@ -39,6 +39,6 @@ def get_languagecode(user, accept_language_header=None,
     return default_languagecode
 
 
-find_all_translatestrings_patt = re.compile(r"""dtranslate\(['"]([a-z.-]+)['"]\)""")
+find_all_translatestrings_patt = re.compile(r"""dtranslate\(['"]([a-z._-]+)['"]\)""")
 def find_all_translatestrings(data):
     return find_all_translatestrings_patt.findall(data)
