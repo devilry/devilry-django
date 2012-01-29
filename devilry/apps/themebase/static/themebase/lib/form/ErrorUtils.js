@@ -62,7 +62,10 @@ Ext.define('themebase.form.ErrorUtils', {
     },
 
     /** Formats the error object returned by ``Ext.data.Operation.getError(). as
-     * a string that can be displayed to users. */
+     * a string that can be displayed to users.
+     * 
+     * @return The formatted string.
+     * */
     getErrorMessageFromOperation: function(operation) {
         var error = operation.getError();
         var message;
@@ -74,12 +77,41 @@ Ext.define('themebase.form.ErrorUtils', {
         return message;
     },
 
-    _addGlobalErrorMessages: function(errormessages) {
-        Ext.Array.each(errormessages, function(message) {
-            this.add({
-                message: message,
+    /**
+     * Mark all fields that are both in ``formpanel`` and ``fielderrors`` with
+     * using ``field.markInvalid(fielderrors[fieldname])``.
+     *
+     * @param formpanel A ``Ext.form.Panel`` object.
+     * @param fielderrors Such as the one returned by ``getRestErrorsFromOperation``.
+     * */
+    applyFieldErrorsToForm: function(formpanel, fielderrors) {
+        Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
+            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
+            var match = formpanel.query(fieldComponentQuery);
+            if(match.length > 0) {
+                var field = match[0];
+                field.markInvalid(fielderrors);
+            }
+        });
+    },
+
+    /** Handle errors from an update, create or delete using a model that uses
+     * ``devilry.extjshelpers.RestProxy``.
+     *
+     * @param operation ``Ext.data.Operation`` object.
+     * @param formpanel A ``Ext.form.Panel`` object.
+     * @param alertmessagelist A ``themebase.AlertMessageList`` object.
+     * */
+    handleRestErrorsInForm: function(operation, formpanel, alertmessagelist) {
+        var errors = this.getErrorsFromOperation(operation);
+        alertmessagelist.addMany(errors.global, 'error');
+        this.applyFieldErrorsToForm(formpanel, errors.field);
+        console.log(errors);
+        if(Ext.Object.getSize(errors.field) > 0) {
+            alertmessagelist.add({
+                message: dtranslate('themebase.form.hasfieldswitherrors'),
                 type: 'error'
             });
-        }, this);
-    },
+        }
+    }
 });
