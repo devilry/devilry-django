@@ -22,10 +22,5 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
 
     getAssignmentModel: function() {
         return this.getAssignmentTestMockModel();
-    },
-
-    _save: function() {
-        this.callParent();
-        this._onSuccessfulSave(); // The memory proxy does not save anythin, so we have to fake success
     }
 });
