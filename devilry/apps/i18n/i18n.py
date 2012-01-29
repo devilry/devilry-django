@@ -194,7 +194,7 @@ class Flatten(Base):
     def _save_js(self, exportdir, name, flatformatdata):
         jsfilename = join(exportdir, name + '.js')
         logging.info('Writing ' + jsfilename)
-        jsdata = 'var i18n = {0};\n'.format(flatformatdata)
+        jsdata = 'window.document.i18n = {0};\n'.format(flatformatdata)
         self._savefile(jsfilename, jsdata)
 
     def _save_json(self, exportdir, name, flatformatdata):

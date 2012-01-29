@@ -1,8 +1,9 @@
 function dtranslate(key) {
-    var translation = i18n[key];
-    if(translation) {
-        return translation;
-    } else {
-        return key;
+    if(window.document.i18n) {
+        var translation = window.document.i18n[key];
+        if(translation) {
+            return translation;
+        }
     }
+    return key;
 }
