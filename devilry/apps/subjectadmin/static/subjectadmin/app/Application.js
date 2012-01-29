@@ -5,6 +5,8 @@ Ext.define('subjectadmin.Application', {
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
 
     requires: [
+        'Ext.container.Viewport',
+        'jsapp.Router',
         'themebase.RouteNotFound',
         'themebase.view.Breadcrumbs'
     ],

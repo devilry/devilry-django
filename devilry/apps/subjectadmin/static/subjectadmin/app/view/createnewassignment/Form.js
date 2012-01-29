@@ -3,10 +3,14 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     alias: 'widget.createnewassignmentform',
     cls: 'createnewassignmentform form-stacked',
     requires: [
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Text',
+        'Ext.form.field.Hidden',
+        'Ext.toolbar.Toolbar',
         'devilry.extjshelpers.formfields.DateTimeField',
         'themebase.CreateButton',
         'themebase.AlertMessageList',
-        'themebase.form.Help'
+        'themebase.form.Help',
     ],
     ui: 'transparentpanel',
 
