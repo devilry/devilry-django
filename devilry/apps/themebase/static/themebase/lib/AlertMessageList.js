@@ -35,5 +35,19 @@ Ext.define('themebase.AlertMessageList', {
         if(messages.length === 0) {
             this.hide();
         }
+    },
+
+    /** Add many messages of the same type.
+     *
+     * @param messages Array of messages (strings).
+     * @param type The type of the message (see ``themebase.AlertMessage.type``).
+     * */
+    addMany: function(messages, type) {
+        Ext.Array.each(messages, function(message) {
+            this.add({
+                message: message,
+                type: type
+            });
+        }, this);
     }
 });
