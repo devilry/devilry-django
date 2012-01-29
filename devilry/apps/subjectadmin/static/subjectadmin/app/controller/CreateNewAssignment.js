@@ -93,29 +93,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _onFailedSave: function(record, operation) {
         this._unmask();
-        var errors = themebase.form.ErrorUtils.getErrorsFromOperation(operation);
-        this._addGlobalErrorMessages(errors.global);
-        this._addFieldErrorMessages(errors.field);
-    },
-
-    _addGlobalErrorMessages: function(errormessages) {
-        Ext.Array.each(errormessages, function(message) {
-            this.getAlertMessageList().add({
-                message: message,
-                type: 'error'
-            });
-        }, this);
-    },
-
-    _addFieldErrorMessages: function(fielderrors) {
-        Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
-            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
-            var match = this.getForm().query(fieldComponentQuery);
-            if(match.length > 0) {
-                var field = match[0];
-                field.markInvalid(fielderrors);
-            }
-        }, this);
+        themebase.form.ErrorUtils.handleRestErrorsInForm(operation, this.getForm(), this.getAlertMessageList());
     },
 
     _mask: function() {
