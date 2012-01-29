@@ -1,6 +1,9 @@
 Ext.define('subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'themebase.form.ErrorUtils'
+    ],
     views: [
         'createnewassignment.Form',
         'createnewassignment.CreateNewAssignment'
@@ -90,25 +93,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _onFailedSave: function(record, operation) {
         this._unmask();
-
-        console.log(operation);
-        if(operation.responseData && operation.responseData.items.errormessages) {
-            var errors = operation.responseData.items;
-            this._addGlobalErrorMessages(errors.errormessages);
-            this._addFieldErrorMessages(errors.fielderrors);
-        } else {
-            var error = operation.getError();
-            var message;
-            if(error.status === 0) {
-                message = dtranslate('themebase.lostserverconnection');
-            } else {
-                message = Ext.String.format('{0}: {1}', error.status, error.statusText);
-            }
-            this.getAlertMessageList().add({
-                message: message,
-                type: 'error'
-            });
-        }
+        var errors = themebase.form.ErrorUtils.getErrorsFromOperation(operation);
+        this._addGlobalErrorMessages(errors.global);
+        this._addFieldErrorMessages(errors.field);
     },
 
     _addGlobalErrorMessages: function(errormessages) {
