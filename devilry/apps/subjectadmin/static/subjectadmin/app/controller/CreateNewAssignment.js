@@ -19,6 +19,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'createNewAssignment',
         selector: 'createnewassignment'
+    }, {
+        ref: 'alertMessageList',
+        selector: 'alertmessagelist'
     }],
 
     init: function() {
@@ -48,6 +51,10 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _setInitialValues: function() {
+        this.getForm().getForm().setValues({
+            long_name: 'The first assignment',
+            short_name: 'firstassignment'
+        })
     },
 
     _onSubmit: function() {
@@ -61,6 +68,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _save: function() {
+        this.getAlertMessageList().removeAll();
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
         values.parentnode = periodId;
@@ -81,7 +89,46 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onFailedSave: function(record, operation) {
-        console.log('error', record, operation);
+        this._unmask();
+
+        console.log(operation);
+        if(operation.responseData && operation.responseData.items.errormessages) {
+            var errors = operation.responseData.items;
+            this._addGlobalErrorMessages(errors.errormessages);
+            this._addFieldErrorMessages(errors.fielderrors);
+        } else {
+            var error = operation.getError();
+            var message;
+            if(error.status === 0) {
+                message = dtranslate('themebase.lostserverconnection');
+            } else {
+                message = Ext.String.format('{0}: {1}', error.status, error.statusText);
+            }
+            this.getAlertMessageList().add({
+                message: message,
+                type: 'error'
+            });
+        }
+    },
+
+    _addGlobalErrorMessages: function(errormessages) {
+        Ext.Array.each(errormessages, function(message) {
+            this.getAlertMessageList().add({
+                message: message,
+                type: 'error'
+            });
+        }, this);
+    },
+
+    _addFieldErrorMessages: function(fielderrors) {
+        Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
+            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
+            var match = this.getForm().query(fieldComponentQuery);
+            if(match.length > 0) {
+                var field = match[0];
+                field.markInvalid(fielderrors);
+            }
+        }, this);
     },
 
     _mask: function() {

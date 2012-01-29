@@ -5,6 +5,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     requires: [
         'devilry.extjshelpers.formfields.DateTimeField',
         'themebase.CreateButton',
+        'themebase.AlertMessageList',
         'themebase.form.Help'
     ],
     ui: 'transparentpanel',
@@ -17,6 +18,10 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     },
 
     items: [{
+        margin: {top: 0, bottom: 20},
+        xtype: 'alertmessagelist'
+    }, {
+        margin: {top: 0},
         name: "long_name",
         fieldLabel: "Name",
         xtype: 'textfield',
