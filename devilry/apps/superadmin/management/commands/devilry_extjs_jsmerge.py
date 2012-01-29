@@ -1,8 +1,8 @@
-from os import walk
+from os import walk, sep
 from os.path import join, dirname, isdir, exists
 import re
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.utils.importlib import import_module
 from django.conf import settings
 
@@ -77,11 +77,11 @@ def orderJsFiles(jsfiles):
 
 
 def collect_jsfiles(jsfiles, rootdir, verbose):
-    ignorefilepatt = re.compile('^.*?(configeditor.js|drafteditor.js|formatoverrides.js)$')
-    ignoredirpatt = re.compile('(deliverystore|extjshelpers.extjs)')
+    ignorefilepatt = re.compile('^.*?(configeditor.js|drafteditor.js|formatoverrides.js|app-all.js|all-classes.js|devilry_all_uncompiled.js|django\.js)$')
+    includedirpatt = re.compile(r'(extjs_classes|extjsux)')
     for root, dirs, files in walk(rootdir):
-        if ignoredirpatt.search(root):
-            continue
+        unixstyledir = root.replace(sep, '/')
+        if not includedirpatt.search(root): continue
         for filename in files:
             if filename.endswith('.js'):
                 filepath = join(root, filename)
