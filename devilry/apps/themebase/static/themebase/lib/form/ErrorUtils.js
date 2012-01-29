@@ -95,6 +95,36 @@ Ext.define('themebase.form.ErrorUtils', {
         });
     },
 
+    /**
+     * Add field errors to ``AlertMessageList``.
+     *
+     * Locates form field labels using the key in fielderrors, and prefixes all
+     * error messages with the field label.
+     *
+     * @param formpanel A ``Ext.form.Panel`` object.
+     * @param fielderrors Such as the one returned by ``getRestErrorsFromOperation``.
+     * @param alertmessagelist A ``themebase.AlertMessageList`` object.
+     * */
+    addFieldErrorsToAlertMessageList: function(formpanel, fielderrors, alertmessagelist) {
+        Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
+            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
+            var match = formpanel.query(fieldComponentQuery);
+            var fielderror = fielderrors.join('. ');
+            if(match.length > 0) {
+                var field = match[0];
+                var message = Ext.String.format('<strong>{0}:</strong> {1}', field.fieldLabel, fielderror)
+                alertmessagelist.add({
+                    message: message,
+                    type: 'error'
+                });
+            } else {
+                throw Ext.String.format(
+                    "Field error in field that is not in the form. Field name: {0}. Error: {1}.",
+                    fieldname, fielderror)
+            }
+        });
+    },
+
     /** Handle errors from an update, create or delete using a model that uses
      * ``devilry.extjshelpers.RestProxy``.
      *
@@ -105,13 +135,7 @@ Ext.define('themebase.form.ErrorUtils', {
     handleRestErrorsInForm: function(operation, formpanel, alertmessagelist) {
         var errors = this.getErrorsFromOperation(operation);
         alertmessagelist.addMany(errors.global, 'error');
+        this.addFieldErrorsToAlertMessageList(formpanel, errors.field, alertmessagelist);
         this.applyFieldErrorsToForm(formpanel, errors.field);
-        console.log(errors);
-        if(Ext.Object.getSize(errors.field) > 0) {
-            alertmessagelist.add({
-                message: dtranslate('themebase.form.hasfieldswitherrors'),
-                type: 'error'
-            });
-        }
     }
 });
