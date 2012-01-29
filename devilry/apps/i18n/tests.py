@@ -125,3 +125,8 @@ class TestUtils(TestCase):
                                                  languagecodemapping={'ru': 'unused'},
                                                  default_languagecode="DEFAULT"),
                          "DEFAULT")
+
+    def test_find_all_translatestrings(self):
+        self.assertEquals(utils.find_all_translatestrings('dtranslate("hello.world")dajkdajdawkdwakl'
+                                                          'jdwdw\ndsada dtranslate("this-is.a.test")dwda'),
+                         ['hello.world', 'this-is.a.test'])

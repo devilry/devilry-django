@@ -1,6 +1,6 @@
+import re
 from django.utils.translation.trans_real import parse_accept_lang_header
 from django.conf import settings
-
 
 def get_languagecode_from_httpheader(accept_language_header, languagemapping):
     for languagecode , priority in parse_accept_lang_header(accept_language_header): # NOTE: parse_accept_lang_header returns accept_lang sorted by priority
@@ -37,3 +37,8 @@ def get_languagecode(user, accept_language_header=None,
             return languagecode
 
     return default_languagecode
+
+
+find_all_translatestrings_patt = re.compile(r"""dtranslate\(['"]([a-z.-]+)['"]\)""")
+def find_all_translatestrings(data):
+    return find_all_translatestrings_patt.findall(data)
