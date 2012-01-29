@@ -46,12 +46,16 @@
         {% else %}
             <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext.js"></script>
             <script type="text/javascript">
-                Ext.syncRequire('Ext.Ajax');
+                Ext.Loader.setConfig({
+                    enabled: false
+                });
+            </script>
+            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/app-all.js"></script>
+            <script type="text/javascript">
                 Ext.Ajax.defaultHeaders = {
                     'X_DEVILRY_USE_EXTJS': true
                 };
             </script>
-            <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/app-all.js"></script>
         {% endif %}
 
         {% block appjs %}{% endblock %}
