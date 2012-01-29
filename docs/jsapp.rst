@@ -132,6 +132,41 @@ classes in ``lib/`` instead of ``app``.
 
 
 
+Code conventions
+################
+
+Require/include order
+---------------------
+
+The order of statements in ``requires: [...]`` should be:
+
+- ExtJs includes (anything in the Ext namespace).
+- Non-app includes grouped by namespace.
+- App includes.
+
+Example::
+
+    requires: [
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Text',
+        'Ext.form.field.Hidden',
+        'Ext.toolbar.Toolbar',
+        'devilry.extjshelpers.formfields.DateTimeField',
+        'themebase.CreateButton',
+        'themebase.AlertMessageList',
+        'themebase.form.Help',
+        'view.SomeView',
+        'view.AnotherView'
+    ]
+
+
+Private methods
+---------------
+
+Private methods should be prefixed with ``_``. These methods should **never**
+be used outside the class, not even in subclasses.
+
+
 API
 ###
 
