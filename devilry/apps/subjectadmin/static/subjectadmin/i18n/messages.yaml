@@ -1,11 +1,17 @@
 subjectadmin.assignment.anonymous.help: 'For <strong>exams</strong>, this should normally be <em>Yes</em>. If set anonymous to <strong>yes</strong>, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'
 subjectadmin.assignment.anonymous.label: 'Anonymous?'
+
 subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback (students deliver through an alternative channel), set this to <em>Not using Devilry</em>.'
 subjectadmin.assignment.delivery_types.label: 'How do students add deliveries?'
+subjectadmin.assignment.delivery_types.electronic : Using Devilry
+subjectadmin.assignment.delivery_types.nonelectronic : Not through Devilry (hand in on paper, oral examination, ...)
+
 subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assignment."
 subjectadmin.assignment.long_name.label: Name
+
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
+
 subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
 

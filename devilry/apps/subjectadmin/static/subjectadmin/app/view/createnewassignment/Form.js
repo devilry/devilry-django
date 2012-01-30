@@ -65,8 +65,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         store: Ext.create('Ext.data.Store', {
             fields: ['value', 'label'],
             data : [
-                {value:0, label:"Using Devilry"},
-                {value:1, label:"Not through Devilry (hand in on paper, oral examination, ...)"}
+                {value:0, label: dtranslate('subjectadmin.assignment.delivery_types.electronic')},
+                {value:1, label: dtranslate('subjectadmin.assignment.delivery_types.nonelectronic')}
             ]
         })
     }, {
@@ -101,8 +101,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         store: Ext.create('Ext.data.Store', {
             fields: ['value', 'label'],
             data : [
-                {value:false, label:"No"},
-                {value:true, label:"Yes"}
+                {value:false, label: dtranslate('themebase.no')},
+                {value:true, label: dtranslate('themebase.yes')}
             ]
         })
     }, {

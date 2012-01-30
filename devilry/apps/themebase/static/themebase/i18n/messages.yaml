@@ -5,3 +5,5 @@ themebase.lostserverconnection: Lost connection to the server.
 themebase.next: Next
 themebase.routenotfound: Route not found
 themebase.saving: Saving
+themebase.yes: 'Yes'
+themebase.no: 'No'
