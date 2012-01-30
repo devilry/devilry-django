@@ -42,7 +42,7 @@ Ext.define('themebase.form.ErrorUtils', {
      *  can be found in the operation object.
      */
     getRestErrorsFromOperation: function(operation) {
-        if(operation.responseData && operation.responseData.items.errormessages) {
+        if(operation.responseData && operation.responseData.items) {
             var errors = operation.responseData.items;
             var fielderrors = {};
             if(errors.fielderrors) {
