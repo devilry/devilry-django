@@ -1,4 +1,4 @@
-subjectadmin.assignment.anonymous.help: 'For <strong>exams</strong>, this should normally be <em>Yes</em>. If set anonymous to <strong>yes</strong>, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'
+subjectadmin.assignment.anonymous.help: 'For <strong>exams</strong>, this should normally be <em>Yes</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'
 subjectadmin.assignment.anonymous.label: 'Anonymous?'
 
 subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback (students deliver through an alternative channel), set this to <em>Not using Devilry</em>.'
