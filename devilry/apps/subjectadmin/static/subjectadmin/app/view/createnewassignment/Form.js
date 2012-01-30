@@ -7,7 +7,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         'Ext.form.field.Text',
         'Ext.form.field.Hidden',
         'Ext.toolbar.Toolbar',
-        'devilry.extjshelpers.formfields.DateTimeField',
+        'themebase.form.DateField',
+        'themebase.form.TimeField',
         'themebase.CreateButton',
         'themebase.AlertMessageList',
         'themebase.form.Help',
@@ -76,11 +77,26 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
 
     // Publishing time
     }, {
-        name: "publishing_time",
+        xtype: 'fieldcontainer',
+        layout: 'column',
         fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
-        xtype: 'devilrydatetimefield',
-        allowBlank: false,
-        value: new Date()
+        width: 300,
+        defaults: {
+            hideLabel: true
+        },
+        items: [{
+            name: "publishing_time_date",
+            xtype: 'themebase-datefield',
+            allowBlank: false,
+            columnWidth: .5,
+            value: new Date()
+        }, {
+            name: "publishing_time_time",
+            xtype: 'themebase-timefield',
+            allowBlank: false,
+            columnWidth: .5,
+            value: new Date()
+        }]
     }, {
         xtype: 'formhelp',
         margin: {top: 5},

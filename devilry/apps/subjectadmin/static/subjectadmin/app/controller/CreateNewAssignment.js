@@ -25,12 +25,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'alertMessageList',
         selector: 'alertmessagelist'
-    //}, {
-        //ref: 'shortNameField',
-        //selector: 'textfield[name=short_name]'
-    //}, {
-        //ref: 'longNameField',
-        //selector: 'textfield[name=long_name]'
     }],
 
     init: function() {
@@ -75,7 +69,16 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _getFormValues: function() {
-        return this.getForm().getForm().getFieldValues();
+        var values = this.getForm().getForm().getFieldValues();
+        var date = values.publishing_time_date;
+        var time = values.publishing_time_time;
+        values.publishing_time = new Date(
+            date.getYear(), date.getMonth(), date.getDate(),
+            time.getHours(), time.getMinutes()
+        );
+        delete values.publishing_time_date;
+        delete values.publishing_time_time;
+        return values;
     },
 
     _save: function() {
@@ -93,29 +96,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             failure: this._onFailedSave
         });
     },
-
-    //_createShortNameFromLongname: function(longname) {
-        //var shortname = longname.toLowerCase();
-        //shortname = shortname.replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '');
-        ////if(shortname.length > 20) {
-            ////var prefix = shortname.substring(0, 10);
-            ////var suffix = shortname.substring(shortname.length - 9);
-            ////shortname = prefix + '-' + suffix;
-        ////}
-        //return shortname;
-    //},
-
-    //_onLongNameChange: function() {
-        //var shortname = this.getShortNameField().getValue();
-        //var longname = this.getLongNameField().getValue();
-        //if(this._shouldAutosetShortname()) {
-            //var shortname = this._createShortNameFromLongname(longname);
-            //console.log(shortname);
-            //if(shortname.length <= 20) {
-                //this.getShortNameField().setValue(shortname);
-            //}
-        //}
-    //},
 
     _onSuccessfulSave: function() {
         this._unmask();

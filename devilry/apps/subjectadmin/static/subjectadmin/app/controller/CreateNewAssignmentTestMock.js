@@ -9,12 +9,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
         'AssignmentTestMock'
     ],
 
-    //_setInitialValues: function() {
-        //this.getForm().getForm().setValues({
-            //long_name: 'The first assignment',
-            //short_name: 'firstassignment'
-        //})
-    //},
+    _setInitialValues: function() {
+        this.getForm().getForm().setValues({
+            long_name: 'The first assignment',
+            short_name: 'firstassignment'
+        })
+    },
 
     getActiveAssignmentsStore: function() {
         return this.getActiveAssignmentsTestMockStore();
