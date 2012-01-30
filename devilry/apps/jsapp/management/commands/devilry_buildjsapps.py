@@ -1,5 +1,5 @@
 import logging
-from os.path import join, exists, dirname, isdir, relpath, abspath, sep
+from os.path import join, dirname, isdir, relpath, abspath, sep
 from os import getcwd, remove
 from subprocess import call
 from tempfile import mkdtemp
@@ -10,7 +10,8 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.core import management
 
-from devilry.utils.command import setup_logging, get_verbosity, get_installed_apps
+from devilry.utils.command import setup_logging, get_verbosity
+from devilry.utils.importutils import get_installed_apps
 import devilry
 
 log = logging.getLogger('buildjsapps')
