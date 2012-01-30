@@ -15,11 +15,11 @@
         ';;\n</pre></p>' +
         '<p>The number of points may be any integer number, both positive and negative. The default may be either 0 or 1, to enable or disable the feedback element by default. The comment is visible for both the examiner and student.</p>\n' +
         '<h2>Set up an adjustment field</h2>\n' +
-        '<p>In case you want to give the examiners an option to adjust the final number of given points, you may define a number field to adjust the sum calculated by the above feedback fields. This can for instance be used if the examiners finds errors or positive remarks that are not defined in the feedback list.</p>\n' +
+        '<p>In case you want to give the examiners an option to adjust the final number of given points, you may define a number field to adjust the sum calculated by the above feedback fields. This can for instance be used if the examiners finds errors or positive remarks that are not defined in the feedback list. This field will be shown to the student with the text you give in the definition.</p>\n' +
         '<p><pre>number : maxpoints : default\n' +
         'comment\n' +
         ';;\n</pre></p>' + 
-        '<p>The comment is in this case only shown to the examiner.</p>\n' +
+        '<p>The comment is shown to the student. The max points field is currently not in use, so the examiner may actually set any number of points. This might change in the future.</p>\n' +
         '<h2>A working example</h2>\n' +
         'Below is a working example that may be used as a reference for making your own feedback list.\n' +
         '<p><pre>' +
@@ -35,8 +35,8 @@
         'check : -20 : 0\n' +
         'You have not answered the discussion questions.\n' +
         ';;\n' +
-        'number : 100 : 0\n' +
-        'Use this field to adjust the number of points given to the student.\n'+
+        'number : 0 : 0\n' +
+        'Correction points (see comment).\n'+
         ';;' +
         '</pre></p>', 
     

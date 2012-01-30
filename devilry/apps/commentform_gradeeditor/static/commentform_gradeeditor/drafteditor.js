@@ -47,8 +47,6 @@
             } else if (grade[0] == 'number'){
                 var field = Ext.widget('numberfield', {
                     fieldLabel: grade[3],
-                    minValue: 0,
-                    maxValue: parseInt(grade[1]),
                     anchor: '-1',
                     value: grade[2],
                     flex: 0

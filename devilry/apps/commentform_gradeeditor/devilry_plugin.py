@@ -55,9 +55,9 @@ class CommentForm(JsonRegistryItem):
                     errormsg = 'the field labled "' + confval[i][2] + '" has to contain a number 0 or higher'
                     raise ConfigValidationError(errormsg)
 
-                if draftval[i]<0:
-                    errormsg = 'the field labled "' + confval[i][2] + '" has to contain a number 0 or higher'
-                    raise ConfigValidationError(errormsg)
+                #if draftval[i]<0:
+                #    errormsg = 'the field labled "' + confval[i][2] + '" has to contain a number 0 or higher'
+                #    raise ConfigValidationError(errormsg)
 
     @classmethod
     def validate_config(cls, configstring):
@@ -122,10 +122,23 @@ class CommentForm(JsonRegistryItem):
             if confval[i][0]=='check':
                 if draftval[i]:
                     points+=int(confval[i][1])
-                    feedback += "<li>" + markdown_full(confval[i][3]) + "</li>\n"
+                    val = int(confval[i][1])
+                    if(val > 0):
+                        prefix = "+"
+                    else:
+                        prefix = u"\u00f7"
+                        val = - val
+                    feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3]) +  "</li>\n"
 
             elif confval[i][0] == 'number':
                 points+=draftval[i]
+                val = int(draftval[i])
+                if(val > 0):                                                       
+                    prefix = "+"
+                else:                                                                             
+                    prefix = u"\u00f7"
+                    val = - val
+                feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3] ) + "</li>\n"
 
         feedback += "</ul>\n"
 
