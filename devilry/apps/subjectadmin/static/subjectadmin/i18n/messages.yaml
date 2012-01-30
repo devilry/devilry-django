@@ -6,7 +6,7 @@ subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assi
 subjectadmin.assignment.long_name.label: Name
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
-subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. Can only contain numbers, lowercase letters, '_' and '-'. This is used the the regular name takes to much space."
+subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
 
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
