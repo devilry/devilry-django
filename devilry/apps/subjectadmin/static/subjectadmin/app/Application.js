@@ -15,7 +15,8 @@ Ext.define('subjectadmin.Application', {
         'Shortcuts',
         'Dashboard',
         'CreateNewAssignment',
-        'ChoosePeriod'
+        'ChoosePeriod',
+        'Assignment'
     ],
 
     launch: function() {
@@ -55,7 +56,7 @@ Ext.define('subjectadmin.Application', {
         this.route.add("/@@create-new-assignment/:period", 'create_new_assignment');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
-        //this.route.add("/:subject/:period/:assignment", 'assignment_show');
+        this.route.add("/assignment/:assignmentid", 'assignment_show');
         this.setupExtraRoutes();
         this.route.start();
     },
@@ -93,6 +94,13 @@ Ext.define('subjectadmin.Application', {
         this.setPrimaryContent({
             xtype: 'createnewassignment',
             periodId: periodId
+        });
+    },
+
+    assignment_show: function(info, assignmentId) {
+        this.setPrimaryContent({
+            xtype: 'assignment',
+            assignmentId: assignmentId
         });
     }
 });

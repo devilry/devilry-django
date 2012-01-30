@@ -5,7 +5,8 @@ Ext.define('subjectadmin.TestApplication', {
         'ShortcutsTestMock',
         'Dashboard',
         'CreateNewAssignmentTestMock',
-        'ChoosePeriodTestMock'
+        'ChoosePeriodTestMock',
+        'Assignment'
     ],
 
     setupExtraRoutes: function() {
