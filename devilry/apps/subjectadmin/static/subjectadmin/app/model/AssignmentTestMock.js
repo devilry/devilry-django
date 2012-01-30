@@ -21,7 +21,6 @@ Ext.define('subjectadmin.model.AssignmentTestMock', {
                     status: 0
                 });
             }
-            console.log(this.data.items);
         }
     }
 });
