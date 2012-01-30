@@ -12,5 +12,5 @@ subjectadmin.assignment.short_name.label: Short name
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'
 
-subjectadmin.createnewassignment.sidebarhelp: 'If you are creating a regular electronic assignment that students deliver using Devilry, you normally only have to choose a <em>Name</em> and click <em>Create</em>.'
+subjectadmin.createnewassignment.sidebarhelp: 'If you are creating a regular electronic assignment that students deliver using Devilry, you normally only have to fill in the first two fields and click <em>Create</em>.'
 subjectadmin.createnewassignment.title: Create new assignment
