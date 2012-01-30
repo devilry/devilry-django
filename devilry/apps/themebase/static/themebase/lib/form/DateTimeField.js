@@ -67,18 +67,18 @@ Ext.define('themebase.form.DateTimeField', {
         for (; i < me.items.length; i++) {
             me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
             me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
-            me.items[i].on('specialkey', function(field, event){
-                key = event.getKey();
-                tab = key == event.TAB;
+            //me.items[i].on('specialkey', function(field, event){
+                //key = event.getKey();
+                //tab = key == event.TAB;
                 
-                if (tab && me.focussedItem == me.dateField) {
-                    event.stopEvent();
-                    me.timeField.focus();
-                    return;
-                }
+                //if (tab && me.focussedItem == me.dateField) {
+                    //event.stopEvent();
+                    //me.timeField.focus();
+                    //return;
+                //}
                 
-                me.fireEvent('specialkey', field, event);
-            });
+                //me.fireEvent('specialkey', field, event);
+            //});
         }
 
         me.callParent();
