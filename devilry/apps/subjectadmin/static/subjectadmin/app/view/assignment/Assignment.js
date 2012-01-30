@@ -4,7 +4,7 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
     cls: 'assignment sidebarlayout',
     requires: [
         'themebase.layout.RightSidebar',
-        //'subjectadmin.views.ActionList'
+        'subjectadmin.view.ActionList'
     ],
 
     layout: 'rightsidebar',
