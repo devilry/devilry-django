@@ -20,11 +20,19 @@
         'comment\n' +
         ';;\n</pre></p>' + 
         '<p>The comment is shown to the student. The max points field is currently not in use, so the examiner may actually set any number of points. This might change in the future.</p>\n' +
+        '<h2>Custom text</h2>\n' +
+        '<p>You may also add custom text like this:</p>\n' +
+        '<p><pre>text : :\n' +
+        'Your custom text\n' +
+        ';;\n</pre></p>' +
         '<h2>A working example</h2>\n' +
         'Below is a working example that may be used as a reference for making your own feedback list.\n' +
         '<p><pre>' +
         'check : 10 : 1\n' +
         'You have remembered to include a figure. That is good.\n' +
+        ';;\n' +
+        'text : : \n' +
+        'The following comments are important for your next delivery.\n' +
         ';;\n' +
         'check : 20 : 0\n' +
         'Your conclusion is well written. I believe you have understood the problem correctly.\n' +

@@ -53,6 +53,15 @@
                 });
                 this.draftfields[nr] = field;
                 nr++;
+            } else if (grade[0] == 'text'){
+                var field = Ext.widget('checkboxfield', {
+                    boxLabel: grade[3],
+                    anchor: '-1',
+                    flex: 0,
+                    disabled: true
+                });
+                this.draftfields[nr] = field;
+                nr++;
             }
         }
 
