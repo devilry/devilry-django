@@ -6,7 +6,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
     appname = 'subjectadmin'
 
     def test_chooseperiod_render(self):
-        self.browseTo('/@@create-new-assignment/@@chooseperiod')
+        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
         self.waitForCssSelector('.activeperiodslist')
         self.assertTrue('duck-mek2030.2012h' in self.driver.page_source)
         self.assertTrue('duck1100.2011h' in self.driver.page_source)
@@ -17,7 +17,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertEquals(len(periodlist.find_elements_by_css_selector('tr.x-grid-row')), 3)
 
     def test_chooseperiod_nextbutton(self):
-        self.browseTo('/@@create-new-assignment/@@chooseperiod')
+        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
         self.waitForCssSelector('.nextbutton')
         buttonel = self.driver.find_element_by_css_selector('.nextbutton button')
         self.assertFalse(buttonel.is_enabled())
@@ -29,7 +29,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue(buttonel.is_enabled())
 
     def test_form_render(self):
-        self.browseTo('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
@@ -57,7 +57,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         field.send_keys(value)
 
     def test_form_createbutton(self):
-        self.browseTo('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
@@ -71,7 +71,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.waitForEnabled(createbutton)
 
     def test_form_servererror(self):
-        self.browseTo('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -84,7 +84,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('500: Server error' in self.driver.page_source)
 
     def test_form_lostconnectionerror(self):
-        self.browseTo('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -97,7 +97,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('themebase.lostserverconnection' in self.driver.page_source)
 
     def test_form_responseData_errors(self):
-        self.browseTo('/@@create-new-assignment/3')
+        self.browseToTest('/@@create-new-assignment/3')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
 
@@ -114,3 +114,6 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.short_name.label:</strong> Invalid short name' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.long_name.label:</strong> Invalid. Long name' in self.driver.page_source)
         self.assertTrue('' in self.driver.page_source)
+
+    def test_jasmine(self):
+        self.runJasmineTests()
