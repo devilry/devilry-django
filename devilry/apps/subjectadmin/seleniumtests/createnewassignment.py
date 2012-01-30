@@ -95,3 +95,22 @@ class TestCreateNewAssignment(SeleniumTestCase):
         createbutton.click()
         self.waitForCssSelector('.alert-message')
         self.assertTrue('themebase.lostserverconnection' in self.driver.page_source)
+
+    def test_form_responseData_errors(self):
+        self.browseTo('/@@create-new-assignment/3')
+        self.waitForCssSelector('.createnewassignmentform')
+        createbutton = self.driver.find_element_by_css_selector('.createbutton button')
+
+        self._set_value('long_name', 'Just to enable the button')
+        self._set_value('short_name', 'unused')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
+
+        # subjectadmin.model.AssignmentTestMock defines special values for short_name to produce error messages ...
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('This is a global error message' in self.driver.page_source)
+        self.assertTrue('Another global message' in self.driver.page_source)
+        self.assertFalse('This should not be shown' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.short_name.label:</strong> Invalid short name' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.long_name.label:</strong> Invalid. Long name' in self.driver.page_source)
+        self.assertTrue('' in self.driver.page_source)
