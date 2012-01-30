@@ -15,6 +15,7 @@ The layout is basically the one reccommended by ExtJS, however since we route ap
                 app/
                     Application.js
                     TestApplication.js
+                    JasmineTestApplication.js
                     controller/
                     model/
                     store/
@@ -129,6 +130,57 @@ Libraries
 
 Libraries are just like apps, however they should put their data in extjs
 classes in ``lib/`` instead of ``app``.
+
+
+
+Tests
+#######
+
+Test views with Selenium
+------------------------
+
+Use the ``TestApplication.js`` views with selenium to test views. Your selenium
+tests should inherit from
+:class:`devilry.apps.jsapp.seleniumhelpers.SeleniumTestCase`. Example::
+
+    from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
+
+    class TestSomething(SeleniumTestCase):
+        appname = 'something'
+
+        def test_chooseperiod_render(self):
+            self.browseToTest('/@@create-something')
+            self.waitForCssSelector('.somecssclass')
+            self.assertTrue('Something something' in self.driver.page_source)
+
+Run tests just like any other django-nose test. Example::
+
+    bin/django_dev.py test devilry.apps.something
+
+You must be running the Django server at port 8080 for this to work.
+
+
+Mock everything!
+----------------
+
+``TestApplication.js`` must not require **any** persistence on the server. Mock
+everything. See the ``devilry.apps.subjectadmin`` for examples.
+
+
+Unit tests with Jasmine
+-----------------------
+
+Add Jasmine test specs to ``static/<appname>/jasminespecs/``. 
+Use the ``JasmineTestApplication.js`` view
+(http://localhost:8080/APPNAME/jasminetest) to run your tests during
+development. Add them to the regular test suite as a selenium test like so::
+
+    class TestSomething(SeleniumTestCase):
+
+        ...
+
+        def test_jasmine(self):
+            self.runJasmineTests()
 
 
 
