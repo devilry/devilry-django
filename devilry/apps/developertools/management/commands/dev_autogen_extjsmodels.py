@@ -1,28 +1,18 @@
 import logging
 from inspect import getmembers
-from os.path import join, exists, dirname, isdir
+from os.path import join, exists, dirname
 from os import makedirs
 
 from django.core.management.base import BaseCommand
-from django.conf import settings
 from django.utils.importlib import import_module
 from devilry.apps import extjshelpers
 
 from devilry.restful import RestfulManager
 from devilry.utils.command import setup_logging, get_verbosity
+from devilry.utils.importutils import get_installed_apps
 from devilry.apps.extjshelpers.modelintegration import (restfulcls_to_extjsmodel,
                                                         get_extjs_modelname)
 
-
-def get_installed_apps():
-    installed_apps = []
-    for app in settings.INSTALLED_APPS:
-        if not app.startswith('django.'):
-            mod = import_module(app)
-            if exists(mod.__file__) and isdir(dirname(mod.__file__)):
-                moddir = dirname(mod.__file__)
-                installed_apps.append((moddir, mod, mod.__name__.split('.')[-1]))
-    return installed_apps
 
 def get_restful_apps():
     apps = []
