@@ -70,14 +70,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _getFormValues: function() {
         var values = this.getForm().getForm().getFieldValues();
-        var date = values.publishing_time_date;
-        var time = values.publishing_time_time;
-        values.publishing_time = new Date(
-            date.getYear(), date.getMonth(), date.getDate(),
-            time.getHours(), time.getMinutes()
-        );
-        delete values.publishing_time_date;
-        delete values.publishing_time_time;
         return values;
     },
 

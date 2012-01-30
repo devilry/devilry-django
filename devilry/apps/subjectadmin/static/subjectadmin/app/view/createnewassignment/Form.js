@@ -7,8 +7,9 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         'Ext.form.field.Text',
         'Ext.form.field.Hidden',
         'Ext.toolbar.Toolbar',
-        'themebase.form.DateField',
-        'themebase.form.TimeField',
+        //'themebase.form.DateField',
+        //'themebase.form.TimeField',
+        'themebase.form.DateTimeField',
         'themebase.CreateButton',
         'themebase.AlertMessageList',
         'themebase.form.Help',
@@ -77,26 +78,32 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
 
     // Publishing time
     }, {
-        xtype: 'fieldcontainer',
-        layout: 'column',
-        fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
+        xtype: 'themebase-datetimefield',
         width: 300,
-        defaults: {
-            hideLabel: true
-        },
-        items: [{
-            name: "publishing_time_date",
-            xtype: 'themebase-datefield',
-            allowBlank: false,
-            columnWidth: .5,
-            value: new Date()
-        }, {
-            name: "publishing_time_time",
-            xtype: 'themebase-timefield',
-            allowBlank: false,
-            columnWidth: .5,
-            value: new Date()
-        }]
+        fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
+        name: "publishing_time",
+        value: new Date()
+        //xtype: 'fieldcontainer',
+        //layout: 'column',
+        //fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
+        //width: 300,
+        //defaults: {
+            //hideLabel: true
+        //},
+        //items: [{
+            //name: "publishing_time",
+            //xtype: 'themebase-datefield',
+            //fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'), // Only used for error messages
+            //allowBlank: false,
+            //columnWidth: .5,
+            //value: new Date()
+        //}, {
+            //name: "publishing_time_time",
+            //xtype: 'themebase-timefield',
+            //allowBlank: false,
+            //columnWidth: .5,
+            //value: new Date()
+        //}]
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
