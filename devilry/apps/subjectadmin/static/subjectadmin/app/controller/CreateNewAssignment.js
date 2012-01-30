@@ -25,15 +25,22 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'alertMessageList',
         selector: 'alertmessagelist'
+    //}, {
+        //ref: 'shortNameField',
+        //selector: 'textfield[name=short_name]'
+    //}, {
+        //ref: 'longNameField',
+        //selector: 'textfield[name=long_name]'
     }],
 
     init: function() {
+        this.shortNameManuallyChanged = false;
         this.control({
             'viewport createnewassignmentform': {
                 render: this._onRenderForm,
             },
             'viewport createnewassignmentform textfield[name=long_name]': {
-                render: this._onRenderLongName,
+                render: this._onRenderLongName
             },
             'viewport createnewassignmentform createbutton': {
                 click: this._onSubmit,
@@ -53,12 +60,13 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this._setInitialValues();
     },
 
-    _setInitialValues: function() {
-        this.getForm().getForm().setValues({
-            long_name: 'The first assignment',
-            short_name: 'firstassignment'
-        })
-    },
+    _setInitialValues: Ext.emptyFn,
+    //_setInitialValues: function() {
+        //this.getForm().getForm().setValues({
+            //long_name: 'The first assignment',
+            //short_name: 'firstassignment'
+        //})
+    //},
 
     _onSubmit: function() {
         if(this.getForm().getForm().isValid()) {
@@ -85,6 +93,29 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             failure: this._onFailedSave
         });
     },
+
+    //_createShortNameFromLongname: function(longname) {
+        //var shortname = longname.toLowerCase();
+        //shortname = shortname.replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '');
+        ////if(shortname.length > 20) {
+            ////var prefix = shortname.substring(0, 10);
+            ////var suffix = shortname.substring(shortname.length - 9);
+            ////shortname = prefix + '-' + suffix;
+        ////}
+        //return shortname;
+    //},
+
+    //_onLongNameChange: function() {
+        //var shortname = this.getShortNameField().getValue();
+        //var longname = this.getLongNameField().getValue();
+        //if(this._shouldAutosetShortname()) {
+            //var shortname = this._createShortNameFromLongname(longname);
+            //console.log(shortname);
+            //if(shortname.length <= 20) {
+                //this.getShortNameField().setValue(shortname);
+            //}
+        //}
+    //},
 
     _onSuccessfulSave: function() {
         this._unmask();

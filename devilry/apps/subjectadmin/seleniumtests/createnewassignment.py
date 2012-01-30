@@ -1,4 +1,5 @@
 from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
+import time
 
 
 class TestCreateNewAssignment(SeleniumTestCase):
@@ -18,8 +19,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
     def test_chooseperiod_nextbutton(self):
         self.browseTo('/@@create-new-assignment/@@chooseperiod')
         self.waitForCssSelector('.nextbutton')
-        nextbutton = self.driver.find_element_by_class_name('nextbutton')
-        buttonel = nextbutton.find_element_by_tag_name('button')
+        buttonel = self.driver.find_element_by_css_selector('.nextbutton button')
         self.assertFalse(buttonel.is_enabled())
 
         # Click first element in the periodlist and make sure nextbutton is enabled afterwards
@@ -50,3 +50,48 @@ class TestCreateNewAssignment(SeleniumTestCase):
 
         self.assertTrue('subjectadmin.assignment.anonymous.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.anonymous.label' in self.driver.page_source)
+
+
+    def _set_value(self, fieldname, value):
+        field = self.driver.find_element_by_css_selector('input[name={0}]'.format(fieldname))
+        field.send_keys(value)
+
+    def test_form_createbutton(self):
+        self.browseTo('/@@create-new-assignment/1')
+        self.waitForCssSelector('.createnewassignmentform')
+
+        createbutton = self.driver.find_element_by_css_selector('.createbutton button')
+        self.assertFalse(createbutton.is_enabled())
+
+        # Make sure the create button is clickable after both short and long names are entered.
+        self._set_value('long_name', 'Test')
+        self.assertFalse(createbutton.is_enabled())
+
+        self._set_value('short_name', 'test')
+        self.waitForEnabled(createbutton)
+
+    def test_form_servererror(self):
+        self.browseTo('/@@create-new-assignment/1')
+        self.waitForCssSelector('.createnewassignmentform')
+        createbutton = self.driver.find_element_by_css_selector('.createbutton button')
+        self._set_value('long_name', 'Just to enable the button')
+
+        # subjectadmin.model.AssignmentTestMock defines special values for short_name to produce error messages ...
+        self._set_value('short_name', 'servererror')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
+        self.waitForCssSelector('.alert-message')
+        self.assertTrue('500: Server error' in self.driver.page_source)
+
+    def test_form_lostconnectionerror(self):
+        self.browseTo('/@@create-new-assignment/1')
+        self.waitForCssSelector('.createnewassignmentform')
+        createbutton = self.driver.find_element_by_css_selector('.createbutton button')
+        self._set_value('long_name', 'Just to enable the button')
+
+        # subjectadmin.model.AssignmentTestMock defines special values for short_name to produce error messages ...
+        self._set_value('short_name', 'noconnection')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
+        self.waitForCssSelector('.alert-message')
+        self.assertTrue('themebase.lostserverconnection' in self.driver.page_source)
