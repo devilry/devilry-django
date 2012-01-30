@@ -37,14 +37,30 @@ Ext.define('jsapp.HiddenElementProxy', {
      */
     show: false,
 
+
     /**
      * @cfg validator
      * An optional validator that may be used to change the operation.
      */
+    validator: undefined,
+
+    /**
+     * @cfg
+     * An optional array of initial data.
+     */
+    data: undefined,
 
     constructor: function(config) {
         this.callParent([config]);
-        this.data = new Ext.util.MixedCollection();
+        if(!this.id) {
+            throw "id is a required argument";
+        }
+
+        this.allItems = new Ext.util.MixedCollection();
+        if(this.data) {
+            this.allItems.addAll(this.data);
+        };
+
         this.container = Ext.widget('window', {
             width: 400,
             height: 500,
@@ -82,7 +98,7 @@ Ext.define('jsapp.HiddenElementProxy', {
 
     _formatDataAsJSON: function() {
         var out = [];
-        this.data.each(function(item) {
+        this.allItems.each(function(item) {
             var itemout = [];
             Ext.Object.each(item, function(key, value) {
                 itemout.push(Ext.String.format('{0}: {1}',
@@ -102,6 +118,34 @@ Ext.define('jsapp.HiddenElementProxy', {
         Ext.getCmp(this.id).update(outdata);
     },
 
+    _getRecord: function(data) {
+        var Model = this.model;
+        var record = new Model(data, id);
+        record.internalId = record.get('id'); // NOTE: Important that internal ID is defined and consistent! If not, Ext.data.Store will not work with the proxy.
+        record.phantom = false;
+        return record;
+    },
+
+    _addRecord: function(record) {
+        record.internalId = record.get('id'); // NOTE: Important that internal ID is defined and consistent! If not, Ext.data.Store will not work with the proxy.
+        this.allItems.add(record.get('id'), record.data);
+    },
+
+    _getRecords: function() {
+        var records = [];
+        this.allItems.each(function(data) {
+            records.push(this._getRecord(data));
+        }, this);
+        return records;
+    },
+
+    setData: function(dataArray) {
+        Ext.Array.each(dataArray, function(data) {
+            var record = this._getRecord(data);
+            this._addRecord(record);
+        }, this);
+    },
+
     /**
      * Performs the given create operation.
      * @param {Ext.data.Operation} operation The Operation to perform
@@ -117,7 +161,7 @@ Ext.define('jsapp.HiddenElementProxy', {
 
         if(!operation.hasException()) {
             Ext.Array.each(records, function(record) {
-                this.data.add(record.id, record.data);
+                this._addRecord(record);
             }, this);
             this._updateContainer();
             operation.setSuccessful();
@@ -134,16 +178,16 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @method
      */
     read: function(operation, callback, scope) {
-        console.warn('read is not supported ye');
-        //var me = this;
-        //var reader = me.getReader();
-        //var result = reader.read(me.data);
-        //Ext.apply(operation, {
-            //resultSet: result
-        //});
-        //operation.setCompleted();
-        //operation.setSuccessful();
-        //Ext.callback(callback, scope || me, [operation]);
+        var records = this._getRecords();
+        operation.resultSet = Ext.create('Ext.data.ResultSet', {
+            records: records,
+            total: records.length,
+            loaded: true
+        });
+
+        operation.setSuccessful();
+        operation.setCompleted();
+        Ext.callback(callback, scope || me, [operation]);
     },
     
     /**
@@ -154,7 +198,7 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @method
      */
     update: function() {
-        console.warn('update is not supported ye');
+        console.error('update is not supported yet');
     },
     
     /**
@@ -165,6 +209,6 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @method
      */
     destroy: function() {
-        console.warn('destroy is not supported ye');
+        console.error('destroy is not supported yet');
     }
 });
