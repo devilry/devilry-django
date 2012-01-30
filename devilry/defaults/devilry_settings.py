@@ -27,11 +27,12 @@ DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment deliver
                   "Please do not respond to this email."
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
+DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
 ## Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
-## to automatically set email to this pattern if it is not set when a user is saved.
-#DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
+## to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
+#DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
 
 ## When sorting by fullname, would you like to sort by last name? Currently
 ## only affects the overview over an entire period.

@@ -4,6 +4,7 @@ from optparse import make_option
 import sys
 
 from devilry_usermod import UserModCommand
+from devilry.utils.management import make_input_encoding_option
 
 
 class Command(UserModCommand):
@@ -23,9 +24,11 @@ class Command(UserModCommand):
             dest='is_superuser',
             default=False,
             help='Make the user a superuser, with access to everything in the system.'),
+        make_input_encoding_option()
     )
 
     def handle(self, *args, **options):
+        self.inputencoding = options['inputencoding']
         if len(args) != 1:
             raise CommandError('Username is required. See --help.')
         verbosity = int(options.get('verbosity', '1'))
@@ -42,7 +45,7 @@ class Command(UserModCommand):
             profile = user.get_profile()
             full_name = options.get('full_name')
             if full_name:
-                profile.full_name = unicode(full_name, sys.stdin.encoding)
+                profile.full_name = unicode(full_name, self.inputencoding)
             self.save_profile(profile)
         else:
             raise CommandError('User "{0}" already exists.'.format(username))

@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from optparse import make_option
 import sys
 
+from devilry.utils.management import make_input_encoding_option
+
 
 class UserModCommand(BaseCommand):
     def save(self, obj):
@@ -48,9 +50,11 @@ class Command(UserModCommand):
             dest='normaluser',
             default=False,
             help='Make the user a normal user, with access to everything that they are given explicit access to.'),
+        make_input_encoding_option()
     )
 
     def handle(self, *args, **options):
+        self.inputencoding = options['inputencoding']
         if len(args) != 1:
             raise CommandError('Username is required. See --help.')
         verbosity = int(options.get('verbosity', '1'))
@@ -79,5 +83,5 @@ class Command(UserModCommand):
             profile = user.get_profile()
             full_name = options.get('full_name')
             if full_name:
-                profile.full_name = unicode(full_name, sys.stdin.encoding)
+                profile.full_name = unicode(full_name, self.inputencoding)
             self.save_profile(profile)

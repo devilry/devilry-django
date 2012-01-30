@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from optparse import make_option
 import sys
 
+from devilry.utils.management import make_output_encoding_option
+
 
 class Command(BaseCommand):
     args = '[search|empty for all]'
@@ -28,9 +30,11 @@ class Command(BaseCommand):
             dest='normalusers',
             default=False,
             help='Only match non-superusers.'),
+        make_output_encoding_option()
     )
 
     def handle(self, *args, **options):
+        self.outputencoding = options['outputencoding']
         if len(args) == 1:
             qry = User.objects.filter(username__icontains=args[0])
         else:
@@ -59,6 +63,6 @@ class Command(BaseCommand):
         for attrname in ('full_name',):
             attr = getattr(profile, attrname)
             if isinstance(attr, str) or isinstance(attr, unicode):
-                attr = attr.encode(sys.stdout.encoding)
+                attr = attr.encode(self.outputencoding)
             print '   {attrname}: {attr}'.format(attrname=attrname,
                                                  attr=attr)

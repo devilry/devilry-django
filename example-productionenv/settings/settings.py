@@ -157,5 +157,5 @@ LOGGING = {
 #EMAIL_HOST = 'smtp.example.com'
 #EMAIL_PORT = 25
 
-#DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = None
-#DEVILRY_FSHIERDELIVERYSTORE_ROOT = None
+## Settings for the FsHierDeliveryStore
+#DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/path/to/directory/where/delivery-files/are/stored'
