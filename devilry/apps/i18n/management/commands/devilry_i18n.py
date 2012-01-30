@@ -8,7 +8,8 @@ from django.core.management.base import BaseCommand, CommandError
 
 from devilry.apps.i18n import i18n
 from devilry.apps.i18n.utils import find_all_translatestrings
-from devilry.utils.command import setup_logging, get_verbosity, get_installed_apps
+from devilry.utils.command import setup_logging, get_verbosity
+from devilry.utils.importutils import get_installed_apps
 
 
 class Command(BaseCommand):
