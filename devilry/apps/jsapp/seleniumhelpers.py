@@ -16,6 +16,9 @@ class SeleniumMixin(object):
     def driverWaitForCssSelector(self, driver, cssselector, timeout=10):
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_elements_by_css_selector(cssselector))
 
+    def driverWaitForEnabled(self, driver, element, timeout=10):
+        WebDriverWait(driver, timeout).until(lambda driver: element.is_enabled())
+
 
 class SeleniumTestCase(TestCase, SeleniumMixin):
     appname = None
@@ -28,6 +31,9 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
 
     def waitForCssSelector(self, cssselector, timeout=10):
         return self.driverWaitForCssSelector(self.driver, cssselector, timeout)
+
+    def waitForEnabled(self, element, timeout=10):
+        return self.driverWaitForEnabled(self.driver, element, timeout)
 
     def browseTo(self, path):
         self.driver.get(self.getHashUrl(self.appname, path))
