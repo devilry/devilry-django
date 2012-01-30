@@ -11,6 +11,7 @@ Ext.define('themebase.AlertMessageList', {
     ],
     ui: 'transparentpanel',
     alias: 'widget.alertmessagelist',
+    cls: 'alertmessagelist',
     hidden: true,
 
     constructor: function() {
