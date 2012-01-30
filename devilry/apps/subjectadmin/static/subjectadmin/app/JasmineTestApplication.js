@@ -1,8 +1,8 @@
 Ext.define('subjectadmin.JasmineTestApplication', {
     extend: 'subjectadmin.TestApplication',
+    requires: ['jsapp.JasmineTest'],
 
     launch: function() {
-        jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
-        jasmine.getEnv().execute();
+        jsapp.JasmineTest.execute();
     }
 });
