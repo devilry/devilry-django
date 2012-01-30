@@ -37,6 +37,18 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         margin: {top: 5},
         html: dtranslate('subjectadmin.assignment.long_name.help')
 
+    // Short name
+    }, {
+        name: "short_name",
+        fieldLabel: dtranslate('subjectadmin.assignment.short_name.label'),
+        xtype: 'textfield',
+        allowBlank: false,
+        emptyText: 'Example: assignment1'
+    }, {
+        xtype: 'formhelp',
+        margin: {top: 5},
+        html: dtranslate('subjectadmin.assignment.short_name.help')
+
     // How do students add deliveries
     }, {
         name: "delivery_types",
@@ -61,18 +73,6 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         xtype: 'formhelp',
         margin: {top: 5},
         html: dtranslate('subjectadmin.assignment.delivery_types.help')
-
-    // Short name
-    }, {
-        name: "short_name",
-        fieldLabel: dtranslate('subjectadmin.assignment.short_name.label'),
-        xtype: 'textfield',
-        allowBlank: false,
-        emptyText: 'Example: assignment1'
-    }, {
-        xtype: 'formhelp',
-        margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.short_name.help')
 
     // Publishing time
     }, {
