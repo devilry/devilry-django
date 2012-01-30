@@ -1,0 +1,21 @@
+{% extends "jsapp/test.django.html" %}
+
+{% block appjs %}
+    {# jasmine #}
+    <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/jsapp/jasmine/jasmine.css">    
+    <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jsapp/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jsapp/jasmine/jasmine-html.js"></script>
+
+    {% for filename in jasminespecs %}
+        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/{{ appname }}/jasminespecs/{{ filename }}"></script>
+    {% endfor %}
+
+
+    <script type="text/javascript">
+        Ext.require('subjectadmin.JasmineTestApplication');
+
+        Ext.onReady(function() {
+            Ext.create('subjectadmin.JasmineTestApplication');
+        });
+    </script>
+{% endblock %}
