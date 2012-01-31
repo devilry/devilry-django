@@ -20,3 +20,8 @@ subjectadmin.chooseperiod.title: 'Choose period'
 
 subjectadmin.createnewassignment.sidebarhelp: 'If you are creating a regular electronic assignment that students deliver using Devilry, you normally only have to fill in the first two fields and click <em>Create</em>.'
 subjectadmin.createnewassignment.title: Create new assignment
+
+subjectadmin.dashboard.createnewassignment: Create new assignment
+subjectadmin.dashboard.browseall: Browse all
+subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
+subjectadmin.dashboard.statistics: Statistics 

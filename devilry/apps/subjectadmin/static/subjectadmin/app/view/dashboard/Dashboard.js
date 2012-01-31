@@ -19,16 +19,16 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                 title: 'Actions',
                 links: [{
                     url: '#/@@create-new-assignment/@@chooseperiod',
-                    text: 'Create new assignment'
+                    text: dtranslate('subjectadmin.dashboard.createnewassignment')
                 }, {
                     url: '#/',
-                    text: 'Browse all'
+                    text: dtranslate('subjectadmin.dashboard.browseall')
                 }, {
                     url: '#/@@register-for-final-exams',
-                    text: 'Register students that qualify for final exams'
+                    text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
                 }, {
                     url: '#/@@global-statistics',
-                    text: 'Statistics'
+                    text: dtranslate('subjectadmin.dashboard.statistics')
                 }]
             }
         }, {
