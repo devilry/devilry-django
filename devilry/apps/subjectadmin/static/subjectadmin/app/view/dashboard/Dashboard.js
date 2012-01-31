@@ -28,7 +28,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                     text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
                 }, {
                     url: '#/@@global-statistics',
-                    text: dtranslate('subjectadmin.dashboard.statistics')
+                    text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
                 }]
             }
         }, {

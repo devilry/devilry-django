@@ -22,6 +22,6 @@ subjectadmin.createnewassignment.sidebarhelp: 'If you are creating a regular ele
 subjectadmin.createnewassignment.title: Create new assignment
 
 subjectadmin.dashboard.createnewassignment: Create new assignment
-subjectadmin.dashboard.browseall: Browse all
+subjectadmin.dashboard.browseall: Browse everything i have access to
 subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
-subjectadmin.dashboard.statistics: Statistics 
+subjectadmin.dashboard.overview-and-statistics: Overview and statistics
