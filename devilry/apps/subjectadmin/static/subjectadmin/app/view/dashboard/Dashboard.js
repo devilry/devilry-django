@@ -15,22 +15,20 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         region: 'main',
         items: [{
             xtype: 'actionlist',
-            data: {
-                title: 'Actions',
-                links: [{
-                    url: '#/@@create-new-assignment/@@chooseperiod',
-                    text: dtranslate('subjectadmin.dashboard.createnewassignment')
-                }, {
-                    url: '#/',
-                    text: dtranslate('subjectadmin.dashboard.browseall')
-                }, {
-                    url: '#/@@register-for-final-exams',
-                    text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
-                }, {
-                    url: '#/@@global-statistics',
-                    text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
-                }]
-            }
+            title: 'Actions',
+            links: [{
+                url: '#/@@create-new-assignment/@@chooseperiod',
+                text: dtranslate('subjectadmin.dashboard.createnewassignment')
+            }, {
+                url: '#/',
+                text: dtranslate('subjectadmin.dashboard.browseall')
+            }, {
+                url: '#/@@register-for-final-exams',
+                text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
+            }, {
+                url: '#/@@global-statistics',
+                text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
+            }]
         }, {
             xtype: 'box',
             cls: 'sysadmin-messages box',
