@@ -7,7 +7,7 @@ class TestDashboard(SeleniumTestCase):
     def test_dashboard(self):
         self.browseToTest('')
         self.waitForCssSelector('.shortcutlist')
-        self.assertTrue('Actions' in self.driver.page_source)
+        self.assertTrue('subjectadmin.dashboard.actionstitle' in self.driver.page_source)
         self.assertTrue('#/@@create-new-assignment/@@chooseperiod' in self.driver.page_source)
         self.assertTrue('href="#/"' in self.driver.page_source)
         self.assertTrue('#/@@register-for-final-exams' in self.driver.page_source)
