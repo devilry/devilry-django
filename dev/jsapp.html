@@ -22,7 +22,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="index.html" /> 
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="Simplified API" href="simplified.html" />
+    <link rel="prev" title="How to write a plugin" href="plugins.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,6 +36,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="simplified.html" title="Simplified API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -150,6 +158,8 @@ classes in <tt class="docutils literal"><span class="pre">lib/</span></tt> inste
 </div>
 <div class="section" id="tests">
 <h1>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="test-views-with-selenium">
+<h2>Test views with Selenium<a class="headerlink" href="#test-views-with-selenium" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">TestApplication.js</span></tt> views with selenium to test views. Your selenium
 tests should inherit from
 <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.jsapp.seleniumhelpers.SeleniumTestCase</span></tt>. Example:</p>
@@ -168,8 +178,14 @@ tests should inherit from
 <div class="highlight-python"><pre>bin/django_dev.py test devilry.apps.something</pre>
 </div>
 <p>You must be running the Django server at port 8080 for this to work.</p>
+</div>
+<div class="section" id="mock-everything">
+<h2>Mock everything!<a class="headerlink" href="#mock-everything" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal"><span class="pre">TestApplication.js</span></tt> must not require <strong>any</strong> persistence on the server. Mock
 everything. See the <tt class="docutils literal"><span class="pre">devilry.apps.subjectadmin</span></tt> for examples.</p>
+</div>
+<div class="section" id="unit-tests-with-jasmine">
+<h2>Unit tests with Jasmine<a class="headerlink" href="#unit-tests-with-jasmine" title="Permalink to this headline">¶</a></h2>
 <p>Add Jasmine test specs to <tt class="docutils literal"><span class="pre">static/&lt;appname&gt;/jasminespecs/</span></tt>.
 Use the <tt class="docutils literal"><span class="pre">JasmineTestApplication.js</span></tt> view
 (<a class="reference external" href="http://localhost:8080/APPNAME/jasminetest">http://localhost:8080/APPNAME/jasminetest</a>) to run your tests during
@@ -183,8 +199,11 @@ development. Add them to the regular test suite as a selenium test like so:</p>
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="code-conventions">
 <h1>Code conventions<a class="headerlink" href="#code-conventions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="require-include-order">
+<h2>Require/include order<a class="headerlink" href="#require-include-order" title="Permalink to this headline">¶</a></h2>
 <p>The order of statements in <tt class="docutils literal"><span class="pre">requires:</span> <span class="pre">[...]</span></tt> should be:</p>
 <ul class="simple">
 <li>ExtJs includes (anything in the Ext namespace).</li>
@@ -205,8 +224,12 @@ development. Add them to the regular test suite as a selenium test like so:</p>
     'view.AnotherView'
 ]</pre>
 </div>
+</div>
+<div class="section" id="private-methods">
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this headline">¶</a></h2>
 <p>Private methods should be prefixed with <tt class="docutils literal"><span class="pre">_</span></tt>. These methods should <strong>never</strong>
 be used outside the class, not even in subclasses.</p>
+</div>
 </div>
 <div class="section" id="module-devilry.apps.jsapp.views">
 <span id="api"></span><h1>API<a class="headerlink" href="#module-devilry.apps.jsapp.views" title="Permalink to this headline">¶</a></h1>
@@ -236,11 +259,26 @@ be used outside the class, not even in subclasses.</p>
 </li>
 <li><a class="reference internal" href="#routing">Routing</a></li>
 <li><a class="reference internal" href="#libraries">Libraries</a></li>
-<li><a class="reference internal" href="#tests">Tests</a></li>
-<li><a class="reference internal" href="#code-conventions">Code conventions</a></li>
+<li><a class="reference internal" href="#tests">Tests</a><ul>
+<li><a class="reference internal" href="#test-views-with-selenium">Test views with Selenium</a></li>
+<li><a class="reference internal" href="#mock-everything">Mock everything!</a></li>
+<li><a class="reference internal" href="#unit-tests-with-jasmine">Unit tests with Jasmine</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#code-conventions">Code conventions</a><ul>
+<li><a class="reference internal" href="#require-include-order">Require/include order</a></li>
+<li><a class="reference internal" href="#private-methods">Private methods</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-devilry.apps.jsapp.views">API</a></li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.html"
+                        title="previous chapter">How to write a plugin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="simplified.html"
+                        title="next chapter">Simplified API</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/jsapp.txt"
@@ -272,6 +310,12 @@ be used outside the class, not even in subclasses.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="simplified.html" title="Simplified API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>

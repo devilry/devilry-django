@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery", comp:"startswith", value:15},
-                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"exact", value:"2010-02-22 22:32:10"},
-                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:">", value:"2010-02-22 22:32:10"}],
+        filters: [{field:"delivery", comp:"icontains", value:15},
+                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"endswith", value:"2010-02-22 22:32:10"},
+                      {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"<=", value:"2010-02-22 22:32:10"}],
         orderby: ["id", "-grade", "is_passing_grade", "saved_by", "save_timestamp", "delivery", "rendered_view", "points"],
         start: 10,
         limit: 100
@@ -137,9 +137,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery", comp:"startswith", value:15},
-         {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"exact", value:"2010-02-22 22:32:10"},
-         {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:">", value:"2010-02-22 22:32:10"}]
+        [{field:"delivery", comp:"icontains", value:15},
+         {field:"delivery__deadline__assignment_group__parentnode__parentnode__end_time", comp:"endswith", value:"2010-02-22 22:32:10"},
+         {field:"delivery__deadline__assignment_group__parentnode__parentnode__start_time", comp:"<=", value:"2010-02-22 22:32:10"}]
 
 Static feedbacks can be filtered on the following *fields*:
 
