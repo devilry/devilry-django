@@ -5,7 +5,7 @@ class TestShortcuts(SeleniumTestCase):
     appname = 'subjectadmin'
 
     def test_actionlist(self):
-        self.browseTo('/@@dashboard/actionlist')
+        self.browseToTest('/@@dashboard/actionlist')
         self.waitForCssSelector('.actionlist')
         self.assertTrue('Action list test' in self.driver.page_source)
         self.assertTrue('#/@@actionitem-1' in self.driver.page_source)
