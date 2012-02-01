@@ -6,11 +6,19 @@
                 color: #666666;
                 background-color: #EEEEEE;
                 padding: 15px 40px 10px 40px;
+                font-size: 24px;
                 font-weight: normal;
             }
             .centerbody {
                 margin: 0;
                 padding: 40px 44px;
+            }
+        }
+        .twocol-centerbox {
+            .centerbox {
+                h2.centertitle {
+                    font-size: 18px;
+                }
             }
         }
     }

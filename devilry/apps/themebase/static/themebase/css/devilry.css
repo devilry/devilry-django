@@ -12553,40 +12553,45 @@ input[type=submit].btn::-moz-focus-inner {
   color: #666666;
   background-color: #EEEEEE;
   padding: 15px 40px 10px 40px;
+  font-size: 24px;
   font-weight: normal;
 }
-/* line 11, ../sass/_rightsidebarlayout.scss */
+/* line 12, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .centercolumn .centerbox .centerbody {
   margin: 0;
   padding: 40px 44px;
 }
-/* line 17, ../sass/_rightsidebarlayout.scss */
+/* line 19, ../sass/_rightsidebarlayout.scss */
+.rightsidebarlayout .centercolumn .twocol-centerbox .centerbox h2.centertitle {
+  font-size: 18px;
+}
+/* line 25, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn {
   background-color: #191919;
   padding: 40px;
   color: #fff;
   font-size: 116%;
 }
-/* line 22, ../sass/_rightsidebarlayout.scss */
+/* line 30, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn a {
   color: #fff;
   text-decoration: underline;
 }
-/* line 26, ../sass/_rightsidebarlayout.scss */
+/* line 34, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn h2 {
   color: #999999;
   padding: 15px 0 10px 0;
   font-weight: normal;
 }
-/* line 31, ../sass/_rightsidebarlayout.scss */
+/* line 39, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled {
   margin-left: 4px;
 }
-/* line 33, ../sass/_rightsidebarlayout.scss */
+/* line 41, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled > li {
   margin-bottom: 20px;
 }
-/* line 35, ../sass/_rightsidebarlayout.scss */
+/* line 43, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled > li li {
   margin: 6px 0;
 }
