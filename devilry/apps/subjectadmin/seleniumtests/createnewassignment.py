@@ -114,6 +114,3 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.short_name.label:</strong> Invalid short name' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.long_name.label:</strong> Invalid. Long name' in self.driver.page_source)
         self.assertTrue('' in self.driver.page_source)
-
-    def test_jasmine(self):
-        self.runJasmineTests()
