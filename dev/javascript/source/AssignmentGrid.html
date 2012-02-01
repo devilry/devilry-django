@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.student.browseperiods.AssignmentGrid', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.student-browseperiods-assignmentgrid',
+    
+    constructor: function(config) {
+        this.createStore();
+        this.callParent([config]);
+    },
+
+    assignmentTpl: Ext.create('Ext.XTemplate',
+        '&lt;div style=&quot;height: 37px&quot;&gt;{parentnode__long_name}&lt;/div&gt;'
+    ),
+
+    pointsTpl: Ext.create('Ext.XTemplate', 
+        '&lt;span class=&quot;pointscolumn&quot;&gt;',
+        '    &lt;tpl if=&quot;feedback&quot;&gt;',
+        '       {feedback__points}',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!feedback&quot;&gt;',
+        '       &lt;span class=&quot;nofeedback&quot;&gt;&amp;empty;&lt;/span&gt;',
+        '   &lt;/tpl&gt;',
+        '&lt;/span&gt;'
+    ),
+
+    gradeTpl: Ext.create('Ext.XTemplate', 
+        '&lt;div class=&quot;section gradecolumn&quot; style=&quot;line-height: 1.8em; height:37px&quot;&gt;',
+        '   &lt;tpl if=&quot;feedback&quot;&gt;',
+        '        &lt;div class=&quot;is_passing_grade&quot;&gt;',
+        '           &lt;tpl if=&quot;feedback__is_passing_grade&quot;&gt;&lt;span class=&quot;passing_grade&quot;&gt;Passed&lt;/span&gt;&lt;/tpl&gt;',
+        '           &lt;tpl if=&quot;!feedback__is_passing_grade&quot;&gt;&lt;span class=&quot;not_passing_grade&quot;&gt;Failed&lt;/span&gt;&lt;/tpl&gt;',
+        '           : &lt;span class=&quot;grade&quot;&gt;{feedback__grade}&lt;/span&gt;',
+        '        &lt;/div&gt;',
+        '        &lt;div class=&quot;delivery_type&quot;&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 0&quot;&gt;&lt;span class=&quot;electronic&quot;&gt;Electronic&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 1&quot;&gt;&lt;span class=&quot;non-electronic&quot;&gt;Non-electronic&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type == 2&quot;&gt;&lt;span class=&quot;neutralInlineItem&quot;&gt;From previous period (semester)&lt;/span&gt;&lt;/tpl&gt;',
+        '            &lt;tpl if=&quot;feedback__delivery__delivery_type &amp;gt; 2&quot;&gt;&lt;span class=&quot;warningInlineItem&quot;&gt;Unknown delivery type&lt;/span&gt;&lt;/tpl&gt;',
+        '       &lt;/div&gt;',
+        '   &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!feedback&quot;&gt;',
+        '        &lt;div class=&quot;nofeedback&quot;&gt;',
+        '           No feedback',
+        '        &lt;/div&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/div&gt;'
+    ),
+
+    createStore: function() {
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.student.simplified.SimplifiedAssignmentGroup',
+            remoteFilter: true,
+            remoteSort: false,
+            autoSync: true
+        });
+        this.store.pageSize = 100000;
+        //this.store.proxy.setDevilryOrderby(['parentnode__publishing_time', 'parentnode__short_name']);
+    },
+
+    loadGroupsInPeriod: function(periodRecord) {
+        this.store.proxy.setDevilryFilters([{
+            field: 'parentnode__parentnode',
+            comp: 'exact',
+            value: periodRecord.get('id')
+        }])
+        this.store.load({
+            scope: this,
+            callback: function(records, op) {
+                this.getEl().unmask();
+                if(records.length === 0) {
+                    this.getEl().mask('You are not registered on any assignments within this period/semester. This may not be an issue if your subject/course do not have assignments, if no assignments have been published yet, or if the subject/course only use Devilry to register final results.', 'information-mask');
+                }
+            }
+        });
+    },
+    
+    initComponent: function() {
+        Ext.apply(this, {
+            cls: 'selectable-grid',
+            //hideHeaders: true,
+            columns: [{
+                header: 'Assignment', dataIndex: 'parentnode__long_name', flex: 4,
+                renderer: function(value, m, record) {
+                    return this.assignmentTpl.apply(record.data);
+                }
+            //}, {
+                //header: 'Points', dataIndex: 'feedback__points', flex: 1,
+                //renderer: function(value, m, record) {
+                    //return this.pointsTpl.apply(record.data);
+                //}
+            }, {
+                header: 'Grade', dataIndex: 'feedback__grade', flex: 2,
+                renderer: function(value, m, record) {
+                    return this.gradeTpl.apply(record.data);
+                }
+            }],
+
+            listeners: {
+                scope: this,
+                select: this._onSelect
+            }
+        });
+        this.callParent(arguments);
+    },
+
+    _onSelect: function(grid, record) {
+        var url = Ext.String.format('{0}/student/assignmentgroup/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('id'));
+        window.location.href = url;
+    }
+});
+</pre>
+</body>
+</html>

@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignmentgroup", comp:"<=", value:15},
-                      {field:"assignmentgroup__parentnode", comp:"<", value:15},
-                      {field:"assignmentgroup__parentnode__parentnode", comp:">", value:15}],
+        filters: [{field:"assignmentgroup", comp:"startswith", value:15},
+                      {field:"assignmentgroup__parentnode", comp:">=", value:15},
+                      {field:"assignmentgroup__parentnode__parentnode", comp:"<=", value:15}],
         orderby: ["user", "-id", "assignmentgroup"],
         start: 10,
         limit: 100
@@ -81,9 +81,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignmentgroup", comp:"<=", value:15},
-         {field:"assignmentgroup__parentnode", comp:"<", value:15},
-         {field:"assignmentgroup__parentnode__parentnode", comp:">", value:15}]
+        [{field:"assignmentgroup", comp:"startswith", value:15},
+         {field:"assignmentgroup__parentnode", comp:">=", value:15},
+         {field:"assignmentgroup__parentnode__parentnode", comp:"<=", value:15}]
 
 examiners can be filtered on the following *fields*:
 
@@ -177,6 +177,40 @@ limit
 Limit results to this number of items. Defaults to ``50``.
 
 
+result_fieldgroups
+------------------
+A list of group names. Each group adds an additional set of fields to the
+results of the search. The following group names are available:
+
+    userdetails
+        *Expands to the following fields:*
+        
+            user__username
+                Actual location of the field:
+                    :class:`django.contrib.auth.models.User`
+                About the field:
+                    Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters
+                Type
+                    String
+        
+            user__email
+                Actual location of the field:
+                    :class:`django.contrib.auth.models.User`
+                About the field:
+                    
+                Type
+                    String
+        
+            user__devilryuserprofile__full_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.DevilryUserProfile`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
+
+
 
 
 
@@ -252,6 +286,9 @@ the *value* for that field. The result always contains the following fields:
                 Integer
     
 
+
+However, there may be more fields if specified with the ``result_fieldgroups``
+request parameter.
 
 
 

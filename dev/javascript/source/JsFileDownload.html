@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.jsfiledownload.JsFileDownload', {
+    singleton: true,
+    baseurl: Ext.String.format('{0}/jsfiledownload/', DevilrySettings.DEVILRY_URLPATH_PREFIX),
+
+    getOpenUrl: function() {
+        return this.baseurl + 'open';
+    },
+
+    getSaveAsUrl: function() {
+        return this.baseurl + 'saveas';
+    },
+
+    open: function(content_type, content) {
+        this._post_to_url(this.getOpenUrl(), {
+            content_type: content_type,
+            content: content
+        });
+    },
+
+    saveas: function(filename, content, content_type) {
+        var args = {
+            filename: filename,
+            content: content
+        };
+        if(content_type) {
+            args.content_type = content_type;
+        }
+        this._post_to_url(this.getSaveAsUrl(), args);
+    },
+
+    _post_to_url: function(path, params) { // See: http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+        var form = document.createElement(&quot;form&quot;);
+        form.setAttribute(&quot;method&quot;, 'post');
+        form.setAttribute(&quot;style&quot;, 'display: none');
+        form.setAttribute(&quot;action&quot;, path);
+
+        for(var key in params) {
+            var hiddenField = document.createElement(&quot;input&quot;);
+            hiddenField.setAttribute(&quot;type&quot;, &quot;hidden&quot;);
+            hiddenField.setAttribute(&quot;name&quot;, key);
+            hiddenField.setAttribute(&quot;value&quot;, params[key]);
+            form.appendChild(hiddenField);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</pre>
+</body>
+</html>

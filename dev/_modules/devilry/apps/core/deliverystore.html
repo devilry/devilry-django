@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.core.deliverystore &mdash; Devilry 1.0 documentation</title>
-    
+    <title>devilry.apps.core.deliverystore &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -25,7 +22,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry 1.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -38,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -53,7 +50,7 @@
 <span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ImproperlyConfigured</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">remove</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">remove</span>
 <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">dumbdbm</span>
 
@@ -178,7 +175,7 @@
     <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
         <span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dirpath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">delivery</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
-            <span class="n">mkdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+            <span class="n">makedirs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">),</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
@@ -190,6 +187,47 @@
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
         <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="FsHierDeliveryStore"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.FsHierDeliveryStore">[docs]</a><span class="k">class</span> <span class="nc">FsHierDeliveryStore</span><span class="p">(</span><span class="n">FsDeliveryStore</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Filesystem-based DeliveryStore suitable for production use with huge</span>
+<span class="sd">    amounts of deliveries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param root: The root-directory where files are stored. Defaults to</span>
+<span class="sd">            the value of the ``DEVILRY_FSHIERDELIVERYSTORE_ROOT``-setting.</span>
+<span class="sd">        :param interval: The interval. Defaults to</span>
+<span class="sd">            the value of the ``DEVILRY_FSHIERDELIVERYSTORE_INTERVAL``-setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_FSHIERDELIVERYSTORE_ROOT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_FSHIERDELIVERYSTORE_INTERVAL</span>
+
+<div class="viewcode-block" id="FsHierDeliveryStore.get_path_from_deliveryid"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.FsHierDeliveryStore.get_path_from_deliveryid">[docs]</a>    <span class="k">def</span> <span class="nf">get_path_from_deliveryid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deliveryid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; fs = FsHierDeliveryStore(&#39;/stuff/&#39;, interval=1000)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=2001000)</span>
+<span class="sd">        (2, 1)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=1000)</span>
+<span class="sd">        (0, 1)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=1005)</span>
+<span class="sd">        (0, 1)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=2005)</span>
+<span class="sd">        (0, 2)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=0)</span>
+<span class="sd">        (0, 0)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=1)</span>
+<span class="sd">        (0, 0)</span>
+<span class="sd">        &gt;&gt;&gt; fs.get_path_from_deliveryid(deliveryid=1000000)</span>
+<span class="sd">        (1, 0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">toplevel</span> <span class="o">=</span> <span class="n">deliveryid</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="n">sublevel</span> <span class="o">=</span> <span class="p">(</span><span class="n">deliveryid</span> <span class="o">-</span> <span class="p">(</span><span class="n">toplevel</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+        <span class="k">return</span> <span class="n">toplevel</span><span class="p">,</span> <span class="n">sublevel</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_dirpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">):</span>
+        <span class="n">toplevel</span><span class="p">,</span> <span class="n">sublevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">delivery_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">toplevel</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">sublevel</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">delivery_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">))</span>
 
 </div>
 <div class="viewcode-block" id="DbmDeliveryStore"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DbmDeliveryStore">[docs]</a><span class="k">class</span> <span class="nc">DbmDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreInterface</span><span class="p">):</span>
@@ -278,7 +316,15 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span></div>
+        <span class="k">return</span> <span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_test</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">_test</span><span class="p">()</span>
 </pre></div>
 
           </div>
@@ -289,7 +335,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -312,13 +358,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"anonymous", comp:"startswith", value:true},
+        filters: [{field:"anonymous", comp:"exact", value:true},
                       {field:"delivery_types", comp:"startswith", value:20},
-                      {field:"long_name", comp:"iexact", value:"My example value"}],
+                      {field:"long_name", comp:"icontains", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time", "delivery_types", "anonymous", "scale_points_percent"],
         start: 10,
         limit: 100
@@ -129,9 +129,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"anonymous", comp:"startswith", value:true},
+        [{field:"anonymous", comp:"exact", value:true},
          {field:"delivery_types", comp:"startswith", value:20},
-         {field:"long_name", comp:"iexact", value:"My example value"}]
+         {field:"long_name", comp:"icontains", value:"My example value"}]
 
 Assignments can be filtered on the following *fields*:
 

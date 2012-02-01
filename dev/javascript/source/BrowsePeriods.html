@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.student.browseperiods.BrowsePeriods', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.student-browseperiods',
+    requires: [
+        'devilry.student.browseperiods.PeriodGrid',
+        'devilry.student.browseperiods.AssignmentGrid',
+        'devilry.statistics.OverviewOfSingleStudent'
+    ],
+    
+    initComponent: function() {
+        Ext.apply(this, {
+            layout: 'border',
+            items: [{
+                xtype: 'student-browseperiods-periodgrid',
+                region: 'west',
+                width: 200,
+                listeners: {
+                    scope: this,
+                    select: this._onSelectPeriod
+                }
+            }, {
+                xtype: 'student-browseperiods-assignmentgrid',
+                region: 'center'
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    _onSelectPeriod: function(grid, periodRecord) {
+        var assignmentGrid = this.down('student-browseperiods-assignmentgrid');
+        assignmentGrid.loadGroupsInPeriod(periodRecord);
+    }
+});
+</pre>
+</body>
+</html>

@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"candidates__identifier", comp:"startswith", value:["this", "is", "an", "example"]},
+        filters: [{field:"candidates__identifier", comp:">", value:["this", "is", "an", "example"]},
                       {field:"feedback", comp:"icontains", value:15},
-                      {field:"feedback__delivery__delivery_type", comp:"startswith", value:20}],
+                      {field:"feedback__delivery__delivery_type", comp:"icontains", value:20}],
         orderby: ["id", "-name", "is_open", "parentnode", "feedback", "latest_delivery_id", "latest_deadline_id", "latest_deadline_deadline", "number_of_deliveries"],
         start: 10,
         limit: 100
@@ -161,9 +161,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"candidates__identifier", comp:"startswith", value:["this", "is", "an", "example"]},
+        [{field:"candidates__identifier", comp:">", value:["this", "is", "an", "example"]},
          {field:"feedback", comp:"icontains", value:15},
-         {field:"feedback__delivery__delivery_type", comp:"startswith", value:20}]
+         {field:"feedback__delivery__delivery_type", comp:"icontains", value:20}]
 
 assignment groups can be filtered on the following *fields*:
 

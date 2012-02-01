@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.models.Deadline', {
+    extend: 'Ext.data.Model',
+    idProperty: 'id',
+    fields: [
+        {&quot;type&quot;: &quot;int&quot;, &quot;name&quot;: &quot;id&quot;},
+        {&quot;type&quot;: &quot;auto&quot;, &quot;name&quot;: &quot;text&quot;},
+        {&quot;type&quot;: &quot;date&quot;, &quot;name&quot;: &quot;deadline&quot;, &quot;dateFormat&quot;: &quot;Y-m-dTH:i:s&quot;},
+        {&quot;type&quot;: &quot;auto&quot;, &quot;name&quot;: &quot;assignment_group&quot;},
+        {&quot;type&quot;: &quot;auto&quot;, &quot;name&quot;: &quot;number_of_deliveries&quot;},
+        {&quot;type&quot;: &quot;bool&quot;, &quot;name&quot;: &quot;feedbacks_published&quot;}
+    ]
+});
+</pre>
+</body>
+</html>

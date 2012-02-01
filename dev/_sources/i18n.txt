@@ -1,0 +1,144 @@
+.. _i18n:
+
+============================
+Translating Devilry
+============================
+
+
+.. _i18n-gui:
+
+Easy mode --- using the web-interface
+#####################################
+
+Translating Devilry using the web-gui is very simple, all you need is to
+understand English, and the language you are translating Devilry into.
+
+Finding the translation web-gui
+-------------------------------
+
+The translation GUI is available at ``/i18n/translategui`` on any Devilry
+instance. So, for example if you have access to Devilry at
+http://devilry.ifi.uio.no, you can translate Devilry using
+http://devilry.ifi.uio.no/i18n/translategui.
+
+Using the GUI
+-------------
+
+If you want to make an entirely new translation, click the **New**-button and
+start adding translations to the *Translation*-column. The original English
+text is in the *Default*-column.
+
+
+Saving your changes
+-------------------
+
+Save your changes using the **Export**-button. This will download the current
+translation to you machine.
+
+
+Load a translation
+------------------
+
+If you want to change an existing translation, one you have saved, or one of
+the translations provided by Devilry, click the **Load**-button. Paste the contents
+of a file you have exported (see previous section), or choose *Load from server*.
+
+
+Edit long lines
+---------------
+
+Double click on the default text to open a window that lets you edit long lines.
+
+
+
+.. _i18n-sysadmin:
+
+Add translations to Devilry
+###########################
+
+If you have translated Devilry using the GUI as explained in :ref:`i18n-gui`,
+you can send your translation file (``devilry-translation.json``), to your
+local Devilry administrator, and they can follow the instructions in the rest
+of this section.
+
+
+How translations work
+---------------------
+
+Devilry is a set of independent Django applications. Each application manage
+its own translations. Before translations can be used in production, we merge
+translations from all apps into a single file for each language/locale.
+
+
+Decoupling translations from the GUI
+------------------------------------
+
+When you receive a translation created as explained in :ref:`i18n-gui`, you
+have to decouple the translation and choose the language name using
+the ``devilry_i18n load`` command as so::
+
+    $ bin/django_production.py devilry_i18n load -v2 <language-code> /path/to/devilry-translation.json
+
+Where ``<language-code>`` is a single word (lower-case english letters,
+numbers, underscore and dash). Remove ``-v2`` make it non-verbose.
+
+
+.. _i18n-avoid-collision:
+
+How do I avoid collisions with builtin translations?
+----------------------------------------------------
+
+Your translation files will be prefixed with ``local-``. Translations
+with this prefix is never added to Devilry, and is therefore safe from future
+collisions with builtin devilry translations. Developers may check out ``--help``
+to see how to get rid of the prefix.
+
+
+Prepare translations for the web
+--------------------------------
+
+Use the ``devilry_i18n export`` to merge all localizations into a single file
+for each language/locale::
+
+    $ bin/django_production.py devilry_i18n export -v2
+
+This places the files in the appropriate place for static files. Next, you need
+to run ``collectstatic``::
+
+    $ bin/django_production.py collectstatic
+
+See the the install and update guides on the Wiki for more details about
+``collectstatic``.
+
+
+.. _i18n-geek:
+
+Geek mode --- Edit the translation files
+########################################
+
+Each application (in ``devilry/apps/``) keeps their translations in
+``static/APPNME/i18n/``. Just copy ``messages.yaml`` into a file named
+``messages_<langcode>.yaml`` where ``<langcode>`` is a unique identfier for
+your translation. For translations for local use (not intended to be
+distributed with Devilry), the ``<langcode>`` should be prefixed with
+``local-`` (See: :ref:`i18n-avoid-collision`).
+
+Example
+-------
+
+A good example is the translations for the ``core`` app, which lives in
+``devilry/apps/core/static/core/i18n/``.
+
+
+.. _i18n-middleware:
+
+Localization middleware
+#######################
+
+.. automodule:: devilry.apps.i18n.middleware
+
+
+Utils
+#######################
+
+.. automodule:: devilry.apps.i18n.utils

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
+    extend: 'devilry.extjshelpers.DashGrid',
+    requires: [
+        'devilry.extjshelpers.DateTime'
+    ],
+
+    config: {
+        model: undefined,
+        noRecordsMessage: {
+            title: dtranslate('core.periods.noactive.title'),
+            msg: dtranslate('core.periods.noactive.body')
+        },
+        pageSize: 30,
+        dashboard_url: undefined
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+    
+    createStore: function() {
+        this.store = Ext.create('Ext.data.Store', {
+            model: this.model,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
+
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'start_time',
+            comp: '&lt;',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }, {
+            field: 'end_time',
+            comp: '&gt;',
+            value: devilry.extjshelpers.DateTime.restfulNow()
+        }]);
+        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-publishing_time']);
+        this.store.pageSize = this.pageSize
+    },
+
+    createBody: function() {
+        var activePeriodsGrid = Ext.create('Ext.grid.Panel', {
+            frame: false,
+            frameHeader: false,
+            border: false,
+            sortableColumns: false,
+            autoScroll: true,
+            cls: 'selectable-grid',
+            store: this.store,
+            flex: 1,
+            columns: [{
+                text: dtranslate('core.subject'),
+                menuDisabled: true,
+                dataIndex: 'parentnode__long_name',
+                flex: 30,
+            },{
+                text: dtranslate('core.period'),
+                menuDisabled: true,
+                dataIndex: 'long_name',
+                flex: 20,
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: function(view, record) {
+                    var url = this.dashboard_url + &quot;period/&quot; + record.data.id
+                    window.location = url;
+                }
+            }
+        });
+        this.add({
+            xtype: 'box',
+            html: Ext.String.format('&lt;div class=&quot;section&quot;&gt;&lt;h2&gt;{0}&lt;/h2&gt;&lt;/div&gt;', dtranslate('extjshelpers.periods.active'))
+        });
+        this.add(activePeriodsGrid);
+    }
+});
+</pre>
+</body>
+</html>

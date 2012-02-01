@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.examiner.AssignmentLayout', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.examiner-assignmentlayout',
+    requires: [
+        'devilry.examiner.AssignmentLayoutTodoList',
+        'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.SingleRecordView'
+    ],
+    
+<span id='global-cfg-assignmentid'>    /**
+</span>     * @cfg
+     */
+    assignmentid: undefined,
+    
+
+    assignmentmodelname: 'devilry.apps.examiner.simplified.SimplifiedAssignment',
+    assignmentgroupmodelname: 'devilry.apps.examiner.simplified.SimplifiedAssignmentGroup',
+    
+    constructor: function(config) {
+        this.assignment_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.assignment_recordcontainer.on('setRecord', this._onLoadRecord, this);
+        this.callParent(arguments);
+    },
+    
+    initComponent: function() {
+        var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
+        assignmentmodel.load(this.assignmentid, {
+            scope: this,
+            success: this._onLoadAssignmentSuccess,
+            failure: this._onLoadAssignmentFailure
+        });
+
+        this.heading = Ext.widget('singlerecordview', {
+            singlerecordontainer: this.assignment_recordcontainer,
+            tpl: Ext.create('Ext.XTemplate',
+                '&lt;div class=&quot;section treeheading&quot;&gt;',
+                '    &lt;h1&gt;{long_name} ({short_name})&lt;/h1&gt;',
+                '    &lt;h2&gt;{parentnode__long_name}&lt;/h2&gt;',
+                '    &lt;h3&gt;{parentnode__parentnode__long_name}&lt;/h3&gt;',
+                '&lt;/tpl&gt;'
+            ),
+        });
+        Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: []
+        });
+        this.callParent(arguments);
+    },
+
+    _onLoadAssignmentSuccess: function(record) {
+        this.assignment_recordcontainer.setRecord(record);
+    },
+
+    _onLoadAssignmentFailure: function() {
+        Ext.MessageBox.alert(&quot;Failed to load assignment. Please try to reload the page.&quot;);
+    },
+
+    _getStudentsManagerConfig: function() {
+        return {
+            xtype: 'studentsmanager',
+            title: 'Detailed overview of all students',
+            assignmentgroupmodelname: this.assignmentgroupmodelname,
+            assignmentid: this.assignmentid,
+            assignmentrecord: this.assignment_recordcontainer.record,
+            deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
+            gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
+            isAdministrator: false
+        };
+    },
+
+    _getTodoListConfig: function() {
+        return {
+            xtype: 'examiner-assignmentlayout-todolist',
+            assignmentid: this.assignmentid,
+            pageSize: 30,
+            assignmentmodelname: this.assignmentmodelname,
+            assignmentgroupmodelname: this.assignmentgroupmodelname
+        };
+    },
+
+    _electronicLayout: function() {
+        this.add([this.heading, {
+            xtype: 'tabpanel',
+            flex: 1,
+            items: [this._getTodoListConfig(), this._getStudentsManagerConfig()]
+        }]);
+    },
+
+    _nonElectronicLayout: function() {
+        var studentsmanagerConf = this._getStudentsManagerConfig();
+        studentsmanagerConf.flex = 1;
+        this.add([this.heading, studentsmanagerConf]);
+    },
+
+    _onLoadRecord: function() {
+        if(this.assignment_recordcontainer.record.get('delivery_types') == 1) {
+            this._nonElectronicLayout();
+        } else {
+            this._electronicLayout();
+        }
+        Ext.getBody().unmask();
+    },
+});
+</pre>
+</body>
+</html>

@@ -86,32 +86,11 @@ extjs_store
 .. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_store
 
 
-extjs_form_items
-----------------
-
-.. code-block:: javascript
-
-    var formitems = {{ RestfulSimplifiedDelivery|extjs_form_items }};
-
-.. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_form_items
-
-
-extjs_foreignkeys
------------------
-
-.. code-block:: javascript
-
-    var foreignkeys = {{ RestfulSimplifiedDelivery|extjs_foreignkeys }};
-
-.. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_foreignkeys
-
-
 Low-level API for filters
 ===========================
 
 .. automodule:: devilry.apps.extjshelpers.modelintegration
 .. automodule:: devilry.apps.extjshelpers.storeintegration
-.. automodule:: devilry.apps.extjshelpers.formintegration
 
 
 Extensions to the RESTful API

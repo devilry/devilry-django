@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.gradeeditors.models &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.gradeeditors.models</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">post_save</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">devilry.apps.core.models</span> <span class="kn">import</span> <span class="n">Delivery</span><span class="p">,</span> <span class="n">Assignment</span><span class="p">,</span> <span class="n">StaticFeedback</span>
+<span class="kn">from</span> <span class="nn">registry</span> <span class="kn">import</span> <span class="n">gradeeditor_registry</span>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stored by admins.</span>
+
+<span class="sd">    .. attribute:: gradeeditorid</span>
+
+<span class="sd">        A ``gradeeditorid`` that is used to get the</span>
+<span class="sd">        :class:`devilry.apps.gradeeditors.registry.RegistryItem` for this</span>
+<span class="sd">        config.</span>
+
+<span class="sd">    .. attribute:: assignment</span>
+
+<span class="sd">        The primary key. This means we have one config for each assignment.</span>
+
+<span class="sd">    .. attribute:: config</span>
+
+<span class="sd">        A text field where the config editor can store its data in any format</span>
+<span class="sd">        it chooses. JSON is usually a good choice because of easy interraction</span>
+<span class="sd">        with JavaScript.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gradeeditorid</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">()</span>
+    <span class="n">assignment</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">Assignment</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;gradeeditor_config&#39;</span><span class="p">,</span>
+                                      <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_gradeeditor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gradeeditor_registry</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gradeeditorid</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Config.clean"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.Config.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a :class:`devilry.apps.gradeeditors.registry.RegistryItem` from</span>
+<span class="sd">        the ``gradeeditor_registry`` in</span>
+<span class="sd">        :mod:`devilry.apps.gradeeditor.registry`.</span>
+
+<span class="sd">        Uses</span>
+<span class="sd">        :meth:`devilry.apps.gradeeditors.registry.RegistryItem.validate_config`</span>
+<span class="sd">        to validate the config before saving it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gradeeditor</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">&#39;Invalid grade editor: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradeeditorid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+
+</div></div>
+<div class="viewcode-block" id="create_gradeconfig_for_assignment"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.create_gradeconfig_for_assignment">[docs]</a><span class="k">def</span> <span class="nf">create_gradeconfig_for_assignment</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Signal handler which is invoked when an Assignment is created.</span>
+
+<span class="sd">    Create default grade Config for Assignment with ``config=&#39;&#39;`` if the assignment</span>
+<span class="sd">    has no grade Config.</span>
+
+<span class="sd">    :param kwargs: Must have an *instance* key with an assignment object as value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assignment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;instance&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">assignment</span><span class="o">.</span><span class="n">gradeeditor_config</span>
+    <span class="k">except</span> <span class="n">Config</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">assignment</span><span class="o">=</span><span class="n">assignment</span><span class="p">,</span>
+                        <span class="n">gradeeditorid</span><span class="o">=</span><span class="n">gradeeditor_registry</span><span class="o">.</span><span class="n">getdefaultkey</span><span class="p">(),</span>
+                        <span class="n">config</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</div>
+<span class="n">post_save</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">create_gradeconfig_for_assignment</span><span class="p">,</span>
+                  <span class="n">sender</span><span class="o">=</span><span class="n">Assignment</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FeedbackDraft"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.FeedbackDraft">[docs]</a><span class="k">class</span> <span class="nc">FeedbackDraft</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stored by examiners.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delivery</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Delivery</span><span class="p">)</span>
+    <span class="n">draft</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">save_timestamp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                          <span class="n">help_text</span><span class="o">=</span><span class="s">&#39;Time when this feedback was saved. Since FeedbackDraft &#39;</span>
+                                                    <span class="s">&#39;is immutable, this never changes.&#39;</span><span class="p">)</span>
+    <span class="n">saved_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="n">published</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                    <span class="n">help_text</span><span class="o">=</span><span class="s">&#39;Has this draft been published as a StaticFeedback? Setting this to true on create automatically creates a StaticFeedback.&#39;</span><span class="p">)</span>
+    <span class="n">staticfeedback</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">StaticFeedback</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                          <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;gradeeditor_feedbackdraft&#39;</span><span class="p">,</span>
+                                          <span class="n">help_text</span><span class="o">=</span><span class="s">&#39;The StaticFeedback where this was published if this draft has been published.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">gradeeditor_config</span>
+
+    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="c"># If creating a new FeedbackDraft</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_config</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">Config</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">((</span><span class="s">&#39;Can not create feedback on delivery:{0} &#39;</span>
+                                       <span class="s">&#39;because its assignment does not have a &#39;</span>
+                                       <span class="s">&#39;gradeeditor_config.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gradeeditor</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">_get_gradeeditor</span><span class="p">()</span>
+                <span class="n">gradeeditor</span><span class="o">.</span><span class="n">validate_draft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">staticfeedback</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># We should NEVER set staticfeedback if published is not True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">&#39;FeedbackDraft is immutable (it can not be changed).&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FeedbackDraft.save"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.FeedbackDraft.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the draft and optionally a :class:`devilry.core.models.StaticFeedback`</span>
+<span class="sd">        in the database. The ``StaticFeedback`` is only saved if</span>
+<span class="sd">        ``self.publish`` is ``True``.</span>
+
+<span class="sd">        Uses :meth:`to_staticfeedback` to create the staticfeedback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+            <span class="n">_tmp_staticfeedback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_staticfeedback</span><span class="p">()</span>
+            <span class="n">_tmp_staticfeedback</span><span class="o">.</span><span class="n">full_clean</span><span class="p">()</span>
+            <span class="n">_tmp_staticfeedback</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">staticfeedback</span> <span class="o">=</span> <span class="n">_tmp_staticfeedback</span> <span class="c"># Note: We use _tmp_staticfeedback because if we need a variable in which to store the staticfeedback while we save it. We can not just save self.staticfeedback() because that would just create create a copy without actually setting self.staticfeedback to the newly saved value.</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FeedbackDraft</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="FeedbackDraft.to_staticfeedback"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.models.FeedbackDraft.to_staticfeedback">[docs]</a>    <span class="k">def</span> <span class="nf">to_staticfeedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a staticfeedback generated from self. &quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_config</span><span class="p">()</span>
+        <span class="n">gradeeditor</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">_get_gradeeditor</span><span class="p">()</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">gradeeditor</span><span class="o">.</span><span class="n">draft_to_staticfeedback_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="c"># Create StaticFeedback from kwargs. We copy by key instead of **kwargs to make sure we dont get anything extra.</span>
+        <span class="k">return</span> <span class="n">StaticFeedback</span><span class="p">(</span><span class="n">is_passing_grade</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;is_passing_grade&#39;</span><span class="p">],</span>
+                              <span class="n">grade</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;grade&#39;</span><span class="p">],</span>
+                              <span class="n">points</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;points&#39;</span><span class="p">],</span>
+                              <span class="n">rendered_view</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;rendered_view&#39;</span><span class="p">],</span>
+                              <span class="n">delivery</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="p">,</span>
+                              <span class="n">save_timestamp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                              <span class="n">saved_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saved_by</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

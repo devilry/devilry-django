@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.ComboboxTemplatesMixin', {
+    assignmentRowTpl: [
+        '&lt;div class=&quot;section popuplistitem&quot;&gt;',
+        '   &lt;p class=&quot;path&quot;&gt;{parentnode__parentnode__short_name}.{parentnode__short_name}&lt;/p&gt;',
+        '   &lt;h1&gt;{long_name:ellipsis(40)}&lt;/h1&gt;',
+        '&lt;/div&gt;'
+    ],
+
+    assignmentgroupRowTpl: [
+        '&lt;div class=&quot;section popuplistitem&quot;&gt;',
+        '   &lt;p class=&quot;path&quot;&gt;',
+        '{parentnode__parentnode__parentnode__short_name:ellipsis(60)}.',
+        '{parentnode__parentnode__short_name:ellipsis(60)}.',
+        '{parentnode__short_name:ellipsis(60)}',
+        '   &lt;/p&gt;',
+        '   &lt;tpl if=&quot;!is_student&quot;&gt;',
+        '       &lt;h1&gt;&lt;ul class=&quot;useridlist&quot;&gt;&lt;tpl for=&quot;candidates__identifier&quot;&gt;&lt;li&gt;{.}&lt;/li&gt;&lt;/tpl&gt;&lt;/ul&gt;&lt;/h1&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;tpl if=&quot;is_student&quot;&gt;',
+        '       &lt;h1&gt;{parentnode__long_name:ellipsis(40)}&lt;/h1&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;p&gt;&lt;tpl if=&quot;name&quot;&gt;{name}&lt;/tpl&gt;&lt;p&gt;',
+        '&lt;/div&gt;'
+    ],
+
+    deliveryRowTpl: [
+        '&lt;div class=&quot;section popuplistitem&quot;&gt;',
+        '   &lt;p class=&quot;path&quot;&gt;',
+        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__parentnode__short_name}.',
+        '{deadline__assignment_group__parentnode__short_name}',
+        '   &lt;/p&gt;',
+        '   &lt;tpl if=&quot;!is_student&quot;&gt;',
+        '       &lt;ul class=&quot;useridlist&quot;&gt;&lt;tpl for=&quot;deadline__assignment_group__candidates__identifier&quot;&gt;&lt;li&gt;{.}&lt;/li&gt;&lt;/tpl&gt;&lt;/ul&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;tpl if=&quot;deadline__assignment_group__name&quot;&gt; &amp;ndash; {deadline__assignment_group__name}&lt;/tpl&gt;',
+        '   &lt;div class=&quot;section dl_valueimportant&quot;&gt;',
+        '      &lt;div class=&quot;section&quot;&gt;',
+        '          &lt;h1&gt;Delivery number&lt;/h1&gt;',
+        '          {number}',
+        '      &lt;/div&gt;',
+        '   &lt;/div&gt;',
+        '&lt;/div&gt;'
+    ]
+});
+</pre>
+</body>
+</html>

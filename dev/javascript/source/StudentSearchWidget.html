@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-student-StudentSearchWidget'>/** SearchWidget used in every page in the entire student interface.
+</span> *
+ * Enables users to search for everything (like the dashboard) or just within
+ * the current item.
+ * */
+Ext.define('devilry.student.StudentSearchWidget', {
+    extend: 'devilry.extjshelpers.searchwidget.DashboardSearchWidget',
+
+<span id='devilry-student-StudentSearchWidget-cfg-urlPrefix'>    /**
+</span>     * @cfg
+     * Url prefix. Should be the absolute URL path to /student/.
+     */
+    urlPrefix: '',
+
+    deadlineRowTpl: [
+        '&lt;div class=&quot;section popuplistitem&quot;&gt;',
+        '   &lt;p class=&quot;path&quot;&gt;',
+        '{assignment_group__parentnode__parentnode__parentnode__short_name}.',
+        '{assignment_group__parentnode__parentnode__short_name}.',
+        '{assignment_group__parentnode__short_name}',
+        '   &lt;/p&gt;',
+        '   &lt;tpl if=&quot;!is_student&quot;&gt;',
+        '       &lt;ul class=&quot;useridlist&quot;&gt;&lt;tpl for=&quot;assignment_group__candidates__identifier&quot;&gt;&lt;li&gt;{.}&lt;/li&gt;&lt;/tpl&gt;&lt;/ul&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;h1&gt;{deadline:date}&lt;/h1&gt;',
+        '   &lt;p&gt;&lt;tpl if=&quot;assignment_group__name&quot;&gt; &amp;ndash; {assignment_group__name}&lt;/tpl&gt;&lt;p&gt;',
+        '   &lt;div class=&quot;section dl_valueimportant&quot;&gt;',
+        '       &lt;div class=&quot;section&quot;&gt;',
+        '           &lt;h1&gt;Deliveries&lt;/h1&gt;',
+        '           {number_of_deliveries}',
+        '       &lt;/div&gt;',
+        '   &lt;/div&gt;',
+        '&lt;/div&gt;'
+    ],
+
+    initComponent: function() {
+        Ext.apply(this, {
+            searchResultItems: [{
+                xtype: 'searchresults',
+                title: 'Deliveries',
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedDelivery'),
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
+                itemtpldata: {
+                    is_student: true
+                },
+                resultitemConfig: {
+                    tpl: this.deliveryRowTpl,
+                    defaultbutton: {
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
+                    }
+                }
+            }, {
+                xtype: 'searchresults',
+                title: 'Open deadlines',
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedDeadline'),
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.deadline,
+                itemtpldata: {
+                    is_student: true
+                },
+                alwaysAppliedFilters: [{
+                    field: 'assignment_group__is_open',
+                    comp: 'exact',
+                    value: true
+                }, {
+                    field: 'assignment_group__parentnode__delivery_types',
+                    comp: 'exact',
+                    value: 0 // Electronic deliveries
+                }],
+                resultitemConfig: {
+                    tpl: this.deadlineRowTpl,
+                    defaultbutton: {
+                        text: 'Deliver',
+                        clickLinkTpl: this.urlPrefix + 'add-delivery/{assignment_group}'
+                    }
+                }
+            }, {
+                xtype: 'searchresults',
+                title: 'Assignments',
+                store: this._createStore('devilry.apps.student.simplified.SimplifiedAssignmentGroup'),
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
+                itemtpldata: {
+                    is_student: true
+                },
+                resultitemConfig: {
+                    tpl: this.assignmentgroupRowTpl,
+                    defaultbutton: {
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
+                    }
+                }
+            }]
+        });
+        this.callParent(arguments);
+    }
+});
+</pre>
+</body>
+</html>

@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.rest — General purpose RESTful tools &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" />
+    <link rel="prev" title="Low level RESTful web service API" href="restful.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="restful.html" title="Low level RESTful web service API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devilry-rest-general-purpose-restful-tools">
+<span id="rest"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.rest</span></tt> &#8212; General purpose RESTful tools<a class="headerlink" href="#devilry-rest-general-purpose-restful-tools" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services">http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services</a></p>
+<p>This API will replace <a href="#id1"><span class="problematic" id="id2">restful_</span></a>.</p>
+<div class="section" id="module-devilry.rest.restview">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.rest.restview" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="devilry.rest.restview.RestView">
+<em class="property">class </em><tt class="descclassname">devilry.rest.restview.</tt><tt class="descname">RestView</tt><big>(</big><em>restapicls, apiname, apiversion, suffix_to_content_type_map={'xml': 'application/xml', 'yaml': 'application/yaml', 'json': 'application/json', 'html': 'text/html', 'extjs.json': 'application/extjsjson'}, input_data_preprocessors=[], output_data_postprocessors=[&lt;function extjs at 0x10556d488&gt;], output_content_type_detectors=[&lt;function devilry_accept_querystringparam at 0x105566c80&gt;, &lt;function suffix at 0x105566488&gt;, &lt;function from_acceptheader at 0x105566c08&gt;], input_content_type_detectors=[&lt;function from_content_type_header at 0x105565f50&gt;, &lt;function use_output_content_type at 0x105566050&gt;], inputdata_handlers=[&lt;function getqrystring_inputdata_handler at 0x105566de8&gt;, &lt;function rawbody_inputdata_handler at 0x105566e60&gt;], dataconverters={'application/extjsjson': &lt;class 'devilry.dataconverter.jsondataconverter.JsonDataConverter'&gt;, 'application/json': &lt;class 'devilry.dataconverter.jsondataconverter.JsonDataConverter'&gt;, 'application/yaml': &lt;class 'devilry.dataconverter.yamldataconverter.YamlDataConverter'&gt;, 'text/html': &lt;class 'devilry.dataconverter.htmldataconverter.HtmlDataConverter'&gt;, 'application/xml': &lt;class 'devilry.dataconverter.xmldataconverter.XmlDataConverter'&gt;}, restmethod_routers=[&lt;function post_to_create at 0x105566f50&gt;, &lt;function get_with_id_to_read at 0x10556d050&gt;, &lt;function put_with_id_to_update at 0x10556d140&gt;, &lt;function delete_to_delete at 0x10556d230&gt;, &lt;function get_without_id_to_list at 0x10556d0c8&gt;, &lt;function put_without_id_to_batch at 0x10556d1b8&gt;], response_handlers=[&lt;function stricthttp at 0x105566ed8&gt;]</em><big>)</big><a class="reference internal" href="_modules/devilry/rest/restview.html#RestView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.rest.restview.RestView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Django view that handles input/output to <tt class="xref py py-class docutils literal"><span class="pre">devilry.rest.restbase.RestBase</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>restapicls</strong> &#8211; A class implementing <tt class="xref py py-class docutils literal"><span class="pre">devilry.rest.restbase.RestBase</span></tt>.</li>
+<li><strong>suffix_to_content_type_map</strong> &#8211; Maps suffix to content type. Used to determine content-type from url-suffix.</li>
+<li><strong>input_data_preprocessors</strong> &#8211; <p>List of input data post-processor callbacks. The callbacks have the following signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">match</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">output_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The data of the first matching callback will be used. If no processor matches,
+the unchanged data will be used.</p>
+<p>Together with <tt class="docutils literal"><span class="pre">output_data_postprocessors</span></tt> this allows for wrapping
+certain content-types with extra data. Example of use is to add data that is required
+by a javascript library, such as the successful attribute required by ExtJS.</p>
+</li>
+<li><strong>output_data_postprocessors</strong> &#8211; List of input data post-processor callbacks. See <tt class="docutils literal"><span class="pre">input_data_preprocessors</span></tt>
+for more details. Note that the callbacks take one additional argument, a boolean
+telling if the restful method completed without error.</li>
+<li><strong>output_content_type_detectors</strong> &#8211; <p>Input content type detectors detect the content type of the request data.
+Must be a list of callables with the following signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">content_type</span>  <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>The first content_type that is not <tt class="docutils literal"><span class="pre">bool(content_type)==False</span></tt> will</dt>
+<dd>be used.</dd>
+</dl>
+</li>
+<li><strong>input_content_type_detectors</strong> &#8211; <p>Similar to <tt class="docutils literal"><span class="pre">output_content_type_detectors</span></tt>, except for input/request
+instead of for output/response. Furthermore, the the callbacks take the
+output content-type as the third argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">content_type</span>  <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">output_content_type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is because few clients send the CONTENT_TYPE header, and falling back on
+output content-type is a mostly sane default.</p>
+</li>
+<li><strong>inputdata_handlers</strong> &#8211; <p>Input data handlers convert input data into a dict. Input data can come from several sources:</p>
+<blockquote>
+<div><ul>
+<li>Querystring</li>
+<li>Paramater in querystring</li>
+<li>Request body</li>
+</ul>
+</div></blockquote>
+<p>Therefore, we need to check for data in several places. Instead of hardcoding this
+checking, we accept a list of callables that does the checking.</p>
+<p>Must be a list of callables with the following signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">match</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">input_content_type</span><span class="p">,</span> <span class="n">dataconverters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first input data handler returning <tt class="docutils literal"><span class="pre">match==True</span></tt> is be used.</p>
+<p>See <tt class="xref py py-mod docutils literal"><span class="pre">devilry.rest.inputdata_handlers</span></tt> for implementations.</p>
+<p>Input data can come in many different formats and from different sources.
+Examples are such XML in request body, query string and JSON embedded in
+a query string parameter.</p>
+</li>
+<li><strong>dataconverters</strong> &#8211; <p>A dict of implementations of <tt class="xref py py-class docutils literal"><span class="pre">devilry.dataconverter.dataconverter.DataConverter</span></tt>.
+The key is a content-type. Data converters convert between python and some other format,
+such as JSON or XML.</p>
+<dl class="docutils">
+<dt>Typically used by <tt class="docutils literal"><span class="pre">input_datahandlers</span></tt> and <tt class="docutils literal"><span class="pre">response_handlers</span></tt> to convert data</dt>
+<dd>input the content_type detected by one of the <tt class="docutils literal"><span class="pre">output_content_type_detectors</span></tt>.</dd>
+</dl>
+</li>
+<li><strong>restmethod_routers</strong> &#8211; <p>A list of callables with the following signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">restapimethodname</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="xref docutils literal"><span class="pre">None</span></tt> must be returned if the route does not match.</p>
+<p>Restmetod routes takes determines which method in the <tt class="xref py py-class docutils literal"><span class="pre">devilry.rest.restbase.RestBase</span></tt>
+interface to call, and the arguments to use for the call.</p>
+</li>
+<li><strong>response_handlers</strong> &#8211; <p>Response handlers are responsible for creating responses.
+Signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">reponse</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">,</span> <span class="n">output_content_type</span><span class="p">,</span> <span class="n">encoded_output</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first response handler returning <tt class="docutils literal"><span class="pre">bool(response)</span> <span class="pre">==</span> <span class="pre">True</span></tt> is used.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.rest</span></tt> &#8212; General purpose RESTful tools</a><ul>
+<li><a class="reference internal" href="#module-devilry.rest.restview">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="restful.html"
+                        title="previous chapter">Low level RESTful web service API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="extjshelpers.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">devilry.apps.extjshelpers</span></tt> &#8212; ExtJS helpers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rest.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="restful.html" title="Low level RESTful web service API"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

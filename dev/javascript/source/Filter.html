@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.Filter', {
+    config: {
+        pointspecArgs: undefined,
+        must_pass: []
+    },
+
+    requires: [
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec'
+    ],
+
+    strTpl: Ext.create('Ext.XTemplate',
+        '&lt;div style=&quot;white-space: normal&quot;&gt;',
+            '&lt;tpl if=&quot;must_pass.length &amp;gt; 0&quot;&gt;',
+                '&lt;p&gt;Must pass: ',
+                    '&lt;tpl for=&quot;must_pass&quot;&gt;',
+                        '(&lt;tpl for=&quot;.&quot;&gt;',
+                            '{data.short_name}',
+                            '&lt;tpl if=&quot;xindex &amp;lt; xcount&quot;&gt; OR &lt;/tpl&gt;',
+                        '&lt;/tpl&gt;)',
+                        '&lt;tpl if=&quot;xindex &amp;lt; xcount&quot;&gt; AND &lt;/tpl&gt;',
+                    '&lt;/tpl&gt;',
+                '&lt;/p&gt;',
+            '&lt;/tpl&gt;',
+            '&lt;tpl if=&quot;pointassignments.length &amp;gt; 0&quot;&gt;',
+                '&lt;p&gt;Must have between ',
+                    '&lt;tpl if=&quot;!min&quot;&gt;0&lt;/tpl&gt;&lt;tpl if=&quot;min&quot;&gt;{min}&lt;/tpl&gt;',
+                    ' and ',
+                    '&lt;tpl if=&quot;!max&quot;&gt;&amp;#8734;&lt;/tpl&gt;&lt;tpl if=&quot;max&quot;&gt;{max}&lt;/tpl&gt;',
+                    ' points in total (including both ends) on ',
+                    '&lt;tpl for=&quot;pointassignments&quot;&gt;',
+                        '(',
+                        '&lt;tpl if=&quot;length &amp;gt; 1&quot;&gt;best of: &lt;/tpl&gt;',
+                        '&lt;tpl for=&quot;.&quot;&gt;',
+                            '{data.short_name}',
+                            '&lt;tpl if=&quot;xindex &amp;lt; xcount&quot;&gt;, &lt;/tpl&gt;',
+                        '&lt;/tpl&gt;)',
+                        '&lt;tpl if=&quot;xindex &amp;lt; xcount&quot;&gt; AND &lt;/tpl&gt;',
+                    '&lt;/tpl&gt;',
+                '&lt;/p&gt;',
+            '&lt;/tpl&gt;',
+        '&lt;/div&gt;'
+    ),
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.pointspec = Ext.create('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', this.pointspecArgs);
+    },
+
+    toReadableSummary: function(assignment_store) {
+        var data = {
+            must_pass: this._assignmentIdListToAssignmentRecords(assignment_store, this.must_pass),
+            min: this.pointspec.min,
+            max: this.pointspec.max,
+            pointassignments: this._assignmentIdListToAssignmentRecords(assignment_store, this.pointspec.assignments)
+        };
+        return this.strTpl.apply(data);
+    },
+
+    _assignmentIdListToAssignmentRecords: function(assignment_store, arrayOfArrayOfassignmentIds) {
+        var arrayOfArrayOfAssignmentRecords = [];
+        Ext.each(arrayOfArrayOfassignmentIds, function(assignmentIds, index) {
+            var assignmentRecords = [];
+            Ext.each(assignmentIds, function(assignmentId, index) {
+                var assignmentRecordIndex = assignment_store.findExact('id', assignmentId);
+                var assignmentRecord = assignment_store.getAt(assignmentRecordIndex);
+                assignmentRecords.push(assignmentRecord);
+            });
+            arrayOfArrayOfAssignmentRecords.push(assignmentRecords);
+        });
+        return arrayOfArrayOfAssignmentRecords;
+    },
+
+    match: function(studentRecord) {
+        return this._matchIsPassingGrade(studentRecord) &amp;&amp; this._matchPointspec(studentRecord);
+    },
+
+    _matchIsPassingGrade: function(studentRecord) {
+        if(this.must_pass.length === 0) {
+            return true;
+        }
+        var matches = true;
+        Ext.each(this.must_pass, function(assignment_ids, index) {
+            var one_of_them_is_passing = studentRecord.countPassingAssignments(assignment_ids) &gt; 0;
+            if(!one_of_them_is_passing) {
+                matches = false;
+                return false; // Break
+            }
+        }, this);
+        return matches;
+    },
+
+    _matchPointspec: function(studentRecord) {
+        if(!this.pointspec) {
+            return true;
+        }
+        return this.pointspec.match(studentRecord);
+    },
+
+    toExportObject: function() {
+        return {
+            must_pass: this.must_pass,
+            pointspecArgs: this.pointspec.toExportObject()
+        };
+    }
+});
+</pre>
+</body>
+</html>

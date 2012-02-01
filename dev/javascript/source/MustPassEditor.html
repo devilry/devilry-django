@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.MustPassEditor', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.statistics-mustpasseditor',
+    requires: [
+        'devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListOfAssignments'
+    ],
+
+    config: {
+        assignment_store: undefined,
+        must_pass: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        Ext.apply(this, {
+            layout: 'fit',
+            items: {
+                xtype: 'statistics-listofassignments',
+                title: 'Require passing grade on the following assignments:',
+                selected_assignments: this.must_pass,
+                assignment_store: this.assignment_store
+            }
+        });
+        this.callParent(arguments);
+    },
+
+    getResult: function() {
+        return this.down('statistics-listofassignments').getArrayOfAssignmentIds();
+    }
+});
+</pre>
+</body>
+</html>

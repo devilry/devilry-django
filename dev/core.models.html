@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.core.models — Devilry core datastructure &mdash; Devilry 1.0 documentation</title>
-    
+    <title>devilry.apps.core.models — Devilry core datastructure &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -25,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry 1.0 documentation" href="index.html" />
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
     <link rel="next" title="devilry.apps.core.deliverystore — DeliveryStore" href="core.deliverystore.html" />
     <link rel="prev" title="Devilry developer documentation overview" href="index.html" /> 
   </head>
@@ -45,7 +42,7 @@
         <li class="right" >
           <a href="index.html" title="Devilry developer documentation overview"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -85,7 +82,7 @@ Example:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expected_len</strong> &#8211; Expected length of the resulting list. If the resulting list is not
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expected_len</strong> &#8211; Expected length of the resulting list. If the resulting list is not
 exactly the given length, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised. If
 <tt class="docutils literal"><span class="pre">expected_len</span></tt> is 0 (default), no checking is done.</td>
 </tr>
@@ -171,7 +168,7 @@ where <a class="reference internal" href="#devilry.apps.core.models.model_utils.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>old</strong> &#8211; Include assignments where <a class="reference internal" href="#devilry.apps.core.models.model_utils.Period.end_time" title="devilry.apps.core.models.model_utils.Period.end_time"><tt class="xref py py-attr docutils literal"><span class="pre">Period.end_time</span></tt></a>
 is in the past?</li>
 <li><strong>active</strong> &#8211; Include assignments where <a class="reference internal" href="#devilry.apps.core.models.model_utils.Period.end_time" title="devilry.apps.core.models.model_utils.Period.end_time"><tt class="xref py py-attr docutils literal"><span class="pre">Period.end_time</span></tt></a>
@@ -199,9 +196,9 @@ examiner on one of the assignment groups.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
 </tr>
 </tbody>
 </table>
@@ -217,14 +214,14 @@ groups. Combines <tt class="xref py py-meth docutils literal"><span class="pre">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>user_obj</strong> &#8211; <tt class="xref py py-meth docutils literal"><span class="pre">q_is_examiner()</span></tt>.</li>
 <li><strong>old</strong> &#8211; <tt class="xref py py-meth docutils literal"><span class="pre">q_published()</span></tt>.</li>
 <li><strong>active</strong> &#8211; <tt class="xref py py-meth docutils literal"><span class="pre">q_published()</span></tt>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A django.db.models.query.QuerySet with duplicate
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A django.db.models.query.QuerySet with duplicate
 assignments eliminated.</p>
 </td>
 </tr>
@@ -672,9 +669,9 @@ given user is student.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
 </tr>
 </tbody>
 </table>
@@ -689,9 +686,9 @@ is student.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
 </tr>
 </tbody>
 </table>
@@ -706,9 +703,9 @@ is student.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
 </tr>
 </tbody>
 </table>
@@ -723,9 +720,9 @@ is student.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
 </tr>
 </tbody>
 </table>
@@ -772,7 +769,7 @@ comma (<tt class="docutils literal"><span class="pre">','</span></tt>).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The latest deadline.</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The latest deadline.</td>
 </tr>
 </tbody>
 </table>
@@ -838,7 +835,7 @@ deadline expires? This is set by students.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Deadline.feedbacks_published">
 <tt class="descname">feedbacks_published</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="Permalink to this definition">¶</a></dt>
-<dd><p>If this boolean field is <tt class="docutils literal"><span class="pre">True</span></tt>, the student can see all
+<dd><p>If this boolean field is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the student can see all
 <tt class="xref py py-class docutils literal"><span class="pre">StaticFeedback</span></tt> objects associated with this Deadline through a
 <tt class="xref py py-class docutils literal"><span class="pre">Delivery</span></tt>. See also <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.examiners_publish_feedbacks_directly" title="devilry.apps.core.models.model_utils.Assignment.examiners_publish_feedbacks_directly"><tt class="xref py py-attr docutils literal"><span class="pre">Assignment.examiners_publish_feedbacks_directly</span></tt></a>.</p>
 </dd></dl>
@@ -975,7 +972,7 @@ the given student is candidate.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> &#8211; A filename as defined in <tt class="xref py py-class docutils literal"><span class="pre">FileMeta</span></tt>.</li>
 <li><strong>iterable_data</strong> &#8211; A iterable yielding data that can be written to file using the
 write() method of a storage backend (byte strings).</li>
@@ -1010,7 +1007,7 @@ created and edited in a <em>grade+feedback editor</em> in a <em>grade plugin</em
 when an examiner choose to publish feedback, a static copy of the data
 he/she created in the <em>grade+feedback editor</em> is stored in a StaticFeedback.</p>
 <p>Feedbacks are only visible to students when
-<a class="reference internal" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="devilry.apps.core.models.model_utils.Deadline.feedbacks_published"><tt class="xref py py-attr docutils literal"><span class="pre">Deadline.feedbacks_published</span></tt></a> on the related deadline is <tt class="docutils literal"><span class="pre">True</span></tt>.
+<a class="reference internal" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="devilry.apps.core.models.model_utils.Deadline.feedbacks_published"><tt class="xref py py-attr docutils literal"><span class="pre">Deadline.feedbacks_published</span></tt></a> on the related deadline is <tt class="xref docutils literal"><span class="pre">True</span></tt>.
 Feedbacks are related to Deadlines through its <a class="reference internal" href="#devilry.apps.core.models.model_utils.StaticFeedback.delivery" title="devilry.apps.core.models.model_utils.StaticFeedback.delivery"><tt class="xref py py-attr docutils literal"><span class="pre">delivery</span></tt></a>.</p>
 <p>Students are presented with the last feedback on a delivery, however they
 can browse every StaticFeedback on their deliveries. This history is to protect
@@ -1178,7 +1175,7 @@ the given feedback.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1207,12 +1204,12 @@ the given feedback.</p>
         <li class="right" >
           <a href="index.html" title="Devilry developer documentation overview"
              >previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

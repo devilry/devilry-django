@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.administrator.assignment.Layout', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.administrator-assignmentlayout',
+
+    requires: [
+        'devilry.administrator.assignment.PrettyView',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel',
+        'devilry.extjshelpers.forms.administrator.Assignment'
+    ],
+
+<span id='global-cfg-assignmentid'>    /**
+</span>     * @cfg
+     */
+    assignmentid: undefined,
+
+<span id='global-cfg-dashboardUrl'>    /**
+</span>     * @cfg
+     */
+    dashboardUrl: undefined,
+
+    assignmentmodel_name: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+    assignmentgroupmodelname: 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup',
+    
+    initComponent: function() {
+        this.studentsLoaded = false;
+        var query = Ext.Object.fromQueryString(window.location.search);
+        Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [this.heading = Ext.ComponentManager.create({
+                xtype: 'component',
+                data: {hasdata: false},
+                cls: 'section treeheading',
+                tpl: [
+                    '&lt;tpl if=&quot;!hasdata&quot;&gt;',
+                    '   &lt;span class=&quot;loading&quot;&gt;Loading...&lt;/span&gt;',
+                    '&lt;/tpl&gt;',
+                    '&lt;tpl if=&quot;hasdata&quot;&gt;',
+                    '    &lt;h1&gt;{assignment.long_name}&lt;/h1&gt;',
+                    '    &lt;h2&gt;&lt;a href=&quot;{DEVILRY_URLPATH_PREFIX}/administrator/period/{assignment.parentnode}&quot;&gt;',
+                    '       {assignment.parentnode__long_name}',
+                    '    &lt;/a&gt;&lt;/h2&gt;',
+                    '    &lt;h3 class=&quot;endoflist&quot;&gt;&lt;a href=&quot;{DEVILRY_URLPATH_PREFIX}/administrator/subject/{assignment.parentnode__parentnode}&quot;&gt;',
+                    '       {assignment.parentnode__parentnode__long_name}',
+                    '    &lt;/a&gt;&lt;/h2&gt;',
+                    '&lt;/tpl&gt;'
+                ]
+            }), {
+                xtype: 'tabpanel',
+                flex: 1,
+                activeTab: query.open_students == 'yes'? 1: 0,
+                items: [this.prettyview = Ext.widget('administrator_assignmentprettyview', {
+                    title: 'Administer',
+                    modelname: this.assignmentmodel_name,
+                    objectid: this.assignmentid,
+                    dashboardUrl: this.dashboardUrl,
+                    assignmentgroupmodelname: this.assignmentgroupmodelname,
+                    listeners: {
+                        scope: this,
+                        loadmodel: this._onLoadRecord,
+                        edit: this._onEdit,
+                        activate: function() {
+                            if(this.prettyview.record) {
+                                this.prettyview.checkStudentsAndRefreshBody();
+                            }
+                        }
+                    }
+                }), this.studentstab = Ext.widget('panel', {
+                    title: 'Students',
+                    layout: 'fit'
+                })]
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    _onLoadRecord: function(assignmentRecord) {
+        this.assignmentRecord = assignmentRecord;
+        this.heading.update({
+            hasdata: true,
+            assignment: assignmentRecord.data,
+            DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
+        });
+        this._onStudents();
+    },
+
+    _onEdit: function(record, button) {
+        var editpanel = Ext.ComponentManager.create({
+            xtype: 'restfulsimplified_editpanel',
+            model: this.periodmodel_name,
+            editform: Ext.widget('administrator_periodform'),
+            record: record
+        });
+        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            editpanel: editpanel,
+            prettyview: this.prettyview
+        });
+        editwindow.show();
+    },
+
+
+    _onStudents: function() {
+        if(this.studentsLoaded) {
+            return;
+        }
+        this.studentsLoaded = true;
+        this.studentstab.add({
+            xtype: 'administrator_studentsmanager',
+            assignmentid: this.assignmentid,
+            assignmentrecord: this.assignmentRecord,
+            periodid: this.assignmentRecord.data.parentnode,
+            deadlinemodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDeadline'),
+            gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig'),
+            assignmentgroupmodelname: this.assignmentgroupmodelname,
+            isAdministrator: true
+        });
+    }
+});
+</pre>
+</body>
+</html>

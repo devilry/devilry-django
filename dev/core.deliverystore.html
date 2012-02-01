@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.core.deliverystore — DeliveryStore &mdash; Devilry 1.0 documentation</title>
-    
+    <title>devilry.apps.core.deliverystore — DeliveryStore &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -25,8 +22,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry 1.0 documentation" href="index.html" />
-    <link rel="next" title="How to write a plugin" href="plugins.html" />
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="Translating Devilry" href="i18n.html" />
     <link rel="prev" title="devilry.apps.core.models — Devilry core datastructure" href="core.models.html" /> 
   </head>
   <body>
@@ -40,12 +37,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.html" title="How to write a plugin"
+          <a href="i18n.html" title="Translating Devilry"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="core.models.html" title="devilry.apps.core.models — Devilry core datastructure"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -108,7 +105,7 @@ store your files in the <tt class="docutils literal"><span class="pre">DELIVERY_
     <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
         <span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dirpath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">delivery</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
-            <span class="n">mkdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+            <span class="n">makedirs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">),</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
@@ -126,11 +123,11 @@ store your files in the <tt class="docutils literal"><span class="pre">DELIVERY_
 <div class="section" id="testing-your-own-deliverystore">
 <h3>Testing your own DeliveryStore<a class="headerlink" href="#testing-your-own-deliverystore" title="Permalink to this headline">¶</a></h3>
 <p>We provide a mixing-class,
-<a class="reference internal" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin" title="devilry.apps.core.testhelpers.TestDeliveryStoreMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.testhelpers.TestDeliveryStoreMixin</span></tt></a>, for you to extend
+<a class="reference internal" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin" title="devilry.apps.core.testhelpers.DeliveryStoreTestMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.testhelpers.DeliveryStoreTestMixin</span></tt></a>, for you to extend
 when writing unit-tests for your DeliveryStore. Here is how we test
 <a class="reference internal" href="#devilry.apps.core.deliverystore.FsDeliveryStore" title="devilry.apps.core.deliverystore.FsDeliveryStore"><tt class="xref py py-class docutils literal"><span class="pre">FsDeliveryStore</span></tt></a>:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestFsDeliveryStore</span><span class="p">(</span><span class="n">TestDeliveryStoreMixin</span><span class="p">,</span> <span class="n">TestCase</span><span class="p">):</span>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestFsDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreTestMixin</span><span class="p">,</span> <span class="n">TestCase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TestFsDeliveryStore</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">setUp</span><span class="p">()</span>
@@ -144,31 +141,31 @@ when writing unit-tests for your DeliveryStore. Here is how we test
 </div>
 </div></blockquote>
 <dl class="class">
-<dt id="devilry.apps.core.testhelpers.TestDeliveryStoreMixin">
-<em class="property">class </em><tt class="descclassname">devilry.apps.core.testhelpers.</tt><tt class="descname">TestDeliveryStoreMixin</tt><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#TestDeliveryStoreMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.testhelpers.DeliveryStoreTestMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.core.testhelpers.</tt><tt class="descname">DeliveryStoreTestMixin</tt><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#DeliveryStoreTestMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.testhelper.TestHelper</span></tt></p>
 <p>Mixin-class that tests if
 <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.deliverystore.DeliveryStoreInterface</span></tt> is
 implemented correctly.</p>
 <p>You only need to override
-<a class="reference internal" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj" title="devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj"><tt class="xref py py-meth docutils literal"><span class="pre">get_storageobj()</span></tt></a>, and maybe <a class="reference internal" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp" title="devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp"><tt class="xref py py-meth docutils literal"><span class="pre">setUp()</span></tt></a> and <tt class="xref py py-meth docutils literal"><span class="pre">tearDown()</span></tt>,
+<a class="reference internal" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.get_storageobj" title="devilry.apps.core.testhelpers.DeliveryStoreTestMixin.get_storageobj"><tt class="xref py py-meth docutils literal"><span class="pre">get_storageobj()</span></tt></a>, and maybe <a class="reference internal" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.setUp" title="devilry.apps.core.testhelpers.DeliveryStoreTestMixin.setUp"><tt class="xref py py-meth docutils literal"><span class="pre">setUp()</span></tt></a> and <tt class="xref py py-meth docutils literal"><span class="pre">tearDown()</span></tt>,
 but make sure you call <tt class="docutils literal"><span class="pre">super(...,</span> <span class="pre">self).setUp()</span></tt> if you override it.</p>
 <p>You <strong>must</strong> mixin this class before <tt class="xref py py-class docutils literal"><span class="pre">django.test.TestCase</span></tt> like
 so:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestMyDeliveryStore</span><span class="p">(</span><span class="n">TestDeliveryStoreMixin</span><span class="p">,</span> <span class="n">django</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestMyDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreTestMixin</span><span class="p">,</span> <span class="n">django</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj">
-<tt class="descname">get_storageobj</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#TestDeliveryStoreMixin.get_storageobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.testhelpers.DeliveryStoreTestMixin.get_storageobj">
+<tt class="descname">get_storageobj</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#DeliveryStoreTestMixin.get_storageobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.get_storageobj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a object implementing
 <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.deliverystore.DeliveryStoreInterface</span></tt></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp">
-<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#TestDeliveryStoreMixin.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.testhelpers.DeliveryStoreTestMixin.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/testhelpers.html#DeliveryStoreTestMixin.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.setUp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make sure to call this if you override it in subclasses, or the
 tests <strong>will fail</strong>.</p>
 </dd></dl>
@@ -193,6 +190,58 @@ like this:</p>
         <span class="n">delivery</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s">&#39;hello.txt&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;hello&#39;</span><span class="p">,</span> <span class="s">&#39;world&#39;</span><span class="p">])</span>
         <span class="n">delivery</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="the-recommended-production-deliverystore">
+<h2>The recommended production deliverystore<a class="headerlink" href="#the-recommended-production-deliverystore" title="Permalink to this headline">¶</a></h2>
+<p>The recommended DeliveryStore is <a class="reference internal" href="#devilry.apps.core.deliverystore.FsHierDeliveryStore" title="devilry.apps.core.deliverystore.FsHierDeliveryStore"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.deliverystore.FsHierDeliveryStore</span></tt></a>.</p>
+<p>It stores files in a filesystem hierarcy with one directory for each
+Delivery, with the delivery-id as name. In each delivery-directory, the
+files are stored by FileMeta id.</p>
+<div class="section" id="directory-hierachy">
+<h3>Directory hierachy<a class="headerlink" href="#directory-hierachy" title="Permalink to this headline">¶</a></h3>
+<p>The delivery directories are stored in a
+hierarchy with two parent directories. The parent directories are numeric intervals.
+We have one top-level directory for each N in <tt class="docutils literal"><span class="pre">interval_size*interval_size*N</span></tt>. Within each
+toplevel directory, we have one subdirectory for each N in
+<tt class="docutils literal"><span class="pre">interval_size*N</span></tt>.</p>
+</div>
+<div class="section" id="directory-hierarchy-example">
+<h3>Directory hierarchy example<a class="headerlink" href="#directory-hierarchy-example" title="Permalink to this headline">¶</a></h3>
+<p>For <tt class="docutils literal"><span class="pre">interval_size</span></tt> of <tt class="docutils literal"><span class="pre">1000</span></tt>, this will use the following hierarchy:</p>
+<div class="highlight-python"><pre>0/
+    0/
+        0/
+        1/
+        .
+        .
+    1/
+        1000/
+        2000/
+        .
+        .
+    2/
+    .
+    .
+    999/
+1/
+    0/
+        1000000/
+        1000001/
+        .
+        .
+    1/
+        1001000/
+        1001001/
+    2/
+    .
+    .
+    999/
+2/
+.
+.
+999/</pre>
+</div>
 </div>
 </div>
 <div class="section" id="module-devilry.apps.core.deliverystore">
@@ -221,7 +270,7 @@ as defined by the documentation of the standard python file-class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
 </tr>
 </tbody>
 </table>
@@ -237,7 +286,7 @@ defined by the documentation of the standard python file-class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
 </tr>
 </tbody>
 </table>
@@ -258,7 +307,7 @@ handle any other error.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
 </tr>
 </tbody>
 </table>
@@ -267,12 +316,12 @@ handle any other error.</p>
 <dl class="method">
 <dt id="devilry.apps.core.deliverystore.DeliveryStoreInterface.exists">
 <tt class="descname">exists</tt><big>(</big><em>filemeta_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/deliverystore.html#DeliveryStoreInterface.exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.deliverystore.DeliveryStoreInterface.exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the file exists, <tt class="docutils literal"><span class="pre">False</span></tt> if not.</p>
+<dd><p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the file exists, <tt class="xref docutils literal"><span class="pre">False</span></tt> if not.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filemeta_obj</strong> &#8211; A <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.FileMeta</span></tt>-object.</td>
 </tr>
 </tbody>
 </table>
@@ -292,7 +341,7 @@ files are stored by FileMeta id.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root</strong> &#8211; The root-directory where files are stored. Defaults to
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root</strong> &#8211; The root-directory where files are stored. Defaults to
 the value of the <tt class="docutils literal"><span class="pre">DELIVERY_STORE_ROOT</span></tt>-setting.</td>
 </tr>
 </tbody>
@@ -300,15 +349,59 @@ the value of the <tt class="docutils literal"><span class="pre">DELIVERY_STORE_R
 </dd></dl>
 
 <dl class="class">
+<dt id="devilry.apps.core.deliverystore.FsHierDeliveryStore">
+<em class="property">class </em><tt class="descclassname">devilry.apps.core.deliverystore.</tt><tt class="descname">FsHierDeliveryStore</tt><big>(</big><em>root=None</em>, <em>interval=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/deliverystore.html#FsHierDeliveryStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.deliverystore.FsHierDeliveryStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#devilry.apps.core.deliverystore.FsDeliveryStore" title="devilry.apps.core.deliverystore.FsDeliveryStore"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.deliverystore.FsDeliveryStore</span></tt></a></p>
+<p>Filesystem-based DeliveryStore suitable for production use with huge
+amounts of deliveries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>root</strong> &#8211; The root-directory where files are stored. Defaults to
+the value of the <tt class="docutils literal"><span class="pre">DEVILRY_FSHIERDELIVERYSTORE_ROOT</span></tt>-setting.</li>
+<li><strong>interval</strong> &#8211; The interval. Defaults to
+the value of the <tt class="docutils literal"><span class="pre">DEVILRY_FSHIERDELIVERYSTORE_INTERVAL</span></tt>-setting.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="devilry.apps.core.deliverystore.FsHierDeliveryStore.get_path_from_deliveryid">
+<tt class="descname">get_path_from_deliveryid</tt><big>(</big><em>deliveryid</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/deliverystore.html#FsHierDeliveryStore.get_path_from_deliveryid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.deliverystore.FsHierDeliveryStore.get_path_from_deliveryid" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span> <span class="o">=</span> <span class="n">FsHierDeliveryStore</span><span class="p">(</span><span class="s">&#39;/stuff/&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">2001000</span><span class="p">)</span>
+<span class="go">(2, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">(0, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">1005</span><span class="p">)</span>
+<span class="go">(0, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">2005</span><span class="p">)</span>
+<span class="go">(0, 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">(0, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(0, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="o">.</span><span class="n">get_path_from_deliveryid</span><span class="p">(</span><span class="n">deliveryid</span><span class="o">=</span><span class="mi">1000000</span><span class="p">)</span>
+<span class="go">(1, 0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="devilry.apps.core.deliverystore.DbmDeliveryStore">
-<em class="property">class </em><tt class="descclassname">devilry.apps.core.deliverystore.</tt><tt class="descname">DbmDeliveryStore</tt><big>(</big><em>filename=None</em>, <em>dbm=&lt;module 'dumbdbm' from '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/dumbdbm.py'&gt;</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/deliverystore.html#DbmDeliveryStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.deliverystore.DbmDeliveryStore" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">devilry.apps.core.deliverystore.</tt><tt class="descname">DbmDeliveryStore</tt><big>(</big><em>filename=None</em>, <em>dbm=&lt;module 'dumbdbm' from '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/dumbdbm.pyc'&gt;</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/deliverystore.html#DbmDeliveryStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.deliverystore.DbmDeliveryStore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#devilry.apps.core.deliverystore.DeliveryStoreInterface" title="devilry.apps.core.deliverystore.DeliveryStoreInterface"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.deliverystore.DeliveryStoreInterface</span></tt></a></p>
 <p>Dbm DeliveryStore ONLY FOR TESTING.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> &#8211; The dbm-file where files are stored. Defaults to
 the value of the <tt class="docutils literal"><span class="pre">DELIVERY_STORE_DBM_FILENAME</span></tt>-setting.</li>
 <li><strong>dbm</strong> &#8211; The dbm implementation. This defaults to <tt class="xref py py-mod docutils literal"><span class="pre">dumbdbm</span></tt> for
@@ -350,6 +443,11 @@ Suitable for unittesting.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#setting-the-deliverystore-manually-for-tests">Setting the DeliveryStore manually - for tests</a></li>
+<li><a class="reference internal" href="#the-recommended-production-deliverystore">The recommended production deliverystore</a><ul>
+<li><a class="reference internal" href="#directory-hierachy">Directory hierachy</a></li>
+<li><a class="reference internal" href="#directory-hierarchy-example">Directory hierarchy example</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-devilry.apps.core.deliverystore">API</a></li>
 </ul>
 </li>
@@ -359,8 +457,8 @@ Suitable for unittesting.</p>
   <p class="topless"><a href="core.models.html"
                         title="previous chapter"><tt class="docutils literal"><span class="pre">devilry.apps.core.models</span></tt> &#8212; Devilry core datastructure</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="plugins.html"
-                        title="next chapter">How to write a plugin</a></p>
+  <p class="topless"><a href="i18n.html"
+                        title="next chapter">Translating Devilry</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/core.deliverystore.txt"
@@ -369,7 +467,7 @@ Suitable for unittesting.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -393,17 +491,17 @@ Suitable for unittesting.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.html" title="How to write a plugin"
+          <a href="i18n.html" title="Translating Devilry"
              >next</a> |</li>
         <li class="right" >
           <a href="core.models.html" title="devilry.apps.core.models — Devilry core datastructure"
              >previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.gradeeditors — Grade editors &mdash; Devilry 1.0 documentation</title>
-    
+    <title>devilry.apps.gradeeditors — Grade editors &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -25,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry 1.0 documentation" href="index.html" />
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
     <link rel="next" title="devilry.utils.assignmentgroup" href="utils.assignmentgroup.html" />
     <link rel="prev" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" /> 
   </head>
@@ -45,7 +42,7 @@
         <li class="right" >
           <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,22 +53,364 @@
             
   <div class="section" id="devilry-apps-gradeeditors-grade-editors">
 <span id="apps-gradeeditors"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.gradeeditors</span></tt> &#8212; Grade editors<a class="headerlink" href="#devilry-apps-gradeeditors-grade-editors" title="Permalink to this headline">¶</a></h1>
-<p><strong>WARNING</strong>: OUTDATED docs. This will be updated for the new <em>grade editors</em>.</p>
-<div class="section" id="the-view">
-<h2>The view<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h2>
-<p>TODO: New example</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>To make it easy for examiners to create all the information related to a grade,
+Devilry use grade editors. Grade editors give examiners a unified
+user-interface tailored for different kinds of grading systems. Select Grade
+editor in the toolbar to change or configure the grade editor.</p>
 </div>
-<div class="section" id="register-the-plugin">
-<h2>Register the plugin<a class="headerlink" href="#register-the-plugin" title="Permalink to this headline">¶</a></h2>
-<p>To make the plugin register itself when the server starts, you need to put
-something like the following in <tt class="docutils literal"><span class="pre">devilry_plugin.py</span></tt> in you plugin (see
-<a class="reference internal" href="plugins.html#plugins"><em>How to write a plugin</em></a>):</p>
-<p>TODO : New example.</p>
-<p>You can see that we register our <em>model</em> and our <em>view</em>. The API-docs for
-<a class="reference internal" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="devilry.apps.gradeeditors.registry.gradeeditor_registry"><tt class="xref py py-attr docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.gradeeditor_registry</span></tt></a> explains all the details.</p>
+<div class="section" id="what-they-do">
+<h2>What they do<a class="headerlink" href="#what-they-do" title="Permalink to this headline">¶</a></h2>
+<p>A grade editor is essentially very simple:</p>
+<blockquote>
+<div>Make it easy to create a <a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a>.</div></blockquote>
+</div>
+<div class="section" id="how-they-store-their-data-feedbackdraft">
+<span id="gradeeditor-howtheystore"></span><h2>How they store their data &#8212; FeedbackDraft<a class="headerlink" href="#how-they-store-their-data-feedbackdraft" title="Permalink to this headline">¶</a></h2>
+<p>Since grade editors vary greatly, but <a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a> only have four fields
+that they can save, grade editors store their actual data in
+<a class="reference internal" href="#devilry.apps.gradeeditors.models.FeedbackDraft" title="devilry.apps.gradeeditors.models.FeedbackDraft"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.models.FeedbackDraft</span></tt></a>. A draft has a text field,
+<tt class="docutils literal"><span class="pre">draft</span></tt>, where a grade editors can store their data.</p>
+<div class="section" id="grade-editor-specific-storage-format">
+<h3>Grade editor specific storage format<a class="headerlink" href="#grade-editor-specific-storage-format" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">draft</span></tt> field uses a draft-editor specific storage format. Since this plays
+well with JavaScript, all out built-in grade editors uses <a class="reference external" href="http://en.wikipedia.org/wiki/Json">JSON</a> to encode this
+data. However, <em>XML</em> would also be a good alternative, especially for complex
+data where validation would become difficult with JSON.</p>
+</div>
+<div class="section" id="from-feedbackdraft-to-staticfeedback">
+<h3>From FeedbackDraft to StaticFeedback<a class="headerlink" href="#from-feedbackdraft-to-staticfeedback" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a> is, as the name suggests,
+unchangable. StaticFeedback objects can only be appended to a delivery. When a
+<a class="reference internal" href="#devilry.apps.gradeeditors.models.FeedbackDraft" title="devilry.apps.gradeeditors.models.FeedbackDraft"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.models.FeedbackDraft</span></tt></a> is published, it converts
+the grade-editor specific storage format in the <tt class="docutils literal"><span class="pre">draft</span></tt>-field into XHTML for
+<tt class="docutils literal"><span class="pre">rendered_view</span></tt> attribute of <a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a>.</p>
+<p>The draft is not deleted, so the original data is still available in the
+grade-editor specific storage format, while a <em>view</em> of the data is available
+as a <em>StaticFeedback</em>.</p>
+<p><strong>Note</strong>: <tt class="docutils literal"><span class="pre">rendered_view</span></tt> is not validated at this point. Howver, we plan to define a
+subset of XHTML at some point in the future when we have a clearer picture of
+what developers are able to create using the grade editor framework.</p>
+</div>
+</div>
+<div class="section" id="creating-a-grade-editor">
+<span id="gradeeditor-creating"></span><h2>Creating a grade editor<a class="headerlink" href="#creating-a-grade-editor" title="Permalink to this headline">¶</a></h2>
+<p>In this guide, we will walk you through the creation of
+<tt class="docutils literal"><span class="pre">devilry.apps.asminimalaspossible_gradeeditor</span></tt>. This is available in
+<tt class="docutils literal"><span class="pre">devilry/apps/asminimalaspossible_gradeeditor</span></tt> in the devilry source code.</p>
+<div class="section" id="add-to-registry">
+<h3>Add to registry<a class="headerlink" href="#add-to-registry" title="Permalink to this headline">¶</a></h3>
+<p>First of all, we need to register the grade editor with <a class="reference internal" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="devilry.apps.gradeeditors.registry.gradeeditor_registry"><tt class="xref py py-attr docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.gradeeditor_registry</span></tt></a>.
+To make the plugin register itself when the server starts, we put the registry code in
+<tt class="docutils literal"><span class="pre">devilry_plugin.py</span></tt> (see <a class="reference internal" href="plugins.html#plugins"><em>How to write a plugin</em></a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">devilry.apps.gradeeditors</span> <span class="kn">import</span> <span class="p">(</span><span class="n">gradeeditor_registry</span><span class="p">,</span> <span class="n">JsonRegistryItem</span><span class="p">,</span>
+                                       <span class="n">DraftValidationError</span><span class="p">,</span> <span class="n">ConfigValidationError</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">devilry.defaults.encoding</span> <span class="kn">import</span> <span class="n">CHARSET</span>
+
+
+
+<span class="k">class</span> <span class="nc">AsMinimalAsPossible</span><span class="p">(</span><span class="n">JsonRegistryItem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serves as a minimal example of a grade editor, and as a well suited grade</span>
+<span class="sd">    editor for use in test cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gradeeditorid</span> <span class="o">=</span> <span class="s">&#39;asminimalaspossible&#39;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Minimal&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;A minimal grade editor for testing. Allows examiners to select if delivery is approved or not approved.&#39;</span>
+    <span class="n">config_editor_url</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_STATIC_URL</span> <span class="o">+</span> <span class="s">&#39;/asminimalaspossible_gradeeditor/configeditor.js&#39;</span>
+    <span class="n">draft_editor_url</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_STATIC_URL</span> <span class="o">+</span> <span class="s">&#39;/asminimalaspossible_gradeeditor/drafteditor.js&#39;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">configstring</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">decode_configstring</span><span class="p">(</span><span class="n">configstring</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">ConfigValidationError</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;defaultvalue&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                                                          <span class="s">&#39;fieldlabel&#39;</span><span class="p">:</span> <span class="nb">basestring</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate_draft</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftstring</span><span class="p">,</span> <span class="n">configstring</span><span class="p">):</span>
+        <span class="n">is_approved</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">decode_draftstring</span><span class="p">(</span><span class="n">draftstring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_approved</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;The draft string must contain a single boolean value.&#39;</span><span class="p">)</span>
+        <span class="c">## Uncomment to see how validation errors work:</span>
+        <span class="c">#raise DraftValidationError(&#39;Some error occurred.&#39;)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">draft_to_staticfeedback_kwargs</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftstring</span><span class="p">,</span> <span class="n">configstring</span><span class="p">):</span>
+        <span class="n">is_approved</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">draftstring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_approved</span><span class="p">:</span>
+            <span class="n">grade</span> <span class="o">=</span> <span class="s">&#39;approved&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grade</span> <span class="o">=</span> <span class="s">&#39;not approved&#39;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">is_passing_grade</span><span class="o">=</span><span class="n">is_approved</span><span class="p">,</span>
+                    <span class="n">grade</span><span class="o">=</span><span class="n">grade</span><span class="p">,</span>
+                    <span class="n">points</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">is_approved</span><span class="p">),</span>
+                    <span class="n">rendered_view</span><span class="o">=</span><span class="s">&#39;Your grade is: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grade</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">CHARSET</span><span class="p">)))</span>
+
+
+<span class="n">gradeeditor_registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">AsMinimalAsPossible</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="devilry-plugin-asminimalaspossible-code-explained">
+<h3>devilry_plugin.AsMinimalAsPossible code explained<a class="headerlink" href="#devilry-plugin-asminimalaspossible-code-explained" title="Permalink to this headline">¶</a></h3>
+<p>Since we use JSON as the data format in <tt class="docutils literal"><span class="pre">asminimalaspossible_gradeeditor</span></tt>, we
+inherit from <a class="reference internal" href="#devilry.apps.gradeeditors.registry.JsonRegistryItem" title="devilry.apps.gradeeditors.registry.JsonRegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.JsonRegistryItem</span></tt></a>, a
+sublclass of <tt class="docutils literal"><span class="pre">RegistryItem</span></tt>.</p>
+<p>We set a <tt class="docutils literal"><span class="pre">title</span></tt> and <tt class="docutils literal"><span class="pre">description</span></tt> which administrators should be able to
+read to get an understanding of what the grade editor provides. Furthermore, we
+define:</p>
+<dl class="docutils">
+<dt>gradeeditorid</dt>
+<dd>A unique id for this grade editor.</dd>
+<dt>config_editor_url and validate_config(...)</dt>
+<dd>See <a class="reference internal" href="#gradeeditor-configeditor"><em>Config editor</em></a> section below.</dd>
+<dt>draft_editor_url and validate_draft(...)</dt>
+<dd>See <a class="reference internal" href="#gradeeditor-drafteditor"><em>Draft editor</em></a> section below.</dd>
+<dt>draft_to_staticfeedback_kwargs(...)</dt>
+<dd>Convert a draft string in our grade editor specific format into a
+<a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a> as explained in
+<a class="reference internal" href="#gradeeditor-howtheystore"><em>How they store their data &#8212; FeedbackDraft</em></a>.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="config-editor">
+<span id="gradeeditor-configeditor"></span><h2>Config editor<a class="headerlink" href="#config-editor" title="Permalink to this headline">¶</a></h2>
+<p>The config editor makes it possible for administrators to configure the grade
+editor. A gradeeditor is not required to provide a config editor.</p>
+<p>The config editor has three components: view, storage and validation.</p>
+<div class="section" id="the-view">
+<h3>The view<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h3>
+<p>Its view is defined as a ExtJS JavaScript file configured through the
+<tt class="docutils literal"><span class="pre">config_editor_url</span></tt> attribute. This view is loaded as a child component of
+the <a class="reference external" href="javascript/index.html#/api/devilry.gradeeditors.ConfigEditorWindow">ConfigEditorWindow</a> widget. This widget is available through the
+<tt class="docutils literal"><span class="pre">this.getMainWin()</span></tt> method.</p>
+</div>
+<div class="section" id="saving-a-config">
+<h3>Saving a config<a class="headerlink" href="#saving-a-config" title="Permalink to this headline">¶</a></h3>
+<p>The main window for config editor provides provides the
+<tt class="docutils literal"><span class="pre">saveConfig(configstring,</span> <span class="pre">onFailure)</span></tt> method that should be used to save the
+config. <tt class="docutils literal"><span class="pre">saveConfig(...)</span></tt> method makes a request to the server which ends up
+saving the <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditor.models.Config</span></tt> as long as
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.gradeeditor.models.Config.clean()</span></tt>.</p>
+</div>
+<div class="section" id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h3>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.gradeeditor.models.Config.clean()</span></tt> uses uses the
+<tt class="docutils literal"><span class="pre">validate_config(...)</span></tt> method in the registry item that we defined in
+<tt class="docutils literal"><span class="pre">devilry_plugin.py</span></tt> in <a class="reference internal" href="#gradeeditor-creating"><em>Creating a grade editor</em></a>.</p>
+</div>
+<div class="section" id="example-code">
+<h3>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nx">padding</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">border</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">frame</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span> <span class="c1">// Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called by the config-editor main window when it is opened.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param config Get the grade editor configuration that is stored on the</span>
+<span class="cm">     *      current assignment.</span>
+<span class="cm">     */</span>
+    <span class="nx">initializeEditor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">getMainWin</span><span class="p">().</span><span class="nx">changeSize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span> <span class="c1">// Change window size to a more appropritate size for so little content.</span>
+
+        <span class="c1">// Load configuration, and fall back on defaults</span>
+        <span class="kd">var</span> <span class="nx">configobj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">defaultvalue</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nx">fieldlabel</span><span class="o">:</span> <span class="s1">&#39;Approved&#39;</span>
+        <span class="p">};</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">configobj</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">config</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// Create and add the fields</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">defaultvalueField</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">widget</span><span class="p">(</span><span class="s1">&#39;checkboxfield&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">boxLabel</span><span class="o">:</span> <span class="s1">&#39;Choose default value&#39;</span><span class="p">,</span>
+            <span class="nx">checked</span><span class="o">:</span> <span class="nx">configobj</span><span class="p">.</span><span class="nx">defaultvalue</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">defaultvalueField</span><span class="p">);</span>
+
+        <span class="k">this</span><span class="p">.</span><span class="nx">fieldlabelField</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">widget</span><span class="p">(</span><span class="s1">&#39;textfield&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">fieldLabel</span><span class="o">:</span> <span class="s1">&#39;Field label&#39;</span><span class="p">,</span>
+            <span class="nx">labelWidth</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
+            <span class="nx">width</span><span class="o">:</span> <span class="mi">340</span><span class="p">,</span>
+            <span class="nx">value</span><span class="o">:</span> <span class="nx">configobj</span><span class="p">.</span><span class="nx">fieldlabel</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">fieldlabelField</span><span class="p">);</span>
+
+        <span class="k">this</span><span class="p">.</span><span class="nx">getEl</span><span class="p">().</span><span class="nx">unmask</span><span class="p">();</span> <span class="c1">// Unmask the loading mask (set by the main window).</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called when the &#39;Save&#39; button is clicked.</span>
+<span class="cm">     */</span>
+    <span class="nx">onSave</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">isValid</span><span class="p">())</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">encode</span><span class="p">({</span>
+                <span class="nx">defaultvalue</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">defaultvalueField</span><span class="p">.</span><span class="nx">getValue</span><span class="p">(),</span>
+                <span class="nx">fieldlabel</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">fieldlabelField</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">getMainWin</span><span class="p">().</span><span class="nx">saveConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onFailure</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * @private</span>
+<span class="cm">     * Get the grade config editor main window.</span>
+<span class="cm">     */</span>
+    <span class="nx">getMainWin</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">up</span><span class="p">(</span><span class="s1">&#39;gradeconfigeditormainwin&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * @private</span>
+<span class="cm">     * Used by onSave to handle save-failures.</span>
+<span class="cm">     */</span>
+    <span class="nx">onFailure</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Failed!&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="draft-editor">
+<span id="gradeeditor-drafteditor"></span><h2>Draft editor<a class="headerlink" href="#draft-editor" title="Permalink to this headline">¶</a></h2>
+<p>The draft editor works almost like a config editor. The primary difference is:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">getMainWin()</span></tt> returns a <a class="reference external" href="javascript/index.html#/api/devilry.gradeeditors.DraftEditorWindow">DraftEditorWindow</a>.</li>
+<li>The draft editor uses <tt class="docutils literal"><span class="pre">draft_editor_url</span></tt> and <tt class="docutils literal"><span class="pre">validate_draft(...)</span></tt>.</li>
+<li>Drafts are saved as <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditor.models.FeedbackDraft</span></tt>.</li>
+<li>Drafts are appended, not overwritten (each time you save a draft, a new
+FeedbackDraft database record is saved).</li>
+<li>Drafts can be published using <tt class="docutils literal"><span class="pre">getMainWin().saveDraftAndPublish(...)</span></tt>. This
+results in <tt class="docutils literal"><span class="pre">draft_to_staticfeedback_kwargs(...)</span></tt> beeing used to create a
+new <a class="reference internal" href="core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a>.</li>
+</ul>
+<div class="section" id="id1">
+<h3>Example code<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nx">padding</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">border</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">frame</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+
+    <span class="c1">// These 3 settings are optional.</span>
+    <span class="nx">help</span><span class="o">:</span> <span class="s1">&#39;&lt;h1&gt;Some useful help here&lt;/h1&gt;&#39;</span> <span class="o">+</span>
+        <span class="s1">&#39;&lt;p&gt;Help is never needed, since all users are really smart, and all of them knows the internals of how Devilry works...&lt;/p&gt;&#39;</span><span class="p">,</span>
+    <span class="nx">helpwidth</span><span class="o">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="nx">helpheight</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called by the grade-editor main window just before calling</span>
+<span class="cm">     * setDraftstring() for the first time.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param config Get the grade editor configuration that is stored on the</span>
+<span class="cm">     *      current assignment.</span>
+<span class="cm">     */</span>
+    <span class="nx">initializeEditor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">editorConfig</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">config</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">checkbox</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">widget</span><span class="p">(</span><span class="s1">&#39;checkboxfield&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">boxLabel</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">editorConfig</span><span class="p">.</span><span class="nx">fieldlabel</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">checkbox</span><span class="p">);</span>
+
+        <span class="c1">// This opens a new window. Just to show how to load classes in a grade editor.</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;devilry.asminimalaspossible_gradeeditor.DummyWindow&#39;</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">({</span>
+            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+            <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;click me&#39;</span><span class="p">,</span>
+            <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">scope</span><span class="o">:</span> <span class="k">this</span><span class="p">,</span>
+                <span class="nx">click</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">win</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;devilry.asminimalaspossible_gradeeditor.DummyWindow&#39;</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Just to show how to do loading of classes from draft editor!&#39;</span><span class="p">,</span>
+                        <span class="nx">buttonLabel</span><span class="o">:</span> <span class="s1">&#39;Hello world!&#39;</span><span class="p">,</span>
+                        <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+                            <span class="nx">scope</span><span class="o">:</span> <span class="k">this</span><span class="p">,</span>
+                            <span class="nx">gotSomeValue</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">onGotSomeValue</span>
+                        <span class="p">}</span>
+                    <span class="p">});</span>
+                    <span class="nx">win</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+
+    <span class="nx">onGotSomeValue</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stuff</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called by the grade-editor main window to set the current draft. Used</span>
+<span class="cm">     * both on initialization and when selecting a draft from history (rolling</span>
+<span class="cm">     * back to a previous draft).</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param draftstring The current draftstring, or ``undefined`` if no</span>
+<span class="cm">     *      drafts have been saved yet.</span>
+<span class="cm">     */</span>
+    <span class="nx">setDraftstring</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">draftstring</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">draftstring</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">checkbox</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">editorConfig</span><span class="p">.</span><span class="nx">defaultvalue</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">approved</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span><span class="nx">draftstring</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">checkbox</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">approved</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">getEl</span><span class="p">().</span><span class="nx">unmask</span><span class="p">();</span> <span class="c1">// Unmask the loading mask (set by the main window).</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called when the &#39;save draft&#39; button is clicked.</span>
+<span class="cm">     */</span>
+    <span class="nx">onSaveDraft</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">isValid</span><span class="p">())</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">draft</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createDraft</span><span class="p">();</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">getMainWin</span><span class="p">().</span><span class="nx">saveDraft</span><span class="p">(</span><span class="nx">draft</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Called when the publish button is clicked.</span>
+<span class="cm">     */</span>
+    <span class="nx">onPublish</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">isValid</span><span class="p">())</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">draft</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createDraft</span><span class="p">();</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">getMainWin</span><span class="p">().</span><span class="nx">saveDraftAndPublish</span><span class="p">(</span><span class="nx">draft</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+
+
+
+    <span class="cm">/**</span>
+<span class="cm">     * @private</span>
+<span class="cm">     * Get the grade draft editor main window.</span>
+<span class="cm">     */</span>
+    <span class="nx">getMainWin</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">up</span><span class="p">(</span><span class="s1">&#39;gradedrafteditormainwin&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * @private</span>
+<span class="cm">     * Create a draft (used in onSaveDraft and onPublish)</span>
+<span class="cm">     */</span>
+    <span class="nx">createDraft</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">approved</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">checkbox</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">draft</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">approved</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">draft</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="module-devilry.apps.gradeeditors.registry">
-<span id="grade-editor-classes"></span><h2>Grade editor classes<a class="headerlink" href="#module-devilry.apps.gradeeditors.registry" title="Permalink to this headline">¶</a></h2>
+<span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.apps.gradeeditors.registry" title="Permalink to this headline">¶</a></h2>
 <dl class="attribute">
 <dt id="devilry.apps.gradeeditors.registry.gradeeditor_registry">
 <tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">gradeeditor_registry</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="Permalink to this definition">¶</a></dt>
@@ -117,6 +456,18 @@ gradeeditorid is registered, an exception will be raised on load time.</p>
 <dt id="devilry.apps.gradeeditors.registry.RegistryItem.description">
 <tt class="descname">description</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>A longer description of the grade editor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.config_editor_url">
+<tt class="descname">config_editor_url</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.config_editor_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL to the config editor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">draft_editor_url::</tt></dt>
+<dd><p>The URL to the draft editor.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -205,6 +556,84 @@ It is already available as <a class="reference internal" href="#devilry.apps.gra
 
 </dd></dl>
 
+<span class="target" id="module-devilry.apps.gradeeditors.models"></span><dl class="class">
+<dt id="devilry.apps.gradeeditors.models.Config">
+<em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.models.</tt><tt class="descname">Config</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt></p>
+<p>Stored by admins.</p>
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.models.Config.gradeeditorid">
+<tt class="descname">gradeeditorid</tt><a class="headerlink" href="#devilry.apps.gradeeditors.models.Config.gradeeditorid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <tt class="docutils literal"><span class="pre">gradeeditorid</span></tt> that is used to get the
+<a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem" title="devilry.apps.gradeeditors.registry.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.RegistryItem</span></tt></a> for this
+config.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.models.Config.assignment">
+<tt class="descname">assignment</tt><a class="headerlink" href="#devilry.apps.gradeeditors.models.Config.assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>The primary key. This means we have one config for each assignment.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.models.Config.config">
+<tt class="descname">config</tt><a class="headerlink" href="#devilry.apps.gradeeditors.models.Config.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>A text field where the config editor can store its data in any format
+it chooses. JSON is usually a good choice because of easy interraction
+with JavaScript.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.models.Config.clean">
+<tt class="descname">clean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#Config.clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.Config.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a <a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem" title="devilry.apps.gradeeditors.registry.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.RegistryItem</span></tt></a> from
+the <tt class="docutils literal"><span class="pre">gradeeditor_registry</span></tt> in
+<tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.gradeeditor.registry</span></tt>.</p>
+<p>Uses
+<a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem.validate_config" title="devilry.apps.gradeeditors.registry.RegistryItem.validate_config"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.RegistryItem.validate_config()</span></tt></a>
+to validate the config before saving it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.apps.gradeeditors.models.create_gradeconfig_for_assignment">
+<tt class="descclassname">devilry.apps.gradeeditors.models.</tt><tt class="descname">create_gradeconfig_for_assignment</tt><big>(</big><em>sender</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#create_gradeconfig_for_assignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.create_gradeconfig_for_assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal handler which is invoked when an Assignment is created.</p>
+<p>Create default grade Config for Assignment with <tt class="docutils literal"><span class="pre">config=''</span></tt> if the assignment
+has no grade Config.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> &#8211; Must have an <em>instance</em> key with an assignment object as value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.apps.gradeeditors.models.FeedbackDraft">
+<em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.models.</tt><tt class="descname">FeedbackDraft</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#FeedbackDraft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.FeedbackDraft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt></p>
+<p>Stored by examiners.</p>
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.models.FeedbackDraft.save">
+<tt class="descname">save</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#FeedbackDraft.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.FeedbackDraft.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the draft and optionally a <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.StaticFeedback</span></tt>
+in the database. The <tt class="docutils literal"><span class="pre">StaticFeedback</span></tt> is only saved if
+<tt class="docutils literal"><span class="pre">self.publish</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+<p>Uses <a class="reference internal" href="#devilry.apps.gradeeditors.models.FeedbackDraft.to_staticfeedback" title="devilry.apps.gradeeditors.models.FeedbackDraft.to_staticfeedback"><tt class="xref py py-meth docutils literal"><span class="pre">to_staticfeedback()</span></tt></a> to create the staticfeedback.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.models.FeedbackDraft.to_staticfeedback">
+<tt class="descname">to_staticfeedback</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/models.html#FeedbackDraft.to_staticfeedback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.models.FeedbackDraft.to_staticfeedback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a staticfeedback generated from self.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -217,9 +646,30 @@ It is already available as <a class="reference internal" href="#devilry.apps.gra
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.apps.gradeeditors</span></tt> &#8212; Grade editors</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#what-they-do">What they do</a></li>
+<li><a class="reference internal" href="#how-they-store-their-data-feedbackdraft">How they store their data &#8212; FeedbackDraft</a><ul>
+<li><a class="reference internal" href="#grade-editor-specific-storage-format">Grade editor specific storage format</a></li>
+<li><a class="reference internal" href="#from-feedbackdraft-to-staticfeedback">From FeedbackDraft to StaticFeedback</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creating-a-grade-editor">Creating a grade editor</a><ul>
+<li><a class="reference internal" href="#add-to-registry">Add to registry</a></li>
+<li><a class="reference internal" href="#devilry-plugin-asminimalaspossible-code-explained">devilry_plugin.AsMinimalAsPossible code explained</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#config-editor">Config editor</a><ul>
 <li><a class="reference internal" href="#the-view">The view</a></li>
-<li><a class="reference internal" href="#register-the-plugin">Register the plugin</a></li>
-<li><a class="reference internal" href="#module-devilry.apps.gradeeditors.registry">Grade editor classes</a></li>
+<li><a class="reference internal" href="#saving-a-config">Saving a config</a></li>
+<li><a class="reference internal" href="#validation">Validation</a></li>
+<li><a class="reference internal" href="#example-code">Example code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#draft-editor">Draft editor</a><ul>
+<li><a class="reference internal" href="#id1">Example code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-devilry.apps.gradeeditors.registry">API</a></li>
 </ul>
 </li>
 </ul>
@@ -238,7 +688,7 @@ It is already available as <a class="reference internal" href="#devilry.apps.gra
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -267,12 +717,12 @@ It is already available as <a class="reference internal" href="#devilry.apps.gra
         <li class="right" >
           <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
              >previous</a> |</li>
-        <li><a href="index.html">Devilry 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

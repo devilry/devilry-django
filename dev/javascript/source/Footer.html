@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.page.Footer', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.pagefooter',
+    border: false,
+    margins: '0 0 0 0',
+    height: 30,
+
+    html: Ext.create('Ext.XTemplate',
+        '&lt;div class=&quot;footer&quot;&gt;',
+        '   &lt;a href=&quot;http://devilry.org&quot;&gt;Devilry&lt;/a&gt; is an open source general purpose delivery system. Visit &lt;a class=&quot;projectlink&quot; href=&quot;http://devilry.org&quot;&gt;http://devilry.org&lt;/a&gt; and help us make it better.',
+        '&lt;/div&gt;'
+    ).apply({})
+});
+</pre>
+</body>
+</html>

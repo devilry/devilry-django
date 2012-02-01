@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.deliveriespanel',
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.IsOpen',
+    ],
+
+    config: {
+        assignmentgroup_recordcontainer: undefined,
+        delivery_recordcontainer: undefined,
+        deadlineRecord: undefined,
+        deliveriesStore: undefined,
+        activeFeedback: undefined
+    },
+
+    titleTpl: Ext.create('Ext.XTemplate',
+        '&lt;div class=&quot;deadline_title&quot;&gt;',
+        '    &lt;div style=&quot;font-weight:bold&quot;&gt;Deadline: ',
+        '        &lt;tpl if=&quot;assignmentgroup.parentnode__delivery_types !== 1&quot;&gt;{deadline.deadline:date}&lt;/tpl&gt;',
+        '        &lt;tpl if=&quot;assignmentgroup.parentnode__delivery_types === 1&quot;&gt;Not defined in Devilry&lt;/tpl&gt;',
+        '    &lt;/div&gt;',
+        //'    &lt;div&gt;',
+        ////'        Deliveries: &lt;span class=&quot;number_of_deliveries&quot;&gt;{deadline.number_of_deliveries}&lt;/span&gt;',
+        //'        &lt;tpl if=&quot;deadline.number_of_deliveries &amp;gt; 0&quot;&gt;{extra}&lt;/tpl&gt;',
+        //'    &lt;/div&gt;',
+        '&lt;div&gt;'
+    ),
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+    },
+
+    initComponent: function() {
+        //var extra = '(No feedback)';
+        //if(this.activeFeedback) {
+            //extra = Ext.String.format('(Latest feedback: {0})', this.activeFeedback.data.grade);
+        //}
+
+        Ext.apply(this, {
+            title: this.titleTpl.apply({
+                deadline: this.deadlineRecord.data,
+                assignmentgroup: this.assignmentgroup_recordcontainer.record.data
+                //extra: extra
+            }),
+            layout: 'fit',
+            border: false,
+            listeners: {
+                scope: this,
+                collapse: this._onCollapse
+            }
+            //tbar: [{
+                //xtype: 'button',
+                //iconCls: 'icon-edit-16',
+                //text: 'Edit deadline',
+                //listeners: {
+                    //scope: this,
+                    //click: this.onEditDeadline
+                //}
+            //}, {
+                //xtype: 'button',
+                //iconCls: 'icon-delete-16',
+                //text: 'Delete deadline',
+                //listeners: {
+                    //scope: this,
+                    //click: this.onDeleteDeadline
+                //}
+            //}]
+        });
+
+        if(this.deliveriesStore.count() === 0) {
+            this.items = {
+                xtype: 'box',
+                html: 'No deliveries on this deadline.',
+                padding: 10
+            };
+        } else {
+            this.items = {
+                xtype: 'deliveriesgrid',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                deadlineRecord: this.deadlineRecord,
+                store: this.deliveriesStore
+            };
+        }
+
+        this.callParent(arguments);
+    },
+
+    _onCollapse: function() {
+        //var allGrids = this.up('assignmentgroupoverview').feedbackPanel.hide();
+    },
+
+<span id='global-method-onEditDeadline'>    /**
+</span>     * @private
+     */
+    onEditDeadline: function() {
+        console.log('Edit deadline');
+    },
+
+    onDeleteDeadline: function() {
+        console.log('Delete deadline');
+    }
+});
+</pre>
+</body>
+</html>

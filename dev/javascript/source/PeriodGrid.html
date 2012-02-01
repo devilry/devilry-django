@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.student.browseperiods.PeriodGrid', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.student-browseperiods-periodgrid',
+    
+    constructor: function(config) {
+        this.createStore();
+        this.createRelatedStudentKeyValueStore();
+        this.studentkeyvalue_store.load({
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this.labelsGroupedByPeriod = this._groupLabelsByPeriod();
+                    this.store.load();
+                } else {
+                    Ext.MessageBox.alert('Failed to load a resource. Please try to reload the page.');
+                }
+            },
+        });
+        this.callParent([config]);
+    },
+
+    cellTpl: Ext.create('Ext.XTemplate',
+        '&lt;div style=&quot;margin-bottom: 3px;&quot;&gt;{period.parentnode__short_name}.{period.short_name}&lt;/div&gt;',
+        '&lt;ul class=&quot;labels-list&quot;&gt;',
+        '    &lt;tpl for=&quot;labels&quot;&gt;',
+        '       &lt;li class=&quot;label-{label}&quot;&gt;{label}&lt;/li&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/ul&gt;'
+    ),
+
+    createStore: function() {
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.student.simplified.SimplifiedPeriod',
+            remoteFilter: false,
+            remoteSort: false,
+            autoSync: true
+        });
+        this.store.proxy.setDevilryOrderby(['parentnode__short_name', '-start_time']);
+        this.store.pageSize = 100000;
+    },
+
+    createRelatedStudentKeyValueStore: function() {
+        this.studentkeyvalue_store = Ext.create('Ext.data.Store', {
+            model: 'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue',
+            remoteFilter: false,
+            remoteSort: false,
+            autoSync: true
+        });
+        this.studentkeyvalue_store.proxy.setDevilryFilters([{
+            field: 'application',
+            comp: 'exact',
+            value: 'devilry.statistics.Labels'
+        }]);
+        this.studentkeyvalue_store.pageSize = 100000;
+    },
+    
+    initComponent: function() {
+        Ext.apply(this, {
+            cls: 'selectable-grid',
+            columns: [{
+                header: 'Subject/course', dataIndex: 'parentnode__short_name', flex: 1,
+                renderer: function(value, m, record) {
+                    return this.cellTpl.apply({
+                        period: record.data,
+                        labels: this.labelsGroupedByPeriod[record.get('id')]
+                    });
+                }
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    _groupLabelsByPeriod: function() {
+        var labelsGroupedByPeriod = {};
+        for(labelRecordIndex in this.studentkeyvalue_store.data.items) {
+            var labelRecord = this.studentkeyvalue_store.getAt(labelRecordIndex);
+            var periodid = labelRecord.get('relatedstudent__period');
+            if(!labelsGroupedByPeriod[periodid]) {
+                labelsGroupedByPeriod[periodid] = [];
+            }
+            labelsGroupedByPeriod[periodid].push({label: labelRecord.get('key')});
+        }
+        return labelsGroupedByPeriod;
+    }
+});
+</pre>
+</body>
+</html>

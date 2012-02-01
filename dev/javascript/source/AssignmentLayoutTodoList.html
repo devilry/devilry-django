@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-examiner-AssignmentLayoutTodoList'>/** Assignment layout TODO-list. Reloads the TODO-list whenever it is shown (on
+</span> * the show-event). */
+Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
+    extend: 'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
+    alias: 'widget.examiner-assignmentlayout-todolist',
+
+    requires: [
+        'devilry.extjshelpers.studentsmanager.StudentsManager',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
+        'devilry.extjshelpers.charts.PointsOfGroupsOnSingleAssignment'
+    ],
+
+<span id='devilry-examiner-AssignmentLayoutTodoList-cfg-assignmentid'>    /**
+</span>     * @cfg
+     * Assignment ID to show todo items within (Required).
+     */
+    assignmentid: undefined,
+
+    initComponent: function() {
+        Ext.apply(this, {
+            title: 'Todo-list',
+            toolbarExtra: ['-&gt;', {
+               xtype: 'button',
+               scale: 'large',
+               iconCls: 'icon-save-32',
+               text: 'Download all deliveries',
+               listeners: {
+                   scope: this,
+                   click: this.onDownload
+               }
+            }],
+            listeners: {
+                scope: this,
+                show: function() {
+                    this._loadTodoList();
+                }
+            },
+            
+            helpTpl: Ext.create('Ext.XTemplate',
+                '&lt;div class=&quot;section helpsection&quot;&gt;',
+                '   {todohelptext}',
+                '   &lt;p&gt;Choose the &lt;span class=&quot;menuref&quot;&gt;Detailed overview of all students tab&lt;/span&gt; to view all groups, and to give feedback in bulk.&lt;/p&gt;',
+                '   &lt;p&gt;You may want to &lt;span class=&quot;menuref&quot;&gt;Download all deliveries&lt;/span&gt; as a zip file instead of downloading the delivery for each student/group separately. This will download all deliveries from all assignment groups where you are examiner on this assignment, not just the deliveries in your todo-list.&lt;/p&gt;',
+                '&lt;/div&gt;'
+            ),
+
+            onSelectGroup: function(grid, assignmentgroupRecord) {
+                var url = Ext.String.format('../assignmentgroup/{0}',
+                    assignmentgroupRecord.data.id
+                );
+                window.location.href = url;
+            },
+        });
+        this.callParent(arguments);
+        this._loadTodoList();
+    },
+
+
+    _loadTodoList: function() {
+        this.loadTodoListForAssignment(this.assignmentid);
+    },
+
+    onDownload: function() {
+        window.location.href = Ext.String.format('compressedfiledownload/{0}', this.assignmentid);
+    }
+});
+</pre>
+</body>
+</html>

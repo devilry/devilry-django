@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll', {
+    extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsBase',
+    requires: [
+        'devilry.statistics.ChooseAssignmentsGrid'
+    ],
+
+    initComponent: function() {
+        Ext.apply(this, {
+            items: [{
+                xtype: 'numberfield',
+                fieldLabel: 'Minumum total points',
+                minValue: 0,
+                value: this.settings? this.settings.minimumScaledPoints: '',
+                margin: {bottom: 10}
+            }, this.defaultButtonPanel]
+        });
+        this.callParent(arguments);
+    },
+
+    filter: function(student) {
+        var assignment_ids = this.loader.assignment_ids;
+        var minimumScaledPoints = this.down('numberfield').getValue();
+        return student.hasMinimalNumberOfScaledPointsOn(assignment_ids, minimumScaledPoints);
+    },
+
+    validInput: function() {
+        return this.validPointInput();
+    }
+});
+</pre>
+</body>
+</html>

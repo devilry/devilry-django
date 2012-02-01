@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.apps.core.testhelpers &mdash; Devilry 1.0 documentation</title>
-    
+    <title>devilry.apps.core.testhelpers &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -25,7 +22,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry 1.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -38,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -147,7 +144,7 @@
     <span class="k">return</span> <span class="n">last</span>
 
 
-<div class="viewcode-block" id="TestDeliveryStoreMixin"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin">[docs]</a><span class="k">class</span> <span class="nc">TestDeliveryStoreMixin</span><span class="p">(</span><span class="n">TestHelper</span><span class="p">):</span>
+<div class="viewcode-block" id="DeliveryStoreTestMixin"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.DeliveryStoreTestMixin">[docs]</a><span class="k">class</span> <span class="nc">DeliveryStoreTestMixin</span><span class="p">(</span><span class="n">TestHelper</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Mixin-class that tests if</span>
 <span class="sd">    :class:`devilry.core.deliverystore.DeliveryStoreInterface` is</span>
 <span class="sd">    implemented correctly.</span>
@@ -159,16 +156,16 @@
 <span class="sd">    You **must** mixin this class before :class:`django.test.TestCase` like</span>
 <span class="sd">    so::</span>
 
-<span class="sd">        class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):</span>
+<span class="sd">        class TestMyDeliveryStore(DeliveryStoreTestMixin, django.test.TestCase):</span>
 <span class="sd">            ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="TestDeliveryStoreMixin.get_storageobj"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj">[docs]</a>    <span class="k">def</span> <span class="nf">get_storageobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeliveryStoreTestMixin.get_storageobj"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.get_storageobj">[docs]</a>    <span class="k">def</span> <span class="nf">get_storageobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a object implementing</span>
 <span class="sd">        :class:`devilry.core.deliverystore.DeliveryStoreInterface` &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="TestDeliveryStoreMixin.setUp"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeliveryStoreTestMixin.setUp"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.DeliveryStoreTestMixin.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Make sure to call this if you override it in subclasses, or the</span>
 <span class="sd">        tests **will fail**. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="s">&quot;uio.ifi&quot;</span><span class="p">,</span>
@@ -244,7 +241,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -267,13 +264,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Devilry 1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

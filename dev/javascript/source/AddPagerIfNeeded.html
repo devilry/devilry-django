@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-AddPagerIfNeeded'>/** Mixin class for grids that can add a pager if needed. */
+</span>Ext.define('devilry.extjshelpers.AddPagerIfNeeded', {
+    
+<span id='devilry-extjshelpers-AddPagerIfNeeded-method-addPagerIfNeeded'>    /**
+</span>     * @private
+     * Make sure we show pager if needed.
+     */
+    addPagerIfNeeded: function() {
+        if(this._hasPager) {
+            return;
+        }
+        var totalCount = this.store.getTotalCount();
+        if(totalCount == undefined) {
+            this.store.on('load', this.addPagerIfNeeded, this, {single: true});
+            return;
+        }
+        this._hasPager = true;
+        if(this.store.count() &lt; this.store.getTotalCount()) {
+            this._addPager();
+        };
+    },
+
+    _addPager: function() {
+        try {
+            this.addDocked({
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'bottom',
+                displayInfo: false
+            });
+        } catch(e) {
+            Ext.defer(function() {
+                this._addPager();
+            }, 250, this);
+        }
+    },
+});
+</pre>
+</body>
+</html>

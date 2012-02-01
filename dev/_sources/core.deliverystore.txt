@@ -40,10 +40,10 @@ To create your own DeliveryStore you have to implement
 
 
 Testing your own DeliveryStore
-------------------------------
+==============================
 
 We provide a mixing-class,
-:class:`devilry.apps.core.testhelpers.TestDeliveryStoreMixin`, for you to extend
+:class:`devilry.apps.core.testhelpers.DeliveryStoreTestMixin`, for you to extend
 when writing unit-tests for your DeliveryStore. Here is how we test
 :class:`FsDeliveryStore`:
 
@@ -52,7 +52,7 @@ when writing unit-tests for your DeliveryStore. Here is how we test
 
 .. currentmodule:: devilry.apps.core.testhelpers
 
-.. autoclass:: devilry.apps.core.testhelpers.TestDeliveryStoreMixin
+.. autoclass:: devilry.apps.core.testhelpers.DeliveryStoreTestMixin
 
 .. currentmodule:: devilry.apps.core.deliverystore
 
@@ -76,8 +76,68 @@ like this::
             delivery.finish()
 
 
+
+The recommended production deliverystore
+#######################################################
+
+The recommended DeliveryStore is :class:`devilry.apps.core.deliverystore.FsHierDeliveryStore`.
+
+It stores files in a filesystem hierarcy with one directory for each
+Delivery, with the delivery-id as name. In each delivery-directory, the
+files are stored by FileMeta id.
+
+Directory hierachy
+==================
+
+The delivery directories are stored in a
+hierarchy with two parent directories. The parent directories are numeric intervals.
+We have one top-level directory for each N in ``interval_size*interval_size*N``. Within each
+toplevel directory, we have one subdirectory for each N in
+``interval_size*N``.
+
+
+Directory hierarchy example
+===========================
+
+For ``interval_size`` of ``1000``, this will use the following hierarchy::
+
+
+    0/
+        0/
+            0/
+            1/
+            .
+            .
+        1/
+            1000/
+            2000/
+            .
+            .
+        2/
+        .
+        .
+        999/
+    1/
+        0/
+            1000000/
+            1000001/
+            .
+            .
+        1/
+            1001000/
+            1001001/
+        2/
+        .
+        .
+        999/
+    2/
+    .
+    .
+    999/
+
+
 API
 ###########################################################
 
 .. automodule:: devilry.apps.core.deliverystore
-
+    :members: F

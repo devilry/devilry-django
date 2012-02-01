@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Translating Devilry &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="How to write a plugin" href="plugins.html" />
+    <link rel="prev" title="devilry.apps.core.deliverystore — DeliveryStore" href="core.deliverystore.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.deliverystore.html" title="devilry.apps.core.deliverystore — DeliveryStore"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="translating-devilry">
+<span id="i18n"></span><h1>Translating Devilry<a class="headerlink" href="#translating-devilry" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="easy-mode-using-the-web-interface">
+<span id="i18n-gui"></span><h2>Easy mode &#8212; using the web-interface<a class="headerlink" href="#easy-mode-using-the-web-interface" title="Permalink to this headline">¶</a></h2>
+<p>Translating Devilry using the web-gui is very simple, all you need is to
+understand English, and the language you are translating Devilry into.</p>
+<div class="section" id="finding-the-translation-web-gui">
+<h3>Finding the translation web-gui<a class="headerlink" href="#finding-the-translation-web-gui" title="Permalink to this headline">¶</a></h3>
+<p>The translation GUI is available at <tt class="docutils literal"><span class="pre">/i18n/translategui</span></tt> on any Devilry
+instance. So, for example if you have access to Devilry at
+<a class="reference external" href="http://devilry.ifi.uio.no">http://devilry.ifi.uio.no</a>, you can translate Devilry using
+<a class="reference external" href="http://devilry.ifi.uio.no/i18n/translategui">http://devilry.ifi.uio.no/i18n/translategui</a>.</p>
+</div>
+<div class="section" id="using-the-gui">
+<h3>Using the GUI<a class="headerlink" href="#using-the-gui" title="Permalink to this headline">¶</a></h3>
+<p>If you want to make an entirely new translation, click the <strong>New</strong>-button and
+start adding translations to the <em>Translation</em>-column. The original English
+text is in the <em>Default</em>-column.</p>
+</div>
+<div class="section" id="saving-your-changes">
+<h3>Saving your changes<a class="headerlink" href="#saving-your-changes" title="Permalink to this headline">¶</a></h3>
+<p>Save your changes using the <strong>Export</strong>-button. This will download the current
+translation to you machine.</p>
+</div>
+<div class="section" id="load-a-translation">
+<h3>Load a translation<a class="headerlink" href="#load-a-translation" title="Permalink to this headline">¶</a></h3>
+<p>If you want to change an existing translation, one you have saved, or one of
+the translations provided by Devilry, click the <strong>Load</strong>-button. Paste the contents
+of a file you have exported (see previous section), or choose <em>Load from server</em>.</p>
+</div>
+<div class="section" id="edit-long-lines">
+<h3>Edit long lines<a class="headerlink" href="#edit-long-lines" title="Permalink to this headline">¶</a></h3>
+<p>Double click on the default text to open a window that lets you edit long lines.</p>
+</div>
+</div>
+<div class="section" id="add-translations-to-devilry">
+<span id="i18n-sysadmin"></span><h2>Add translations to Devilry<a class="headerlink" href="#add-translations-to-devilry" title="Permalink to this headline">¶</a></h2>
+<p>If you have translated Devilry using the GUI as explained in <a class="reference internal" href="#i18n-gui"><em>Easy mode &#8212; using the web-interface</em></a>,
+you can send your translation file (<tt class="docutils literal"><span class="pre">devilry-translation.json</span></tt>), to your
+local Devilry administrator, and they can follow the instructions in the rest
+of this section.</p>
+<div class="section" id="how-translations-work">
+<h3>How translations work<a class="headerlink" href="#how-translations-work" title="Permalink to this headline">¶</a></h3>
+<p>Devilry is a set of independent Django applications. Each application manage
+its own translations. Before translations can be used in production, we merge
+translations from all apps into a single file for each language/locale.</p>
+</div>
+<div class="section" id="decoupling-translations-from-the-gui">
+<h3>Decoupling translations from the GUI<a class="headerlink" href="#decoupling-translations-from-the-gui" title="Permalink to this headline">¶</a></h3>
+<p>When you receive a translation created as explained in <a class="reference internal" href="#i18n-gui"><em>Easy mode &#8212; using the web-interface</em></a>, you
+have to decouple the translation and choose the language name using
+the <tt class="docutils literal"><span class="pre">devilry_i18n</span> <span class="pre">load</span></tt> command as so:</p>
+<div class="highlight-python"><pre>$ bin/django_production.py devilry_i18n load -v2 &lt;language-code&gt; /path/to/devilry-translation.json</pre>
+</div>
+<p>Where <tt class="docutils literal"><span class="pre">&lt;language-code&gt;</span></tt> is a single word (lower-case english letters,
+numbers, underscore and dash). Remove <tt class="docutils literal"><span class="pre">-v2</span></tt> make it non-verbose.</p>
+</div>
+<div class="section" id="how-do-i-avoid-collisions-with-builtin-translations">
+<span id="i18n-avoid-collision"></span><h3>How do I avoid collisions with builtin translations?<a class="headerlink" href="#how-do-i-avoid-collisions-with-builtin-translations" title="Permalink to this headline">¶</a></h3>
+<p>Your translation files will be prefixed with <tt class="docutils literal"><span class="pre">local-</span></tt>. Translations
+with this prefix is never added to Devilry, and is therefore safe from future
+collisions with builtin devilry translations. Developers may check out <tt class="docutils literal"><span class="pre">--help</span></tt>
+to see how to get rid of the prefix.</p>
+</div>
+<div class="section" id="prepare-translations-for-the-web">
+<h3>Prepare translations for the web<a class="headerlink" href="#prepare-translations-for-the-web" title="Permalink to this headline">¶</a></h3>
+<p>Use the <tt class="docutils literal"><span class="pre">devilry_i18n</span> <span class="pre">export</span></tt> to merge all localizations into a single file
+for each language/locale:</p>
+<div class="highlight-python"><pre>$ bin/django_production.py devilry_i18n export -v2</pre>
+</div>
+<p>This places the files in the appropriate place for static files. Next, you need
+to run <tt class="docutils literal"><span class="pre">collectstatic</span></tt>:</p>
+<div class="highlight-python"><pre>$ bin/django_production.py collectstatic</pre>
+</div>
+<p>See the the install and update guides on the Wiki for more details about
+<tt class="docutils literal"><span class="pre">collectstatic</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="geek-mode-edit-the-translation-files">
+<span id="i18n-geek"></span><h2>Geek mode &#8212; Edit the translation files<a class="headerlink" href="#geek-mode-edit-the-translation-files" title="Permalink to this headline">¶</a></h2>
+<p>Each application (in <tt class="docutils literal"><span class="pre">devilry/apps/</span></tt>) keeps their translations in
+<tt class="docutils literal"><span class="pre">static/APPNME/i18n/</span></tt>. Just copy <tt class="docutils literal"><span class="pre">messages.yaml</span></tt> into a file named
+<tt class="docutils literal"><span class="pre">messages_&lt;langcode&gt;.yaml</span></tt> where <tt class="docutils literal"><span class="pre">&lt;langcode&gt;</span></tt> is a unique identfier for
+your translation. For translations for local use (not intended to be
+distributed with Devilry), the <tt class="docutils literal"><span class="pre">&lt;langcode&gt;</span></tt> should be prefixed with
+<tt class="docutils literal"><span class="pre">local-</span></tt> (See: <a class="reference internal" href="#i18n-avoid-collision"><em>How do I avoid collisions with builtin translations?</em></a>).</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>A good example is the translations for the <tt class="docutils literal"><span class="pre">core</span></tt> app, which lives in
+<tt class="docutils literal"><span class="pre">devilry/apps/core/static/core/i18n/</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="module-devilry.apps.i18n.middleware">
+<span id="localization-middleware"></span><span id="i18n-middleware"></span><h2>Localization middleware<a class="headerlink" href="#module-devilry.apps.i18n.middleware" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="devilry.apps.i18n.middleware.LocaleMiddleware">
+<em class="property">class </em><tt class="descclassname">devilry.apps.i18n.middleware.</tt><tt class="descname">LocaleMiddleware</tt><a class="reference internal" href="_modules/devilry/apps/i18n/middleware.html#LocaleMiddleware"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.i18n.middleware.LocaleMiddleware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Locale middleware.</p>
+<p>Detects the current locale in this order:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>If <tt class="docutils literal"><span class="pre">settings.DEBUG</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt> and &#8216;locale&#8217; GET header, use the
+locale in the header.</li>
+<li>Use the &#8216;languagecode&#8217; in the GET header if it is valid. If the user
+is authenticated, store the language code as their preferred language.</li>
+<li>If the user has a valid languagecode in their preferences, use it.</li>
+<li>Check the ACCEPT_LANGUAGE HTTP header.</li>
+</ol>
+</div></blockquote>
+<p><strong>2</strong> makes it possible to use <tt class="docutils literal"><span class="pre">?languagecode=LANGCODE</span></tt> to change the
+language preference.  Valid language codes are those in
+<tt class="docutils literal"><span class="pre">DEVILRY_I18N_LANGCODEMAPPING</span></tt>.</p>
+<p>Preferred language code is stored in the <tt class="docutils literal"><span class="pre">languagecode</span></tt> field on the user profile.</p>
+<p>Uses <a class="reference internal" href="#devilry.apps.i18n.utils.get_languagecode" title="devilry.apps.i18n.utils.get_languagecode"><tt class="xref py py-func docutils literal"><span class="pre">devilry.apps.i18n.utils.get_languagecode()</span></tt></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-devilry.apps.i18n.utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-devilry.apps.i18n.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="devilry.apps.i18n.utils.get_languagecode">
+<tt class="descclassname">devilry.apps.i18n.utils.</tt><tt class="descname">get_languagecode</tt><big>(</big><em>user</em>, <em>accept_language_header=None</em>, <em>languagecodemapping={'DEFAULT': ''}</em>, <em>default_languagecode='DEFAULT'</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/i18n/utils.html#get_languagecode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.i18n.utils.get_languagecode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the appropriate language code from the provided information:</p>
+<ol class="arabic simple">
+<li>If the user has a valid languagecode in their preferences, use it.</li>
+<li>Check the ACCEPT_LANGUAGE HTTP header, and use it as long as parsing it yields a
+language code that is is <tt class="docutils literal"><span class="pre">languagecodemapping</span></tt>.</li>
+<li>Return the default_languagecode as the last fallback.</li>
+</ol>
+<p>As long as <tt class="docutils literal"><span class="pre">default_languagecode</span></tt> is in <tt class="docutils literal"><span class="pre">languagecodemapping</span></tt>, this function
+is guaranteed to yield a language code that is present as a key in
+<tt class="docutils literal"><span class="pre">languagecodemapping</span></tt>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Translating Devilry</a><ul>
+<li><a class="reference internal" href="#easy-mode-using-the-web-interface">Easy mode &#8212; using the web-interface</a><ul>
+<li><a class="reference internal" href="#finding-the-translation-web-gui">Finding the translation web-gui</a></li>
+<li><a class="reference internal" href="#using-the-gui">Using the GUI</a></li>
+<li><a class="reference internal" href="#saving-your-changes">Saving your changes</a></li>
+<li><a class="reference internal" href="#load-a-translation">Load a translation</a></li>
+<li><a class="reference internal" href="#edit-long-lines">Edit long lines</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#add-translations-to-devilry">Add translations to Devilry</a><ul>
+<li><a class="reference internal" href="#how-translations-work">How translations work</a></li>
+<li><a class="reference internal" href="#decoupling-translations-from-the-gui">Decoupling translations from the GUI</a></li>
+<li><a class="reference internal" href="#how-do-i-avoid-collisions-with-builtin-translations">How do I avoid collisions with builtin translations?</a></li>
+<li><a class="reference internal" href="#prepare-translations-for-the-web">Prepare translations for the web</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geek-mode-edit-the-translation-files">Geek mode &#8212; Edit the translation files</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-devilry.apps.i18n.middleware">Localization middleware</a></li>
+<li><a class="reference internal" href="#module-devilry.apps.i18n.utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.deliverystore.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">devilry.apps.core.deliverystore</span></tt> &#8212; DeliveryStore</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.html"
+                        title="next chapter">How to write a plugin</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/i18n.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.deliverystore.html" title="devilry.apps.core.deliverystore — DeliveryStore"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

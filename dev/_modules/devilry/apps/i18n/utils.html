@@ -1,0 +1,135 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.i18n.utils &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.i18n.utils</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation.trans_real</span> <span class="kn">import</span> <span class="n">parse_accept_lang_header</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">get_languagecode_from_httpheader</span><span class="p">(</span><span class="n">accept_language_header</span><span class="p">,</span> <span class="n">languagemapping</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">languagecode</span> <span class="p">,</span> <span class="n">priority</span> <span class="ow">in</span> <span class="n">parse_accept_lang_header</span><span class="p">(</span><span class="n">accept_language_header</span><span class="p">):</span> <span class="c"># NOTE: parse_accept_lang_header returns accept_lang sorted by priority</span>
+        <span class="k">if</span> <span class="n">languagecode</span> <span class="o">==</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">languagecode</span> <span class="ow">in</span> <span class="n">languagemapping</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">languagecode</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+
+<div class="viewcode-block" id="get_languagecode"><a class="viewcode-back" href="../../../../i18n.html#devilry.apps.i18n.utils.get_languagecode">[docs]</a><span class="k">def</span> <span class="nf">get_languagecode</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">accept_language_header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                     <span class="n">languagecodemapping</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_I18N_LANGCODEMAPPING</span><span class="p">,</span>
+                     <span class="n">default_languagecode</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_I18N_DEFAULT_LANGCODE</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the appropriate language code from the provided information:</span>
+
+<span class="sd">    1. If the user has a valid languagecode in their preferences, use it.</span>
+<span class="sd">    2. Check the ACCEPT_LANGUAGE HTTP header, and use it as long as parsing it yields a</span>
+<span class="sd">       language code that is is ``languagecodemapping``.</span>
+<span class="sd">    3. Return the default_languagecode as the last fallback.</span>
+
+<span class="sd">    As long as ``default_languagecode`` is in ``languagecodemapping``, this function</span>
+<span class="sd">    is guaranteed to yield a language code that is present as a key in</span>
+<span class="sd">    ``languagecodemapping``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
+        <span class="n">languagecode</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_profile</span><span class="p">()</span><span class="o">.</span><span class="n">languagecode</span>
+        <span class="k">if</span> <span class="n">languagecode</span> <span class="ow">and</span> <span class="n">languagecode</span> <span class="ow">in</span> <span class="n">languagecodemapping</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">languagecode</span>
+
+    <span class="k">if</span> <span class="n">accept_language_header</span><span class="p">:</span>
+        <span class="n">languagecode</span> <span class="o">=</span> <span class="n">get_languagecode_from_httpheader</span><span class="p">(</span><span class="n">accept_language_header</span><span class="p">,</span> <span class="n">languagecodemapping</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">languagecode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">languagecode</span>
+
+    <span class="k">return</span> <span class="n">default_languagecode</span>
+
+</div>
+<span class="n">find_all_translatestrings_patt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;&quot;&quot;dtranslate\([&#39;&quot;]([a-z._-]+)[&#39;&quot;]\)&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">find_all_translatestrings</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">find_all_translatestrings_patt</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

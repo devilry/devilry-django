@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.i18n.EditRecordForm', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.i18n-editrecordform',
+    
+<span id='global-cfg-record'>    /**
+</span>     * @cfg
+     * 
+     */
+    record: undefined,
+
+    initComponent: function() {
+        var me = this;
+        Ext.apply(this, {
+            title: 'Translation',
+            bodyPadding: 5,
+            layout: 'fit',
+            flex: 1,
+            items: [{
+                xtype: 'textarea',
+                name: 'translation'
+            }],
+            buttons: [{
+                text: 'Cancel',
+                handler: function() {
+                    var form = this.up('form').getForm();
+                    var translation = form.getValues().translation;
+                    if(translation === form.getRecord().get('translation')) {
+                        this.up('window').close();
+                    } else {
+                        Ext.MessageBox.confirm('Close without saving?', 'This will loose any changes you have made to the translation.', function(btn) {
+                            if(btn === 'yes') {
+                                this.up('window').close();
+                            }
+                        }, this);
+                    }
+                }
+            }, {
+                text: 'Save',
+                handler: function() {
+                    var form = this.up('form').getForm();
+                    form.updateRecord(form.getRecord());
+                    this.up('window').close();
+                }
+            }]
+        });
+        this.callParent(arguments);
+        this.loadRecord(this.record);
+    }
+});
+</pre>
+</body>
+</html>

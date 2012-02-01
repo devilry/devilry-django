@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.rest.restview &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.rest.restview</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseBadRequest</span>
+
+<span class="kn">from</span> <span class="nn">devilry.rest.error</span> <span class="kn">import</span> <span class="n">InvalidContentTypeError</span>
+<span class="kn">import</span> <span class="nn">default</span>
+
+
+<div class="viewcode-block" id="RestView"><a class="viewcode-back" href="../../../rest.html#devilry.rest.restview.RestView">[docs]</a><span class="k">class</span> <span class="nc">RestView</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Django view that handles input/output to :class:`devilry.rest.restbase.RestBase`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restapicls</span><span class="p">,</span>
+                 <span class="n">apiname</span><span class="p">,</span> <span class="n">apiversion</span><span class="p">,</span>
+                 <span class="n">suffix_to_content_type_map</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">SUFFIX_TO_CONTENT_TYPE_MAP</span><span class="p">,</span>
+                 <span class="n">input_data_preprocessors</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">INPUT_DATA_PREPROCESSORS</span><span class="p">,</span>
+                 <span class="n">output_data_postprocessors</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">OUTPUT_DATA_POSTPROCESSORS</span><span class="p">,</span>
+                 <span class="n">output_content_type_detectors</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">OUTPUT_CONTENT_TYPE_DETECTORS</span><span class="p">,</span>
+                 <span class="n">input_content_type_detectors</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">INPUT_CONTENT_TYPE_DETECTORS</span><span class="p">,</span>
+                 <span class="n">inputdata_handlers</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">INPUTDATA_HANDLERS</span><span class="p">,</span>
+                 <span class="n">dataconverters</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">DATACONVERTERS</span><span class="p">,</span>
+                 <span class="n">restmethod_routers</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">RESTMETHOD_ROUTES</span><span class="p">,</span>
+                 <span class="n">response_handlers</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">RESPONSEHANDLERS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param restapicls:</span>
+<span class="sd">            A class implementing :class:`devilry.rest.restbase.RestBase`.</span>
+<span class="sd">        :param suffix_to_content_type_map:</span>
+<span class="sd">            Maps suffix to content type. Used to determine content-type from url-suffix.</span>
+
+<span class="sd">        :param input_data_preprocessors:</span>
+<span class="sd">            List of input data post-processor callbacks. The callbacks have the following signature::</span>
+
+<span class="sd">                match, data = f(request, output_data)</span>
+
+<span class="sd">            The data of the first matching callback will be used. If no processor matches,</span>
+<span class="sd">            the unchanged data will be used.</span>
+
+<span class="sd">            Together with ``output_data_postprocessors`` this allows for wrapping</span>
+<span class="sd">            certain content-types with extra data. Example of use is to add data that is required</span>
+<span class="sd">            by a javascript library, such as the successful attribute required by ExtJS.</span>
+<span class="sd">        :param output_data_postprocessors:</span>
+<span class="sd">            List of input data post-processor callbacks. See ``input_data_preprocessors``</span>
+<span class="sd">            for more details. Note that the callbacks take one additional argument, a boolean</span>
+<span class="sd">            telling if the restful method completed without error.</span>
+
+<span class="sd">        :param output_content_type_detectors:</span>
+<span class="sd">            Input content type detectors detect the content type of the request data.</span>
+<span class="sd">            Must be a list of callables with the following signature::</span>
+
+<span class="sd">                content_type  = f(request, suffix)</span>
+
+<span class="sd">            The first content_type that is not ``bool(content_type)==False`` will</span>
+<span class="sd">             be used.</span>
+<span class="sd">        :param input_content_type_detectors:</span>
+<span class="sd">            Similar to ``output_content_type_detectors``, except for input/request</span>
+<span class="sd">            instead of for output/response. Furthermore, the the callbacks take the</span>
+<span class="sd">            output content-type as the third argument::</span>
+
+<span class="sd">                content_type  = f(request, suffix, output_content_type)</span>
+
+<span class="sd">            This is because few clients send the CONTENT_TYPE header, and falling back on</span>
+<span class="sd">            output content-type is a mostly sane default.</span>
+
+<span class="sd">        :param inputdata_handlers:</span>
+<span class="sd">            Input data handlers convert input data into a dict. Input data can come from several sources:</span>
+
+<span class="sd">                - Querystring</span>
+<span class="sd">                - Paramater in querystring</span>
+<span class="sd">                - Request body</span>
+
+<span class="sd">            Therefore, we need to check for data in several places. Instead of hardcoding this</span>
+<span class="sd">            checking, we accept a list of callables that does the checking.</span>
+
+<span class="sd">            Must be a list of callables with the following signature::</span>
+
+<span class="sd">                match, data = f(request, input_content_type, dataconverters)</span>
+
+<span class="sd">            The first input data handler returning ``match==True`` is be used.</span>
+<span class="sd">                </span>
+<span class="sd">            See :mod:`devilry.rest.inputdata_handlers` for implementations.</span>
+<span class="sd">            </span>
+<span class="sd">            Input data can come in many different formats and from different sources.</span>
+<span class="sd">            Examples are such XML in request body, query string and JSON embedded in</span>
+<span class="sd">            a query string parameter.</span>
+<span class="sd">        :param dataconverters:</span>
+<span class="sd">            A dict of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.</span>
+<span class="sd">            The key is a content-type. Data converters convert between python and some other format,</span>
+<span class="sd">            such as JSON or XML.</span>
+
+<span class="sd">            Typically used by ``input_datahandlers`` and ``response_handlers`` to convert data</span>
+<span class="sd">             input the content_type detected by one of the ``output_content_type_detectors``.</span>
+<span class="sd">        :param restmethod_routers:</span>
+<span class="sd">            A list of callables with the following signature::</span>
+
+<span class="sd">                restapimethodname, args, kwargs = f(request, id, input_data)</span>
+
+<span class="sd">            ``None`` must be returned if the route does not match.</span>
+
+<span class="sd">            Restmetod routes takes determines which method in the :class:`devilry.rest.restbase.RestBase`</span>
+<span class="sd">            interface to call, and the arguments to use for the call.</span>
+<span class="sd">        :param response_handlers:</span>
+<span class="sd">            Response handlers are responsible for creating responses.</span>
+<span class="sd">            Signature::</span>
+
+<span class="sd">                reponse = f(request, restapimethodname, output_content_type, encoded_output)</span>
+
+<span class="sd">            The first response handler returning ``bool(response) == True`` is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restapicls</span> <span class="o">=</span> <span class="n">restapicls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiname</span> <span class="o">=</span> <span class="n">apiname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiversion</span> <span class="o">=</span> <span class="n">apiversion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data_preprocessors</span> <span class="o">=</span> <span class="n">input_data_preprocessors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data_postprocessors</span> <span class="o">=</span> <span class="n">output_data_postprocessors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_content_type_detectors</span> <span class="o">=</span> <span class="n">output_content_type_detectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_content_type_detectors</span> <span class="o">=</span> <span class="n">input_content_type_detectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_to_content_type_map</span> <span class="o">=</span> <span class="n">suffix_to_content_type_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputdata_handlers</span> <span class="o">=</span> <span class="n">inputdata_handlers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataconverters</span> <span class="o">=</span> <span class="n">dataconverters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restmethod_routers</span> <span class="o">=</span> <span class="n">restmethod_routers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response_handlers</span> <span class="o">=</span> <span class="n">response_handlers</span>
+
+    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_and_suffix</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">id</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_id_and_suffix</span><span class="p">(</span><span class="n">id_and_suffix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output_content_type</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_content_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_charset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_content_type</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidContentTypeError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HttpResponseBadRequest</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_input</span><span class="p">()</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_input_data</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">restmethod_route</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">restmethod_routers</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">restmethod_route</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">restapimethodname</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">match</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_restapi</span><span class="p">(</span><span class="n">restapimethodname</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;&#39;{0}&#39; is not supported.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">restapimethodname</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">406</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;No restmethod route found.&quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">406</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_process_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processorlist</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">extraargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processorlist</span><span class="p">:</span>
+            <span class="n">match</span><span class="p">,</span> <span class="n">processed_data</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">extraargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">processed_data</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">preprocess_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_data_preprocessors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_content_type</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">postprocess_output_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_data</span><span class="p">,</span> <span class="n">successful</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_data_postprocessors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_content_type</span><span class="p">,</span> <span class="n">output_data</span><span class="p">,</span> <span class="n">successful</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse_id_and_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_and_suffix</span><span class="p">):</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">id_and_suffix</span><span class="p">:</span>
+            <span class="n">split</span> <span class="o">=</span> <span class="n">id_and_suffix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">id</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">suffix</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">,</span> <span class="n">suffix</span>
+
+    <span class="k">def</span> <span class="nf">call_restapi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">restapi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">restapicls</span><span class="p">(</span><span class="n">apiname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apiname</span><span class="p">,</span> <span class="n">apiversion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apiversion</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">restmethod</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">restapi</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">restmethod</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess_output_data</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">successful</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">encoded_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_response</span><span class="p">(</span><span class="n">encoded_output</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detectors</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="o">*</span><span class="n">extraargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">content_type_detector</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
+            <span class="n">content_type</span> <span class="o">=</span> <span class="n">content_type_detector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">suffix_to_content_type_map</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">dataconverters</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="o">*</span><span class="n">extraargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">content_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">content_type</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">get_output_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_content_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_content_type_detectors</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">content_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidContentTypeError</span><span class="p">(</span><span class="s">&#39;Not output content type detected.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">content_type</span>
+
+    <span class="k">def</span> <span class="nf">get_input_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_content_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_content_type_detectors</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_content_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">content_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidContentTypeError</span><span class="p">(</span><span class="s">&#39;Not input content type detected.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">content_type</span>
+
+    <span class="k">def</span> <span class="nf">parse_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">input_data_handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdata_handlers</span><span class="p">:</span>
+            <span class="n">match</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">input_data_handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_content_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconverters</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Input data handlers must return (bool, dict).&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="c"># Will result in server error unless catched by some middleware</span>
+
+    <span class="k">def</span> <span class="nf">create_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoded_output</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">response_handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_handlers</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response_handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">restapimethodname</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">output_content_type</span><span class="p">,</span> <span class="n">encoded_output</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">response</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s">&quot;No matching response_handler. You should provide one that always matches at the end of the chain.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">encode_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="n">dataconverter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconverters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_content_type</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dataconverter</span><span class="o">.</span><span class="n">fromPython</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconverters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">as_view</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">initargs</span><span class="p">,</span> <span class="o">**</span><span class="n">initkwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">id_and_suffix</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="n">initargs</span><span class="p">,</span> <span class="o">**</span><span class="n">initkwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">id_and_suffix</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">view</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

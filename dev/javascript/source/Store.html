@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-Store'>/** Store with defaults tuned for Devilry and some extra utility functions. */
+</span>Ext.define('devilry.extjshelpers.Store', {
+    extend: 'Ext.data.Store',
+
+    config: {
+        remoteFilter: true,
+        remoteSort: true,
+        autoSync: true
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+
+        this.addEvents(
+<span id='devilry-extjshelpers-Store-event-loadAll'>            /**
+</span>             * @event
+             * Fired when loadAll() has successfully loaded all records. Same params as the load event.
+             */
+            'loadAll'
+        );
+    },
+
+<span id='devilry-extjshelpers-Store-method-loadAll'>    /**
+</span>     * Load all records in the store. This is done in two requests. First we
+     * ask for a single record, to get the totalCount, then we ask for all
+     * records.
+     *
+     * @param options Same as for ``Ext.data.Store.load``.
+     */
+    loadAll: function(options) {
+        this.pageSize = 1;
+        var me = this;
+        this.load({
+            callback: function(records, operation, success) {
+                if(success) {
+                    me.pageSize = me.totalCount;
+                    me.load(function(records, operation, success) {
+                        me._callbackFromOptions(options, [records, operation, success]);
+                        me.fireEvent('loadAll', me, records, success, operation);
+                    });
+                } else {
+                    me._callbackFromOptions(options, [records, operation, false]);
+                }
+            }
+        });
+    },
+
+    _callbackFromOptions: function(options, args) {
+        if(Ext.typeOf(options) == 'function') {
+            Ext.bind(options, this, args)();
+        } else if(Ext.typeOf(options) == 'object' &amp;&amp; options.callback) {
+            Ext.bind(options.callback, options.scope, args)();
+        }
+    }
+});
+</pre>
+</body>
+</html>

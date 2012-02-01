@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Disk Layout &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="disk-layout">
+<h1>Disk Layout<a class="headerlink" href="#disk-layout" title="Permalink to this headline">¶</a></h1>
+<p>The layout is basically the one reccommended by ExtJS, however since we route apps through Django, there are minor differences:</p>
+<div class="highlight-python"><pre>appname/
+    models.py
+    urls.py
+    ...
+    static/
+        appname/
+            app/
+                Application.js
+                TestApplication.js
+                JasmineTestApplication.js
+                controller/
+                model/
+                store/
+                view/</pre>
+</div>
+</div>
+<div class="section" id="creating-a-new-app">
+<h1>Creating a new app<a class="headerlink" href="#creating-a-new-app" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="create-disk-layout">
+<h2>Create disk layout<a class="headerlink" href="#create-disk-layout" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="models-py">
+<h3>models.py<a class="headerlink" href="#models-py" title="Permalink to this headline">¶</a></h3>
+<p>TODO</p>
+</div>
+<div class="section" id="urls-py">
+<h3>urls.py<a class="headerlink" href="#urls-py" title="Permalink to this headline">¶</a></h3>
+<p>Typically looks something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.conf.urls.defaults</span> <span class="kn">import</span> <span class="n">patterns</span>
+<span class="kn">from</span> <span class="nn">devilry.apps.jsapp.views</span> <span class="kn">import</span> <span class="n">create_urls</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;devilry.apps.myapp&#39;</span><span class="p">,</span>
+                       <span class="o">*</span><span class="n">create_urls</span><span class="p">(</span><span class="s">&#39;myapp&#39;</span><span class="p">,</span>
+                                    <span class="n">with_css</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                    <span class="n">libs</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jsapp&#39;</span><span class="p">,</span> <span class="s">&#39;themebase&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>See <tt class="xref py py-func docutils literal"><span class="pre">devilry.apps.jsapp.views.create_urls()</span></tt>. Notice that we specify two
+libs. You will usually need these two. <tt class="docutils literal"><span class="pre">jsapp</span></tt> provides the architecture
+for the app framework, and <tt class="docutils literal"><span class="pre">themebase</span></tt> provides the default theme, re-usable
+layouts and common widgets.</p>
+</div>
+<div class="section" id="static-appname">
+<h3>static/appname/<a class="headerlink" href="#static-appname" title="Permalink to this headline">¶</a></h3>
+<p>Refer to ExtJS docs.</p>
+</div>
+<div class="section" id="static-appname-app-application-js">
+<h3>static/appname/app/Application.js<a class="headerlink" href="#static-appname-app-application-js" title="Permalink to this headline">¶</a></h3>
+<p>A subclass of <tt class="docutils literal"><span class="pre">Ext.app.Application</span></tt>.</p>
+</div>
+<div class="section" id="static-appname-app-testapplication-js">
+<h3>static/appname/app/TestApplication.js<a class="headerlink" href="#static-appname-app-testapplication-js" title="Permalink to this headline">¶</a></h3>
+<p>A subclass of <tt class="docutils literal"><span class="pre">&lt;appname&gt;.Application</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="need-css">
+<h2>Need CSS?<a class="headerlink" href="#need-css" title="Permalink to this headline">¶</a></h2>
+<p>Add your CSS to
+<tt class="docutils literal"><span class="pre">&lt;appname&gt;/static/&lt;appname&gt;/resources/stylesheets/&lt;appname&gt;.css</span></tt> and update
+<tt class="docutils literal"><span class="pre">urls.py</span></tt> with the <tt class="docutils literal"><span class="pre">with_css=True</span></tt> argument to
+<tt class="xref py py-func docutils literal"><span class="pre">devilry.apps.jsapp.views.create_urls()</span></tt>.</p>
+</div>
+<div class="section" id="css-with-compass">
+<h2>CSS with compass<a class="headerlink" href="#css-with-compass" title="Permalink to this headline">¶</a></h2>
+<p>We reccommend <a class="reference external" href="http://compass-style.org/">Compass</a>:</p>
+<div class="highlight-python"><pre>$ cd &lt;appname&gt;/static/&lt;appname&gt;/
+$ compass create resources
+$ cd resources
+$ rm sass/ie.scss sass/screen.scss sass/print.scss</pre>
+</div>
+<p>Add your styles to <tt class="docutils literal"><span class="pre">sass/&lt;appname&gt;.scss</span></tt> and compile using:</p>
+<div class="highlight-python"><pre>$ compass compile</pre>
+</div>
+<p>You may also autocompile on file changes using:</p>
+<div class="highlight-python"><pre>$ compass watch</pre>
+</div>
+</div>
+</div>
+<div class="section" id="routing">
+<h1>Routing<a class="headerlink" href="#routing" title="Permalink to this headline">¶</a></h1>
+<p>The natural structure of the data controlled by the app should be organized
+in a directory-like routing scheme:</p>
+<div class="highlight-python"><pre>#/
+    List all items
+#/someitem
+    Show "someitem"
+#/someitem/
+    Show all children of "someitem"
+#/someitem/childitem
+    Show "childitem"</pre>
+</div>
+<p>Cross cutting and non-hierarchial routes should use the following format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#/@@some-action</span>
+<span class="c">#/someitem/@@some-action</span>
+</pre></div>
+</div>
+<p>Prefixing with <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> makes it clear to developers that these are not part of
+the normal hierarchy browsing.</p>
+</div>
+<div class="section" id="libraries">
+<h1>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h1>
+<p>Libraries are just like apps, however they should put their data in extjs
+classes in <tt class="docutils literal"><span class="pre">lib/</span></tt> instead of <tt class="docutils literal"><span class="pre">app</span></tt>.</p>
+</div>
+<div class="section" id="tests">
+<h1>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
+<p>Use the <tt class="docutils literal"><span class="pre">TestApplication.js</span></tt> views with selenium to test views. Your selenium
+tests should inherit from
+<tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.jsapp.seleniumhelpers.SeleniumTestCase</span></tt>. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilry.apps.jsapp.seleniumhelpers</span> <span class="kn">import</span> <span class="n">SeleniumTestCase</span>
+
+<span class="k">class</span> <span class="nc">TestSomething</span><span class="p">(</span><span class="n">SeleniumTestCase</span><span class="p">):</span>
+    <span class="n">appname</span> <span class="o">=</span> <span class="s">&#39;something&#39;</span>
+
+    <span class="k">def</span> <span class="nf">test_chooseperiod_render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browseToTest</span><span class="p">(</span><span class="s">&#39;/@@create-something&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitForCssSelector</span><span class="p">(</span><span class="s">&#39;.somecssclass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;Something something&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run tests just like any other django-nose test. Example:</p>
+<div class="highlight-python"><pre>bin/django_dev.py test devilry.apps.something</pre>
+</div>
+<p>You must be running the Django server at port 8080 for this to work.</p>
+<p><tt class="docutils literal"><span class="pre">TestApplication.js</span></tt> must not require <strong>any</strong> persistence on the server. Mock
+everything. See the <tt class="docutils literal"><span class="pre">devilry.apps.subjectadmin</span></tt> for examples.</p>
+<p>Add Jasmine test specs to <tt class="docutils literal"><span class="pre">static/&lt;appname&gt;/jasminespecs/</span></tt>.
+Use the <tt class="docutils literal"><span class="pre">JasmineTestApplication.js</span></tt> view
+(<a class="reference external" href="http://localhost:8080/APPNAME/jasminetest">http://localhost:8080/APPNAME/jasminetest</a>) to run your tests during
+development. Add them to the regular test suite as a selenium test like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestSomething</span><span class="p">(</span><span class="n">SeleniumTestCase</span><span class="p">):</span>
+
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">test_jasmine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runJasmineTests</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-conventions">
+<h1>Code conventions<a class="headerlink" href="#code-conventions" title="Permalink to this headline">¶</a></h1>
+<p>The order of statements in <tt class="docutils literal"><span class="pre">requires:</span> <span class="pre">[...]</span></tt> should be:</p>
+<ul class="simple">
+<li>ExtJs includes (anything in the Ext namespace).</li>
+<li>Non-app includes grouped by namespace.</li>
+<li>App includes.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><pre>requires: [
+    'Ext.form.field.ComboBox',
+    'Ext.form.field.Text',
+    'Ext.form.field.Hidden',
+    'Ext.toolbar.Toolbar',
+    'devilry.extjshelpers.formfields.DateTimeField',
+    'themebase.CreateButton',
+    'themebase.AlertMessageList',
+    'themebase.form.Help',
+    'view.SomeView',
+    'view.AnotherView'
+]</pre>
+</div>
+<p>Private methods should be prefixed with <tt class="docutils literal"><span class="pre">_</span></tt>. These methods should <strong>never</strong>
+be used outside the class, not even in subclasses.</p>
+</div>
+<div class="section" id="module-devilry.apps.jsapp.views">
+<span id="api"></span><h1>API<a class="headerlink" href="#module-devilry.apps.jsapp.views" title="Permalink to this headline">¶</a></h1>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Disk Layout</a></li>
+<li><a class="reference internal" href="#creating-a-new-app">Creating a new app</a><ul>
+<li><a class="reference internal" href="#create-disk-layout">Create disk layout</a><ul>
+<li><a class="reference internal" href="#models-py">models.py</a></li>
+<li><a class="reference internal" href="#urls-py">urls.py</a></li>
+<li><a class="reference internal" href="#static-appname">static/appname/</a></li>
+<li><a class="reference internal" href="#static-appname-app-application-js">static/appname/app/Application.js</a></li>
+<li><a class="reference internal" href="#static-appname-app-testapplication-js">static/appname/app/TestApplication.js</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#need-css">Need CSS?</a></li>
+<li><a class="reference internal" href="#css-with-compass">CSS with compass</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#routing">Routing</a></li>
+<li><a class="reference internal" href="#libraries">Libraries</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#code-conventions">Code conventions</a></li>
+<li><a class="reference internal" href="#module-devilry.apps.jsapp.views">API</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/jsapp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

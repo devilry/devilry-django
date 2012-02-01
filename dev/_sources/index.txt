@@ -3,11 +3,13 @@
     
     core.models
     core.deliverystore
+    i18n
 
     plugins
 
     simplified
     restful
+    rest
     extjshelpers
 
     apps.gradeeditors
@@ -44,6 +46,14 @@ Plugin development
 * **Grade editors:** :ref:`Overview <apps.gradeeditors>`
 
 
+Translating Devilry
+######################################################################
+
+* :ref:`i18n-gui`
+* :ref:`i18n-geek`
+* :ref:`i18n-sysadmin`
+* :ref:`i18n-middleware`
+
 
 Simplified API
 ######################################################################
@@ -58,6 +68,7 @@ RESTful API
 ######################################################################
 
 * :ref:`restful`
+* :ref:`rest`
 * :ref:`public_restful_api`
 * :ref:`public_restful_api_examples`
 * Check out the Wiki_ for community docs such as:
