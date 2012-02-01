@@ -1,3 +1,6 @@
+/**
+ * Defines a menu of actions (urls).
+ * */
 Ext.define('subjectadmin.view.ActionList', {
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
