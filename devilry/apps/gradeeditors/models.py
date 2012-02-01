@@ -87,6 +87,13 @@ class FeedbackDraft(models.Model):
             raise ValidationError('FeedbackDraft is immutable (it can not be changed).')
 
     def save(self, *args, **kwargs):
+        """
+        Save the draft and optionally a :class:`devilry.core.models.StaticFeedback`
+        in the database. The ``StaticFeedback`` is only saved if
+        ``self.publish`` is ``True``.
+
+        Uses :meth:`to_staticfeedback` to create the staticfeedback.
+        """
         if self.published:
             _tmp_staticfeedback = self.to_staticfeedback()
             _tmp_staticfeedback.full_clean()
