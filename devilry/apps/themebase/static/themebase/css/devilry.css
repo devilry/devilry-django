@@ -12549,14 +12549,14 @@ input[type=submit].btn::-moz-focus-inner {
   background-color: white;
 }
 /* line 5, ../sass/_rightsidebarlayout.scss */
-.rightsidebarlayout .centercolumn .box h2.boxtitle {
+.rightsidebarlayout .centercolumn .centerbox h2.centertitle {
   color: #666666;
   background-color: #EEEEEE;
   padding: 15px 40px 10px 40px;
   font-weight: normal;
 }
 /* line 11, ../sass/_rightsidebarlayout.scss */
-.rightsidebarlayout .centercolumn .box .boxbody {
+.rightsidebarlayout .centercolumn .centerbox .centerbody {
   margin: 0;
   padding: 40px 44px;
 }

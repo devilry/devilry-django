@@ -6,12 +6,13 @@ ul.unstyled {
 /* line 8, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul {
   list-style: none;
+  margin: 0;
 }
-/* line 10, ../sass/subjectadmin.scss */
+/* line 11, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li {
   margin: 0 0 20px 0;
 }
-/* line 12, ../sass/subjectadmin.scss */
+/* line 13, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li a {
   min-width: 400px;
 }

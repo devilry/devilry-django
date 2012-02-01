@@ -4,10 +4,8 @@
 Ext.define('subjectadmin.view.ActionList', {
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
-    cls: 'actionlist box',
 
     tpl: [
-        '<h2 class="boxtitle">{title}</h2>',
         '<ul class="boxbody">',
         '    <tpl for="links">',
         '       <li>',
@@ -31,6 +29,11 @@ Ext.define('subjectadmin.view.ActionList', {
      */
 
     initComponent: function() {
+        if(this.cls) {
+            this.cls = this.cls + ' actionlist';
+        } else {
+            this.cls = 'actionlist'
+        }
         Ext.Array.each(this.links, function(link) {
             if(link.buttonType == undefined) {
                 link.buttonType = 'primary';

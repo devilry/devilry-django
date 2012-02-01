@@ -14,27 +14,34 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         cls: 'centercolumn',
         region: 'main',
         items: [{
-            xtype: 'actionlist',
-            title: 'Actions',
-            links: [{
-                url: '#/@@create-new-assignment/@@chooseperiod',
-                text: dtranslate('subjectadmin.dashboard.createnewassignment')
+            xtype: 'container',
+            cls: 'centerbox',
+            items: [{
+                xtype: 'box',
+                html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.dashboard.actionstitle')),
             }, {
-                url: '#/',
-                text: dtranslate('subjectadmin.dashboard.browseall')
-            }, {
-                url: '#/@@register-for-final-exams',
-                text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
-            }, {
-                url: '#/@@global-statistics',
-                text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
+                xtype: 'actionlist',
+                cls: 'centerbody',
+                links: [{
+                    url: '#/@@create-new-assignment/@@chooseperiod',
+                    text: dtranslate('subjectadmin.dashboard.createnewassignment')
+                }, {
+                    url: '#/',
+                    text: dtranslate('subjectadmin.dashboard.browseall')
+                }, {
+                    url: '#/@@register-for-final-exams',
+                    text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
+                }, {
+                    url: '#/@@global-statistics',
+                    text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
+                }]
             }]
         }, {
             xtype: 'box',
-            cls: 'sysadmin-messages box',
+            cls: 'sysadmin-messages centerbox',
             html: [
-                '<h2 class="boxtitle">Information from Drift</h2>',
-                '<div class="boxbody">',
+                '<h2 class="title">Information from Drift</h2>',
+                '<div class="body">',
                 '    <p>Please use the help-tab to access guides and tips. Contact ',
                 '    drift@example.com if anything is unclear.</p>',
                 '    <p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
