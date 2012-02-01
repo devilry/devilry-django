@@ -14,8 +14,12 @@
     <script type="text/javascript">
         Ext.require('subjectadmin.JasmineTestApplication');
 
+        // Define a global variable to give our tests a reference to the
+        // application.
+        var application = null;
+
         Ext.onReady(function() {
-            Ext.create('subjectadmin.JasmineTestApplication');
+            application = Ext.create('subjectadmin.JasmineTestApplication');
         });
     </script>
 {% endblock %}
