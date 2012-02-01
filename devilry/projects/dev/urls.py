@@ -19,6 +19,7 @@ urlpatterns = patterns('',
                        (r'^test/', include('devilry.projects.dev.apps.test.urls')),
                        (r'^corerest/', include('devilry.apps.corerest.urls')),
                        (r'^subjectadmin/', include('devilry.apps.subjectadmin.urls')),
+                       (r'^themebase/', include('devilry.apps.themebase.urls')),
 
                        # Add the default Devilry urls
                        *devilry_urls
