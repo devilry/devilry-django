@@ -1,4 +1,6 @@
-
+=======================================================
+jsapp --- Django ExtJS javascript application framework
+=======================================================
 
 
 Disk Layout
@@ -141,7 +143,8 @@ Test views with Selenium
 
 Use the ``TestApplication.js`` views with selenium to test views. Your selenium
 tests should inherit from
-:class:`devilry.apps.jsapp.seleniumhelpers.SeleniumTestCase`. Example::
+:class:`devilry.apps.jsapp.seleniumhelpers.SeleniumTestCase`, and they should
+be placed in ``<appdir>/seleniumtests/``. Example::
 
     from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 
@@ -170,17 +173,20 @@ everything. See the ``devilry.apps.subjectadmin`` for examples.
 Unit tests with Jasmine
 =======================
 
-Add Jasmine test specs to ``static/<appname>/jasminespecs/``. 
-Use the ``JasmineTestApplication.js`` view
-(http://localhost:8080/APPNAME/jasminetest) to run your tests during
-development. Add them to the regular test suite as a selenium test like so::
+Add Jasmine test specs to ``static/<appname>/jasminespecs/``.  Use the
+``JasmineTestApplication.js`` view (http://localhost:8080/APPNAME/jasminetest)
+to run your tests during development. Add them to the regular test suite as a
+selenium test case in ``<appdir>/seleniumtests/jasmine.py`` like so::
 
-    class TestSomething(SeleniumTestCase):
+    from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 
-        ...
-
+    class TestCreateNewAssignment(SeleniumTestCase):
+        appname = 'themebase'
         def test_jasmine(self):
             self.runJasmineTests()
+
+You should use ``jasmine.py`` since that makes it easy to include/exclude
+jasmine tests when running the test suite.
 
 
 
@@ -222,4 +228,5 @@ be used outside the class, not even in subclasses.
 API
 ###
 
+.. currentmodule:: devilry.apps.jsapp.views
 .. automodule:: devilry.apps.jsapp.views

@@ -11,6 +11,52 @@ from devilry.utils.importutils import get_staticdir_from_appname
 
 
 class JsAppView(View):
+    """
+    A view that uses ``jsapp/<templatename>.django.html`` as view, and sends
+    all of the attributes below into the template.
+
+    You normally do not use this directly, but rather use:
+
+    - :func:`create_app_urls`
+    - :func:`create_lib_urls`
+
+    .. attribute:: appname
+
+        The name of the application.
+
+    .. attribute:: templatename
+
+        Defaults to ``"production"``.
+
+    .. attribute:: with_css
+
+        Defaults to ``False``.
+        Set this to ``True`` if your app provides custom styles, and
+        add your styles to::
+
+            <appdir>/static/<appname>/resources/stylesheets/<appname>.css
+
+    .. attribute:: include_old_exjsclasses
+
+        Defaults to ``False``.
+        If this is ``True``, add the old ``static/extjs_classes`` map to the
+        ExtJS ``devilry`` namespace to ``Ext.loader``.
+
+    .. attribute:: libs
+
+        List of *jsapp* libraries that this app depends on. For each libname in
+        the list, add::
+
+            '{{ lib }}': '{{ DEVILRY_STATIC_URL }}/{{ lib }}/lib'
+
+        to the ``Ext.Loader`` paths.
+
+    .. attribute:: apptype
+
+        Should be ``"app"`` for jsapp applications, and ``"lib"`` for jsapp
+        libraries. Defaults to ``"app"``. ``create_lib_urls`` overrides this
+        and sets it to ``"lib"``.
+    """
     appname = None
     templatename = 'production'
     with_css = False
@@ -19,8 +65,8 @@ class JsAppView(View):
     apptype = 'app'
 
     @classonlymethod
-    def as_appview(cls, appname, **kwargs):
-        return cls.as_view(appname=appname, **kwargs)
+    def as_appview(cls, **kwargs):
+        return cls.as_view(**kwargs)
 
     def get_base(self, request, **extra):
         kw = {'appname': self.appname,
@@ -36,10 +82,19 @@ class JsAppView(View):
 
 
 class JsAppTestView(JsAppView):
+    """
+    Overrides ``templatename`` to ``"test"``.
+    """
     templatename = 'test'
 
 
 class JsAppJasmineTestView(JsAppTestView):
+    """
+    Overrides ``templatename`` to ``"jasminetest"``, and adds all files in
+    ``<appdir>/static/<appname>/jasminespecs/`` to the ``jasminespecs``
+    template variable, which in turn is added to the jasmine test suite by the
+    template.
+    """
     templatename = 'jasminetest'
     def _get_jasmine_specs(self):
         staticdir = get_staticdir_from_appname(self.appname)
@@ -54,12 +109,23 @@ class JsAppJasmineTestView(JsAppTestView):
         return self.get_base(request, jasminespecs=self._get_jasmine_specs())
 
 
-def create_urls(appname, with_css=False, libs=[], include_old_exjsclasses=False):
-    kwargs = dict(with_css=with_css, libs=libs, include_old_exjsclasses=include_old_exjsclasses)
-    return (url(r'^ui$', login_required(JsAppView.as_appview(appname, **kwargs))),
-            url(r'^test$', JsAppTestView.as_appview(appname, **kwargs)),
-            url(r'^jasminetest$', JsAppJasmineTestView.as_appview(appname, **kwargs)))
+def create_app_urls(**kwargs):
+    """
+    Create views for applications. Forwards ``kwargs`` to:
 
-def create_jasmine_url(appname, with_css=False, libs=[], include_old_exjsclasses=False, apptype='app'):
-    kwargs = dict(with_css=with_css, libs=libs, include_old_exjsclasses=include_old_exjsclasses, apptype=apptype)
-    return url(r'^jasminetest$', JsAppJasmineTestView.as_appview(appname, **kwargs))
+    - :class:`JsAppView` (mapped to /ui)
+    - :class:`JsAppTestView` (mapped to /test)
+    - :class:`JsAppJasmineTestView` (mapped to /jasminetest)
+    """
+    return (url(r'^ui$', login_required(JsAppView.as_appview(**kwargs))),
+            url(r'^test$', JsAppTestView.as_appview(**kwargs)),
+            url(r'^jasminetest$', JsAppJasmineTestView.as_appview(**kwargs)))
+
+def create_lib_urls(**kwargs):
+    """
+    Mostly the same as :func:`create_app_urls`, however it does not add ``/ui``, and
+    ``apptype`` is automatically set to ``"lib"``.
+    """
+    kwargs['apptype'] = 'lib'
+    return (url(r'^test$', JsAppTestView.as_appview(**kwargs)),
+            url(r'^jasminetest$', JsAppJasmineTestView.as_appview(**kwargs)))

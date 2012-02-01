@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns
-from devilry.apps.jsapp.views import create_jasmine_url
+from devilry.apps.jsapp.views import create_lib_urls
 
 urlpatterns = patterns('devilry.apps.themebase',
-                       create_jasmine_url('themebase', libs=['jsapp'], apptype='lib'))
+                       *create_lib_urls(appname='themebase',
+                                       libs=['jsapp']))
