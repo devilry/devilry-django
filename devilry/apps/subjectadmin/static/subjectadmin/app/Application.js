@@ -52,11 +52,11 @@ Ext.define('subjectadmin.Application', {
     _setupRoutes: function() {
         this.route = Ext.create('jsapp.Router', this);
         this.route.add("", 'dashboard');
-        this.route.add("/@@create-new-assignment/@@chooseperiod", 'create_new_assignment_chooseperiod');
-        this.route.add("/@@create-new-assignment/:period", 'create_new_assignment');
+        this.route.add("/@@create-new-assignment/@@chooseperiod", 'createNewAssignmentChooseperiod');
+        this.route.add("/@@create-new-assignment/:period", 'createNewAssignment');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
-        this.route.add("/assignment/:assignmentid", 'assignment_show');
+        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname", 'assignmentShow');
         this.setupExtraRoutes();
         this.route.start();
     },
@@ -81,7 +81,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    create_new_assignment_chooseperiod: function(info) {
+    createNewAssignmentChooseperiod: function(info) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'chooseperiod',
@@ -89,7 +89,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    create_new_assignment: function(info, periodId) {
+    createNewAssignment: function(info, periodId) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
@@ -97,10 +97,12 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    assignment_show: function(info, assignmentId) {
+    assignmentShow: function(info, subject_shortname, period_shortname, assignment_shortname) {
         this.setPrimaryContent({
             xtype: 'assignment',
-            assignmentId: assignmentId
+            subject_shortname: subject_shortname,
+            period_shortname: period_shortname,
+            assignment_shortname: assignment_shortname
         });
     }
 });

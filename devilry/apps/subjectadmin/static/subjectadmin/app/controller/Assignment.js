@@ -1,3 +1,6 @@
+/**
+ * Controller for the assignment overview.
+ */
 Ext.define('subjectadmin.controller.Assignment', {
     extend: 'Ext.app.Controller',
 
