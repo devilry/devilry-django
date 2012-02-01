@@ -11,17 +11,20 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
         xtype: 'container',
         region: 'main',
         items: [{
-            xtype: 'box',
-            cls: 'sysadmin-messages box',
-            html: Ext.String.format('<h2 class="boxtitle">{0}</h2>', dtranslate('subjectadmin.chooseperiod.title')),
-        }, {
             xtype: 'container',
-            margin: 40,
+            cls: 'centerbox sysadmin-messages',
             items: [{
-                xtype: 'activeperiodslist',
+                xtype: 'box',
+                html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.chooseperiod.title')),
             }, {
-                xtype: 'nextbutton',
-                margin: {top: 10}
+                xtype: 'container',
+                cls: 'centerbody',
+                items: [{
+                    xtype: 'activeperiodslist',
+                }, {
+                    xtype: 'nextbutton',
+                    margin: {top: 10}
+                }]
             }]
         }]
     }, {

@@ -1,7 +1,6 @@
 Ext.define('subjectadmin.view.createnewassignment.Form', {
     extend: 'Ext.form.Panel',
     alias: 'widget.createnewassignmentform',
-    cls: 'createnewassignmentform form-stacked',
     requires: [
         'Ext.form.field.ComboBox',
         'Ext.form.field.Text',
@@ -150,5 +149,15 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
             formBind: true, //only enabled once the form is valid
             disabled: true
         }]
-    }]
+    }],
+
+
+    initComponent: function() {
+        var cssclasses = 'createnewassignmentform form-stacked';
+        if(this.cls) {
+            cssclasses += ' ' + this.cls;
+        }
+        this.cls = cssclasses;
+        this.callParent(arguments);
+    }
 });

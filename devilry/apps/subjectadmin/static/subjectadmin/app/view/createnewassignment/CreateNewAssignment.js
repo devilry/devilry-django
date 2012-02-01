@@ -12,15 +12,18 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
         xtype: 'container',
         region: 'main',
         items: [{
-            xtype: 'box',
-            cls: 'sysadmin-messages box',
-            html: Ext.String.format(
-                '<h2 class="boxtitle">{0}</h2>',
-                dtranslate('subjectadmin.createnewassignment.title')
-            ),
-        }, {
-            margin: 40,
-            xtype: 'createnewassignmentform'
+            xtype: 'container',
+            cls: 'centerbox sysadmin-messages',
+            items: [{
+                xtype: 'box',
+                html: Ext.String.format(
+                    '<h2 class="centertitle">{0}</h2>',
+                    dtranslate('subjectadmin.createnewassignment.title')
+                ),
+            }, {
+                cls: 'centerbody',
+                xtype: 'createnewassignmentform'
+            }]
         }]
     }, {
         xtype: 'box',

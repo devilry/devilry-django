@@ -40,8 +40,8 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
             xtype: 'box',
             cls: 'sysadmin-messages centerbox',
             html: [
-                '<h2 class="title">Information from Drift</h2>',
-                '<div class="body">',
+                '<h2 class="centertitle">Information from Drift</h2>',
+                '<div class="centerbody">',
                 '    <p>Please use the help-tab to access guides and tips. Contact ',
                 '    drift@example.com if anything is unclear.</p>',
                 '    <p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
