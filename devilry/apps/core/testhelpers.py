@@ -108,7 +108,7 @@ class DeliveryStoreTestMixin(TestHelper):
     You **must** mixin this class before :class:`django.test.TestCase` like
     so::
 
-        class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):
+        class TestMyDeliveryStore(DeliveryStoreTestMixin, django.test.TestCase):
             ...
     """
 

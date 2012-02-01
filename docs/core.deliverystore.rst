@@ -40,10 +40,10 @@ To create your own DeliveryStore you have to implement
 
 
 Testing your own DeliveryStore
-------------------------------
+==============================
 
 We provide a mixing-class,
-:class:`devilry.apps.core.testhelpers.TestDeliveryStoreMixin`, for you to extend
+:class:`devilry.apps.core.testhelpers.DeliveryStoreTestMixin`, for you to extend
 when writing unit-tests for your DeliveryStore. Here is how we test
 :class:`FsDeliveryStore`:
 
@@ -52,7 +52,7 @@ when writing unit-tests for your DeliveryStore. Here is how we test
 
 .. currentmodule:: devilry.apps.core.testhelpers
 
-.. autoclass:: devilry.apps.core.testhelpers.TestDeliveryStoreMixin
+.. autoclass:: devilry.apps.core.testhelpers.DeliveryStoreTestMixin
 
 .. currentmodule:: devilry.apps.core.deliverystore
 
