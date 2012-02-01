@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignment_group", comp:"iexact", value:15},
-                      {field:"assignment_group__is_open", comp:"<", value:true},
+        filters: [{field:"assignment_group", comp:"<", value:15},
+                      {field:"assignment_group__is_open", comp:"iexact", value:true},
                       {field:"assignment_group__name", comp:">=", value:"My example value"}],
         orderby: ["id", "-text", "deadline", "assignment_group", "number_of_deliveries", "feedbacks_published"],
         start: 10,
@@ -137,8 +137,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignment_group", comp:"iexact", value:15},
-         {field:"assignment_group__is_open", comp:"<", value:true},
+        [{field:"assignment_group", comp:"<", value:15},
+         {field:"assignment_group__is_open", comp:"iexact", value:true},
          {field:"assignment_group__name", comp:">=", value:"My example value"}]
 
 Deadlines can be filtered on the following *fields*:

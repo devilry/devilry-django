@@ -34,7 +34,7 @@ Request example
         query: 'a query string',
         filters: [{field:"anonymous", comp:"startswith", value:true},
                       {field:"delivery_types", comp:"contains", value:20},
-                      {field:"long_name", comp:"startswith", value:"My example value"}],
+                      {field:"long_name", comp:"endswith", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time", "delivery_types", "anonymous", "scale_points_percent"],
         start: 10,
         limit: 100
@@ -131,7 +131,7 @@ Example:
 
         [{field:"anonymous", comp:"startswith", value:true},
          {field:"delivery_types", comp:"contains", value:20},
-         {field:"long_name", comp:"startswith", value:"My example value"}]
+         {field:"long_name", comp:"endswith", value:"My example value"}]
 
 Assignments can be filtered on the following *fields*:
 

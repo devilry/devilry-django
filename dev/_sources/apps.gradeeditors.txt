@@ -158,6 +158,25 @@ Example code
     :language: javascript
 
 
+
+Using the RESTful API to get data grade editor data
+###################################################
+
+It is common to use the ``StaticFeedback`` API to get data from a running
+Devilry instance. This is explained in the `RESTful python bindings`_ page on our wiki.
+
+If you want to have more detailes than the data provided by the
+``StaticFeedback`` RESTful API, you can fetch data from the gradeeditor APIs
+directly. Their URLs are::
+
+    /gradeeditors/administrator/restfulsimplifiedconfig
+    /gradeeditors/administrator/restfulsimplifiedfeedbackdraft
+
+However one challenge is that drafts are *personal*. This means that you will
+only be able to get drafts that you have made. We will provide an API for
+administrators to get **all** drafts some time in the future.
+
+
 API
 ####################
 
@@ -169,6 +188,8 @@ API
 
 
 
+
 .. _JSON: http://en.wikipedia.org/wiki/Json
 .. _ConfigEditorWindow: javascript/index.html#/api/devilry.gradeeditors.ConfigEditorWindow
 .. _DraftEditorWindow: javascript/index.html#/api/devilry.gradeeditors.DraftEditorWindow
+.. _`RESTful python bindings`: https://github.com/devilry/devilry-django/wiki/Official-RESTful-Python-bindings

@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignmentgroup", comp:"iexact", value:15},
-                      {field:"assignmentgroup__parentnode", comp:"<", value:15},
+        filters: [{field:"assignmentgroup", comp:"<=", value:15},
+                      {field:"assignmentgroup__parentnode", comp:">=", value:15},
                       {field:"assignmentgroup__parentnode__parentnode", comp:"contains", value:15}],
         orderby: ["user", "-id", "assignmentgroup"],
         start: 10,
@@ -81,8 +81,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignmentgroup", comp:"iexact", value:15},
-         {field:"assignmentgroup__parentnode", comp:"<", value:15},
+        [{field:"assignmentgroup", comp:"<=", value:15},
+         {field:"assignmentgroup__parentnode", comp:">=", value:15},
          {field:"assignmentgroup__parentnode__parentnode", comp:"contains", value:15}]
 
 examiners can be filtered on the following *fields*:

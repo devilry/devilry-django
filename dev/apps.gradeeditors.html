@@ -408,6 +408,20 @@ new <a class="reference internal" href="core.models.html#devilry.apps.core.model
 </div>
 </div>
 </div>
+<div class="section" id="using-the-restful-api-to-get-data-grade-editor-data">
+<h2>Using the RESTful API to get data grade editor data<a class="headerlink" href="#using-the-restful-api-to-get-data-grade-editor-data" title="Permalink to this headline">¶</a></h2>
+<p>It is common to use the <tt class="docutils literal"><span class="pre">StaticFeedback</span></tt> API to get data from a running
+Devilry instance. This is explained in the <a class="reference external" href="https://github.com/devilry/devilry-django/wiki/Official-RESTful-Python-bindings">RESTful python bindings</a> page on our wiki.</p>
+<p>If you want to have more detailes than the data provided by the
+<tt class="docutils literal"><span class="pre">StaticFeedback</span></tt> RESTful API, you can fetch data from the gradeeditor APIs
+directly. Their URLs are:</p>
+<div class="highlight-python"><pre>/gradeeditors/administrator/restfulsimplifiedconfig
+/gradeeditors/administrator/restfulsimplifiedfeedbackdraft</pre>
+</div>
+<p>However one challenge is that drafts are <em>personal</em>. This means that you will
+only be able to get drafts that you have made. We will provide an API for
+administrators to get <strong>all</strong> drafts some time in the future.</p>
+</div>
 <div class="section" id="module-devilry.apps.gradeeditors.registry">
 <span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.apps.gradeeditors.registry" title="Permalink to this headline">¶</a></h2>
 <dl class="attribute">
@@ -668,6 +682,7 @@ in the database. The <tt class="docutils literal"><span class="pre">StaticFeedba
 <li><a class="reference internal" href="#id1">Example code</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#using-the-restful-api-to-get-data-grade-editor-data">Using the RESTful API to get data grade editor data</a></li>
 <li><a class="reference internal" href="#module-devilry.apps.gradeeditors.registry">API</a></li>
 </ul>
 </li>

@@ -32,7 +32,7 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"end_time", comp:"contains", value:"2010-02-22 22:32:10"},
+        filters: [{field:"end_time", comp:"exact", value:"2010-02-22 22:32:10"},
                       {field:"long_name", comp:">=", value:"My example value"},
                       {field:"parentnode", comp:"exact", value:15}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "start_time", "end_time"],
@@ -113,7 +113,7 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"end_time", comp:"contains", value:"2010-02-22 22:32:10"},
+        [{field:"end_time", comp:"exact", value:"2010-02-22 22:32:10"},
          {field:"long_name", comp:">=", value:"My example value"},
          {field:"parentnode", comp:"exact", value:15}]
 

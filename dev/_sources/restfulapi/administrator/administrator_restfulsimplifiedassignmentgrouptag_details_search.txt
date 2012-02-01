@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignment_group", comp:">", value:15},
-                      {field:"assignment_group__parentnode", comp:"startswith", value:15},
-                      {field:"assignment_group__parentnode__parentnode", comp:">=", value:15}],
+        filters: [{field:"assignment_group", comp:"contains", value:15},
+                      {field:"assignment_group__parentnode", comp:"iexact", value:15},
+                      {field:"assignment_group__parentnode__parentnode", comp:"icontains", value:15}],
         orderby: ["id", "-assignment_group", "tag"],
         start: 10,
         limit: 100
@@ -81,9 +81,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignment_group", comp:">", value:15},
-         {field:"assignment_group__parentnode", comp:"startswith", value:15},
-         {field:"assignment_group__parentnode__parentnode", comp:">=", value:15}]
+        [{field:"assignment_group", comp:"contains", value:15},
+         {field:"assignment_group__parentnode", comp:"iexact", value:15},
+         {field:"assignment_group__parentnode__parentnode", comp:"icontains", value:15}]
 
 assignment group tags can be filtered on the following *fields*:
 
