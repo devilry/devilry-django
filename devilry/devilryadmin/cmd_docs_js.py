@@ -5,22 +5,32 @@ Requires JSDuck: https://github.com/nene/jsduck
 """
 from subprocess import call
 from os import walk, makedirs
-from os.path import exists, join
+from os.path import exists, join, abspath
 from shutil import rmtree
 from argparse import RawDescriptionHelpFormatter
 from sys import exit
 import webbrowser
 
 from common import (get_docs_javascriptbuild_dir, DevilryAdmArgumentParser,
-                    getprogname, getappsdir)
+                    getprogname)
+from devilry.utils.importutils import get_installed_apps, get_staticdir_from_appname
 
 
 def find_javascriptfiles():
     jsfiles = []
-    for root, dirs, files in walk(getappsdir()):
-        is_devilry_doc = 'extjs_classes' in root
-        if is_devilry_doc:
+    extjssources = abspath(join(get_staticdir_from_appname('extjshelpers'), 'extjs'))
+    jasminesources = abspath(join(get_staticdir_from_appname('jsapp'), 'jasmine'))
+    for appdir, module, appname in get_installed_apps():
+        for root, dirs, files in walk(join(appdir, 'static')):
+            if extjssources in abspath(root): # Skip extjs
+                continue
+            if jasminesources in abspath(root): # Skip jasmine sources
+                continue
+            if 'jasminespecs' in root: # Skip jasmine tests
+                continue
             for filename in files:
+                if filename in ('all-classes.js', 'app-all.js'): # Skip compiled apps
+                    continue
                 if filename.endswith('.js'):
                     filepath = join(root, filename)
                     jsfiles.append(filepath)
