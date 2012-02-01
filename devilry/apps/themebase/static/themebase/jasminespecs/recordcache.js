@@ -71,13 +71,13 @@ describe("RecordCache", function() {
         }, this);
         expect(nomatch).toBeNull();
 
-        var duck1100 = recordCache._findByInStores(function(record) {
+        var duck1100 = recordCache.findBy(function(record) {
             return record.get('id') == 1;
         }, this);
         expect(duck1100).toNotEqual(null);
         expect(duck1100.get('title')).toEqual('duck1100');
 
-        var helloworld = recordCache._findByInCache(function(record) {
+        var helloworld = recordCache.findBy(function(record) {
             return record.get('id') == 2;
         }, this);
         expect(helloworld).toNotEqual(null);

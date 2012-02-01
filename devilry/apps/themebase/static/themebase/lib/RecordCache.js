@@ -71,11 +71,6 @@ Ext.define('themebase.RecordCache', {
         return foundRecord;
     },
 
-    put: function(record) {
-        var id = record.get(this.idProperty);
-        this.cache[id] = record;
-    },
-
     findBy: function(fn, scope) {
         var record;
         record = this._findByInCache(fn, scope);
@@ -87,5 +82,10 @@ Ext.define('themebase.RecordCache', {
             return record;
         }
         return null;
-    }
+    },
+
+    put: function(record) {
+        var id = record.get(this.idProperty);
+        this.cache[id] = record;
+    },
 });
