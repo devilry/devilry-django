@@ -39,6 +39,14 @@ class RegistryItem(object):
     .. attribute:: description
 
         A longer description of the grade editor.
+
+    .. attribute:: config_editor_url
+
+        The URL to the config editor.
+
+    .. attribute:: draft_editor_url::
+
+        The URL to the draft editor.
     """
     def __str__(self):
         return self.title

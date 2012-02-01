@@ -10,6 +10,22 @@ from registry import gradeeditor_registry
 class Config(models.Model):
     """
     Stored by admins.
+
+    .. attribute:: gradeeditorid
+
+        A ``gradeeditorid`` that is used to get the
+        :class:`devilry.apps.gradeeditors.registry.RegistryItem` for this
+        config.
+
+    .. attribute:: assignment
+
+        The primary key. This means we have one config for each assignment.
+
+    .. attribute:: config
+
+        A text field where the config editor can store its data in any format
+        it chooses. JSON is usually a good choice because of easy interraction
+        with JavaScript.
     """
     gradeeditorid = models.SlugField()
     assignment = models.OneToOneField(Assignment, related_name='gradeeditor_config',
@@ -20,6 +36,15 @@ class Config(models.Model):
         return gradeeditor_registry[self.gradeeditorid]
 
     def clean(self):
+        """
+        Gets a :class:`devilry.apps.gradeeditors.registry.RegistryItem` from
+        the ``gradeeditor_registry`` in
+        :mod:`devilry.apps.gradeeditor.registry`.
+
+        Uses
+        :meth:`devilry.apps.gradeeditors.registry.RegistryItem.validate_config`
+        to validate the config before saving it.
+        """
         try:
             config = self._get_gradeeditor()
         except KeyError, e:

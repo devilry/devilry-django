@@ -1,3 +1,4 @@
+/** Config editor window. */
 Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradeconfigeditormainwin',

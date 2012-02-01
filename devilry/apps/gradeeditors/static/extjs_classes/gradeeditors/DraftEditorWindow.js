@@ -1,3 +1,4 @@
+/** Draft editor window. */
 Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditormainwin',
