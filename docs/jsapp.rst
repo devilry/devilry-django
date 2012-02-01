@@ -180,7 +180,7 @@ selenium test case in ``<appdir>/seleniumtests/jasmine.py`` like so::
 
     from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 
-    class TestCreateNewAssignment(SeleniumTestCase):
+    class TestJasmine(SeleniumTestCase):
         appname = 'themebase'
         def test_jasmine(self):
             self.runJasmineTests()
