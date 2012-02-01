@@ -15,11 +15,6 @@ Ext.define('subjectadmin.view.ActionList', {
         '<ul>'
     ],
 
-
-    /**
-     * @cfg {String} title (required)
-     */
-
     /**
      * @cfg {[Object]} links (required)
      *
