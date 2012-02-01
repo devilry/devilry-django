@@ -16,6 +16,7 @@ class JsAppView(View):
     with_css = False
     include_old_exjsclasses = False
     libs = []
+    apptype = 'app'
 
     @classonlymethod
     def as_appview(cls, appname, **kwargs):
@@ -25,6 +26,7 @@ class JsAppView(View):
         kw = {'appname': self.appname,
               'with_css': self.with_css,
               'libs': self.libs,
+              'apptype': self.apptype,
               'include_old_exjsclasses': self.include_old_exjsclasses}
         kw.update(extra)
         return render(request, 'jsapp/{0}.django.html'.format(self.templatename), kw)
@@ -57,3 +59,7 @@ def create_urls(appname, with_css=False, libs=[], include_old_exjsclasses=False)
     return (url(r'^ui$', login_required(JsAppView.as_appview(appname, **kwargs))),
             url(r'^test$', JsAppTestView.as_appview(appname, **kwargs)),
             url(r'^jasminetest$', JsAppJasmineTestView.as_appview(appname, **kwargs)))
+
+def create_jasmine_url(appname, with_css=False, libs=[], include_old_exjsclasses=False, apptype='app'):
+    kwargs = dict(with_css=with_css, libs=libs, include_old_exjsclasses=include_old_exjsclasses, apptype=apptype)
+    return url(r'^jasminetest$', JsAppJasmineTestView.as_appview(appname, **kwargs))

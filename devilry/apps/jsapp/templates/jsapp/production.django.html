@@ -28,10 +28,10 @@
 
 {% block appjs %}
     <script type="text/javascript">
-        Ext.require('subjectadmin.Application');
+        Ext.require('{{ appname }}.Application');
 
         Ext.onReady(function() {
-            Ext.create('subjectadmin.Application');
+            Ext.create('{{ appname }}.Application');
         });
     </script>
 {% endblock %}

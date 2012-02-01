@@ -34,14 +34,16 @@
                             '{{ lib }}': '{{ DEVILRY_STATIC_URL }}/{{ lib }}/lib',
                         {% endfor %}
                         // Add the app here to be able to require Application.js
-                        '{{ appname }}': '{{ DEVILRY_STATIC_URL }}/{{ appname }}/app'
+                        '{{ appname }}': '{{ DEVILRY_STATIC_URL }}/{{ appname }}/{{ apptype }}'
                     }
                 });
 
-                // Load RestProxy synchronously. This is required to make it
-                // possible for model classes to use RestProxy at load time (when
-                // the JS file is loaded).
-                Ext.syncRequire('devilry.extjshelpers.RestProxy');
+                {% if include_old_exjsclasses %}
+                    // Load RestProxy synchronously. This is required to make it
+                    // possible for model classes to use RestProxy at load time (when
+                    // the JS file is loaded).
+                    Ext.syncRequire('devilry.extjshelpers.RestProxy');
+                {% endif %}
             </script>
         {% else %}
             <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext.js"></script>

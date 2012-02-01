@@ -20,10 +20,10 @@
 
 {% block appjs %}
     <script type="text/javascript">
-        Ext.require('subjectadmin.TestApplication');
+        Ext.require('{{ appname }}.TestApplication');
 
         Ext.onReady(function() {
-            Ext.create('subjectadmin.TestApplication');
+            Ext.create('{{ appname }}.TestApplication');
         });
     </script>
 {% endblock %}
