@@ -63,7 +63,7 @@ static/appname/app/Application.js
 A subclass of ``Ext.app.Application``.
 
 static/appname/app/TestApplication.js
----------------------------------
+-------------------------------------
 A subclass of ``<appname>.Application``.
 
 
@@ -137,7 +137,7 @@ Tests
 #######
 
 Test views with Selenium
-------------------------
+========================
 
 Use the ``TestApplication.js`` views with selenium to test views. Your selenium
 tests should inherit from
@@ -161,14 +161,14 @@ You must be running the Django server at port 8080 for this to work.
 
 
 Mock everything!
-----------------
+================
 
 ``TestApplication.js`` must not require **any** persistence on the server. Mock
 everything. See the ``devilry.apps.subjectadmin`` for examples.
 
 
 Unit tests with Jasmine
------------------------
+=======================
 
 Add Jasmine test specs to ``static/<appname>/jasminespecs/``. 
 Use the ``JasmineTestApplication.js`` view
@@ -188,7 +188,7 @@ Code conventions
 ################
 
 Require/include order
----------------------
+=====================
 
 The order of statements in ``requires: [...]`` should be:
 
@@ -213,7 +213,7 @@ Example::
 
 
 Private methods
----------------
+===============
 
 Private methods should be prefixed with ``_``. These methods should **never**
 be used outside the class, not even in subclasses.

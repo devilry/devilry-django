@@ -6,6 +6,7 @@
     i18n
 
     plugins
+    jsapp
 
     simplified
     restful
