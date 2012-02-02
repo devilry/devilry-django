@@ -47,9 +47,6 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                         cls: 'centerbody',
                         links: [{
                             url: '#',
-                            text: dtranslate('themebase.edit-something')
-                        }, {
-                            url: '#',
                             text: dtranslate('subjectadmin.assignment.manage-students')
                         }, {
                             url: '#',
