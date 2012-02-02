@@ -154,6 +154,7 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @method
      */
     create: function(operation, callback, scope) {
+        //console.log('create', operation);
         operation.setStarted();
         var records = operation.getRecords();
 
@@ -178,6 +179,7 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @method
      */
     read: function(operation, callback, scope) {
+        //console.log('read', operation);
         var records = this._getRecords();
         operation.resultSet = Ext.create('Ext.data.ResultSet', {
             records: records,
@@ -197,7 +199,7 @@ Ext.define('jsapp.HiddenElementProxy', {
      * @param {Object} scope Scope to execute the callback function in
      * @method
      */
-    update: function() {
+    update: function(operation) {
         console.error('update is not supported yet');
     },
     

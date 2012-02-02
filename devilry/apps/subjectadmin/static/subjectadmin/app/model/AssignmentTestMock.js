@@ -6,6 +6,7 @@ Ext.define('subjectadmin.model.AssignmentTestMock', {
     proxy: {
         type: 'hiddenelement',
         id: 'simplifiedassignmentproxy',
+        //show: true,
 
         // We override this to force some error messages. This can be used to
         // test that errors are shown correctly, however not that errors are actually

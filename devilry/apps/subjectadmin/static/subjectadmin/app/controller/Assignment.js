@@ -53,8 +53,25 @@ Ext.define('subjectadmin.controller.Assignment', {
     },
 
     _onLoadAssignment: function(records, operation) {
-        console.log(records);
         console.log(operation);
+        if(operation.success) {
+            this._onLoadAssignmentSuccess(records[0]);
+        } else {
+            this._onLoadAssignmentFailure(operation);
+        }
+    },
+
+    _onLoadAssignmentFailure: function(operation) {
+        this.getAssignmentView().removeAll();
+        this.getAssignmentView().add({
+            xtype: 'box',
+            region: 'main',
+            html: 'Does not exist'
+        });
+    },
+
+    _onLoadAssignmentSuccess: function(record) {
+        console.log('success', record);
     },
 
     _onEditGradeEditor: function() {

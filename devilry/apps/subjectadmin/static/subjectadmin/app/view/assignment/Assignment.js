@@ -49,7 +49,7 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                             text: dtranslate('themebase.edit-something')
                         }, {
                             url: '#',
-                            text: dtranslate('subjectadmin.assignment.browse-and-manage-students')
+                            text: dtranslate('subjectadmin.assignment.manage-students')
                         }, {
                             url: '#',
                             text: dtranslate('subjectadmin.assignment.manage-deadlines')

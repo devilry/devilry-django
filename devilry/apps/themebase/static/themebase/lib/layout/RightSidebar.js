@@ -47,5 +47,5 @@ Ext.define('themebase.layout.RightSidebar', {
         }
 
         return items;
-    },
+    }
 });

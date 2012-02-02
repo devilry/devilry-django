@@ -33,7 +33,16 @@ Ext.define('subjectadmin.controller.AssignmentTestMock', {
             short_name:'extra'
         }];
 
-        this.getSingleAssignmentTestMockStore().proxy.setData(initialData);
+        // Add data to the proxy. This will be available in the store after a
+        // load(), thus simulating loading from a server.
+        var store = this.getSingleAssignmentTestMockStore();
+        Ext.Array.each(initialData, function(data) {
+            var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
+            record.phantom = true; // Force create
+            record.save();
+        }, this);
+
+        //this.getSingleAssignmentTestMockStore().proxy.setData(initialData);
         this.callParent();
     },
 
