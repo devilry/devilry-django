@@ -94,10 +94,12 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                 items: [{
                     xtype: 'editablesidebarbox',
                     itemId: 'gradeeditor',
+                    cls: 'gradeeditor-editablesidebarbox',
                     title: dtranslate('subjectadmin.assignment.gradeeditor')
                 }, {
                     xtype: 'editablesidebarbox',
                     itemId: 'publishingtime',
+                    cls: 'publishingtime-editablesidebarbox',
                     title: dtranslate('themebase.loading'),
                     data: {text: ''}
                 }]

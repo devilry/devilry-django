@@ -4,6 +4,7 @@
 Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
     extend: 'Ext.window.Window',
     alias: 'widget.editpublishingtime',
+    cls: 'editpublishingtime',
     requires: [
         'themebase.SaveButton'
     ],
@@ -18,17 +19,18 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
             width: 330,
             height: 270,
             modal: true,
-            title: dtranslate('subjectadmin.assignment.editpublishing.title'),
+            title: dtranslate('subjectadmin.assignment.editpublishingtime.title'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
+                autoScroll: true,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
                 },
                 items: [{
                     xtype: 'box',
-                    html: dtranslate('subjectadmin.assignment.editpublishing.help'),
+                    html: dtranslate('subjectadmin.assignment.editpublishingtime.help'),
                     margin: {bottom: 20}
                 }, {
                     xtype: 'alertmessagelist'

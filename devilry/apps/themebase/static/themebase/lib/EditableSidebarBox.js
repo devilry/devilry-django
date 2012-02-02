@@ -1,7 +1,6 @@
 Ext.define('themebase.EditableSidebarBox', {
     extend: 'Ext.container.Container',
     alias: 'widget.editablesidebarbox',
-    cls: 'editablesidebarbox',
 
     requires: [
         'themebase.SidebarTitle'
@@ -31,7 +30,7 @@ Ext.define('themebase.EditableSidebarBox', {
     buttonText: dtranslate('themebase.edit'),
 
     initComponent: function() {
-        var cssclasses = 'createnewassignmentform form-stacked';
+        var cssclasses = 'editablesidebarbox';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }

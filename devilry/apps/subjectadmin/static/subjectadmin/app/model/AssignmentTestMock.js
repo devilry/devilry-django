@@ -11,7 +11,7 @@ Ext.define('subjectadmin.model.AssignmentTestMock', {
         // We override this to force some error messages. This can be used to
         // test that errors are shown correctly, however not that errors are actually
         // received correctly.
-        validator: function(action, operation) {
+        validator: function(operation) {
             var record = operation.getRecords()[0];
             if(record.get('parentnode') == '3') {
                 operation.responseData = {
@@ -25,6 +25,22 @@ Ext.define('subjectadmin.model.AssignmentTestMock', {
                             short_name: ['Invalid short name'],
                             long_name: ['Invalid', 'Long name']
                         }
+                    }
+                };
+                operation.setException({
+                    status: 400,
+                    statusText: "BAD REQUEST"
+                });
+            }
+
+            // Trigger BAD REQUEST for publishing_time at the first of every month
+            if(record.get('publishing_time').getDate() == 1) {
+                operation.responseData = {
+                    items: {
+                        errormessages: [
+                            'This is a global error message',
+                            'It is triggered since the day of month is "1" (for testing only).'
+                        ]
                     }
                 };
                 operation.setException({
