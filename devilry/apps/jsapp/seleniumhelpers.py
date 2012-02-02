@@ -34,6 +34,12 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
 
     def setUp(self):
         self.driver = self.getDriver()
+        self.afterSetUp()
+
+    def afterSetUp(self):
+        """
+        Override this instead of ``setUp()``.
+        """
 
     def tearDown(self):
         self.driver.close()
