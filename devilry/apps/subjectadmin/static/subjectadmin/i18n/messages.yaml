@@ -11,9 +11,15 @@ subjectadmin.assignment.long_name.label: Name
 
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
+subjectadmin.assignment.notpublished.title: Not published
+subjectadmin.assignment.notpublished.body: 'Will be published {publishing_time}.'
+subjectadmin.assignment.published.title: Published
+subjectadmin.assignment.published.body: 'Publishing time was {publishing_time}.'
 
 subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
+
+subjectadmin.assignment.gradeeditor: Grade editor
 
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'
@@ -24,4 +30,4 @@ subjectadmin.createnewassignment.title: Create new assignment
 subjectadmin.dashboard.createnewassignment: Create new assignment
 subjectadmin.dashboard.browseall: Browse everything i have access to
 subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
-subjectadmin.dashboard.overview-and-statistics: Overview and statistics
+"subjectadmin.dashboard.overview-and-statistics": Overview and statistics

@@ -6,17 +6,24 @@ Ext.define('subjectadmin.controller.AssignmentTestMock', {
     ],
 
     init: function() {
+        var dateformat = 'Y-m-d\\TH:i:s';
+        var now = new Date();
+        var yesterday = Ext.Date.format(Ext.Date.add(now, Ext.Date.DAY, -1), dateformat);
+        var nextmonth = Ext.Date.format(Ext.Date.add(now, Ext.Date.MONTH, 1), dateformat);
         var initialData = [{
             id: 0,
             parentnode__parentnode__short_name:'duck1100',
             parentnode__short_name:'2012h',
             long_name:'The one and only week one',
+            publishing_time: yesterday,
             short_name:'week1'
         }, {
             id: 1,
             parentnode__parentnode__short_name:'duck1100',
             parentnode__short_name:'2012h',
             long_name:'The one and only week two',
+            //publishing_time: "2012-01-30T00:00:00", //Ext.Date.format(new Date(), 'Y-m-d H:i'),
+            publishing_time: nextmonth,
             short_name:'week2'
         }, {
             id: 2,

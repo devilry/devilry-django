@@ -12,13 +12,13 @@ Ext.define('themebase.EditableSidebarBox', {
      */
 
     /**
-     * @cfg {Array|Ext.XTemplate} tpl
+     * @cfg {Array|Ext.XTemplate} bodyTpl
      */
-    tpl: ['{text}'],
+    bodyTpl: ['{text}'],
 
     /**
      * @cfg {Object} data
-     * Initial data for the ``tpl``.
+     * Initial data for the ``bodyTpl``.
      */
     data: {
         text: dtranslate('themebase.loading')
@@ -51,15 +51,17 @@ Ext.define('themebase.EditableSidebarBox', {
                 }]
             }, {
                 xtype: 'box',
-                tpl: this.tpl
+                itemId: 'body',
+                html: ''
             }]
         });
         this.callParent(arguments);
+        this.updateBody(this.bodyTpl, this.data);
     },
 
-
-    updateData: function(config) {
-        this.down('box').update(data);
+    updateBody: function(bodyTpl, data) {
+        var tpl = Ext.create('Ext.XTemplate', bodyTpl)
+        this.getComponent('body').update(tpl.apply(data));
     },
 
     updateTitle: function(title) {

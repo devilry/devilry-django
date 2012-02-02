@@ -39,7 +39,10 @@ Ext.define('subjectadmin.controller.Assignment', {
             },
             'viewport assignment editablesidebarbox[itemId=publishingtime] button': {
                 click: this._onEditPublishingTime
-            }
+            },
+            'viewport assignment editablesidebarbox[itemId=publishingtime] button': {
+                click: this._onEditPublishingTime
+            },
         });
     },
 
@@ -83,8 +86,26 @@ Ext.define('subjectadmin.controller.Assignment', {
     },
 
     _onLoadAssignmentSuccess: function(record) {
-        console.log('success', record);
+        this.assignmentRecord = record;
         this.getPrimaryTitle().update(record.get('long_name'));
+        this._updatePublishingTimeBox();
+    },
+
+    _updatePublishingTimeBox: function() {
+        var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
+        var title, tpl;
+        if(published) {
+            title = dtranslate('subjectadmin.assignment.published.title');
+            tpl = dtranslate('subjectadmin.assignment.published.body');
+        } else {
+            title = dtranslate('subjectadmin.assignment.notpublished.title');
+            tpl = dtranslate('subjectadmin.assignment.notpublished.body');
+        }
+        var publishing_time = this.assignmentRecord.get('publishing_time');
+        this.getPublishingTimeSidebarBox().updateTitle(title);
+        this.getPublishingTimeSidebarBox().updateBody([tpl], {
+            publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
+        });
     },
 
     _onEditGradeEditor: function() {
@@ -93,5 +114,5 @@ Ext.define('subjectadmin.controller.Assignment', {
 
     _onEditPublishingTime: function() {
         console.log('pub', this.getPublishingTimeSidebarBox());
-    },
+    }
 });
