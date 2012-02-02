@@ -136,18 +136,49 @@ Ext.define('devilry.extjshelpers.RestProxy', {
         });
     },
 
+    /** Set the ``result_fieldgroups`` parameter for the devilry restful API.
+     *
+     * @param {[String]} [fieldgroups] Restful result_fieldgroups.
+     *
+     * Example:
+     *
+     *      setDevilryResultFieldgroups(['everything', 'evenmore']);
+     */
     setDevilryResultFieldgroups: function(fieldgroups) {
         if(Ext.typeOf(fieldgroups) !== 'array') {
             throw "setDevilryResultFieldgroups(): fieldgroups must be an array";
         }
         this.extraParams.result_fieldgroups = Ext.JSON.encode(fieldgroups);
     },
+
+    /**
+     * Set filters on the devilry restful format
+     *
+     * @param {[Object]} [filters] Restful filters.
+     *
+     * Example:
+     *
+     *      setDevilryFilters([
+     *          {field:"long_name", comp:"<", value:"My example value"},
+     *          {field:"parentnode", comp:"iexact", value:15}
+     *      ]);
+     * */
     setDevilryFilters: function(filters) {
         if(Ext.typeOf(filters) !== 'array') {
             throw "setDevilryFilters(): filters must be an array";
         }
         this.extraParams.filters = Ext.JSON.encode(filters);
     },
+
+    /**
+     * Set the orderby paramaeter to the devilry restful API.
+     *
+     * @param {[String]} [fieldgroups] Array of field names.
+     *
+     * Example:
+     *
+     *      setDevilryOrderby(['-short_name', 'long_name']);
+     */
     setDevilryOrderby: function(orderby) {
         if(Ext.typeOf(orderby) !== 'array') {
             throw "setDevilryOrderby(): orderby must be an array";
