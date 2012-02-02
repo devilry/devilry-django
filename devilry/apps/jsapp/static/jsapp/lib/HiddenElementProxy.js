@@ -139,6 +139,11 @@ Ext.define('jsapp.HiddenElementProxy', {
         return records;
     },
 
+    _updateRecord: function(record) {
+        var existing = this.allItems.get(record.get('id'));
+        Ext.apply(existing, record.data);
+    },
+
     setData: function(dataArray) {
         Ext.Array.each(dataArray, function(data) {
             var record = this._getRecord(data);
@@ -158,11 +163,36 @@ Ext.define('jsapp.HiddenElementProxy', {
         operation.setStarted();
         var records = operation.getRecords();
 
-        Ext.callback(this.validator, this, ['create', operation]);
+        Ext.callback(this.validator, this, [operation]);
 
         if(!operation.hasException()) {
             Ext.Array.each(records, function(record) {
                 this._addRecord(record);
+            }, this);
+            this._updateContainer();
+            operation.setSuccessful();
+        }
+        operation.setCompleted();
+        Ext.callback(callback, scope || this, [operation]);
+    },
+    
+    /**
+     * Performs the given update operation.
+     * @param {Ext.data.Operation} operation The Operation to perform
+     * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
+     * @param {Object} scope Scope to execute the callback function in
+     * @method
+     */
+    update: function(operation, callback, scope) {
+        operation.setStarted();
+        var records = operation.getRecords();
+
+        console.log(operation);
+        Ext.callback(this.validator, this, [operation]);
+
+        if(!operation.hasException()) {
+            Ext.Array.each(records, function(record) {
+                this._updateRecord(record);
             }, this);
             this._updateContainer();
             operation.setSuccessful();
@@ -190,17 +220,6 @@ Ext.define('jsapp.HiddenElementProxy', {
         operation.setSuccessful();
         operation.setCompleted();
         Ext.callback(callback, scope || me, [operation]);
-    },
-    
-    /**
-     * Performs the given update operation.
-     * @param {Ext.data.Operation} operation The Operation to perform
-     * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
-     * @param {Object} scope Scope to execute the callback function in
-     * @method
-     */
-    update: function(operation) {
-        console.error('update is not supported yet');
     },
     
     /**
