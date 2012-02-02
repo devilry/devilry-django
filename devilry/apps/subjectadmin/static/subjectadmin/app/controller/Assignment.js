@@ -11,10 +11,9 @@ Ext.define('subjectadmin.controller.Assignment', {
         'ActionList'
     ],
 
-    //stores: [
-    //],
-    //models: [
-    //],
+    stores: [
+        'SingleAssignment'
+    ],
 
     refs: [{
         ref: 'gradeEditorSidebarBox',
@@ -22,6 +21,9 @@ Ext.define('subjectadmin.controller.Assignment', {
     }, {
         ref: 'publishingTimeSidebarBox',
         selector: 'editablesidebarbox[itemId=publishingtime]'
+    }, {
+        ref: 'assignmentView',
+        selector: 'assignment'
     }],
 
     init: function() {
@@ -33,6 +35,26 @@ Ext.define('subjectadmin.controller.Assignment', {
                 click: this._onEditPublishingTime
             }
         });
+    },
+
+    onLaunch: function() {
+        this.subject_shortname = this.getAssignmentView().subject_shortname;
+        this.period_shortname = this.getAssignmentView().period_shortname;
+        this.assignment_shortname = this.getAssignmentView().assignment_shortname;
+        this._loadAssignment();
+    },
+
+    _loadAssignment: function() {
+        var store = this.getSingleAssignmentStore();
+        store.loadAssignment(
+            this.subject_shortname, this.period_shortname, this.assignment_shortname,
+            this._onLoadAssignment, this
+        );
+    },
+
+    _onLoadAssignment: function(records, operation) {
+        console.log(records);
+        console.log(operation);
     },
 
     _onEditGradeEditor: function() {
