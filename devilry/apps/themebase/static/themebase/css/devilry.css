@@ -12578,22 +12578,31 @@ input[type=submit].btn::-moz-focus-inner {
   text-decoration: underline;
 }
 /* line 34, ../sass/_rightsidebarlayout.scss */
-.rightsidebarlayout .sidebarcolumn h2 {
+.rightsidebarlayout .sidebarcolumn h2.sidebartitle {
   color: #999999;
   padding: 15px 0 10px 0;
   font-weight: normal;
+  font-size: 18px;
 }
-/* line 39, ../sass/_rightsidebarlayout.scss */
+/* line 40, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled {
   margin-left: 4px;
 }
-/* line 41, ../sass/_rightsidebarlayout.scss */
+/* line 42, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled > li {
   margin-bottom: 20px;
 }
-/* line 43, ../sass/_rightsidebarlayout.scss */
+/* line 44, ../sass/_rightsidebarlayout.scss */
 .rightsidebarlayout .sidebarcolumn ul.unstyled > li li {
   margin: 6px 0;
+}
+/* line 50, ../sass/_rightsidebarlayout.scss */
+.rightsidebarlayout .sidebarcolumn .editablesidebarbox {
+  margin-bottom: 40px;
+}
+/* line 52, ../sass/_rightsidebarlayout.scss */
+.rightsidebarlayout .sidebarcolumn .editablesidebarbox h2.sidebartitle {
+  padding: 0;
 }
 
 /* line 615, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */

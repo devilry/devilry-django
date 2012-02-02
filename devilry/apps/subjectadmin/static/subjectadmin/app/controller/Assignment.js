@@ -16,16 +16,30 @@ Ext.define('subjectadmin.controller.Assignment', {
     //models: [
     //],
 
-    //refs: [{
-        ////ref: 'form',
-        ////selector: 'createnewassignmentform'
-    //}],
+    refs: [{
+        ref: 'gradeEditorSidebarBox',
+        selector: 'editablesidebarbox[itemId=gradeeditor]'
+    }, {
+        ref: 'publishingTimeSidebarBox',
+        selector: 'editablesidebarbox[itemId=publishingtime]'
+    }],
 
-    //init: function() {
-        ////this.control({
-            ////'viewport createnewassignmentform': {
-                ////render: this._onRenderForm,
-            ////}
-        ////});
-    //}
+    init: function() {
+        this.control({
+            'viewport assignment editablesidebarbox[itemId=gradeeditor] button': {
+                click: this._onEditGradeEditor
+            },
+            'viewport assignment editablesidebarbox[itemId=publishingtime] button': {
+                click: this._onEditPublishingTime
+            }
+        });
+    },
+
+    _onEditGradeEditor: function() {
+        console.log('grade', this.getGradeEditorSidebarBox());
+    },
+
+    _onEditPublishingTime: function() {
+        console.log('pub', this.getPublishingTimeSidebarBox());
+    },
 });

@@ -7,6 +7,8 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
     cls: 'assignment sidebarlayout',
     requires: [
         'themebase.layout.RightSidebar',
+        'themebase.CenterTitle',
+        'themebase.EditableSidebarBox',
         'subjectadmin.view.ActionList'
     ],
 
@@ -37,8 +39,8 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                     xtype: 'container',
                     cls: 'centerbox',
                     items: [{
-                        xtype: 'box',
-                        html: Ext.String.format('<h2 class="centertitle">{0}</h2>', this.assignment_shortname),
+                        xtype: 'centertitle',
+                        title: this.assignment_shortname,
                     }, {
                         xtype: 'actionlist',
                         cls: 'centerbody',
@@ -66,10 +68,8 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                         cls: 'centerbox',
                         columnWidth: .5,
                         items: [{
-                            xtype: 'box',
-                            html: Ext.String.format('<h2 class="centertitle">{0}</h2>',
-                                Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25)
-                            ),
+                            xtype: 'centertitle',
+                            title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25)
                         }, {
                             xtype: 'box',
                             cls: 'centerbody',
@@ -80,10 +80,8 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                         columnWidth: .5,
                         cls: 'centerbox',
                         items: [{
-                            xtype: 'box',
-                            html: Ext.String.format('<h2 class="centertitle">{0}</h2>',
-                                Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming-deadlines'), 25)
-                            ),
+                            xtype: 'centertitle',
+                            title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming-deadlines'), 25)
                         }, {
                             xtype: 'box',
                             cls: 'centerbody',
@@ -96,8 +94,14 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                 border: false,
                 region: 'sidebar',
                 items: [{
-                    xtype: 'box',
-                    html: 'Something'
+                    xtype: 'editablesidebarbox',
+                    itemId: 'gradeeditor',
+                    title: dtranslate('subjectadmin.assignment.gradeeditor')
+                }, {
+                    xtype: 'editablesidebarbox',
+                    itemId: 'publishingtime',
+                    title: dtranslate('themebase.loading'),
+                    data: {text: ''}
                 }]
             }]
         });

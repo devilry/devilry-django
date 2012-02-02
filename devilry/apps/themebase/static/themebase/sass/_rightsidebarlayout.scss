@@ -31,10 +31,11 @@
             color: #fff;
             text-decoration: underline;
         }
-        h2 {
+        h2.sidebartitle {
             color: #999999;
             padding: 15px 0 10px 0;
             font-weight: normal;
+            font-size: 18px;
         }
         ul.unstyled {
             margin-left: 4px;
@@ -43,6 +44,13 @@
                 li {
                     margin: 6px 0;
                 }
+            }
+        }
+
+        .editablesidebarbox {
+            margin-bottom: 40px;
+            h2.sidebartitle {
+                padding: 0;
             }
         }
     }

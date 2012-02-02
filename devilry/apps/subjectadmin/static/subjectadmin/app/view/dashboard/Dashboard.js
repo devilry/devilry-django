@@ -55,6 +55,9 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         border: false,
         region: 'sidebar',
         items: [{
+            xtype: 'box',
+            html: Ext.String.format('<h2 class="sidebartitle">{0}</h2>', dtranslate('subjectadmin.dashboard.shortcutstitle')),
+        }, {
             xtype: 'shortcutlist'
         }]
     }]
