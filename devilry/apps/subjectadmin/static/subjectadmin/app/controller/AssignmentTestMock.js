@@ -14,6 +14,7 @@ Ext.define('subjectadmin.controller.AssignmentTestMock', {
             id: 0,
             parentnode__parentnode__short_name:'duck1100',
             parentnode__short_name:'2012h',
+            parentnode:2,
             long_name:'The one and only week one',
             publishing_time: yesterday,
             short_name:'week1'
@@ -21,26 +22,16 @@ Ext.define('subjectadmin.controller.AssignmentTestMock', {
             id: 1,
             parentnode__parentnode__short_name:'duck1100',
             parentnode__short_name:'2012h',
+            parentnode:2,
             long_name:'The one and only week two',
-            //publishing_time: "2012-01-30T00:00:00", //Ext.Date.format(new Date(), 'Y-m-d H:i'),
             publishing_time: nextmonth,
             short_name:'week2'
         }, {
-            id: 2,
-            parentnode__parentnode__short_name:'duck-mek2030',
-            parentnode__short_name:'2012h',
-            long_name:'First assignment',
-            short_name:'assignment1'
-        }, {
-            id: 3,
-            parentnode__parentnode__short_name:'duck-mek2030',
-            parentnode__short_name:'2012h',
-            long_name:'Second assignment',
-            short_name:'assignment2'
-        }, {
             id: 4,
             parentnode__parentnode__short_name:'duck-mek2030',
+            parentnode:1,
             parentnode__short_name:'2012h-extra',
+            publishing_time: nextmonth,
             long_name: 'Extra superhard assignment',
             short_name:'extra'
         }];
@@ -51,7 +42,11 @@ Ext.define('subjectadmin.controller.AssignmentTestMock', {
         Ext.Array.each(initialData, function(data) {
             var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
             record.phantom = true; // Force create
-            record.save();
+            record.save({
+                failure: function(r, op) {
+                    //console.log('fail', op);
+                }
+            });
         }, this);
 
         //this.getSingleAssignmentTestMockStore().proxy.setData(initialData);
