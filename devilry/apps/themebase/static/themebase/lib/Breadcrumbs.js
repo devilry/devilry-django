@@ -1,4 +1,5 @@
-Ext.define('themebase.view.Breadcrumbs', {
+/** Breadcrumb management. */
+Ext.define('themebase.Breadcrumbs', {
     extend: 'Ext.Component',
     alias: 'widget.breadcrumbs',
     cls: 'breadcrumb-component',
@@ -29,6 +30,18 @@ Ext.define('themebase.view.Breadcrumbs', {
         this.draw();
     },
 
+    /** Set the breadcrumbs.
+     *
+     * Example:
+     *
+     *      set([{
+     *          url: '/hello',
+     *          text: 'Hello'
+     *      }, {
+     *          url: '/hello/cruel',
+     *          text: 'Cruel'
+     *      }], 'World');
+     * */
     set: function(breadcrumbs, current) {
         this.clear();
         Ext.Array.each(breadcrumbs, function(breadcrumb) {
