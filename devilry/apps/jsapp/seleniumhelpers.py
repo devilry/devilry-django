@@ -25,6 +25,9 @@ class SeleniumMixin(object):
     def driverWaitForEnabled(self, driver, element, timeout=10):
         WebDriverWait(driver, timeout).until(lambda driver: element.is_enabled())
 
+    def driverWaitForText(self, driver, text, timeout=10):
+        WebDriverWait(driver, timeout).until(lambda driver: text in driver.page_source)
+
 
 class SeleniumTestCase(TestCase, SeleniumMixin):
     appname = None
@@ -40,6 +43,9 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
 
     def waitForEnabled(self, element, timeout=10):
         return self.driverWaitForEnabled(self.driver, element, timeout)
+
+    def waitForText(self, text, timeout=10):
+        return self.driverWaitForText(self.driver, text, timeout)
 
     def browseToTest(self, path):
         self.driver.get(self.getHashUrl(self.appname, path))
