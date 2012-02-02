@@ -22,12 +22,18 @@ Ext.define('subjectadmin.controller.Assignment', {
         ref: 'publishingTimeSidebarBox',
         selector: 'editablesidebarbox[itemId=publishingtime]'
     }, {
+        ref: 'primaryTitle',
+        selector: 'centertitle[itemId=primaryTitle]'
+    }, {
         ref: 'assignmentView',
         selector: 'assignment'
     }],
 
     init: function() {
         this.control({
+            'viewport assignment': {
+                render: this._onAssignmentViewRender
+            },
             'viewport assignment editablesidebarbox[itemId=gradeeditor] button': {
                 click: this._onEditGradeEditor
             },
@@ -37,7 +43,7 @@ Ext.define('subjectadmin.controller.Assignment', {
         });
     },
 
-    onLaunch: function() {
+    _onAssignmentViewRender: function() {
         this.subject_shortname = this.getAssignmentView().subject_shortname;
         this.period_shortname = this.getAssignmentView().period_shortname;
         this.assignment_shortname = this.getAssignmentView().assignment_shortname;
@@ -66,16 +72,19 @@ Ext.define('subjectadmin.controller.Assignment', {
             '<h2>{title}</h2>',
             '<p>{subject_shortname}.{period_shortname}.{assignment_shortname}</p>'
         );
-        this.getAssignmentView().getEl().mask(tpl.apply({
-            title: dtranslate('themebase.doesnotexist'),
-            subject_shortname: this.subject_shortname,
-            period_shortname: this.period_shortname,
-            assignment_shortname: this.assignment_shortname
-        }), 'messagemask');
+        Ext.defer(function() { // NOTE: The delay is required for the mask to draw itself correctly.
+            this.getAssignmentView().getEl().mask(tpl.apply({
+                title: dtranslate('themebase.doesnotexist'),
+                subject_shortname: this.subject_shortname,
+                period_shortname: this.period_shortname,
+                assignment_shortname: this.assignment_shortname
+            }), 'messagemask');
+        }, 50, this);
     },
 
     _onLoadAssignmentSuccess: function(record) {
         console.log('success', record);
+        this.getPrimaryTitle().update(record.get('long_name'));
     },
 
     _onEditGradeEditor: function() {

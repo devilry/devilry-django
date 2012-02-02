@@ -8,7 +8,7 @@ Ext.define('subjectadmin.Application', {
         'Ext.container.Viewport',
         'jsapp.Router',
         'themebase.RouteNotFound',
-        'themebase.view.Breadcrumbs'
+        'themebase.Breadcrumbs'
     ],
 
     controllers: [
@@ -98,6 +98,14 @@ Ext.define('subjectadmin.Application', {
     },
 
     assignmentShow: function(info, subject_shortname, period_shortname, assignment_shortname) {
+        var subjecturl = '/' + subject_shortname;
+        this.breadcrumbs.set([{
+            text: subject_shortname,
+            url: subjecturl
+        }, {
+            text: period_shortname,
+            url: subjecturl + '/' + period_shortname
+        }], assignment_shortname);
         this.setPrimaryContent({
             xtype: 'assignment',
             subject_shortname: subject_shortname,

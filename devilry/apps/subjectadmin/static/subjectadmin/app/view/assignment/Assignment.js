@@ -40,7 +40,8 @@ Ext.define('subjectadmin.view.assignment.Assignment' ,{
                     cls: 'centerbox',
                     items: [{
                         xtype: 'centertitle',
-                        title: this.assignment_shortname,
+                        itemId: 'primaryTitle',
+                        title: dtranslate('themebase.loading'),
                     }, {
                         xtype: 'actionlist',
                         cls: 'centerbody',

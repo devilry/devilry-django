@@ -16,8 +16,8 @@ Ext.define('themebase.CenterTitle', {
     },
 
     update: function(title) {
-        this.callParent({
+        this.callParent([{
             title: title
-        });
+        }]);
     }
 });
