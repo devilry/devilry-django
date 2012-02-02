@@ -8,7 +8,8 @@ Ext.define('subjectadmin.controller.Assignment', {
     //],
     views: [
         'assignment.Assignment',
-        'ActionList'
+        'ActionList',
+        'assignment.EditPublishingTime'
     ],
 
     stores: [
@@ -103,6 +104,8 @@ Ext.define('subjectadmin.controller.Assignment', {
         }
         var publishing_time = this.assignmentRecord.get('publishing_time');
         this.getPublishingTimeSidebarBox().updateTitle(title);
+        console.log(this.assignmentRecord.data);
+        console.log(publishing_time);
         this.getPublishingTimeSidebarBox().updateBody([tpl], {
             publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
         });
@@ -114,5 +117,8 @@ Ext.define('subjectadmin.controller.Assignment', {
 
     _onEditPublishingTime: function() {
         console.log('pub', this.getPublishingTimeSidebarBox());
+        Ext.widget('editpublishingtime', {
+            assignmentRecord: this.assignmentRecord
+        }).show();
     }
 });
