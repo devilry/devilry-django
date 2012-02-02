@@ -13253,3 +13253,10 @@ select:focus {
   -khtml-border-radius: 3px;
   border-radius: 3px;
 }
+
+/* line 2, ../sass/_doesnotexist.scss */
+.messagemask > div {
+  cursor: default;
+  padding: 5px 10px;
+  background-image: none !important;
+}

@@ -62,12 +62,16 @@ Ext.define('subjectadmin.controller.Assignment', {
     },
 
     _onLoadAssignmentFailure: function(operation) {
-        this.getAssignmentView().removeAll();
-        this.getAssignmentView().add({
-            xtype: 'box',
-            region: 'main',
-            html: 'Does not exist'
-        });
+        var tpl = Ext.create('Ext.XTemplate',
+            '<h2>{title}</h2>',
+            '<p>{subject_shortname}.{period_shortname}.{assignment_shortname}</p>'
+        );
+        this.getAssignmentView().getEl().mask(tpl.apply({
+            title: dtranslate('themebase.doesnotexist'),
+            subject_shortname: this.subject_shortname,
+            period_shortname: this.period_shortname,
+            assignment_shortname: this.assignment_shortname
+        }), 'messagemask');
     },
 
     _onLoadAssignmentSuccess: function(record) {
