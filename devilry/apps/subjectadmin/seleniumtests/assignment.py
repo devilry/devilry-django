@@ -35,8 +35,8 @@ class TestEditPublishingTime(SeleniumTestCase):
 
     def afterSetUp(self):
         self.browseToTest('/duck1100/2012h/week1') # Set to yesterday in AssignmentTestMock
-        self.waitForCssSelector('.publishingtime-editablesidebarbox button')
-        button = self.driver.find_element_by_css_selector('.publishingtime-editablesidebarbox button')
+        self.waitForCssSelector('.editpublishingtime-widget button')
+        button = self.driver.find_element_by_css_selector('.editpublishingtime-widget button')
         button.click()
         self.waitForCssSelector('.editpublishingtime')
 

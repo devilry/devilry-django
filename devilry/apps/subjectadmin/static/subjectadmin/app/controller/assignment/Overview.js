@@ -9,7 +9,8 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     views: [
         'assignment.Overview',
         'ActionList',
-        'assignment.EditPublishingTime'
+        'assignment.EditPublishingTime',
+        'assignment.EditPublishingTimeWidget'
     ],
 
     stores: [
@@ -24,8 +25,8 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
         ref: 'gradeEditorSidebarBox',
         selector: 'editablesidebarbox[itemId=gradeeditor]'
     }, {
-        ref: 'publishingTimeSidebarBox',
-        selector: 'editablesidebarbox[itemId=publishingtime]'
+        ref: 'publishingTimeWidget',
+        selector: 'editpublishingtime-widget'
     }, {
         ref: 'primaryTitle',
         selector: 'centertitle[itemId=primaryTitle]'
@@ -42,12 +43,9 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
             'viewport assignmentoverview editablesidebarbox[itemId=gradeeditor] button': {
                 click: this._onEditGradeEditor
             },
-            'viewport assignmentoverview editablesidebarbox[itemId=publishingtime] button': {
+            'viewport assignmentoverview editpublishingtime-widget button': {
                 click: this._onEditPublishingTime
-            },
-            'viewport assignmentoverview editablesidebarbox[itemId=publishingtime] button': {
-                click: this._onEditPublishingTime
-            },
+            }
         });
     },
 
@@ -106,8 +104,8 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
             tpl = dtranslate('subjectadmin.assignment.notpublished.body');
         }
         var publishing_time = this.assignmentRecord.get('publishing_time');
-        this.getPublishingTimeSidebarBox().updateTitle(title);
-        this.getPublishingTimeSidebarBox().updateBody([tpl], {
+        this.getPublishingTimeWidget().updateTitle(title);
+        this.getPublishingTimeWidget().updateBody([tpl], {
             publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
         });
     },
@@ -117,7 +115,6 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     },
 
     _onEditPublishingTime: function() {
-        //console.log('pub', this.getPublishingTimeSidebarBox());
         Ext.widget('editpublishingtime', {
             assignmentRecord: this.assignmentRecord
         }).show();

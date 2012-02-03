@@ -5,7 +5,8 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'assignment.EditPublishingTime'
+        'assignment.EditPublishingTime',
+        'assignment.EditPublishingTimeWidget'
     ],
 
     refs: [{

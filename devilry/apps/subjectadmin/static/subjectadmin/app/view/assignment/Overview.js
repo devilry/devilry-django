@@ -97,11 +97,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     cls: 'gradeeditor-editablesidebarbox',
                     title: dtranslate('subjectadmin.assignment.gradeeditor')
                 }, {
-                    xtype: 'editablesidebarbox',
-                    itemId: 'publishingtime',
-                    cls: 'publishingtime-editablesidebarbox',
-                    title: dtranslate('themebase.loading'),
-                    data: {text: ''}
+                    xtype: 'editpublishingtime-widget'
                 }]
             }]
         });
