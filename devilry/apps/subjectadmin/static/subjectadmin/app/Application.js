@@ -16,7 +16,8 @@ Ext.define('subjectadmin.Application', {
         'Dashboard',
         'CreateNewAssignment',
         'ChoosePeriod',
-        'Assignment'
+        'Assignment',
+        'assignment.EditPublishingTime'
     ],
 
     launch: function() {

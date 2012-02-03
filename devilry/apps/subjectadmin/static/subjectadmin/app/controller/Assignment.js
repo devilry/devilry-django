@@ -16,6 +16,10 @@ Ext.define('subjectadmin.controller.Assignment', {
         'SingleAssignment'
     ],
 
+    controllers: [
+        'assignment.EditPublishingTime'
+    ],
+
     refs: [{
         ref: 'gradeEditorSidebarBox',
         selector: 'editablesidebarbox[itemId=gradeeditor]'
@@ -63,7 +67,6 @@ Ext.define('subjectadmin.controller.Assignment', {
     },
 
     _onLoadAssignment: function(records, operation) {
-        console.log(operation);
         if(operation.success) {
             this._onLoadAssignmentSuccess(records[0]);
         } else {
@@ -104,8 +107,6 @@ Ext.define('subjectadmin.controller.Assignment', {
         }
         var publishing_time = this.assignmentRecord.get('publishing_time');
         this.getPublishingTimeSidebarBox().updateTitle(title);
-        console.log(this.assignmentRecord.data);
-        console.log(publishing_time);
         this.getPublishingTimeSidebarBox().updateBody([tpl], {
             publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
         });
@@ -116,7 +117,7 @@ Ext.define('subjectadmin.controller.Assignment', {
     },
 
     _onEditPublishingTime: function() {
-        console.log('pub', this.getPublishingTimeSidebarBox());
+        //console.log('pub', this.getPublishingTimeSidebarBox());
         Ext.widget('editpublishingtime', {
             assignmentRecord: this.assignmentRecord
         }).show();

@@ -38,7 +38,7 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
                     xtype: 'themebase-datetimefield',
                     name: 'publishing_time',
                     margin: {top: 20},
-                    value: this.assignmentRecord.get('publishing_time')
+                    //value: this.assignmentRecord.get('publishing_time')
                 }],
                 dockedItems: [{
                     xtype: 'toolbar',
@@ -47,43 +47,11 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
                     padding: 0,
                     items: ['->', {
                         xtype: 'savebutton',
-                        formBind: true, //only enabled once the form is valid
-                        listeners: {
-                            scope: this,
-                            click: this._onSave
-                        }
+                        formBind: true //only enabled once the form is valid
                     }]
                 }]
             }
         });
         this.callParent(arguments);
-    },
-
-    _onSave: function() {
-        var form = this.down('form').getForm();
-        if(form.isDirty()) {
-            form.updateRecord(this.assignmentRecord);
-            console.log(this.assignmentRecord.get('publishing_time').toString());
-            this.getEl().mask(dtranslate('themebase.saving'));
-            this.assignmentRecord.save({
-                scope: this,
-                success: this._onSaveSuccess,
-                failure: this._onSaveFailure
-            });
-        } else {
-            this.close();
-        }
-    },
-
-    _onSaveSuccess: function() {
-        this.getEl().unmask();
-        this.close();
-    },
-
-    _onSaveFailure: function(record, operation) {
-        this.getEl().unmask();
-        themebase.form.ErrorUtils.handleRestErrorsInForm(
-            operation, this.down('form'), this.down('alertmessagelist')
-        );
     }
 });
