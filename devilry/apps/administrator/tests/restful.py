@@ -8,7 +8,8 @@ from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment, Restf
                        RestfulSimplifiedPeriod, RestfulSimplifiedAssignmentGroup)
 from ..simplified import (SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod,
                           SimplifiedAssignmentGroup)
-from ...core import models, testhelper
+from devilry.apps.core import models, testhelper
+from devilry.simplified import OneToMany
 
 
 testhelper.TestHelper.set_memory_deliverystore()
@@ -444,7 +445,13 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
         first = data['items'][0]
-        self.assertEquals(set(first.keys()), set(self.resultfields.all_aslist()))
+        fieldnames = set()
+        for field in self.resultfields.all_aslist():
+            if isinstance(field, OneToMany):
+                fieldnames.add(field.related_field)
+            else:
+                fieldnames.add(field)
+        self.assertEquals(set(first.keys()), fieldnames)
 
     def test_create(self):
         self.create_user('exampleexaminer1')
