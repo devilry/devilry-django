@@ -30,7 +30,7 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
         ref: 'primaryTitle',
         selector: 'centertitle[itemId=primaryTitle]'
     }, {
-        ref: 'assignmentView',
+        ref: 'assignmentOverview',
         selector: 'assignmentoverview'
     }],
 
@@ -52,9 +52,9 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     },
 
     _onAssignmentViewRender: function() {
-        this.subject_shortname = this.getAssignmentView().subject_shortname;
-        this.period_shortname = this.getAssignmentView().period_shortname;
-        this.assignment_shortname = this.getAssignmentView().assignment_shortname;
+        this.subject_shortname = this.getAssignmentOverview().subject_shortname;
+        this.period_shortname = this.getAssignmentOverview().period_shortname;
+        this.assignment_shortname = this.getAssignmentOverview().assignment_shortname;
         this._loadAssignment();
     },
 
@@ -80,7 +80,7 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
             '<p>{subject_shortname}.{period_shortname}.{assignment_shortname}</p>'
         );
         Ext.defer(function() { // NOTE: The delay is required for the mask to draw itself correctly.
-            this.getAssignmentView().getEl().mask(tpl.apply({
+            this.getAssignmentOverview().getEl().mask(tpl.apply({
                 title: dtranslate('themebase.doesnotexist'),
                 subject_shortname: this.subject_shortname,
                 period_shortname: this.period_shortname,
