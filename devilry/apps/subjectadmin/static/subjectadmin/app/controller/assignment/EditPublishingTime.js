@@ -51,6 +51,7 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
+        this.getPublishingTimeWidget().enable();
         this._updatePublishingTimeWidget();
     },
 
@@ -100,12 +101,18 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
     _updatePublishingTimeWidget: function() {
         var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
         var title, tpl;
+
+        // The fallback is to make it possible to test. We assume that translations is always
+        // active in production
+        var fallback = Ext.Date.format(this.assignmentRecord.get('publishing_time'), 'Y-m-d H:i');
+        fallback += ' ' + (published? 'is published': 'not published');
+
         if(published) {
             title = dtranslate('subjectadmin.assignment.published.title');
-            tpl = dtranslate('subjectadmin.assignment.published.body');
+            tpl = dtranslate('subjectadmin.assignment.published.body', fallback);
         } else {
             title = dtranslate('subjectadmin.assignment.notpublished.title');
-            tpl = dtranslate('subjectadmin.assignment.notpublished.body');
+            tpl = dtranslate('subjectadmin.assignment.notpublished.body', fallback);
         }
         var publishing_time = this.assignmentRecord.get('publishing_time');
         this.getPublishingTimeWidget().updateTitle(title);

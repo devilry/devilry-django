@@ -98,7 +98,8 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     cls: 'gradeeditor-editablesidebarbox',
                     title: dtranslate('subjectadmin.assignment.gradeeditor')
                 }, {
-                    xtype: 'editpublishingtime-widget'
+                    xtype: 'editpublishingtime-widget',
+                    disabled: true
                 }]
             }]
         });

@@ -21,13 +21,12 @@ class TestAssignment(SeleniumTestCase):
     def test_notpublished(self):
         self.browseToTest('/duck1100/2012h/week2') # Set to nextmonth in AssignmentTestMock
         self.waitForText('subjectadmin.assignment.notpublished.title')
-        self.assertTrue('subjectadmin.assignment.notpublished.body' in self.driver.page_source)
+        self.assertTrue('not published' in self.driver.page_source)
 
     def test_published(self):
         self.browseToTest('/duck1100/2012h/week1') # Set to yesterday in AssignmentTestMock
         self.waitForText('subjectadmin.assignment.published.title')
-        self.assertTrue('subjectadmin.assignment.published.body' in self.driver.page_source)
-
+        self.assertTrue('is published' in self.driver.page_source)
 
 
 class TestEditPublishingTime(SeleniumTestCase):
@@ -54,9 +53,18 @@ class TestEditPublishingTime(SeleniumTestCase):
     def test_editpublishingtime(self):
         self.assertTrue('subjectadmin.assignment.editpublishingtime.title' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.editpublishingtime.help' in self.driver.page_source)
-        self._set_datetime('2012-02-15', '12:00')
+        self._set_datetime('2012-01-10', '12:00')
         self.savebutton.click()
-        self.waitForText('2012-02-15T12:00') # If this times out, the proxy has not been updated
+        self.waitForText('2012-01-10T12:00') # If this times out, the proxy has not been updated
+        self.assertTrue('2012-01-10 12:00 is published' in self.driver.page_source)
+
+    def test_editpublishingtime_notpublished(self):
+        self.assertTrue('subjectadmin.assignment.editpublishingtime.title' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.editpublishingtime.help' in self.driver.page_source)
+        self._set_datetime('3012-01-10', '12:00') # If Devilry is still in use in 3012, we can afford to fix this:)
+        self.savebutton.click()
+        self.waitForText('3012-01-10T12:00') # If this times out, the proxy has not been updated
+        self.assertTrue('3012-01-10 12:00 not published' in self.driver.page_source)
 
     def test_editpublishingtime_errorhandling(self):
         self._set_datetime('2012-02-01', '12:00') # subjectadmin.model.AssignmentTestMock defines day 01 to raise an error (for _this_ testcase)
