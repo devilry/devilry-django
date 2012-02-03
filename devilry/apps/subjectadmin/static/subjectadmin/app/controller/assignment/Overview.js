@@ -17,16 +17,9 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
         'SingleAssignment'
     ],
 
-    controllers: [
-        'assignment.EditPublishingTime'
-    ],
-
     refs: [{
         ref: 'gradeEditorSidebarBox',
         selector: 'editablesidebarbox[itemId=gradeeditor]'
-    }, {
-        ref: 'publishingTimeWidget',
-        selector: 'editpublishingtime-widget'
     }, {
         ref: 'primaryTitle',
         selector: 'centertitle[itemId=primaryTitle]'
@@ -89,26 +82,10 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
 
     _onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
+        this.application.fireEvent('assignmentSuccessfullyLoaded', record);
         this.getPrimaryTitle().update(record.get('long_name'));
-        this._updatePublishingTimeBox();
     },
 
-    _updatePublishingTimeBox: function() {
-        var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
-        var title, tpl;
-        if(published) {
-            title = dtranslate('subjectadmin.assignment.published.title');
-            tpl = dtranslate('subjectadmin.assignment.published.body');
-        } else {
-            title = dtranslate('subjectadmin.assignment.notpublished.title');
-            tpl = dtranslate('subjectadmin.assignment.notpublished.body');
-        }
-        var publishing_time = this.assignmentRecord.get('publishing_time');
-        this.getPublishingTimeWidget().updateTitle(title);
-        this.getPublishingTimeWidget().updateBody([tpl], {
-            publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
-        });
-    },
 
     _onEditGradeEditor: function() {
         console.log('grade', this.getGradeEditorSidebarBox());

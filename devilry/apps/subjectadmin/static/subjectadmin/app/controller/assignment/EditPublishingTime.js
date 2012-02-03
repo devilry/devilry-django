@@ -9,6 +9,10 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         'assignment.EditPublishingTimeWidget'
     ],
 
+    controllers: [
+        'assignment.Overview'
+    ],
+
     refs: [{
         ref: 'editPublishingTime',
         selector: 'editpublishingtime'
@@ -21,10 +25,17 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
     }, {
         ref: 'alertMessageList',
         selector: 'editpublishingtime alertmessagelist'
+    }, {
+        ref: 'publishingTimeWidget',
+        selector: 'editpublishingtime-widget'
     }],
 
     init: function() {
         // This is called when the application is initialized, not when the window is opened
+        this.application.addListener({
+            scope: this,
+            assignmentSuccessfullyLoaded: this._onLoadAssignment
+        });
         this.control({
             'editpublishingtime': {
                 render: this._onRender
@@ -33,6 +44,11 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
                 click: this._onSave
             }
         });
+    },
+
+    _onLoadAssignment: function(assignmentRecord) {
+        this.assignmentRecord = assignmentRecord;
+        this._updatePublishingTimeBox();
     },
 
     _getAssignmentRecord: function() {
@@ -75,5 +91,22 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         themebase.form.ErrorUtils.handleRestErrorsInForm(
             operation, this.getFormPanel(), this.getAlertMessageList()
         );
-    }
+    },
+
+    _updatePublishingTimeBox: function() {
+        var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
+        var title, tpl;
+        if(published) {
+            title = dtranslate('subjectadmin.assignment.published.title');
+            tpl = dtranslate('subjectadmin.assignment.published.body');
+        } else {
+            title = dtranslate('subjectadmin.assignment.notpublished.title');
+            tpl = dtranslate('subjectadmin.assignment.notpublished.body');
+        }
+        var publishing_time = this.assignmentRecord.get('publishing_time');
+        this.getPublishingTimeWidget().updateTitle(title);
+        this.getPublishingTimeWidget().updateBody([tpl], {
+            publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
+        });
+    },
 });

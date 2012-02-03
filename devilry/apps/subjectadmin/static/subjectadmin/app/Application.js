@@ -1,3 +1,4 @@
+/** Subjectadmin Application. */
 Ext.define('subjectadmin.Application', {
     extend: 'Ext.app.Application',
 
@@ -19,6 +20,18 @@ Ext.define('subjectadmin.Application', {
         'assignment.Overview',
         'assignment.EditPublishingTime'
     ],
+
+    constructor: function() {
+        this.addEvents(
+           /**
+             * @event
+             * Fired when an assignment is successfully loaded by the assignment.Overview.
+             * @param {subjectadmin.model.Assignment} assignmentRecord
+             */
+            'assignmentSuccessfullyLoaded'
+        );
+        this.callParent(arguments);
+    },
 
     launch: function() {
         this._createViewport();
