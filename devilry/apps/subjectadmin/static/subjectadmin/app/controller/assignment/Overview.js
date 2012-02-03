@@ -4,13 +4,9 @@
 Ext.define('subjectadmin.controller.assignment.Overview', {
     extend: 'Ext.app.Controller',
 
-    //requires: [
-    //],
     views: [
         'assignment.Overview',
-        'ActionList',
-        'assignment.EditPublishingTime',
-        'assignment.EditPublishingTimeWidget'
+        'ActionList'
     ],
 
     stores: [
@@ -35,9 +31,6 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
             },
             'viewport assignmentoverview editablesidebarbox[itemId=gradeeditor] button': {
                 click: this._onEditGradeEditor
-            },
-            'viewport assignmentoverview editpublishingtime-widget button': {
-                click: this._onEditPublishingTime
             }
         });
     },
@@ -89,11 +82,5 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
 
     _onEditGradeEditor: function() {
         console.log('grade', this.getGradeEditorSidebarBox());
-    },
-
-    _onEditPublishingTime: function() {
-        Ext.widget('editpublishingtime', {
-            assignmentRecord: this.assignmentRecord
-        }).show();
     }
 });

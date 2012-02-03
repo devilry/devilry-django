@@ -9,6 +9,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
         'themebase.layout.RightSidebar',
         'themebase.CenterTitle',
         'themebase.EditableSidebarBox',
+        'subjectadmin.view.assignment.EditPublishingTimeWidget',
         'subjectadmin.view.ActionList'
     ],
 

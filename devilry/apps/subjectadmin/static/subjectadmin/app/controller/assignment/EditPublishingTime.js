@@ -38,34 +38,31 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         });
         this.control({
             'editpublishingtime': {
-                render: this._onRender
+                render: this._onRenderWindow
             },
             'editpublishingtime savebutton': {
                 click: this._onSave
+            },
+            'editpublishingtime-widget button': {
+                click: this._onEdit
             }
         });
     },
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this._updatePublishingTimeBox();
+        this._updatePublishingTimeWidget();
     },
 
-    _getAssignmentRecord: function() {
-        return this.getEditPublishingTime().assignmentRecord;
-    },
-
-    /** When the window has been successfully rendered */
-    _onRender: function() {
-        this.getPublishingTimeField().setValue(this._getAssignmentRecord().get('publishing_time'));
+    _onRenderWindow: function() {
+        this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
     },
 
     _onSave: function() {
         var form = this.getFormPanel().getForm();
         if(form.isDirty()) {
-            var assignmentRecord = this._getAssignmentRecord();
+            var assignmentRecord = this.assignmentRecord;
             form.updateRecord(assignmentRecord);
-            console.log(assignmentRecord.get('publishing_time').toString());
             this._getMaskElement().mask(dtranslate('themebase.saving'));
             assignmentRecord.save({
                 scope: this,
@@ -84,6 +81,7 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
         this.getEditPublishingTime().close();
+        this._updatePublishingTimeWidget();
     },
 
     _onSaveFailure: function(record, operation) {
@@ -93,7 +91,13 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         );
     },
 
-    _updatePublishingTimeBox: function() {
+    _onEdit: function() {
+        Ext.widget('editpublishingtime', {
+            assignmentRecord: this.assignmentRecord
+        }).show();
+    },
+
+    _updatePublishingTimeWidget: function() {
         var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
         var title, tpl;
         if(published) {
@@ -108,5 +112,5 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         this.getPublishingTimeWidget().updateBody([tpl], {
             publishing_time: Ext.Date.format(publishing_time, dtranslate('Y-m-d H:i'))
         });
-    },
+    }
 });
