@@ -409,7 +409,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
     # Ignored because fix_expected_data_missing_database_fields does not work
     # for this, and the tests should be re-written from scratch as something
     # that can be read and understood.
-    def ignore_test_search(self):
+    def ignore_search(self):
         self.firstExam = User.objects.get(id=self.firstExam.id)
         # search with no query and no extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, query='firstStud')
