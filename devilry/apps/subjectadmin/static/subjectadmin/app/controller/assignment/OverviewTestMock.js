@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.controller.AssignmentTestMock', {
-    extend: 'subjectadmin.controller.Assignment',
+Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
+    extend: 'subjectadmin.controller.assignment.Overview',
 
     stores: [
         'SingleAssignmentTestMock'
