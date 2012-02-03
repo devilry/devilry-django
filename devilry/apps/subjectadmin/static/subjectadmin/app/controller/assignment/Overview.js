@@ -31,21 +31,21 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
         selector: 'centertitle[itemId=primaryTitle]'
     }, {
         ref: 'assignmentView',
-        selector: 'assignment'
+        selector: 'assignmentoverview'
     }],
 
     init: function() {
         this.control({
-            'viewport assignment': {
+            'viewport assignmentoverview': {
                 render: this._onAssignmentViewRender
             },
-            'viewport assignment editablesidebarbox[itemId=gradeeditor] button': {
+            'viewport assignmentoverview editablesidebarbox[itemId=gradeeditor] button': {
                 click: this._onEditGradeEditor
             },
-            'viewport assignment editablesidebarbox[itemId=publishingtime] button': {
+            'viewport assignmentoverview editablesidebarbox[itemId=publishingtime] button': {
                 click: this._onEditPublishingTime
             },
-            'viewport assignment editablesidebarbox[itemId=publishingtime] button': {
+            'viewport assignmentoverview editablesidebarbox[itemId=publishingtime] button': {
                 click: this._onEditPublishingTime
             },
         });

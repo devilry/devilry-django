@@ -3,8 +3,8 @@
  */
 Ext.define('subjectadmin.view.assignment.Overview' ,{
     extend: 'Ext.container.Container',
-    alias: 'widget.assignment',
-    cls: 'assignment sidebarlayout',
+    alias: 'widget.assignmentoverview',
+    cls: 'assignmentoverview sidebarlayout',
     requires: [
         'themebase.layout.RightSidebar',
         'themebase.CenterTitle',

@@ -108,7 +108,7 @@ Ext.define('subjectadmin.Application', {
             url: subjecturl + '/' + period_shortname
         }], assignment_shortname);
         this.setPrimaryContent({
-            xtype: 'assignment',
+            xtype: 'assignmentoverview',
             subject_shortname: subject_shortname,
             period_shortname: period_shortname,
             assignment_shortname: assignment_shortname
