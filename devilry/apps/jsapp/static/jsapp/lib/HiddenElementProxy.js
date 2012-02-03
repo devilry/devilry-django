@@ -187,7 +187,6 @@ Ext.define('jsapp.HiddenElementProxy', {
         operation.setStarted();
         var records = operation.getRecords();
 
-        console.log(operation);
         Ext.callback(this.validator, this, [operation]);
 
         if(!operation.hasException()) {
