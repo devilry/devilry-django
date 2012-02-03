@@ -50,7 +50,7 @@ class TestFlatten(TestCase):
         flatten = self.MochFlatten()
         flatten._save_js('/export', 'somename', 'DUMMY')
         self.assertEquals(flatten.last_written_filename, '/export/somename.js')
-        self.assertEquals(flatten.last_written_content.strip(), "var i18n = DUMMY;")
+        self.assertEquals(flatten.last_written_content.strip(), "window.document.i18n = DUMMY;")
 
     def test_save_json(self):
         flatten = self.MochFlatten()
