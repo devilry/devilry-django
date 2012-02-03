@@ -7,7 +7,7 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     //requires: [
     //],
     views: [
-        'assignment.Assignment',
+        'assignment.Overview',
         'ActionList',
         'assignment.EditPublishingTime'
     ],

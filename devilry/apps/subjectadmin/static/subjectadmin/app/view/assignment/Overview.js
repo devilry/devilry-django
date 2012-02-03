@@ -1,7 +1,7 @@
 /**
- * Assignment dashboard view (overview of an assignment).
+ * Assignment overview (overview of an assignment).
  */
-Ext.define('subjectadmin.view.assignment.Assignment' ,{
+Ext.define('subjectadmin.view.assignment.Overview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.assignment',
     cls: 'assignment sidebarlayout',
