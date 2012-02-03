@@ -1,10 +1,11 @@
 import re
 from django.test import TestCase
 
-from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
-from ....simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
+from devilry.simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
+from devilry.simplified.utils import modelinstance_to_dict, fix_expected_data_missing_database_fields
 
-from ...core import testhelper
+from devilry.apps.core import testhelper
+from devilry.apps.core.models import RelatedStudent
 from ..simplified import (SimplifiedDelivery, SimplifiedStaticFeedback, SimplifiedAssignment,
                           SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject,
                           SimplifiedFileMeta)
@@ -32,6 +33,12 @@ class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):
         # secondStud began secondsem
         self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud).d1')
         self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud).d1')
+
+        for period in (self.inf101_firstsem, self.inf101_secondsem,
+                       self.inf110_firstsem, self.inf110_secondsem):
+            RelatedStudent(user=self.firstStud, period=period).save()
+        for period in (self.inf101_secondsem, self.inf110_secondsem):
+            RelatedStudent(user=self.secondStud, period=period).save()
 
 
 class TestSimplifiedNode(SimplifiedStudentTestBase):
@@ -106,8 +113,8 @@ class TestSimplifiedPeriod(SimplifiedStudentTestBase):
     def test_search_noextras(self):
 
         # search with no query and no extra fields
-        search_res = SimplifiedPeriod.search(self.firstStud)
-        expected_res = [modelinstance_to_dict(self.inf101_firstsem, SimplifiedPeriod._meta.resultfields.aslist()),
+        search_res = SimplifiedPeriod.search(self.secondStud)
+        expected_res = [modelinstance_to_dict(self.inf101_secondsem, SimplifiedPeriod._meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondsem, SimplifiedPeriod._meta.resultfields.aslist())]
 
         # assert that all search results are as expected
@@ -117,8 +124,8 @@ class TestSimplifiedPeriod(SimplifiedStudentTestBase):
 
     def test_search_allextras(self):
         # search with no query and with extra fields
-        search_res = SimplifiedPeriod.search(self.firstStud, result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf101_firstsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras)),
+        search_res = SimplifiedPeriod.search(self.secondStud, result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_secondsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), 2)
@@ -127,16 +134,16 @@ class TestSimplifiedPeriod(SimplifiedStudentTestBase):
 
     def test_search_query(self):
         # search with query
-        search_res = SimplifiedPeriod.search(self.firstStud, query='inf101')
-        expected_res = modelinstance_to_dict(self.inf101_firstsem, SimplifiedPeriod._meta.resultfields.aslist())
+        search_res = SimplifiedPeriod.search(self.secondStud, query='inf101')
+        expected_res = modelinstance_to_dict(self.inf101_secondsem, SimplifiedPeriod._meta.resultfields.aslist())
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
 
     def test_search_queryandextras(self):
         # with query and extra fields
-        search_res = SimplifiedPeriod.search(self.firstStud, query='inf101', result_fieldgroups=self.allExtras)
-        expected_res = modelinstance_to_dict(self.inf101_firstsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))
+        search_res = SimplifiedPeriod.search(self.secondStud, query='inf101', result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf101_secondsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
@@ -149,16 +156,16 @@ class TestSimplifiedPeriod(SimplifiedStudentTestBase):
         search_res = SimplifiedPeriod.search(self.admin)
         self.assertEquals(len(search_res), 0)
 
-    def test_search_security_wrongsubject(self):
+    def test_search_security_notinone(self):
         search_res = SimplifiedPeriod.search(self.secondStud, query='inf110')
-        self.assertEquals(len(search_res), 0)
+        self.assertEquals(len(search_res), 1)
 
     def test_search_filters(self):
         qrywrap = SimplifiedPeriod.search(self.firstStud)
-        self.assertEquals(len(qrywrap), 2)
+        self.assertEquals(len(qrywrap), 4)
         qrywrap = SimplifiedPeriod.search(self.firstStud,
                                         filters=[dict(field='parentnode__short_name', comp='exact', value='inf110')])
-        self.assertEquals(len(qrywrap), 1)
+        self.assertEquals(len(qrywrap), 2)
 
         with self.assertRaises(FilterValidationError):
             SimplifiedPeriod.search(self.firstStud,
@@ -171,10 +178,10 @@ class TestSimplifiedPeriod(SimplifiedStudentTestBase):
                                   filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='inf110')])
 
     def test_search_exact_number_of_results(self):
-        qrywrap = SimplifiedPeriod.search(self.firstStud, exact_number_of_results=2)
-        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedPeriod.search(self.firstStud, exact_number_of_results=4)
+        self.assertEquals(len(qrywrap), 4)
         qrywrap = SimplifiedPeriod.search(self.firstStud, exact_number_of_results=None)
-        self.assertEquals(len(qrywrap), 2)
+        self.assertEquals(len(qrywrap), 4)
         with self.assertRaises(InvalidNumberOfResults):
             SimplifiedPeriod.search(self.firstStud, exact_number_of_results=1)
         with self.assertRaises(InvalidNumberOfResults):
