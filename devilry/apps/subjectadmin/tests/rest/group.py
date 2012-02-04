@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.subjectadmin.rest.group import (assignmentadmin_required,
                                                   AssignmentadminRequiredError,
                                                   GroupDao)
@@ -31,55 +32,74 @@ class TestAssignmentAdminRequired(TestCase):
 
 
 class TestGroupDao(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
+    def create_testdata(self):
+        testhelper = TestHelper()
+        testhelper.add(nodes='uni',
                             subjects=['duck1010'],
                             periods=['firstsem'],
-                            assignments=['a1:admin(a1admin)', 'a2'])
-        self.testhelper.create_superuser("superuser")
-        self.assignment1 = self.testhelper.duck1010_firstsem_a1
-        self.assignment2 = self.testhelper.duck1010_firstsem_a2
+                            assignments=['a1:admin(a1admin)'])
+        testhelper.create_superuser("superuser")
+        assignment1 = testhelper.duck1010_firstsem_a1
 
-        for num in xrange(10):
+        for num in xrange(3):
             path = 'uni;duck1010.firstsem.a1.g{num}:candidate(student{num}):examiner(examiner1).d1'
-            self.testhelper.add_to_path(path.format(**vars()))
-            group = getattr(self.testhelper, 'duck1010_firstsem_a1_g{0}'.format(num))
+            testhelper.add_to_path(path.format(**vars()))
+            group = getattr(testhelper, 'duck1010_firstsem_a1_g{0}'.format(num))
             group.tags.create(tag="stuff")
-            if num < 5:
-                group.tags.create(tag="lownumber")
-            delivery = self.testhelper.add_delivery(group)
-            self.testhelper.add_feedback(delivery,
-                                         verdict=dict(grade='A', points=100, is_passing_grade=True))
-
-        self.groupdao = GroupDao()
+            group.tags.create(tag="lownumber")
+            delivery = testhelper.add_delivery(group)
+            testhelper.add_feedback(delivery,
+                                    verdict=dict(grade='A', points=100, is_passing_grade=True))
+        return testhelper.a1admin, assignment1
 
     def test_read(self):
-        self.groupdao.read(self.testhelper.a1admin, self.assignment1.id)
+        a1admin, assignment1 = self.create_testdata()
+        groups = GroupDao().read(a1admin, assignment1.id)
+        # We only check a few values here. The most important thing is that the
+        # database queries are sane, since the other stuff is tested in
+        # smaller units
+        self.assertEquals(len(groups), 3)
+        self.assertTrue('examiners' in groups[0].keys())
+        self.assertTrue('students' in groups[0].keys())
+        self.assertTrue('deadlines' in groups[0].keys())
+        fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
+                      'feedback__is_passing_grade', 'feedback__save_timestamp',
+                      'examiners', 'students', 'tags', 'deadlines'])
+        self.assertEquals(set(groups[0].keys()), fields)
+        self.assertEquals(AssignmentGroup.objects.get(id=groups[0]['id']).parentnode_id,
+                          assignment1.id)
+
+    def test_merge(self):
+        groups = [{'id': 1, 'name': 'Group1'}]
+        candidates = [{'assignment_group_id': 1, 'username': 'stud'}]
+        examiners = [{'assignmentgroup_id': 1, 'username': 'exam'}]
+        tags = [{'assignment_group_id': 1, 'tag': 'important'}]
+        deadlines = [{'assignment_group_id': 1, 'deadline': 'now'}]
+        groups = GroupDao()._merge(groups, candidates, examiners, tags, deadlines)
+        self.assertEquals(groups,
+                          [{'id': 1,
+                            'name': 'Group1',
+                            'students': [{'username': 'stud'}],
+                            'examiners': [{'username': 'exam'}],
+                            'tags': [{'tag': 'important'}],
+                            'deadlines': [{'deadline': 'now'}]
+                           }])
 
     def test_get_groups(self):
-        groups = self.groupdao._get_groups(self.assignment1.id)
-        self.assertEquals(len(groups), 10)
+        a1admin, assignment1 = self.create_testdata()
+        groups = GroupDao()._get_groups(assignment1.id)
+        self.assertEquals(len(groups), 3)
         first = groups[0]
         fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
                       'feedback__is_passing_grade', 'feedback__save_timestamp'])
         self.assertEquals(set(first.keys()), fields)
 
     def test_prepare_group(self):
-        self.assertEquals(self.groupdao._prepare_group({}), {'tags': []})
-
-    def test_merge_tags_with_groupsdict(self):
-        tags =[{'assignment_group_id': 1, 'tag': 'test'},
-               {'assignment_group_id': 1, 'tag': 'test2'},
-               {'assignment_group_id': 3, 'tag': 'test'}]
-        groupsdict = {1: {'tags': []},
-                      2: {'tags': []},
-                      3: {'tags': []}}
-        expected = {1: {'tags': ['test', 'test2']},
-                    2: {'tags': []},
-                    3: {'tags': ['test']}}
-        self.groupdao._merge_tags_with_groupsdict(tags, groupsdict)
-        self.assertEquals(groupsdict, expected)
+        self.assertEquals(GroupDao()._prepare_group({}),
+                          {'tags': [],
+                           'students': [],
+                           'examiners': [],
+                           'deadlines': []})
 
     def test_merge_with_groupsdict(self):
         people =[{'assignment_group_id': 1, 'name': 'test'},
@@ -91,5 +111,5 @@ class TestGroupDao(TestCase):
         expected = {1: {'people': [{'name':'test'}, {'name':'test2'}]},
                     2: {'people': []},
                     3: {'people': [{'name':'test3'}]}}
-        self.groupdao._merge_with_groupsdict(groupsdict, people, 'people')
+        GroupDao()._merge_with_groupsdict(groupsdict, people, 'people')
         self.assertEquals(groupsdict, expected)

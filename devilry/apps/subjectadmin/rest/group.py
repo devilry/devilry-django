@@ -5,9 +5,8 @@ from devilry.apps.core.models import (Assignment,
                                       AssignmentGroup,
                                       AssignmentGroupTag,
                                       Candidate,
-                                      Examiner
-                                     )
-
+                                      Examiner,
+                                      Deadline)
 from errors import PermissionDeniedError
 
 
@@ -62,6 +61,7 @@ class GroupDao(object):
         group['tags'] = []
         group['students'] = []
         group['examiners'] = []
+        group['deadlines'] = []
         return group
 
     def _convert_groupslist_to_groupsdict(self, groups):
@@ -69,11 +69,6 @@ class GroupDao(object):
         for group in groups:
             groupsdict[group['id']] = self._prepare_group(group)
         return groupsdict
-
-    def _merge_tags_with_groupsdict(self, tags, groupsdict):
-        for tagdict in tags:
-            group = groupsdict[tagdict['assignment_group_id']]
-            group['tags'].append(tagdict['tag'])
 
     def _merge_with_groupsdict(self, groupsdict, listofdicts, targetkey, assignmentgroup_key='assignment_group_id'):
         for dct in listofdicts:
@@ -97,22 +92,27 @@ class GroupDao(object):
         fields = ('assignment_group_id', 'tag')
         return AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
 
+    def _get_deadlines(self, assignmentid):
+        fields = ('assignment_group_id', 'deadline')
+        return Deadline.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+
+    def _merge(self, groups, candidates, examiners, tags, deadlines):
+        groupsdict = self._convert_groupslist_to_groupsdict(groups)
+        self._merge_with_groupsdict(groupsdict, candidates, 'students')
+        self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
+        self._merge_with_groupsdict(groupsdict, tags, 'tags')
+        self._merge_with_groupsdict(groupsdict, deadlines, 'deadlines')
+        return groupsdict.values()
+
     def read(self, user, assignmentid):
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         groups = self._get_groups(assignmentid)
-        groupsdict = self._convert_groupslist_to_groupsdict(groups)
-
-        tags = self._get_tags(assignmentid)
-        self._merge_tags_with_groupsdict(tags, groupsdict)
-
         candidates = self._get_candidates(assignmentid)
-        self._merge_with_groupsdict(groupsdict, candidates, 'students')
-
         examiners = self._get_examiners(assignmentid)
-        self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
-
-        for group in groupsdict.values():
-            print group
+        tags = self._get_tags(assignmentid)
+        deadlines = self._get_deadlines(assignmentid)
+        groups = self._merge(groups, candidates, examiners, tags, deadlines)
+        return groups
 
 
 #class Group(RestBase):
