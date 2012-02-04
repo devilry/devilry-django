@@ -105,6 +105,30 @@ class GroupDao(object):
         return groupsdict.values()
 
     def read(self, user, assignmentid):
+        """
+        Returns a list of one dict for each group in the assignment with the
+        given ``assignmentid``. The dict has the following keys:
+
+        - name --- string
+        - is_open --- boolean
+        - feedback__grade --- string
+        - feedback__points --- int
+        - feedback__save_timestamp --- datetime
+        - feedback__is_passing_grade --- boolean
+        - students --- list of dicts with the following keys:
+            - candidate_id --- string
+            - student__username --- string
+            - student__email --- string
+            - student__devilryuserprofile__full_name --- string
+        - examiners --- list of dicts with the following keys:
+            - user__username --- string
+            - user__devilryuserprofile__full_name --- string
+            - user__email --- string
+        - tags --- list of dicts with the following keys:
+            - tag --- string
+        - deadlines --- list of dicts with the following keys:
+            - deadline --- datetime
+        """
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         groups = self._get_groups(assignmentid)
         candidates = self._get_candidates(assignmentid)

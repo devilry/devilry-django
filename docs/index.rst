@@ -14,6 +14,7 @@
     extjshelpers
 
     apps.gradeeditors
+    apps.subjectadmin
 
     utils.assignmentgroup
     utils.ordereddict
@@ -27,6 +28,7 @@
     student.simplified
     public_restful_api
     public_restful_api_examples
+
 
 
 ======================================================================
