@@ -57,7 +57,6 @@ class TestGroupDao(TestCase):
     def test_read(self):
         self.groupdao.read(self.testhelper.a1admin, self.assignment1.id)
 
-
     def test_get_groups(self):
         groups = self.groupdao._get_groups(self.assignment1.id)
         self.assertEquals(len(groups), 10)
@@ -80,4 +79,17 @@ class TestGroupDao(TestCase):
                     2: {'tags': []},
                     3: {'tags': ['test']}}
         self.groupdao._merge_tags_with_groupsdict(tags, groupsdict)
+        self.assertEquals(groupsdict, expected)
+
+    def test_merge_with_groupsdict(self):
+        people =[{'assignment_group_id': 1, 'name': 'test'},
+                 {'assignment_group_id': 1, 'name': 'test2'},
+                 {'assignment_group_id': 3, 'name': 'test3'}]
+        groupsdict = {1: {'people': []},
+                      2: {'people': []},
+                      3: {'people': []}}
+        expected = {1: {'people': [{'name':'test'}, {'name':'test2'}]},
+                    2: {'people': []},
+                    3: {'people': [{'name':'test3'}]}}
+        self.groupdao._merge_with_groupsdict(groupsdict, people, 'people')
         self.assertEquals(groupsdict, expected)

@@ -3,7 +3,9 @@ from devilry.rest.restbase import RestBase
 
 from devilry.apps.core.models import (Assignment,
                                       AssignmentGroup,
-                                      AssignmentGroupTag
+                                      AssignmentGroupTag,
+                                      Candidate,
+                                      Examiner
                                      )
 
 from errors import PermissionDeniedError
@@ -32,9 +34,9 @@ class GroupDao(object):
 
     - name
     - is_open
-    - deadlines
     - feedback
     - tags
+    - deadlines
     - Candidates (students)
         - Candidate ID
         - Username
@@ -58,6 +60,8 @@ class GroupDao(object):
     def _prepare_group(self, group):
         """ Add the separate-query-aggreagated fields to the group dict. """
         group['tags'] = []
+        group['students'] = []
+        group['examiners'] = []
         return group
 
     def _convert_groupslist_to_groupsdict(self, groups):
@@ -71,14 +75,43 @@ class GroupDao(object):
             group = groupsdict[tagdict['assignment_group_id']]
             group['tags'].append(tagdict['tag'])
 
+    def _merge_with_groupsdict(self, groupsdict, listofdicts, targetkey, assignmentgroup_key='assignment_group_id'):
+        for dct in listofdicts:
+            group = groupsdict[dct[assignmentgroup_key]]
+            del dct[assignmentgroup_key]
+            group[targetkey].append(dct)
+
+    def _get_candidates(self, assignmentid):
+        fields = ('assignment_group_id', 'candidate_id',
+                  'student__username', 'student__email',
+                  'student__devilryuserprofile__full_name')
+        return Candidate.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+
+    def _get_examiners(self, assignmentid):
+        fields = ('assignmentgroup_id',
+                  'user__username', 'user__email',
+                  'user__devilryuserprofile__full_name')
+        return Examiner.objects.filter(assignmentgroup__parentnode=assignmentid).values(*fields)
+
+    def _get_tags(self, assignmentid):
+        fields = ('assignment_group_id', 'tag')
+        return AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+
     def read(self, user, assignmentid):
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         groups = self._get_groups(assignmentid)
         groupsdict = self._convert_groupslist_to_groupsdict(groups)
 
-        tags = AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignmentid).values('assignment_group_id', 'tag')
+        tags = self._get_tags(assignmentid)
         self._merge_tags_with_groupsdict(tags, groupsdict)
-        for group in groupsdict.itervalues():
+
+        candidates = self._get_candidates(assignmentid)
+        self._merge_with_groupsdict(groupsdict, candidates, 'students')
+
+        examiners = self._get_examiners(assignmentid)
+        self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
+
+        for group in groupsdict.values():
             print group
 
 
