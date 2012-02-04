@@ -21,8 +21,8 @@ INSTALLED_APPS += [
                    #'devilry.projects.dev.apps.test',
 
                   # Under development
-                  'devilry.apps.coredao',
-                  'devilry.apps.corerest',
+                  #'devilry.apps.coredao',
+                  #'devilry.apps.corerest',
                   'devilry.dataconverter', # Needs to be here since it uses templates
 
                   'devilry.apps.jsapp',
