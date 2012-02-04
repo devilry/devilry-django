@@ -104,7 +104,7 @@ class GroupDao(object):
         self._merge_with_groupsdict(groupsdict, deadlines, 'deadlines')
         return groupsdict.values()
 
-    def read(self, user, assignmentid):
+    def list(self, user, assignmentid):
         """
         Returns a list of one dict for each group in the assignment with the
         given ``assignmentid``. The dict has the following keys:
@@ -144,9 +144,9 @@ class RestGroup(RestBase):
         super(RestGroup, self).__init__(**basekwargs)
         self.dao = daocls()
 
-    @indata(id=int)
-    def read(self, id):
-        return self.dao.read(self.user, id)
+    @indata(assignmentid=int)
+    def list(self, assignmentid):
+        return self.dao.list(self.user, assignmentid)
 
     #@indata(short_name=unicode, long_name=unicode)
     #def create(self, short_name, long_name):

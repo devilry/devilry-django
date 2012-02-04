@@ -55,12 +55,12 @@ class TestGroupDao(TestCase):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
         with self.assertRaises(AssignmentadminRequiredError):
-            GroupDao().read(testhelper.a2admin, assignment1.id)
+            GroupDao().list(testhelper.a2admin, assignment1.id)
 
     def test_read(self):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupDao().read(testhelper.a1admin, assignment1.id)
+        groups = GroupDao().list(testhelper.a1admin, assignment1.id)
         # We only check a few values here. The most important thing is that the
         # database queries are sane, since the other stuff is tested in
         # smaller units
