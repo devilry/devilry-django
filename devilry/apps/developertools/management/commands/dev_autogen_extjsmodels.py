@@ -69,9 +69,11 @@ class Command(BaseCommand):
                    '// This is a Django template because we want to make it easy to dump it into the page template.\n'
                    '{{% endcomment %}}'
                    '\nExt.require([\n{1}\n]);').format(self.fileheader, requires)
-        path = join(extjshelpersdir, 'templates', 'extjshelpers', 'restful-generated-models.django.js')
+        dirpath = join(extjshelpersdir, 'templates', 'extjshelpers')
+        path = join(dirpath, 'restful-generated-models.django.js')
         logging.info('Creating: %s', path)
         logging.debug('%s: %s', path, content)
+        makedirs(dirpath)
         open(path, 'w').write(content)
 
     def _get_js_for_model(self, restfulcls):
