@@ -35,11 +35,10 @@ class TestGroupDao(TestCase):
     def create_testdata(self):
         testhelper = TestHelper()
         testhelper.add(nodes='uni',
-                            subjects=['duck1010'],
-                            periods=['firstsem'],
-                            assignments=['a1:admin(a1admin)'])
+                       subjects=['duck1010'],
+                       periods=['firstsem'],
+                       assignments=['a1:admin(a1admin)', 'a2:admin(a2admin)'])
         testhelper.create_superuser("superuser")
-        assignment1 = testhelper.duck1010_firstsem_a1
 
         for num in xrange(3):
             path = 'uni;duck1010.firstsem.a1.g{num}:candidate(student{num}):examiner(examiner1).d1'
@@ -50,11 +49,18 @@ class TestGroupDao(TestCase):
             delivery = testhelper.add_delivery(group)
             testhelper.add_feedback(delivery,
                                     verdict=dict(grade='A', points=100, is_passing_grade=True))
-        return testhelper.a1admin, assignment1
+        return testhelper
+
+    def test_read_permissiondenied(self):
+        testhelper = self.create_testdata()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        with self.assertRaises(AssignmentadminRequiredError):
+            GroupDao().read(testhelper.a2admin, assignment1.id)
 
     def test_read(self):
-        a1admin, assignment1 = self.create_testdata()
-        groups = GroupDao().read(a1admin, assignment1.id)
+        testhelper = self.create_testdata()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        groups = GroupDao().read(testhelper.a1admin, assignment1.id)
         # We only check a few values here. The most important thing is that the
         # database queries are sane, since the other stuff is tested in
         # smaller units
@@ -86,7 +92,8 @@ class TestGroupDao(TestCase):
                            }])
 
     def test_get_groups(self):
-        a1admin, assignment1 = self.create_testdata()
+        testhelper = self.create_testdata()
+        assignment1 = testhelper.duck1010_firstsem_a1
         groups = GroupDao()._get_groups(assignment1.id)
         self.assertEquals(len(groups), 3)
         first = groups[0]
