@@ -1,7 +1,10 @@
 from devilry.rest.indata import indata
 from devilry.rest.restbase import RestBase
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import (Assignment,
+                                      AssignmentGroup,
+                                      AssignmentGroupTag
+                                     )
 
 from errors import PermissionDeniedError
 
@@ -24,8 +27,59 @@ def assignmentadmin_required(user, errormsg, *assignmentids):
 
 
 class GroupDao(object):
+    """
+    Makes it convenient to work with everything related to an AssignmentGroup:
+
+    - name
+    - is_open
+    - deadlines
+    - feedback
+    - tags
+    - Candidates (students)
+        - Candidate ID
+        - Username
+        - Full name
+        - Email
+    - Examiners
+        - Username
+        - Full name
+        - Email
+    """
+
+    def _get_groups(self, assignmentid):
+        """
+        Get a list of group dictionaries.
+        """
+        fields = ('id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
+                  'feedback__is_passing_grade', 'feedback__save_timestamp')
+        groups = AssignmentGroup.objects.filter(parentnode=assignmentid).select_related('feedback').values(*fields)
+        return groups
+
+    def _prepare_group(self, group):
+        """ Add the separate-query-aggreagated fields to the group dict. """
+        group['tags'] = []
+        return group
+
+    def _convert_groupslist_to_groupsdict(self, groups):
+        groupsdict = {}
+        for group in groups:
+            groupsdict[group['id']] = self._prepare_group(group)
+        return groupsdict
+
+    def _merge_tags_with_groupsdict(self, tags, groupsdict):
+        for tagdict in tags:
+            group = groupsdict[tagdict['assignment_group_id']]
+            group['tags'].append(tagdict['tag'])
+
     def read(self, user, assignmentid):
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
+        groups = self._get_groups(assignmentid)
+        groupsdict = self._convert_groupslist_to_groupsdict(groups)
+
+        tags = AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignmentid).values('assignment_group_id', 'tag')
+        self._merge_tags_with_groupsdict(tags, groupsdict)
+        for group in groupsdict.itervalues():
+            print group
 
 
 #class Group(RestBase):
