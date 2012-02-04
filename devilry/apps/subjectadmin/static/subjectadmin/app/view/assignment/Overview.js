@@ -6,6 +6,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
     alias: 'widget.assignmentoverview',
     cls: 'assignmentoverview sidebarlayout',
     requires: [
+        'Ext.layout.container.Column',
         'themebase.layout.RightSidebar',
         'themebase.CenterTitle',
         'themebase.EditableSidebarBox',
