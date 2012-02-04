@@ -115,27 +115,14 @@ class GroupDao(object):
         return groups
 
 
-#class Group(RestBase):
-    #def __init__(self, daocls=NodeDao, **basekwargs):
-        #super(Group, self).__init__(**basekwargs)
-        #self.dao = daocls()
+class RestGroup(RestBase):
+    def __init__(self, daocls=GroupDao, **basekwargs):
+        super(RestGroup, self).__init__(**basekwargs)
+        self.dao = daocls()
 
-    #def todict(self, node):
-        #item = node
-        #links = {}
-        #links['toplevel-nodes'] = self.geturl()
-        #if node['parentnode_id'] != None:
-            #links['parentnode'] = self.geturl(node['parentnode_id'])
-        #links['childnodes'] = self.geturl(params={'id': node['id']})
-        #links['node'] = self.geturl(node['id'])
-        #return dict(
-            #item=item,
-            #links=links
-        #)
-
-    #@indata(id=int)
-    #def read(self, id):
-        #return self.todict(self.dao.read(self.user, id))
+    @indata(id=int)
+    def read(self, id):
+        return self.dao.read(self.user, id)
 
     #@indata(short_name=unicode, long_name=unicode)
     #def create(self, short_name, long_name):
