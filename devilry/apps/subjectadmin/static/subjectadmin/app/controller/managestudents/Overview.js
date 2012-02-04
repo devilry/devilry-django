@@ -9,7 +9,8 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     },
 
     views: [
-        'managestudents.Overview'
+        'managestudents.Overview',
+        'managestudents.ListOfGroups'
     ],
 
     stores: [
@@ -52,6 +53,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        console.log(record.data);
+        console.log('Assignment:', record.data);
+        this.getGroupsStore().load();
     }
 });

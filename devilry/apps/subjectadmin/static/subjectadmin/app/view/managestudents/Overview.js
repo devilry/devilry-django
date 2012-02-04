@@ -6,6 +6,7 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
     alias: 'widget.managestudentsoverview',
     cls: 'managestudentsoverview sidebarlayout',
     requires: [
+        'subjectadmin.view.managestudents.ListOfGroups'
     ],
 
 
@@ -21,15 +22,13 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
      * @cfg {String} assignment_shortname (required)
      */
 
-
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
             frame: false,
 
             items: [{
-                xtype: 'box',
-                html: 'hei'
+                xtype: 'listofgroups'
             }]
         });
         this.callParent(arguments);
