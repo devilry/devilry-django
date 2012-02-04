@@ -1,5 +1,5 @@
 from selenium.webdriver.support.ui import WebDriverWait
-from unittest import TestCase
+from unittest import TestCase, skipIf
 from selenium import webdriver
 from django.conf import settings
 
@@ -30,6 +30,8 @@ class SeleniumMixin(object):
         WebDriverWait(driver, timeout).until(lambda driver: text in driver.page_source)
 
 
+@skipIf(hasattr(settings, 'SKIP_SELENIUMTESTS') and settings.SKIP_SELENIUMTESTS,
+    'Selenium tests have been disabled in settings.py using SKIP_SELENIUMTESTS=True.')
 class SeleniumTestCase(TestCase, SeleniumMixin):
     appname = None
 

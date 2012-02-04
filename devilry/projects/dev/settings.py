@@ -61,6 +61,7 @@ DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
 import os
+SKIP_SELENIUMTESTS = os.environ.get('SKIP_SELENIUMTESTS', False)
 SELENIUM_BROWSER = os.environ.get('SELENIUM_BROWSER', 'Chrome')
 
 
