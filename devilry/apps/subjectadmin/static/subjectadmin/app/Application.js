@@ -18,7 +18,8 @@ Ext.define('subjectadmin.Application', {
         'CreateNewAssignment',
         'ChoosePeriod',
         'assignment.Overview',
-        'assignment.EditPublishingTime'
+        'assignment.EditPublishingTime',
+        'managestudents.Overview'
     ],
 
     constructor: function() {
@@ -70,7 +71,8 @@ Ext.define('subjectadmin.Application', {
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
-        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname", 'assignmentShow');
+        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname", 'showAssignment');
+        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/@@manage-students", 'manageStudents');
         this.setupExtraRoutes();
         this.route.start();
     },
@@ -111,7 +113,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    assignmentShow: function(info, subject_shortname, period_shortname, assignment_shortname) {
+    showAssignment: function(info, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname;
         this.breadcrumbs.set([{
             text: subject_shortname,
@@ -122,6 +124,27 @@ Ext.define('subjectadmin.Application', {
         }], assignment_shortname);
         this.setPrimaryContent({
             xtype: 'assignmentoverview',
+            subject_shortname: subject_shortname,
+            period_shortname: period_shortname,
+            assignment_shortname: assignment_shortname
+        });
+    },
+
+    manageStudents: function(info, subject_shortname, period_shortname, assignment_shortname) {
+        var subjecturl = '/' + subject_shortname;
+        var periodurl = subjecturl + '/' + period_shortname;
+        this.breadcrumbs.set([{
+            text: subject_shortname,
+            url: subjecturl
+        }, {
+            text: period_shortname,
+            url: periodurl
+        }, {
+            text: assignment_shortname,
+            url: periodurl + '/' + assignment_shortname
+        }], dtranslate('subjectadmin.managestudents.breadcrumbtitle'));
+        this.setPrimaryContent({
+            xtype: 'managestudentsoverview',
             subject_shortname: subject_shortname,
             period_shortname: period_shortname,
             assignment_shortname: assignment_shortname
