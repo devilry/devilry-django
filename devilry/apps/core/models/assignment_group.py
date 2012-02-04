@@ -231,3 +231,6 @@ class AssignmentGroupTag(models.Model):
         app_label = 'core'
         ordering = ['tag']
         unique_together = ('assignment_group', 'tag')
+
+    def __unicode__(self):
+        return self.tag
