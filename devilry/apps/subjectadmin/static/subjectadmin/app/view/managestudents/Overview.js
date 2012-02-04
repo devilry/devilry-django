@@ -24,11 +24,23 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
 
     initComponent: function() {
         Ext.apply(this, {
-            layout: 'fit',
+            layout: 'border',
             frame: false,
-
             items: [{
-                xtype: 'listofgroups'
+                xtype: 'listofgroups',
+                region: 'west',
+                //border: false,
+                width: 350
+            }, {
+                xtype: 'panel',
+                region: 'center',
+                border: false,
+                //ui: 'transparentpanel',
+                bodyPadding: 20,
+                items: {
+                    xtype: 'box',
+                    html: 'TODO'
+                }
             }]
         });
         this.callParent(arguments);
