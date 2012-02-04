@@ -60,6 +60,8 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(this_dir, 'deliverystorehier')
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
+import os
+SELENIUM_BROWSER = os.environ.get('SELENIUM_BROWSER', 'Chrome')
 
 
 ##

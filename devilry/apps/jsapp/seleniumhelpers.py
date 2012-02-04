@@ -1,11 +1,12 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from unittest import TestCase
 from selenium import webdriver
+from django.conf import settings
 
 
 class SeleniumMixin(object):
     def getDriver(self):
-        return getattr(webdriver, self.seleniumbrowser)()
+        return getattr(webdriver, settings.SELENIUM_BROWSER)()
 
     def getJsBaseUrl(self, appname):
         return 'http://localhost:8000/{0}'.format(appname)
