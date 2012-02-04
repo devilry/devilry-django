@@ -14,7 +14,8 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     ],
 
     stores: [
-        'SingleAssignment'
+        'SingleAssignment',
+        'Groups'
     ],
 
     refs: [{
@@ -51,9 +52,14 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         return this.getOverview().getEl();
     },
 
+    setupGroupsProxy: function(assignmentid) {
+        this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
+    },
+
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         console.log('Assignment:', record.data);
+        this.setupGroupsProxy(this.assignmentRecord.get('id'));
         this.getGroupsStore().load();
     }
 });

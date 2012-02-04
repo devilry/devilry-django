@@ -6,6 +6,11 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         'jsapp.HiddenElementProxy'
     ],
 
+    views: [
+        'managestudents.Overview',
+        'managestudents.ListOfGroupsTestMock'
+    ],
+
     stores: [
         'SingleAssignmentTestMock',
         'GroupsTestMock'
@@ -120,12 +125,15 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
 
     init: function() {
         this._loadAssignmentsIntoStore();
-        this._loadGroupsIntoStore();
         this.callParent();
     },
 
     getSingleAssignmentStore: function() {
         return this.getSingleAssignmentTestMockStore();
+    },
+
+    setupGroupsProxy: function(assignmentid) {
+        this._loadGroupsIntoStore();
     },
 
     getGroupsStore: function() {

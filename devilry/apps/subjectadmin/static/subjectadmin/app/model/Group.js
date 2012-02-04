@@ -13,18 +13,18 @@ Ext.define('subjectadmin.model.Group', {
         {name: 'examiners', type: 'auto'},
         {name: 'deadlines', type: 'auto'},
         {name: 'tags', type: 'auto'},
-    ]
+    ],
 
-    //proxy: {
-        //type: 'rest',
-        //url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/restgroup/',
-        //extraParams: {
-            //_devilry_accept: 'application/json'
-        //},
-        //reader: {
-            //type: 'json',
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/restgroup/',
+        extraParams: {
+            _devilry_accept: 'application/json'
+        },
+        reader: {
+            type: 'json',
             //root: 'items',
             //record: 'item'
-        //}
-    //}
+        }
+    }
 });
