@@ -33,8 +33,8 @@ INSTALLED_APPS += [
                    'devilry.utils',
                    'devilry.restful',
                    'devilry.rest',
-                   'devilry.simplified',
-                   'django_nose']
+                   'devilry.simplified']
+
 
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
@@ -60,10 +60,6 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(this_dir, 'deliverystorehier')
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_PLUGINS = [
-    'devilry.apps.developertools.noseplugins.AddSeleniumArgs'
-]
 
 
 ##
