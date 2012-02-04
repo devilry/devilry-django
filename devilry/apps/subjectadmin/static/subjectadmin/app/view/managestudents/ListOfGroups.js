@@ -11,17 +11,17 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
 
     col1TemplateString: [
         '<div class="col1Wrapper">',
-        '   <div class="name">{name}</div>',
-        '   <div class="username">{username}</div>',
+        '   <div class="name largerfont">{name}</div>',
+        '   <div class="username smallerfont">{username}</div>',
         '   <tpl if="hasFeedback">',
         '       <tpl if="feedback__is_passing_grade">',
-        '           <div class="passinggrade">',
+        '           <div class="passinggrade smallerfont">',
         '               <span class="passingstatus">{approvedText}</span>',
         '               <span class="grade">({feedback__grade})</span>',
         '           </div>',
         '       </tpl>',
         '       <tpl if="!feedback__is_passing_grade">',
-        '           <div class="notpassinggrade">',
+        '           <div class="notpassinggrade smallerfont">',
         '               <span class="passingstatus">{notApprovedText}</span>',
         '               <span class="grade">({feedback__grade})</span>',
         '           </div>',
@@ -30,7 +30,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
         '</div>'
     ],
     col2TemplateString: [
-        '<div class="col2Wrapper">',
+        '<div class="col2Wrapper smallerfont">',
         '   <tpl if="is_open">',
         '       <div class="open">{openText}</div>',
         '   </tpl>',

@@ -21,3 +21,8 @@ ul.unstyled {
   font-size: 15px;
   color: #444444;
 }
+
+/* line 3, ../sass/_managestudents.scss */
+.listofgroups .col1Wrapper .name {
+  font-weight: bold;
+}
