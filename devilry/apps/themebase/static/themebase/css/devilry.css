@@ -13260,3 +13260,37 @@ select:focus {
   padding: 5px 10px;
   background-image: none !important;
 }
+
+/* line 2, ../sass/_grid.scss */
+.x-grid-cell-inner strong {
+  font-size: 15px;
+  line-height: 21px;
+}
+/* line 6, ../sass/_grid.scss */
+.x-grid-cell-inner small {
+  font-size: 11px;
+  color: gray;
+}
+/* line 10, ../sass/_grid.scss */
+.x-grid-cell-inner .success, .x-grid-cell-inner small.success {
+  color: #46a546;
+}
+/* line 13, ../sass/_grid.scss */
+.x-grid-cell-inner .danger, .x-grid-cell-inner small.danger {
+  color: #cc4400;
+}
+/* line 17, ../sass/_grid.scss */
+.x-grid-cell-inner .countbox {
+  background-color: gray;
+  color: white;
+  padding: 2px 4px;
+  margin: 2px 0;
+  display: inline-block;
+  font-size: 11px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  -o-border-radius: 3px 3px 3px 3px;
+  -ms-border-radius: 3px 3px 3px 3px;
+  -khtml-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+}

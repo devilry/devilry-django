@@ -22,7 +22,8 @@ ul.unstyled {
   color: #444444;
 }
 
-/* line 3, ../sass/_managestudents.scss */
-.listofgroups .col1Wrapper .name {
-  font-weight: bold;
+/* line 2, ../sass/_managestudents.scss */
+.listofgroups .col2Wrapper {
+  text-align: right;
+  padding-right: 15px;
 }
