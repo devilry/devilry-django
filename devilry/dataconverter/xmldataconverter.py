@@ -34,6 +34,9 @@ class ToXml(object):
     def encode_unicode(self, parent, data):
         parent.text = data
 
+    def encode_bool(self, parent, data):
+        parent.text = str(data)
+
     def encode_str(self, parent, data):
         parent.text = data
 
