@@ -4,6 +4,7 @@
  *
  * Requirements for the class using the mixin:
  *
+ * - The ``SingleAssignment`` store in stores.
  * - Methods to get the short names: ``getSubjectShortname()``,
  *   ``getPeriodShortname()``, ``getAssignmentShortname()``
  * - ``getMaskElement()`` method to get an element that is masked with the
@@ -17,7 +18,9 @@
  *         mixins: {
  *             'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
  *         },
- *     
+ *         stores: [
+ *             'SingleAssignment'
+ *         ],
  *         _onRender: function() {
  *             ...
  *             this.loadAssignment();
