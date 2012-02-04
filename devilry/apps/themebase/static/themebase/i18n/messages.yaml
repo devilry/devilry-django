@@ -8,3 +8,10 @@ themebase.saving: Saving
 themebase.yes: 'Yes'
 themebase.no: 'No'
 themebase.loading: 'Loading...'
+
+themebase.approved: Approved
+themebase.notapproved: Not approved
+themebase.open: Open
+themebase.closed: Closed
+themebase.deliveries: deliveries
+themebase.delivery: delivery

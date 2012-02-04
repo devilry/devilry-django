@@ -46,12 +46,12 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
 
 
     initComponent: function() {
-        this.approvedText = dtranslate('i18n.approved');
-        this.notApprovedText = dtranslate('i18n.notapproved');
-        this.openText = dtranslate('i18n.open');
-        this.closedText = dtranslate('i18n.closed');
-        this.deliveriesText = dtranslate('i18n.deliveries');
-        this.deliveryText = dtranslate('i18n.delivery');
+        this.approvedText = dtranslate('themebase.approved');
+        this.notApprovedText = dtranslate('themebase.notapproved');
+        this.openText = dtranslate('themebase.open');
+        this.closedText = dtranslate('themebase.closed');
+        this.deliveriesText = dtranslate('themebase.deliveries');
+        this.deliveryText = dtranslate('themebase.delivery');
 
         this.col1Template = Ext.create('Ext.XTemplate', this.col1TemplateString);
         this.col2Template = Ext.create('Ext.XTemplate', this.col2TemplateString);
