@@ -58,7 +58,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        console.log('Assignment:', record.data);
+        //console.log('Assignment:', record.data);
         this.setupGroupsProxy(this.assignmentRecord.get('id'));
         this.getGroupsStore().load();
     }
