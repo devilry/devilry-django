@@ -13,6 +13,24 @@ from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 
 class RelatedUserBase(models.Model, AbstractIsAdmin):
+    """
+    Common fields for examiners and students related to a period.
+
+    .. attribute:: period
+
+        The period that the user is related to.
+
+    .. attribute:: user
+
+        A django.contrib.auth.models.User_ object. Must be unique within this
+        period.
+
+    .. attribute:: tags
+
+        Comma-separated list of tags. Each tag is a word with the following
+        letters allowed: a-z and 0-9. Each word is separated by a comma, and no
+        whitespace.
+    """
     period = models.ForeignKey(Period,
                                verbose_name='Period',
                                help_text="The period.")
@@ -41,10 +59,20 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
 
 class RelatedExaminer(RelatedUserBase):
-    """ Related examiner. """
+    """ Related examiner.
+
+    Adds no fields to RelatedUserBase.
+    """
 
 class RelatedStudent(RelatedUserBase):
-    """ Related student. """
+    """ Related student.
+
+    .. attribute:: candidate_id
+
+        If a candidate has the same Candidate ID for all or many assignments in
+        a semester, this field can be set to simplify setting candidate IDs on
+        each assignment.
+    """
     candidate_id = models.CharField(max_length=30, blank=True, null=True,
                                     help_text="If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.")
 

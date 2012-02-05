@@ -80,6 +80,29 @@ even a single day.
 
 .. autoclass:: devilry.apps.core.models.Period
 
+
+RelatedUserBase
+#########################################################
+
+Base class for :class:`devilry.apps.core.models.RelatedStudent` and :class:`devilry.apps.core.models.RelatedExaminer`.
+
+.. autoclass:: devilry.apps.core.models.relateduser.RelatedUserBase
+
+
+RelatedStudent --- Student on a period
+#########################################################
+
+A RelatedStudent is a students *related* to a period.
+
+.. autoclass:: devilry.apps.core.models.RelatedStudent
+
+RelatedExaminer --- Examiner on a period
+#########################################################
+
+A RelatedExaminer is a students *related* to a period.
+
+.. autoclass:: devilry.apps.core.models.RelatedExaminer
+
 Assignment
 #########################################################
 
@@ -165,6 +188,14 @@ FileMeta
 
 .. autoclass:: devilry.apps.core.models.FileMeta
 
+
+
+DevilryUserProfile
+#########################################################
+
+**See also**: :ref:`userobj`.
+
+.. autoclass:: devilry.apps.core.models.DevilryUserProfile
 
 
 .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield

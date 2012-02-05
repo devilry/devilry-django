@@ -4,18 +4,19 @@ from django.db.models.signals import post_save
 
 
 class DevilryUserProfile(models.Model):
-    """ User profile extending django.contrib.auth.models.User.
+    """ User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
 
-    Ment to be used as a Django _user profile_ (AUTH_PROFILE_MODULE).
+    Ment to be used as a Django *user profile* (AUTH_PROFILE_MODULE).
 
     .. attribute:: full_name
 
         Django splits names into first_name and last_name. They are only 30 chars each.
         Read about why this is not a good idea here:
+
             http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
 
-        Since we require support for _any_ name, we use our own full_name
-        field, and ignore the one in Django.
+        Since we require support for *any* name, we use our own ``full_name``
+        field, and ignore the one in Django. Max length 300.
 
     .. attribute:: languagecode
 

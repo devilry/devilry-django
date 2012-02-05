@@ -2,6 +2,7 @@
     :hidden:
     
     core.models
+    userobj
     core.deliverystore
     i18n
 
@@ -39,6 +40,7 @@ Core
 ######################################################################
 
 * **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
+* :ref:`userobj`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
 
