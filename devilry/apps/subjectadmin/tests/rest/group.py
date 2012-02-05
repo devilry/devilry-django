@@ -2,33 +2,11 @@ from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.subjectadmin.rest.group import (assignmentadmin_required,
-                                                  AssignmentadminRequiredError,
-                                                  GroupDao)
 
 
-class TestAssignmentAdminRequired(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
-                            subjects=['duck1010'],
-                            periods=['firstsem'],
-                            assignments=['a1:admin(a1admin)', 'a2'])
-        self.testhelper.create_superuser("superuser")
-        self.assignment1 = self.testhelper.duck1010_firstsem_a1
-        self.assignment2 = self.testhelper.duck1010_firstsem_a2
+from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
+from devilry.apps.subjectadmin.rest.group import GroupDao
 
-    def test_assignmentadmin_required_superuser(self):
-        assignmentadmin_required(self.testhelper.superuser, "", None) # Calls is_superuser and exits without further checks
-
-    def test_assignmentadmin_required_normaluser(self):
-        assignmentadmin_required(self.testhelper.a1admin, "",
-                                 self.assignment1.id)
-
-    def test_assignmentadmin_required_normaluser_denied(self):
-        self.assertRaises(AssignmentadminRequiredError,
-                          assignmentadmin_required, self.testhelper.a1admin,
-                          "", self.assignment2.id)
 
 
 class TestGroupDao(TestCase):
@@ -54,7 +32,7 @@ class TestGroupDao(TestCase):
     def test_read_permissiondenied(self):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
-        with self.assertRaises(AssignmentadminRequiredError):
+        with self.assertRaises(PermissionDeniedError):
             GroupDao().list(testhelper.a2admin, assignment1.id)
 
     def test_read(self):

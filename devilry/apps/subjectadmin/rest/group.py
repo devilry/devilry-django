@@ -1,30 +1,14 @@
 from devilry.rest.indata import indata
 from devilry.rest.restbase import RestBase
 
-from devilry.apps.core.models import (Assignment,
-                                      AssignmentGroup,
+from devilry.apps.core.models import (AssignmentGroup,
                                       AssignmentGroupTag,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-from errors import PermissionDeniedError
+from auth import assignmentadmin_required
 
 
-
-class AssignmentadminRequiredError(PermissionDeniedError):
-    """
-    Raised to signal that a subject admin is required for the given operation.
-    """
-
-
-def assignmentadmin_required(user, errormsg, *assignmentids):
-    if user.is_superuser:
-        return
-    for assignmentid in assignmentids:
-        if assignmentid == None:
-            raise AssignmentadminRequiredError(errormsg)
-        if Assignment.where_is_admin(user).filter(id=assignmentid).count() == 0:
-            raise AssignmentadminRequiredError(errormsg)
 
 
 class GroupDao(object):
