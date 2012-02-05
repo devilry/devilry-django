@@ -1,3 +1,7 @@
+"""
+Exceptions for ``devilry.apps.subjectadmin.rest``.
+"""
+
 class PermissionDeniedError(Exception):
     """
     Raised to signal permission denied.
