@@ -17,7 +17,7 @@ Ext.define('subjectadmin.model.Group', {
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/restgroup/',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/rest/group/',
         extraParams: {
             _devilry_accept: 'application/json'
         },
