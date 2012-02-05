@@ -20,8 +20,13 @@ Additional data
 ###############
 
 Additional data is stored in a one-to-one relation to
-:class:`devilry.apps.core.models.DevilryUserProfile`.
+:class:`devilry.apps.core.models.DevilryUserProfile`. The profile object is
+available through the ``devilryuserprofile`` attribute of any
+django.contrib.auth.models.User_ object in devilry. It can be used in queries
+just like any other one-to-one relation, like this::
 
+    from django.contrib.auth.models import User
+    supermen = User.objects.filter(devilryuserprofile__full_name__contains="Superman")
 
 
 .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
