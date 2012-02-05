@@ -130,7 +130,7 @@ class CommentForm(JsonRegistryItem):
                     if(val > 0):
                         prefix = "+"
                     else:
-                        prefix = u"\u00f7"
+                        prefix = u"\u2012"
                         val = - val
                     feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3]) +  "</li>\n"
                 nr += 1
@@ -140,7 +140,7 @@ class CommentForm(JsonRegistryItem):
                 if(val > 0):                                                       
                     prefix = "+"
                 else:                                                                             
-                    prefix = u"\u00f7"
+                    prefix = u"\u2012"
                     val = - val
                 if val != 0:
                     feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3] ) + "</li>\n"

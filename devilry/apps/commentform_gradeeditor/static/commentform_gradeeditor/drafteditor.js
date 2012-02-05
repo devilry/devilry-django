@@ -5,7 +5,9 @@
     xtype: 'form',
 
     layout: {
-        type: 'anchor',
+        type: 'vbox',
+        align: 'stretch',
+        autoSize: true,
     },
    // layout: 'auto',
     autoScroll: true,
@@ -13,10 +15,10 @@
     fieldDefaults: {
         labelAlign: 'top',
         labelWidth: 100,
-        labelStyle: 'font-weight:bold'
+        labelStyle: 'font-weight:bold;'
     },
     defaults: {
-        margins: '0 0 10 0'
+        margins: '0 0 5 0'
     },
     /**
      * Called by the grade-editor main window just before calling
@@ -59,14 +61,22 @@
                 var field = Ext.widget('label', {
                     text: grade[3],
                     anchor: '-1',
-                    flex: 0
+                    flex: 0,
+                    style: {
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        margin: '10 0 10 0',
+                    },
                 });
                 this.add(field)
             } else if (grade[0] == 'text') {
                 var label = Ext.widget('label', {
-                    text: grade[3],
+                    text: grade[3] + ":",
                     anchor: '-1',
-                    flex: 0
+                    flex: 0,
+                    style: {
+                        fontWeight: 'bold',
+                    },
                 });
                 var field = Ext.widget('markdownfulleditor', {
                     height: 150
