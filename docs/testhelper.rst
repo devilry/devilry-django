@@ -1,7 +1,7 @@
 .. _testhelper:
 
 ================================================================
-devilry.apps.core.testhelper --- Create core test data for tests
+devilry.apps.core.testhelper --- Create core test data
 ================================================================
 
 
