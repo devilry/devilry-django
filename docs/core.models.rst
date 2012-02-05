@@ -92,14 +92,14 @@ Base class for :class:`devilry.apps.core.models.RelatedStudent` and :class:`devi
 RelatedStudent --- Student on a period
 #########################################################
 
-A RelatedStudent is a students *related* to a period.
+A RelatedStudent is a student *related* to a :class:`devilry.apps.core.models.Period`.
 
 .. autoclass:: devilry.apps.core.models.RelatedStudent
 
 RelatedExaminer --- Examiner on a period
 #########################################################
 
-A RelatedExaminer is a students *related* to a period.
+A RelatedExaminer is an examiner *related* to a :class:`devilry.apps.core.models.Period`.
 
 .. autoclass:: devilry.apps.core.models.RelatedExaminer
 

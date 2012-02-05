@@ -45,7 +45,15 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     .. attribute:: assignments
 
-        A set of :class:`assignments <devilry.apps.core.models.Assignment>` for this period.
+        A Django RelatedManager of :class:`assignments <devilry.apps.core.models.Assignment>` for this period.
+
+    .. attribute:: relatedexaminer_set
+
+        A Django RelatedManager of :class:`RelatedExaminers <devilry.apps.core.models.RelatedExaminer>` for this period.
+
+    .. attribute:: relatedstudent_set
+
+        A Django RelatedManager of :class:`RelatedStudents <devilry.apps.core.models.RelatedStudent>` for this period.
 
     .. attribute:: etag
 
