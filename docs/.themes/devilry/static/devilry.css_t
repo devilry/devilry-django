@@ -32,11 +32,14 @@ div.body>div.section>div.section {
 }
 div.body>div.section>div.section>h2 {
     border: none;
+    font-size: 190%;
     margin: 0 0 15px 0;
     padding: 0;
 }
 
-div.body>div.section>div.section>div.section>h3, div.body>div.section>div.section>div.section>div.section>h4 {
+div.body>div.section>div.section>div.section>h3,
+div.body>div.section>div.section>div.section>div.section>h4,
+div.body>div.section>div.section>div.section>div.section>div.section>h5 {
     border: none;
     margin: 20px 0 15px 0;
     padding: 0;
@@ -44,10 +47,18 @@ div.body>div.section>div.section>div.section>h3, div.body>div.section>div.sectio
 
 div.body>div.section>div.section>div.section>h3 {
     border-bottom: 1px solid #d8d8d8;
+    font-size: 165%;
 }
 
 div.body>div.section>div.section>div.section>div.section>h4 {
+    font-size: 140%;
     font-weight: bold;
+    border: none;
+}
+div.body>div.section>div.section>div.section>div.section>div.section>h5 {
+    font-size: 120%;
+    font-weight: normal;
+    font-style: italic;
     border: none;
 }
 
