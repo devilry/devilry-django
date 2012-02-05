@@ -1,5 +1,4 @@
 {
-    padding: 20,
     border: false,
     frame: false,
     xtype: 'form',
@@ -8,14 +7,14 @@
         type: 'vbox',
         align: 'stretch',
         autoSize: true,
+        padding: 20,
     },
-   // layout: 'auto',
     autoScroll: true,
 
     fieldDefaults: {
         labelAlign: 'top',
         labelWidth: 100,
-        labelStyle: 'font-weight:bold;'
+        labelStyle: 'font-weight:bold;',
     },
     defaults: {
         margins: '0 0 5 0'

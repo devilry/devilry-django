@@ -1,5 +1,4 @@
 {
-    padding: 20,
     border: false,
     frame: false,
     xtype: 'form',
@@ -7,8 +6,10 @@
     layout: {
         type: 'vbox',
         align: 'stretch',
-        autoSize: 'true'
+        autoSize: true,
+        padding: 20,
     },
+    autoScroll: true,
 
     fieldDefaults: {
         labelAlign: 'top',
@@ -58,7 +59,7 @@
         }
 
         this.feedback = Ext.widget('markdownfulleditor', {
-            flex: 1
+            height: 200,
         });
         this.add(this.feedback);
     },
