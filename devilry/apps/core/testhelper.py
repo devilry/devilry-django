@@ -52,14 +52,17 @@ class TestHelper(object):
 
     def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True):
         """
-        :param assignmentgroup: Expects either a Delivery object or a
-        string path to an assignmentgroup. This is a mandatory parameter.
+        :param assignmentgroup:
+            Expects either a Delivery object or a string path to an
+            assignmentgroup. This is a mandatory parameter.
 
-        :param files: a dictionary with key/values as file name and
-        file content as described in Delivery.add_file()
+        :param files:
+            A dictionary with key/values as file name and
+            file content as described in Delivery.add_file()
 
-        :param after_last_deadline: if true, sets time_of_delivery 1
-        day later than the assignmentgroups active deadline
+        :param after_last_deadline:
+            If true, sets time_of_delivery 1 day later than the
+            assignmentgroups active deadline
         """
 
         # TODO: add timestamp-parameter for time_of_delivery
@@ -128,19 +131,24 @@ class TestHelper(object):
 
     def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
         """
-        :param delivery: either a Delivery object or a string path to
-        an assignmentgroup, where we take the last delivery made. This
-        is the only mandatory parameter
+        :param delivery:
+            Either a Delivery object or a string path to
+            an assignmentgroup, where we take the last delivery made. This
+            is the only mandatory parameter
 
-        :param verdict: a dict containing grade, score and passing
-        grade. Defaults to grade='A', points=100,
-        is_passing_grade=True
+        :param verdict:
+            E dict containing grade, score and passing
+            grade. Defaults to::
 
-        :param examiner: A User object. Defaults to the first examiner
-        for the delivery's assignment group.
+                dict(grade='A', points=100, is_passing_grade=True)
 
-        :param timestamp: A datetime object for when the feedback was
-        saved. Defaults to same time the delivery was made
+        :param examiner:
+            A User object. Defaults to the first examiner
+            for the delivery's assignment group.
+
+        :param timestamp:
+            A datetime object for when the feedback was
+            saved. Defaults to same time the delivery was made
         """
 
         # get the delivery object

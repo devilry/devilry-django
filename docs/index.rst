@@ -6,6 +6,9 @@
     core.deliverystore
     i18n
 
+    testsuite
+    testhelper
+
     plugins
     jsapp
 
@@ -42,6 +45,13 @@ Core
 * **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
 * :ref:`userobj`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
+
+
+Testing
+#######
+
+* :ref:`testsuite`
+* :ref:`testhelper`
 
 
 Plugin development
