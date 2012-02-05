@@ -43,16 +43,19 @@ class CommentForm(JsonRegistryItem):
         gradeeditor = draft['gradeeditor']
         draftval = draft['values']
         confval = config['formValues']
+        nr = 0
         for i in xrange(0, len(draftval)):
             if confval[i][0]=='check':
-                if not isinstance(draftval[i], bool):
+                if not isinstance(draftval[nr], bool):
                     errormsg = 'the field labled "' + confval[i][3] + '" has to contain a boolean-value'
                     raise ConfigValidationError(errormsg)
 
             elif confval[i][0] == 'number':
-                if not isinstance(draftval[i], int):
+                if not isinstance(draftval[nr], int):
                     errormsg = 'the field labled "' + confval[i][3] + '" has to contain a number 0 or higher'
                     raise ConfigValidationError(errormsg)
+            if confval[i][0] != 'label':
+                nr += 1
 
 
     @classmethod
@@ -67,15 +70,15 @@ class CommentForm(JsonRegistryItem):
 
         pointSum = 0
         for entry in form:
-            if len(entry) != 4 and entry[0] != 'text':
-                raise ConfigValidationError('You have to specify fieldtype, points, default and label')
+            if len(entry) != 4:
+                raise ConfigValidationError('You have to specify fieldtype, points, default and label. For text and label fields you may skip these by typing ::')
 
             if not isinstance(entry[0], basestring):
                 raise ConfigValidationError('You have to specify fieldtype as either "number" or "check"')
-            if entry[0] != 'number' and entry[0] != 'check' and entry[0] != 'text':
-                raise ConfigValidationError('You have to specify fieldtype as either "number" or "check"')
+            if entry[0] != 'number' and entry[0] != 'check' and entry[0] != 'text' and entry[0] != 'label':
+                raise ConfigValidationError('You have to specify fieldtype as either "number", "text", "label" or "check"')
 
-            if entry[1] == '' and entry[0] != 'text':
+            if entry[1] == '' and entry[0] != 'text' and entry[0] != 'label':
                 raise ConfigValidationError('You have to enter points as a number 0 or higher')
 
             #if int(entry[1])<0:
@@ -84,12 +87,12 @@ class CommentForm(JsonRegistryItem):
             if not isinstance(entry[2], basestring):
                 raise ConfigValidationError('You have to enter the field-label as plain text')
 
-            if entry[2] == '' and entry[0] != 'text':
+            if entry[2] == '' and entry[0] != 'text' and entry[0] != 'label':
                 raise ConfigValidationError('You have to enter a default value')
             
             if entry[3] == '':
                 raise ConfigValidationError('You have to enter a field-label')
-            if entry[0] != 'text':
+            if entry[0] != 'text' and entry[0] != 'label':
                 pointSum+=int(entry[1])
 
         if not isinstance(approvedLimit, int):
@@ -113,12 +116,15 @@ class CommentForm(JsonRegistryItem):
         points = 0
 
         feedback = "<ul>\n"
-
-        for i in xrange(0, len(draftval)):
-            if confval[i][0] == 'text':
+        nr = 0
+        for i in xrange(0, len(confval)):
+            if confval[i][0] == 'label':
                 feedback += "</ul>\n" + markdown_full(confval[i][3]) + "\n<ul>\n"
-            if confval[i][0]=='check':
-                if draftval[i]:
+            elif confval[i][0] == 'text':
+                feedback += "</ul>\n" + markdown_full(draftval[nr]) + "\n<ul>\n"
+                nr += 1
+            elif confval[i][0]=='check':
+                if draftval[nr]:
                     points+=int(confval[i][1])
                     val = int(confval[i][1])
                     if(val > 0):
@@ -127,10 +133,10 @@ class CommentForm(JsonRegistryItem):
                         prefix = u"\u00f7"
                         val = - val
                     feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3]) +  "</li>\n"
-
+                nr += 1
             elif confval[i][0] == 'number':
-                points+=draftval[i]
-                val = int(draftval[i])
+                points+=draftval[nr]
+                val = int(draftval[nr])
                 if(val > 0):                                                       
                     prefix = "+"
                 else:                                                                             
@@ -138,6 +144,7 @@ class CommentForm(JsonRegistryItem):
                     val = - val
                 if val != 0:
                     feedback += "<li>" + markdown_full("**" + prefix + str(val) + " points:** " + confval[i][3] ) + "</li>\n"
+                nr += 1
 
         feedback += "</ul>\n"
 
