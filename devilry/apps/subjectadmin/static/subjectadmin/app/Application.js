@@ -81,12 +81,12 @@ Ext.define('subjectadmin.Application', {
      * extending this app. */
     setupExtraRoutes: Ext.emptyFn,
 
-    routeNotFound: function(route) {
+    routeNotFound: function(routeInfo) {
         this.breadcrumbs.set([], dtranslate('theme.routenotfound'));
         this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'routenotfound',
-            route: route.token
+            route: routeInfo.token
         });
     },
 
@@ -97,7 +97,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    createNewAssignmentChooseperiod: function(info) {
+    createNewAssignmentChooseperiod: function(routeInfo) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'chooseperiod',
@@ -105,7 +105,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    createNewAssignment: function(info, periodId) {
+    createNewAssignment: function(routeInfo, periodId) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
@@ -113,7 +113,7 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    showAssignment: function(info, subject_shortname, period_shortname, assignment_shortname) {
+    showAssignment: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname;
         this.breadcrumbs.set([{
             text: subject_shortname,
@@ -124,13 +124,14 @@ Ext.define('subjectadmin.Application', {
         }], assignment_shortname);
         this.setPrimaryContent({
             xtype: 'assignmentoverview',
+            url: routeInfo.url,
             subject_shortname: subject_shortname,
             period_shortname: period_shortname,
             assignment_shortname: assignment_shortname
         });
     },
 
-    manageStudents: function(info, subject_shortname, period_shortname, assignment_shortname) {
+    manageStudents: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname;
         var periodurl = subjecturl + '/' + period_shortname;
         this.breadcrumbs.set([{

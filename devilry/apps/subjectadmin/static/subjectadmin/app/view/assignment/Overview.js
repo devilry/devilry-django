@@ -16,6 +16,10 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
 
 
     /**
+     * @cfg {String} url (required)
+     */
+
+    /**
      * @cfg {String} subject_shortname (required)
      */
 
@@ -29,6 +33,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
 
 
     initComponent: function() {
+
         Ext.apply(this, {
             layout: 'rightsidebar',
             frame: false,
@@ -48,7 +53,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         xtype: 'actionlist',
                         cls: 'centerbody',
                         links: [{
-                            url: '#',
+                            url: Ext.String.format('{0}/@@manage-students', this.url),
                             text: dtranslate('subjectadmin.assignment.manage-students')
                         }, {
                             url: '#',
