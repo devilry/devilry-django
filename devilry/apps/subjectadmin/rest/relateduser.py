@@ -34,6 +34,9 @@ class RelatedStudentDao(RelatedUserDaoBase):
     readfields = RelatedUserDaoBase.readfields + ['candidate_id']
     corecls = RelatedStudent
 
+class RelatedExaminerDao(RelatedUserDaoBase):
+    corecls = RelatedExaminer
+
 
 class RestRelatedStudent(RestBase):
     def __init__(self, daocls=RelatedStudentDao, **basekwargs):
