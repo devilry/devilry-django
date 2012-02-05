@@ -42,22 +42,24 @@ Ext.define('jsapp.Router', {
         if(token == null) {
             token = '';
         }
+        var routeInfo = {
+            token: token,
+            url: '#' + token
+        };
         for(var index in this.routes) {
             var route = this.routes[index];
             var match = token.match(route.regex);
             if(match) {
                 var args = match.slice(1);
-                Ext.bind(this.handler[route.action], this.handler, args, true)({
-                    action: route.action,
-                    token: token
-                });
+                Ext.bind(this.handler[route.action], this.handler, args, true)(Ext.apply(routeInfo, {
+                    action: route.action
+                }));
                 return;
             }
         }
-        Ext.bind(this.handler['routeNotFound'], this.handler)({
+        Ext.bind(this.handler['routeNotFound'], this.handler)(Ext.apply(routeInfo, {
             action: 'routeNotFound',
-            token: token
-        });
+        }));
     },
 
     _initHistory: function() {
