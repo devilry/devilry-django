@@ -19,11 +19,17 @@ class TestHelper(object):
         FileMeta.deliverystore = MemoryDeliveryStore()
 
     def create_user(self, name):
+        """
+        Create a user with the given username. Adds the user to ``self.<name>``.
+
+        :return: The created user object.
+        """
         user = User(username=name)
         user.set_password('test')
         user.full_clean()
         user.save()
         vars(self)[name] = user
+        return user
 
     def refresh_var(self, obj):
         freshed_obj = type(obj).objects.get(pk=obj.pk)
@@ -32,11 +38,17 @@ class TestHelper(object):
                 vars(self)[key] = freshed_obj
 
     def create_superuser(self, name):
+        """
+        Create a superuser with the given username. Adds the user to ``self.<name>``.
+
+        :return: The created user object.
+        """
         su = User(username=name, is_superuser=True)
         su.set_password("test")
         su.full_clean()
         su.save()
         vars(self)[name] = su
+        return su
 
     def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True):
         """
