@@ -30,15 +30,15 @@
         '<p><pre>label : :\n' +
         'Your custom label\n' +
         ';;\n</pre></p>' +
-        '<p>This could for instance be used to separate exercises from each other.</p>\n' +
+        '<p>This could for instance be used to separate exercises from each other. Labels accept markdown syntax for further styling. For the moment the syntax is only rendered for students and not examiners.</p>\n' +
         '<h2>A working example</h2>\n' +
         'Below is a working example that may be used as a reference for making your own feedback list.\n' +
         '<p><pre>' +
+        'label : : \n' +
+        '## Exercise 1\n' +
+        ';;\n' +
         'check : 10 : 1\n' +
         'You have remembered to include a figure. That is good.\n' +
-        ';;\n' +
-        'text : : \n' +
-        'The following comments are important for your next delivery.\n' +
         ';;\n' +
         'check : 20 : 0\n' +
         'Your conclusion is well written. I believe you have understood the problem correctly.\n' +
@@ -51,7 +51,10 @@
         ';;\n' +
         'number : 0 : 0\n' +
         'Correction points (see comment).\n'+
-        ';;' +
+        ';;\n' +
+        'text : : \n' +
+        'Additional comments\n' +
+        ';;\n' +
         '</pre></p>', 
     
     layout: {
