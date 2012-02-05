@@ -5,43 +5,73 @@
 ==============================================================
 
 
+####################################################
 About the app
-####################
+####################################################
 
 The *subjectadmin* app provides a GUI for administrator on Subject, Period and
 Assignment, including a dashboard.
 
 
 
+####################################################
 JavaScript API
-##############
+####################################################
 
 The application is mostly written in JavaScript, so check out the
 *subjectadmin* package in the `Javascript API <javascript>`_.
 
 
+####################################################
 Errors/exceptions
-#################
+####################################################
 
 .. automodule:: devilry.apps.subjectadmin.rest.errors
 
+####################
 Authentification
-################
+####################
+
 .. automodule:: devilry.apps.subjectadmin.rest.auth
 
+####################################################
 Group management
-################
+####################################################
 
+
+""""""""""""""""""""""""""""""""""""""""""""
 REST API
-========
+""""""""""""""""""""""""""""""""""""""""""""
+
+.. seealso:: :ref:`rest-for-users`
+
+Resource URL
+============
+
+/subjectadmin/rest/group/
 
 
-/ --- List
----------------------
+GET / --- List
+========================
 
-Get list of all related students::
+Parameters
+----------
 
-    GET <APPPREFIX>/rest/group/?assignmentid=1&_devilry_accept=application/json
+assignmentid
+    ID of an assignment. (Required).
+
+
+Example
+-------
+
+Get list of all groups on assignment ``1``::
+
+    GET <APPPREFIX>/rest/group/?assignmentid=1
+    Accept: application/json
+
+The result will be something like this:
+
+.. code-block:: javascript
 
     [{ // Group 1....
         "name": null,
@@ -71,24 +101,50 @@ Get list of all related students::
     }]
 
 
+""""""""""""""""""""""""""""""""""""""""""
 API
-===
+""""""""""""""""""""""""""""""""""""""""""
 
 .. automodule:: devilry.apps.subjectadmin.rest.group
 
 
+####################################################
 Related user management
-##########################
+####################################################
 
+""""""""""""""""""""""""""""""""""""""""""
 REST API
-========
+""""""""""""""""""""""""""""""""""""""""""
 
-/ --- List
----------------------
+.. seealso:: :ref:`rest-for-users`
 
-Get list of all related students::
+Resource URL
+============
 
-    GET <APPPREFIX>/rest/relatedstudent/?periodid=1&_devilry_accept=application/json
+/subjectadmin/rest/relatedstudent/
+
+
+GET / --- List
+==============
+
+Parameters
+----------
+
+periodid
+    ID of a period. (Required).
+
+
+Example
+-------
+
+Get list of all related students on period ``1``::
+
+    GET /subjectadmin/rest/relatedstudent/?periodid=1
+    Accept: application/json
+
+The result will be something like this:
+
+.. code-block:: javascript
 
     [{
         "user__username": "student0",
@@ -106,6 +162,7 @@ The only difference required to get examiners is to change to
 ``relatedexaminer`` in the URL.
     
 
+""""""""""""""""""""""""""""""""""""""""""
 API
-===
+""""""""""""""""""""""""""""""""""""""""""
 .. automodule:: devilry.apps.subjectadmin.rest.relateduser
