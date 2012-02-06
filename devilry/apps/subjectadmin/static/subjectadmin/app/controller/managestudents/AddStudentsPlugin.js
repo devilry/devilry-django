@@ -33,6 +33,9 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
                 click: this._onAddstudents
             },
 
+            'addstudentswindow': {
+                render: this._onRenderWindow
+            },
             'addstudentswindow savebutton': {
                 click: this._onSave
             },
@@ -52,12 +55,26 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this._onAddstudents();
     },
 
+    _onRenderWindow: function() {
+        var windowEl = this.getWindow().getEl();
+        Ext.defer(function() {
+            var relatedlink = windowEl.query('.relatedlink')[0];
+            var relatedlinkEl = Ext.create('Ext.Element', relatedlink);
+            relatedlinkEl.on('click', this._onRelatedLinkClick, this);
+        }, 200, this);
+    },
+
+    _onRelatedLinkClick: function(ev) {
+        console.log('hei');
+        ev.stopEvent();
+    },
+
     _onAddstudents: function() {
         var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsStore();
         relatedStudentsStore.clearFilter();
-        //this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
-        //relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
-        console.log(relatedStudentsStore.data.items[0].data);
+        this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
+        relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+        console.log(relatedStudentsStore.data.items[0]);
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore
         }).show();

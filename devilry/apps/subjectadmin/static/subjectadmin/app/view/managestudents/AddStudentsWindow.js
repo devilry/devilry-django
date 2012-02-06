@@ -46,7 +46,18 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                 region: 'east',
                 width: 250,
                 bodyPadding: 20,
-                html: dtranslate('subjectadmin.managestudents.addstudents.tips')
+                html: Ext.create('Ext.XTemplate',
+                    '<p>',
+                    dtranslate('subjectadmin.managestudents.addstudents.tips'),
+                    '</p><p>',
+                    dtranslate('subjectadmin.managestudents.addstudents.relatedref'),
+                    '</p>'
+                ).apply({
+                    period: 'stuff',
+                    startlink: '<div class="relatedlink">',
+                    endlink: '</div>'
+                })
+
             }],
             buttons: ['->', {
                 xtype: 'cancelbutton'

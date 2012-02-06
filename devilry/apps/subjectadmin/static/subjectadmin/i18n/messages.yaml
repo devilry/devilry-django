@@ -31,4 +31,8 @@ subjectadmin.dashboard.createnewassignment: Create new assignment
 subjectadmin.dashboard.browseall: Browse everything i have access to
 subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
 "subjectadmin.dashboard.overview-and-statistics": Overview and statistics
+
 subjectadmin.managestudents.breadcrumbtitle: Manage students
+subjectadmin.managestudents.addstudents.title: Add students
+subjectadmin.managestudents.addstudents.tips: Choose the students you want to add to the assignment, and click save.
+subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {period} is available. {startlink}Click here{endlink} to manage students on {period}."
