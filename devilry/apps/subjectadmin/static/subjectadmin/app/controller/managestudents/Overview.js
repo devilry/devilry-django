@@ -16,6 +16,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     stores: [
         'SingleAssignment',
         'RelatedStudents',
+        'RelatedExaminers',
         'Groups'
     ],
 
@@ -63,6 +64,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     setupProxies: function(periodid, assignmentid) {
         this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
         this.getRelatedStudentsStore().proxy.extraParams.periodid = periodid;
+        this.getRelatedExaminersStore().proxy.extraParams.periodid = periodid;
     },
 
     onLoadAssignmentSuccess: function(record) {
@@ -89,6 +91,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         };
         this.getGroupsStore().load(loadConfig);
         this.getRelatedStudentsStore().load(loadConfig);
+        this.getRelatedExaminersStore().load(loadConfig);
     },
 
     /**
@@ -99,7 +102,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      */
     _onUserStoreLoaded: function() {
         this.loadedStores ++;
-        if(this.loadedStores == 2) {
+        if(this.loadedStores == 3) { // Groups, RelatedStudents, RelatedExaminers
             this._onAllUserStoresLoaded();
         }
     },
@@ -107,7 +110,8 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     _onAllUserStoresLoaded: function() {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
-        console.log(this.getRelatedStudentsStore().data.items);
+        console.log('relstudents', this.getRelatedStudentsStore().data.items);
+        console.log('relexaminers', this.getRelatedExaminersStore().data.items);
     },
 
     _onAddstudents: function() {

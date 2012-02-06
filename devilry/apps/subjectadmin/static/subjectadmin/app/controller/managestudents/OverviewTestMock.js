@@ -14,6 +14,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
     stores: [
         'SingleAssignmentTestMock',
         'RelatedStudentsTestMock',
+        'RelatedExaminersTestMock',
         'GroupsTestMock'
     ],
 
@@ -127,6 +128,33 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         }, this);
     },
 
+    _loadRelatedExaminersIntoStore: function() {
+        var initialData = [{
+            "user__username": "examiner0",
+            "user_id": 10,
+            "tags": "tag2",
+            "user__devilryuserprofile__full_name": null,
+            "user__email": "examiner0@example.com",
+            "id": 1
+        }, {
+            "user__username": "examiner1",
+            "user_id": 11,
+            "tags": "tag2",
+            "user__devilryuserprofile__full_name": "The first examiner",
+            "user__email": "examiner1@example.com",
+            "id": 2
+        }];
+
+
+        // Add data to the proxy. This will be available in the store after a
+        // load(), thus simulating loading from a server.
+        Ext.Array.each(initialData, function(data) {
+            var record = Ext.create('subjectadmin.model.RelatedExaminerTestMock', Ext.apply(data));
+            record.phantom = true; // Force create
+            record.save();
+        }, this);
+    },
+
     _loadRelatedStudentsIntoStore: function() {
         var initialData = [{
             "user__username": "student0",
@@ -176,10 +204,15 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
     setupProxies: function(assignmentid) {
         this._loadGroupsIntoStore();
         this._loadRelatedStudentsIntoStore();
+        this._loadRelatedExaminersIntoStore();
     },
 
     getGroupsStore: function() {
         return this.getGroupsTestMockStore();
+    },
+
+    getRelatedExaminersStore: function() {
+        return this.getRelatedExaminersTestMockStore();
     },
 
     getRelatedStudentsStore: function() {
