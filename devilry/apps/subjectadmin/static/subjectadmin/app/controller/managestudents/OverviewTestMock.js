@@ -180,6 +180,22 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
             "candidate_id": "secretcand2",
             "user__email": "student2@example.com",
             "id": 3
+        }, {
+            "user__username": "dewey",
+            "user_id": 14,
+            "tags": "nondefault",
+            "user__devilryuserprofile__full_name": "Dewey Duck",
+            "candidate_id": "dw213",
+            "user__email": "dewey@example.com",
+            "id": 4
+        }, {
+            "user__username": "louie",
+            "user_id": 15,
+            "tags": "nondefault",
+            "user__devilryuserprofile__full_name": "Louie Duck",
+            "candidate_id": "l2333",
+            "user__email": "louie@example.com",
+            "id": 5
         }];
 
 

@@ -1,5 +1,10 @@
 /**
  * Controller for the managestudents overview.
+ *
+ * Provides loading of stores required for student management, and leaves everything else 
+ * to plugins. The plugins get a reference to this controller from the
+ * {@link subjectadmin.Application#managestudentsSuccessfullyLoaded} event, and
+ * they use the documented methods to hook themselves into the user interface.
  */
 Ext.define('subjectadmin.controller.managestudents.Overview', {
     extend: 'Ext.app.Controller',
@@ -15,18 +20,24 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     /**
      * Get the related examiners store.
+     * This store is automatically loaded with all the groups on the assignment
+     * before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {subjectadmin.store.RelatedExaminers} Store.
      * @method getRelatedExaminersStore
      */
 
     /**
      * Get the related students store.
+     * This store is automatically loaded with all the groups on the assignment
+     * before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {subjectadmin.store.RelatedStudents} Store.
      * @method getRelatedStudentsStore
      */
 
     /**
      * Get the groups store.
+     * This store is automatically loaded with all the groups on the assignment
+     * before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {subjectadmin.store.Groups} Store.
      * @method getGroupsStore
      */
@@ -134,6 +145,28 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         if(this.loadedStores == 3) { // Groups, RelatedStudents, RelatedExaminers
             this._onAllUserStoresLoaded();
         }
+    },
+
+    /**
+     * Get the contents of the groups store (see {@link #getGroupsStore}
+     * as an object with usernames as key and an array of
+     * {@link subjectadmin.model.Group} records for values.
+     *
+     * The values are arrays because we support the same user in multiple
+     * groups on the same assignment.
+     */
+    getGroupsMappedByUsername: function() {
+        var map = {};
+        this.getGroupsStore().each(function(record) {
+            Ext.each(record.get('students'), function(student) {
+                if(map[student.student__username]) {
+                    map[student.student__username].push(record);
+                } else {
+                    map[student.student__username] = [record];
+                }
+            }, this);
+        }, this);
+        return map;
     },
 
     _onAllUserStoresLoaded: function() {

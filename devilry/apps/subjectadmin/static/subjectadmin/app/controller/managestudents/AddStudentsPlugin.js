@@ -19,11 +19,8 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
     ],
 
     refs: [{
-        ref: 'overview',
-        selector: 'managestudentsoverview'
-    }, {
-        ref: 'addstudentsButton',
-        selector: 'button[itemId=addstudents]'
+        ref: 'window',
+        selector: 'addstudentswindow'
     }],
 
     init: function() {
@@ -34,7 +31,14 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.control({
             'viewport managestudentsoverview button[itemId=addstudents]': {
                 click: this._onAddstudents
-            }
+            },
+
+            'addstudentswindow savebutton': {
+                click: this._onSave
+            },
+            'addstudentswindow cancelbutton': {
+                click: this._onCancel
+            },
         });
     },
 
@@ -48,9 +52,28 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onAddstudents: function() {
-        console.log('HEIi');
-        //Ext.widget('addstudentswindow', {
-            //store: this.manageStudentsController.getRelatedStudentsStore()
-        //});
+        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsStore();
+        relatedStudentsStore.clearFilter();
+        this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
+        relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+        Ext.widget('addstudentswindow', {
+            relatedStudentsStore: relatedStudentsStore
+        }).show();
+    },
+
+    _filterOutRelatedStudentsAlreadyInGroup: function(relatedStudentsStore) {
+        var currentUsers = this.manageStudentsController.getGroupsMappedByUsername();
+        relatedStudentsStore.filterBy(function(record) {
+            var username = record.get('user__username');
+            return currentUsers[username] === undefined;
+        });
+    },
+
+    _onCancel: function(button) {
+        this.getWindow().close();
+    },
+
+    _onSave: function(button) {
+        console.log('save');
     }
 });
