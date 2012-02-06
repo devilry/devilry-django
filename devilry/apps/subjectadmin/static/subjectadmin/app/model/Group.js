@@ -3,6 +3,7 @@ Ext.define('subjectadmin.model.Group', {
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
+        {name: 'num_deliveries', type: 'int'},
         {name: 'name',  type: 'string'},
         {name: 'is_open',  type: 'boolean'},
         {name: 'feedback__grade',  type: 'string'},

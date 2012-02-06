@@ -37,10 +37,12 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
         '   <tpl if="!is_open">',
         '       <div class="closed"><small class="danger">{closedText}</small></div>',
         '   </tpl>',
-        '   <div class="deliveries countbox">',
-        '       <tpl if="deliveries == 1">{deliveries} {deliveryText}</tpl>',
-        '       <tpl if="deliveries &gt; 1">{deliveries} {deliveriesText}</tpl>',
-        '   <div>',
+        '   <tpl if="num_deliveries != 0">',
+        '       <div class="num_deliveries countbox">',
+        '           <tpl if="num_deliveries == 1">{num_deliveries} {deliveryText}</tpl>',
+        '           <tpl if="num_deliveries &gt; 1">{num_deliveries} {deliveriesText}</tpl>',
+        '       <div>',
+        '   </tpl>',
         '</div>'
     ],
 
@@ -79,7 +81,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
 
     renderCol2: function(unused, unused2, record) {
         return this.col2Template.apply({
-            deliveries: 2,
+            num_deliveries: record.get('num_deliveries'),
             is_open: record.get('is_open'),
             openText: this.openText,
             closedText: this.closedText,
