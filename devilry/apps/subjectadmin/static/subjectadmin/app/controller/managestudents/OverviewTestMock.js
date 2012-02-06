@@ -13,6 +13,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
 
     stores: [
         'SingleAssignmentTestMock',
+        'RelatedStudentsTestMock',
         'GroupsTestMock'
     ],
 
@@ -123,6 +124,43 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         }, this);
     },
 
+    _loadRelatedStudentsIntoStore: function() {
+        var initialData = [{
+            "user__username": "student0",
+            "user_id": 11,
+            "tags": "tag1,tag2",
+            "user__devilryuserprofile__full_name": "The Student0",
+            "candidate_id": "secretcand0",
+            "user__email": "student0@example.com",
+            "id": 1
+        }, {
+            "user__username": "student1",
+            "user_id": 12,
+            "tags": "tag1",
+            "user__devilryuserprofile__full_name": "The Student1",
+            "candidate_id": "secretcand1",
+            "user__email": "student1@example.com",
+            "id": 2
+        }, {
+            "user__username": "student2",
+            "user_id": 13,
+            "tags": "supertag,tag3",
+            "user__devilryuserprofile__full_name": "The Student2",
+            "candidate_id": "secretcand2",
+            "user__email": "student2@example.com",
+            "id": 3
+        }];
+
+
+        // Add data to the proxy. This will be available in the store after a
+        // load(), thus simulating loading from a server.
+        Ext.Array.each(initialData, function(data) {
+            var record = Ext.create('subjectadmin.model.RelatedStudentTestMock', Ext.apply(data));
+            record.phantom = true; // Force create
+            record.save();
+        }, this);
+    },
+
     init: function() {
         this._loadAssignmentsIntoStore();
         this.callParent();
@@ -132,11 +170,16 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         return this.getSingleAssignmentTestMockStore();
     },
 
-    setupGroupsProxy: function(assignmentid) {
+    setupProxies: function(assignmentid) {
         this._loadGroupsIntoStore();
+        this._loadRelatedStudentsIntoStore();
     },
 
     getGroupsStore: function() {
         return this.getGroupsTestMockStore();
+    },
+
+    getRelatedStudentsStore: function() {
+        return this.getRelatedStudentsTestMockStore();
     }
 });

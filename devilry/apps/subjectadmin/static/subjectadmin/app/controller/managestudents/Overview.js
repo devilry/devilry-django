@@ -15,18 +15,25 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     stores: [
         'SingleAssignment',
+        'RelatedStudents',
         'Groups'
     ],
 
     refs: [{
         ref: 'overview',
         selector: 'managestudentsoverview'
+    }, {
+        ref: 'addstudentsButton',
+        selector: 'button[itemId=addstudents]'
     }],
 
     init: function() {
         this.control({
             'viewport managestudentsoverview': {
                 render: this._onRender
+            },
+            'viewport managestudentsoverview button[itemId=addstudents]': {
+                click: this._onAddstudents
             }
         });
     },
@@ -35,6 +42,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.subject_shortname = this.getOverview().subject_shortname;
         this.period_shortname = this.getOverview().period_shortname;
         this.assignment_shortname = this.getOverview().assignment_shortname;
+        //this.getOverview().getEl().mask(dtranslate('themebase.loading'));
         this.loadAssignment();
     },
 
@@ -52,14 +60,59 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         return this.getOverview().getEl();
     },
 
-    setupGroupsProxy: function(assignmentid) {
+    setupProxies: function(periodid, assignmentid) {
         this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
+        this.getRelatedStudentsStore().proxy.extraParams.periodid = periodid;
     },
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         //console.log('Assignment:', record.data);
-        this.setupGroupsProxy(this.assignmentRecord.get('id'));
-        this.getGroupsStore().load();
+        this._loadUserStores();
+    },
+
+    /**
+     * @private
+     *
+     * Load RelatedStudents and Groups stores.
+     * */
+    _loadUserStores: function() {
+        this.setupProxies(
+            this.assignmentRecord.get('parentnode'),
+            this.assignmentRecord.get('id')
+        );
+        this.getOverview().setLoading(true);
+        this.loadedStores = 0;
+        var loadConfig = {
+            scope: this,
+            callback: this._onUserStoreLoaded
+        };
+        this.getGroupsStore().load(loadConfig);
+        this.getRelatedStudentsStore().load(loadConfig);
+    },
+
+    /**
+     * @private
+     *
+     * Called for each of the user stores, and calls _onAllUserStoresLoaded
+     * when all of them are finished loading.
+     */
+    _onUserStoreLoaded: function() {
+        this.loadedStores ++;
+        if(this.loadedStores == 2) {
+            this._onAllUserStoresLoaded();
+        }
+    },
+
+    _onAllUserStoresLoaded: function() {
+        this.getOverview().setLoading(false);
+        this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
+        console.log(this.getRelatedStudentsStore().data.items);
+    },
+
+    _onAddstudents: function() {
+        Ext.widget('addstudentswindow', {
+            store: this.getRelatedStudentsStore()
+        });
     }
 });
