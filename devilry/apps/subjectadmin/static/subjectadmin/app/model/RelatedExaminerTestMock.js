@@ -5,7 +5,6 @@ Ext.define('subjectadmin.model.RelatedExaminerTestMock', {
     ],
     proxy: {
         type: 'hiddenelement',
-        show: true,
         id: 'relatedexaminerproxy'
     }
 });
