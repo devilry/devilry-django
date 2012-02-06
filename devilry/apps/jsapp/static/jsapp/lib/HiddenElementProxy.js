@@ -122,13 +122,18 @@ Ext.define('jsapp.HiddenElementProxy', {
     _getRecord: function(data) {
         var Model = this.model;
         var record = new Model(data, id);
-        record.internalId = record.get('id'); // NOTE: Important that internal ID is defined and consistent! If not, Ext.data.Store will not work with the proxy.
+        this._setRecordProperties(record);
         record.phantom = false;
         return record;
     },
 
+    _setRecordProperties: function(record) {
+        record.internalId = record.get('id');
+        record.id = Ext.String.format('{0}-{1}', this.id, record.get('id'));
+    },
+
     _addRecord: function(record) {
-        record.internalId = record.get('id'); // NOTE: Important that internal ID is defined and consistent! If not, Ext.data.Store will not work with the proxy.
+        this._setRecordProperties(record);
         this.allItems.add(record.get('id'), record.data);
     },
 
