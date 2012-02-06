@@ -45,20 +45,20 @@ Output content type --- ACCEPT
 The content type for output from the APIs is normally specified using a HTTP
 accept header in the HTTP request::
 
-    GET /path/to/api/
+    GET http://devilry.example.com/path/to/api/
     Accept: application/json
 
 However you can also use the ``_devilry_accept`` querystring parameter::
 
-    GET /path/to/api/?_devilry_accept=application/json
+    GET http://devilry.example.com/path/to/api/?_devilry_accept=application/json
 
 Or suffix::
 
-    GET /path/to/api/1.json
+    GET http://devilry.example.com/path/to/api/1.json
 
 Note that suffix also works on ``/``, even if it looks a bit strange::
 
-    GET /path/to/api/.json
+    GET http://devilry.example.com/path/to/api/.json
 
 
 Input content type
@@ -69,9 +69,32 @@ on the output content type. However, if you want to send data encoded in format,
 and receive the response encoded in another, this is specified using
 the ``Content-type`` HTTP header::
 
-    GET /path/to/api/
+    GET http://devilry.example.com/path/to/api/
     Accept: application/xml
     Content-type: application/json
+
+
+Parameters
+==========
+
+Parameters are given in the querystring (the stuff after ? in the url). For
+example, if the ``/path/to/api/`` API required a numeric parameter named
+``stuff``, we would specify it using::
+
+    GET http://devilry.example.com/path/to/api/?stuff=10
+
+Lets say the API also supported a ``search`` parameter, we could specify both
+``stuff`` and ``search``::
+
+    GET http://devilry.example.com/path/to/api/?stuff=10&search=something
+
+Furthermore, other requests such as POST and PUT also uses the querystring for
+parameters. So to create a new item in our fictional API, we would do something
+like this::
+
+    POST http://devilry.example.com/path/to/api/?stuff=10
+
+    Some data here.
 
 
 
