@@ -66,6 +66,12 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
         self.waitForCssSelector('.jasmine_reporter')
         self.assertTrue('0 failures' in self.driver.page_source)
 
+    def executeScript(self, script, element):
+        return self.driver.execute_script(script, element)
+
+    def getInnerHtml(self, element):
+        return self.executeScript("return arguments[0].innerHTML", element)
+
     def waitFor(self, item, fn, timeout=10):
         """
         Wait for the ``fn`` function to return ``True``. The ``item`` is
