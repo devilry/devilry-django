@@ -29,7 +29,6 @@ class SeleniumMixin(object):
     def driverWaitForText(self, driver, text, timeout=10):
         WebDriverWait(driver, timeout).until(lambda driver: text in driver.page_source)
 
-
 @skipIf(hasattr(settings, 'SKIP_SELENIUMTESTS') and settings.SKIP_SELENIUMTESTS,
     'Selenium tests have been disabled in settings.py using SKIP_SELENIUMTESTS=True.')
 class SeleniumTestCase(TestCase, SeleniumMixin):
@@ -62,7 +61,18 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
     def browseToJasmine(self):
         self.driver.get(self.getJsAppJasmineTestUrl(self.appname))
 
-    def runJasmineTests(self, ):
+    def runJasmineTests(self):
         self.browseToJasmine()
         self.waitForCssSelector('.jasmine_reporter')
         self.assertTrue('0 failures' in self.driver.page_source)
+
+    def waitFor(self, item, fn, timeout=10):
+        """
+        Wait for the ``fn`` function to return ``True``. The ``item`` is
+        forwarded as argument to ``fn``.
+
+        Example (wait for text in an element)::
+
+            waitFor(myelem, lambda myelem: len(myelem.text) > 0)
+        """
+        WebDriverWait(item, timeout).until(fn)
