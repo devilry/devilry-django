@@ -19,7 +19,8 @@ Ext.define('subjectadmin.Application', {
         'ChoosePeriod',
         'assignment.Overview',
         'assignment.EditPublishingTime',
-        'managestudents.Overview'
+        'managestudents.Overview',
+        'managestudents.AddStudentsPlugin'
     ],
 
     constructor: function() {
@@ -29,7 +30,14 @@ Ext.define('subjectadmin.Application', {
              * Fired when an assignment is successfully loaded by the assignment.Overview.
              * @param {subjectadmin.model.Assignment} assignmentRecord
              */
-            'assignmentSuccessfullyLoaded'
+            'assignmentSuccessfullyLoaded',
+
+            /**
+             * @event
+             * Fired when the students manager on an assigmment is successfully loaded.
+             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             */
+            'managestudentsSuccessfullyLoaded'
         );
         this.callParent(arguments);
     },

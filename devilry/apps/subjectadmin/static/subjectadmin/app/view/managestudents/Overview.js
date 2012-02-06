@@ -26,16 +26,17 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
         Ext.apply(this, {
             layout: 'border',
             frame: false,
-            tbar: [{
-                xtype: 'button',
-                itemId: 'addstudents',
-                text: dtranslate('subjectadmin.managestudents.addstudents')
-            }],
             items: [{
                 xtype: 'listofgroups',
                 region: 'west',
                 //border: false,
-                width: 350
+                width: 350,
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    itemId: 'listofgroupsToolbar',
+                    items: []
+                }]
             }, {
                 xtype: 'panel',
                 region: 'center',

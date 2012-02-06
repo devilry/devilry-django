@@ -13,6 +13,24 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         'managestudents.ListOfGroups'
     ],
 
+    /**
+     * Get the related examiners store.
+     * @return {subjectadmin.store.RelatedExaminers} Store.
+     * @method getRelatedExaminersStore
+     */
+
+    /**
+     * Get the related students store.
+     * @return {subjectadmin.store.RelatedStudents} Store.
+     * @method getRelatedStudentsStore
+     */
+
+    /**
+     * Get the groups store.
+     * @return {subjectadmin.store.Groups} Store.
+     * @method getGroupsStore
+     */
+
     stores: [
         'SingleAssignment',
         'RelatedStudents',
@@ -20,21 +38,32 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         'Groups'
     ],
 
+
+    /**
+     * Get the main view for managestudents.
+     * @return {subjectadmin.view.managestudents.Overview} The overview.
+     * @method getOverview
+     */
+
+    /**
+     * Get the toolbar for list of groups. Useful if a plugin needs to add
+     * items to this toolbar.
+     * @return {Ext.toolbar.Toolbar} The toolbar.
+     * @method getListofgroupsToolbar
+     */
+
     refs: [{
         ref: 'overview',
         selector: 'managestudentsoverview'
     }, {
-        ref: 'addstudentsButton',
-        selector: 'button[itemId=addstudents]'
+        ref: 'listofgroupsToolbar',
+        selector: 'toolbar[itemId=listofgroupsToolbar]'
     }],
 
     init: function() {
         this.control({
             'viewport managestudentsoverview': {
                 render: this._onRender
-            },
-            'viewport managestudentsoverview button[itemId=addstudents]': {
-                click: this._onAddstudents
             }
         });
     },
@@ -110,13 +139,6 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     _onAllUserStoresLoaded: function() {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
-        console.log('relstudents', this.getRelatedStudentsStore().data.items);
-        console.log('relexaminers', this.getRelatedExaminersStore().data.items);
-    },
-
-    _onAddstudents: function() {
-        Ext.widget('addstudentswindow', {
-            store: this.getRelatedStudentsStore()
-        });
+        this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
     }
 });
