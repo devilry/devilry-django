@@ -110,6 +110,12 @@ Utils
 * :ref:`devilry.utils.groupnodes`
 * :ref:`devilry.utils.delivery_collection`
 
+Apps
+######################################################################
+
+* :ref:`apps.subjectadmin`
+
+
 
 Indices and tables
 ######################################################################
