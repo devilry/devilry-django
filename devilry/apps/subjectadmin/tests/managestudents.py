@@ -15,11 +15,13 @@ class TestManageStudents(SeleniumTestCase):
         self.browseToTest('/duck1100/2012h/week1/@@manage-students')
         self.waitForCssSelector('.all-items-loaded')
         self.waitForCssSelector('#relatedstudentproxy .hiddenelement-text')
-        proxytext = self.driver.find_element_by_css_selector('#relatedstudentproxy .hiddenelement-text')
-        self.waitFor(proxytext, lambda element: len(element.text) > 0)
-        self.assertTrue('"candidate_id": "secretcand0"' in proxytext.text)
-        self.assertTrue('"candidate_id": "secretcand2"' in proxytext.text)
-        self.assertTrue('"user__devilryuserprofile__full_name": "The Student1",' in proxytext.text)
+
+        proxyelement = self.driver.find_element_by_css_selector('#relatedstudentproxy-body')
+        self.waitFor(proxyelement, lambda element: len(self.getInnerHtml(element)) > 0)
+        proxytext = self.getInnerHtml(proxyelement)
+        self.assertTrue('"candidate_id": "secretcand0"' in proxytext)
+        self.assertTrue('"candidate_id": "secretcand2"' in proxytext)
+        self.assertTrue('"user__devilryuserprofile__full_name": "The Student1",' in proxytext)
 
     def test_load_relatedexaminers(self):
         self.browseToTest('/duck1100/2012h/week1/@@manage-students')
