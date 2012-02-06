@@ -48,7 +48,7 @@ class TestGroupDao(TestCase):
         self.assertTrue('deadlines' in groups[0].keys())
         fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
                       'feedback__is_passing_grade', 'feedback__save_timestamp',
-                      'examiners', 'students', 'tags', 'deadlines'])
+                      'examiners', 'students', 'tags', 'deadlines', 'num_deliveries'])
         self.assertEquals(set(groups[0].keys()), fields)
         self.assertEquals(AssignmentGroup.objects.get(id=groups[0]['id']).parentnode_id,
                           assignment1.id)
@@ -76,8 +76,17 @@ class TestGroupDao(TestCase):
         self.assertEquals(len(groups), 3)
         first = groups[0]
         fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
-                      'feedback__is_passing_grade', 'feedback__save_timestamp'])
+                      'feedback__is_passing_grade', 'feedback__save_timestamp', 'num_deliveries'])
         self.assertEquals(set(first.keys()), fields)
+
+    def test_num_deliveries(self):
+        testhelper = self.create_testdata()
+        testhelper.add_to_path('uni;duck1010.firstsem.a1.g0.d2')
+        testhelper.add_delivery(testhelper.duck1010_firstsem_a1_g0)
+        assignment1 = testhelper.duck1010_firstsem_a1
+        groups = GroupDao()._get_groups(assignment1.id)
+        self.assertEquals(groups[0]['num_deliveries'], 2)
+        self.assertEquals(groups[1]['num_deliveries'], 1)
 
     def test_prepare_group(self):
         self.assertEquals(GroupDao()._prepare_group({}),

@@ -1,5 +1,6 @@
 from devilry.rest.indata import indata
 from devilry.rest.restbase import RestBase
+from django.db.models import Count
 
 from devilry.apps.core.models import (AssignmentGroup,
                                       AssignmentGroupTag,
@@ -36,9 +37,12 @@ class GroupDao(object):
         Get a list of group dictionaries.
         """
         fields = ('id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
-                  'feedback__is_passing_grade', 'feedback__save_timestamp')
-        groups = AssignmentGroup.objects.filter(parentnode=assignmentid).select_related('feedback').values(*fields)
-        return groups
+                  'feedback__is_passing_grade', 'feedback__save_timestamp',
+                  'num_deliveries')
+        qry = AssignmentGroup.objects.filter(parentnode=assignmentid)
+        qry = qry.select_related('feedback')
+        qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
+        return qry.values(*fields)
 
     def _prepare_group(self, group):
         """ Add the separate-query-aggreagated fields to the group dict. """
