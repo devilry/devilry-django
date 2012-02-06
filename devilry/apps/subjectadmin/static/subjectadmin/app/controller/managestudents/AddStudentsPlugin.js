@@ -32,9 +32,8 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
             'viewport managestudentsoverview button[itemId=addstudents]': {
                 click: this._onAddstudents
             },
-
-            'addstudentswindow': {
-                render: this._onRenderWindow
+            'addstudentswindow button[itemId=relatedLink]': {
+                click: this._onRelatedLinkClick
             },
             'addstudentswindow savebutton': {
                 click: this._onSave
@@ -52,21 +51,11 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
             itemId: 'addstudents',
             text: dtranslate('subjectadmin.managestudents.addstudents')
         });
-        this._onAddstudents();
-    },
-
-    _onRenderWindow: function() {
-        var windowEl = this.getWindow().getEl();
-        Ext.defer(function() {
-            var relatedlink = windowEl.query('.relatedlink')[0];
-            var relatedlinkEl = Ext.create('Ext.Element', relatedlink);
-            relatedlinkEl.on('click', this._onRelatedLinkClick, this);
-        }, 200, this);
+        //this._onAddstudents();
     },
 
     _onRelatedLinkClick: function(ev) {
-        console.log('hei');
-        ev.stopEvent();
+        console.log('_onRelatedLinkClick');
     },
 
     _onAddstudents: function() {
@@ -74,9 +63,13 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
         relatedStudentsStore.clearFilter();
         this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
         relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
-        console.log(relatedStudentsStore.data.items[0]);
         Ext.widget('addstudentswindow', {
-            relatedStudentsStore: relatedStudentsStore
+            relatedStudentsStore: relatedStudentsStore,
+            periodpath: Ext.String.format(
+                '{0}.{1}',
+                this.manageStudentsController.getSubjectShortname(),
+                this.manageStudentsController.getPeriodShortname()
+            )
         }).show();
     },
 

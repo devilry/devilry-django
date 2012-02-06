@@ -46,18 +46,22 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                 region: 'east',
                 width: 250,
                 bodyPadding: 20,
-                html: Ext.create('Ext.XTemplate',
-                    '<p>',
-                    dtranslate('subjectadmin.managestudents.addstudents.tips'),
-                    '</p><p>',
-                    dtranslate('subjectadmin.managestudents.addstudents.relatedref'),
-                    '</p>'
-                ).apply({
-                    period: 'stuff',
-                    startlink: '<div class="relatedlink">',
-                    endlink: '</div>'
-                })
-
+                items: [{
+                    xtype: 'box',
+                    html: Ext.create('Ext.XTemplate',
+                        '<p>',
+                        dtranslate('subjectadmin.managestudents.addstudents.tips'),
+                        '</p><p>',
+                        dtranslate('subjectadmin.managestudents.addstudents.relatedref'),
+                        '</p>'
+                    ).apply({
+                        periodpath: 'stuff'
+                    })
+                }, {
+                    xtype: 'button',
+                    itemId: 'relatedLink',
+                    text: dtranslate('subjectadmin.managestudents.addstudents.relatedbtn')
+                }]
             }],
             buttons: ['->', {
                 xtype: 'cancelbutton'

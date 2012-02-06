@@ -87,18 +87,19 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.loadAssignment();
     },
 
+    /** Get the short name for the current subject. */
     getSubjectShortname: function() {
         return this.subject_shortname;
     },
+
+    /** Get the short name for the current period. */
     getPeriodShortname: function() {
         return this.period_shortname;
     },
+
+    /** Get the short name for the current assignment. */
     getAssignmentShortname: function() {
         return this.assignment_shortname;
-    },
-
-    getMaskElement: function() {
-        return this.getOverview().getEl();
     },
 
     setupProxies: function(periodid, assignmentid) {

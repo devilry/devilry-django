@@ -35,4 +35,5 @@ subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify
 subjectadmin.managestudents.breadcrumbtitle: Manage students
 subjectadmin.managestudents.addstudents.title: Add students
 subjectadmin.managestudents.addstudents.tips: Choose the students you want to add to the assignment, and click save.
-subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {period} is available. {startlink}Click here{endlink} to manage students on {period}."
+subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
+subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
