@@ -7,7 +7,8 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
     cls: 'addstudentswindow',
     requires: [
         'themebase.SaveButton',
-        'themebase.CancelButton'
+        'themebase.CancelButton',
+        'themebase.GridMultiSelectModel'
     ],
 
     /**
@@ -15,6 +16,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
      */
 
     initComponent: function() {
+        var selModel = Ext.create('themebase.GridMultiSelectModel');
         Ext.apply(this, {
             layout: 'border',
             closable: false,
@@ -27,6 +29,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                 xtype: 'grid',
                 region: 'center',
                 store: this.relatedStudentsStore,
+                selModel: selModel,
                 columns: [{
                     header: 'Name',
                     dataIndex: 'user__devilryuserprofile__full_name',

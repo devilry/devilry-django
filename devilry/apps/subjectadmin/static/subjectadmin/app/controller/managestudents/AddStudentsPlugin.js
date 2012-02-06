@@ -49,13 +49,15 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
             itemId: 'addstudents',
             text: dtranslate('subjectadmin.managestudents.addstudents')
         });
+        this._onAddstudents();
     },
 
     _onAddstudents: function() {
         var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsStore();
         relatedStudentsStore.clearFilter();
-        this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
-        relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+        //this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
+        //relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+        console.log(relatedStudentsStore.data.items[0].data);
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore
         }).show();
