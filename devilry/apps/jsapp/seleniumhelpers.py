@@ -1,3 +1,4 @@
+import json
 from selenium.webdriver.support.ui import WebDriverWait
 from unittest import TestCase, skipIf
 from selenium import webdriver
@@ -71,6 +72,16 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
 
     def getInnerHtml(self, element):
         return self.executeScript("return arguments[0].innerHTML", element)
+
+    def getHiddenElementProxyDecoded(self, proxyid):
+        return json.loads(self.getHiddenElementProxyRawtext(proxyid))
+
+    def getHiddenElementProxyRawtext(self, proxyid):
+        css_selector = '#{0} .hiddenelement-text'.format(proxyid)
+        self.waitForCssSelector(css_selector)
+        proxyelement = self.driver.find_element_by_css_selector(css_selector)
+        self.waitFor(proxyelement, lambda element: len(self.getInnerHtml(element)) > 0)
+        return self.getInnerHtml(proxyelement)
 
     def waitFor(self, item, fn, timeout=10):
         """
