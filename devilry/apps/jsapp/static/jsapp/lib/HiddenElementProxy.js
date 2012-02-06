@@ -71,6 +71,7 @@ Ext.define('jsapp.HiddenElementProxy', {
             maximizable: true,
             items: [{
                 xtype: 'panel',
+                bodyCls: 'hiddenelement-text',
                 bodyStyle: 'white-space:pre',
                 autoScroll: true,
                 id: this.id
