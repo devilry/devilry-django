@@ -1,22 +1,23 @@
 {
-    padding: 20,
     border: false,
     frame: false,
     xtype: 'form',
 
     layout: {
-        type: 'anchor',
+        type: 'vbox',
+        align: 'stretch',
+        autoSize: true,
+        padding: 20,
     },
-   // layout: 'auto',
     autoScroll: true,
 
     fieldDefaults: {
         labelAlign: 'top',
         labelWidth: 100,
-        labelStyle: 'font-weight:bold'
+        labelStyle: 'font-weight:bold;',
     },
     defaults: {
-        margins: '0 0 10 0'
+        margins: '0 0 5 0'
     },
     /**
      * Called by the grade-editor main window just before calling
@@ -28,13 +29,13 @@
     initializeEditor: function(config) {
         var me = this;
         this.editorConfig = Ext.JSON.decode(config.config);
-        var formVal = this.editorConfig.formValues;
+        this.formVal = this.editorConfig.formValues;
         this.draftfields = [];
         var nr = 0;
         var i=0;
         
-        for (i=0; i<formVal.length; i++) {
-            var grade = formVal[i];
+        for (i=0; i<this.formVal.length; i++) {
+            var grade = this.formVal[i];
             if (grade[0] == 'check') {
                 var field = Ext.widget('checkboxfield', {
                     boxLabel: grade[3] + " (" + grade[1] + ")",
@@ -43,29 +44,53 @@
                     flex: 0
                 });
                 this.draftfields[nr] = field;
+                this.add(field)
                 nr++;
             } else if (grade[0] == 'number'){
                 var field = Ext.widget('numberfield', {
                     fieldLabel: grade[3],
-                    minValue: 0,
-                    maxValue: parseInt(grade[1]),
                     anchor: '-1',
                     value: grade[2],
                     flex: 0
                 });
                 this.draftfields[nr] = field;
+                this.add(field)
+                nr++;
+            } else if (grade[0] == 'label'){
+                var field = Ext.widget('label', {
+                    text: grade[3],
+                    anchor: '-1',
+                    flex: 0,
+                    style: {
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        margin: '10 0 10 0',
+                    },
+                });
+                this.add(field)
+            } else if (grade[0] == 'text') {
+                var label = Ext.widget('label', {
+                    text: grade[3] + ":",
+                    anchor: '-1',
+                    flex: 0,
+                    style: {
+                        fontWeight: 'bold',
+                    },
+                });
+                var field = Ext.widget('markdownfulleditor', {
+                    height: 150
+                });
+                this.draftfields[nr] = field;
+                this.add(label)
+                this.add(field)
                 nr++;
             }
         }
 
-        for (i=0; i<this.draftfields.length; i++) {
-            this.add(this.draftfields[i]);
-        }
-
-        this.feedback = Ext.widget('markdownfulleditor', {
-            height: 200
-        });
-        this.add(this.feedback);
+        //this.feedback = Ext.widget('markdownfulleditor', {
+        //    height: 200
+        //});
+        //this.add(this.feedback);
     },
 
     /**
@@ -80,10 +105,15 @@
         }
         if(buf.gradeeditor && buf.gradeeditor.id === 'commentform') {
             var i=0;
+            var nr = 0;
             for (i=0; i<buf.values.length; i++) {
-                this.draftfields[i].setValue(buf.values[i]);
+                var grade = this.formVal[i];
+                if(grade[0] != 'label') {
+                    this.draftfields[nr].setValue(buf.values[nr]);
+                    nr++;
+                }
             }
-            this.feedback.setValue(buf.feedback);
+            //this.feedback.setValue(buf.feedback);
         }
     },
 
@@ -135,7 +165,7 @@
      * Create a draft (used in onSaveDraft and onPublish)
      */
     createDraft: function() {
-        var feedback = this.feedback.getValue();
+        //var feedback = this.feedback.getValue();
         var values = [];
         var i=0;
         for (i=0; i<this.draftfields.length; i++) {
@@ -148,7 +178,7 @@
                 version: '1.0'
             },
             values: values,
-            feedback: feedback
+            feedback: ""
         };
 
         var draft = Ext.JSON.encode(retval);
