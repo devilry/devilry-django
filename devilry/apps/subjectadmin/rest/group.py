@@ -1,14 +1,31 @@
 from devilry.rest.indata import indata
 from devilry.rest.restbase import RestBase
 from django.db.models import Count
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 from devilry.apps.core.models import (AssignmentGroup,
                                       AssignmentGroupTag,
                                       Candidate,
                                       Examiner,
                                       Deadline)
+from devilry.rest.indata import none_or_bool
+from devilry.rest.indata import none_or_unicode
 from auth import assignmentadmin_required
 
+
+
+#def _require_list_of_students(value):
+    #return value
+
+#def _require_list_of_examiner(value):
+    #return value
+
+#def _require_list_of_tags(value):
+    #return value
+
+#def _require_list_of_deadlines(value):
+    #return value
 
 
 
@@ -127,6 +144,44 @@ class GroupDao(object):
         return groups
 
 
+    def _setattr_if_not_none(self, obj, attrname, value):
+        if value != None:
+            setattr(obj, attrname, value)
+
+    def _get_user(self, username):
+        try:
+            return User.objects.get(username=username)
+        except ObjectDoesNotExist, e:
+            raise ValueError('User does not exist: {0}'.format(username))
+
+    def _create_candidate_from_studentdict(self, group, studentdict):
+        if not isinstance(studentdict, dict):
+            raise ValueError('Each entry in the students list must be a dict. '
+                             'Given type: {0}.'.format(type(studentdict)))
+        try:
+            username = studentdict['username']
+        except KeyError, e:
+            raise ValueError('A student dict must contain username. '
+                             'Keys in the given dict: {0}.'.format(','.join(studentdict.keys())))
+        else:
+            candidate_id = studentdict.get('candidate_id')
+            candidate = Candidate(assignment_group=group,
+                                  student=self._get_user(username),
+                                  candidate_id=candidate_id)
+            candidate.save()
+            return candidate
+
+    def create_noauth(self, assignment, name=None, is_open=None, students=[], examiners=[], tags=[], deadlines=[]):
+        group = AssignmentGroup(parentnode=assignment)
+        self._setattr_if_not_none(group, 'name', name)
+        self._setattr_if_not_none(group, 'is_open', is_open)
+        group.save()
+        for studentdict in students:
+            self._create_candidate_from_studentdict(group, studentdict)
+        return group
+
+
+
 class RestGroup(RestBase):
     def __init__(self, daocls=GroupDao, **basekwargs):
         super(RestGroup, self).__init__(**basekwargs)
@@ -136,25 +191,18 @@ class RestGroup(RestBase):
     def list(self, assignmentid):
         return self.dao.list(self.user, assignmentid)
 
-    #@indata(short_name=unicode, long_name=unicode)
-    #def create(self, short_name, long_name):
-        #return self.todict(self.dao.create(self.user, short_name, long_name))
+    #@indata(name=none_or_unicode,
+            #is_open=none_or_bool,
+            #students=require_list_of_students,
+            #examiners=require_list_of_examiner,
+            #tags=require_list_of_tags,
+            #deadlines=require_list_of_deadlines)
+    #def create(self, name='', is_open=True, students=[], examiners=[], tags=[], deadlines=[]):
+        #pass
 
     #@indata(id=int, short_name=unicode, long_name=unicode)
     #def update(self, id, short_name, long_name):
         #return self.todict(self.dao.update(self.user, id, short_name, long_name))
-
-    #@indata(id=int)
-    #def list(self, id=None):
-        #items = self._get_items(id)
-        #return dict(
-            #params=dict(
-                #parentnode_id=id
-            #),
-            #links=self.get_links(id),
-            #items=items,
-            #total=len(items)
-        #)
 
     ##    @indata(parentnode_id=force_list)
 ##    def batch(self, create=[], update=[], delete=[]):
@@ -168,8 +216,3 @@ class RestGroup(RestBase):
     #def _get_items(self, parentnode_id):
         #return [self.todict(item) for item in self.dao.list(self.user, parentnode_id)]
 
-    #def get_links(self, id):
-        #links = {}
-        #if id:
-            #links['node'] = self.geturl(id)
-        #return links

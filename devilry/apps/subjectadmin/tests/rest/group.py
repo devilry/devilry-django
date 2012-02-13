@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
@@ -10,13 +11,17 @@ from devilry.apps.subjectadmin.rest.group import GroupDao
 
 
 class TestGroupDao(TestCase):
-    def create_testdata(self):
+    def create_testassignments(self):
         testhelper = TestHelper()
         testhelper.add(nodes='uni',
                        subjects=['duck1010'],
                        periods=['firstsem'],
                        assignments=['a1:admin(a1admin)', 'a2:admin(a2admin)'])
         testhelper.create_superuser("superuser")
+        return testhelper
+
+    def create_testdata(self):
+        testhelper = self.create_testassignments()
 
         for num in xrange(3):
             path = 'uni;duck1010.firstsem.a1.g{num}:candidate(student{num}):examiner(examiner1).d1'
@@ -107,3 +112,61 @@ class TestGroupDao(TestCase):
                     3: {'people': [{'name':'test3'}]}}
         GroupDao()._merge_with_groupsdict(groupsdict, people, 'people')
         self.assertEquals(groupsdict, expected)
+
+
+    def test_create_noauth_minimal(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = GroupDao().create_noauth(assignment1)
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        self.assertEquals(group_db.name, None)
+        self.assertEquals(group_db.is_open, True)
+
+    def test_create_noauth_simpleattrs(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = GroupDao().create_noauth(assignment1, name='Somename', is_open=False)
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        self.assertEquals(group_db.name, 'Somename')
+        self.assertEquals(group_db.is_open, False)
+
+    def test_get_user(self):
+        with self.assertRaises(ValueError):
+            GroupDao()._get_user('tstuser')
+        testhelper = TestHelper()
+        tstuser = testhelper.create_user('tstuser')
+        GroupDao()._get_user('tstuser')
+
+    def test_create_candidate_from_studentdict(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = AssignmentGroup(parentnode=assignment1)
+        group.save()
+        tstuser = testhelper.create_user('tstuser')
+        candidate = GroupDao()._create_candidate_from_studentdict(group, dict(username='tstuser'))
+        self.assertEquals(candidate.student.username, 'tstuser')
+        self.assertEquals(candidate.candidate_id, None)
+        candidate = GroupDao()._create_candidate_from_studentdict(group,
+                                                                  dict(username='tstuser',
+                                                                       candidate_id='XY'))
+        self.assertEquals(candidate.student.username, 'tstuser')
+        self.assertEquals(candidate.candidate_id, 'XY')
+        candidate_db = Candidate.objects.get(id=candidate.id) # Raises exception if not found
+        self.assertEquals(candidate_db.student.username, 'tstuser')
+
+    def test_create_candidate_from_studentdict_errors(self):
+        with self.assertRaises(ValueError):
+            GroupDao()._create_candidate_from_studentdict(None, []) # not a dict
+        with self.assertRaises(ValueError):
+            GroupDao()._create_candidate_from_studentdict(None, {}) # username not in dict
+
+    def test_create_noauth_students(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        tstuser = testhelper.create_user('tstuser')
+        tstuser = testhelper.create_user('tstuser2')
+        group = GroupDao().create_noauth(assignment1, students=[{'username': 'tstuser'},
+                                                                {'username': 'tstuser2'}])
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        usernames = [candidate.student.username for candidate in group.candidates.all()]
+        self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
