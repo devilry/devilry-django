@@ -1,4 +1,5 @@
 import json
+from optparse import make_option
 
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -10,6 +11,13 @@ import sys
 
 class RelatedBaseCommand(BaseCommand):
     args = '<subject short name> <period short name>'
+    option_list = BaseCommand.option_list + (
+        make_option('--clearall',
+            action='store_true',
+            dest='clearall',
+            default=False,
+            help='Clear all related students on the period before adding.'),
+    )
 
     def get_subject_and_period(self, args):
         """ Get the subject and period from args """
@@ -34,6 +42,8 @@ class RelatedBaseCommand(BaseCommand):
         jsondata = sys.stdin.read()
         data = json.loads(jsondata)
         self.period.relatedstudent_set.filter()
+        if options.get('clearall'):
+            self._clearAllRelatedOnPeriod(modelcls)
         for kw in data:
             username = kw.pop('username')
             user = self._get_user(username)
@@ -43,6 +53,11 @@ class RelatedBaseCommand(BaseCommand):
             print "Added/updated {0} related {1}s to {2}.{3}".format(len(data),
                                                                      self.user_type,
                                                                      args[0], args[1])
+
+    def _clearAllRelatedOnPeriod(self, modelcls):
+        modelcls.objects.filter(period=self.period).delete()
+        if self.verbosity > 0:
+            print "Removed all related students in: {0}".format(self.period)
 
     def _update_reluser(self, modelcls, user, kw):
             try:
