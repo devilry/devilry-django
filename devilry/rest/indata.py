@@ -1,3 +1,7 @@
+"""
+Validate and type-convert input to RESTful methods.
+"""
+
 from functools import wraps
 from devilry.rest.error import RestError
 
@@ -8,6 +12,28 @@ class InvalidIndataError(RestError):
     """
 
 def indata(**indataspec):
+    """
+    Decorator that takes care of validating and type-converting indata for a RESTful method.
+
+    Each key in ``indataspec`` is a parameter name, and each value is a
+    function that raises ``ValueError`` if the given value is of the wrong
+    type. The function may also try to convert the type of the given value.
+
+    Example::
+
+        from devilry.rest.restbase import RestBase
+
+        def int_minusone_is_none(data):
+            data = int(data)
+            if data == -1:
+                return None
+            return data
+
+        class MyRestInterface(RestBase):
+            @indata(name=unicode, age=int, size=int_minusone_is_none)
+            def post(self, name, age, size):
+                pass
+    """
     def dec(targetfunc):
         targetfunc.indataspec = indataspec
 

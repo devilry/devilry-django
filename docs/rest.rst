@@ -101,5 +101,14 @@ like this::
 API
 ############################
 
+RestBase
+========
 .. autoclass:: devilry.rest.restbase.RestBase
+
+RestView
+========
 .. autoclass:: devilry.rest.restview.RestView
+
+@indata
+========
+.. automodule:: devilry.rest.indata
