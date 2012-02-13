@@ -11,6 +11,39 @@ class InvalidIndataError(RestError):
     Invalid indata.
     """
 
+
+def none_or_bool(value):
+    """
+    Validator for :func:`indata` that requires that the value is ``None`` or a
+    ``bool``.
+    """
+    if value == None:
+        return value
+    elif not isinstance(value, bool):
+        raise ValueError('Value is not a bool. It is: ' + str(type(value)))
+    else:
+        return value
+
+def none_or_unicode(value):
+    """
+    Validator for :func:`indata` that requires that the value is ``None`` or a
+    ``unicode`` string. It also accepts bytestrings, which it will try to
+    decode as utf-8.
+    """
+    if value == None:
+        return value
+    if isinstance(value, unicode):
+        return value
+    elif isinstance(value, str):
+        try:
+            return unicode(value, 'utf-8')
+        except UnicodeDecodeError, e:
+            raise ValueError("Could not decode value as UTF-8 string. " + str(e))
+    else:
+        raise ValueError('Invalid type: ' + str(type(value)))
+
+
+
 def indata(**indataspec):
     """
     Decorator that takes care of validating and type-converting indata for a RESTful method.

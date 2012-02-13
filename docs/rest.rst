@@ -111,4 +111,5 @@ RestView
 
 @indata
 ========
+.. currentmodule:: devilry.rest.indata
 .. automodule:: devilry.rest.indata
