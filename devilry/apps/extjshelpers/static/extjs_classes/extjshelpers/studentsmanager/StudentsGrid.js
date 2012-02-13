@@ -250,7 +250,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         });
         if(this.isAdministrator) {
             Ext.Array.insert(this.columns, 3, [{
-                text: 'Examiners', dataIndex: 'examiners__username', flex: 3,
+                text: 'Examiners', dataIndex: 'examiners__user__username', flex: 3,
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
             }]);
