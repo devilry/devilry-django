@@ -140,6 +140,11 @@ AssignmentGroup
 
 .. autoclass:: devilry.apps.core.models.AssignmentGroup
 
+AssignmentGroupTag
+#########################################################
+
+.. autoclass:: devilry.apps.core.models.AssignmentGroupTag
+
 
 Deadline
 #########################################################

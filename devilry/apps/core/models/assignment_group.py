@@ -223,7 +223,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
 
 class AssignmentGroupTag(models.Model):
-    """ An AssignmentGroup can be tagged with zero or more tags using this class. """
+    """
+    An AssignmentGroup can be tagged with zero or more tags using this class.
+
+    .. attribute:: assignment_group
+
+        The `AssignmentGroup`_ where this groups belongs.
+
+    .. attribute:: tag
+
+        The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".
+    """
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags')
     tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')
 
