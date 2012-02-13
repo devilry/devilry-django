@@ -3,6 +3,7 @@ from django.test import TestCase
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Examiner
 
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
@@ -170,3 +171,20 @@ class TestGroupDao(TestCase):
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         usernames = [candidate.student.username for candidate in group.candidates.all()]
         self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
+
+    def test_create_examiner_from_examinerdict(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = AssignmentGroup(parentnode=assignment1)
+        group.save()
+        tstuser = testhelper.create_user('tstuser')
+        examiner = GroupDao()._create_examiner_from_examinerdict(group, dict(user__username='tstuser'))
+        self.assertEquals(examiner.user.username, 'tstuser')
+        examiner_db = Examiner.objects.get(id=examiner.id) # Raises exception if not found
+        self.assertEquals(examiner_db.user.username, 'tstuser')
+
+    def test_create_examiner_from_examinerdict_errors(self):
+        with self.assertRaises(ValueError):
+            GroupDao()._create_examiner_from_examinerdict(None, []) # not a dict
+        with self.assertRaises(ValueError):
+            GroupDao()._create_examiner_from_examinerdict(None, {}) # username not in dict

@@ -9,8 +9,8 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-from devilry.rest.indata import none_or_bool
-from devilry.rest.indata import none_or_unicode
+#from devilry.rest.indata import none_or_bool
+#from devilry.rest.indata import none_or_unicode
 from auth import assignmentadmin_required
 
 
@@ -171,13 +171,31 @@ class GroupDao(object):
             candidate.save()
             return candidate
 
-    def create_noauth(self, assignment, name=None, is_open=None, students=[], examiners=[], tags=[], deadlines=[]):
+    def _create_examiner_from_examinerdict(self, group, examinerdict):
+        if not isinstance(examinerdict, dict):
+            raise ValueError('Each entry in the examiner list must be a dict. '
+                             'Given type: {0}.'.format(type(examinerdict)))
+        try:
+            username = examinerdict['user__username']
+        except KeyError, e:
+            raise ValueError('An examiner dict must contain user__username. '
+                             'Keys in the given dict: {0}.'.format(','.join(examinerdict.keys())))
+        else:
+            examiner = Examiner(assignmentgroup=group,
+                                user=self._get_user(username))
+            examiner.save()
+            return examiner
+
+    def create_noauth(self, assignment, name=None, is_open=None,
+                      students=[], examiners=[], tags=[], deadlines=[]):
         group = AssignmentGroup(parentnode=assignment)
         self._setattr_if_not_none(group, 'name', name)
         self._setattr_if_not_none(group, 'is_open', is_open)
         group.save()
         for studentdict in students:
             self._create_candidate_from_studentdict(group, studentdict)
+        for examinerdict in examiners:
+            self._create_candidate_from_examinerdict(group, studentdict)
         return group
 
 
