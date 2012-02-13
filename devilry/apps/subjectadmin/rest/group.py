@@ -159,9 +159,9 @@ class GroupDao(object):
             raise ValueError('Each entry in the students list must be a dict. '
                              'Given type: {0}.'.format(type(studentdict)))
         try:
-            username = studentdict['username']
+            username = studentdict['student__username']
         except KeyError, e:
-            raise ValueError('A student dict must contain username. '
+            raise ValueError('A student dict must contain student__username. '
                              'Keys in the given dict: {0}.'.format(','.join(studentdict.keys())))
         else:
             candidate_id = studentdict.get('candidate_id')

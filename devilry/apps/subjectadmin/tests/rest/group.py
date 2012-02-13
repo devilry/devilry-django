@@ -143,11 +143,11 @@ class TestGroupDao(TestCase):
         group = AssignmentGroup(parentnode=assignment1)
         group.save()
         tstuser = testhelper.create_user('tstuser')
-        candidate = GroupDao()._create_candidate_from_studentdict(group, dict(username='tstuser'))
+        candidate = GroupDao()._create_candidate_from_studentdict(group, dict(student__username='tstuser'))
         self.assertEquals(candidate.student.username, 'tstuser')
         self.assertEquals(candidate.candidate_id, None)
         candidate = GroupDao()._create_candidate_from_studentdict(group,
-                                                                  dict(username='tstuser',
+                                                                  dict(student__username='tstuser',
                                                                        candidate_id='XY'))
         self.assertEquals(candidate.student.username, 'tstuser')
         self.assertEquals(candidate.candidate_id, 'XY')
@@ -165,8 +165,8 @@ class TestGroupDao(TestCase):
         assignment1 = testhelper.duck1010_firstsem_a1
         tstuser = testhelper.create_user('tstuser')
         tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create_noauth(assignment1, students=[{'username': 'tstuser'},
-                                                                {'username': 'tstuser2'}])
+        group = GroupDao().create_noauth(assignment1, students=[{'student__username': 'tstuser'},
+                                                                {'student__username': 'tstuser2'}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         usernames = [candidate.student.username for candidate in group.candidates.all()]
         self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
