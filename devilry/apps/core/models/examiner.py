@@ -7,7 +7,7 @@ from node import Node
 
 class Examiner(models.Model, AbstractIsAdmin):
     """
-    .. attribute:: assignment_group
+    .. attribute:: assignmentgroup
 
         The `AssignmentGroup`_ where this groups belongs.
 
