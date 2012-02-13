@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from ..models import AssignmentGroup, Assignment, Candidate
+from ..models import Candidate
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
@@ -21,11 +21,11 @@ class TestCandidate(TestCase, TestHelper):
         self.assertEquals(candidate.identifier, candidate.candidate_id)
         candidate.update_identifier(False)
         self.assertEquals(candidate.identifier, candidate.student.username)
- 
+
     def test_non_anonymous(self):
         candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
         self.assertEquals(candidate.identifier, candidate.student.username)
-   
+
     def test_change_anonymous(self):
         cands = self.inf1100_autumn_assignment1_g1.candidates.all()
         self.inf1100_autumn_assignment1.anonymous = True
@@ -57,3 +57,22 @@ class TestCandidate(TestCase, TestHelper):
             candidate.etag_update(e.etag)
         candidate_db = Candidate.objects.get(id=candidate.id)
         self.assertEquals(candidate_db.identifier, "Test_ID")
+
+    def test_sync_candidate_with_user_on_change(self):
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.identifier, 'student1')
+        self.assertEquals(candidate.email, 'student1@example.com')
+        candidate.student.username = 'changed'
+        candidate.student.email = 'somethingchanged@example.com'
+        candidate.student.save()
+        candidate_db = Candidate.objects.get(id=candidate.id) # Must be re-fetched to avoid reading student from cache
+        self.assertEquals(candidate_db.identifier, 'changed')
+        self.assertEquals(candidate_db.email, 'somethingchanged@example.com')
+
+    def test_sync_candidate_with_userprofile_on_change(self):
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.full_name, None)
+        candidate.student.devilryuserprofile.full_name = 'Changed Name'
+        candidate.student.devilryuserprofile.save()
+        candidate_db = Candidate.objects.get(id=candidate.id) # Must be re-fetched to avoid reading student from cache
+        self.assertEquals(candidate_db.full_name, 'Changed Name')
