@@ -122,6 +122,12 @@ We have three main classifications of assignments:
 
 .. autoclass:: devilry.apps.core.models.Assignment
 
+Examiner
+#########################################################
+
+.. autoclass:: devilry.apps.core.models.Examiner
+    :no-members:
+
 
 Candidate
 #########################################################
