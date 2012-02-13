@@ -65,3 +65,11 @@ class TestCandidate(TestCase, TestHelper):
         candidate.student.save()
         candidate_db = Candidate.objects.get(id=candidate.id) # Must be re-fetched to avoid reading student from cache
         self.assertEquals(candidate_db.identifier, 'changed')
+
+    def test_sync_candidate_with_userprofile_on_change(self):
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.full_name, None)
+        candidate.student.devilryuserprofile.full_name = 'Changed Name'
+        candidate.student.devilryuserprofile.save()
+        candidate_db = Candidate.objects.get(id=candidate.id) # Must be re-fetched to avoid reading student from cache
+        self.assertEquals(candidate_db.full_name, 'Changed Name')

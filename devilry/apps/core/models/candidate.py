@@ -6,6 +6,9 @@ from django.db.models import Q
 from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
 from node import Node
+from devilryuserprofile import DevilryUserProfile
+
+
 
 class Candidate(models.Model, Etag, AbstractIsAdmin):
     """
@@ -83,3 +86,15 @@ def sync_candidate_with_user_on_change(sender, **kwargs):
 
 post_save.connect(sync_candidate_with_user_on_change,
                   sender=User)
+
+
+def sync_candidate_with_userprofile_on_change(sender, **kwargs):
+    """
+    Signal handler which is invoked when a DevilryUserProfile is saved.
+    """
+    userprofile = kwargs['instance']
+    for candidate in Candidate.objects.filter(student=userprofile.user):
+        candidate.save()
+
+post_save.connect(sync_candidate_with_userprofile_on_change,
+                  sender=DevilryUserProfile)
