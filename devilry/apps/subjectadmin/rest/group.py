@@ -171,20 +171,41 @@ class GroupDao(object):
             candidate.save()
             return candidate
 
-    def _create_examiner_from_examinerdict(self, group, examinerdict):
+    def _create_from_singlekey_dict(self, modelcls, group, examinerdict, key,
+                                    objectattr, getvalue=lambda v: v,
+                                   assignmentgroupattr='assignment_group'):
+        typename = modelcls.__class__.__name__
         if not isinstance(examinerdict, dict):
-            raise ValueError('Each entry in the examiner list must be a dict. '
-                             'Given type: {0}.'.format(type(examinerdict)))
+            raise ValueError('Each entry in the {typename} list must be a dict. '
+                             'Given type: {giventypename}.'.format(typename=typename,
+                                                                   giventypename=type(examinerdict)))
         try:
-            username = examinerdict['user__username']
+            value = examinerdict[key]
         except KeyError, e:
-            raise ValueError('An examiner dict must contain user__username. '
-                             'Keys in the given dict: {0}.'.format(','.join(examinerdict.keys())))
+            raise ValueError('A {typename} dict must contain {key}. '
+                             'Keys in the given dict: {keys}.'.format(typename=typename,
+                                                                      key=key,
+                                                                      keys=','.join(examinerdict.keys())))
         else:
-            examiner = Examiner(assignmentgroup=group,
-                                user=self._get_user(username))
-            examiner.save()
-            return examiner
+            obj = modelcls()
+            setattr(obj, assignmentgroupattr, group)
+            setattr(obj, objectattr, getvalue(value))
+            obj.save()
+            return obj
+
+    def _create_examiner_from_examinerdict(self, group, examinerdict):
+        return self._create_from_singlekey_dict(Examiner, group, examinerdict,
+                                                'user__username', 'user',
+                                                assignmentgroupattr='assignmentgroup',
+                                                getvalue=self._get_user)
+
+    def _create_tag_from_tagdict(self, group, tagdict):
+        return self._create_from_singlekey_dict(AssignmentGroupTag, group, tagdict, 'tag', 'tag')
+
+    def _create_deadline_from_deadlinedict(self, group, deadlinedict):
+        return self._create_from_singlekey_dict(AssignmentGroupTag, group, deadlinedict,
+                                                'deadline', 'deadline')
+
 
     def create_noauth(self, assignment, name=None, is_open=None,
                       students=[], examiners=[], tags=[], deadlines=[]):

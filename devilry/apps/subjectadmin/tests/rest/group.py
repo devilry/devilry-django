@@ -4,6 +4,7 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner
+from devilry.apps.core.models import AssignmentGroupTag
 
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
@@ -188,3 +189,35 @@ class TestGroupDao(TestCase):
             GroupDao()._create_examiner_from_examinerdict(None, []) # not a dict
         with self.assertRaises(ValueError):
             GroupDao()._create_examiner_from_examinerdict(None, {}) # username not in dict
+
+    def test_create_tag_from_tagdict(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = AssignmentGroup(parentnode=assignment1)
+        group.save()
+        tag = GroupDao()._create_tag_from_tagdict(group, dict(tag='mytag'))
+        self.assertEquals(tag.tag, 'mytag')
+        tag_db = AssignmentGroupTag.objects.get(id=tag.id) # Raises exception if not found
+        self.assertEquals(tag_db.tag, 'mytag')
+
+    def test_create_tag_from_tagdict_errors(self):
+        with self.assertRaises(ValueError):
+            GroupDao()._create_tag_from_tagdict(None, []) # not a dict
+        with self.assertRaises(ValueError):
+            GroupDao()._create_tag_from_tagdict(None, {}) # username not in dict
+
+    #def test_create_deadline_from_deadlinedict(self):
+        #testhelper = self.create_testassignments()
+        #assignment1 = testhelper.duck1010_firstsem_a1
+        #group = AssignmentGroup(parentnode=assignment1)
+        #group.save()
+        #deadline = GroupDao()._create_deadline_from_deadlinedict(group, dict(deadline='mydeadline'))
+        #self.assertEquals(deadline.deadline, 'mydeadline')
+        #deadline_db = AssignmentGroupTag.objects.get(id=deadline.id) # Raises exception if not found
+        #self.assertEquals(deadline_db.deadline, 'mydeadline')
+
+    #def test_create_deadline_from_deadlinedict_errors(self):
+        #with self.assertRaises(ValueError):
+            #GroupDao()._create_deadline_from_deadlinedict(None, []) # not a dict
+        #with self.assertRaises(ValueError):
+            #GroupDao()._create_deadline_from_deadlinedict(None, {}) # username not in dict
