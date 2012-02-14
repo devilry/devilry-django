@@ -11,6 +11,7 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Deadline)
 #from devilry.rest.indata import none_or_bool
 #from devilry.rest.indata import none_or_unicode
+from devilry.rest.indata import isoformatted_datetime
 from auth import assignmentadmin_required
 
 
@@ -203,8 +204,9 @@ class GroupDao(object):
         return self._create_from_singlekey_dict(AssignmentGroupTag, group, tagdict, 'tag', 'tag')
 
     def _create_deadline_from_deadlinedict(self, group, deadlinedict):
-        return self._create_from_singlekey_dict(AssignmentGroupTag, group, deadlinedict,
-                                                'deadline', 'deadline')
+        return self._create_from_singlekey_dict(Deadline, group, deadlinedict,
+                                                'deadline', 'deadline',
+                                                getvalue=isoformatted_datetime)
 
 
     def create_noauth(self, assignment, name=None, is_open=None,
