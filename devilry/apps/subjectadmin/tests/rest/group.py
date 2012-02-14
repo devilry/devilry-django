@@ -141,6 +141,8 @@ class TestGroupDao(TestCase):
         tstuser = testhelper.create_user('tstuser')
         GroupDao()._get_user('tstuser')
 
+
+
     def test_create_candidate_from_studentdict(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
@@ -175,6 +177,8 @@ class TestGroupDao(TestCase):
         usernames = [candidate.student.username for candidate in group.candidates.all()]
         self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
 
+
+
     def test_create_examiner_from_examinerdict(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
@@ -191,6 +195,19 @@ class TestGroupDao(TestCase):
             GroupDao()._create_examiner_from_examinerdict(None, []) # not a dict
         with self.assertRaises(ValueError):
             GroupDao()._create_examiner_from_examinerdict(None, {}) # username not in dict
+
+    def test_create_noauth_examiners(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        tstuser = testhelper.create_user('tstuser')
+        tstuser = testhelper.create_user('tstuser2')
+        group = GroupDao().create_noauth(assignment1, examiners=[{'user__username': 'tstuser'},
+                                                                {'user__username': 'tstuser2'}])
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        usernames = [examiner.user.username for examiner in group.examiners.all()]
+        self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
+
+
 
     def test_create_tag_from_tagdict(self):
         testhelper = self.create_testassignments()

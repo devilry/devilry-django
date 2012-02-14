@@ -218,7 +218,7 @@ class GroupDao(object):
         for studentdict in students:
             self._create_candidate_from_studentdict(group, studentdict)
         for examinerdict in examiners:
-            self._create_candidate_from_examinerdict(group, studentdict)
+            self._create_examiner_from_examinerdict(group, examinerdict)
         return group
 
 
