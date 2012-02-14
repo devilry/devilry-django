@@ -3,6 +3,8 @@ Validate and type-convert input to RESTful methods.
 """
 
 from functools import wraps
+from datetime import datetime
+
 from devilry.rest.error import RestError
 
 
@@ -42,6 +44,15 @@ def none_or_unicode(value):
     else:
         raise ValueError('Invalid type: ' + str(type(value)))
 
+
+def isoformatted_datetime(value):
+    """
+
+    """
+    try:
+        return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
+    except TypeError, e:
+        raise ValueError(str(e))
 
 
 def indata(**indataspec):
