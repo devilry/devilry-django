@@ -225,12 +225,24 @@ class TestGroupDao(TestCase):
         with self.assertRaises(ValueError):
             GroupDao()._create_tag_from_tagdict(None, {}) # username not in dict
 
+    def test_create_noauth_tags(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = GroupDao().create_noauth(assignment1, tags=[{'tag': 'tag1'},
+                                                            {'tag': 'tag2'}])
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        tags = [tag.tag for tag in group.tags.all()]
+        self.assertEquals(set(tags), set(['tag1', 'tag2']))
+
+
+
     def test_create_deadline_from_deadlinedict(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
         group = AssignmentGroup(parentnode=assignment1)
         group.save()
-        deadline = GroupDao()._create_deadline_from_deadlinedict(group, dict(deadline='2010-01-02T03:04:05'))
+        deadline = GroupDao()._create_deadline_from_deadlinedict(group,
+                                                                 dict(deadline='2010-01-02T03:04:05'))
         self.assertEquals(deadline.deadline, datetime(2010, 1, 2, 3, 4, 5))
         deadline_db = Deadline.objects.get(id=deadline.id) # Raises exception if not found
         self.assertEquals(deadline_db.deadline, datetime(2010, 1, 2, 3, 4, 5))
@@ -240,3 +252,13 @@ class TestGroupDao(TestCase):
             GroupDao()._create_deadline_from_deadlinedict(None, []) # not a dict
         with self.assertRaises(ValueError):
             GroupDao()._create_deadline_from_deadlinedict(None, {}) # username not in dict
+
+    def test_create_noauth_deadlines(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = GroupDao().create_noauth(assignment1, deadlines=[{'deadline': '2010-01-02T03:04:05'},
+                                                                 {'deadline': '2010-02-03T04:05:06'}])
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        deadlines = [deadline.deadline for deadline in group.deadlines.all()]
+        self.assertEquals(set(deadlines),
+                          set([datetime(2010, 1, 2, 3, 4, 5), datetime(2010, 2, 3, 4, 5, 6)]))

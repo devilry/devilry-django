@@ -219,6 +219,10 @@ class GroupDao(object):
             self._create_candidate_from_studentdict(group, studentdict)
         for examinerdict in examiners:
             self._create_examiner_from_examinerdict(group, examinerdict)
+        for tagdict in tags:
+            self._create_tag_from_tagdict(group, tagdict)
+        for deadlinedict in deadlines:
+            self._create_deadline_from_deadlinedict(group, deadlinedict)
         return group
 
 
