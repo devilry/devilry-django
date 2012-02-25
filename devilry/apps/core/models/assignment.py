@@ -52,9 +52,21 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
        students immediately? If not, an administrator have to publish
        feedbacks. See also :attr:`Deadline.feedbacks_published`.
 
-    .. scale_points_percent
+    .. attribute:: scale_points_percent
 
         Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
+
+    .. attribute:: delivery_types
+
+        An integer identifying the type of deliveries allowed. Possible values:
+
+            0
+                Electronic deliveries using Devilry
+            1
+                Non-electronic deliveries, or deliveries made through another
+                electronic system.
+            2
+                An alias/link to a delivery made in another Period.
 
     .. attribute:: etag
 
