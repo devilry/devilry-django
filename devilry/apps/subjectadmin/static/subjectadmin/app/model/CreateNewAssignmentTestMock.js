@@ -12,7 +12,7 @@ Ext.define('subjectadmin.model.CreateNewAssignmentTestMock', {
         // received correctly.
         validator: function(operation) {
             var record = operation.getRecords()[0];
-            if(record.get('parentnode') == '3') {
+            if(record.get('parentnode_id') == '3') {
                 operation.responseData = {
                     items: {
                         errormessages: [

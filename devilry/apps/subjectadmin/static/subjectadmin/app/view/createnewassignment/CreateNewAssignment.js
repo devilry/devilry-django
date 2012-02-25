@@ -13,7 +13,7 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
         region: 'main',
         items: [{
             xtype: 'container',
-            cls: 'centerbox sysadmin-messages',
+            cls: 'centerbox',
             items: [{
                 xtype: 'box',
                 html: Ext.String.format(
