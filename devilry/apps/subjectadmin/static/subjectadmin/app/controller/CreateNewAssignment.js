@@ -9,11 +9,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         'createnewassignment.CreateNewAssignment'
     ],
 
-    stores: [
-        'ActiveAssignments'
-    ],
     models: [
-        'Assignment'
+        'CreateNewAssignment'
     ],
 
     refs: [{
@@ -77,16 +74,17 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this.getAlertMessageList().removeAll();
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
-        values.parentnode = periodId;
+        values.parentnode_id = periodId;
+        console.log(values);
 
-        var AssignmentModel = this.getAssignmentModel();
-        var assignment = new AssignmentModel(values);
-        this._mask();
-        assignment.save({
-            scope: this,
-            success: this._onSuccessfulSave,
-            failure: this._onFailedSave
-        });
+        //var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
+        //var assignment = new CreateNewAssignmentModel(values);
+        //this._mask();
+        //assignment.save({
+            //scope: this,
+            //success: this._onSuccessfulSave,
+            //failure: this._onFailedSave
+        //});
     },
 
     _onSuccessfulSave: function() {

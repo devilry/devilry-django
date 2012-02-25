@@ -16,7 +16,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     ui: 'transparentpanel',
 
     fieldDefaults: {
-        labelAlign: 'top'
+        labelAlign: 'top',
+        labelStyle: 'font-weight: bold'
     },
     defaults: {
         margin: {top: 20}
@@ -25,6 +26,8 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     items: [{
         margin: {top: 0, bottom: 20},
         xtype: 'alertmessagelist'
+
+    // Long name
     }, {
         margin: {top: 0},
         name: "long_name",
@@ -75,6 +78,18 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         margin: {top: 5},
         html: dtranslate('subjectadmin.assignment.delivery_types.help')
 
+    // Anonymous?
+    }, {
+        xtype: 'checkboxfield',
+        margin: {top: 20},
+        name: 'anonymous',
+        labelAlign: 'left',
+        boxLabel: dtranslate('subjectadmin.assignment.anonymous.label')
+    }, {
+        xtype: 'formhelp',
+        margin: {top: 5},
+        html: dtranslate('subjectadmin.assignment.anonymous.help')
+
     // Publishing time
     }, {
         xtype: 'themebase-datetimefield',
@@ -82,60 +97,43 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
         name: "publishing_time",
         value: new Date()
-        //xtype: 'fieldcontainer',
-        //layout: 'column',
-        //fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
-        //width: 300,
-        //defaults: {
-            //hideLabel: true
-        //},
-        //items: [{
-            //name: "publishing_time",
-            //xtype: 'themebase-datefield',
-            //fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'), // Only used for error messages
-            //allowBlank: false,
-            //columnWidth: .5,
-            //value: new Date()
-        //}, {
-            //name: "publishing_time_time",
-            //xtype: 'themebase-timefield',
-            //allowBlank: false,
-            //columnWidth: .5,
-            //value: new Date()
-        //}]
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
         html: dtranslate('subjectadmin.assignment.publishing_time.help')
 
-    // Anonymous?
     }, {
-        name: "anonymous",
-        flex: 1,
-        fieldLabel: dtranslate('subjectadmin.assignment.anonymous.label'),
-        xtype: 'combobox',
-        queryMode: 'local',
-        valueField: 'value',
-        displayField: 'label',
-        forceSelection: true,
-        editable: false,
-        value: false,
-        store: Ext.create('Ext.data.Store', {
-            fields: ['value', 'label'],
-            data : [
-                {value:false, label: dtranslate('themebase.no')},
-                {value:true, label: dtranslate('themebase.yes')}
-            ]
-        })
-    }, {
-        xtype: 'formhelp',
-        margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.anonymous.help')
+        xtype: 'fieldset',
+        title: dtranslate('subjectadmin.assignment.add_all_relatedstudents.label'),
+        collapsible: true,
+        //collapsed: true,
+        checkboxToggle: true,
+        checkboxName:'add_all_relatedstudents',
+        padding: 10,
+        items: [{
 
-    }, {
-        xtype: 'hiddenfield',
-        name: 'scale_points_percent',
-        value: 100
+        // Autosetup examiners
+            xtype: 'themebase-datetimefield',
+            name: 'first_deadline',
+            width: 300,
+            fieldLabel: dtranslate('subjectadmin.assignment.first_deadline.label')
+        }, {
+            xtype: 'formhelp',
+            margin: {top: 5},
+            html: dtranslate('subjectadmin.assignment.first_deadline.help')
+
+        // Autosetup examiners
+        }, {
+            xtype: 'checkboxfield',
+            margin: {top: 20},
+            name: 'autosetup_examiners',
+            labelAlign: 'left',
+            boxLabel: dtranslate('subjectadmin.assignment.autosetup_examiners.label')
+        }, {
+            xtype: 'formhelp',
+            margin: {top: 5},
+            html: dtranslate('subjectadmin.assignment.autosetup_examiners.help')
+        }]
     }],
 
     dockedItems: [{
@@ -145,15 +143,14 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         padding: 0,
         items: [{
             xtype: 'createbutton',
-            margin: {top: 10},
+            margin: {top: 20},
             formBind: true, //only enabled once the form is valid
             disabled: true
         }]
     }],
 
-
     initComponent: function() {
-        var cssclasses = 'createnewassignmentform form-stacked';
+        var cssclasses = 'createnewassignmentform';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }
