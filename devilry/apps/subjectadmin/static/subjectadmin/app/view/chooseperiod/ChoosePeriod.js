@@ -12,7 +12,7 @@ Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
         region: 'main',
         items: [{
             xtype: 'container',
-            cls: 'centerbox sysadmin-messages',
+            cls: 'centerbox',
             items: [{
                 xtype: 'box',
                 html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.chooseperiod.title')),
