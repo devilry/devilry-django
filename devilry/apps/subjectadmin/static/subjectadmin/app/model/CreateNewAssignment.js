@@ -7,7 +7,7 @@ Ext.define('subjectadmin.model.CreateNewAssignment', {
         {name: 'parentnode_id',  type: 'int'},
         {name: 'short_name',  type: 'string'},
         {name: 'long_name',  type: 'string'},
-        {name: 'publishing_time',  type: 'string'},
+        {name: 'publishing_time',  type: 'date'},
         {name: 'delivery_types',  type: 'string'},
         {name: 'anonymous',  type: 'boolean'},
 

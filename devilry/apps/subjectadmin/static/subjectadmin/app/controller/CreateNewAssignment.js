@@ -77,14 +77,14 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         values.parentnode_id = periodId;
         console.log(values);
 
-        //var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
-        //var assignment = new CreateNewAssignmentModel(values);
-        //this._mask();
-        //assignment.save({
-            //scope: this,
-            //success: this._onSuccessfulSave,
-            //failure: this._onFailedSave
-        //});
+        var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
+        var assignment = new CreateNewAssignmentModel(values);
+        this._mask();
+        assignment.save({
+            scope: this,
+            success: this._onSuccessfulSave,
+            failure: this._onFailedSave
+        });
     },
 
     _onSuccessfulSave: function() {
