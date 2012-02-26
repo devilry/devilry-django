@@ -26,3 +26,8 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(assignment.publishing_time, publishing_time)
         self.assertEquals(assignment.delivery_types, 0)
         self.assertEquals(assignment.anonymous, False)
+
+    def test_add_all_relatedstudents(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        print self.testhelper.sub_p1_a1
