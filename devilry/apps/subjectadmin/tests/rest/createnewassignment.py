@@ -17,7 +17,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
     def test_create_assignment(self):
         dao = CreateNewAssignmentDao()
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
-        assignment = dao._create_assignment(parentnode=self.testhelper.sub_p1,
+        assignment = dao._create_assignment(period_id=self.testhelper.sub_p1.id,
                                             short_name='a1', long_name='Assignment 1',
                                             publishing_time=publishing_time,
                                             delivery_types=0, anonymous=False)
@@ -33,6 +33,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
                                                                           candidate_id=candidate_id)
         if tags:
             relatedstudent.tags = tags
+            relatedstudent.save()
         return relatedstudent
 
     def _create_related_examiner(self, username, tags=None):
@@ -40,6 +41,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
         relatedexaminer = self.testhelper.sub_p1.relatedexaminer_set.create(user=user)
         if tags:
             relatedexaminer.tags = tags
+            relatedexaminer.save()
         return relatedexaminer
 
     def test_create_group_from_relatedstudent(self):
@@ -52,8 +54,8 @@ class TestRestCreateNewAssignmentDao(TestCase):
 
         related_dewey = self._create_related_student('dewey', candidate_id='dew123',
                                                      tags='bb,aa')
-        related_examiner1 = self._create_related_student('examiner1', tags='cc,dd')
-        related_examiner2 = self._create_related_student('examiner2', tags='aa')
+        related_examiner1 = self._create_related_examiner('examiner1', tags='cc,dd')
+        related_examiner2 = self._create_related_examiner('examiner2', tags='aa')
         group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_dewey,
                                                       [related_examiner1, related_examiner2])
         self.assertEquals(group.candidates.all()[0].candidate_id, 'dew123')
@@ -71,7 +73,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
 
         self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 0)
         deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
-        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline)
+        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline, False)
         self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 2)
 
         groups = list(self.testhelper.sub_p1_a1.assignmentgroups.all().order_by('candidates__student__username'))
@@ -83,3 +85,15 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(groups[0].deadlines.all().count(), 1)
         self.assertEquals(groups[1].deadlines.all().count(), 1)
         self.assertEquals(groups[0].deadlines.all()[0].deadline, deadline)
+
+    def test_add_all_relatedstudents_autosetup_examiners(self):
+        self._create_related_student('louie', tags='bb,aa')
+        self._create_related_examiner('examiner2', tags='aa,cc')
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline,
+                                     autosetup_examiners=True)
+        group = self.testhelper.sub_p1_a1.assignmentgroups.all()[0]
+        self.assertEquals(group.examiners.all().count(), 1)
