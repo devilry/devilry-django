@@ -1,11 +1,13 @@
 from datetime import timedelta, datetime
-from dingus import Dingus, DontCare
+from dingus import Dingus
 from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
 from devilry.apps.subjectadmin.rest.createnewassignment import RestCreateNewAssignment
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
+from devilry.rest.testutils import dummy_urlreverse
+from devilry.rest.testutils import isoformat_datetime
 
 
 class TestRestCreateNewAssignmentDao(TestCase):
@@ -115,11 +117,6 @@ class TestRestCreateNewAssignmentDao(TestCase):
         with self.assertRaises(PermissionDeniedError):
             dao.create(nobody, **kw)
 
-def dummy_urlreverse(restcls, apipath, apiversion, id=None):
-    return '{0}-{1}.{2}-{3}'.format(restcls.__name__, apipath, apiversion, id)
-
-def isoformat_datetime(datetimeobj):
-    return datetimeobj.strftime('%Y-%m-%dT%H:%M:%S')
 
 class TestRestCreateNewAssignment(TestCase):
     def setUp(self):

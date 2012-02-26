@@ -1,6 +1,7 @@
 class RestError(Exception):
-    pass
-
+    """
+    Base class for REST errors.
+    """
 
 class UnsupportedHttpMethodError(RestError):
     """

@@ -101,6 +101,10 @@ like this::
 API
 ############################
 
+Errors
+========
+.. automodule:: devilry.rest.error
+
 RestBase
 ========
 .. autoclass:: devilry.rest.restbase.RestBase
@@ -111,5 +115,8 @@ RestView
 
 @indata
 ========
-.. currentmodule:: devilry.rest.indata
 .. automodule:: devilry.rest.indata
+
+Test utilities
+==============
+.. automodule:: devilry.rest.testutils
