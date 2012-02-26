@@ -4,6 +4,7 @@ Validate and type-convert input to RESTful methods.
 
 from functools import wraps
 from datetime import datetime
+from inspect import getargspec
 
 from devilry.rest.error import RestError
 
@@ -103,9 +104,18 @@ def indata(**indataspec):
     """
     def dec(targetfunc):
         targetfunc.indataspec = indataspec
+        argspec = getargspec(targetfunc)
+        args = argspec[0]
+        required_argcount = len(args)
 
         @wraps(targetfunc)
         def wrapper(self, **kwargs):
+            if len(kwargs) != required_argcount:
+                raise InvalidIndataError('{funcname}(...) takes {required_argcount} arguments '
+                                         '({argcount} given).'.format(funcname=targetfunc.__name__,
+                                                                      required_argcount=required_argcount,
+                                                                      argcount=len(kwargs)))
+
             converted_kwargs = {}
             for paramname, convert in indataspec.iteritems():
                 if paramname in kwargs:
