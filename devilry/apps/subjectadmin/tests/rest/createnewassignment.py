@@ -27,14 +27,17 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(assignment.delivery_types, 0)
         self.assertEquals(assignment.anonymous, False)
 
-    def _create_related_student(self, username, candidate_id=None):
+    def _create_related_student(self, username, candidate_id=None, tags=None):
         """
         Creates two related students on sub_p1: dewey, louie.
         dewey with candidate_id ``dew123``.
         """
         user = self.testhelper.create_user(username)
-        return self.testhelper.sub_p1.relatedstudent_set.create(user=user,
-                                                                candidate_id=candidate_id)
+        relatedstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user,
+                                                                          candidate_id=candidate_id)
+        if tags:
+            relatedstudent.tags = tags
+        return relatedstudent
 
     def test_create_group_from_relatedstudent(self):
         dao = CreateNewAssignmentDao()
@@ -44,9 +47,14 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(group.candidates.all()[0].student.username, 'louie')
         self.assertEquals(group.candidates.all()[0].candidate_id, None)
 
-        related_dewey = self._create_related_student('dewey', candidate_id='dew123')
+        related_dewey = self._create_related_student('dewey', candidate_id='dew123',
+                                                     tags='bb,aa')
         group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_dewey)
         self.assertEquals(group.candidates.all()[0].candidate_id, 'dew123')
+        tags = group.tags.all().order_by('tag')
+        self.assertEquals(len(tags), 2)
+        self.assertEquals(tags[0].tag, 'aa')
+        self.assertEquals(tags[1].tag, 'bb')
 
     def test_add_all_relatedstudents(self):
         self._create_related_student('louie')

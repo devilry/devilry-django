@@ -18,6 +18,9 @@ class CreateNewAssignmentDao(object):
         kw = dict(student=relatedstudent.user)
         if relatedstudent.candidate_id:
             kw['candidate_id'] = relatedstudent.candidate_id
+        if relatedstudent.tags:
+            for tag in relatedstudent.tags.split(','):
+                group.tags.create(tag=tag)
         group.candidates.create(**kw)
         return group
 
@@ -28,6 +31,8 @@ class CreateNewAssignmentDao(object):
         for relatedstudent in assignment.parentnode.relatedstudent_set.all():
             group = self._create_group_from_relatedstudent(assignment, relatedstudent)
             self._create_deadline(group, first_deadline)
+
+    #def set_examiners_from_related
 
     def create_noauth(self, parentnode, short_name, long_name, publishing_time,
                       delivery_types, anonymous, add_all_relatedstudents,
