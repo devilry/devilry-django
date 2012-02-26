@@ -28,10 +28,6 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(assignment.anonymous, False)
 
     def _create_related_student(self, username, candidate_id=None, tags=None):
-        """
-        Creates two related students on sub_p1: dewey, louie.
-        dewey with candidate_id ``dew123``.
-        """
         user = self.testhelper.create_user(username)
         relatedstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user,
                                                                           candidate_id=candidate_id)
@@ -39,18 +35,29 @@ class TestRestCreateNewAssignmentDao(TestCase):
             relatedstudent.tags = tags
         return relatedstudent
 
+    def _create_related_examiner(self, username, tags=None):
+        user = self.testhelper.create_user(username)
+        relatedexaminer = self.testhelper.sub_p1.relatedexaminer_set.create(user=user)
+        if tags:
+            relatedexaminer.tags = tags
+        return relatedexaminer
+
     def test_create_group_from_relatedstudent(self):
         dao = CreateNewAssignmentDao()
         self.testhelper.add_to_path('uni;sub.p1.a1')
         related_louie = self._create_related_student('louie')
-        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_louie)
+        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_louie, [])
         self.assertEquals(group.candidates.all()[0].student.username, 'louie')
         self.assertEquals(group.candidates.all()[0].candidate_id, None)
 
         related_dewey = self._create_related_student('dewey', candidate_id='dew123',
                                                      tags='bb,aa')
-        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_dewey)
+        related_examiner1 = self._create_related_student('examiner1', tags='cc,dd')
+        related_examiner2 = self._create_related_student('examiner2', tags='aa')
+        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_dewey,
+                                                      [related_examiner1, related_examiner2])
         self.assertEquals(group.candidates.all()[0].candidate_id, 'dew123')
+        self.assertEquals(group.examiners.all().count(), 1)
         tags = group.tags.all().order_by('tag')
         self.assertEquals(len(tags), 2)
         self.assertEquals(tags[0].tag, 'aa')
