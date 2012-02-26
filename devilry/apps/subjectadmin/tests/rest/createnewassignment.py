@@ -1,8 +1,10 @@
+from datetime import timedelta, datetime
+from dingus import Dingus, DontCare
 from django.test import TestCase
-from datetime import timedelta
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
+from devilry.apps.subjectadmin.rest.createnewassignment import RestCreateNewAssignment
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 
 
@@ -101,7 +103,8 @@ class TestRestCreateNewAssignmentDao(TestCase):
     def test_create_permissions(self):
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
         #first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        kw = dict(period_id=self.testhelper.sub_p1.id, short_name='a',
+        kw = dict(period_id=self.testhelper.sub_p1.id,
+                  short_name='a',
                   long_name='Aa', publishing_time=publishing_time,
                   delivery_types=0, anonymous=False,
                   add_all_relatedstudents=False, first_deadline=None,
@@ -111,3 +114,31 @@ class TestRestCreateNewAssignmentDao(TestCase):
         nobody = self.testhelper.create_user('nobody')
         with self.assertRaises(PermissionDeniedError):
             dao.create(nobody, **kw)
+
+def dummy_urlreverse(restcls, apipath, apiversion, id=None):
+    return '{0}-{1}.{2}-{3}'.format(restcls.__name__, apipath, apiversion, id)
+
+def isoformat_datetime(datetimeobj):
+    return datetimeobj.strftime('%Y-%m-%dT%H:%M:%S')
+
+class TestRestCreateNewAssignment(TestCase):
+    def setUp(self):
+        self.restapi = RestCreateNewAssignment(daocls=Dingus(), apiname='api',
+                                               apiversion='1.0', user=None,
+                                               url_reverse=dummy_urlreverse)
+
+    def test_list(self):
+        publishing_time = datetime(2010, 1, 1, 1, 1, 1)
+        first_deadline = datetime(2011, 2, 2, 2, 2, 2)
+        self.restapi.create(period_id=1001,
+                            short_name='a', long_name='Aa',
+                            publishing_time=isoformat_datetime(publishing_time),
+                            delivery_types=0, anonymous=False,
+                            add_all_relatedstudents=False,
+                            first_deadline=isoformat_datetime(first_deadline),
+                            autosetup_examiners=False)
+        dingus = self.restapi.dao
+        # Check the dingus to make sure all parameters was converted correctly
+        self.assertEquals(1, len(dingus.calls('create', None, 1001, 'a', 'Aa',
+                                              publishing_time, 0, False, False,
+                                              first_deadline, False)))
