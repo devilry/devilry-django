@@ -5,6 +5,7 @@ from devilry.rest.indata import indata
 
 from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import NoneOr
+from devilry.rest.indata import bool_indata
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -81,14 +82,6 @@ class CreateNewAssignmentDao(object):
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
 
-
-def bool_indata(value):
-    if isinstance(value, bool):
-        return value
-    elif value.lower() == 'true':
-        return True
-    else:
-        return False
 
 class RestCreateNewAssignment(RestBase):
     def __init__(self, daocls=CreateNewAssignmentDao, **basekwargs):

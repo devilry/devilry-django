@@ -14,26 +14,11 @@ class InvalidIndataError(RestError):
     """
 
 
-def none_or_bool(value):
+def unicode_indata(value):
     """
-    Validator for :func:`indata` that requires that the value is ``None`` or a
-    ``bool``.
+    Validator for :func:`indata` that requires that the value is a ``unicode``
+    string. It also accepts bytestrings, which it will try to decode as utf-8.
     """
-    if value == None:
-        return value
-    elif not isinstance(value, bool):
-        raise ValueError('Value is not a bool. It is: ' + str(type(value)))
-    else:
-        return value
-
-def none_or_unicode(value):
-    """
-    Validator for :func:`indata` that requires that the value is ``None`` or a
-    ``unicode`` string. It also accepts bytestrings, which it will try to
-    decode as utf-8.
-    """
-    if value == None:
-        return value
     if isinstance(value, unicode):
         return value
     elif isinstance(value, str):
@@ -45,14 +30,52 @@ def none_or_unicode(value):
         raise ValueError('Invalid type: ' + str(type(value)))
 
 
+def bool_indata(value):
+    """
+    Validator for :func:`indata` that requires that the value is a ``bool`` or
+    a basestring matching ``true`` or ``false`` when lowercased.
+    """
+    if isinstance(value, bool):
+        return value
+    elif isinstance(value, basestring):
+        value = value.lower()
+        if value == 'true':
+            return True
+        elif value == 'false':
+            return False
+    raise ValueError('Invalid type: ' + str(type(value)))
+
+
 def isoformatted_datetime(value):
     """
-
+    Expects value to be a datetime string on the following format:
+    ``"%Y-%m-%dT%H:%M:%S"``. Raises ``ValueError`` if it is not correctly
+    formatted.
     """
     try:
         return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
     except TypeError, e:
         raise ValueError(str(e))
+
+class NoneOr(object):
+    """
+    Wraps any :func:`indata` validator with the ability to allow ``None`` as
+    value. Example::
+
+        >>> NoneOr(unicode)('Hello world')
+        u'Hello world'
+        >>> NoneOr(unicode)(None)
+        None
+    """
+    def __init__(self, notnone_handler):
+        self.notnone_handler = notnone_handler
+
+    def __call__(self, value):
+        if value == None:
+            return None
+        else:
+            notnone_handler = self.notnone_handler
+            return notnone_handler(value)
 
 
 def indata(**indataspec):
