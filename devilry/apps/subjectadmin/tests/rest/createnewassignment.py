@@ -27,7 +27,44 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(assignment.delivery_types, 0)
         self.assertEquals(assignment.anonymous, False)
 
-    def test_add_all_relatedstudents(self):
+    def _create_related_student(self, username, candidate_id=None):
+        """
+        Creates two related students on sub_p1: dewey, louie.
+        dewey with candidate_id ``dew123``.
+        """
+        user = self.testhelper.create_user(username)
+        return self.testhelper.sub_p1.relatedstudent_set.create(user=user,
+                                                                candidate_id=candidate_id)
+
+    def test_create_group_from_relatedstudent(self):
         dao = CreateNewAssignmentDao()
         self.testhelper.add_to_path('uni;sub.p1.a1')
-        print self.testhelper.sub_p1_a1
+        related_louie = self._create_related_student('louie')
+        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_louie)
+        self.assertEquals(group.candidates.all()[0].student.username, 'louie')
+        self.assertEquals(group.candidates.all()[0].candidate_id, None)
+
+        related_dewey = self._create_related_student('dewey', candidate_id='dew123')
+        group = dao._create_group_from_relatedstudent(self.testhelper.sub_p1_a1, related_dewey)
+        self.assertEquals(group.candidates.all()[0].candidate_id, 'dew123')
+
+    def test_add_all_relatedstudents(self):
+        self._create_related_student('louie')
+        self._create_related_student('dewey', candidate_id='dew123')
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+
+        self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 0)
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline)
+        self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 2)
+
+        groups = list(self.testhelper.sub_p1_a1.assignmentgroups.all().order_by('candidates__student__username'))
+        self.assertEquals(groups[0].candidates.all()[0].student.username, 'dewey')
+        self.assertEquals(groups[0].candidates.all()[0].candidate_id, 'dew123')
+        self.assertEquals(groups[1].candidates.all()[0].student.username, 'louie')
+        self.assertEquals(groups[1].candidates.all()[0].candidate_id, None)
+
+        self.assertEquals(groups[0].deadlines.all().count(), 1)
+        self.assertEquals(groups[1].deadlines.all().count(), 1)
+        self.assertEquals(groups[0].deadlines.all()[0].deadline, deadline)

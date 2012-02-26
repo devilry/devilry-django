@@ -13,14 +13,21 @@ class CreateNewAssignmentDao(object):
         assignment.save()
         return assignment
 
+    def _create_group_from_relatedstudent(self, assignment, relatedstudent):
+        group = assignment.assignmentgroups.create()
+        kw = dict(student=relatedstudent.user)
+        if relatedstudent.candidate_id:
+            kw['candidate_id'] = relatedstudent.candidate_id
+        group.candidates.create(**kw)
+        return group
+
+    def _create_deadline(self, group, deadline):
+        return group.deadlines.create(deadline=deadline)
+
     def _add_all_relatedstudents(self, assignment, first_deadline):
         for relatedstudent in assignment.parentnode.relatedstudent_set.all():
-            group = assignment.assignmentgroups.create()
-            group.save()
-            kw = dict(student=relatedstudent.user)
-            if relatedstudent.candidate_id:
-                kw['candidate_id'] = relatedstudent.candidate_id
-            group.candidates.create(**kw)
+            group = self._create_group_from_relatedstudent(assignment, relatedstudent)
+            self._create_deadline(group, first_deadline)
 
     def create_noauth(self, parentnode, short_name, long_name, publishing_time,
                       delivery_types, anonymous, add_all_relatedstudents,
