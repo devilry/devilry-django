@@ -74,7 +74,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this.getAlertMessageList().removeAll();
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
-        values.parentnode_id = periodId;
+        values.period_id = periodId;
         console.log(values);
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();

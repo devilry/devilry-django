@@ -4,7 +4,7 @@ Ext.define('subjectadmin.model.CreateNewAssignment', {
     idProperty: 'id',
     fields: [
         // Properties that are set directly on the assignment
-        {name: 'parentnode_id',  type: 'int'},
+        {name: 'period_id',  type: 'int'},
         {name: 'short_name',  type: 'string'},
         {name: 'long_name',  type: 'string'},
         {name: 'publishing_time',  type: 'date'},

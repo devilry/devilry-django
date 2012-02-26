@@ -81,6 +81,7 @@ class CreateNewAssignmentDao(object):
         if add_all_relatedstudents:
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
+        return dict(success=True)
 
 
 class RestCreateNewAssignment(RestBase):
