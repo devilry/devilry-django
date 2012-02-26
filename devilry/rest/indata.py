@@ -122,7 +122,7 @@ def indata(**indataspec):
                     else:
                         converted_kwargs[paramname] = converted_value
 
-            if len(converted_kwargs) != len(targetfunc_args):
+            if len(converted_kwargs) != len(targetfunc_args) - 1:
                 missing = ', '.join([repr(s) for s in set(targetfunc_args[1:]).difference(set(kwargs.keys()))])
                 raise InvalidIndataError('{funcname}(...) takes {targetfunc_argslen} arguments '
                                          '({argcount} given). Missing parameters: {missing}.'
