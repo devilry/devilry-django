@@ -77,9 +77,31 @@ the ``Content-type`` HTTP header::
 Parameters
 ==========
 
-Parameters are given in the querystring (the stuff after ? in the url). For
-example, if the ``/path/to/api/`` API required a numeric parameter named
-``stuff``, we would specify it using::
+Parameters are given in one of the following ways:
+
+- `Request body`_
+- `Querystring`_
+
+
+Request body
+------------
+
+Get the input parameters from the body of the HTTP request. This is usually
+used for POST and PUT requests, however it should work for GET requests in
+modern browsers. Example::
+
+
+    POST http://devilry.example.com/path/to/api/
+    Accept: application/json
+
+    {stuff: 10, somethingelse: 'Hello world'}
+
+
+Querystring
+-----------
+
+The querystring is the part after ? in the url. E.g.: if the ``/path/to/api/``
+API required a numeric parameter named ``stuff``, we would specify it using::
 
     GET http://devilry.example.com/path/to/api/?stuff=10
 
@@ -88,13 +110,9 @@ Lets say the API also supported a ``search`` parameter, we could specify both
 
     GET http://devilry.example.com/path/to/api/?stuff=10&search=something
 
-Furthermore, other requests such as POST and PUT also uses the querystring for
-parameters. So to create a new item in our fictional API, we would do something
-like this::
+.. note::
 
-    POST http://devilry.example.com/path/to/api/?stuff=10
-
-    Some data here.
+    Querystring can only be used for parameters to GET requests.
 
 
 
@@ -105,13 +123,131 @@ Errors
 ========
 .. automodule:: devilry.rest.error
 
+Input data handlers
+===================
+.. automodule:: devilry.rest.inputdata_handlers
+
+Output content type detectors
+=============================
+.. automodule:: devilry.rest.output_content_type_detectors
+
 RestBase
 ========
 .. autoclass:: devilry.rest.restbase.RestBase
 
 RestView
 ========
-.. autoclass:: devilry.rest.restview.RestView
+.. class:: devilry.rest.restview.RestView
+
+    :param restapicls:
+        A class implementing :class:`devilry.rest.restbase.RestBase`.
+    :param suffix_to_content_type_map:
+        Maps suffix to content type. Used to determine content-type from url-suffix.
+
+    :param input_data_preprocessors:
+        List of input data post-processor callbacks. The callbacks have the following signature::
+
+            match, data = f(request, output_data)
+
+        The data of the first matching callback will be used. If no processor matches,
+        the unchanged data will be used.
+
+        Together with ``output_data_postprocessors`` this allows for wrapping
+        certain content-types with extra data. Example of use is to add data that is required
+        by a javascript library, such as the successful attribute required by ExtJS.
+
+    :param output_data_postprocessors:
+        List of output data post-processor callbacks. See ``input_data_preprocessors``
+        for more details. Note that the callbacks take one additional argument, a boolean
+        telling if the restful method completed without error.
+
+    :param output_content_type_detectors:
+        Output content type detectors detect the content type of the request data.
+        Must be a list of callables with the following signature::
+
+            content_type  = f(request, suffix)
+
+        The first content_type that is not ``bool(content_type)==False`` will
+        be used.
+
+        Defaults to:
+
+            - :func:`.output_content_type_detectors.devilry_accept_querystringparam`
+            - :func:`.output_content_type_detectors.suffix`
+            - :func:`.output_content_type_detectors.from_acceptheader`
+
+    :param input_content_type_detectors:
+        Similar to ``output_content_type_detectors``, except for input/request
+        instead of for output/response. Furthermore, the the callbacks take the
+        output content-type as the third argument::
+
+            content_type  = f(request, suffix, output_content_type)
+
+        This is because few clients send the CONTENT_TYPE header, and falling back on
+        output content-type is a mostly sane default.
+
+    :param inputdata_handlers:
+        Input data handlers convert input data into a dict. Input data can come
+        from several sources:
+
+            - Querystring
+            - Parameter in querystring
+            - Request body
+
+        Therefore, we need to check for data in several places. Instead of hardcoding this
+        checking, we accept a list of callables that does the checking.
+
+        Must be a list of callables with the following signature::
+
+            match, data = f(request, input_content_type, dataconverters)
+
+        The first input data handler returning ``match==True`` is be used.
+            
+        See :mod:`devilry.rest.inputdata_handlers` for implementations.
+        
+        Input data can come in many different formats and from different sources.
+        Examples are such XML in request body, query string and JSON embedded in
+        a query string parameter.
+
+        Defaults to:
+
+            - :func:`.inputdata_handlers.getqrystring_inputdata_handler`
+            - :func:`.inputdata_handlers.rawbody_inputdata_handler`
+            
+
+    :param dataconverters:
+        A dict of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
+        The key is a content-type. Data converters convert between python and some other format,
+        such as JSON or XML.
+
+        Typically used by ``input_datahandlers`` and ``response_handlers`` to convert data
+        input the content_type detected by one of the ``output_content_type_detectors``.
+
+        Defaults to:
+
+            - ``"application/xml"``: :class:`.dataconverter.xmldataconverter.XmlDataConverter`
+            - ``"application/yaml"``: :class:`.dataconverter.yamldataconverter.YamlDataConverter`
+            - ``"application/json"``: :class:`.dataconverter.jsondataconverter.JsonDataConverter`
+            - ``"application/extjsjson"``: :class:`.dataconverter.jsondataconverter.JsonDataConverter`
+            - ``"text/html"``: :class:`.dataconverter.htmldataconverter.HtmlDataConverter`
+
+    :param restmethod_routers:
+        A list of callables with the following signature::
+
+            restapimethodname, args, kwargs = f(request, id, input_data)
+
+        ``None`` must be returned if the route does not match.
+
+        Restmetod routes takes determines which method in the :class:`devilry.rest.restbase.RestBase`
+        interface to call, and the arguments to use for the call.
+    :param response_handlers:
+        Response handlers are responsible for creating responses.
+        Signature::
+
+            reponse = f(request, restapimethodname, output_content_type, encoded_output)
+
+        The first response handler returning ``bool(response) == True`` is used.
+
 
 @indata
 ========
