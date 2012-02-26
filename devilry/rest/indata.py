@@ -105,16 +105,10 @@ def indata(**indataspec):
     def dec(targetfunc):
         targetfunc.indataspec = indataspec
         argspec = getargspec(targetfunc)
-        args = argspec[0]
-        required_argcount = len(args)
+        targetfunc_args = argspec[0]
 
         @wraps(targetfunc)
         def wrapper(self, **kwargs):
-            if len(kwargs) != required_argcount:
-                raise InvalidIndataError('{funcname}(...) takes {required_argcount} arguments '
-                                         '({argcount} given).'.format(funcname=targetfunc.__name__,
-                                                                      required_argcount=required_argcount,
-                                                                      argcount=len(kwargs)))
 
             converted_kwargs = {}
             for paramname, convert in indataspec.iteritems():
@@ -127,6 +121,15 @@ def indata(**indataspec):
                             convert.__name__))
                     else:
                         converted_kwargs[paramname] = converted_value
+
+            if len(converted_kwargs) != len(targetfunc_args):
+                missing = ', '.join([repr(s) for s in set(targetfunc_args[1:]).difference(set(kwargs.keys()))])
+                raise InvalidIndataError('{funcname}(...) takes {targetfunc_argslen} arguments '
+                                         '({argcount} given). Missing parameters: {missing}.'
+                                         .format(funcname=targetfunc.__name__,
+                                                 targetfunc_argslen=len(targetfunc_args),
+                                                 argcount=len(converted_kwargs),
+                                                 missing=missing))
             return targetfunc(self, **converted_kwargs)
 
         return wrapper
