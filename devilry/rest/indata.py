@@ -6,10 +6,10 @@ from functools import wraps
 from datetime import datetime
 from inspect import getargspec
 
-from devilry.rest.error import RestError
+from .error import BadRequestError
 
 
-class InvalidIndataError(RestError):
+class InvalidIndataError(BadRequestError):
     """
     Invalid indata.
     """
