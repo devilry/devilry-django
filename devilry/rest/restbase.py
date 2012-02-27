@@ -26,6 +26,21 @@ class RestBase(object):
         self.user = user
 
     @classmethod
+    def _create_urlpattern(cls, prefix):
+        return r'^{prefix}/(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(prefix=prefix)
+
+    @classmethod
+    def create_noauth_url(cls, prefix, apiname, apiversion):
+        """
+        Just like :meth:`create_url`, except that the view is not wrapped in
+        ``django.contrib.auth.decorators.login_required``.
+        """
+        urlpattern = cls._create_urlpattern(prefix)
+        return url(urlpattern,
+                   RestView.as_view(cls, apiname, apiversion),
+                   name=cls.get_urlname(apiname, apiversion))
+
+    @classmethod
     def create_url(cls, prefix, apiname, apiversion):
         """
         The url is created as::
@@ -36,10 +51,10 @@ class RestBase(object):
         only used for naming. Name and version is decoupled to make it easy to create new api versions
         mixing unchanged and new classes (I.E. rest-classes can be in multiple API versions).
         """
-        urlpattern = r'^{prefix}/(?P<id_and_suffix>[a-zA-Z-0-9_\.-]+)?$'.format(prefix=prefix)
+        urlpattern = cls._create_urlpattern(prefix)
         return url(urlpattern,
-            login_required(RestView.as_view(cls, apiname, apiversion)),
-            name=cls.get_urlname(apiname, apiversion))
+                   login_required(RestView.as_view(cls, apiname, apiversion)),
+                   name=cls.get_urlname(apiname, apiversion))
 
     @classmethod
     def get_urlname(cls, apiname, apiversion):
