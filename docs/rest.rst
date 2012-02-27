@@ -139,6 +139,15 @@ Output data postprocessors
 =============================
 .. automodule:: devilry.rest.output_data_postprocessors
 
+Restmethod routers
+==================
+.. automodule:: devilry.rest.restmethod_routers
+
+Responsehandlers
+================
+.. automodule:: devilry.rest.responsehandlers
+
+
 RestView
 ========
 .. class:: devilry.rest.restview.RestView
@@ -259,15 +268,28 @@ RestView
 
         ``None`` must be returned if the route does not match.
 
-        Restmetod routes takes determines which method in the :class:`devilry.rest.restbase.RestBase`
-        interface to call, and the arguments to use for the call.
+        Restmetod routes determines which method in the
+        :class:`.restbase.RestBase` interface to call, and the arguments to
+        use for the call. Defaults to:
+
+            - :func:`.restmethod_routers.post_to_create`
+            - :func:`.restmethod_routers.get_with_id_to_read`
+            - :func:`.restmethod_routers.put_with_id_to_update`
+            - :func:`.restmethod_routers.delete_to_delete`
+            - :func:`.restmethod_routers.get_without_id_to_list`
+            - :func:`.restmethod_routers.put_without_id_to_batch`
+
     :param response_handlers:
-        Response handlers are responsible for creating responses.
+        Response handlers are responsible for creating the response after the 
+        rest method has been successfully invoked, and the output has been encoded.
         Signature::
 
             reponse = f(request, restapimethodname, output_content_type, encoded_output)
 
-        The first response handler returning ``bool(response) == True`` is used.
+        The first response handler returning ``bool(response) == True`` is used. Defaults
+        to:
+
+            - :func:`.responsehandlers.stricthttp`
 
 
 @indata
