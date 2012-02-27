@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 from dingus import Dingus
-from django.test import TestCase, Client
+from django.test import TestCase
 import json
 from django.contrib.auth.models import User
 
@@ -10,6 +10,7 @@ from devilry.apps.subjectadmin.rest.createnewassignment import RestCreateNewAssi
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.rest.testutils import dummy_urlreverse
 from devilry.rest.testutils import isoformat_datetime
+from devilry.rest.testutils import RestClient
 
 
 class TestRestCreateNewAssignmentDao(TestCase):
@@ -149,7 +150,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['p1:admin(p1admin)', 'p2'])
-        self.client = Client()
+        self.client = RestClient()
         p1admin = User.objects.get(username='p1admin')
         self.client.login(username='p1admin', password='test')
 
@@ -163,10 +164,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                     add_all_relatedstudents=False,
                     first_deadline=isoformat_datetime(first_deadline),
                     autosetup_examiners=False)
-        response = self.client.post('/subjectadmin/rest/createnewassignment/',
-                                   data=json.dumps(data),
-                                   content_type="application/json",
-                                   HTTP_ACCEPT="application/json")
+        content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
+                                                    **data)
         self.assertEquals(response.status_code, 201)
-        content = json.loads(response.content)
         self.assertEquals(content['success'], True)
