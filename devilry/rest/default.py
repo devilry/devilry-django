@@ -58,5 +58,6 @@ RESTMETHOD_ROUTES = [
     restmethod_routers.put_without_id_to_batch
 ]
 RESPONSEHANDLERS = [
+    responsehandlers.clienterror,
     responsehandlers.stricthttp
 ]

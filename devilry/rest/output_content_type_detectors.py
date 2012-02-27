@@ -1,7 +1,7 @@
 """
 Output content type detectors detect the desired content type of the response data.
 """
-from devilry.rest.error import InvalidContentTypeError
+from devilry.rest.error import NotAcceptable
 from devilry.rest.httpacceptheaderparser import HttpAcceptHeaderParser
 
 def suffix(request, suffix, suffix_to_content_type_map, valid_content_types):
@@ -13,7 +13,7 @@ def suffix(request, suffix, suffix_to_content_type_map, valid_content_types):
     try:
         return suffix_to_content_type_map[suffix]
     except KeyError:
-        raise InvalidContentTypeError('Invalid suffix: {0}'.format(suffix))
+        raise NotAcceptable('Invalid suffix: {0}'.format(suffix))
 
 def _parse_acceptheader(acceptheader, valid_content_types):
     parser = HttpAcceptHeaderParser()

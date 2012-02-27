@@ -1,8 +1,8 @@
 import re
-from devilry.rest.error import InvalidContentTypeError
+from devilry.rest.error import NotAcceptable
 
 
-class HttpAcceptHeaderParseError(InvalidContentTypeError):
+class HttpAcceptHeaderParseError(NotAcceptable):
     """
     Raised for errors in :class:`HttpAccessHeaderParse`.
     """

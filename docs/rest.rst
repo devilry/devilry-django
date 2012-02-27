@@ -302,6 +302,7 @@ RestView
         The first response handler returning ``bool(response) == True`` is used. Defaults
         to:
 
+            - :func:`.responsehandlers.clienterror`
             - :func:`.responsehandlers.stricthttp`
 
     .. method:: error_handler(error)

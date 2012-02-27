@@ -3,7 +3,9 @@
 """
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from devilry.rest.error import InvalidContentTypeError
+from .error import InvalidInputContentTypeError
+from .error import NotAcceptable
+from .error import ClientErrorBase
 import default
 
 
@@ -41,7 +43,7 @@ class RestView():
         try:
             self.output_content_type = self.get_output_content_type(suffix)
             self.input_content_type, self.input_charset = self.get_input_content_type(suffix)
-        except InvalidContentTypeError, e:
+        except NotAcceptable, e:
             return HttpResponseBadRequest(str(e))
         input_data = self.parse_input()
         input_data = self.preprocess_input_data(input_data)
@@ -87,17 +89,24 @@ class RestView():
     def call_restapi(self, restapimethodname, kwargs):
         restapi = self.restapicls(apiname=self.apiname, apiversion=self.apiversion, user=self.request.user)
         restmethod = getattr(restapi, restapimethodname)
+        error = None
         try:
             output = restmethod(**kwargs)
         except Exception, e:
             output = self.error_handler(e)
+            error = e
             successful = False
         else:
             successful = True
-        output = self.postprocess_output_data(output, successful=True)
+        output = self.postprocess_output_data(output, successful=successful)
         encoded_output = self.encode_output(output)
-        return self.create_response(encoded_output, restapimethodname)
+        return self.create_response(encoded_output, restapimethodname, error=error)
 
+    def error_handler(self, error):
+        try:
+            raise
+        except ClientErrorBase, e:
+            return dict(error=unicode(e))
 
     def _get_content_type(self, detectors, suffix, *extraargs):
         for content_type_detector in detectors:
@@ -111,13 +120,13 @@ class RestView():
     def get_output_content_type(self, suffix):
         content_type = self._get_content_type(self.output_content_type_detectors, suffix)
         if not content_type:
-            raise InvalidContentTypeError('Not output content type detected.')
+            raise NotAcceptable('No acceptable output content type detected.')
         return content_type
 
     def get_input_content_type(self, suffix):
         content_type = self._get_content_type(self.input_content_type_detectors, suffix, self.output_content_type)
         if not content_type:
-            raise InvalidContentTypeError('Not input content type detected.')
+            raise InvalidInputContentTypeError('No acceptable input content type detected.')
         return content_type
 
     def parse_input(self):
@@ -128,9 +137,6 @@ class RestView():
                     raise ValueError("Input data handlers must return (bool, dict).")
                 return data
         return {}
-
-    def error_handler(self, error):
-        raise # Will result in server error unless catched by some middleware
 
     def create_response(self, encoded_output, restapimethodname):
         for response_handler in self.response_handlers:
