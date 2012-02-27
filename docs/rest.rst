@@ -147,6 +147,19 @@ Responsehandlers
 ================
 .. automodule:: devilry.rest.responsehandlers
 
+Dataconverters
+==============
+
+.. autoclass:: devilry.rest.dataconverter.DataConverter
+
+.. autoclass:: devilry.rest.xmldataconverter.XmlDataConverter
+
+.. autoclass:: devilry.rest.yamldataconverter.YamlDataConverter
+
+.. autoclass:: devilry.rest.jsondataconverter.JsonDataConverter
+
+.. autoclass:: devilry.rest.htmldataconverter.HtmlDataConverter
+
 
 RestView
 ========
