@@ -2,8 +2,8 @@ from datetime import datetime
 from django.test import TestCase
 
 from devilry.rest.indata import indata, InvalidIndataError
-from devilry.rest.indata import none_or_unicode
-from devilry.rest.indata import none_or_bool
+from devilry.rest.indata import bool_indata
+from devilry.rest.indata import unicode_indata
 from devilry.rest.indata import isoformatted_datetime
 
 
@@ -20,29 +20,19 @@ class TestIndata(TestCase):
         self.assertEquals(tst.tst(x=10, y="20"), 30)
         self.assertEquals(tst.tst(x=10, y=20), 30)
 
-    def test_unicode_or_none(self):
-        self.assertEquals(none_or_unicode(None), None)
-        self.assertEquals(none_or_unicode(u'myunicodestring'), u'myunicodestring')
-        self.assertEquals(none_or_unicode(u'\u00e5ge'), u'\u00e5ge')
-        self.assertEquals(none_or_unicode('mybytestring'), u'mybytestring')
-        self.assertEquals(none_or_unicode(u'\u00e5ge'.encode('utf-8')), u'\u00e5ge')
+    def test_unicode_indata(self):
+        self.assertEquals(unicode_indata(u'test'), u'test')
+        self.assertEquals(unicode_indata(u'\u00e5ge'.encode('utf-8')), u'\u00e5ge')
         with self.assertRaises(ValueError):
-            none_or_unicode(u'\u00e5ge'.encode('latin-1'))
-        with self.assertRaises(ValueError):
-            none_or_unicode(True)
+            unicode_indata(None)
 
-    def test_bool_or_none(self):
-        self.assertEquals(none_or_bool(None), None)
-        self.assertEquals(none_or_bool(True), True)
-        self.assertEquals(none_or_bool(False), False)
+    def test_bool_indata(self):
+        self.assertEquals(bool_indata(True), True)
+        self.assertEquals(bool_indata(False), False)
+        self.assertEquals(bool_indata('true'), True)
+        self.assertEquals(bool_indata('false'), False)
         with self.assertRaises(ValueError):
-            none_or_bool('1')
-        with self.assertRaises(ValueError):
-            none_or_bool('')
-        with self.assertRaises(ValueError):
-            none_or_bool(1)
-        with self.assertRaises(ValueError):
-            none_or_bool(0)
+            bool_indata(None)
 
 
     def test_isoformatted_datetime(self):
