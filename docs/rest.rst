@@ -291,6 +291,20 @@ RestView
 
             - :func:`.responsehandlers.stricthttp`
 
+    .. method:: error_handler(error)
+
+        Override this method to handle errors. The ``error`` parameter is the
+        catched exception. The function defaults to re-raising the exception,
+        which will result is server-error unless some Django middleware caches
+        the error. Example::
+
+            class MyRestView(RestView):
+                def error_handler(self, error):
+                    try:
+                        raise # Re-raise the error
+                    except MyCustomError, e:
+                        return dict(error=str(e))
+
 
 @indata
 ========

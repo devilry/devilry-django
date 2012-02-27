@@ -90,11 +90,13 @@ class RestView():
         try:
             output = restmethod(**kwargs)
         except Exception, e:
-            return self.error_handler(e)
+            output = self.error_handler(e)
+            successful = False
         else:
-            output = self.postprocess_output_data(output, successful=True)
-            encoded_output = self.encode_output(output)
-            return self.create_response(encoded_output, restapimethodname)
+            successful = True
+        output = self.postprocess_output_data(output, successful=True)
+        encoded_output = self.encode_output(output)
+        return self.create_response(encoded_output, restapimethodname)
 
 
     def _get_content_type(self, detectors, suffix, *extraargs):
