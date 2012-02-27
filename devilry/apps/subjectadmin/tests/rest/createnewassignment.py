@@ -1,6 +1,8 @@
 from datetime import timedelta, datetime
 from dingus import Dingus
-from django.test import TestCase
+from django.test import TestCase, Client
+import json
+from django.contrib.auth.models import User
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
@@ -124,7 +126,7 @@ class TestRestCreateNewAssignment(TestCase):
                                                apiversion='1.0', user=None,
                                                url_reverse=dummy_urlreverse)
 
-    def test_list(self):
+    def test_create(self):
         publishing_time = datetime(2010, 1, 1, 1, 1, 1)
         first_deadline = datetime(2011, 2, 2, 2, 2, 2)
         self.restapi.create(period_id=1001,
@@ -139,3 +141,32 @@ class TestRestCreateNewAssignment(TestCase):
         self.assertEquals(1, len(dingus.calls('create', None, 1001, 'a', 'Aa',
                                               publishing_time, 0, False, False,
                                               first_deadline, False)))
+
+
+class TestRestCreateNewAssignmentIntegration(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:admin(p1admin)', 'p2'])
+        self.client = Client()
+        p1admin = User.objects.get(username='p1admin')
+        self.client.login(username='p1admin', password='test')
+
+    def test_create(self):
+        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
+        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
+        data = dict(period_id=self.testhelper.sub_p1.id,
+                    short_name='a', long_name='Aa',
+                    publishing_time=isoformat_datetime(publishing_time),
+                    delivery_types=0, anonymous=False,
+                    add_all_relatedstudents=False,
+                    first_deadline=isoformat_datetime(first_deadline),
+                    autosetup_examiners=False)
+        response = self.client.post('/subjectadmin/rest/createnewassignment/',
+                                   data=json.dumps(data),
+                                   content_type="application/json",
+                                   HTTP_ACCEPT="application/json")
+        self.assertEquals(response.status_code, 201)
+        content = json.loads(response.content)
+        self.assertEquals(content['success'], True)
