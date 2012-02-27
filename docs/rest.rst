@@ -160,6 +160,11 @@ Dataconverters
 
 .. autoclass:: devilry.rest.htmldataconverter.HtmlDataConverter
 
+Errorhandlers
+=============
+
+.. automodule:: devilry.rest.errorhandlers
+
 
 RestView
 ========
@@ -256,6 +261,7 @@ RestView
 
             - :func:`.inputdata_handlers.getqrystring_inputdata_handler`
             - :func:`.inputdata_handlers.rawbody_inputdata_handler`
+            - :func:`.inputdata_handlers.noinput_inputdata_handler`
             
 
     :param dataconverters:
@@ -305,19 +311,18 @@ RestView
             - :func:`.responsehandlers.clienterror`
             - :func:`.responsehandlers.stricthttp`
 
-    .. method:: error_handler(error)
+    :param errorhandlers:
+        Error handlers are functions that take an exception object as
+        parameter, and returns a HTTP status code and error reponse data.
+        Must be a list of callables with the following signature::
 
-        Override this method to handle errors. The ``error`` parameter is the
-        catched exception. The function defaults to re-raising the exception,
-        which will result is server-error unless some Django middleware caches
-        the error. Example::
+            statuscode, errordata = f(error)
 
-            class MyRestView(RestView):
-                def error_handler(self, error):
-                    try:
-                        raise # Re-raise the error
-                    except MyCustomError, e:
-                        return dict(error=str(e))
+        Defaults to:
+
+            - :func:`.errorhandlers.clienterror`
+            - :func:`.errorhandlers.django_validationerror`
+            
 
 
 @indata

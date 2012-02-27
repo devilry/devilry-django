@@ -40,7 +40,8 @@ INPUT_CONTENT_TYPE_DETECTORS = [
 
 INPUTDATA_HANDLERS = [
     inputdata_handlers.getqrystring_inputdata_handler,
-    inputdata_handlers.rawbody_inputdata_handler
+    inputdata_handlers.rawbody_inputdata_handler,
+    inputdata_handlers.noinput_inputdata_handler
 ]
 
 DATACONVERTERS = {

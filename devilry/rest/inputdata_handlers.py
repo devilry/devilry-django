@@ -31,7 +31,15 @@ def rawbody_inputdata_handler(request, input_content_type, dataconverters):
     the request body of GET requests.
     """
     dataconverter = dataconverters.get(input_content_type)
-    if dataconverter:
+    if dataconverter and request.raw_post_data:
         return True, dataconverter.toPython(request.raw_post_data)
     else:
         return False, None
+
+def noinput_inputdata_handler(*args):
+    """
+    Returns ``(True, {})``. Suitable for fallback when no other inputdata
+    handler can find any input data (which may be the case for requests that
+    only require an ID, such as DELETE).
+    """
+    return True, {}
