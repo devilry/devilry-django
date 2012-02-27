@@ -56,3 +56,9 @@ class TestRestView(TestCase):
         content, response = client.rest_list('/polls/', search='hello')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['search'], 'hello')
+
+    def test_clienterror(self):
+        client = RestClient()
+        content, response = client.rest_read('/polls/', 2)
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(content, dict(error=u'Poll not found.'))
