@@ -1,6 +1,6 @@
 from xml.etree import cElementTree as ElementTree
-from devilry.dataconverter.dataconverter import DataConverter
-from devilry.dataconverter.utils import str_format_datetime
+from dataconverter import DataConverter
+from utils import str_format_datetime
 
 
 class ToXml(object):

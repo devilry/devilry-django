@@ -1,9 +1,8 @@
-from urllib import urlencode
 from urlparse import urlparse
 from xml.etree import ElementTree
 from django.template.loader import render_to_string
-from devilry.dataconverter.dataconverter import DataConverter
-from devilry.dataconverter.utils import str_format_datetime
+from dataconverter import DataConverter
+from utils import str_format_datetime
 
 
 class ToHtml(object):

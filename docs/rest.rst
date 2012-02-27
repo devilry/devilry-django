@@ -246,7 +246,7 @@ RestView
             
 
     :param dataconverters:
-        A dict of implementations of :class:`devilry.dataconverter.dataconverter.DataConverter`.
+        A dict of implementations of :class:`.dataconverter.DataConverter`.
         The key is a content-type. Data converters convert between python and some other format,
         such as JSON or XML.
 
@@ -255,11 +255,11 @@ RestView
 
         Defaults to:
 
-            - ``"application/xml"``: :class:`devilry.dataconverter.xmldataconverter.XmlDataConverter`
-            - ``"application/yaml"``: :class:`devilry.dataconverter.yamldataconverter.YamlDataConverter`
-            - ``"application/json"``: :class:`devilry.dataconverter.jsondataconverter.JsonDataConverter`
-            - ``"application/extjsjson"``: :class:`devilry.dataconverter.jsondataconverter.JsonDataConverter`
-            - ``"text/html"``: :class:`devilry.dataconverter.htmldataconverter.HtmlDataConverter`
+            - ``"application/xml"``: :class:`.xmldataconverter.XmlDataConverter`
+            - ``"application/yaml"``: :class:`.yamldataconverter.YamlDataConverter`
+            - ``"application/json"``: :class:`.jsondataconverter.JsonDataConverter`
+            - ``"application/extjsjson"``: :class:`.jsondataconverter.JsonDataConverter`
+            - ``"text/html"``: :class:`.htmldataconverter.HtmlDataConverter`
 
     :param restmethod_routers:
         A list of callables with the following signature::

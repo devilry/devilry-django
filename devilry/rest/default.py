@@ -1,7 +1,7 @@
-from devilry.dataconverter.jsondataconverter import JsonDataConverter
-from devilry.dataconverter.xmldataconverter import XmlDataConverter
-from devilry.dataconverter.yamldataconverter import YamlDataConverter
-from devilry.dataconverter.htmldataconverter import HtmlDataConverter
+from jsondataconverter import JsonDataConverter
+from xmldataconverter import XmlDataConverter
+from yamldataconverter import YamlDataConverter
+from htmldataconverter import HtmlDataConverter
 from devilry.rest import input_content_type_detectors
 from devilry.rest import output_content_type_detectors
 import inputdata_handlers

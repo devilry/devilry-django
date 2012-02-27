@@ -1,4 +1,4 @@
-from devilry.dataconverter.dataconverter import DataConverter
+from dataconverter import DataConverter
 import yaml
 
 class YamlDataConverter(DataConverter):

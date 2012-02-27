@@ -23,7 +23,6 @@ INSTALLED_APPS += [
                   # Under development
                   #'devilry.apps.coredao',
                   #'devilry.apps.corerest',
-                  'devilry.dataconverter', # Needs to be here since it uses templates
 
                   'devilry.apps.jsapp',
                   'devilry.apps.themebase',
@@ -32,7 +31,7 @@ INSTALLED_APPS += [
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
                    'devilry.restful',
-                   'devilry.rest',
+                   'devilry.rest', # Also needs to be here since it uses templates
                    'devilry.simplified']
 
 

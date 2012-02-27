@@ -1,5 +1,5 @@
 import json
-from devilry.dataconverter.dataconverter import DataConverter
+from dataconverter import DataConverter
 
 from utils import str_format_datetime
 
