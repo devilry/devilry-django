@@ -79,12 +79,28 @@ class ToHtml(object):
 
 
 class HtmlDataConverter(DataConverter):
+    """
+    Convert data from Python into HTML suitable for browsing.
+    """
     @classmethod
     def fromPython(cls, obj, alternative_formats=[]):
+        """
+        Handles:
+
+        - unicode --- If unicode data can be parsed as an URL, a link is generated.
+        - bool
+        - str
+        - datatime.datetime
+        - None
+        - int
+        """
         return render_to_string('dataconverter/htmldataconverter.django.html', {
             "body": ToHtml(obj, alternative_formats).encode()
         })
 
     @classmethod
     def toPython(cls, bytestring):
+        """
+        Raises NotImplementedError.
+        """
         raise NotImplementedError("The HTML data converter can not be used for input.")

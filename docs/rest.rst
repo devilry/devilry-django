@@ -123,6 +123,10 @@ Errors
 ========
 .. automodule:: devilry.rest.error
 
+RestBase
+========
+.. autoclass:: devilry.rest.restbase.RestBase
+
 Input data handlers
 ===================
 .. automodule:: devilry.rest.inputdata_handlers
@@ -131,9 +135,9 @@ Output content type detectors
 =============================
 .. automodule:: devilry.rest.output_content_type_detectors
 
-RestBase
-========
-.. autoclass:: devilry.rest.restbase.RestBase
+Output data postprocessors
+=============================
+.. automodule:: devilry.rest.output_data_postprocessors
 
 RestView
 ========
@@ -143,23 +147,40 @@ RestView
         A class implementing :class:`devilry.rest.restbase.RestBase`.
     :param suffix_to_content_type_map:
         Maps suffix to content type. Used to determine content-type from url-suffix.
+        Defaults to::
+
+            {"xml": "application/xml",
+             "yaml": "application/yaml",
+             "json": "application/json",
+             "extjs.json": "application/extjsjson",
+             "html": "text/html"}
 
     :param input_data_preprocessors:
-        List of input data post-processor callbacks. The callbacks have the following signature::
+        List of input data pre-processor callbacks. The callbacks have the following signature::
 
-            match, data = f(request, output_data)
+            match, input_data = f(request, input_data)
 
-        The data of the first matching callback will be used. If no processor matches,
-        the unchanged data will be used.
-
+        The ``input_data`` of the first matching callback will be used. If no
+        processor matches, the unchanged data will be used.
         Together with ``output_data_postprocessors`` this allows for wrapping
-        certain content-types with extra data. Example of use is to add data that is required
-        by a javascript library, such as the successful attribute required by ExtJS.
+        certain content-types with extra data. By default, no input data
+        pre-processors are registered.
 
     :param output_data_postprocessors:
         List of output data post-processor callbacks. See ``input_data_preprocessors``
-        for more details. Note that the callbacks take one additional argument, a boolean
-        telling if the restful method completed without error.
+        for more details. Callback signature::
+
+            match, output_data = f(request, output_data, has_errors)
+
+        The ``output_data`` of the first matching callback will be used. If no
+        processor matches, the unchanged data will be used.
+
+        Where ``has_errors`` is a boolean telling if the restful method
+        completed with/without error.
+
+        Defaults to:
+
+            - :func:`.output_data_postprocessors.extjs`
 
     :param output_content_type_detectors:
         Output content type detectors detect the content type of the request data.
@@ -225,11 +246,11 @@ RestView
 
         Defaults to:
 
-            - ``"application/xml"``: :class:`.dataconverter.xmldataconverter.XmlDataConverter`
-            - ``"application/yaml"``: :class:`.dataconverter.yamldataconverter.YamlDataConverter`
-            - ``"application/json"``: :class:`.dataconverter.jsondataconverter.JsonDataConverter`
-            - ``"application/extjsjson"``: :class:`.dataconverter.jsondataconverter.JsonDataConverter`
-            - ``"text/html"``: :class:`.dataconverter.htmldataconverter.HtmlDataConverter`
+            - ``"application/xml"``: :class:`devilry.dataconverter.xmldataconverter.XmlDataConverter`
+            - ``"application/yaml"``: :class:`devilry.dataconverter.yamldataconverter.YamlDataConverter`
+            - ``"application/json"``: :class:`devilry.dataconverter.jsondataconverter.JsonDataConverter`
+            - ``"application/extjsjson"``: :class:`devilry.dataconverter.jsondataconverter.JsonDataConverter`
+            - ``"text/html"``: :class:`devilry.dataconverter.htmldataconverter.HtmlDataConverter`
 
     :param restmethod_routers:
         A list of callables with the following signature::

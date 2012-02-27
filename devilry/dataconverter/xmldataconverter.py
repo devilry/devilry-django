@@ -51,6 +51,16 @@ class ToXml(object):
 
 
 class XmlDataConverter(DataConverter):
+    """
+    Convert data from and to XML. Handles recursive lists and dicts of:
+
+    - unicode
+    - bool
+    - str
+    - datatime.datetime
+    - None
+    - int
+    """
     @classmethod
     def fromPython(cls, obj, alternative_formats=[]):
         return ToXml(obj).encode()

@@ -14,6 +14,7 @@
 
     simplified
     restful
+    dataconverter
     rest
     extjshelpers
 
@@ -84,6 +85,7 @@ RESTful API
 
 * :ref:`restful`
 * :ref:`rest`
+* :ref:`dataconverter`
 * :ref:`public_restful_api`
 * :ref:`public_restful_api_examples`
 * Check out the Wiki_ for community docs such as:

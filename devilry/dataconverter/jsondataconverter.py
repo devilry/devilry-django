@@ -13,6 +13,9 @@ def json_serialize_handler(obj):
 
 
 class JsonDataConverter(DataConverter):
+    """
+    Convert data from and to JSON.
+    """
     @classmethod
     def fromPython(cls, obj, alternative_formats=[]):
         return json.dumps(obj, default=json_serialize_handler, indent=2)
