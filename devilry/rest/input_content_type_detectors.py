@@ -12,5 +12,5 @@ def from_content_type_header(request, suffix, suffix_to_content_type_map, valid_
     else:
         return None
 
-def use_output_content_type(request, suffix, output_content_type):
+def use_output_content_type(request, suffix, suffix_to_content_type_map, valid_content_types, output_content_type):
     return (output_content_type, None)
