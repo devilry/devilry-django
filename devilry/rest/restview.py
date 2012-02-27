@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 from .error import InvalidInputContentTypeError
 from .error import NotAcceptable
-from .error import ClientErrorBase
 import default
 
 
@@ -23,7 +22,8 @@ class RestView():
                  inputdata_handlers=default.INPUTDATA_HANDLERS,
                  dataconverters=default.DATACONVERTERS,
                  restmethod_routers=default.RESTMETHOD_ROUTES,
-                 response_handlers=default.RESPONSEHANDLERS):
+                 response_handlers=default.RESPONSEHANDLERS,
+                 errorhandlers=default.ERRORHANDLERS):
         self.restapicls = restapicls
         self.apiname = apiname
         self.apiversion = apiversion
@@ -36,6 +36,7 @@ class RestView():
         self.dataconverters = dataconverters
         self.restmethod_routers = restmethod_routers
         self.response_handlers = response_handlers
+        self.errorhandlers = errorhandlers
 
     def view(self, request, id_and_suffix=None):
         id, suffix = self.parse_id_and_suffix(id_and_suffix)
@@ -89,24 +90,24 @@ class RestView():
     def call_restapi(self, restapimethodname, kwargs):
         restapi = self.restapicls(apiname=self.apiname, apiversion=self.apiversion, user=self.request.user)
         restmethod = getattr(restapi, restapimethodname)
-        error = None
+        statuscodehint = None
         try:
             output = restmethod(**kwargs)
         except Exception, e:
-            output = self.error_handler(e)
-            error = e
+            statuscodehint, output = self.error_handler(e)
             successful = False
         else:
             successful = True
         output = self.postprocess_output_data(output, successful=successful)
         encoded_output = self.encode_output(output)
-        return self.create_response(encoded_output, restapimethodname, error=error)
+        return self.create_response(encoded_output, restapimethodname, statuscodehint)
 
     def error_handler(self, error):
-        try:
-            raise
-        except ClientErrorBase, e:
-            return dict(error=unicode(e))
+        for errorhandler in self.errorhandlers:
+            statuscode, errordata = errorhandler(error)
+            if statuscode and errordata:
+                return statuscode, errordata
+        raise # Re-raise the exception if it is not handled by any errorhandler
 
     def _get_content_type(self, detectors, suffix, *extraargs):
         for content_type_detector in detectors:
@@ -138,10 +139,11 @@ class RestView():
                 return data
         return {}
 
-    def create_response(self, encoded_output, restapimethodname):
+    def create_response(self, encoded_output, restapimethodname, statuscodehint):
         for response_handler in self.response_handlers:
             response = response_handler(self.request, restapimethodname,
-                                        self.output_content_type, encoded_output)
+                                        self.output_content_type,
+                                        encoded_output, statuscodehint)
             if response:
                 return response
         raise ValueError(

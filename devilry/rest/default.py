@@ -8,6 +8,7 @@ import inputdata_handlers
 import responsehandlers
 import restmethod_routers
 import output_data_postprocessors
+import errorhandlers
 
 
 SUFFIX_TO_CONTENT_TYPE_MAP = {
@@ -58,6 +59,10 @@ RESTMETHOD_ROUTES = [
     restmethod_routers.put_without_id_to_batch
 ]
 RESPONSEHANDLERS = [
-    responsehandlers.clienterror,
     responsehandlers.stricthttp
+]
+
+ERRORHANDLERS = [
+    errorhandlers.clienterror,
+    errorhandlers.django_validationerror
 ]
