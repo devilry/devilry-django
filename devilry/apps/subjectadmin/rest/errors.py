@@ -2,7 +2,10 @@
 Exceptions for ``devilry.apps.subjectadmin.rest``.
 """
 
-class PermissionDeniedError(Exception):
+from devilry.rest.error import ForbiddenError
+
+
+class PermissionDeniedError(ForbiddenError):
     """
     Raised to signal permission denied.
     """
