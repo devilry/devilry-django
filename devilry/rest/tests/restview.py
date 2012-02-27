@@ -40,3 +40,19 @@ class TestRestView(TestCase):
         content, response = client.rest_delete('/polls/', 1)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['id'], '1')
+
+    def test_batch(self):
+        client = RestClient()
+        content, response = client.rest_batch('/polls/',
+                                              polls_to_create=['my2ndpoll'],
+                                              polls_to_delete=[1, 2])
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['polls_to_update'], [])
+        self.assertEquals(content['polls_to_create'], ['my2ndpoll'])
+        self.assertEquals(content['polls_to_delete'], [1, 2])
+
+    def test_list(self):
+        client = RestClient()
+        content, response = client.rest_list('/polls/', search='hello')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['search'], 'hello')
