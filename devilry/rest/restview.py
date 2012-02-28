@@ -3,40 +3,85 @@
 """
 from django.http import HttpResponse, HttpResponseBadRequest
 
+from jsondataconverter import JsonDataConverter
+from xmldataconverter import XmlDataConverter
+from yamldataconverter import YamlDataConverter
+from htmldataconverter import HtmlDataConverter
+from devilry.rest import input_content_type_detectors
+from devilry.rest import output_content_type_detectors
+import inputdata_handlers
+import responsehandlers
+import restmethod_routers
+import output_data_postprocessors
+import errorhandlers
 from .error import InvalidInputContentTypeError
 from .error import NotAcceptable
-import default
 
 
 class RestView():
     """
     Django view that handles input/output to :class:`devilry.rest.restbase.RestBase`.
     """
-    def __init__(self, restapicls,
-                 apiname, apiversion,
-                 suffix_to_content_type_map=default.SUFFIX_TO_CONTENT_TYPE_MAP,
-                 input_data_preprocessors=default.INPUT_DATA_PREPROCESSORS,
-                 output_data_postprocessors=default.OUTPUT_DATA_POSTPROCESSORS,
-                 output_content_type_detectors=default.OUTPUT_CONTENT_TYPE_DETECTORS,
-                 input_content_type_detectors=default.INPUT_CONTENT_TYPE_DETECTORS,
-                 inputdata_handlers=default.INPUTDATA_HANDLERS,
-                 dataconverters=default.DATACONVERTERS,
-                 restmethod_routers=default.RESTMETHOD_ROUTES,
-                 response_handlers=default.RESPONSEHANDLERS,
-                 errorhandlers=default.ERRORHANDLERS):
+    suffix_to_content_type_map = {
+        "xml": "application/xml",
+        "yaml": "application/yaml",
+        "json": "application/json",
+        "extjs.json": "application/extjsjson",
+        "html": "text/html"
+    }
+
+    input_data_preprocessors = []
+    output_data_postprocessors = [
+        output_data_postprocessors.extjs
+    ]
+
+    output_content_type_detectors = [
+        # This order is chosen because the "common" case is to use accept header, however when
+        # the user does something special, like adding a querystring param or suffix, they do
+        # it intentionally.
+        output_content_type_detectors.devilry_accept_querystringparam,
+        output_content_type_detectors.suffix,
+        output_content_type_detectors.from_acceptheader
+    ]
+
+    input_content_type_detectors = [
+        input_content_type_detectors.from_content_type_header,
+        input_content_type_detectors.use_output_content_type
+    ]
+
+    inputdata_handlers = [
+        inputdata_handlers.getqrystring_inputdata_handler,
+        inputdata_handlers.rawbody_inputdata_handler,
+        inputdata_handlers.noinput_inputdata_handler
+    ]
+
+    dataconverters = {
+        "application/xml": XmlDataConverter,
+        "application/yaml": YamlDataConverter,
+        "application/json": JsonDataConverter,
+        "application/extjsjson": JsonDataConverter,
+        "text/html": HtmlDataConverter
+    }
+    restmethod_routers = [
+        restmethod_routers.post_to_create,
+        restmethod_routers.get_with_id_to_read,
+        restmethod_routers.put_with_id_to_update,
+        restmethod_routers.delete_to_delete,
+        restmethod_routers.get_without_id_to_list,
+        restmethod_routers.put_without_id_to_batch
+    ]
+    response_handlers = [
+        responsehandlers.stricthttp
+    ]
+
+    errorhandlers = [
+        errorhandlers.clienterror,
+        errorhandlers.django_validationerror
+    ]
+    def __init__(self, restapicls, apiname, apiversion):
         self.restapicls = restapicls
         self.apiname = apiname
         self.apiversion = apiversion
-        self.input_data_preprocessors = input_data_preprocessors
-        self.output_data_postprocessors = output_data_postprocessors
-        self.output_content_type_detectors = output_content_type_detectors
-        self.input_content_type_detectors = input_content_type_detectors
-        self.suffix_to_content_type_map = suffix_to_content_type_map
-        self.inputdata_handlers = inputdata_handlers
-        self.dataconverters = dataconverters
-        self.restmethod_routers = restmethod_routers
-        self.response_handlers = response_handlers
-        self.errorhandlers = errorhandlers
 
     def view(self, request, id_and_suffix=None):
         id, suffix = self.parse_id_and_suffix(id_and_suffix)
