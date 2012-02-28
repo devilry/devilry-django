@@ -6,11 +6,11 @@ from django.core.exceptions import ValidationError
 from error import ClientErrorBase
 
 
-def create_errordict(error):
+def create_errordict(*errors):
     """
-    Returns ``dict(error=unicode(error))``.
+    Returns ``dict(errormessages=<list of unicode encoded errors>)``.
     """
-    return dict(error=unicode(error))
+    return dict(errormessages=[unicode(error) for error in errors])
 
 
 def django_validationerror(error):

@@ -16,18 +16,23 @@ Ext.define('themebase.form.ErrorUtils', {
      *  @return an object as described above.
      */
     getErrorsFromOperation: function(operation) {
-        var restfulErrors = this.getRestErrorsFromOperation(operation);
+        var restfulErrors = this.getRestfulErrorsFromOperation(operation);
         if(restfulErrors) {
             return restfulErrors;
         } else {
-            return {
-                global: this.getErrorMessageFromOperation(operation),
-                field: []
-            };
+            var restErrors = this.getRestErrorsFromOperation(operation);
+            if(restErrors) {
+                return restErrors;
+            } else {
+                return {
+                    global: this.getErrorMessageFromOperation(operation),
+                    field: []
+                };
+            }
         } 
     },
 
-    _getResponseData: function(operation) {
+    _decodeResponseTextJSON: function(operation) {
         try {
             return Ext.JSON.decode(operation.responseText);
         } catch(e) {
@@ -35,7 +40,48 @@ Ext.define('themebase.form.ErrorUtils', {
         }
     },
 
-    /** Makes the errors messages contained in the ``responseData`` added to
+    _parseRestAndRestfulErrors: function(errors) {
+        var fielderrors = {};
+        if(errors.fielderrors) {
+            Ext.Object.each(errors.fielderrors, function(key, value) {
+                if(key != '__all__') {
+                    fielderrors[key] = value;
+                }
+            });
+        }
+        return {
+            global: errors.errormessages,
+            field: fielderrors
+        };
+    },
+
+    /** Gets the JSON encoded errors messages contained in
+     * ``operation.responseText``. Requires the JSON data
+     * to be an object with a list of errors in its ``errormessages`` attribute.
+     * The object may also contain a ``fielderrors`` attribute, which should be
+     * an object where each attribute is a fieldname with a corresponding list
+     * of error messages.
+     *
+     * The returned object guaranteed to have the following attributes (unless it is null):
+     *
+     *  - **global**: Array of global errors.
+     *  - **field**: Object of field errors with field name as key. The __all__
+     *    key is removed, since these are Django globale global errors which
+     *    should be in ``errormessages``.
+     *
+     *  @return an object as described above, or null if no REST errormessages
+     *  can be found in the operation object.
+     */
+    getRestErrorsFromOperation: function(operation) {
+        var responseData = this._decodeResponseTextJSON(operation);
+        if(responseData) {
+            return this._parseRestAndRestfulErrors(responseData);
+        } else {
+            return null;
+        }
+    },
+
+    /** Gets the errors messages contained in the ``responseData`` added to
      * ``Ext.data.Operation`` objects by
      * ``devilry.extjshelpers.RestProxy.setException``.
      *
@@ -49,22 +95,10 @@ Ext.define('themebase.form.ErrorUtils', {
      *  @return an object as described above, or null if no REST errormessages
      *  can be found in the operation object.
      */
-    getRestErrorsFromOperation: function(operation) {
-        var responseData = 
+    getRestfulErrorsFromOperation: function(operation) {
         if(operation.responseData && operation.responseData.items) {
             var errors = operation.responseData.items;
-            var fielderrors = {};
-            if(errors.fielderrors) {
-                Ext.Object.each(errors.fielderrors, function(key, value) {
-                    if(key != '__all__') {
-                        fielderrors[key] = value;
-                    }
-                });
-            }
-            return {
-                global: errors.errormessages,
-                field: fielderrors
-            };
+            return this._parseRestAndRestfulErrors(errors);
         } else {
             return null;
         }
@@ -91,7 +125,7 @@ Ext.define('themebase.form.ErrorUtils', {
      * using ``field.markInvalid(fielderrors[fieldname])``.
      *
      * @param formpanel A ``Ext.form.Panel`` object.
-     * @param fielderrors Such as the one returned by ``getRestErrorsFromOperation``.
+     * @param fielderrors Such as the one returned by ``getRestfulErrorsFromOperation``.
      * */
     applyFieldErrorsToForm: function(formpanel, fielderrors) {
         Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
@@ -111,7 +145,7 @@ Ext.define('themebase.form.ErrorUtils', {
      * error messages with the field label.
      *
      * @param formpanel A ``Ext.form.Panel`` object.
-     * @param fielderrors Such as the one returned by ``getRestErrorsFromOperation``.
+     * @param fielderrors Such as the one returned by ``getRestfulErrorsFromOperation``.
      * @param alertmessagelist A ``themebase.AlertMessageList`` object.
      * */
     addFieldErrorsToAlertMessageList: function(formpanel, fielderrors, alertmessagelist) {
