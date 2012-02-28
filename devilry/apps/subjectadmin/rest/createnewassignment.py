@@ -1,11 +1,13 @@
 from devilry.apps.core.models import Assignment
 from auth import periodadmin_required
+
+from devilry.apps.core.models import Period
 from devilry.rest.restbase import RestBase
 from devilry.rest.indata import indata
-
 from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
+from devilry.rest.error import NotFoundError
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -18,9 +20,9 @@ def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
 
 
 class CreateNewAssignmentDao(object):
-    def _create_assignment(self, period_id, short_name, long_name,
+    def _create_assignment(self, period, short_name, long_name,
                            publishing_time, delivery_types, anonymous):
-        assignment = Assignment(parentnode_id=period_id, short_name=short_name,
+        assignment = Assignment(parentnode=period, short_name=short_name,
                                 long_name=long_name,
                                 publishing_time=publishing_time,
                                 delivery_types=delivery_types,
@@ -70,18 +72,27 @@ class CreateNewAssignmentDao(object):
                                                            relatedexaminers)
             self._create_deadline(group, first_deadline)
 
-    def create(self, user, period_id,
+    def create(self, user, period,
                short_name, long_name, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                first_deadline, autosetup_examiners):
-        periodadmin_required(user, "i18n.permissiondenied", period_id)
-        assignment = self._create_assignment(period_id, short_name, long_name,
+        periodadmin_required(user, "i18n.permissiondenied", period.id)
+        assignment = self._create_assignment(period, short_name, long_name,
                                              publishing_time, delivery_types,
                                              anonymous)
         if add_all_relatedstudents:
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
         return dict(success=True)
+
+    def lookup_period_create(self, user, period_id, *args, **kwargs):
+        try:
+            period = Period.objects.get(id=period_id)
+        except Period.DoesNotExist:
+            raise NotFoundError('Period {period_id} does not exist.'.format(period_id=period_id))
+        else:
+            return self.create(user, period, *args, **kwargs)
+
 
 
 class RestCreateNewAssignment(RestBase):
@@ -102,7 +113,7 @@ class RestCreateNewAssignment(RestBase):
                short_name, long_name, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                first_deadline, autosetup_examiners):
-        return self.dao.create(self.user, period_id, short_name, long_name,
-                               publishing_time, delivery_types, anonymous,
-                               add_all_relatedstudents, first_deadline,
-                               autosetup_examiners)
+        return self.dao.lookup_period_create(self.user, period_id, short_name, long_name,
+                                             publishing_time, delivery_types, anonymous,
+                                             add_all_relatedstudents, first_deadline,
+                                             autosetup_examiners)

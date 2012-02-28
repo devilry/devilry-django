@@ -24,7 +24,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
     def test_create_assignment(self):
         dao = CreateNewAssignmentDao()
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
-        assignment = dao._create_assignment(period_id=self.testhelper.sub_p1.id,
+        assignment = dao._create_assignment(period=self.testhelper.sub_p1,
                                             short_name='a1', long_name='Assignment 1',
                                             publishing_time=publishing_time,
                                             delivery_types=0, anonymous=False)
@@ -115,10 +115,10 @@ class TestRestCreateNewAssignmentDao(TestCase):
                   add_all_relatedstudents=False, first_deadline=None,
                   autosetup_examiners=False)
         dao = CreateNewAssignmentDao()
-        dao.create(self.testhelper.p1admin, **kw)
+        dao.lookup_period_create(self.testhelper.p1admin, **kw)
         nobody = self.testhelper.create_user('nobody')
         with self.assertRaises(PermissionDeniedError):
-            dao.create(nobody, **kw)
+            dao.lookup_period_create(nobody, **kw)
 
 
 class TestRestCreateNewAssignment(TestCase):
@@ -168,3 +168,18 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                                                     **data)
         self.assertEquals(response.status_code, 201)
         self.assertEquals(content['success'], True)
+
+    def test_create_notfound(self):
+        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
+        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
+        data = dict(period_id=20000,
+                    short_name='a', long_name='Aa',
+                    publishing_time=isoformat_datetime(publishing_time),
+                    delivery_types=0, anonymous=False,
+                    add_all_relatedstudents=False,
+                    first_deadline=isoformat_datetime(first_deadline),
+                    autosetup_examiners=False)
+        content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
+                                                    **data)
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(content['errormessages'], [u'Period 20000 does not exist.'])
