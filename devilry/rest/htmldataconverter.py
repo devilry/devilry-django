@@ -93,7 +93,7 @@ class HtmlDataConverter(DataConverter):
         - None
         - int
         """
-        return render_to_string('dataconverter/htmldataconverter.django.html', {
+        return render_to_string('rest/htmldataconverter.django.html', {
             "body": ToHtml(obj, alternative_formats).encode()
         })
 
