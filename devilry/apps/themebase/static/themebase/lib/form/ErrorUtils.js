@@ -62,6 +62,9 @@ Ext.define('themebase.form.ErrorUtils', {
      * an object where each attribute is a fieldname with a corresponding list
      * of error messages.
      *
+     * This is ment to parse error messages from the python function
+     * ``devilry.rest.errorhandlers.create_errordict``.
+     *
      * The returned object guaranteed to have the following attributes (unless it is null):
      *
      *  - **global**: Array of global errors.
