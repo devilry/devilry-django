@@ -170,9 +170,12 @@ RestView
 ========
 .. class:: devilry.rest.restview.RestView
 
-    :param restapicls:
+    .. attribute:: restapicls
+
         A class implementing :class:`devilry.rest.restbase.RestBase`.
-    :param suffix_to_content_type_map:
+
+    .. attribute:: suffix_to_content_type_map
+
         Maps suffix to content type. Used to determine content-type from url-suffix.
         Defaults to::
 
@@ -182,7 +185,8 @@ RestView
              "extjs.json": "application/extjsjson",
              "html": "text/html"}
 
-    :param input_data_preprocessors:
+    .. attribute:: input_data_preprocessors
+
         List of input data pre-processor callbacks. The callbacks have the following signature::
 
             match, input_data = f(request, input_data)
@@ -193,7 +197,8 @@ RestView
         certain content-types with extra data. By default, no input data
         pre-processors are registered.
 
-    :param output_data_postprocessors:
+    .. attribute:: output_data_postprocessors
+
         List of output data post-processor callbacks. See ``input_data_preprocessors``
         for more details. Callback signature::
 
@@ -209,7 +214,8 @@ RestView
 
             - :func:`.output_data_postprocessors.extjs`
 
-    :param output_content_type_detectors:
+    .. attribute:: output_content_type_detectors
+
         Output content type detectors detect the content type of the request data.
         Must be a list of callables with the following signature::
 
@@ -224,7 +230,8 @@ RestView
             - :func:`.output_content_type_detectors.suffix`
             - :func:`.output_content_type_detectors.from_acceptheader`
 
-    :param input_content_type_detectors:
+    .. attribute:: input_content_type_detectors
+
         Similar to ``output_content_type_detectors``, except for input/request
         instead of for output/response. Furthermore, the the callbacks take the
         output content-type as the third argument::
@@ -234,7 +241,8 @@ RestView
         This is because few clients send the CONTENT_TYPE header, and falling back on
         output content-type is a mostly sane default.
 
-    :param inputdata_handlers:
+    .. attribute:: inputdata_handlers
+
         Input data handlers convert input data into a dict. Input data can come
         from several sources:
 
@@ -263,8 +271,8 @@ RestView
             - :func:`.inputdata_handlers.rawbody_inputdata_handler`
             - :func:`.inputdata_handlers.noinput_inputdata_handler`
             
+    .. attribute:: dataconverters
 
-    :param dataconverters:
         A dict of implementations of :class:`.dataconverter.DataConverter`.
         The key is a content-type. Data converters convert between python and some other format,
         such as JSON or XML.
@@ -280,7 +288,8 @@ RestView
             - ``"application/extjsjson"``: :class:`.jsondataconverter.JsonDataConverter`
             - ``"text/html"``: :class:`.htmldataconverter.HtmlDataConverter`
 
-    :param restmethod_routers:
+    .. attribute:: restmethod_routers
+
         A list of callables with the following signature::
 
             restapimethodname, args, kwargs = f(request, id, input_data)
@@ -298,7 +307,8 @@ RestView
             - :func:`.restmethod_routers.get_without_id_to_list`
             - :func:`.restmethod_routers.put_without_id_to_batch`
 
-    :param response_handlers:
+    .. attribute:: response_handlers
+
         Response handlers are responsible for creating the response after the 
         rest method has been successfully invoked, and the output has been encoded.
         Signature::
@@ -311,7 +321,8 @@ RestView
             - :func:`.responsehandlers.clienterror`
             - :func:`.responsehandlers.stricthttp`
 
-    :param errorhandlers:
+    .. attribute:: errorhandlers
+
         Error handlers are functions that take an exception object as
         parameter, and returns a HTTP status code and error reponse data.
         Must be a list of callables with the following signature::
