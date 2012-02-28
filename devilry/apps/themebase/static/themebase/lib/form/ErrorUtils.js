@@ -27,6 +27,14 @@ Ext.define('themebase.form.ErrorUtils', {
         } 
     },
 
+    _getResponseData: function(operation) {
+        try {
+            return Ext.JSON.decode(operation.responseText);
+        } catch(e) {
+            return null;
+        }
+    },
+
     /** Makes the errors messages contained in the ``responseData`` added to
      * ``Ext.data.Operation`` objects by
      * ``devilry.extjshelpers.RestProxy.setException``.
@@ -42,6 +50,7 @@ Ext.define('themebase.form.ErrorUtils', {
      *  can be found in the operation object.
      */
     getRestErrorsFromOperation: function(operation) {
+        var responseData = 
         if(operation.responseData && operation.responseData.items) {
             var errors = operation.responseData.items;
             var fielderrors = {};
