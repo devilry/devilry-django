@@ -23,8 +23,9 @@ body>dl {
     }
     &>dd {
         margin-left: 0;
-        dt {
-            font-weight: bold;
-        }
     }
+}
+dt {
+    font-weight: bold;
+    color: #777;
 }

@@ -26,7 +26,9 @@ body > dl > dt {
 body > dl > dd {
   margin-left: 0;
 }
-/* line 26, ../sass/screen.scss */
-body > dl > dd dt {
+
+/* line 28, ../sass/screen.scss */
+dt {
   font-weight: bold;
+  color: #777;
 }
