@@ -123,6 +123,10 @@ Errors
 ========
 .. automodule:: devilry.rest.error
 
+Utilities
+=========
+.. automodule:: devilry.rest.utils
+
 RestBase
 ========
 .. autoclass:: devilry.rest.restbase.RestBase
@@ -168,171 +172,9 @@ Errorhandlers
 
 RestView
 ========
-.. class:: devilry.rest.restview.RestView
 
-    .. attribute:: restapicls
+.. autoclass:: devilry.rest.restview.RestView
 
-        A class implementing :class:`devilry.rest.restbase.RestBase`.
-
-    .. attribute:: suffix_to_content_type_map
-
-        Maps suffix to content type. Used to determine content-type from url-suffix.
-        Defaults to::
-
-            {"xml": "application/xml",
-             "yaml": "application/yaml",
-             "json": "application/json",
-             "extjs.json": "application/extjsjson",
-             "html": "text/html"}
-
-    .. attribute:: input_data_preprocessors
-
-        List of input data pre-processor callbacks. The callbacks have the following signature::
-
-            match, input_data = f(request, input_data)
-
-        The ``input_data`` of the first matching callback will be used. If no
-        processor matches, the unchanged data will be used.
-        Together with ``output_data_postprocessors`` this allows for wrapping
-        certain content-types with extra data. By default, no input data
-        pre-processors are registered.
-
-    .. attribute:: output_data_postprocessors
-
-        List of output data post-processor callbacks. See ``input_data_preprocessors``
-        for more details. Callback signature::
-
-            match, output_data = f(request, output_data, has_errors)
-
-        The ``output_data`` of the first matching callback will be used. If no
-        processor matches, the unchanged data will be used.
-
-        Where ``has_errors`` is a boolean telling if the restful method
-        completed with/without error.
-
-        Defaults to:
-
-            - :func:`.output_data_postprocessors.extjs`
-
-    .. attribute:: output_content_type_detectors
-
-        Output content type detectors detect the content type of the request data.
-        Must be a list of callables with the following signature::
-
-            content_type  = f(request, suffix)
-
-        The first content_type that is not ``bool(content_type)==False`` will
-        be used.
-
-        Defaults to:
-
-            - :func:`.output_content_type_detectors.devilry_accept_querystringparam`
-            - :func:`.output_content_type_detectors.suffix`
-            - :func:`.output_content_type_detectors.from_acceptheader`
-
-    .. attribute:: input_content_type_detectors
-
-        Similar to ``output_content_type_detectors``, except for input/request
-        instead of for output/response. Furthermore, the the callbacks take the
-        output content-type as the third argument::
-
-            content_type  = f(request, suffix, output_content_type)
-
-        This is because few clients send the CONTENT_TYPE header, and falling back on
-        output content-type is a mostly sane default.
-
-    .. attribute:: inputdata_handlers
-
-        Input data handlers convert input data into a dict. Input data can come
-        from several sources:
-
-            - Querystring
-            - Parameter in querystring
-            - Request body
-
-        Therefore, we need to check for data in several places. Instead of hardcoding this
-        checking, we accept a list of callables that does the checking.
-
-        Must be a list of callables with the following signature::
-
-            match, data = f(request, input_content_type, dataconverters)
-
-        The first input data handler returning ``match==True`` is be used.
-            
-        See :mod:`devilry.rest.inputdata_handlers` for implementations.
-        
-        Input data can come in many different formats and from different sources.
-        Examples are such XML in request body, query string and JSON embedded in
-        a query string parameter.
-
-        Defaults to:
-
-            - :func:`.inputdata_handlers.getqrystring_inputdata_handler`
-            - :func:`.inputdata_handlers.rawbody_inputdata_handler`
-            - :func:`.inputdata_handlers.noinput_inputdata_handler`
-            
-    .. attribute:: dataconverters
-
-        A dict of implementations of :class:`.dataconverter.DataConverter`.
-        The key is a content-type. Data converters convert between python and some other format,
-        such as JSON or XML.
-
-        Typically used by ``input_datahandlers`` and ``response_handlers`` to convert data
-        input the content_type detected by one of the ``output_content_type_detectors``.
-
-        Defaults to:
-
-            - ``"application/xml"``: :class:`.xmldataconverter.XmlDataConverter`
-            - ``"application/yaml"``: :class:`.yamldataconverter.YamlDataConverter`
-            - ``"application/json"``: :class:`.jsondataconverter.JsonDataConverter`
-            - ``"application/extjsjson"``: :class:`.jsondataconverter.JsonDataConverter`
-            - ``"text/html"``: :class:`.htmldataconverter.HtmlDataConverter`
-
-    .. attribute:: restmethod_routers
-
-        A list of callables with the following signature::
-
-            restapimethodname, args, kwargs = f(request, id, input_data)
-
-        ``None`` must be returned if the route does not match.
-
-        Restmetod routes determines which method in the
-        :class:`.restbase.RestBase` interface to call, and the arguments to
-        use for the call. Defaults to:
-
-            - :func:`.restmethod_routers.post_to_create`
-            - :func:`.restmethod_routers.get_with_id_to_read`
-            - :func:`.restmethod_routers.put_with_id_to_update`
-            - :func:`.restmethod_routers.delete_to_delete`
-            - :func:`.restmethod_routers.get_without_id_to_list`
-            - :func:`.restmethod_routers.put_without_id_to_batch`
-
-    .. attribute:: response_handlers
-
-        Response handlers are responsible for creating the response after the 
-        rest method has been successfully invoked, and the output has been encoded.
-        Signature::
-
-            reponse = f(request, restapimethodname, output_content_type, encoded_output)
-
-        The first response handler returning ``bool(response) == True`` is used. Defaults
-        to:
-
-            - :func:`.responsehandlers.clienterror`
-            - :func:`.responsehandlers.stricthttp`
-
-    .. attribute:: errorhandlers
-
-        Error handlers are functions that take an exception object as
-        parameter, and returns a HTTP status code and error reponse data.
-        Must be a list of callables with the following signature::
-
-            statuscode, errordata = f(error)
-
-        Defaults to:
-
-            - :func:`.errorhandlers.clienterror`
-            - :func:`.errorhandlers.django_validationerror`
             
 
 
