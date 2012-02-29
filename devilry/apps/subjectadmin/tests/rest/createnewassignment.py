@@ -182,4 +182,22 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
                                                     **data)
         self.assertEquals(response.status_code, 404)
-        self.assertEquals(content['errormessages'], [u'Period 20000 does not exist.'])
+        self.assertEquals(content['i18nErrormessages'],
+                          [[u'subjectadmin.create_new_assignment.period_doesnotexist',
+                            {'period_id': 20000}]])
+
+    def test_create_first_deadline_none(self):
+        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
+        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
+        data = dict(period_id=self.testhelper.sub_p1.id,
+                    short_name='a', long_name='Aa',
+                    publishing_time=isoformat_datetime(publishing_time),
+                    delivery_types=0, anonymous=False,
+                    add_all_relatedstudents=True,
+                    first_deadline=None,
+                    autosetup_examiners=False)
+        content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
+                                                    **data)
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['i18nErrormessages'],
+                          [[u'subjectadmin.create_new_assignment.first_deadline_none', {}]])

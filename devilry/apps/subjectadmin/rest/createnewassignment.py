@@ -8,6 +8,7 @@ from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
 from devilry.rest.error import NotFoundError
+from devilry.rest.error import BadRequestError
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -62,6 +63,8 @@ class CreateNewAssignmentDao(object):
 
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
+        if not first_deadline:
+            raise BadRequestError('subjectadmin.create_new_assignment.first_deadline_none')
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
         else:
@@ -89,7 +92,8 @@ class CreateNewAssignmentDao(object):
         try:
             period = Period.objects.get(id=period_id)
         except Period.DoesNotExist:
-            raise NotFoundError('Period {period_id} does not exist.'.format(period_id=period_id))
+            raise NotFoundError('subjectadmin.create_new_assignment.period_doesnotexist',
+                                period_id=period_id)
         else:
             return self.create(user, period, *args, **kwargs)
 
