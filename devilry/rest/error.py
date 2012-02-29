@@ -42,6 +42,14 @@ class BadRequestError(ClientErrorBase):
     The request cannot be fulfilled due to bad syntax.
     """
 
+class BadRequestFieldError(BadRequestError):
+    """
+    Bad request error containing a ``fieldname`` as metadata.
+    """
+    def __init__(self, fieldname, i18nkey, **i18nparameters):
+        super(BadRequestError, self).__init__(i18nkey, **i18nparameters)
+        self.fieldname = fieldname
+
 class ForbiddenError(ClientErrorBase):
     """
     The request was a legal request, but the server is refusing to respond to

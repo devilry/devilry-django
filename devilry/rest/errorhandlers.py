@@ -4,6 +4,7 @@ returns a HTTP status code and error reponse data.
 """
 from django.core.exceptions import ValidationError
 from error import ClientErrorBase
+from error import BadRequestFieldError
 
 
 def create_errordict(errormessages=[], fielderrors={},
@@ -52,11 +53,21 @@ def django_validationerror(error):
         return None, None
 
 
+def badRequestFieldError(error):
+    """
+    An error handler that handles :exc:`.error.BadRequestFieldError` errors.
+    Important that this comes before :func:`clienterror` in the
+    *functionchain*.
+    """
+    if error and isinstance(error, BadRequestFieldError):
+        fielderrors = {error.fieldname: [(error.i18nkey, error.i18nparameters)]}
+        return error.STATUS, create_errordict(i18nFielderrors=fielderrors)
+    else:
+        return None, None
+
 def clienterror(error):
     """
-    An error handler that checks if ``error`` is a
-    :exc:`.error.ClientErrorBase` object, and if that is the case,
-    ``(error.STATUS, create_errordict([unicode(error)]))`` is returned.
+    An error handler that handles :exc:`.error.ClientErrorBase` errors.
     """
     if error and isinstance(error, ClientErrorBase):
         messages = [(error.i18nkey, error.i18nparameters)]

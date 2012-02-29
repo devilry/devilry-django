@@ -187,6 +187,7 @@ class RestView(object):
 
         Defaults to:
 
+            - :func:`.errorhandlers.badRequestFieldError`
             - :func:`.errorhandlers.clienterror`
             - :func:`.errorhandlers.django_validationerror`
     """
@@ -244,6 +245,7 @@ class RestView(object):
     ]
 
     errorhandlers = [
+        errorhandlers.badRequestFieldError,
         errorhandlers.clienterror,
         errorhandlers.django_validationerror
     ]
