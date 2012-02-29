@@ -239,7 +239,7 @@ class RestView(object):
         restmethod_routers.put_without_id_to_batch
     ]
     response_handlers = [
-        responsehandlers.extjs,
+        #responsehandlers.extjs,
         responsehandlers.stricthttp
     ]
 
