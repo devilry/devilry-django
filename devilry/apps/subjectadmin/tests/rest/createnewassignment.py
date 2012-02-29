@@ -139,7 +139,7 @@ class TestRestCreateNewAssignment(TestCase):
                             autosetup_examiners=False)
         dingus = self.restapi.dao
         # Check the dingus to make sure all parameters was converted correctly
-        self.assertEquals(1, len(dingus.calls('create', None, 1001, 'a', 'Aa',
+        self.assertEquals(1, len(dingus.calls('lookup_period_create', None, 1001, 'a', 'Aa',
                                               publishing_time, 0, False, False,
                                               first_deadline, False)))
 
