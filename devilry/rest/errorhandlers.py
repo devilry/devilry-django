@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from error import ClientErrorBase
 
 
-def create_errordict(errormessages=[], fielderrrors={}):
+def create_errordict(errormessages=[], fielderrors={}):
     """
     Returns ``dict(errormessages=errormessages, fielderrors=fielderrors)``.
     This is mainly a function to encourage uniform error return format from
@@ -14,11 +14,11 @@ def create_errordict(errormessages=[], fielderrrors={}):
 
     :param errormessages:
         Should be a list of unicode error messages.
-    :param fielderrrors:
+    :param fielderrors:
         Should be a dict with fieldnames as key and list of unicode error
         messages as value.
     """
-    return dict(errormessages=errormessages, fielderrrors=fielderrrors)
+    return dict(errormessages=errormessages, fielderrors=fielderrors)
 
 
 def django_validationerror(error):
@@ -28,7 +28,11 @@ def django_validationerror(error):
     case, ``(400, create_errordict([unicode(error)]))`` is returned.
     """
     if error and isinstance(error, ValidationError):
-        return 400, create_errordict([unicode(error)])
+        if hasattr(error, 'message_dict'):
+            errordict = create_errordict(fielderrors=error.message_dict)
+        else:
+            errordict = create_errordict(errormessages=error.messages)
+        return 400, errordict
     else:
         return None, None
 
