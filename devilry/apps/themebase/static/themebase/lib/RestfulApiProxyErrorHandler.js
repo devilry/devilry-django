@@ -13,7 +13,7 @@ Ext.define('themebase.RestfulApiProxyErrorHandler', {
         if(operation.responseData && operation.responseData.items) {
             var errors = operation.responseData.items;
             this.errormessages = errors.errormessages;
-            this.fielderrors = this.removeGlobalFromFieldErrors(errors.fielderrors);
+            this.fielderrors = this._removeGlobalFromFieldErrors(errors.fielderrors);
             return true;
         } else {
             return false;
@@ -29,10 +29,10 @@ Ext.define('themebase.RestfulApiProxyErrorHandler', {
             }
         });
         return cleanedFieldErrors;
-    }
+    },
 
-    addErrors: function(response, operation) {
-        if(!this.addRestfulErrorsFromOperation(response)) {
+    addErrors: function(operation) {
+        if(!this.addRestfulErrorsFromOperation(operation)) {
             this.addErrorsFromOperation(operation);
         }
     }

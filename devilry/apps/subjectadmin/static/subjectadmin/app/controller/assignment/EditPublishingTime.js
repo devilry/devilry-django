@@ -4,6 +4,11 @@
 Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'themebase.form.ErrorUtils',
+        'themebase.RestfulApiProxyErrorHandler'
+    ],
+
     views: [
         'assignment.EditPublishingTime',
         'assignment.EditPublishingTimeWidget'
@@ -87,8 +92,14 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
 
     _onSaveFailure: function(record, operation) {
         this._getMaskElement().unmask();
-        themebase.form.ErrorUtils.handleRestErrorsInForm(
-            operation, this.getFormPanel(), this.getAlertMessageList()
+        var errorhandler = Ext.create('themebase.RestfulApiProxyErrorHandler');
+        errorhandler.addErrors(operation);
+        this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
+        themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
+            this.getFormPanel(), errorhandler.fielderrors, this.getAlertMessageList()
+        );
+        themebase.form.ErrorUtils.markFieldErrorsAsInvalid(
+            this.getFormPanel(), errorhandler.fielderrors
         );
     },
 
