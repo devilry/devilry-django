@@ -199,5 +199,5 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
                                                     **data)
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['i18nErrormessages'],
-                          [[u'subjectadmin.create_new_assignment.first_deadline_none', {}]])
+        self.assertEquals(content['i18nFielderrors'],
+                          {'first_deadline': [[u'subjectadmin.create_new_assignment.first_deadline_none', {}]]})

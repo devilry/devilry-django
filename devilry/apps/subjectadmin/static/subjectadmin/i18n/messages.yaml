@@ -37,3 +37,6 @@ subjectadmin.managestudents.addstudents.title: Add students
 subjectadmin.managestudents.addstudents.tips: Choose the students you want to add to the assignment, and click save.
 subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
 subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
+
+subjectadmin.create_new_assignment.period_doesnotexist: "Period {period_id} does not exist."
+subjectadmin.create_new_assignment.first_deadline_none: "Required when automatically adding related students."

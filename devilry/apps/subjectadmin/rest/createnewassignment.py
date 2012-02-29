@@ -9,6 +9,7 @@ from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
 from devilry.rest.error import NotFoundError
 from devilry.rest.error import BadRequestError
+from devilry.rest.error import BadRequestFieldError
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -64,7 +65,7 @@ class CreateNewAssignmentDao(object):
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
         if not first_deadline:
-            raise BadRequestError('subjectadmin.create_new_assignment.first_deadline_none')
+            raise BadRequestFieldError('first_deadline', 'subjectadmin.create_new_assignment.first_deadline_none')
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
         else:
