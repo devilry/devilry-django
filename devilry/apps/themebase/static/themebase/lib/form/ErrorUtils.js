@@ -24,10 +24,15 @@ Ext.define('themebase.form.ErrorUtils', {
             if(restErrors) {
                 return restErrors;
             } else {
-                return {
-                    global: this.getErrorMessageFromOperation(operation),
-                    field: []
-                };
+                var httpError = this.getErrorMessageFromOperation(operation);
+                if(httpError) {
+                    return {
+                        global: httpError,
+                        field: []
+                    };
+                } else {
+                    throw "Could not find any errors in the given operation.";
+                }
             }
         } 
     },
@@ -115,6 +120,9 @@ Ext.define('themebase.form.ErrorUtils', {
      * */
     getErrorMessageFromOperation: function(operation) {
         var error = operation.getError();
+        if(error === undefined) {
+            return null;
+        }
         var message;
         if(error.status === 0) {
             message = dtranslate('themebase.lostserverconnection');
