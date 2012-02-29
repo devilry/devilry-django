@@ -320,8 +320,8 @@ class RestView(object):
     def preprocess_input_data(self, input_data):
         return self._process_data(self.input_data_preprocessors, self.input_content_type, input_data)
 
-    def postprocess_output_data(self, output_data, successful):
-        return self._process_data(self.output_data_postprocessors, self.output_content_type, output_data, successful)
+    def postprocess_output_data(self, output_data, success):
+        return self._process_data(self.output_data_postprocessors, self.output_content_type, output_data, success)
 
     def parse_id_and_suffix(self, id_and_suffix):
         id = None
@@ -343,10 +343,10 @@ class RestView(object):
             output = restmethod(**kwargs)
         except Exception, e:
             statuscodehint, output = self.error_handler(e)
-            successful = False
+            success = False
         else:
-            successful = True
-        output = self.postprocess_output_data(output, successful=successful)
+            success = True
+        output = self.postprocess_output_data(output, success=success)
         encoded_output = self.encode_output(output)
         return self.create_response(encoded_output, restapimethodname, statuscodehint)
 
