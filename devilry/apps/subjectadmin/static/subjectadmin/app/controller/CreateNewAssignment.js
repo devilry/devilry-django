@@ -2,7 +2,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'themebase.form.ErrorUtils'
+        'themebase.form.ErrorUtils',
+        'themebase.RestApiProxyErrorHandler'
     ],
     views: [
         'createnewassignment.Form',
@@ -49,15 +50,21 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             scope: this
         });
         this._setInitialValues();
+
+        this.getForm().mon(this.getCreateNewAssignmentModel().proxy, {
+            scope:this,
+            exception: this._onProxyError
+        });
     },
 
     _setInitialValues: Ext.emptyFn,
-    //_setInitialValues: function() {
-        //this.getForm().getForm().setValues({
-            //long_name: 'The first assignment',
-            //short_name: 'firstassignment'
-        //})
-    //},
+
+    _setInitialValues: function() {
+        this.getForm().getForm().setValues({
+            long_name: 'A',
+            short_name: 'A'
+        })
+    },
 
     _onSubmit: function() {
         if(this.getForm().getForm().isValid()) {
@@ -75,27 +82,40 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
         values.period_id = periodId;
-        console.log(values);
+        //console.log(values);
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
         this._mask();
         assignment.save({
             scope: this,
-            success: this._onSuccessfulSave,
-            failure: this._onFailedSave
+            success: this._onSuccessfulSave
+            //failure: this._onFailedSave
         });
     },
 
     _onSuccessfulSave: function(a, b, c) {
         this._unmask();
-        console.log(a, b, c);
         console.log('success');
     },
 
     _onFailedSave: function(record, operation) {
         this._unmask();
-        themebase.form.ErrorUtils.handleRestErrorsInForm(operation, this.getForm(), this.getAlertMessageList());
+        console.log('failed');
+        console.log('f', operation);
+        //themebase.form.ErrorUtils.handleRestfulErrorsInForm(operation, this.getForm(), this.getAlertMessageList());
+    },
+
+    _onProxyError: function(proxy, response, operation) {
+        this._unmask();
+        var errorhandler = Ext.create('themebase.RestApiProxyErrorHandler');
+        this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
+        themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
+            this.getForm(), errorhandler.fielderrors, this.getAlertMessageList()
+        );
+        themebase.form.ErrorUtils.markFieldErrorsAsInvalid(
+            this.getForm(), errorhandler.fielderrors
+        );
     },
 
     _mask: function() {
