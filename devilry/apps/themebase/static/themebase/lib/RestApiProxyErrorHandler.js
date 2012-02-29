@@ -19,7 +19,6 @@ Ext.define('themebase.RestApiProxyErrorHandler', {
      */
     addRestErrorsFromResponse: function(response) {
         var responseData = this._decodeResponseTextJSON(response);
-        console.log(responseData);
         if(responseData) {
             this.errormessages = responseData.errormessages;
             this.fielderrors = responseData.fielderrors;

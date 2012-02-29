@@ -12,18 +12,16 @@ Ext.define('subjectadmin.model.CreateNewAssignmentTestMock', {
         // received correctly.
         validator: function(operation) {
             var record = operation.getRecords()[0];
-            if(record.get('parentnode_id') == '3') {
-                operation.responseData = {
-                    items: {
-                        errormessages: [
-                            'This is a global error message',
-                            'Another global message'
-                        ],
-                        fielderrors: {
-                            '__all__': ['This should not be shown'], // Because unlike in this Mockup, this message should be in errormessages (above)
-                            short_name: ['Invalid short name'],
-                            long_name: ['Invalid', 'Long name']
-                        }
+            var responseText = null;
+            if(record.get('period_id') == 3) {
+                responseText = {
+                    errormessages: [
+                        'This is a global error message',
+                        'Another global message'
+                    ],
+                    fielderrors: {
+                        short_name: ['Invalid short name'],
+                        long_name: ['Invalid', 'Long name']
                     }
                 };
                 operation.setException({
@@ -34,13 +32,11 @@ Ext.define('subjectadmin.model.CreateNewAssignmentTestMock', {
 
             // Trigger BAD REQUEST for publishing_time at the first of every month
             if(record.get('publishing_time').getDate() == 1) {
-                operation.responseData = {
-                    items: {
-                        errormessages: [
-                            'This is a global error message',
-                            'It is triggered since the day of month is "1" (for testing only).'
-                        ]
-                    }
+                responseText = {
+                    errormessages: [
+                        'This is a global error message',
+                        'It is triggered since the day of month is "1" (for testing only).'
+                    ]
                 };
                 operation.setException({
                     status: 400,
@@ -57,6 +53,14 @@ Ext.define('subjectadmin.model.CreateNewAssignmentTestMock', {
                 operation.setException({
                     status: 0
                 });
+            }
+
+            if(operation.hasException()) {
+                var response = null;
+                if(responseText) {
+                    response = {responseText: Ext.JSON.encode(responseText)};
+                }
+                this.fireEvent('exception', this, response, operation);
             }
         }
     }

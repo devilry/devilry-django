@@ -59,12 +59,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _setInitialValues: Ext.emptyFn,
 
-    _setInitialValues: function() {
-        this.getForm().getForm().setValues({
-            long_name: 'A',
-            short_name: 'A'
-        })
-    },
+    //_setInitialValues: function() {
+        //this.getForm().getForm().setValues({
+            //long_name: 'A',
+            //short_name: 'a'
+        //})
+    //},
 
     _onSubmit: function() {
         if(this.getForm().getForm().isValid()) {
@@ -90,7 +90,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         assignment.save({
             scope: this,
             success: this._onSuccessfulSave
-            //failure: this._onFailedSave
         });
     },
 
@@ -101,6 +100,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
+        console.log(response, operation);
         var errorhandler = Ext.create('themebase.RestApiProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
