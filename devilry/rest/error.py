@@ -2,6 +2,18 @@ class RestError(Exception):
     """
     Base class for REST errors.
     """
+    def __init__(self, i18nkey, **i18nparameters):
+        """
+        :param i18nkey: Should be a translation key for
+            ``devilry.i18n``, however it may be an error message if the error is
+            not ment to be displayed to normal users user.
+        :param i18nparameters: Arguments that is passed into the translation string.
+        """
+        self.i18nkey = i18nkey
+        self.i18nparameters = i18nparameters
+
+    def __unicode__(self):
+        return self.i18nkey
 
 class ClientErrorBase(RestError):
     """

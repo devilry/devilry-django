@@ -6,7 +6,8 @@ from django.core.exceptions import ValidationError
 from error import ClientErrorBase
 
 
-def create_errordict(errormessages=[], fielderrors={}):
+def create_errordict(errormessages=[], fielderrors={},
+                     i18nErrormessages=[], i18nFielderrors={}):
     """
     Returns ``dict(errormessages=errormessages, fielderrors=fielderrors)``.
     This is mainly a function to encourage uniform error return format from
@@ -17,8 +18,17 @@ def create_errordict(errormessages=[], fielderrors={}):
     :param fielderrors:
         Should be a dict with fieldnames as key and list of unicode error
         messages as value.
+    :param i18nErrormessages:
+        Translatable error messages. Each item is a tuple ``(i18nkey,
+        parameters)``. Where ``i18nkey`` is a translation key for
+        :ref:`i18n` and ``parameters`` is a dict with arguments for
+        formatting the translation string.
+    :param i18nFielderrors:
+        Just like ``fielderrors``, however the values are tuples like the ones
+        in ``i18nErrormessages``.
     """
-    return dict(errormessages=errormessages, fielderrors=fielderrors)
+    return dict(errormessages=errormessages, fielderrors=fielderrors,
+                i18nErrormessages=i18nErrormessages, i18nFielderrors=i18nFielderrors)
 
 
 def django_validationerror(error):
@@ -49,6 +59,7 @@ def clienterror(error):
     ``(error.STATUS, create_errordict([unicode(error)]))`` is returned.
     """
     if error and isinstance(error, ClientErrorBase):
-        return error.STATUS, create_errordict([unicode(error)])
+        messages = [(error.i18nkey, error.i18nparameters)]
+        return error.STATUS, create_errordict(i18nErrormessages=messages)
     else:
         return None, None
