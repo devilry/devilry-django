@@ -76,6 +76,7 @@ Ext.define('themebase.form.ErrorUtils', {
      *  can be found in the operation object.
      */
     getRestErrorsFromOperation: function(operation) {
+        console.log(operation);
         var responseData = this._decodeResponseTextJSON(operation);
         if(responseData) {
             return this._parseRestAndRestfulErrors(responseData);

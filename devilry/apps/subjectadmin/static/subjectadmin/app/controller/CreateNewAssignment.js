@@ -87,8 +87,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _onSuccessfulSave: function() {
+    _onSuccessfulSave: function(a, b, c) {
         this._unmask();
+        console.log(a, b, c);
         console.log('success');
     },
 
