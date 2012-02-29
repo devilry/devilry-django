@@ -28,9 +28,14 @@ def django_validationerror(error):
     case, ``(400, create_errordict([unicode(error)]))`` is returned.
     """
     if error and isinstance(error, ValidationError):
+        errordict = None
         if hasattr(error, 'message_dict'):
-            errordict = create_errordict(fielderrors=error.message_dict)
-        else:
+            message_dict = error.message_dict
+            if '__all__' in message_dict:
+                del message_dict['__all__']
+            if message_dict:
+                errordict = create_errordict(fielderrors=message_dict)
+        if not errordict: # Note: this may happen if we have have a message_dict with only __all__
             errordict = create_errordict(errormessages=error.messages)
         return 400, errordict
     else:
