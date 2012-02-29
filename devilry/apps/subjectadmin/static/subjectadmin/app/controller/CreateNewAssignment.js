@@ -82,7 +82,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
         values.period_id = periodId;
-        //console.log(values);
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
@@ -100,7 +99,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
-        console.log(response, operation);
         var errorhandler = Ext.create('themebase.RestApiProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
