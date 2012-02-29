@@ -99,16 +99,10 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         console.log('success');
     },
 
-    _onFailedSave: function(record, operation) {
-        this._unmask();
-        console.log('failed');
-        console.log('f', operation);
-        //themebase.form.ErrorUtils.handleRestfulErrorsInForm(operation, this.getForm(), this.getAlertMessageList());
-    },
-
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
         var errorhandler = Ext.create('themebase.RestApiProxyErrorHandler');
+        errorhandler.addErrors(response, operation);
         this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
         themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
             this.getForm(), errorhandler.fielderrors, this.getAlertMessageList()
