@@ -77,9 +77,9 @@ class CreateNewAssignmentDao(object):
             self._create_deadline(group, first_deadline)
 
     def create(self, user, period,
-               short_name, long_name, publishing_time,
+               short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
-               first_deadline, autosetup_examiners):
+               autosetup_examiners):
         periodadmin_required(user, "i18n.permissiondenied", period.id)
         assignment = self._create_assignment(period, short_name, long_name,
                                              publishing_time, delivery_types,
@@ -108,17 +108,19 @@ class RestCreateNewAssignment(RestBase):
     @indata(period_id = int,
             short_name = unicode,
             long_name = unicode,
+            first_deadline = NoneOr(isoformatted_datetime),
             publishing_time = isoformatted_datetime,
             delivery_types = int,
             anonymous = bool_indata,
             add_all_relatedstudents = bool_indata,
-            first_deadline = NoneOr(isoformatted_datetime),
             autosetup_examiners = bool_indata)
     def create(self, period_id,
-               short_name, long_name, publishing_time,
+               short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
-               first_deadline, autosetup_examiners):
-        return self.dao.lookup_period_create(self.user, period_id, short_name, long_name,
-                                             publishing_time, delivery_types, anonymous,
-                                             add_all_relatedstudents, first_deadline,
+               autosetup_examiners):
+        return self.dao.lookup_period_create(self.user, period_id, short_name,
+                                             long_name, first_deadline,
+                                             publishing_time, delivery_types,
+                                             anonymous,
+                                             add_all_relatedstudents,
                                              autosetup_examiners)
