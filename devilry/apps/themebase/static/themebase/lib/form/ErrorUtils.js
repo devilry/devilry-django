@@ -3,6 +3,16 @@
 Ext.define('themebase.form.ErrorUtils', {
     singleton: true,
 
+    _getFieldByName: function(formpanel, fieldname) {
+        var fieldComponentQuery = Ext.String.format('[name={0}]', fieldname);
+            var match = formpanel.query(fieldComponentQuery);
+            if(match.length > 0) {
+                return match[0];
+            } else {
+                return null;
+            }
+    },
+
     /**
      * Mark all fields that are both in ``formpanel`` and ``fielderrors`` with
      * using ``field.markInvalid(fielderrors[fieldname])``.
@@ -12,13 +22,11 @@ Ext.define('themebase.form.ErrorUtils', {
      * */
     markFieldErrorsAsInvalid: function(formpanel, fielderrors) {
         Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
-            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
-            var match = formpanel.query(fieldComponentQuery);
-            if(match.length > 0) {
-                var field = match[0];
+            var field = this._getFieldByName(formpanel, fieldname);
+            if(field) {
                 field.markInvalid(fielderrors);
             }
-        });
+        }, this);
     },
 
     /**
@@ -33,11 +41,9 @@ Ext.define('themebase.form.ErrorUtils', {
      * */
     addFieldErrorsToAlertMessageList: function(formpanel, fielderrors, alertmessagelist) {
         Ext.Object.each(fielderrors, function(fieldname, fielderrors) {
-            var fieldComponentQuery = Ext.String.format('field[name={0}]', fieldname);
-            var match = formpanel.query(fieldComponentQuery);
             var fielderror = fielderrors.join('. ');
-            if(match.length > 0) {
-                var field = match[0];
+            var field = this._getFieldByName(formpanel, fieldname);
+            if(field) {
                 var message = Ext.String.format('<strong>{0}:</strong> {1}', field.fieldLabel, fielderror)
                 alertmessagelist.add({
                     message: message,
@@ -48,6 +54,6 @@ Ext.define('themebase.form.ErrorUtils', {
                     "Field error in field that is not in the form. Field name: {0}. Error: {1}.",
                     fieldname, fielderror)
             }
-        });
+        }, this);
     }
 });
