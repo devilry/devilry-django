@@ -61,4 +61,8 @@ class TestRestView(TestCase):
         client = RestClient()
         content, response = client.rest_read('/polls/', 2)
         self.assertEquals(response.status_code, 404)
-        self.assertEquals(content, dict(error=u'Poll not found.'))
+        self.assertEquals(content,
+                          {u'errormessages': [],
+                           u'fielderrors': {},
+                           u'i18nErrormessages': [[u'rest.restviews.pollnotfound', {'pollid': '2'}]],
+                           u'i18nFielderrors': {}})

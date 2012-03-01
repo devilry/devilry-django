@@ -12,7 +12,7 @@ class RestPolls(RestBase):
 
     def read(self, id, something='Hello world'):
         if id != '1':
-            raise NotFoundError('Poll not found.')
+            raise NotFoundError('rest.restviews.pollnotfound', pollid=id)
         return dict(id=id,
                     something=something)
 
