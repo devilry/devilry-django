@@ -23,10 +23,21 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'alertMessageList',
         selector: 'alertmessagelist'
+    }, {
+        ref: 'firstDeadlineField',
+        selector: 'createnewassignmentform themebase-datetimefield[name=first_deadline]'
+    }, {
+        ref: 'firstDeadlineHelp',
+        selector: 'createnewassignmentform #first_deadline-help'
+    }, {
+        ref: 'autoSetupExaminersField',
+        selector: 'createnewassignmentform checkboxfield[name=autosetup_examiners]'
+    }, {
+        ref: 'autoSetupExaminersHelp',
+        selector: 'createnewassignmentform #autosetup_examiners-help'
     }],
 
     init: function() {
-        this.shortNameManuallyChanged = false;
         this.control({
             'viewport createnewassignmentform': {
                 render: this._onRenderForm,
@@ -36,6 +47,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             },
             'viewport createnewassignmentform createbutton': {
                 click: this._onSubmit,
+            },
+            'viewport createnewassignmentform combobox[name=delivery_types]': {
+                select: this._onDeliveryTypesSelect
+            },
+            'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
+                change: this._onAddRelatedStudentChange
             }
         });
     },
@@ -55,6 +72,28 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             scope:this,
             exception: this._onProxyError
         });
+    },
+
+    _onDeliveryTypesSelect: function(combo, records) {
+        var record = records[0];
+        var is_electronic = record.get('value') === 0;
+        if(is_electronic) {
+            this.getFirstDeadlineField().show();
+            this.getFirstDeadlineHelp().show();
+        } else {
+            this.getFirstDeadlineField().hide();
+            this.getFirstDeadlineHelp().hide();
+        }
+    },
+
+    _onAddRelatedStudentChange: function(field, addAllRelatedStudents) {
+        if(addAllRelatedStudents) {
+            this.getAutoSetupExaminersField().show();
+            this.getAutoSetupExaminersHelp().show();
+        } else {
+            this.getAutoSetupExaminersField().hide();
+            this.getAutoSetupExaminersHelp().hide();
+        }
     },
 
     _setInitialValues: Ext.emptyFn,
