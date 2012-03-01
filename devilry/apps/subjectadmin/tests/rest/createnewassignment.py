@@ -183,7 +183,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                                                     **data)
         self.assertEquals(response.status_code, 404)
         self.assertEquals(content['i18nErrormessages'],
-                          [[u'subjectadmin.create_new_assignment.period_doesnotexist',
+                          [[u'subjectadmin.assignment.error.period_doesnotexist',
                             {'period_id': 20000}]])
 
     def test_create_first_deadline_none(self):
@@ -200,4 +200,4 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                                                     **data)
         self.assertEquals(response.status_code, 400)
         self.assertEquals(content['i18nFielderrors'],
-                          {'first_deadline': [[u'subjectadmin.create_new_assignment.first_deadline_none', {}]]})
+                          {'first_deadline': [[u'subjectadmin.assignment.error.first_deadline_none', {}]]})

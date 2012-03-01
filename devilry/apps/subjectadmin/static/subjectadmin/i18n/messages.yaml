@@ -1,25 +1,26 @@
 subjectadmin.assignment.anonymous.help: 'For <strong>exams</strong>, this should normally be <em>Yes</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'
 subjectadmin.assignment.anonymous.label: 'Anonymous?'
-
 subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback (students deliver through an alternative channel), set this to <em>Not using Devilry</em>.'
 subjectadmin.assignment.delivery_types.label: 'How do students add deliveries?'
 subjectadmin.assignment.delivery_types.electronic : Using Devilry
 subjectadmin.assignment.delivery_types.nonelectronic : Not through Devilry (hand in on paper, oral examination, ...)
-
 subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assignment."
 subjectadmin.assignment.long_name.label: Name
-
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
 subjectadmin.assignment.notpublished.title: Not published
 subjectadmin.assignment.notpublished.body: 'Will be published {publishing_time}.'
 subjectadmin.assignment.published.title: Published
 subjectadmin.assignment.published.body: 'Publishing time was {publishing_time}.'
-
 subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
-
 subjectadmin.assignment.gradeeditor: Grade editor
+subjectadmin.assignment.add_all_relatedstudents.label: Add all students to this assignment?
+subjectadmin.assignment.add_all_relatedstudents.help: If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.
+subjectadmin.assignment.first_deadline.label: First deadline
+subjectadmin.assignment.first_deadline.help: The default deadline added to each student when adding new students to the assignment.
+subjectadmin.assignment.error.period_doesnotexist: "Period {period_id} does not exist."
+subjectadmin.assignment.error.first_deadline_none: "Required when automatically adding related students."
 
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'
@@ -38,5 +39,3 @@ subjectadmin.managestudents.addstudents.tips: Choose the students you want to ad
 subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
 subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
 
-subjectadmin.create_new_assignment.period_doesnotexist: "Period {period_id} does not exist."
-subjectadmin.create_new_assignment.first_deadline_none: "Required when automatically adding related students."

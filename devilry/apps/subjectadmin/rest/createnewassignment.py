@@ -65,7 +65,7 @@ class CreateNewAssignmentDao(object):
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
         if not first_deadline:
-            raise BadRequestFieldError('first_deadline', 'subjectadmin.create_new_assignment.first_deadline_none')
+            raise BadRequestFieldError('first_deadline', 'subjectadmin.assignment.error.first_deadline_none')
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
         else:
@@ -93,7 +93,7 @@ class CreateNewAssignmentDao(object):
         try:
             period = Period.objects.get(id=period_id)
         except Period.DoesNotExist:
-            raise NotFoundError('subjectadmin.create_new_assignment.period_doesnotexist',
+            raise NotFoundError('subjectadmin.assignment.error.period_doesnotexist',
                                 period_id=period_id)
         else:
             return self.create(user, period, *args, **kwargs)
