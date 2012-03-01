@@ -70,8 +70,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     .. attribute:: etag
 
-       A DateTimeField containing the etag for this object.
+        A DateTimeField containing the etag for this object.
 
+    .. attribute:: first_deadline
+
+        A DateTimeField containing an optional first deadline for this
+        assignment. This is metadata that the UI can use where it is
+        natural.
     """
     class Meta:
         app_label = 'core'
@@ -105,6 +110,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                  help_text='This option controls what types of deliveries this assignment accepts. See docs for Delivery for documentation of accepted values.')
     scale_points_percent = models.PositiveIntegerField(default=100,
                                                        help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
+    first_deadline = models.DateTimeField(blank=True, null=True)
 
 
     @classmethod
