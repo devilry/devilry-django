@@ -27,7 +27,7 @@ subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'
 
-subjectadmin.createnewassignment.sidebarhelp: 'If you are creating a regular electronic assignment that students deliver using Devilry, you normally only have to fill in the first two fields and click <em>Create</em>.'
+subjectadmin.createnewassignment.sidebarhelp: 'Options that most users do not require can be found under <em>Advanced options</em>.'
 subjectadmin.createnewassignment.title: Create new assignment
 
 subjectadmin.dashboard.createnewassignment: Create new assignment
