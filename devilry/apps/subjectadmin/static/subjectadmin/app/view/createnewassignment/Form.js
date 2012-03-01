@@ -95,10 +95,14 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         title: dtranslate('themebase.advanced_options'),
         collapsible: true,
         collapsed: true,
+        padding: 10,
+        defaults: {
+            margin: {top: 20}
+        },
         items: [{
         // Anonymous?
             xtype: 'checkboxfield',
-            margin: {top: 20},
+            margin: {top: 0},
             name: 'anonymous',
             labelAlign: 'left',
             boxLabel: dtranslate('subjectadmin.assignment.anonymous.label')

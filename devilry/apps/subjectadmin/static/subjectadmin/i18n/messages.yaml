@@ -15,12 +15,14 @@ subjectadmin.assignment.published.body: 'Publishing time was {publishing_time}.'
 subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
 subjectadmin.assignment.gradeeditor: Grade editor
-subjectadmin.assignment.add_all_relatedstudents.label: Add all students to this assignment?
-subjectadmin.assignment.add_all_relatedstudents.help: If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.
+subjectadmin.assignment.add_all_relatedstudents.label: "Add all students to this assignment?"
+subjectadmin.assignment.add_all_relatedstudents.help: "If this option is selected, all students registered on the period will automatically be added to the assignment when it is created."
 subjectadmin.assignment.first_deadline.label: First deadline
 subjectadmin.assignment.first_deadline.help: The default deadline added to each student when adding new students to the assignment.
 subjectadmin.assignment.error.period_doesnotexist: "Period {period_id} does not exist."
 subjectadmin.assignment.error.first_deadline_none: "Required when automatically adding related students."
+subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiners?"
+subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
 
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'
