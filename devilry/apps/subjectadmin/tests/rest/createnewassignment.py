@@ -24,13 +24,16 @@ class TestRestCreateNewAssignmentDao(TestCase):
     def test_create_assignment(self):
         dao = CreateNewAssignmentDao()
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
+        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
         assignment = dao._create_assignment(period=self.testhelper.sub_p1,
                                             short_name='a1', long_name='Assignment 1',
+                                            first_deadline = first_deadline,
                                             publishing_time=publishing_time,
                                             delivery_types=0, anonymous=False)
         self.assertEquals(assignment.short_name, 'a1')
         self.assertEquals(assignment.long_name, 'Assignment 1')
         self.assertEquals(assignment.publishing_time, publishing_time)
+        self.assertEquals(assignment.first_deadline, first_deadline)
         self.assertEquals(assignment.delivery_types, 0)
         self.assertEquals(assignment.anonymous, False)
 

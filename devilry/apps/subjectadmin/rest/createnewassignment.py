@@ -22,10 +22,11 @@ def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
 
 
 class CreateNewAssignmentDao(object):
-    def _create_assignment(self, period, short_name, long_name,
+    def _create_assignment(self, period, short_name, long_name, first_deadline,
                            publishing_time, delivery_types, anonymous):
         assignment = Assignment(parentnode=period, short_name=short_name,
                                 long_name=long_name,
+                                first_deadline=first_deadline,
                                 publishing_time=publishing_time,
                                 delivery_types=delivery_types,
                                 anonymous=anonymous)
@@ -82,8 +83,8 @@ class CreateNewAssignmentDao(object):
                autosetup_examiners):
         periodadmin_required(user, "i18n.permissiondenied", period.id)
         assignment = self._create_assignment(period, short_name, long_name,
-                                             publishing_time, delivery_types,
-                                             anonymous)
+                                             first_deadline, publishing_time,
+                                             delivery_types, anonymous)
         if add_all_relatedstudents:
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
