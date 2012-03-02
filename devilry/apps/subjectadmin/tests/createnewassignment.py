@@ -11,7 +11,6 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('duck-mek2030.2012h' in self.driver.page_source)
         self.assertTrue('duck1100.2011h' in self.driver.page_source)
         self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
-        self.assertTrue('subjectadmin.createnewassignment.pageone.sidebarhelp' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.activeperiod.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.activeperiod.label' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
@@ -29,7 +28,6 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
-        self.assertTrue('subjectadmin.createnewassignment.pagetwo.sidebarhelp' in self.driver.page_source)
         self.assertTrue('themebase.create' in self.driver.page_source)
 
         self.assertTrue('subjectadmin.assignment.long_name.help' in self.driver.page_source)

@@ -27,8 +27,6 @@ subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiner
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
 subjectadmin.createnewassignment.title: Create new assignment
 subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
-subjectadmin.createnewassignment.pageone.sidebarhelp: 'Please choose a period and method of delivery and click <em>Next</em>.'
-subjectadmin.createnewassignment.pagetwo.sidebarhelp: 'Options that most users do not require can be found under <em>Advanced options</em>.'
 
 subjectadmin.dashboard.createnewassignment: Create new assignment
 subjectadmin.dashboard.browseall: Browse everything i have access to

@@ -9,7 +9,7 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
     ],
     cls: 'createnewassignment-successpanel',
 
-    bodyPadding: 20,
+    bodyPadding: 40,
     autoScroll: true,
     items: [{
         xtype: 'box',
