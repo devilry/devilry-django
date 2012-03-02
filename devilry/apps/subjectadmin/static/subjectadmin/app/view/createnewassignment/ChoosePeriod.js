@@ -62,11 +62,17 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
                     xtype: 'formhelp',
                     margin: {top: 5},
                     html: dtranslate('subjectadmin.assignment.delivery_types.help')
-                    
-                }, {
-                    xtype: 'nextbutton',
-                    margin: {top: 10}
-                }]
+                }],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    padding: 0,
+                    items: [{
+                        xtype: 'nextbutton',
+                        margin: {top: 20}
+                    }]
+                }],
             }]
         }]
     }, {

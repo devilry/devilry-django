@@ -22,6 +22,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     ],
 
     refs: [{
+    // Page one
         ref: 'nextFromPageOneButton',
         selector: 'chooseperiod nextbutton'
     }, {
@@ -36,6 +37,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'pageOneAlertMessageList',
         selector: 'chooseperiod alertmessagelist'
+
+    // Page two
     }, {
         ref: 'createNewAssignmentForm',
         selector: 'createnewassignmentform'
@@ -61,37 +64,109 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     init: function() {
         this.control({
-            'viewport createnewassignmentform': {
-                render: this._onRenderForm,
-            },
-            'viewport createnewassignmentform textfield[name=long_name]': {
-                render: this._onRenderLongName
-            },
-            'viewport createnewassignmentform createbutton': {
-                click: this._onSubmit,
-            },
-            'viewport createnewassignmentform combobox[name=delivery_types]': {
-                select: this._onDeliveryTypesSelect
-            },
-            'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
-                change: this._onAddRelatedStudentChange
+            // Page one
+            'viewport chooseperiod form': {
+                afterrender: this._onRenderPageOneForm
             },
             'viewport chooseperiod activeperiodslist': {
                 afterrender: this._onRenderActivePeriodlist
             },
             'viewport chooseperiod nextbutton': {
                 click: this._onNextFromPageOne
+            },
+
+            // Page two
+            'viewport createnewassignmentform': {
+                render: this._onRenderCreateNewAssignmentForm,
+            },
+            'viewport createnewassignmentform textfield[name=long_name]': {
+                render: this._onRenderLongName
+            },
+            'viewport createnewassignmentform createbutton': {
+                click: this._onCreate,
+            },
+            'viewport createnewassignmentform combobox[name=delivery_types]': {
+                select: this._onDeliveryTypesSelect
+            },
+            'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
+                change: this._onAddRelatedStudentChange
             }
         });
     },
+
+    //////////////////////////////////////////////
+    //
+    // Page one
+    //
+    //////////////////////////////////////////////
+
+    _onRenderPageOneForm: function() {
+        this.getPageOneForm().keyNav = Ext.create('Ext.util.KeyNav', this.getPageOneForm().el, {
+            enter: this._onNextFromPageOne,
+            scope: this
+        });
+    },
+
+    _onRenderActivePeriodlist: function() {
+        this.getActivePeriodsList().getEl().mask(dtranslate('themebase.loading'));
+        if(this.getActivePeriodsStore().getCount() > 0) {
+            this._addItemsToActivePeriodList();
+        } else {
+            this.getActivePeriodsStore().load({
+                scope: this,
+                callback: this._addItemsToActivePeriodList
+            });
+        }
+    },
+
+    _handleNoActivePeriods: function() {
+        this.getNextFromPageOneButton().disable();
+        this.getPageOneAlertMessageList().add({
+            message: dtranslate('subjectadmin.assignment.noactiveperiods'),
+            type: 'error'
+        });
+    },
+
+    _addItemsToActivePeriodList: function() {
+        this.getActivePeriodsList().removeAll();
+        if(this.getActivePeriodsStore().getCount() === 0) {
+            this.getActivePeriodsList().getEl().unmask();
+            this._handleNoActivePeriods();
+        }
+        Ext.defer(function() {
+            this.getActivePeriodsStore().each(function(periodRecord, index) {
+                this.getActivePeriodsList().addPeriod(periodRecord, index===0);
+            }, this);
+            this.getActivePeriodsList().getEl().unmask();
+            this.getActivePeriodsList().query('radio')[0].focus();
+        }, 50, this);
+    },
+
+    _onNextFromPageOne: function() {
+        var formvalues = this.getPageOneForm().getForm().getFieldValues();
+        var delivery_types = formvalues.delivery_types;
+        var activeperiod = formvalues.activeperiod;
+        var nexturlformat = '/@@create-new-assignment/{0},{1}';
+        var nexturl = Ext.String.format(nexturlformat, activeperiod, delivery_types);
+        this.application.route.navigate(nexturl);
+    },
+
+
+
+
+    //////////////////////////////////////////////
+    //
+    // Page two
+    //
+    //////////////////////////////////////////////
 
     _onRenderLongName: function(field) {
         field.focus();
     },
 
-    _onRenderForm: function() {
+    _onRenderCreateNewAssignmentForm: function() {
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
-            enter: this._onSubmit,
+            enter: this._onCreate,
             scope: this
         });
         this._setInitialValues();
@@ -133,7 +208,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         //})
     //},
 
-    _onSubmit: function() {
+    _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
             this._save();
         }
@@ -184,49 +259,5 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
     _unmask: function() {
         this.getCreateNewAssignmentForm().getEl().unmask();
-    },
-
-
-    _onRenderActivePeriodlist: function() {
-        this.getActivePeriodsList().getEl().mask(dtranslate('themebase.loading'));
-        if(this.getActivePeriodsStore().getCount() > 0) {
-            this._addItemsToActivePeriodList();
-        } else {
-            this.getActivePeriodsStore().load({
-                scope: this,
-                callback: this._addItemsToActivePeriodList
-            });
-        }
-    },
-
-    _handleNoActivePeriods: function() {
-        this.getNextFromPageOneButton().disable();
-        this.getPageOneAlertMessageList().add({
-            message: dtranslate('subjectadmin.assignment.noactiveperiods'),
-            type: 'error'
-        });
-    },
-
-    _addItemsToActivePeriodList: function() {
-        this.getActivePeriodsList().removeAll();
-        if(this.getActivePeriodsStore().getCount() === 0) {
-            this.getActivePeriodsList().getEl().unmask();
-            this._handleNoActivePeriods();
-        }
-        Ext.defer(function() {
-            this.getActivePeriodsStore().each(function(periodRecord, index) {
-                this.getActivePeriodsList().addPeriod(periodRecord, index===0);
-            }, this);
-            this.getActivePeriodsList().getEl().unmask();
-        }, 50, this);
-    },
-
-    _onNextFromPageOne: function() {
-        var formvalues = this.getPageOneForm().getForm().getFieldValues();
-        var delivery_types = formvalues.delivery_types;
-        var activeperiod = formvalues.activeperiod;
-        var nexturlformat = '/@@create-new-assignment/{0},{1}';
-        var nexturl = Ext.String.format(nexturlformat, activeperiod, delivery_types);
-        this.application.route.navigate(nexturl);
     }
 });

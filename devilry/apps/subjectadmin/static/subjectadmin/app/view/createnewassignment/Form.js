@@ -134,7 +134,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         padding: 0,
         items: [{
             xtype: 'createbutton',
-            margin: {top: 20},
+            margin: {top: 10},
             formBind: true, //only enabled once the form is valid
             disabled: true
         }]
