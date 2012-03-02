@@ -36,7 +36,6 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
             }, {
                 xtype: 'activeperiodslist',
                 name: 'activeperiod',
-                flex: 1,
                 fieldLabel: dtranslate('subjectadmin.assignment.activeperiod.label')
             }, {
                 xtype: 'formhelp',
@@ -45,11 +44,12 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
 
                 // How do students add deliveries
             }, {
-                flex: 1,
                 margin: {top: 20},
                 fieldLabel: dtranslate('subjectadmin.assignment.delivery_types.label'),
                 xtype: 'radiogroup',
                 vertical: true,
+                itemId: 'deliveryTypesRadioGroup',
+                cls: 'delivery_types-radiogroup',
                 columns: 1,
                 items: [{
                     boxLabel: dtranslate('subjectadmin.assignment.delivery_types.electronic'),

@@ -33,6 +33,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         ref: 'activePeriodsList',
         selector: 'chooseperiod activeperiodslist'
     }, {
+        ref: 'deliveryTypesRadioGroup',
+        selector: 'chooseperiod #deliveryTypesRadioGroup'
+    }, {
         ref: 'pageOneForm',
         selector: 'chooseperiod form'
     }, {
@@ -131,6 +134,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             enter: this._onNextFromPageOne,
             scope: this
         });
+        this._selectAppropriateDeliverytypes();
     },
 
     _onRenderActivePeriodlist: function() {
@@ -175,6 +179,15 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         }
         radioButtons[focusindex].setValue(true);
         radioButtons[focusindex].focus();
+    },
+
+    _selectAppropriateDeliverytypes: function() {
+        var radioButtons = this.getDeliveryTypesRadioGroup().query('radio');
+        var index = 0;
+        if(this.successPanelSetupConfig) {
+            index = this.successPanelSetupConfig.delivery_types;
+        }
+        radioButtons[index].setValue(true);
     },
 
     _onNextFromPageOne: function() {

@@ -19,9 +19,13 @@ class TestCreateNewAssignment(SeleniumTestCase):
     def test_chooseperiod_first_checked(self):
         self.browseToTest('/@@create-new-assignment/@@chooseperiod')
         self.waitForCssSelector('.activeperiodslist input[aria-checked=true]') # NOTE: We wait for aria-checked because just waiting for activeperiodslist may lead to timing miss when waiting for focus.
-        radioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
-        self.assertEquals(radioButtons[0].get_attribute('aria-checked'), 'true')
-        self.assertEquals(radioButtons[1].get_attribute('aria-checked'), 'false')
+        periodRadioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
+        self.assertEquals(periodRadioButtons[0].get_attribute('aria-checked'), 'true')
+        self.assertEquals(periodRadioButtons[1].get_attribute('aria-checked'), 'false')
+
+        deliverytypesRadioButtons = self.driver.find_elements_by_css_selector('.delivery_types-radiogroup input[role=radio]')
+        self.assertEquals(deliverytypesRadioButtons[0].get_attribute('aria-checked'), 'true')
+        self.assertEquals(deliverytypesRadioButtons[1].get_attribute('aria-checked'), 'false')
 
 
     def test_chooseperiod_no_periods(self):
@@ -159,7 +163,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('This page is only available after creating a new assignment.' in self.driver.page_source)
 
     def test_success_addanother(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1,1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self._set_value('long_name', 'Test')
@@ -172,6 +176,10 @@ class TestCreateNewAssignment(SeleniumTestCase):
         links[1].click()
 
         self.waitForCssSelector('.activeperiodslist input[aria-checked=true]') # NOTE: We wait for aria-checked because just waiting for activeperiodslist may lead to timing miss when waiting for focus.
-        radioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
-        self.assertEquals(radioButtons[0].get_attribute('aria-checked'), 'false')
-        self.assertEquals(radioButtons[1].get_attribute('aria-checked'), 'true')
+        periodRadioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
+        self.assertEquals(periodRadioButtons[0].get_attribute('aria-checked'), 'false')
+        self.assertEquals(periodRadioButtons[1].get_attribute('aria-checked'), 'true')
+
+        deliverytypesRadioButtons = self.driver.find_elements_by_css_selector('.delivery_types-radiogroup input[role=radio]')
+        self.assertEquals(deliverytypesRadioButtons[0].get_attribute('aria-checked'), 'false')
+        self.assertEquals(deliverytypesRadioButtons[1].get_attribute('aria-checked'), 'true')
