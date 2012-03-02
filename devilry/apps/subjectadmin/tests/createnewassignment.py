@@ -154,7 +154,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8000/subjectadmin/test#/duck1100/2012h/sometest')
         self.assertEquals(links[1].text, u'subjectadmin.createnewassignment.success.addanother')
         self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/@@chooseperiod')
-        self.assertEquals(links[2].text, u'subjectadmin.createnewassignment.success.addanother-similar')
+        self.assertEquals(links[2].text, u'subjectadmin.createnewassignment.success.addanother_similar')
         self.assertEquals(links[2].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/1,0')
 
     def test_success_direct(self):
