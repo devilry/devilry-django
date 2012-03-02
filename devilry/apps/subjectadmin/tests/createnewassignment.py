@@ -1,5 +1,4 @@
 from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
-import time
 
 
 class TestCreateNewAssignment(SeleniumTestCase):
@@ -16,6 +15,14 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.delivery_types.label' in self.driver.page_source)
         self.assertTrue('themebase.next' in self.driver.page_source)
+
+    def test_chooseperiod_first_checked(self):
+        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
+        self.waitForCssSelector('.activeperiodslist input[aria-checked=true]') # NOTE: We wait for aria-checked because just waiting for activeperiodslist may lead to timing miss when waiting for focus.
+        radioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
+        self.assertEquals(radioButtons[0].get_attribute('aria-checked'), 'true')
+        self.assertEquals(radioButtons[1].get_attribute('aria-checked'), 'false')
+
 
     def test_chooseperiod_no_periods(self):
         url = self.getJsAppTestUrl(self.appname) + '?loadNoPeriods=yes#/@@create-new-assignment/@@chooseperiod'
@@ -150,3 +157,21 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.browseToTest('/@@create-new-assignment/@@success')
         self.waitForCssSelector('.x-message-box')
         self.assertTrue('This page is only available after creating a new assignment.' in self.driver.page_source)
+
+    def test_success_addanother(self):
+        self.browseToTest('/@@create-new-assignment/1,0')
+        self.waitForCssSelector('.createnewassignmentform')
+
+        self._set_value('long_name', 'Test')
+        self._set_value('short_name', 'sometest')
+        createbutton = self.driver.find_element_by_css_selector('.createbutton button')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
+        self.waitForCssSelector('.createnewassignment-successpanel')
+        links = self.driver.find_elements_by_css_selector('.actionlist a')
+        links[1].click()
+
+        self.waitForCssSelector('.activeperiodslist input[aria-checked=true]') # NOTE: We wait for aria-checked because just waiting for activeperiodslist may lead to timing miss when waiting for focus.
+        radioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
+        self.assertEquals(radioButtons[0].get_attribute('aria-checked'), 'false')
+        self.assertEquals(radioButtons[1].get_attribute('aria-checked'), 'true')

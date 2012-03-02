@@ -154,11 +154,27 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         }
         Ext.defer(function() {
             this.getActivePeriodsStore().each(function(periodRecord, index) {
-                this.getActivePeriodsList().addPeriod(periodRecord, index===0);
+                this.getActivePeriodsList().addPeriod(periodRecord);
             }, this);
             this.getActivePeriodsList().getEl().unmask();
-            this.getActivePeriodsList().query('radio')[0].focus();
+            this._focusAndSelectAppropriatePeriod();
         }, 50, this);
+    },
+
+    _focusAndSelectAppropriatePeriod: function() {
+        var radioButtons = this.getActivePeriodsList().query('radio');
+        var focusindex = 0;
+        if(this.successPanelSetupConfig) {
+            var period_id = this.successPanelSetupConfig.period_id;
+            var index = this.getActivePeriodsStore().findBy(function(record) {
+                return record.get('id') == period_id;
+            });
+            if(index != -1) {
+                focusindex = index;
+            }
+        }
+        radioButtons[focusindex].setValue(true);
+        radioButtons[focusindex].focus();
     },
 
     _onNextFromPageOne: function() {
