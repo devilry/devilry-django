@@ -16,7 +16,7 @@ Ext.define('subjectadmin.Application', {
         'Shortcuts',
         'Dashboard',
         'CreateNewAssignment',
-        'ChoosePeriod',
+        //'ChoosePeriod',
         'assignment.Overview',
         'assignment.EditPublishingTime',
         'managestudents.Overview',
@@ -108,8 +108,7 @@ Ext.define('subjectadmin.Application', {
     createNewAssignmentChooseperiod: function(routeInfo) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
-            xtype: 'chooseperiod',
-            nexturlformat: '/@@create-new-assignment/{0}'
+            xtype: 'chooseperiod'
         });
     },
 

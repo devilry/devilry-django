@@ -1,5 +1,5 @@
 Ext.define('subjectadmin.view.ActivePeriodsListTestMock', {
-    extend: 'subjectadmin.view.chooseperiod.ActivePeriodsList',
+    extend: 'subjectadmin.view.ActivePeriodsList',
     alias: 'widget.activeperiodslist',
     store: 'ActivePeriodsTestMock'
 });

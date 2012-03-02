@@ -5,7 +5,6 @@ Ext.define('subjectadmin.TestApplication', {
         'ShortcutsTestMock',
         'Dashboard',
         'CreateNewAssignmentTestMock',
-        'ChoosePeriodTestMock',
         'assignment.OverviewTestMock',
         'assignment.EditPublishingTime',
         'managestudents.OverviewTestMock',
