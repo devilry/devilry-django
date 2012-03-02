@@ -37,13 +37,13 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         ref: 'pageOneAlertMessageList',
         selector: 'chooseperiod alertmessagelist'
     }, {
-        ref: 'form',
+        ref: 'createNewAssignmentForm',
         selector: 'createnewassignmentform'
     }, {
         ref: 'createNewAssignment',
         selector: 'createnewassignment'
     }, {
-        ref: 'alertMessageList',
+        ref: 'pageTwoAlertMessageList',
         selector: 'createnewassignment alertmessagelist'
     }, {
         ref: 'firstDeadlineField',
@@ -90,13 +90,13 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onRenderForm: function() {
-        this.getForm().keyNav = Ext.create('Ext.util.KeyNav', this.getForm().el, {
+        this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
             enter: this._onSubmit,
             scope: this
         });
         this._setInitialValues();
 
-        this.getForm().mon(this.getCreateNewAssignmentModel().proxy, {
+        this.getCreateNewAssignmentForm().mon(this.getCreateNewAssignmentModel().proxy, {
             scope:this,
             exception: this._onProxyError
         });
@@ -127,25 +127,25 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     _setInitialValues: Ext.emptyFn,
 
     //_setInitialValues: function() {
-        //this.getForm().getForm().setValues({
+        //this.getCreateNewAssignmentForm().getForm().setValues({
             //long_name: 'A',
             //short_name: 'a'
         //})
     //},
 
     _onSubmit: function() {
-        if(this.getForm().getForm().isValid()) {
+        if(this.getCreateNewAssignmentForm().getForm().isValid()) {
             this._save();
         }
     },
 
     _getFormValues: function() {
-        var values = this.getForm().getForm().getFieldValues();
+        var values = this.getCreateNewAssignmentForm().getForm().getFieldValues();
         return values;
     },
 
     _save: function() {
-        this.getAlertMessageList().removeAll();
+        this.getPageTwoAlertMessageList().removeAll();
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
         var delivery_types = this.getCreateNewAssignment().delivery_types;
@@ -170,20 +170,20 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this._unmask();
         var errorhandler = Ext.create('themebase.RestApiProxyErrorHandler');
         errorhandler.addErrors(response, operation);
-        this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
+        this.getPageTwoAlertMessageList().addMany(errorhandler.errormessages, 'error');
         themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
-            this.getForm(), errorhandler.fielderrors, this.getAlertMessageList()
+            this.getCreateNewAssignmentForm(), errorhandler.fielderrors, this.getPageTwoAlertMessageList()
         );
         themebase.form.ErrorUtils.markFieldErrorsAsInvalid(
-            this.getForm(), errorhandler.fielderrors
+            this.getCreateNewAssignmentForm(), errorhandler.fielderrors
         );
     },
 
     _mask: function() {
-        this.getForm().getEl().mask(dtranslate('themebase.saving'))
+        this.getCreateNewAssignmentForm().getEl().mask(dtranslate('themebase.saving'))
     },
     _unmask: function() {
-        this.getForm().getEl().unmask();
+        this.getCreateNewAssignmentForm().getEl().unmask();
     },
 
 
