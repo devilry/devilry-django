@@ -20,7 +20,9 @@ subjectadmin.assignment.add_all_relatedstudents.help: "If this option is selecte
 subjectadmin.assignment.first_deadline.label: First deadline
 subjectadmin.assignment.first_deadline.help: The default deadline added to each student when adding new students to the assignment.
 subjectadmin.assignment.error.period_doesnotexist: "Period {period_id} does not exist."
+subjectadmin.assignment.error.not_active_period: "Period {period_id} is not an active period."
 subjectadmin.assignment.error.first_deadline_none: "Required when automatically adding related students."
+subjectadmin.assignment.error.no_active_periods: "No active periods found."
 subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiners?"
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
 subjectadmin.createnewassignment.title: Create new assignment

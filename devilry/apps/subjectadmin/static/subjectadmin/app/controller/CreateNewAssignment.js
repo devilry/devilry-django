@@ -129,7 +129,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     _handleNoActivePeriods: function() {
         this.getNextFromPageOneButton().disable();
         this.getPageOneAlertMessageList().add({
-            message: dtranslate('subjectadmin.assignment.noactiveperiods'),
+            message: dtranslate('subjectadmin.assignment.error.no_active_periods'),
             type: 'error'
         });
     },
@@ -187,22 +187,35 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _showPageOneMetadata: function() {
-        console.log(this.period_id);
-        var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
-        var type;
-        if(this.delivery_types == 0) {
-            type = dtranslate('subjectadmin.assignment.delivery_types.electronic');
-        } else {
-            type = dtranslate('subjectadmin.assignment.delivery_types.nonelectronic');
-        }
-        var metatext = Ext.create('Ext.XTemplate',
-            dtranslate('subjectadmin.createnewassignment.metatext')
-        ).apply({
-            period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name'),
-            type: type
+    _handleNotActivePeriod: function() {
+        var message = Ext.create('Ext.XTemplate',
+            dtranslate('subjectadmin.assignment.error.not_active_period')
+        ).apply({period_id: this.period_id});
+        this.getPageTwoAlertMessageList().add({
+            message: message,
+            type: 'error'
         });
-        this.getMetainfo().update(metatext);
+    },
+
+    _showPageOneMetadata: function() {
+        var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
+        if(periodRecord) {
+            var type;
+            if(this.delivery_types == 0) {
+                type = dtranslate('subjectadmin.assignment.delivery_types.electronic');
+            } else {
+                type = dtranslate('subjectadmin.assignment.delivery_types.nonelectronic');
+            }
+            var metatext = Ext.create('Ext.XTemplate',
+                dtranslate('subjectadmin.createnewassignment.metatext')
+            ).apply({
+                period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name'),
+                type: type
+            });
+            this.getMetainfo().update(metatext);
+        } else {
+            this._handleNotActivePeriod();
+        }
     },
 
     _onDeliveryTypesSelect: function(combo, records) {

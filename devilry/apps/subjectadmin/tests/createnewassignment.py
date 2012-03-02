@@ -22,7 +22,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         url = self.getJsAppTestUrl(self.appname) + '?loadNoPeriods=yes#/@@create-new-assignment/@@chooseperiod'
         self.driver.get(url)
         self.waitForCssSelector('.alertmessagelist')
-        self.assertTrue('subjectadmin.assignment.noactiveperiods' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.error.no_active_periods' in self.driver.page_source)
 
     def test_form_render(self):
         self.browseToTest('/@@create-new-assignment/1,0')
@@ -122,3 +122,8 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.short_name.label:</strong> Invalid short name' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.long_name.label:</strong> Invalid. Long name' in self.driver.page_source)
         self.assertTrue('' in self.driver.page_source)
+
+    def test_form_responseData_not_active_period(self):
+        self.browseToTest('/@@create-new-assignment/100,0')
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('subjectadmin.assignment.error.not_active_period' in self.driver.page_source)
