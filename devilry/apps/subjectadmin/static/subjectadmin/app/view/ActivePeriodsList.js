@@ -1,31 +1,24 @@
 Ext.define('subjectadmin.view.ActivePeriodsList', {
-    extend: 'Ext.grid.Panel',
+    extend: 'Ext.form.RadioGroup',
     alias: 'widget.activeperiodslist',
     cls: 'activeperiodslist',
-    store: 'ActivePeriods',
-    hideHeaders: true,
     requires: [
-        'Ext.XTemplate',
-        'Ext.selection.CheckboxModel'
+        'Ext.XTemplate'
     ],
+    columns: 1,
+    vertical: true,
 
-    // Would be nicer, however it does not work with back forward navigation
-    // for some reason
-    //selModel: Ext.create('Ext.selection.CheckboxModel', {
-        //mode: 'SINGLE'
-    //}),
-
-    rowTpl: Ext.create('Ext.XTemplate',
-        '<div class="important">{parentnode__short_name}.{short_name}</div>'
+    labelTpl: Ext.create('Ext.XTemplate',
+        '{parentnode__short_name}.{short_name}'
     ),
 
-    multiSelect: false,
-
-    columns: [{
-        header: 'Name',  dataIndex: 'short_name',
-        flex: 1,
-        renderer: function(value, p, record) {
-            return this.rowTpl.apply(record.data);
-        }
-    }]
+    addPeriod: function(periodRecord, checked) {
+        var label = this.labelTpl.apply(periodRecord.data);
+        this.add({
+            boxLabel: label,
+            name: this.name,
+            inputValue: periodRecord.get('id'),
+            checked: checked
+        });
+    }
 });

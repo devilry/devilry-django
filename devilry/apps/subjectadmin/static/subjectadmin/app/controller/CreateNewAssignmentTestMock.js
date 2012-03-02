@@ -4,10 +4,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
     models: [
         'CreateNewAssignmentTestMock'
     ],
-    views: [
-        'ActivePeriodsListTestMock',
-        'createnewassignment.ChoosePeriod'
-    ],
 
     stores: [
         'ActivePeriodsTestMock'
@@ -25,24 +21,26 @@ Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
     },
 
     init: function() {
-        var initialData = [{
-            id: 0,
-            parentnode__short_name:'duck1100',
-            short_name:'2011h',
-            start_time: '2011-01-01T12:00:00'
-        }, {
-            id: 1,
-            parentnode__short_name:'duck1100',
-            short_name:'2012h',
-            start_time: '2012-01-03T12:30:00'
-        }, {
-            id: 2,
-            parentnode__short_name:'duck-mek2030',
-            short_name:'2012h',
-            start_time: '2012-01-16T01:30:00'
-        }];
-
-        this.getActivePeriodsTestMockStore().proxy.setData(initialData);
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(!query.loadNoPeriods) {
+            var initialData = [{
+                id: 0,
+                parentnode__short_name:'duck1100',
+                short_name:'2011h',
+                start_time: '2011-01-01T12:00:00'
+            }, {
+                id: 1,
+                parentnode__short_name:'duck1100',
+                short_name:'2012h',
+                start_time: '2012-01-03T12:30:00'
+            }, {
+                id: 2,
+                parentnode__short_name:'duck-mek2030',
+                short_name:'2012h',
+                start_time: '2012-01-16T01:30:00'
+            }];
+            this.getActivePeriodsTestMockStore().proxy.setData(initialData);
+        }
         this.callParent();
     },
 

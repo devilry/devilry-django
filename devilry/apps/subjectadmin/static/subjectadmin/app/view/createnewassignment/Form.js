@@ -27,32 +27,6 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         margin: {top: 0, bottom: 20},
         xtype: 'alertmessagelist'
 
-    // How do students add deliveries
-    }, {
-        margin: {top: 0},
-        name: "delivery_types",
-        flex: 1,
-        fieldLabel: dtranslate('subjectadmin.assignment.delivery_types.label'),
-        xtype: 'combobox',
-        queryMode: 'local',
-        valueField: 'value',
-        displayField: 'label',
-        forceSelection: true,
-        editable: false,
-        width: 400,
-        value: 0,
-        store: Ext.create('Ext.data.Store', {
-            fields: ['value', 'label'],
-            data : [
-                {value:0, label: dtranslate('subjectadmin.assignment.delivery_types.electronic')},
-                {value:1, label: dtranslate('subjectadmin.assignment.delivery_types.nonelectronic')}
-            ]
-        })
-    }, {
-        xtype: 'formhelp',
-        margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.delivery_types.help')
-
     // Long name
     }, {
         name: "long_name",

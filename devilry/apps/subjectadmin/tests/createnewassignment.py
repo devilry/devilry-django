@@ -12,24 +12,20 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('duck1100.2011h' in self.driver.page_source)
         self.assertTrue('subjectadmin.chooseperiod.title' in self.driver.page_source)
         self.assertTrue('subjectadmin.chooseperiod.sidebarhelp' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.activeperiod.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.activeperiod.label' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.delivery_types.label' in self.driver.page_source)
         self.assertTrue('themebase.next' in self.driver.page_source)
-        periodlist = self.driver.find_element_by_class_name('activeperiodslist')
-        self.assertEquals(len(periodlist.find_elements_by_css_selector('tr.x-grid-row')), 3)
 
-    def test_chooseperiod_nextbutton(self):
-        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
-        self.waitForCssSelector('.nextbutton')
-        buttonel = self.driver.find_element_by_css_selector('.nextbutton button')
-        self.assertFalse(buttonel.is_enabled())
-
-        # Click first element in the periodlist and make sure nextbutton is enabled afterwards
-        periodlist = self.driver.find_element_by_class_name('activeperiodslist')
-        firstperiod = periodlist.find_elements_by_css_selector('tr.x-grid-row')[0]
-        firstperiod.click()
-        self.assertTrue(buttonel.is_enabled())
+    def test_chooseperiod_no_periods(self):
+        url = self.getJsAppTestUrl(self.appname) + '?loadNoPeriods=yes#/@@create-new-assignment/@@chooseperiod'
+        self.driver.get(url)
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('subjectadmin.assignment.noactiveperiods' in self.driver.page_source)
 
     def test_form_render(self):
-        self.browseToTest('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1,0')
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
@@ -39,14 +35,11 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.long_name.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.long_name.label' in self.driver.page_source)
 
-        self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.delivery_types.label' in self.driver.page_source)
-
         self.assertTrue('subjectadmin.assignment.short_name.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.short_name.label' in self.driver.page_source)
 
     def test_form_render_advanced_fieldset(self):
-        self.browseToTest('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1,0')
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertFalse('subjectadmin.assignment.anonymous.label' in self.driver.page_source)
@@ -72,7 +65,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         field.send_keys(value)
 
     def test_form_createbutton(self):
-        self.browseToTest('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1,0')
         self.waitForCssSelector('.createnewassignmentform')
 
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
@@ -86,7 +79,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.waitForEnabled(createbutton)
 
     def test_form_servererror(self):
-        self.browseToTest('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1,0')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -99,7 +92,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('500: Server error' in self.driver.page_source)
 
     def test_form_lostconnectionerror(self):
-        self.browseToTest('/@@create-new-assignment/1')
+        self.browseToTest('/@@create-new-assignment/1,0')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -112,7 +105,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('themebase.lostserverconnection' in self.driver.page_source)
 
     def test_form_responseData_errors(self):
-        self.browseToTest('/@@create-new-assignment/3')
+        self.browseToTest('/@@create-new-assignment/3,0')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
 

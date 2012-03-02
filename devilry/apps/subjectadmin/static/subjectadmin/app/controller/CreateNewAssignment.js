@@ -31,6 +31,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         ref: 'activePeriodsList',
         selector: 'chooseperiod activeperiodslist'
     }, {
+        ref: 'pageOneForm',
+        selector: 'chooseperiod form'
+    }, {
+        ref: 'pageOneAlertMessageList',
+        selector: 'chooseperiod alertmessagelist'
+    }, {
         ref: 'form',
         selector: 'createnewassignmentform'
     }, {
@@ -38,7 +44,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         selector: 'createnewassignment'
     }, {
         ref: 'alertMessageList',
-        selector: 'alertmessagelist'
+        selector: 'createnewassignment alertmessagelist'
     }, {
         ref: 'firstDeadlineField',
         selector: 'createnewassignmentform themebase-datetimefield[name=first_deadline]'
@@ -54,7 +60,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }],
 
     init: function() {
-        this.getActivePeriodsStore().load();
         this.control({
             'viewport createnewassignmentform': {
                 render: this._onRenderForm,
@@ -72,9 +77,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
                 change: this._onAddRelatedStudentChange
             },
             'viewport chooseperiod activeperiodslist': {
-                render: this._onRenderActivePeriodlist,
-                select: this._onSelectPeriod,
-                deselect: this._onDeSelectPeriod
+                afterrender: this._onRenderActivePeriodlist
             },
             'viewport chooseperiod nextbutton': {
                 click: this._onNextFromPageOne
@@ -145,7 +148,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this.getAlertMessageList().removeAll();
         var values = this._getFormValues();
         var periodId = this.getCreateNewAssignment().periodId;
+        var delivery_types = this.getCreateNewAssignment().delivery_types;
         values.period_id = periodId;
+        values.delivery_types = delivery_types;
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
@@ -183,20 +188,45 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
 
     _onRenderActivePeriodlist: function() {
-        this.getNextFromPageOneButton().disable();
+        this.getActivePeriodsList().getEl().mask(dtranslate('themebase.loading'));
+        if(this.getActivePeriodsStore().getCount() > 0) {
+            this._addItemsToActivePeriodList();
+        } else {
+            this.getActivePeriodsStore().load({
+                scope: this,
+                callback: this._addItemsToActivePeriodList
+            });
+        }
     },
 
-    _onDeSelectPeriod: function() {
+    _handleNoActivePeriods: function() {
         this.getNextFromPageOneButton().disable();
+        this.getPageOneAlertMessageList().add({
+            message: dtranslate('subjectadmin.assignment.noactiveperiods'),
+            type: 'error'
+        });
     },
-    _onSelectPeriod: function() {
-        this.getNextFromPageOneButton().enable();
+
+    _addItemsToActivePeriodList: function() {
+        this.getActivePeriodsList().removeAll();
+        if(this.getActivePeriodsStore().getCount() === 0) {
+            this.getActivePeriodsList().getEl().unmask();
+            this._handleNoActivePeriods();
+        }
+        Ext.defer(function() {
+            this.getActivePeriodsStore().each(function(periodRecord, index) {
+                this.getActivePeriodsList().addPeriod(periodRecord, index===0);
+            }, this);
+            this.getActivePeriodsList().getEl().unmask();
+        }, 50, this);
     },
 
     _onNextFromPageOne: function() {
-        var nexturlformat = '/@@create-new-assignment/{0}';
-        var periodid = this.getActivePeriodsList().getSelectionModel().getLastSelected().get('id');
-        var nexturl = Ext.String.format(nexturlformat, periodid);
+        var formvalues = this.getPageOneForm().getForm().getFieldValues();
+        var delivery_types = formvalues.delivery_types;
+        var activeperiod = formvalues.activeperiod;
+        var nexturlformat = '/@@create-new-assignment/{0},{1}';
+        var nexturl = Ext.String.format(nexturlformat, activeperiod, delivery_types);
         this.application.route.navigate(nexturl);
     }
 });
