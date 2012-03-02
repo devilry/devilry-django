@@ -45,11 +45,26 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.short_name.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.short_name.label' in self.driver.page_source)
 
-        self.assertTrue('subjectadmin.assignment.publishing_time.help' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.driver.page_source)
+    def test_form_render_advanced_fieldset(self):
+        self.browseToTest('/@@create-new-assignment/1')
+        self.waitForCssSelector('.createnewassignmentform')
 
-        self.assertTrue('subjectadmin.assignment.anonymous.help' in self.driver.page_source)
+        self.assertFalse('subjectadmin.assignment.anonymous.label' in self.driver.page_source)
+        self.assertFalse('subjectadmin.assignment.publishing_time.label' in self.driver.page_source)
+        self.assertFalse('subjectadmin.assignment.add_all_relatedstudents.label' in self.driver.page_source)
+        self.assertFalse('subjectadmin.assignment.autosetup_examiners.label' in self.driver.page_source)
+
+        fieldsetbutton = self.driver.find_element_by_css_selector('fieldset.advanced_options_fieldset>legend>div.x-tool')
+        fieldsetbutton.click()
+
         self.assertTrue('subjectadmin.assignment.anonymous.label' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.anonymous.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.publishing_time.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.add_all_relatedstudents.label' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.add_all_relatedstudents.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.autosetup_examiners.label' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.autosetup_examiners.help' in self.driver.page_source)
 
 
     def _set_value(self, fieldname, value):

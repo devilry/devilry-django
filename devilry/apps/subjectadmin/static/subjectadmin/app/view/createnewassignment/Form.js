@@ -93,6 +93,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'fieldset',
         title: dtranslate('themebase.advanced_options'),
+        cls: 'advanced_options_fieldset',
         collapsible: true,
         collapsed: true,
         padding: 10,
