@@ -9,7 +9,7 @@ Ext.define('subjectadmin.view.ActionList', {
         '<ul class="boxbody">',
         '    <tpl for="links">',
         '       <li>',
-        '           <a href="{url}" class="btn large {buttonType}">{text}</a>',
+        '           <a href="{url}" class="btn {buttonSize} {buttonType}" style="{style}">{text}</a>',
         '       </li>',
         '    </tpl>',
         '<ul>'
@@ -21,6 +21,12 @@ Ext.define('subjectadmin.view.ActionList', {
      * Each object should define an ``url``, ``text`` and optional ``buttonType``.
      *
      * ``buttonType`` defaults to "primary". Other possible values: "danger", "default".
+     */
+
+    /**
+     * @cfg {string} linkStyle (optional)
+     *
+     * Css styles common to all links.
      */
 
     initComponent: function() {
@@ -35,7 +41,11 @@ Ext.define('subjectadmin.view.ActionList', {
             } else if(link.buttonType == 'default') {
                 link.buttonType = '';
             }
-        });
+            if(link.buttonSize == undefined) {
+                link.buttonSize = 'large'
+            }
+            link.style = this.linkStyle || '';
+        }, this);
         this.data = {
             title: this.title,
             links: this.links
