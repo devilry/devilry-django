@@ -7,6 +7,7 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
     requires: [
         'subjectadmin.view.ActionList'
     ],
+    cls: 'createnewassignment-successpanel',
 
     bodyPadding: 20,
     autoScroll: true,
@@ -62,7 +63,7 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
                 config.period_id, config.delivery_types
             ),
             buttonType: 'default',
-            text: dtranslate('subjectadmin.createnewassignment.success.addonother-similar')
+            text: dtranslate('subjectadmin.createnewassignment.success.addanother-similar')
         }]
         this.add({
             xtype: 'actionlist',
