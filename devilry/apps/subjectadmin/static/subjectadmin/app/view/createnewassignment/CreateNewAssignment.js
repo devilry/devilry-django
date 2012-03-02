@@ -28,6 +28,6 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
     }, {
         xtype: 'box',
         region: 'sidebar',
-        html: dtranslate('subjectadmin.createnewassignment.sidebarhelp')
+        html: dtranslate('subjectadmin.createnewassignment.pagetwo.sidebarhelp')
     }]
 });

@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
             cls: 'centerbox',
             items: [{
                 xtype: 'box',
-                html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.chooseperiod.title')),
+                html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.createnewassignment.title')),
             }, {
                 xtype: 'form',
                 ui: 'transparentpanel',
@@ -78,6 +78,6 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
     }, {
         xtype: 'box',
         region: 'sidebar',
-        html: dtranslate('subjectadmin.chooseperiod.sidebarhelp')
+        html: dtranslate('subjectadmin.createnewassignment.pageone.sidebarhelp')
     }]
 });

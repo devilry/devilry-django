@@ -190,7 +190,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     _showPageOneMetadata: function() {
         console.log(this.period_id);
         var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
-        console.log(periodRecord);
         var type;
         if(this.delivery_types == 0) {
             type = dtranslate('subjectadmin.assignment.delivery_types.electronic');

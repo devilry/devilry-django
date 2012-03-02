@@ -91,7 +91,6 @@ Ext.define('subjectadmin.Application', {
 
     routeNotFound: function(routeInfo) {
         this.breadcrumbs.set([], dtranslate('theme.routenotfound'));
-        this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
         this.setPrimaryContent({
             xtype: 'routenotfound',
             route: routeInfo.token
@@ -106,7 +105,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     createNewAssignmentChooseperiod: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('subjectadmin.chooseperiod.title'));
+        this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'chooseperiod'
         });
