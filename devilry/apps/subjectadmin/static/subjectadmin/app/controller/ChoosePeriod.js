@@ -5,8 +5,8 @@ Ext.define('subjectadmin.controller.ChoosePeriod', {
         'themebase.NextButton',
     ],
     views: [
-        'chooseperiod.ActivePeriodsList',
-        'chooseperiod.ChoosePeriod'
+        'ActivePeriodsList',
+        'createnewassignment.ChoosePeriod'
     ],
 
     stores: [

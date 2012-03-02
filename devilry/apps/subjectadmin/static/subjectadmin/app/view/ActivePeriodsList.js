@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.chooseperiod.ActivePeriodsList', {
+Ext.define('subjectadmin.view.ActivePeriodsList', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.activeperiodslist',
     cls: 'activeperiodslist',

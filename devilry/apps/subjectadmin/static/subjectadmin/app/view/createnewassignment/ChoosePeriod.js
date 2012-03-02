@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.chooseperiod.ChoosePeriod' ,{
+Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.chooseperiod',
     requires: [

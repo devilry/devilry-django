@@ -2,8 +2,8 @@ Ext.define('subjectadmin.controller.ChoosePeriodTestMock', {
     extend: 'subjectadmin.controller.ChoosePeriod',
 
     views: [
-        'chooseperiod.ActivePeriodsListTestMock',
-        'chooseperiod.ChoosePeriod'
+        'ActivePeriodsListTestMock',
+        'createnewassignment.ChoosePeriod'
     ],
 
     stores: [
