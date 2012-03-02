@@ -20,7 +20,7 @@ Ext.define('subjectadmin.view.ActionList', {
      *
      * Each object should define an ``url``, ``text`` and optional ``buttonType``.
      *
-     * ``buttonType`` defaults to "primary". Other possible values: "danger".
+     * ``buttonType`` defaults to "primary". Other possible values: "danger", "default".
      */
 
     initComponent: function() {
@@ -32,6 +32,8 @@ Ext.define('subjectadmin.view.ActionList', {
         Ext.Array.each(this.links, function(link) {
             if(link.buttonType == undefined) {
                 link.buttonType = 'primary';
+            } else if(link.buttonType == 'default') {
+                link.buttonType = '';
             }
         });
         this.data = {

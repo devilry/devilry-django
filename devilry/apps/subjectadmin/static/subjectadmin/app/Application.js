@@ -77,6 +77,7 @@ Ext.define('subjectadmin.Application', {
         this.route.add("", 'dashboard');
         this.route.add("/@@create-new-assignment/@@chooseperiod", 'createNewAssignmentChooseperiod');
         this.route.add("/@@create-new-assignment/:period,:delivery_types", 'createNewAssignment');
+        this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
         this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname", 'showAssignment');
@@ -117,6 +118,13 @@ Ext.define('subjectadmin.Application', {
             xtype: 'createnewassignment',
             period_id: period_id,
             delivery_types: delivery_types
+        });
+    },
+
+    createNewAssignmentSuccess: function(routeInfo) {
+        this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
+        this.setPrimaryContent({
+            xtype: 'createnewassignment-successpanel'
         });
     },
 

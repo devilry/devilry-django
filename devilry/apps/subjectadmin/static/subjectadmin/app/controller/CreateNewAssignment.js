@@ -10,6 +10,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         'ActivePeriodsList',
         'createnewassignment.ChoosePeriod',
         'createnewassignment.Form',
+        'createnewassignment.SuccessPanel',
         'createnewassignment.CreateNewAssignment'
     ],
 
@@ -93,7 +94,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             },
             'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
                 change: this._onAddRelatedStudentChange
-            }
+            },
+
+            // Success page
+            'viewport createnewassignment-successpanel': {
+                render: this._onRenderSuccesspanel
+            },
         });
     },
 
@@ -213,6 +219,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
                 type: type
             });
             this.getMetainfo().update(metatext);
+            this.periodRecord = periodRecord;
         } else {
             this._handleNotActivePeriod();
         }
@@ -242,12 +249,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _setInitialValues: Ext.emptyFn,
 
-    //_setInitialValues: function() {
-        //this.getCreateNewAssignmentForm().getForm().setValues({
-            //long_name: 'A',
-            //short_name: 'a'
-        //})
-    //},
+    _setInitialValues: function() {
+        this.getCreateNewAssignmentForm().getForm().setValues({
+            long_name: 'A',
+            short_name: 'a'
+        })
+    },
 
     _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
@@ -275,9 +282,16 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _onSuccessfulSave: function(a, b, c) {
+    _onSuccessfulSave: function() {
         this._unmask();
-        console.log('success');
+        this.successPanelSetupConfig = {
+            period_id: this.period_id,
+            delivery_types: this.delivery_types,
+            period_short_name: this.periodRecord.get('short_name'),
+            subject_short_name: this.periodRecord.get('parentnode__short_name'),
+            short_name: this._getFormValues().short_name
+        };
+        this.application.route.navigate('/@@create-new-assignment/@@success');
     },
 
     _onProxyError: function(proxy, response, operation) {
@@ -298,5 +312,20 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     },
     _unmask: function() {
         this.getCreateNewAssignmentForm().getEl().unmask();
+    },
+
+
+
+    //////////////////////////////////////////////
+    //
+    // Success page
+    //
+    //////////////////////////////////////////////
+    _onRenderSuccesspanel: function(successpanel) {
+        if(!this.successPanelSetupConfig) {
+            Ext.MessageBox.alert('Error', 'This page is only available after creating a new assignment.');
+        } else {
+            successpanel.setup(this.successPanelSetupConfig);
+        }
     }
 });
