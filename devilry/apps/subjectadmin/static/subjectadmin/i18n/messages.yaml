@@ -3,7 +3,7 @@ subjectadmin.assignment.anonymous.label: 'Anonymous?'
 subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback (students deliver through an alternative channel), set this to <em>Not using Devilry</em>.'
 subjectadmin.assignment.delivery_types.label: 'How do students add deliveries?'
 subjectadmin.assignment.delivery_types.electronic : Using Devilry
-subjectadmin.assignment.delivery_types.nonelectronic : Not through Devilry (hand in on paper, oral examination, ...)
+subjectadmin.assignment.delivery_types.nonelectronic : Not using Devilry (hand in on paper, oral examination, ...)
 subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assignment."
 subjectadmin.assignment.long_name.label: Name
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
@@ -23,6 +23,7 @@ subjectadmin.assignment.error.period_doesnotexist: "Period {period_id} does not 
 subjectadmin.assignment.error.first_deadline_none: "Required when automatically adding related students."
 subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiners?"
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
+subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
 
 subjectadmin.chooseperiod.sidebarhelp: 'Please choose a period and click <em>Next</em>.'
 subjectadmin.chooseperiod.title: 'Choose period'

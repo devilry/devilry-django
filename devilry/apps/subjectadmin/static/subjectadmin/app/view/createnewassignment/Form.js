@@ -25,6 +25,12 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
 
     items: [{
         margin: {top: 0, bottom: 20},
+        xtype: 'box',
+        cls: 'metainfo',
+        itemId: 'metainfo',
+        html: ''
+    }, {
+        margin: {top: 20, bottom: 20},
         xtype: 'alertmessagelist'
 
     // Long name

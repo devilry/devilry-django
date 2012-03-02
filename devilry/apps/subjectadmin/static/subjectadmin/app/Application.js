@@ -112,11 +112,11 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    createNewAssignment: function(routeInfo, periodId, delivery_types) {
+    createNewAssignment: function(routeInfo, period_id, delivery_types) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
-            periodId: periodId,
+            period_id: period_id,
             delivery_types: delivery_types
         });
     },
