@@ -10,13 +10,17 @@ ul.unstyled {
 }
 /* line 11, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li {
-  margin: 0 0 20px 0;
+  margin: 20px 0 0 0;
 }
 /* line 13, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li:first-child {
+  margin-top: 0;
+}
+/* line 16, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li a {
   min-width: 400px;
 }
-/* line 20, ../sass/subjectadmin.scss */
+/* line 23, ../sass/subjectadmin.scss */
 .subjectadmin .sysadmin-messages p {
   font-size: 15px;
   color: #444444;

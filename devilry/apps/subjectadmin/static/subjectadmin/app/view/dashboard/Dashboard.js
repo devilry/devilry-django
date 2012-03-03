@@ -1,25 +1,27 @@
 Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.dashboard',
     cls: 'dashboard sidebarlayout',
     requires: [
         'themebase.layout.RightSidebar'
     ],
 
-    layout: 'rightsidebar',
+    layout: 'column',
     frame: false,
+    border: 0,
+    bodyPadding: 40,
+    autoScroll: true,
 
     items: [{
         xtype: 'container',
         cls: 'centercolumn',
-        region: 'main',
+        columnWidth: .65,
         items: [{
-            xtype: 'container',
+            xtype: 'panel',
             cls: 'centerbox',
+            title: dtranslate('subjectadmin.dashboard.actionstitle'),
+            bodyPadding: 20,
             items: [{
-                xtype: 'box',
-                html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.dashboard.actionstitle')),
-            }, {
                 xtype: 'actionlist',
                 cls: 'centerbody',
                 links: [{
@@ -37,28 +39,30 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                 }]
             }]
         }, {
-            xtype: 'box',
-            cls: 'sysadmin-messages centerbox',
-            html: [
-                '<h2 class="centertitle">Information from Drift</h2>',
-                '<div class="centerbody">',
-                '    <p>Please use the help-tab to access guides and tips. Contact ',
-                '    drift@example.com if anything is unclear.</p>',
-                '    <p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
-                '    24. mai from  16:00 to 18:00. Please let us know if this is a ',
-                '    bad time, and we will consider re-scheduling the maintainance.',
-                '</div>'
-            ].join(''),
+            xtype: 'panel',
+            margin: {top: 20},
+            title: 'Shortcuts',
+            bodyPadding: 20,
+            items: {
+                xtype: 'shortcutlist'
+            }
         }]
     }, {
         xtype: 'container',
+        columnWidth: .35,
+        margin: {left: 40},
         border: false,
-        region: 'sidebar',
         items: [{
-            xtype: 'box',
-            html: Ext.String.format('<h2 class="sidebartitle">{0}</h2>', dtranslate('subjectadmin.dashboard.shortcutstitle')),
-        }, {
-            xtype: 'shortcutlist'
+            xtype: 'panel',
+            title: 'Messages',
+            bodyPadding: 10,
+            html: [
+                '<p>Please use the help-tab to access guides and tips. Contact ',
+                'drift@example.com if anything is unclear.</p>',
+                '<p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
+                '24. mai from  16:00 to 18:00. Please let us know if this is a ',
+                'bad time, and we will consider re-scheduling the maintainance.',
+            ].join(''),
         }]
     }]
 });

@@ -39,7 +39,7 @@ Ext.define('subjectadmin.controller.Shortcuts', {
             var multiplePeriods = periods.length !== 1;
             var assignments = [];
             recordsInSubject.each(function(record) {
-                var displayName = record.get('short_name');
+                var displayName = record.get('long_name');
                 if(multiplePeriods) {
                     displayName = Ext.String.format('{0}.{1}', record.get('parentnode__short_name'), displayName);
                 }
