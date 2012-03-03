@@ -13170,6 +13170,192 @@ input[type=submit].btn::-moz-focus-inner {
   background-position: 0 bottom;
 }
 
+/* line 241, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-lookslike-parawitheader-panel {
+  border-color: #99bce8;
+}
+
+/* line 246, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel {
+  font-size: 1.3em;
+  line-height: 15px;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: white;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 290, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-lookslike-parawitheader-panel {
+  color: gray;
+  font-size: 1.3em;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* line 299, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-lookslike-parawitheader-panel {
+  background: transparent;
+  border-color: #99bce8;
+  color: #191919;
+  border-width: 0;
+  border-style: solid;
+}
+
+/* line 314, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-lookslike-parawitheader-panel,
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel {
+  border-color: #99bce8;
+}
+
+/* line 319, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-vertical {
+  border-color: #99bce8;
+}
+
+/* line 326, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-left,
+.x-panel-header-lookslike-parawitheader-panel-right {
+  background-image: none;
+  background-color: white;
+}
+
+/* line 367, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+/* line 371, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+}
+/* line 375, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+}
+/* line 379, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+
+/* line 384, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-lookslike-parawitheader-panel-right {
+  background-position: top right;
+}
+
+/* line 388, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-top {
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 392, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-right {
+  -moz-box-shadow: white -1px 0 0px 0 inset;
+  -webkit-box-shadow: white -1px 0 0px 0 inset;
+  -o-box-shadow: white -1px 0 0px 0 inset;
+  box-shadow: white -1px 0 0px 0 inset;
+}
+
+/* line 396, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-bottom {
+  -moz-box-shadow: white 0 -1px 0px 0 inset;
+  -webkit-box-shadow: white 0 -1px 0px 0 inset;
+  -o-box-shadow: white 0 -1px 0px 0 inset;
+  box-shadow: white 0 -1px 0px 0 inset;
+}
+
+/* line 400, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-left {
+  -moz-box-shadow: white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 1px 0 0px 0 inset;
+  -o-box-shadow: white 1px 0 0px 0 inset;
+  box-shadow: white 1px 0 0px 0 inset;
+}
+
+/* line 405, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-lookslike-parawitheader-panel-bottom {
+  background-position: bottom left;
+}
+
+/* line 439, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-right-tc,
+.x-panel-header-lookslike-parawitheader-panel-right-mc,
+.x-panel-header-lookslike-parawitheader-panel-right-bc {
+  background-position: right 0;
+}
+
+/* line 445, ../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-bottom-tc,
+.x-panel-header-lookslike-parawitheader-panel-bottom-mc,
+.x-panel-header-lookslike-parawitheader-panel-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/* line 23, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel {
+  padding: 0 0 8px 0;
+}
+/* line 26, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel .x-panel-header-body-lookslike-parawitheader-panel-horizontal .x-panel-header-text-container {
+  height: auto !important;
+  line-height: 1.6em;
+}
+/* line 32, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-body-lookslike-parawitheader-panel {
+  padding: 2px;
+}
+
 /* line 1, ../sass/_forms-port.scss */
 .formhelp {
   font-size: 13px;

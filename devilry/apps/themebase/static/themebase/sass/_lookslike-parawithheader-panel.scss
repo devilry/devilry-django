@@ -1,0 +1,35 @@
+@include extjs-panel-ui(
+    'lookslike-parawitheader-panel',
+
+    $ui-base-color: $panel-base-color,
+    $ui-border-width: 0,
+    $ui-border-color: $panel-border-color,
+    $ui-border-radius: $panel-border-radius,
+
+    $ui-header-color: $gray,
+    $ui-header-font-size: 1.3em,
+    $ui-header-font-weight: normal,
+    $ui-header-border-color: #fff,
+    $ui-header-background-color: null,
+    $ui-header-background-gradient: null,
+
+    $ui-body-color: $almostblack,
+    $ui-body-border-color: $panel-body-border-color,
+    $ui-body-border-width: 0,
+    $ui-body-background-color: transparent
+);
+
+.x-panel-lookslike-parawitheader-panel {
+    .x-panel-header-lookslike-parawitheader-panel {
+        padding: 0 0 8px 0;
+        .x-panel-header-body-lookslike-parawitheader-panel-horizontal {
+            .x-panel-header-text-container {
+                height: auto !important;
+                line-height: 1.6em;
+            }
+        }
+    }
+    .x-panel-body-lookslike-parawitheader-panel {
+        padding: 2px;
+    }
+}
