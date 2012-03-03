@@ -450,13 +450,17 @@ a.menu:after,
   @include vertical-gradient($black, $almostblack);
   li {
     display: inline;
+    a {
+        color: $grayLighter;
+        text-decoration: underline;
+    }
   }
   .divider {
     padding: 0 5px;
-    color: $grayDark;
+    color: $grayLight;
   }
   .active {
-    color: $grayLight;
+    color: $grayLighter;
   }
 }
 
