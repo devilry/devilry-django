@@ -92,7 +92,6 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
         }]
         this.bodyPanel.add({
             xtype: 'actionlist',
-            margin: {top: 20},
             width: 460,
             linkStyle: 'width: 100%',
             links: links
