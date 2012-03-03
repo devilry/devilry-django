@@ -20,7 +20,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
             xtype: 'panel',
             cls: 'centerbox',
             title: dtranslate('subjectadmin.dashboard.actionstitle'),
-            bodyPadding: 20,
+            ui: 'inset-header-strong-panel',
             items: [{
                 xtype: 'actionlist',
                 cls: 'centerbody',
@@ -40,9 +40,9 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
             }]
         }, {
             xtype: 'panel',
-            margin: {top: 20},
+            margin: {top: 40},
             title: 'Shortcuts',
-            bodyPadding: 20,
+            ui: 'inset-header-panel',
             items: {
                 xtype: 'shortcutlist'
             }
@@ -55,7 +55,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         items: [{
             xtype: 'panel',
             title: 'Messages',
-            bodyPadding: 10,
+            ui: 'lookslike-parawitheader-panel',
             html: [
                 '<p>Please use the help-tab to access guides and tips. Contact ',
                 'drift@example.com if anything is unclear.</p>',

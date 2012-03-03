@@ -18,9 +18,12 @@ ul.unstyled {
 }
 /* line 16, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li a {
-  min-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
-/* line 23, ../sass/subjectadmin.scss */
+/* line 27, ../sass/subjectadmin.scss */
 .subjectadmin .sysadmin-messages p {
   font-size: 15px;
   color: #444444;

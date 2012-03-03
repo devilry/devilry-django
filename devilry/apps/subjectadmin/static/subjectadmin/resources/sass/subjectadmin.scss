@@ -14,7 +14,11 @@ ul.unstyled {
                     margin-top: 0;
                 }
                 a {
-                    min-width: 400px;
+                    //min-width: 400px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
                 }
             }
         }
