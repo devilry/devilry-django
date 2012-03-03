@@ -14,7 +14,6 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
         xtype: 'panel',
         title: dtranslate('subjectadmin.createnewassignment.title'),
         ui: 'inset-header-strong-panel',
-        border: 0,
         items: { // Note: We wrap this in an extra container to avoid that the Next button ends up at the bottom of the screen
             xtype: 'form',
             region: 'center',
@@ -67,9 +66,9 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
                 dock: 'bottom',
                 ui: 'footer',
                 padding: 0,
+                margin: {top: 20, bottom: 0},
                 items: [{
-                    xtype: 'nextbutton',
-                    margin: {top: 20}
+                    xtype: 'nextbutton'
                 }]
             }]
         }

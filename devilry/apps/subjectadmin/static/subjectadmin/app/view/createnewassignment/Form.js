@@ -138,16 +138,16 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         dock: 'bottom',
         ui: 'footer',
         padding: 0,
+        margin: {top: 15},
         items: [{
             xtype: 'createbutton',
-            margin: {top: 10},
             formBind: true, //only enabled once the form is valid
             disabled: true
         }]
     }],
 
     initComponent: function() {
-        var cssclasses = 'createnewassignmentform';
+        var cssclasses = 'createnewassignmentform bootstrap';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }
