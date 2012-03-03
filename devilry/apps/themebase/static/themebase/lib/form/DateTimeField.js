@@ -27,6 +27,15 @@ Ext.define('themebase.form.DateTimeField', {
      */
     timeConfig:{},
 
+    /**
+     * @cfg {string} dateFieldEmptyText ``emptyText`` attribute for the date field.
+     */
+    dateFieldEmptyText: dtranslate('themebase.date_emptytext'),
+
+    /**
+     * @cfg {string} dateFieldEmptyText ``emptyText`` attribute for the time field.
+     */
+    timeFieldEmptyText: dtranslate('themebase.time_emptytext'),
     
     // properties
     
@@ -53,6 +62,7 @@ Ext.define('themebase.form.DateTimeField', {
         me.dateField = Ext.create('themebase.form.DateField', Ext.apply({
             flex:1,
             isFormField:false, //exclude from field query's
+            emptyText: this.dateFieldEmptyText,
             submitValue:false
         }, me.dateConfig));
         me.items.push(me.dateField);
@@ -60,6 +70,7 @@ Ext.define('themebase.form.DateTimeField', {
         me.timeField = Ext.create('themebase.form.TimeField', Ext.apply({
             flex:1,
             isFormField:false, //exclude from field query's
+            emptyText: this.timeFieldEmptyText,
             submitValue:false
         }, me.timeConfig));
         me.items.push(me.timeField);

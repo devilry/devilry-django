@@ -16,3 +16,5 @@ themebase.closed: Closed
 themebase.deliveries: deliveries
 themebase.delivery: delivery
 themebase.advanced_options: Advanced options
+themebase.date_emptytext: "yyyy-mm-dd"
+themebase.time_emptytext: "hh:mm"
