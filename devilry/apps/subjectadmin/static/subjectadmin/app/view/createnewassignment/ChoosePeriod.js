@@ -6,18 +6,14 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
         'themebase.form.Help'
     ],
 
-    layout: 'border',
     border: 0,
     bodyPadding: 40,
+    autoScroll: true,
 
     items: [{
-        xtype: 'box',
-        region: 'north',
-        height: 50,
-        html: Ext.String.format('<h2 class="centertitle">{0}</h2>', dtranslate('subjectadmin.createnewassignment.title'))
-    }, {
-        region: 'center',
-        autoScroll: true,
+        xtype: 'panel',
+        title: dtranslate('subjectadmin.createnewassignment.title'),
+        ui: 'inset-header-strong-panel',
         border: 0,
         items: { // Note: We wrap this in an extra container to avoid that the Next button ends up at the bottom of the screen
             xtype: 'form',

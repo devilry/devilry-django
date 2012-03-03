@@ -27,6 +27,8 @@ subjectadmin.assignment.error.first_deadline_none: "Required when automatically 
 subjectadmin.assignment.error.no_active_periods: "No active periods found."
 subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiners?"
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
+subjectadmin.assignment.activeperiod.label: "Period"
+subjectadmin.assignment.activeperiod.help: "Choose the period where the assignment belongs."
 subjectadmin.createnewassignment.title: Create new assignment
 subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
 subjectadmin.createnewassignment.success.gotocreated: "Go to {assignment}"
