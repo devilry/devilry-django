@@ -56,6 +56,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
             xtype: 'panel',
             title: 'Messages',
             ui: 'lookslike-parawitheader-panel',
+            cls: 'bootstrap',
             html: [
                 '<p>Please use the help-tab to access guides and tips. Contact ',
                 'drift@example.com if anything is unclear.</p>',

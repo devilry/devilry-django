@@ -1,10 +1,10 @@
 Ext.define('subjectadmin.view.shortcut.List' ,{
     extend: 'Ext.Component',
     alias: 'widget.shortcutlist',
-    cls: 'shortcutlist',
+    cls: 'shortcutlist bootstrap',
 
     tpl: new Ext.XTemplate([
-        '<ul class="unstyled">',
+        '<ul>',
         '    <tpl for="items">',
         '       <li>',
         '           <a href="#/{subject}">{subject}</a>',

@@ -10866,197 +10866,183 @@ a:hover {
 /* Typography.scss
  * Headings, body text, lists, code, and more for a versatile and durable typography system
  * ---------------------------------------------------------------------------------------- */
-/* line 9, ../sass/_type.scss */
-p {
+/* line 10, ../sass/_type.scss */
+.bootstrap p {
   font-size: 13px;
   font-weight: normal;
   line-height: 18px;
   margin-bottom: 9px;
 }
-/* line 12, ../sass/_type.scss */
-p small {
+/* line 13, ../sass/_type.scss */
+.bootstrap p small {
   font-size: 11px;
   color: #bfbfbf;
 }
-
-/* line 22, ../sass/_type.scss */
-h1, h2, h3, h4, h5, h6 {
+/* line 23, ../sass/_type.scss */
+.bootstrap h1, .bootstrap h2, .bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
   font-weight: bold;
   color: #404040;
 }
-/* line 25, ../sass/_type.scss */
-h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+/* line 26, ../sass/_type.scss */
+.bootstrap h1 small, .bootstrap h2 small, .bootstrap h3 small, .bootstrap h4 small, .bootstrap h5 small, .bootstrap h6 small {
   color: #bfbfbf;
 }
-
-/* line 29, ../sass/_type.scss */
-h1 {
+/* line 30, ../sass/_type.scss */
+.bootstrap h1 {
   margin-bottom: 18px;
   font-size: 30px;
   line-height: 36px;
 }
-/* line 33, ../sass/_type.scss */
-h1 small {
+/* line 34, ../sass/_type.scss */
+.bootstrap h1 small {
   font-size: 18px;
 }
-
-/* line 37, ../sass/_type.scss */
-h2 {
+/* line 38, ../sass/_type.scss */
+.bootstrap h2 {
   font-size: 24px;
   line-height: 36px;
 }
-/* line 40, ../sass/_type.scss */
-h2 small {
+/* line 41, ../sass/_type.scss */
+.bootstrap h2 small {
   font-size: 14px;
 }
-
-/* line 44, ../sass/_type.scss */
-h3, h4, h5, h6 {
+/* line 45, ../sass/_type.scss */
+.bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
   line-height: 36px;
 }
-
-/* line 47, ../sass/_type.scss */
-h3 {
+/* line 48, ../sass/_type.scss */
+.bootstrap h3 {
   font-size: 18px;
 }
-/* line 49, ../sass/_type.scss */
-h3 small {
+/* line 50, ../sass/_type.scss */
+.bootstrap h3 small {
   font-size: 14px;
 }
-
-/* line 53, ../sass/_type.scss */
-h4 {
+/* line 54, ../sass/_type.scss */
+.bootstrap h4 {
   font-size: 16px;
 }
-/* line 55, ../sass/_type.scss */
-h4 small {
+/* line 56, ../sass/_type.scss */
+.bootstrap h4 small {
   font-size: 12px;
 }
-
-/* line 59, ../sass/_type.scss */
-h5 {
+/* line 60, ../sass/_type.scss */
+.bootstrap h5 {
   font-size: 14px;
 }
-
-/* line 62, ../sass/_type.scss */
-h6 {
+/* line 63, ../sass/_type.scss */
+.bootstrap h6 {
   font-size: 13px;
   color: #bfbfbf;
   text-transform: uppercase;
 }
-
-/* line 73, ../sass/_type.scss */
-ul, ol {
+/* line 74, ../sass/_type.scss */
+.bootstrap ul, .bootstrap ol {
   margin: 0 0 18px 25px;
 }
-
-/* line 79, ../sass/_type.scss */
-ul ul,
-ul ol,
-ol ol,
-ol ul {
+/* line 80, ../sass/_type.scss */
+.bootstrap ul ul,
+.bootstrap ul ol,
+.bootstrap ol ol,
+.bootstrap ol ul {
   margin-bottom: 0;
 }
-
-/* line 82, ../sass/_type.scss */
-ul {
+/* line 83, ../sass/_type.scss */
+.bootstrap ul {
   list-style: disc;
 }
-
 /* line 85, ../sass/_type.scss */
-ol {
+.bootstrap ul li {
+  list-style: disc;
+}
+/* line 89, ../sass/_type.scss */
+.bootstrap ol {
   list-style: decimal;
 }
-
-/* line 88, ../sass/_type.scss */
-li {
+/* line 92, ../sass/_type.scss */
+.bootstrap li {
   line-height: 18px;
   color: gray;
 }
-
-/* line 92, ../sass/_type.scss */
-ul.unstyled {
+/* line 96, ../sass/_type.scss */
+.bootstrap ul.unstyled {
   list-style: none;
   margin-left: 0;
 }
-
 /* line 98, ../sass/_type.scss */
-dl {
+.bootstrap ul.unstyled li {
+  list-style: none;
+}
+/* line 105, ../sass/_type.scss */
+.bootstrap dl {
   margin-bottom: 18px;
 }
-/* line 100, ../sass/_type.scss */
-dl dt, dl dd {
+/* line 107, ../sass/_type.scss */
+.bootstrap dl dt, .bootstrap dl dd {
   line-height: 18px;
 }
-/* line 103, ../sass/_type.scss */
-dl dt {
+/* line 110, ../sass/_type.scss */
+.bootstrap dl dt {
   font-weight: bold;
 }
-/* line 106, ../sass/_type.scss */
-dl dd {
+/* line 113, ../sass/_type.scss */
+.bootstrap dl dd {
   margin-left: 9px;
 }
-
-/* line 115, ../sass/_type.scss */
-hr {
+/* line 122, ../sass/_type.scss */
+.bootstrap hr {
   margin: 20px 0 19px;
   border: 0;
   border-bottom: 1px solid #eee;
 }
-
-/* line 122, ../sass/_type.scss */
-strong {
+/* line 129, ../sass/_type.scss */
+.bootstrap strong {
   font-style: inherit;
   font-weight: bold;
 }
-
-/* line 126, ../sass/_type.scss */
-em {
+/* line 133, ../sass/_type.scss */
+.bootstrap em {
   font-style: italic;
   font-weight: inherit;
   line-height: inherit;
 }
-
-/* line 131, ../sass/_type.scss */
-.muted {
+/* line 138, ../sass/_type.scss */
+.bootstrap .muted {
   color: #bfbfbf;
 }
-
-/* line 136, ../sass/_type.scss */
-blockquote {
+/* line 143, ../sass/_type.scss */
+.bootstrap blockquote {
   margin-bottom: 18px;
   border-left: 5px solid #eee;
   padding-left: 15px;
 }
-/* line 140, ../sass/_type.scss */
-blockquote p {
+/* line 147, ../sass/_type.scss */
+.bootstrap blockquote p {
   font-size: 14px;
   font-weight: 300;
   line-height: 18px;
   margin-bottom: 0;
 }
-/* line 144, ../sass/_type.scss */
-blockquote small {
+/* line 151, ../sass/_type.scss */
+.bootstrap blockquote small {
   display: block;
   font-size: 12px;
   font-weight: 300;
   line-height: 18px;
   color: #bfbfbf;
 }
-/* line 148, ../sass/_type.scss */
-blockquote small:before {
+/* line 155, ../sass/_type.scss */
+.bootstrap blockquote small:before {
   content: '\2014 \00A0';
 }
-
-/* line 155, ../sass/_type.scss */
-address {
+/* line 162, ../sass/_type.scss */
+.bootstrap address {
   display: block;
   line-height: 18px;
   margin-bottom: 18px;
 }
-
-/* line 162, ../sass/_type.scss */
-code, pre {
+/* line 169, ../sass/_type.scss */
+.bootstrap code, .bootstrap pre {
   padding: 0 3px 2px;
   font-family: Monaco, Andale Mono, Courier New, monospace;
   font-size: 12px;
@@ -11067,16 +11053,14 @@ code, pre {
   -khtml-border-radius: 3px;
   border-radius: 3px;
 }
-
-/* line 168, ../sass/_type.scss */
-code {
+/* line 175, ../sass/_type.scss */
+.bootstrap code {
   background-color: #fee9cc;
   color: rgba(0, 0, 0, 0.75);
   padding: 1px 3px;
 }
-
-/* line 173, ../sass/_type.scss */
-pre {
+/* line 180, ../sass/_type.scss */
+.bootstrap pre {
   background-color: #f5f5f5;
   display: block;
   padding: 8.5px;

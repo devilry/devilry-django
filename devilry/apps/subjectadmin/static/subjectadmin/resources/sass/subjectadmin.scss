@@ -1,5 +1,26 @@
-ul.unstyled {
-    margin: 0;
+.shortcutlist {
+    >ul {
+        margin: 0;
+        a {
+            color: #444;
+            text-decoration: underline;
+        }
+        >li {
+            margin-top: 15px;
+            &:first-child {
+                margin-top: 0;
+            }
+            list-style: none;
+            >a {
+                font-size: 1.2em;
+            }
+            ul {
+                li {
+                    list-style: disc;
+                }
+            }
+        }
+    }
 }
 
 
@@ -21,12 +42,6 @@ ul.unstyled {
                     width: 100%;
                 }
             }
-        }
-    }
-    .sysadmin-messages {
-        p {
-            font-size: 15px;
-            color: #444444;
         }
     }
 }
