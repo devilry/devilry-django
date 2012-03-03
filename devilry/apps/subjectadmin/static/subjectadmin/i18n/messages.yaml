@@ -6,14 +6,16 @@ subjectadmin.assignment.delivery_types.electronic : Using Devilry
 subjectadmin.assignment.delivery_types.nonelectronic : Not using Devilry
 subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assignment."
 subjectadmin.assignment.long_name.label: Name
+subjectadmin.assignment.long_name.example: "Example: Obligatory assignment 1"
+subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
+subjectadmin.assignment.short_name.label: Short name
+subjectadmin.assignment.short_name.example: "Example: assignment1"
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
 subjectadmin.assignment.notpublished.title: Not published
 subjectadmin.assignment.notpublished.body: 'Will be published {publishing_time}.'
 subjectadmin.assignment.published.title: Published
 subjectadmin.assignment.published.body: 'Publishing time was {publishing_time}.'
-subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
-subjectadmin.assignment.short_name.label: Short name
 subjectadmin.assignment.gradeeditor: Grade editor
 subjectadmin.assignment.add_all_relatedstudents.label: "Add all students to this assignment?"
 subjectadmin.assignment.add_all_relatedstudents.help: "If this option is selected, all students registered on the period will automatically be added to the assignment when it is created."
@@ -31,6 +33,7 @@ subjectadmin.createnewassignment.success.gotocreated: "Go to {assignment}"
 subjectadmin.createnewassignment.success.addanother: "Add another assignment"
 subjectadmin.createnewassignment.success.addanother_similar: "Add another <em>{deliverytype}</em>-assignment in <em>{period}</em>"
 subjectadmin.createnewassignment.success.title: "Created {assignment}"
+
 
 
 

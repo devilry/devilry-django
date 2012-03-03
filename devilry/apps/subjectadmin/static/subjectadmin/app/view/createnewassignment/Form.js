@@ -38,7 +38,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         name: "long_name",
         fieldLabel: dtranslate('subjectadmin.assignment.long_name.label'),
         xtype: 'textfield',
-        emptyText: 'Example: Obligatory assignment 1',
+        emptyText: dtranslate('subjectadmin.assignment.long_name.example'),
         allowBlank: false,
         width: 400
     }, {
@@ -52,7 +52,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         fieldLabel: dtranslate('subjectadmin.assignment.short_name.label'),
         xtype: 'textfield',
         allowBlank: false,
-        emptyText: 'Example: assignment1'
+        emptyText: dtranslate('subjectadmin.assignment.short_name.example'),
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
