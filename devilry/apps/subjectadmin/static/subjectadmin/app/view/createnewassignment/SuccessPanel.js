@@ -13,18 +13,12 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
     bodyPadding: 40,
     autoScroll: true,
     items: [{
-        xtype: 'box',
-        itemId: 'header'
+        xtype: 'panel',
+        itemId: 'body',
+        title: 'Heu',
+        ui: 'inset-header-strong-panel'
     }],
 
-    headertemplate: [
-        '<h2>{title}</h2>',
-    ],
-
-
-    initComponent: function() {
-        this.callParent(arguments);
-    },
 
     /**
      * The ``config`` parameter must have the following attributes:
@@ -39,22 +33,28 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
      *      The ``id`` of the period where the assignment was created.
      */
     setup: function(config) {
-        var period = Ext.String.format('{0}.{1}',
-            config.subject_short_name, config.period_short_name
+        this.bodyPanel = this.down('#body');
+        this.config = config;
+        this.period = Ext.String.format('{0}.{1}',
+            this.config.subject_short_name, this.config.period_short_name
         );
-        var assignment = Ext.String.format('{0}.{1}',
-            period, config.short_name
+        this.assignment = Ext.String.format('{0}.{1}',
+            this.period, this.config.short_name
         );
-        var title = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.createnewassignment.success.title')).apply({
-            assignment: assignment
-        })
-        var header = Ext.create('Ext.XTemplate', this.headertemplate).apply({
-            title: title
-        });
-        this.down('#header').update(header);
+        this._setTitle();
+        this._addLinks();
+    },
 
+    _setTitle: function() {
+        var title = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.createnewassignment.success.title')).apply({
+            assignment: this.assignment
+        });
+        this.bodyPanel.setTitle(title);
+    },
+
+    _addLinks: function() {
         var gotoText = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.createnewassignment.success.gotocreated')).apply({
-            assignment: assignment
+            assignment: this.assignment
         });
 
         var type;
@@ -64,16 +64,16 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
             type = dtranslate('subjectadmin.assignment.delivery_types.nonelectronic');
         }
         var another_similarText = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.createnewassignment.success.addanother_similar')).apply({
-            period: period,
+            period: this.period,
             deliverytype: type
         });
 
         var links = [{
             url: Ext.String.format(
                 '#/{0}/{1}/{2}',
-                config.subject_short_name,
-                config.period_short_name,
-                config.short_name
+                this.config.subject_short_name,
+                this.config.period_short_name,
+                this.config.short_name
             ),
             text: gotoText
         }, {
@@ -84,13 +84,13 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
         }, {
             url: Ext.String.format(
                 '#/@@create-new-assignment/{0},{1}',
-                config.period_id, config.delivery_types
+                this.config.period_id, this.config.delivery_types
             ),
             buttonType: 'default',
             buttonSize: 'normal',
             text: another_similarText
         }]
-        this.add({
+        this.bodyPanel.add({
             xtype: 'actionlist',
             margin: {top: 20},
             width: 460,
