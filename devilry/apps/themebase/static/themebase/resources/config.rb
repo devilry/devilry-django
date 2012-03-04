@@ -1,15 +1,17 @@
 # $ext_path: This should be the path of the Ext JS SDK relative to this file
 $ext_path = "../../../../extjshelpers/static/extjshelpers/extjs"
 
+this_dir = File.dirname(__FILE__)
+
 # sass_path: the directory your Sass files are in. THIS file should also be in the Sass folder
 # Generally this will be in a resources/sass folder
 # <root>/resources/sass
-sass_path = File.dirname(__FILE__)
+sass_path = File.join(this_dir, "sass")
 
 # css_path: the directory you want your CSS files to be.
 # Generally this is a folder in the parent directory of your Sass files
 # <root>/resources/css
-css_path = File.join(sass_path, "..", "css")
+css_path = File.join(this_dir, "stylesheets")
 
 # output_style: The output style for your compiled CSS
 # nested, expanded, compact, compressed

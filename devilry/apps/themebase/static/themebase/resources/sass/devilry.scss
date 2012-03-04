@@ -34,4 +34,5 @@ $font-size: $basefont;
 // This only applies to new UIs. It does not apply to default component images (i.e. when changing $base-color)
 // The value can either be true, in which case the image path will be "../images/"
 // or a string, of where the path is
-$relative-image-path-for-uis: true; // defaults to "../images/" when true
+//$relative-image-path-for-uis: true; // defaults to "../images/" when true
+$relative-image-path-for-uis: 'images/'; // defaults to "../images/" when true
