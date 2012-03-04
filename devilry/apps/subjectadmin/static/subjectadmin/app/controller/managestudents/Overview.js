@@ -183,6 +183,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
+        this._handleNoGroupsSelected();
     },
 
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
