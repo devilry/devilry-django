@@ -4,14 +4,10 @@
 Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
     extend: 'Ext.window.Window',
     alias: 'widget.editpublishingtime',
-    cls: 'editpublishingtime',
+    cls: 'editpublishingtime bootstrap',
     requires: [
         'themebase.SaveButton'
     ],
-
-    /**
-     * @cfg {subjectadmin.model.Assignment} assignmentRecord (required)
-     */
 
     initComponent: function() {
         Ext.apply(this, {
@@ -38,8 +34,7 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
                 }, {
                     xtype: 'themebase-datetimefield',
                     name: 'publishing_time',
-                    margin: {top: 20},
-                    //value: this.assignmentRecord.get('publishing_time')
+                    margin: {top: 20}
                 }],
                 dockedItems: [{
                     xtype: 'toolbar',
