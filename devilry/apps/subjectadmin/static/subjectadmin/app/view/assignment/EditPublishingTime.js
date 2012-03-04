@@ -19,18 +19,19 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
             width: 330,
             height: 270,
             modal: true,
-            title: dtranslate('subjectadmin.assignment.editpublishingtime.title'),
+            title: dtranslate('subjectadmin.assignment.publishing_time.label'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
                 autoScroll: true,
+                border: 0,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
                 },
                 items: [{
                     xtype: 'box',
-                    html: dtranslate('subjectadmin.assignment.editpublishingtime.help'),
+                    html: dtranslate('subjectadmin.assignment.publishing_time.edithelp'),
                     margin: {bottom: 20}
                 }, {
                     xtype: 'alertmessagelist'

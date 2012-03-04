@@ -11,6 +11,7 @@ subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 le
 subjectadmin.assignment.short_name.label: Short name
 subjectadmin.assignment.short_name.example: "Example: assignment1"
 subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
+subjectadmin.assignment.publishing_time.edithelp: 'Choose a time when time when students will be able to start adding deliveries on the assignment.'
 subjectadmin.assignment.publishing_time.label: Publishing time
 subjectadmin.assignment.notpublished.title: Not published
 subjectadmin.assignment.notpublished.body: 'Will be published {publishing_time}.'
@@ -29,6 +30,10 @@ subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiner
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
 subjectadmin.assignment.activeperiod.label: "Period"
 subjectadmin.assignment.activeperiod.help: "Choose the period where the assignment belongs."
+subjectadmin.assignment.waitingforfeedback: Waiting for feedback
+subjectadmin.assignment.upcoming_deadlines: Upcoming deadlines
+subjectadmin.assignment.manage_students: Manage students
+subjectadmin.assignment.manage_deadlines: Manage deadlines
 subjectadmin.createnewassignment.title: Create new assignment
 subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
 subjectadmin.createnewassignment.success.gotocreated: "Go to {assignment}"

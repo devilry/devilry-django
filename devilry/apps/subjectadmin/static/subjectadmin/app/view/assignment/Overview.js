@@ -63,10 +63,10 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         xtype: 'actionlist',
                         links: [{
                             url: Ext.String.format('{0}/@@manage-students', this.url),
-                            text: dtranslate('subjectadmin.assignment.manage-students')
+                            text: dtranslate('subjectadmin.assignment.manage_students')
                         }, {
                             url: '#',
-                            text: dtranslate('subjectadmin.assignment.manage-deadlines')
+                            text: dtranslate('subjectadmin.assignment.manage_deadlines')
                         }]
                     }
                 }, {
@@ -86,7 +86,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         ui: 'inset-header-panel',
                         columnWidth: .5,
                         margin: {left: 20},
-                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming-deadlines'), 25),
+                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming_deadlines'), 25),
                         html: 'TODO'
                     }]
                 }]
