@@ -67,6 +67,6 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     },
 
     _onEditGradeEditor: function() {
-        console.log('grade', this.getGradeEditorSidebarBox());
+        Ext.MessageBox.alert('Error', 'Not implemented yet');
     }
 });
