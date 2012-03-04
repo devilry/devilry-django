@@ -39,6 +39,10 @@ class ToHtml(object):
             raise ValueError("Unsupported data type: {0}".format(typename))
 
     def encode_dict(self, parent, data):
+        if len(data) == 0:
+            span = ElementTree.SubElement(parent, 'span')
+            span.text = 'EMPTY DICT'
+            return
         dl = ElementTree.SubElement(parent, "dl")
         for key, value in data.iteritems():
             keyelem = ElementTree.SubElement(dl, 'dt')
