@@ -40,11 +40,11 @@ Ext.define('themebase.EditableSidebarBox', {
                 xtype: 'box',
                 itemId: 'body',
                 padding: {top: 3},
-                columnWidth: .7,
+                columnWidth: .76,
                 html: ''
             }, {
                 xtype: 'button',
-                columnWidth: .3,
+                columnWidth: .24,
                 text: this.buttonText
             }]
         });
