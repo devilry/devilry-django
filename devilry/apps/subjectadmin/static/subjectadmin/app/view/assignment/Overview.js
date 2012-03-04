@@ -33,6 +33,17 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
 
 
     initComponent: function() {
+        var assignment = Ext.String.format('{0}.{1}.{2}',
+            this.subject_shortname, this.period_shortname,
+            this.assignment_shortname
+        );
+        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.delete_something')).apply({
+            what: assignment
+        });
+        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.rename_something')).apply({
+            what: assignment
+        });
+
 
         Ext.apply(this, {
             layout: 'column',
@@ -56,10 +67,6 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         }, {
                             url: '#',
                             text: dtranslate('subjectadmin.assignment.manage-deadlines')
-                        }, {
-                            url: '#',
-                            buttonType: 'danger',
-                            text: dtranslate('themebase.delete-something')
                         }]
                     }
                 }, {
@@ -99,6 +106,20 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                 }, {
                     xtype: 'editpublishingtime-widget',
                     disabled: true
+                }]
+            }],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                padding: {left: 40, top: 1, bottom: 1, right: 40},
+                items: [{
+                    xtype: 'button',
+                    text: 'Advanced',
+                    menu: [{
+                        text: renameLabel
+                    }, {
+                        text: deleteLabel
+                    }]
                 }]
             }]
         });
