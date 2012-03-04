@@ -32,7 +32,11 @@ $progress-bar-background-color: #ababab;
 $tip-base-color: $base-color;
 
 //grid
-$grid-header-over-border-color: darken($base-color, 3);
+$grid-header-over-border-color: #bbb; //darken($base-color, 3);
+$grid-row-cell-selected-border-style: solid;
+$grid-row-cell-selected-border-color: darken($blueDark, 10%);
+$grid-row-cell-selected-background-color: $blueDark;
+
 
 //toolbar
 $toolbar-background-gradient: color-stops(#efefef, #f5f5f5);

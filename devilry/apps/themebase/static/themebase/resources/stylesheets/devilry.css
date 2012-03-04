@@ -5453,16 +5453,16 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 .x-column-header-over,
 .x-column-header-sort-ASC,
 .x-column-header-sort-DESC {
-  border-left-color: #e6e6e6;
-  border-right-color: #e6e6e6;
+  border-left-color: #bbbbbb;
+  border-right-color: #bbbbbb;
   background-image: none;
-  background-color: #e6e6e6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(39%, #ffffff), color-stop(40%, #ffffff), color-stop(100%, #ffffff));
-  background-image: -webkit-linear-gradient(top, #ffffff, #ffffff 39%, #ffffff 40%, #ffffff);
-  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 39%, #ffffff 40%, #ffffff);
-  background-image: -o-linear-gradient(top, #ffffff, #ffffff 39%, #ffffff 40%, #ffffff);
-  background-image: -ms-linear-gradient(top, #ffffff, #ffffff 39%, #ffffff 40%, #ffffff);
-  background-image: linear-gradient(top, #ffffff, #ffffff 39%, #ffffff 40%, #ffffff);
+  background-color: #bbbbbb;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dfdfdf), color-stop(39%, #dfdfdf), color-stop(40%, #d5d5d5), color-stop(100%, #d5d5d5));
+  background-image: -webkit-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
+  background-image: -moz-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
+  background-image: -o-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
+  background-image: -ms-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
+  background-image: linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
 }
 
 /* line 130, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -5588,9 +5588,9 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 /* line 243, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-selected .x-grid-cell,
 .x-grid-row-selected .x-grid-rowwrap-div {
-  border-style: dotted;
-  border-color: #dfdcdc;
-  background-color: white !important;
+  border-style: solid;
+  border-color: #004b9a;
+  background-color: #0064cd !important;
 }
 
 /* line 252, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -5682,13 +5682,13 @@ browsers will do whacky things with it.
 .x-grid-row-selected .x-grid-cell-special {
   border-right: 1px solid #ede2e2;
   background-image: none;
-  background-color: white;
-  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #ffffff), color-stop(100%, #f2f2f2));
-  background-image: -webkit-linear-gradient(left, #ffffff, #f2f2f2);
-  background-image: -moz-linear-gradient(left, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(left, #ffffff, #f2f2f2);
-  background-image: -ms-linear-gradient(left, #ffffff, #f2f2f2);
-  background-image: linear-gradient(left, #ffffff, #f2f2f2);
+  background-color: #0064cd;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #0064cd), color-stop(100%, #0058b3));
+  background-image: -webkit-linear-gradient(left, #0064cd, #0058b3);
+  background-image: -moz-linear-gradient(left, #0064cd, #0058b3);
+  background-image: -o-linear-gradient(left, #0064cd, #0058b3);
+  background-image: -ms-linear-gradient(left, #0064cd, #0058b3);
+  background-image: linear-gradient(left, #0064cd, #0058b3);
 }
 
 /* line 337, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -15307,26 +15307,26 @@ select:focus {
   background-image: none !important;
 }
 
-/* line 2, ../sass/_grid.scss */
-.x-grid-cell-inner strong {
+/* line 3, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner strong {
   font-size: 15px;
   line-height: 21px;
 }
-/* line 6, ../sass/_grid.scss */
-.x-grid-cell-inner small {
+/* line 7, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner small {
   font-size: 11px;
   color: gray;
 }
-/* line 10, ../sass/_grid.scss */
-.x-grid-cell-inner .success, .x-grid-cell-inner small.success {
+/* line 11, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
   color: #46a546;
 }
-/* line 13, ../sass/_grid.scss */
-.x-grid-cell-inner .danger, .x-grid-cell-inner small.danger {
+/* line 14, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
   color: #dc5600;
 }
-/* line 17, ../sass/_grid.scss */
-.x-grid-cell-inner .countbox {
+/* line 18, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .countbox {
   background-color: gray;
   color: white;
   padding: 2px 4px;
@@ -15339,4 +15339,21 @@ select:focus {
   -ms-border-radius: 3px 3px 3px 3px;
   -khtml-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
+}
+
+/* line 31, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner {
+  color: #fff;
+}
+/* line 33, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner small {
+  color: #eee;
+}
+/* line 37, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner .success, .x-grid-row-selected .x-grid-cell-inner small.success {
+  color: #fff;
+}
+/* line 40, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner .danger, .x-grid-row-selected .x-grid-cell-inner small.danger {
+  color: #fff;
 }

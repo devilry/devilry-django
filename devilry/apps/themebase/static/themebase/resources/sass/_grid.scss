@@ -1,26 +1,44 @@
-.x-grid-cell-inner {
-    strong {
-        font-size: $basefont + 2;
-        line-height: $baseline + 3px;
-    }
-    small {
-        font-size: $basefont - 2;
-        color: $gray;
-    }
-    .success, small.success {
-        color: $green;
-    }
-    .danger, small.danger {
-        color: $orangeDark;
-    }
+.x-grid-row {
+    .x-grid-cell-inner {
+        strong {
+            font-size: $basefont + 2;
+            line-height: $baseline + 3px;
+        }
+        small {
+            font-size: $basefont - 2;
+            color: $gray;
+        }
+        .success, small.success {
+            color: $green;
+        }
+        .danger, small.danger {
+            color: $orangeDark;
+        }
 
-    .countbox {
-        background-color: $gray;
-        color: $white;
-        padding: 2px 4px;
-        margin: 2px 0;
-        display: inline-block;
-        font-size: $basefont - 2;
-        @include border-radius(3px 3px 3px 3px);
+        .countbox {
+            background-color: $gray;
+            color: $white;
+            padding: 2px 4px;
+            margin: 2px 0;
+            display: inline-block;
+            font-size: $basefont - 2;
+            @include border-radius(3px 3px 3px 3px);
+        }
+    }
+}
+
+.x-grid-row-selected {
+    .x-grid-cell-inner {
+        color: #fff;
+        small {
+            color: #eee;
+        }
+
+        .success, small.success {
+            color: #fff;
+        }
+        .danger, small.danger {
+            color: #fff;
+        }
     }
 }
