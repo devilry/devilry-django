@@ -1,4 +1,5 @@
 themebase.create: Create
+themebase.edit: Edit
 themebase.form.hasfieldswitherrors: 
 themebase.gotodashboard: Return to dashboard
 themebase.lostserverconnection: Lost connection to the server.
