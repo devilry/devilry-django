@@ -19,6 +19,7 @@ Ext.define('subjectadmin.Application', {
         //'ChoosePeriod',
         'assignment.Overview',
         'assignment.EditPublishingTime',
+        'assignment.EditAnonymous',
         'managestudents.Overview',
         'managestudents.AddStudentsPlugin'
     ],

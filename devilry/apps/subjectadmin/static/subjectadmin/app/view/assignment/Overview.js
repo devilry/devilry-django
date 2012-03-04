@@ -11,6 +11,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
         'themebase.CenterTitle',
         'themebase.EditableSidebarBox',
         'subjectadmin.view.assignment.EditPublishingTimeWidget',
+        'subjectadmin.view.assignment.EditAnonymousWidget',
         'subjectadmin.view.ActionList'
     ],
 
@@ -105,6 +106,9 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     title: dtranslate('subjectadmin.assignment.gradeeditor')
                 }, {
                     xtype: 'editpublishingtime-widget',
+                    disabled: true
+                }, {
+                    xtype: 'editanonymous-widget',
                     disabled: true
                 }]
             }],
