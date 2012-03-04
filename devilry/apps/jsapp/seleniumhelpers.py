@@ -2,6 +2,7 @@ import json
 from selenium.webdriver.support.ui import WebDriverWait
 from unittest import TestCase, skipIf
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from django.conf import settings
 
 
@@ -93,3 +94,11 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
             waitFor(myelem, lambda myelem: len(myelem.text) > 0)
         """
         WebDriverWait(item, timeout).until(fn)
+
+    def failIfCssSelectorNotFound(self, element, css_selector):
+        """
+        Assert that ``element.find_element_by_css_selector(css_selector)``
+        raises ``NoSuchElementException``.
+        """
+        with self.assertRaises(NoSuchElementException):
+            element.find_element_by_css_selector(css_selector)
