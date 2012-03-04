@@ -1,10 +1,9 @@
 Ext.define('themebase.EditableSidebarBox', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.editablesidebarbox',
 
-    requires: [
-        'themebase.SidebarTitle'
-    ],
+    ui: 'lookslike-parawitheader-panel',
+    layout: 'column',
 
     /**
      * @cfg {String} title
@@ -36,22 +35,17 @@ Ext.define('themebase.EditableSidebarBox', {
         }
         this.cls = cssclasses;
         Ext.apply(this, {
+            title: this.title,
             items: [{
-                xtype: 'container',
-                layout: 'column',
-                items: [{
-                    xtype: 'sidebartitle',
-                    columnWidth: .7,
-                    title: this.title
-                }, {
-                    xtype: 'button',
-                    columnWidth: .3,
-                    text: this.buttonText
-                }]
-            }, {
                 xtype: 'box',
                 itemId: 'body',
+                padding: {top: 3},
+                columnWidth: .7,
                 html: ''
+            }, {
+                xtype: 'button',
+                columnWidth: .3,
+                text: this.buttonText
             }]
         });
         this.callParent(arguments);
@@ -64,6 +58,6 @@ Ext.define('themebase.EditableSidebarBox', {
     },
 
     updateTitle: function(title) {
-        this.down('sidebartitle').update(title);
+        this.setTitle(title);
     }
 });
