@@ -39,6 +39,7 @@ Ext.define('themebase.EditableSidebarBox', {
             items: [{
                 xtype: 'box',
                 itemId: 'body',
+                cls: 'bootstrap',
                 padding: {top: 3},
                 columnWidth: .76,
                 html: ''
@@ -53,7 +54,8 @@ Ext.define('themebase.EditableSidebarBox', {
     },
 
     updateBody: function(bodyTpl, data) {
-        var tpl = Ext.create('Ext.XTemplate', bodyTpl)
+        var data = data || {};
+        var tpl = Ext.create('Ext.XTemplate', Ext.Array.from(bodyTpl))
         this.getComponent('body').update(tpl.apply(data));
     },
 
