@@ -88,10 +88,13 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                 border: false,
                 columnWidth: .35,
                 margin: {left: 40},
+                defaults: {
+                    margin: {top: 20},
+                },
                 items: [{
                     xtype: 'editablesidebarbox',
                     itemId: 'gradeeditor',
-                    cls: 'gradeeditor-editablesidebarbox',
+                    margin: {top: 0},
                     title: dtranslate('subjectadmin.assignment.gradeeditor')
                 }, {
                     xtype: 'editpublishingtime-widget',
