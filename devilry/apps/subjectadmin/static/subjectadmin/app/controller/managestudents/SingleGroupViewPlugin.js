@@ -10,21 +10,6 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupViewPlugin', {
         'managestudents.SingleGroupView'
     ],
 
-
-    refs: [{
-        ref: 'overview',
-        selector: 'managestudentsoverview'
-    //}, {
-        //ref: 'listOfGroups',
-        //selector: 'listofgroups'
-    }, {
-        ref: 'body',
-        selector: 'managestudentsoverview #body'
-    }, {
-        ref: 'listofgroupsToolbar',
-        selector: 'managestudentsoverview toolbar[itemId=listofgroupsToolbar]'
-    }],
-
     init: function() {
         this.application.addListener({
             scope: this,

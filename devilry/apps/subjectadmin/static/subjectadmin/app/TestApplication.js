@@ -10,6 +10,7 @@ Ext.define('subjectadmin.TestApplication', {
         'assignment.EditAnonymous',
         'managestudents.OverviewTestMock',
         'managestudents.AddStudentsPlugin',
+        'managestudents.NoGroupSelectedViewPlugin',
         'managestudents.SingleGroupViewPlugin'
     ],
 

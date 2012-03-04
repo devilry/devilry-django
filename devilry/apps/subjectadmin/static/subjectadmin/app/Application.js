@@ -21,6 +21,7 @@ Ext.define('subjectadmin.Application', {
         'assignment.EditAnonymous',
         'managestudents.Overview',
         'managestudents.AddStudentsPlugin',
+        'managestudents.NoGroupSelectedViewPlugin',
         'managestudents.SingleGroupViewPlugin'
     ],
 
@@ -47,7 +48,7 @@ Ext.define('subjectadmin.Application', {
              * whenever all groups are deselected.
              * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
              */
-            'managestudentsNoGroupsSelected',
+            'managestudentsNoGroupSelected',
 
             /**
              * @event

@@ -196,7 +196,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     },
 
     _handleNoGroupsSelected: function() {
-        this.application.fireEvent('managestudentsNoGroupsSelected', this);
+        this.application.fireEvent('managestudentsNoGroupSelected', this);
     },
 
     _handleSingleGroupSelected: function(groupRecord) {
