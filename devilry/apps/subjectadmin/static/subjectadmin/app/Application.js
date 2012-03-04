@@ -22,7 +22,7 @@ Ext.define('subjectadmin.Application', {
         'managestudents.Overview',
         'managestudents.AddStudentsPlugin',
         'managestudents.NoGroupSelectedViewPlugin',
-        'managestudents.SingleGroupViewPlugin'
+        'managestudents.SingleGroupSelectedViewPlugin'
     ],
 
     constructor: function() {

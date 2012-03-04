@@ -3,11 +3,11 @@
  * adds the ability to show information about and edit a single group when
  * it is selected.
  */
-Ext.define('subjectadmin.controller.managestudents.SingleGroupViewPlugin', {
+Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'managestudents.SingleGroupView'
+        'managestudents.SingleGroupSelectedView'
     ],
 
     init: function() {
