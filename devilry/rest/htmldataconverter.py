@@ -52,6 +52,8 @@ class ToHtml(object):
             item = ElementTree.SubElement(ul, "li")
             self._encode(item, value)
 
+    def encode_tuple(self, parent, data):
+        self.encode_list(parent, data)
 
     def encode_unicode(self, parent, data):
         url = urlparse(data)
