@@ -116,13 +116,25 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     xtype: 'button',
                     text: 'Advanced',
                     menu: [{
-                        text: renameLabel
+                        text: renameLabel,
+                        listeners: {
+                            scope: this,
+                            click: this._notImplemented
+                        }
                     }, {
-                        text: deleteLabel
+                        text: deleteLabel,
+                        listeners: {
+                            scope: this,
+                            click: this._notImplemented
+                        }
                     }]
                 }]
             }]
         });
         this.callParent(arguments);
+    },
+
+    _notImplemented: function() {
+        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     }
 });
