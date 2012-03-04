@@ -11,7 +11,8 @@ Ext.define('subjectadmin.TestApplication', {
         'managestudents.OverviewTestMock',
         'managestudents.AddStudentsPlugin',
         'managestudents.NoGroupSelectedViewPlugin',
-        'managestudents.SingleGroupSelectedViewPlugin'
+        'managestudents.SingleGroupSelectedViewPlugin',
+        'managestudents.MultipleGroupsSelectedViewPlugin'
     ],
 
     setupExtraRoutes: function() {
