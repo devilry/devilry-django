@@ -48,6 +48,9 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
             'editpublishingtime savebutton': {
                 click: this._onSave
             },
+            'editpublishingtime cancelbutton': {
+                click: this._close
+            },
             'editpublishingtime-widget button': {
                 click: this._onEdit
             }
@@ -76,8 +79,12 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
                 failure: this._onSaveFailure
             });
         } else {
-            this.close();
+            this._close();
         }
+    },
+
+    _close: function() {
+        this.getEditPublishingTime().close();
     },
 
     _getMaskElement: function() {
@@ -86,7 +93,7 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
 
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
-        this.getEditPublishingTime().close();
+        this._close();
         this._updatePublishingTimeWidget();
     },
 

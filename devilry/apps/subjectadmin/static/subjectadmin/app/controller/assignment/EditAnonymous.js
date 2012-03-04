@@ -48,6 +48,9 @@ Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
             'editanonymous savebutton': {
                 click: this._onSave
             },
+            'editanonymous cancelbutton': {
+                click: this._close
+            },
             'editanonymous-widget button': {
                 click: this._onEdit
             }
@@ -64,6 +67,10 @@ Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
         this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
     },
 
+    _close: function() {
+        this.getEditAnonymous().close();
+    },
+
     _onSave: function() {
         var form = this.getFormPanel().getForm();
         var oldValue = this.assignmentRecord.get('anonymous');
@@ -78,7 +85,7 @@ Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
                 failure: this._onSaveFailure
             });
         } else {
-            this.getEditAnonymous().close();
+            this._close();
         }
     },
 
@@ -88,7 +95,7 @@ Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
 
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
-        this.getEditAnonymous().close();
+        this._close();
         this._updateAnonymousWidget();
     },
 

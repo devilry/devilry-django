@@ -14,6 +14,7 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
             layout: 'fit',
             width: 330,
             height: 270,
+            closable: false,
             modal: true,
             title: dtranslate('subjectadmin.assignment.publishing_time.label'),
             items: {
@@ -36,15 +37,11 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
                     name: 'publishing_time',
                     margin: {top: 20}
                 }],
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    ui: 'footer',
-                    padding: 0,
-                    items: ['->', {
-                        xtype: 'savebutton',
-                        formBind: true //only enabled once the form is valid
-                    }]
+                buttons: ['->', {
+                    xtype: 'cancelbutton'
+                }, {
+                    xtype: 'savebutton',
+                    formBind: true //only enabled once the form is valid
                 }]
             }
         });

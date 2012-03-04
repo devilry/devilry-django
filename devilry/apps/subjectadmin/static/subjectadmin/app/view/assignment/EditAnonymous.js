@@ -14,6 +14,7 @@ Ext.define('subjectadmin.view.assignment.EditAnonymous', {
             layout: 'fit',
             width: 330,
             height: 270,
+            closable: false,
             modal: true,
             title: dtranslate('subjectadmin.assignment.anonymous.label'),
             items: {
@@ -39,14 +40,10 @@ Ext.define('subjectadmin.view.assignment.EditAnonymous', {
                     inputValue: true,
                     margin: {top: 20}
                 }],
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    ui: 'footer',
-                    padding: 0,
-                    items: ['->', {
-                        xtype: 'savebutton'
-                    }]
+                buttons: ['->', {
+                    xtype: 'cancelbutton'
+                }, {
+                    xtype: 'savebutton'
                 }]
             }
         });
