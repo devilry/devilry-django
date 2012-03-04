@@ -95,7 +95,7 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
         """
         WebDriverWait(item, timeout).until(fn)
 
-    def failIfCssSelectorNotFound(self, element, css_selector):
+    def failIfCssSelectorFound(self, element, css_selector):
         """
         Assert that ``element.find_element_by_css_selector(css_selector)``
         raises ``NoSuchElementException``.
