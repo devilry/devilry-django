@@ -2,7 +2,7 @@
  * Assignment overview (overview of an assignment).
  */
 Ext.define('subjectadmin.view.assignment.Overview' ,{
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentoverview',
     cls: 'assignmentoverview sidebarlayout',
     requires: [
@@ -35,23 +35,21 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
     initComponent: function() {
 
         Ext.apply(this, {
-            layout: 'rightsidebar',
+            layout: 'column',
             frame: false,
+            border: 0,
+            bodyPadding: 40,
+            autoScroll: true,
 
             items: [{
                 xtype: 'container',
-                cls: 'centercolumn',
-                region: 'main',
+                columnWidth: .65,
                 items: [{
-                    xtype: 'container',
-                    cls: 'centerbox',
-                    items: [{
-                        xtype: 'centertitle',
-                        itemId: 'primaryTitle',
-                        title: dtranslate('themebase.loading'),
-                    }, {
+                    xtype: 'panel',
+                    itemId: 'actions',
+                    ui: 'inset-header-strong-panel',
+                    items: {
                         xtype: 'actionlist',
-                        cls: 'centerbody',
                         links: [{
                             url: Ext.String.format('{0}/@@manage-students', this.url),
                             text: dtranslate('subjectadmin.assignment.manage-students')
@@ -63,41 +61,33 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                             buttonType: 'danger',
                             text: dtranslate('themebase.delete-something')
                         }]
-                    }]
+                    }
                 }, {
-                    xtype: 'container',
-                    cls: 'twocol-centerbox',
+                    xtype: 'panel',
+                    ui: 'transparentpanel-overflowvisible',
+                    margin: {top: 40},
                     layout: 'column',
                     items: [{
-                        xtype: 'container',
-                        cls: 'centerbox',
+                        xtype: 'panel',
+                        ui: 'inset-header-panel',
+                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25),
                         columnWidth: .5,
-                        items: [{
-                            xtype: 'centertitle',
-                            title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25)
-                        }, {
-                            xtype: 'box',
-                            cls: 'centerbody',
-                            html: 'TODO'
-                        }]
+                        margin: {right: 20},
+                        html: 'TODO'
                     }, {
-                        xtype: 'container',
+                        xtype: 'panel',
+                        ui: 'inset-header-panel',
                         columnWidth: .5,
-                        cls: 'centerbox',
-                        items: [{
-                            xtype: 'centertitle',
-                            title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming-deadlines'), 25)
-                        }, {
-                            xtype: 'box',
-                            cls: 'centerbody',
-                            html: 'TODO'
-                        }]
+                        margin: {left: 20},
+                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming-deadlines'), 25),
+                        html: 'TODO'
                     }]
                 }]
             }, {
                 xtype: 'container',
                 border: false,
-                region: 'sidebar',
+                columnWidth: .35,
+                margin: {left: 40},
                 items: [{
                     xtype: 'editablesidebarbox',
                     itemId: 'gradeeditor',

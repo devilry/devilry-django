@@ -14,7 +14,6 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
 
     items: [{
         xtype: 'container',
-        cls: 'centercolumn',
         columnWidth: .65,
         items: [{
             xtype: 'panel',

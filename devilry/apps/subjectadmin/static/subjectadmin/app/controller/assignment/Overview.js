@@ -19,10 +19,10 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
 
     refs: [{
         ref: 'gradeEditorSidebarBox',
-        selector: 'editablesidebarbox[itemId=gradeeditor]'
+        selector: 'assignmentoverview editablesidebarbox[itemId=gradeeditor]'
     }, {
-        ref: 'primaryTitle',
-        selector: 'centertitle[itemId=primaryTitle]'
+        ref: 'actions',
+        selector: 'assignmentoverview #actions'
     }, {
         ref: 'assignmentOverview',
         selector: 'assignmentoverview'
@@ -63,7 +63,7 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
-        this.getPrimaryTitle().update(record.get('long_name'));
+        this.getActions().setTitle(record.get('long_name'));
     },
 
     _onEditGradeEditor: function() {
