@@ -20,7 +20,8 @@ $font-size: $basefont;
 
 @import "rightsidebarlayout";
 @import "buttons";
-@import "transparent-panel";
+@import "transparentpanel";
+@import "transparentpanel-overflowvisible";
 @import "lookslike-parawithheader-panel";
 @import "inset-header-strong-panel";
 @import "inset-header-panel";
