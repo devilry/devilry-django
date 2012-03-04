@@ -9,7 +9,8 @@ Ext.define('subjectadmin.TestApplication', {
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
         'managestudents.OverviewTestMock',
-        'managestudents.AddStudentsPlugin'
+        'managestudents.AddStudentsPlugin',
+        'managestudents.SingleGroupViewPlugin'
     ],
 
     setupExtraRoutes: function() {

@@ -1,13 +1,13 @@
 /**
- * Controller that handles tasks when a single group is selected.
- *
+ * Plugin for {@link subjectadmin.controller.managestudents.Overview} that
+ * adds the ability to show information about and edit a single group when
+ * it is selected.
  */
-Ext.define('subjectadmin.controller.managestudents.SingleGroupView', {
+Ext.define('subjectadmin.controller.managestudents.SingleGroupViewPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'managestudents.Overview',
-        'managestudents.ListOfGroups'
+        'managestudents.SingleGroupView'
     ],
 
 
@@ -26,21 +26,26 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupView', {
     }],
 
     init: function() {
+        this.application.addListener({
+            scope: this,
+            managestudentsSingleGroupSelected: this._onSingleGroupSelected
+        });
         this.control({
-            'viewport managestudentsoverview': {
+            'viewport singlegroupview': {
                 render: this._onRender
-            },
-            'viewport managestudentsoverview listofgroups': {
-                selectionchange: this._onGroupSelectionChange
             }
         });
     },
 
+    _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
+        this.groupRecord = groupRecord;
+        manageStudentsController.setBody({
+            xtype: 'singlegroupview',
+            groupRecord: groupRecord
+        });
+    },
+
     _onRender: function() {
-        this.subject_shortname = this.getOverview().subject_shortname;
-        this.period_shortname = this.getOverview().period_shortname;
-        this.assignment_shortname = this.getOverview().assignment_shortname;
-        //this.getOverview().getEl().mask(dtranslate('themebase.loading'));
-        this.loadAssignment();
+        console.log('render');
     }
 });

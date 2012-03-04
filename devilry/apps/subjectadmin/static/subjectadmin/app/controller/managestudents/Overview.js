@@ -20,16 +20,16 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     /**
      * Get the related examiners store.
-     * This store is automatically loaded with all the groups on the assignment
-     * before the ``managestudentsSuccessfullyLoaded`` event is fired.
+     * This store is automatically loaded with all the related examiners on the
+     * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {subjectadmin.store.RelatedExaminers} Store.
      * @method getRelatedExaminersStore
      */
 
     /**
      * Get the related students store.
-     * This store is automatically loaded with all the groups on the assignment
-     * before the ``managestudentsSuccessfullyLoaded`` event is fired.
+     * This store is automatically loaded with all the related students on the
+     * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {subjectadmin.store.RelatedStudents} Store.
      * @method getRelatedStudentsStore
      */
@@ -66,15 +66,24 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     refs: [{
         ref: 'overview',
         selector: 'managestudentsoverview'
+    //}, {
+        //ref: 'listOfGroups',
+        //selector: 'listofgroups'
+    }, {
+        ref: 'body',
+        selector: 'managestudentsoverview #body'
     }, {
         ref: 'listofgroupsToolbar',
-        selector: 'toolbar[itemId=listofgroupsToolbar]'
+        selector: 'managestudentsoverview toolbar[itemId=listofgroupsToolbar]'
     }],
 
     init: function() {
         this.control({
             'viewport managestudentsoverview': {
                 render: this._onRender
+            },
+            'viewport managestudentsoverview listofgroups': {
+                selectionchange: this._onGroupSelectionChange
             }
         });
     },
@@ -174,5 +183,36 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
+    },
+
+    _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
+        if(selectedGroupRecords.length === 1) {
+            this._handleSingleGroupSelected(selectedGroupRecords[0]);
+        } else if(selectedGroupRecords.length > 1) {
+            this._handleMultipleGroupsSelected(selectedGroupRecords);
+        } else {
+            this._handleNoGroupsSelected();
+        }
+    },
+
+    _handleNoGroupsSelected: function() {
+        this.application.fireEvent('managestudentsNoGroupsSelected', this);
+    },
+
+    _handleSingleGroupSelected: function(groupRecord) {
+        this.application.fireEvent('managestudentsSingleGroupSelected', this, groupRecord);
+    },
+
+    _handleMultipleGroupsSelected: function(groupRecords) {
+        this.application.fireEvent('managestudentsMultipleGroupsSelected', this, groupRecords);
+    },
+
+    /**
+     * Set the body component (the center area of the borderlayout). Removes
+     * all components in the body before adding the new component.
+     */
+    setBody: function(component) {
+        this.getBody().removeAll();
+        this.getBody().add(component);
     }
 });

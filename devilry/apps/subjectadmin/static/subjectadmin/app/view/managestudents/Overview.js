@@ -41,12 +41,8 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                 xtype: 'panel',
                 region: 'center',
                 border: false,
-                //ui: 'transparentpanel',
                 bodyPadding: 20,
-                items: {
-                    xtype: 'box',
-                    html: 'TODO'
-                }
+                itemId: 'body'
             }]
         });
         this.callParent(arguments);

@@ -16,12 +16,12 @@ Ext.define('subjectadmin.Application', {
         'Shortcuts',
         'Dashboard',
         'CreateNewAssignment',
-        //'ChoosePeriod',
         'assignment.Overview',
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
         'managestudents.Overview',
-        'managestudents.AddStudentsPlugin'
+        'managestudents.AddStudentsPlugin',
+        'managestudents.SingleGroupViewPlugin'
     ],
 
     constructor: function() {
@@ -38,7 +38,34 @@ Ext.define('subjectadmin.Application', {
              * Fired when the students manager on an assigmment is successfully loaded.
              * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
              */
-            'managestudentsSuccessfullyLoaded'
+            'managestudentsSuccessfullyLoaded',
+
+            /**
+             * @event
+             * Fired when no groups are selected in the students manager on an
+             * assignment. This happens when the manager is loaded, and
+             * whenever all groups are deselected.
+             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             */
+            'managestudentsNoGroupsSelected',
+
+            /**
+             * @event
+             * Fired when a single group is selected in the students manager on
+             * an assignment.
+             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {subjectadmin.model.Group} groupRecord
+             */
+            'managestudentsSingleGroupSelected',
+
+            /**
+             * @event
+             * Fired when multiple groups are selected in the students manager
+             * on an assignment.
+             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {[subjectadmin.model.Group]} groupRecords
+             */
+            'managestudentsMultipleGroupsSelected'
         );
         this.callParent(arguments);
     },

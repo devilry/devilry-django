@@ -7,7 +7,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
     cls: 'listofgroups',
     store: 'Groups',
     hideHeaders: true,
-
+    multiSelect: true,
 
     col1TemplateString: [
         '<div class="col1Wrapper">',
