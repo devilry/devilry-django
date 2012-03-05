@@ -209,6 +209,45 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     },
 
     /**
+     * Return ``true`` if this assignment is a project assignment.
+     */
+    isProjectAssignment: function() {
+        return false;
+    },
+
+    /**
+     * Get multiselect help message.
+     */
+    getMultiSelectHowto: function() {
+        var shortcutkey = 'CTRL';
+        if(Ext.isMac) {
+            shortcutkey = 'CMD';
+        }
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselecthowto'));
+        return tpl.apply({
+            shortcutkey: shortcutkey,
+            groupunit_plural: this.getTranslatedGroupUnit(true)
+        });
+    },
+
+    /**
+     * Get translated group unit string. E.g.: One of ``"student"`` or ``"group"``.
+     * @param {boolean} pluralize Pluralize the group unit?
+     */
+    getTranslatedGroupUnit: function(pluralize) {
+        var translatekey;
+        if(this.isProjectAssignment()) {
+            translatekey = 'subjectadmin.groupunit.projectassignment';
+        } else {
+            translatekey = 'subjectadmin.groupunit.not_projectassignment';
+        }
+        if(pluralize) {
+            translatekey += '_plural';
+        }
+        return dtranslate(translatekey);
+    },
+
+    /**
      * Set the body component (the center area of the borderlayout). Removes
      * all components in the body before adding the new component.
      */

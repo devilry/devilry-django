@@ -11,9 +11,23 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      * @cfg {subjectadmin.model.Group} groupRecord (required)
      */
 
+    /**
+     * @cfg {string} topMessage (required)
+     */
+
+    /**
+     * @cfg {string} multiselectHowto (required)
+     */
+
     initComponent: function() {
+        //this.groupRecord.get('students')[0].student__username
+
         Ext.apply(this, {
-            html: 'hei ' + this.groupRecord.get('students')[0].student__username
+            items: [{
+                xtype: 'alertmessage',
+                type: 'info',
+                message: [this.topMessage, this.multiselectHowto].join(' ')
+            }]
         });
         this.callParent(arguments);
     }

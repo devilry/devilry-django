@@ -38,6 +38,7 @@ subjectadmin.assignment.waitingforfeedback: Waiting for feedback
 subjectadmin.assignment.upcoming_deadlines: Upcoming deadlines
 subjectadmin.assignment.manage_students: Manage students
 subjectadmin.assignment.manage_deadlines: Manage deadlines
+
 subjectadmin.createnewassignment.title: Create new assignment
 subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
 subjectadmin.createnewassignment.success.gotocreated: "Go to {assignment}"
@@ -56,4 +57,9 @@ subjectadmin.managestudents.addstudents.title: Add students
 subjectadmin.managestudents.addstudents.tips: Choose the students you want to add to the assignment, and click save.
 subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
 subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
-
+subjectadmin.managestudents.singlegroup.topmessage: 'One {groupunit} selected.'
+subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select multiple {groupunit_plural}.'
+subjectadmin.groupunit.projectassignment: 'group'
+subjectadmin.groupunit.projectassignment_plural: 'groups'
+subjectadmin.groupunit.not_projectassignment: 'student'
+subjectadmin.groupunit.not_projectassignment_plural: 'students'

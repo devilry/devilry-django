@@ -6,6 +6,10 @@
 Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'themebase.AlertMessage'
+    ],
+
     views: [
         'managestudents.SingleGroupSelectedView'
     ],
@@ -23,10 +27,21 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     },
 
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
+        this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
-        manageStudentsController.setBody({
+        this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            groupRecord: groupRecord
+            groupRecord: groupRecord,
+            multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
+            topMessage: this._createTopMessage(),
+            isProjectAssignment: this.manageStudentsController.isProjectAssignment()
+        });
+    },
+
+    _createTopMessage: function() {
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.singlegroup.topmessage'));
+        return tpl.apply({
+            groupunit: this.manageStudentsController.getTranslatedGroupUnit()
         });
     },
 
