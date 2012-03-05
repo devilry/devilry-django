@@ -5,6 +5,7 @@ an action. Particularly useful for forms.
 Ext.define('themebase.AlertMessage', {
     extend: 'Ext.Component',
     alias: 'widget.alertmessage',
+    cls: 'bootstrap',
     
     tpl: [
         '<div class="alert-message {type}">',
