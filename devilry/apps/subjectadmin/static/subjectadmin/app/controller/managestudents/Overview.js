@@ -13,6 +13,10 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
     },
 
+    requires: [
+        'Ext.util.KeyMap'
+    ],
+
     views: [
         'managestudents.Overview',
         'managestudents.ListOfGroups'
@@ -83,7 +87,8 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
                 render: this._onRender
             },
             'viewport managestudentsoverview listofgroups': {
-                selectionchange: this._onGroupSelectionChange
+                selectionchange: this._onGroupSelectionChange,
+                render: this._onRenderListOfGroups
             },
             'viewport managestudentsoverview #selectall': {
                 click: this._onSelectAll
@@ -97,6 +102,15 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.assignment_shortname = this.getOverview().assignment_shortname;
         //this.getOverview().getEl().mask(dtranslate('themebase.loading'));
         this.loadAssignment();
+    },
+
+    _onRenderListOfGroups: function() {
+        var map = new Ext.util.KeyMap(this.getListOfGroups().getEl(), {
+            key: 'a',
+            ctrl: true,
+            fn: this._onSelectAll,
+            scope: this
+        });
     },
 
     _onSelectAll: function() {
