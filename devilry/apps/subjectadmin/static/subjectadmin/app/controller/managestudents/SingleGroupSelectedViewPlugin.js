@@ -46,6 +46,7 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     },
 
     _onRender: function() {
-        console.log('render SingleGroupSelectedView');
+        console.log(this.groupRecord);
+        //console.log('render SingleGroupSelectedView');
     }
 });

@@ -33,9 +33,13 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                 width: 350,
                 dockedItems: [{
                     xtype: 'toolbar',
-                    dock: 'bottom',
+                    dock: 'top',
                     itemId: 'listofgroupsToolbar',
-                    items: []
+                    items: [{
+                        xtype: 'button',
+                        itemId: 'selectall',
+                        text: dtranslate('themebase.selectall')
+                    }]
                 }]
             }, {
                 xtype: 'panel',

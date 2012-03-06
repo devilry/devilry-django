@@ -66,9 +66,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     refs: [{
         ref: 'overview',
         selector: 'managestudentsoverview'
-    //}, {
-        //ref: 'listOfGroups',
-        //selector: 'listofgroups'
+    }, {
+        ref: 'listOfGroups',
+        selector: 'listofgroups'
     }, {
         ref: 'body',
         selector: 'managestudentsoverview #body'
@@ -84,6 +84,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview listofgroups': {
                 selectionchange: this._onGroupSelectionChange
+            },
+            'viewport managestudentsoverview #selectall': {
+                click: this._onSelectAll
             }
         });
     },
@@ -94,6 +97,10 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         this.assignment_shortname = this.getOverview().assignment_shortname;
         //this.getOverview().getEl().mask(dtranslate('themebase.loading'));
         this.loadAssignment();
+    },
+
+    _onSelectAll: function() {
+        this.getListOfGroups().getSelectionModel().selectAll();
     },
 
     /** Get the short name for the current subject. */

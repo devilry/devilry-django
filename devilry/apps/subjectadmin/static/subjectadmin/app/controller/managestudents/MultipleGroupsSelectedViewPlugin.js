@@ -31,6 +31,6 @@ Ext.define('subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlu
     },
 
     _onRender: function() {
-        console.log('render MultipleGroupsSelectedView');
+        //console.log('render MultipleGroupsSelectedView');
     }
 });
