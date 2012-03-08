@@ -193,8 +193,7 @@ class GroupDao(object):
 
     def _create_deadline_from_deadlinedict(self, group, deadlinedict):
         return self._create_from_singlekey_dict(Deadline, group, deadlinedict,
-                                                'deadline', 'deadline',
-                                                getvalue=isoformatted_datetime)
+                                                'deadline', 'deadline')
 
 
     def create_noauth(self, assignmentid, name=None, is_open=None,

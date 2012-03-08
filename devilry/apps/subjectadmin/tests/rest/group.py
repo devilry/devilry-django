@@ -249,7 +249,7 @@ class TestGroupDao(TestCase):
         group = AssignmentGroup(parentnode=assignment1)
         group.save()
         deadline = GroupDao()._create_deadline_from_deadlinedict(group,
-                                                                 dict(deadline='2010-01-02T03:04:05'))
+                                                                 dict(deadline=datetime(2010, 1, 2, 3, 4, 5)))
         self.assertEquals(deadline.deadline, datetime(2010, 1, 2, 3, 4, 5))
         deadline_db = Deadline.objects.get(id=deadline.id) # Raises exception if not found
         self.assertEquals(deadline_db.deadline, datetime(2010, 1, 2, 3, 4, 5))
@@ -263,8 +263,8 @@ class TestGroupDao(TestCase):
     def test_create_noauth_deadlines(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create_noauth(assignment1.id, deadlines=[{'deadline': '2010-01-02T03:04:05'},
-                                                                 {'deadline': '2010-02-03T04:05:06'}])
+        group = GroupDao().create_noauth(assignment1.id, deadlines=[{'deadline': datetime(2010, 1, 2, 3, 4, 5)},
+                                                                    {'deadline': datetime(2010, 2, 3, 4, 5, 6)}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         deadlines = [deadline.deadline for deadline in group.deadlines.all()]
         self.assertEquals(set(deadlines),
@@ -381,12 +381,13 @@ class TestRestGroupIntegration(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
-                            periods=['p1:admin(p1admin)'])
+                            periods=['p1:admin(p1admin)'],
+                            assignments=['a1'])
         self.client = RestClient()
+        self.testhelper.create_user('student0')
         self.client.login(username='p1admin', password='test')
 
     def test_list(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1')
         for studentNum in xrange(3):
             path = 'uni;sub.p1.a1.g{studentNum}:candidate(stud{studentNum})'.format(studentNum=studentNum)
             self.testhelper.add_to_path(path)
@@ -399,3 +400,14 @@ class TestRestGroupIntegration(TestCase):
                                u'id', u'feedback__points', u'feedback__grade',
                                u'is_open', u'num_deliveries',
                                u'feedback__save_timestamp', u'examiners']))
+
+    def test_create(self):
+        content, response = self.client.rest_create('/subjectadmin/rest/group/',
+                                                    assignmentid=self.testhelper.sub_p1_a1.id,
+                                                    students=[dict(candidate_id=u'candid334',
+                                                                   student__username=u'student0',
+                                                                   student__email=u'myemail2',
+                                                                   student__devilryuserprofile__full_name=u'Somename2')],
+                                                    tags=[dict(tag='group1')],
+                                                    deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
+        print content
