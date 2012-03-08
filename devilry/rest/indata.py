@@ -104,8 +104,7 @@ def indata(**indataspec):
     """
     def dec(targetfunc):
         targetfunc.indataspec = indataspec
-        argspec = getargspec(targetfunc)
-        targetfunc_args = argspec[0]
+        targetfunc_argspec = getargspec(targetfunc)
 
         @wraps(targetfunc)
         def wrapper(self, **kwargs):
@@ -122,15 +121,18 @@ def indata(**indataspec):
                     else:
                         converted_kwargs[paramname] = converted_value
 
-            targetfunc_argslen = len(targetfunc_args) - 1
-            if len(converted_kwargs) != targetfunc_argslen:
-                missing = ', '.join([repr(s) for s in set(targetfunc_args[1:]).difference(set(kwargs.keys()))])
-                raise InvalidIndataError('{funcname}(...) takes {targetfunc_argslen} arguments '
-                                         '({argcount} given). Missing parameters: {missing}.'
-                                         .format(funcname=targetfunc.__name__,
-                                                 targetfunc_argslen=targetfunc_argslen,
-                                                 argcount=len(converted_kwargs),
-                                                 missing=missing))
+            targetfunc_argslen = (len(targetfunc_argspec.args) - len(targetfunc_argspec.defaults) - 1)
+            if len(converted_kwargs) < targetfunc_argslen:
+                missing = ', '.join([repr(s) for s in set(targetfunc_argspec.args[1:]).difference(set(kwargs.keys()))])
+                errormsg = ('{funcname}(...) requires {targetfunc_argslen} arguments '
+                            '({argcount} given). Missing parameters: {missing}. '
+                            'Note that the list of missing parameters may contain optional '
+                            'parameters. See the docs for this REST api for more details.'
+                            .format(funcname=targetfunc.__name__,
+                                    targetfunc_argslen=targetfunc_argslen,
+                                    argcount=len(converted_kwargs),
+                                    missing=missing))
+                raise InvalidIndataError(errormsg)
             return targetfunc(self, **converted_kwargs)
 
         return wrapper

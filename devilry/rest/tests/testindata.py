@@ -11,7 +11,7 @@ class TestIndata(TestCase):
     def test_indata(self):
         class Tst(object):
             @indata(x=int, y=int)
-            def tst(self, x, y):
+            def tst(self, x, y=100):
                 return x + y
 
         tst = Tst()
@@ -19,6 +19,19 @@ class TestIndata(TestCase):
         self.assertEquals(tst.tst(x="10", y="20"), 30)
         self.assertEquals(tst.tst(x=10, y="20"), 30)
         self.assertEquals(tst.tst(x=10, y=20), 30)
+        self.assertEquals(tst.tst(x=10), 110)
+        try:
+            tst.tst()
+        except InvalidIndataError, e:
+            errormsg = unicode(e)
+            self.assertEquals(errormsg,
+                              ('tst(...) requires 1 arguments (0 given). '
+                               'Missing parameters: \'y\', \'x\'. Note that the list '
+                               'of missing parameters may contain optional '
+                               'parameters. See the docs for this REST api for '
+                               'more details.'))
+        else:
+            self.fail("InvalidIndataError not raised")
 
     def test_unicode_indata(self):
         self.assertEquals(unicode_indata(u'test'), u'test')
