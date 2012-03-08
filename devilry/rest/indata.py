@@ -45,6 +45,37 @@ def dict_indata(value):
         raise ValueError('Invalid type: {0}. Dict required.'.format(type(value)))
     return value
 
+class DictWithValidatedValuesIndata(object):
+    def __init__(self, **key_validators):
+        self.key_validators = key_validators
+        self.keyset = set(self.key_validators.keys())
+
+    def __call__(self, valuedict):
+        valuedict = dict_indata(valuedict)
+        if set(valuedict.keys()) != self.keyset:
+            raise ValueError('Invalid set of keys. Expected: {0}'.format(', '.join(self.keyset)))
+        validatedDict = {}
+        for key, value in valuedict.iteritems():
+            validate = self.key_validators[key]
+            validatedDict[key] = validate(value)
+        return validatedDict
+
+
+class ListOrTupleOfSomethingIndata(object):
+    def __init__(self, itemValidator):
+        self.itemValidator = itemValidator
+
+    def __call__(self, value):
+        items = list_or_tuple_indata(value)
+        itemValidator = self.itemValidator
+        try:
+            filtered_items = [itemValidator(item) for item in items]
+        except ValueError, e:
+            raise ValueError('One of the items failed validation: {0}'.format(e))
+        else:
+            return filtered_items
+
+
 
 def bool_indata(value):
     """

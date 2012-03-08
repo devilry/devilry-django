@@ -7,6 +7,8 @@ from devilry.rest.indata import unicode_indata
 from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import list_or_tuple_indata
 from devilry.rest.indata import dict_indata
+from devilry.rest.indata import DictWithValidatedValuesIndata
+from devilry.rest.indata import ListOrTupleOfSomethingIndata
 
 
 class TestIndata(TestCase):
@@ -71,4 +73,26 @@ class TestIndata(TestCase):
         self.assertEquals(dict_indata({}), {})
         self.assertEquals(dict_indata({'a': 1}), {'a': 1})
         with self.assertRaises(ValueError):
-            list_or_tuple_indata(None)
+            dict_indata(None)
+
+    def test_DictWithValidatedValuesIndata(self):
+        validator = DictWithValidatedValuesIndata(a=bool_indata,
+                                                  b=unicode_indata)
+        self.assertEquals(validator(dict(a=True, b='Test')),
+                          dict(a=True, b=u'Test'))
+        with self.assertRaises(ValueError):
+            validator(None)
+        with self.assertRaises(ValueError):
+            validator(dict(a='invalid', b='Test'))
+        with self.assertRaises(ValueError):
+            validator(dict(a=True, b=10))
+
+    def test_ListOrTupleOfSomethingIndata(self):
+        validator = ListOrTupleOfSomethingIndata(int)
+        self.assertEquals(validator([10, 20]), [10, 20])
+        with self.assertRaises(ValueError):
+            validator(None)
+        with self.assertRaises(ValueError):
+            validator(10)
+        with self.assertRaises(ValueError):
+            validator(['a', 'b'])
