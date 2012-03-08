@@ -40,6 +40,11 @@ def list_or_tuple_indata(value):
     else:
         raise ValueError('Invalid type: {0}. Tuple or list required.'.format(type(value)))
 
+def dict_indata(value):
+    if not isinstance(value, dict):
+        raise ValueError('Invalid type: {0}. Dict required.'.format(type(value)))
+    return value
+
 
 def bool_indata(value):
     """

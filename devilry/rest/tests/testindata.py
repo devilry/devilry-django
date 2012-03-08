@@ -6,6 +6,7 @@ from devilry.rest.indata import bool_indata
 from devilry.rest.indata import unicode_indata
 from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import list_or_tuple_indata
+from devilry.rest.indata import dict_indata
 
 
 class TestIndata(TestCase):
@@ -65,3 +66,9 @@ class TestIndata(TestCase):
             list_or_tuple_indata(None)
         with self.assertRaises(ValueError):
             list_or_tuple_indata(set([1, 2]))
+
+    def test_dict_indata(self):
+        self.assertEquals(dict_indata({}), {})
+        self.assertEquals(dict_indata({'a': 1}), {'a': 1})
+        with self.assertRaises(ValueError):
+            list_or_tuple_indata(None)
