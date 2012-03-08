@@ -12,6 +12,7 @@ from devilry.apps.core.models import (AssignmentGroup,
 from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
 from devilry.rest.indata import unicode_indata
+from devilry.rest.indata import list_or_tuple_indata
 from devilry.rest.indata import isoformatted_datetime
 from auth import assignmentadmin_required
 
@@ -215,10 +216,30 @@ class GroupDao(object):
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         return self.create_noauth(assignmentid, *args, **kwargs)
 
-def _require_list_of_students(value):
-    return value
 
-def _require_list_of_examiner(value):
+def _studentdict_indata(value):
+    if not isinstance(value, dict):
+        raise ValueError('Invalid type: {0}. Dict required.'.format(type(value)))
+    try:
+       return dict(candidate_id=unicode_indata(value['candidate_id']),
+                   student__username=unicode_indata(value['student__username']),
+                   student__email=unicode_indata(value['student__email']),
+                   student__devilryuserprofile__full_name=unicode_indata(value['student__devilryuserprofile__full_name']))
+    except KeyError, e:
+        if len(e.args) == 1:
+            raise ValueError('Missing dict attribute: {0}'.format(e.args[0]))
+        else:
+            raise
+
+def _list_of_students_indata(value):
+    studentdicts = list_or_tuple_indata(value)
+    try:
+        students = [_studentdict_indata(studentdict) for studentdict in studentdicts]
+    except ValueError, e:
+        raise ValueError('One of the entries failed validation: {0}'.format(e))
+    return students
+
+def _require_list_of_examiners(value):
     return value
 
 def _require_list_of_tags(value):
@@ -226,6 +247,8 @@ def _require_list_of_tags(value):
 
 def _require_list_of_deadlines(value):
     return value
+
+
 
 class RestGroup(RestBase):
     def __init__(self, daocls=GroupDao, **basekwargs):
@@ -240,8 +263,8 @@ class RestGroup(RestBase):
     @indata(assignmentid=int,
             name=NoneOr(unicode_indata),
             is_open=NoneOr(bool_indata),
-            students=_require_list_of_students,
-            examiners=_require_list_of_examiner,
+            students=_list_of_students_indata,
+            examiners=_require_list_of_examiners,
             tags=_require_list_of_tags,
             deadlines=_require_list_of_deadlines)
     def create(self, assignmentid, name=None, is_open=True, students=[],

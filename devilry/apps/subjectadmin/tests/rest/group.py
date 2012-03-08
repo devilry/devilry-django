@@ -14,6 +14,8 @@ from devilry.rest.testutils import RestClient
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.apps.subjectadmin.rest.group import GroupDao
 from devilry.apps.subjectadmin.rest.group import RestGroup
+from devilry.apps.subjectadmin.rest.group import _list_of_students_indata
+from devilry.apps.subjectadmin.rest.group import _studentdict_indata
 
 
 
@@ -275,6 +277,38 @@ class TestGroupDao(TestCase):
         self.assertEquals(group_db.is_open, True)
 
 
+class TestRestGroupIndata(TestCase):
+    def test_studentdict_indata(self):
+        _studentdict_indata(dict(candidate_id=u'candid333',
+                                 student__username=u'someusername',
+                                 student__email=u'myemail',
+                                 student__devilryuserprofile__full_name=u'Somename'))
+        with self.assertRaises(ValueError):
+            # Missing attribute
+            _studentdict_indata(dict(candidate_id=u'candid333',
+                                     student__username=u'someusername',
+                                     student__devilryuserprofile__full_name=u'Somename'))
+        with self.assertRaises(ValueError):
+            # Invalid candidate_id type
+            _studentdict_indata(dict(candidate_id=10,
+                                     student__username=u'someusername',
+                                     student__devilryuserprofile__full_name=u'Somename'))
+
+    def test_list_of_students_indata(self):
+        _list_of_students_indata([dict(candidate_id=u'candid333',
+                                       student__username=u'someusername',
+                                       student__email=u'myemail',
+                                       student__devilryuserprofile__full_name=u'Somename'),
+                                  dict(candidate_id=u'candid334',
+                                       student__username=u'someusername2',
+                                       student__email=u'myemail2',
+                                       student__devilryuserprofile__full_name=u'Somename2')])
+        with self.assertRaises(ValueError):
+            _list_of_students_indata([dict(candidate_id=10,
+                                           student__username=u'someusername',
+                                           student__devilryuserprofile__full_name=u'Somename')])
+
+
 class TestRestGroup(TestCase):
     def setUp(self):
         self.restapi = RestGroup(daocls=Dingus(), apiname='api',
@@ -296,10 +330,18 @@ class TestRestGroup(TestCase):
 
     def test_create(self):
         self.restapi.create(assignmentid=2, name="Testgroup", is_open=False,
-                            students=[], examiners=[], tags=[], deadlines=[])
+                            students=[dict(candidate_id=u'candid334',
+                                           student__username=u'someusername2',
+                                           student__email=u'myemail2',
+                                           student__devilryuserprofile__full_name=u'Somename2')],
+                            examiners=[], tags=[], deadlines=[])
         dingus = self.restapi.dao
         self.assertEquals(1, len(dingus.calls('create', 'FAKEUSER', 2, name='Testgroup',
-                                              is_open=False, students=[],
+                                              is_open=False,
+                                              students=[dict(candidate_id=u'candid334',
+                                                             student__username=u'someusername2',
+                                                             student__email=u'myemail2',
+                                                             student__devilryuserprofile__full_name=u'Somename2')],
                                               examiners=[], tags=[], deadlines=[])))
 
 
