@@ -252,9 +252,10 @@ class RestGroup(RestBase):
             deadlines=ListOrTupleOfSomethingIndata(_deadlinedict_indata))
     def create(self, assignmentid, name=None, is_open=True, students=[],
                examiners=[], tags=[], deadlines=[]):
-        self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
-                        students=students, examiners=examiners, tags=tags,
-                        deadlines=deadlines)
+        group = self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
+                                students=students, examiners=examiners, tags=tags,
+                                deadlines=deadlines)
+        return dict(id=group.id)
 
     #@indata(id=int, short_name=unicode, long_name=unicode)
     #def update(self, id, short_name, long_name):

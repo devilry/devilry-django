@@ -410,4 +410,4 @@ class TestRestGroupIntegration(TestCase):
                                                                    student__devilryuserprofile__full_name=u'Somename2')],
                                                     tags=[dict(tag='group1')],
                                                     deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
-        print content
+        self.assertEquals(content.keys(), ['id'])
