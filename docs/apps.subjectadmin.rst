@@ -75,7 +75,7 @@ The result will be something like this:
 
     [{ // Group 1....
         "name": null,
-        "tags": ['group1'],
+        "tags": [{"tag": "group1"}, {"tag": "learningdisabilities"}],
         "students": [{
             "student__devilryuserprofile__full_name": "The Student1",
             "candidate_id": null,
