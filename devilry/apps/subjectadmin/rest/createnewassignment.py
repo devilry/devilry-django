@@ -8,7 +8,6 @@ from devilry.rest.indata import isoformatted_datetime
 from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
 from devilry.rest.error import NotFoundError
-from devilry.rest.error import BadRequestError
 from devilry.rest.error import BadRequestFieldError
 
 
