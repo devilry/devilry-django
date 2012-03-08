@@ -2,7 +2,6 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.createnewassignment',
     requires: [
-        'themebase.layout.RightSidebar',
         'themebase.PrimaryButton'
     ],
 

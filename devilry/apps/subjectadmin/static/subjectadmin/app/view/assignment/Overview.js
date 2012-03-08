@@ -7,7 +7,6 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
     cls: 'assignmentoverview sidebarlayout',
     requires: [
         'Ext.layout.container.Column',
-        'themebase.layout.RightSidebar',
         'themebase.CenterTitle',
         'themebase.EditableSidebarBox',
         'subjectadmin.view.assignment.EditPublishingTimeWidget',

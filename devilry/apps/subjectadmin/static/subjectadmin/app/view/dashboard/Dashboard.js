@@ -1,10 +1,7 @@
 Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.dashboard',
-    cls: 'dashboard sidebarlayout',
-    requires: [
-        'themebase.layout.RightSidebar'
-    ],
+    cls: 'dashboard',
 
     layout: 'column',
     frame: false,

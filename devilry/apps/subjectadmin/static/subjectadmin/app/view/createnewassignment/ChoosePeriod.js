@@ -2,7 +2,6 @@ Ext.define('subjectadmin.view.createnewassignment.ChoosePeriod' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.chooseperiod',
     requires: [
-        'themebase.layout.RightSidebar',
         'themebase.form.Help'
     ],
 
