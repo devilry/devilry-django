@@ -18,6 +18,7 @@ def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
         for tag in tags:
             if relatedexaminer.tags and tag in relatedexaminer.tags:
                 examiners.append(relatedexaminer.user)
+                break
     return examiners
 
 
