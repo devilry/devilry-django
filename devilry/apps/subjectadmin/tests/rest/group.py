@@ -1,3 +1,4 @@
+from dingus import Dingus
 from datetime import datetime
 from django.test import TestCase
 
@@ -7,10 +8,11 @@ from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Deadline
-
+from devilry.rest.testutils import dummy_urlreverse
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.apps.subjectadmin.rest.group import GroupDao
+from devilry.apps.subjectadmin.rest.group import RestGroup
 
 
 
@@ -262,3 +264,16 @@ class TestGroupDao(TestCase):
         deadlines = [deadline.deadline for deadline in group.deadlines.all()]
         self.assertEquals(set(deadlines),
                           set([datetime(2010, 1, 2, 3, 4, 5), datetime(2010, 2, 3, 4, 5, 6)]))
+
+
+class TestRestGroup(TestCase):
+    def setUp(self):
+        self.restapi = RestGroup(daocls=Dingus(), apiname='api',
+                                 apiversion='1.0', user=None,
+                                 url_reverse=dummy_urlreverse)
+
+    def test_create(self):
+        self.restapi.list(assignmentid=1001)
+        dingus = self.restapi.dao
+        # Check the dingus to make sure all parameters was converted correctly
+        self.assertEquals(1, len(dingus.calls('list', None, 1001)))
