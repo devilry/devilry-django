@@ -9,25 +9,11 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-#from devilry.rest.indata import none_or_bool
-#from devilry.rest.indata import none_or_unicode
+from devilry.rest.indata import NoneOr
+from devilry.rest.indata import bool_indata
+from devilry.rest.indata import unicode_indata
 from devilry.rest.indata import isoformatted_datetime
 from auth import assignmentadmin_required
-
-
-
-#def _require_list_of_students(value):
-    #return value
-
-#def _require_list_of_examiner(value):
-    #return value
-
-#def _require_list_of_tags(value):
-    #return value
-
-#def _require_list_of_deadlines(value):
-    #return value
-
 
 
 class GroupDao(object):
@@ -229,7 +215,17 @@ class GroupDao(object):
         assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         return self.create_noauth(assignmentid, *args, **kwargs)
 
+def _require_list_of_students(value):
+    return value
 
+def _require_list_of_examiner(value):
+    return value
+
+def _require_list_of_tags(value):
+    return value
+
+def _require_list_of_deadlines(value):
+    return value
 
 class RestGroup(RestBase):
     def __init__(self, daocls=GroupDao, **basekwargs):
@@ -240,14 +236,19 @@ class RestGroup(RestBase):
     def list(self, assignmentid):
         return self.dao.list(self.user, assignmentid)
 
-    #@indata(name=none_or_unicode,
-            #is_open=none_or_bool,
-            #students=require_list_of_students,
-            #examiners=require_list_of_examiner,
-            #tags=require_list_of_tags,
-            #deadlines=require_list_of_deadlines)
-    #def create(self, name='', is_open=True, students=[], examiners=[], tags=[], deadlines=[]):
-        #pass
+
+    @indata(assignmentid=int,
+            name=NoneOr(unicode_indata),
+            is_open=NoneOr(bool_indata),
+            students=_require_list_of_students,
+            examiners=_require_list_of_examiner,
+            tags=_require_list_of_tags,
+            deadlines=_require_list_of_deadlines)
+    def create(self, assignmentid, name=None, is_open=True, students=[],
+               examiners=[], tags=[], deadlines=[]):
+        self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
+                        students=students, examiners=examiners, tags=tags,
+                        deadlines=deadlines)
 
     #@indata(id=int, short_name=unicode, long_name=unicode)
     #def update(self, id, short_name, long_name):

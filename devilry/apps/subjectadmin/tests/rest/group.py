@@ -278,15 +278,29 @@ class TestGroupDao(TestCase):
 class TestRestGroup(TestCase):
     def setUp(self):
         self.restapi = RestGroup(daocls=Dingus(), apiname='api',
-                                 apiversion='1.0', user=None,
+                                 apiversion='1.0', user="FAKEUSER",
                                  url_reverse=dummy_urlreverse)
 
-    def test_create(self):
+    def test_list(self):
         self.restapi.list(assignmentid=1001)
         dingus = self.restapi.dao
         # Check the dingus to make sure all parameters was converted correctly
-        self.assertEquals(1, len(dingus.calls('list', None, 1001)))
+        self.assertEquals(1, len(dingus.calls('list', "FAKEUSER", 1001)))
 
+    def test_create_minimal(self):
+        self.restapi.create(assignmentid=1)
+        dingus = self.restapi.dao
+        self.assertEquals(1, len(dingus.calls('create', 'FAKEUSER', 1, name=None,
+                                              is_open=True, students=[],
+                                              examiners=[], tags=[], deadlines=[])))
+
+    def test_create(self):
+        self.restapi.create(assignmentid=2, name="Testgroup", is_open=False,
+                            students=[], examiners=[], tags=[], deadlines=[])
+        dingus = self.restapi.dao
+        self.assertEquals(1, len(dingus.calls('create', 'FAKEUSER', 2, name='Testgroup',
+                                              is_open=False, students=[],
+                                              examiners=[], tags=[], deadlines=[])))
 
 
 class TestRestGroupIntegration(TestCase):
