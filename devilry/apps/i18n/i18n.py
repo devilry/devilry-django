@@ -12,7 +12,7 @@ from django.conf import settings
 
 DEFAULT_KEY = 'messages'
 ORIGINALFORMAT_SUFFIX = '.yaml'
-ORIGINALFORMAT_FILEPATT = '(?P<setname>messages_\w+)\.yaml'
+ORIGINALFORMAT_FILEPATT = '(?P<setname>messages_[a-zA-Z_-]+)\.yaml'
 DEFAULT_FILE = DEFAULT_KEY + ORIGINALFORMAT_SUFFIX
 EXPORTFILE_SUFFIX = '.json'
 INDEXFILE_NAME = 'index.json'
@@ -188,14 +188,14 @@ class Flatten(Base):
             makedirs(exportdir)
 
     def _savefile(self, filename, content):
-        """ Wrap writes to make them easy to moch. """
+        """ Wrap writes to make them easy to mock. """
         open(filename, 'w').write(content)
 
     def _save_js(self, exportdir, name, flatformatdata):
         jsfilename = join(exportdir, name + '.js')
         logging.info('Writing ' + jsfilename)
-        jsdata = 'window.document.i18n = {0};\n'.format(flatformatdata)
-        self._savefile(jsfilename, jsdata)
+        jsdata = u'window.document.i18n = {0};\n'.format(flatformatdata)
+        self._savefile(jsfilename, jsdata.encode('utf-8'))
 
     def _save_json(self, exportdir, name, flatformatdata):
         filename = join(exportdir, name + EXPORTFILE_SUFFIX)
