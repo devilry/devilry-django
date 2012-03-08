@@ -135,6 +135,20 @@ A good example is the translations for the ``core`` app, which lives in
 Localization middleware
 #######################
 
+Essential information for translators
+-------------------------------------
+
+Add ``?languagecode=MY-langcode`` to change the locale for the authenticated
+user. For example, you can visit http://localhost:8000/student/?languagecode=NO-nb to
+change the locale of the currently authenticated user to *norwegian bokmaal*.
+
+When devilry runs in debug mode, you can add ``?locale=_MY-locale`` to force
+that locale for that view. This overrides any checks and even allows you to set
+an invalid locale.
+
+API
+===
+
 .. automodule:: devilry.apps.i18n.middleware
 
 
