@@ -39,6 +39,7 @@ class LocaleMiddleware(object):
                 if request.user.is_authenticated():
                     profile = request.user.get_profile()
                     profile.languagecode = languagecode
+                    profile.save()
                 return
 
         # Fall back on getting language code from request.user or HTTP_ACCEPT_LANGUAGE
