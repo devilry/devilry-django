@@ -10531,245 +10531,89 @@ textarea.x-form-invalid-field {
   height: 100%;
 }
 
-/* line 3, ../sass/_scaffolding.scss */
-.bootstrap {
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  color: #404040;
-  background-color: white;
-}
-/* line 15, ../sass/_scaffolding.scss */
-.bootstrap a {
-  color: #0088cc;
-  text-decoration: none;
-}
-/* line 19, ../sass/_scaffolding.scss */
-.bootstrap a:hover {
-  color: #005580;
-  text-decoration: underline;
+/* line 5, ../sass/_alerts.scss */
+.alert {
+  padding: 8px 35px 8px 14px;
+  margin-bottom: 18px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #fcf8e3;
+  border: 1px solid #fbeed5;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
 }
 
-/* line 11, ../sass/_type.scss */
-.bootstrap p {
-  margin: 0 0 9px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+/* line 14, ../sass/_alerts.scss */
+.alert,
+.alert-heading {
+  color: #c09853;
+}
+
+/* line 19, ../sass/_alerts.scss */
+.alert .close {
+  position: relative;
+  top: -2px;
+  right: -21px;
   line-height: 18px;
 }
-/* line 16, ../sass/_type.scss */
-.bootstrap p small {
-  font-size: 11px;
-  color: #bfbfbf;
+
+/* line 29, ../sass/_alerts.scss */
+.alert-success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
 }
-/* line 21, ../sass/_type.scss */
-.bootstrap .lead {
-  margin-bottom: 18px;
-  font-size: 20px;
-  font-weight: 200;
-  line-height: 27px;
+
+/* line 34, ../sass/_alerts.scss */
+.alert-success,
+.alert-success .alert-heading {
+  color: #468847;
 }
-/* line 31, ../sass/_type.scss */
-.bootstrap h1, .bootstrap h2, .bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
-  margin: 0;
-  font-weight: bold;
-  color: #404040;
-  text-rendering: optimizelegibility;
+
+/* line 38, ../sass/_alerts.scss */
+.alert-danger,
+.alert-error {
+  background-color: #f2dede;
+  border-color: #eed3d7;
 }
-/* line 36, ../sass/_type.scss */
-.bootstrap h1 small, .bootstrap h2 small, .bootstrap h3 small, .bootstrap h4 small, .bootstrap h5 small, .bootstrap h6 small {
-  font-weight: normal;
-  color: #bfbfbf;
+
+/* line 45, ../sass/_alerts.scss */
+.alert-danger,
+.alert-error,
+.alert-danger .alert-heading,
+.alert-error .alert-heading {
+  color: #b94a48;
 }
-/* line 41, ../sass/_type.scss */
-.bootstrap h1 {
-  font-size: 30px;
-  line-height: 36px;
+
+/* line 48, ../sass/_alerts.scss */
+.alert-info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
 }
-/* line 44, ../sass/_type.scss */
-.bootstrap h1 small {
-  font-size: 18px;
+
+/* line 53, ../sass/_alerts.scss */
+.alert-info,
+.alert-info .alert-heading {
+  color: #3a87ad;
 }
-/* line 48, ../sass/_type.scss */
-.bootstrap h2 {
-  font-size: 24px;
-  line-height: 36px;
+
+/* line 60, ../sass/_alerts.scss */
+.alert-block {
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
-/* line 51, ../sass/_type.scss */
-.bootstrap h2 small {
-  font-size: 18px;
-}
-/* line 55, ../sass/_type.scss */
-.bootstrap h3 {
-  line-height: 27px;
-  font-size: 18px;
-}
-/* line 58, ../sass/_type.scss */
-.bootstrap h3 small {
-  font-size: 14px;
-}
-/* line 62, ../sass/_type.scss */
-.bootstrap h4, .bootstrap h5, .bootstrap h6 {
-  line-height: 18px;
-}
-/* line 65, ../sass/_type.scss */
-.bootstrap h4 {
-  font-size: 14px;
-}
-/* line 67, ../sass/_type.scss */
-.bootstrap h4 small {
-  font-size: 12px;
-}
-/* line 71, ../sass/_type.scss */
-.bootstrap h5 {
-  font-size: 12px;
-}
-/* line 74, ../sass/_type.scss */
-.bootstrap h6 {
-  font-size: 11px;
-  color: #bfbfbf;
-  text-transform: uppercase;
-}
-/* line 81, ../sass/_type.scss */
-.bootstrap .page-header {
-  padding-bottom: 17px;
-  margin: 18px 0;
-  border-bottom: 1px solid #e6e6e6;
-}
-/* line 86, ../sass/_type.scss */
-.bootstrap .page-header h1 {
-  line-height: 1;
-}
-/* line 96, ../sass/_type.scss */
-.bootstrap ul, .bootstrap ol {
-  padding: 0;
-  margin: 0 0 9px 25px;
-}
-/* line 103, ../sass/_type.scss */
-.bootstrap ul ul,
-.bootstrap ul ol,
-.bootstrap ol ol,
-.bootstrap ol ul {
+
+/* line 65, ../sass/_alerts.scss */
+.alert-block > p,
+.alert-block > ul {
   margin-bottom: 0;
 }
-/* line 106, ../sass/_type.scss */
-.bootstrap ul {
-  list-style: disc;
-}
-/* line 109, ../sass/_type.scss */
-.bootstrap ol {
-  list-style: decimal;
-}
-/* line 112, ../sass/_type.scss */
-.bootstrap li {
-  line-height: 18px;
-}
-/* line 115, ../sass/_type.scss */
-.bootstrap ul.unstyled {
-  margin-left: 0;
-  list-style: none;
-}
-/* line 121, ../sass/_type.scss */
-.bootstrap dl {
-  margin-bottom: 18px;
-}
-/* line 125, ../sass/_type.scss */
-.bootstrap dt,
-.bootstrap dd {
-  line-height: 18px;
-}
-/* line 128, ../sass/_type.scss */
-.bootstrap dt {
-  font-weight: bold;
-}
-/* line 131, ../sass/_type.scss */
-.bootstrap dd {
-  margin-left: 9px;
-}
-/* line 139, ../sass/_type.scss */
-.bootstrap hr {
-  margin: 18px 0;
-  border: 0;
-  border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid white;
-}
-/* line 147, ../sass/_type.scss */
-.bootstrap strong {
-  font-weight: bold;
-}
-/* line 150, ../sass/_type.scss */
-.bootstrap em {
-  font-style: italic;
-}
-/* line 153, ../sass/_type.scss */
-.bootstrap .muted {
-  color: #bfbfbf;
-}
-/* line 158, ../sass/_type.scss */
-.bootstrap abbr {
-  font-size: 90%;
-  text-transform: uppercase;
-  border-bottom: 1px dotted #ddd;
-  cursor: help;
-}
-/* line 166, ../sass/_type.scss */
-.bootstrap blockquote {
-  padding: 0 0 0 15px;
-  margin: 0 0 18px;
-  border-left: 5px solid #e6e6e6;
-}
-/* line 170, ../sass/_type.scss */
-.bootstrap blockquote p {
-  margin-bottom: 0;
-  font-size: 300;
-  font-weight: 16px;
-  line-height: 22.5px;
-}
-/* line 174, ../sass/_type.scss */
-.bootstrap blockquote small {
-  display: block;
-  line-height: 18px;
-  color: #bfbfbf;
-}
-/* line 178, ../sass/_type.scss */
-.bootstrap blockquote small:before {
-  content: '\2014 \00A0';
-}
-/* line 184, ../sass/_type.scss */
-.bootstrap blockquote.pull-right {
-  float: right;
-  padding-left: 0;
-  padding-right: 15px;
-  border-left: 0;
-  border-right: 5px solid #e6e6e6;
-}
-/* line 191, ../sass/_type.scss */
-.bootstrap blockquote.pull-right p,
-.bootstrap blockquote.pull-right small {
-  text-align: right;
-}
-/* line 201, ../sass/_type.scss */
-.bootstrap q:before,
-.bootstrap q:after,
-.bootstrap blockquote:before,
-.bootstrap blockquote:after {
-  content: "";
-}
-/* line 206, ../sass/_type.scss */
-.bootstrap address {
-  display: block;
-  margin-bottom: 18px;
-  line-height: 18px;
-  font-style: normal;
-}
-/* line 214, ../sass/_type.scss */
-.bootstrap small {
-  font-size: 100%;
-}
-/* line 217, ../sass/_type.scss */
-.bootstrap cite {
-  font-style: normal;
+
+/* line 68, ../sass/_alerts.scss */
+.alert-block p + p {
+  margin-top: 5px;
 }
 
 /* line 4, ../sass/_breadcrumbs.scss */
@@ -11077,6 +10921,247 @@ button.btn.small,
 input[type="submit"].btn.small {
   *padding-top: 3px;
   *padding-bottom: 3px;
+}
+
+/* line 3, ../sass/_scaffolding.scss */
+.bootstrap {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #404040;
+  background-color: white;
+}
+/* line 15, ../sass/_scaffolding.scss */
+.bootstrap a {
+  color: #0088cc;
+  text-decoration: none;
+}
+/* line 19, ../sass/_scaffolding.scss */
+.bootstrap a:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+
+/* line 11, ../sass/_type.scss */
+.bootstrap p {
+  margin: 0 0 9px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+/* line 16, ../sass/_type.scss */
+.bootstrap p small {
+  font-size: 11px;
+  color: #bfbfbf;
+}
+/* line 21, ../sass/_type.scss */
+.bootstrap .lead {
+  margin-bottom: 18px;
+  font-size: 20px;
+  font-weight: 200;
+  line-height: 27px;
+}
+/* line 31, ../sass/_type.scss */
+.bootstrap h1, .bootstrap h2, .bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
+  margin: 0;
+  font-weight: bold;
+  color: #404040;
+  text-rendering: optimizelegibility;
+}
+/* line 36, ../sass/_type.scss */
+.bootstrap h1 small, .bootstrap h2 small, .bootstrap h3 small, .bootstrap h4 small, .bootstrap h5 small, .bootstrap h6 small {
+  font-weight: normal;
+  color: #bfbfbf;
+}
+/* line 41, ../sass/_type.scss */
+.bootstrap h1 {
+  font-size: 30px;
+  line-height: 36px;
+}
+/* line 44, ../sass/_type.scss */
+.bootstrap h1 small {
+  font-size: 18px;
+}
+/* line 48, ../sass/_type.scss */
+.bootstrap h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+/* line 51, ../sass/_type.scss */
+.bootstrap h2 small {
+  font-size: 18px;
+}
+/* line 55, ../sass/_type.scss */
+.bootstrap h3 {
+  line-height: 27px;
+  font-size: 18px;
+}
+/* line 58, ../sass/_type.scss */
+.bootstrap h3 small {
+  font-size: 14px;
+}
+/* line 62, ../sass/_type.scss */
+.bootstrap h4, .bootstrap h5, .bootstrap h6 {
+  line-height: 18px;
+}
+/* line 65, ../sass/_type.scss */
+.bootstrap h4 {
+  font-size: 14px;
+}
+/* line 67, ../sass/_type.scss */
+.bootstrap h4 small {
+  font-size: 12px;
+}
+/* line 71, ../sass/_type.scss */
+.bootstrap h5 {
+  font-size: 12px;
+}
+/* line 74, ../sass/_type.scss */
+.bootstrap h6 {
+  font-size: 11px;
+  color: #bfbfbf;
+  text-transform: uppercase;
+}
+/* line 81, ../sass/_type.scss */
+.bootstrap .page-header {
+  padding-bottom: 17px;
+  margin: 18px 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+/* line 86, ../sass/_type.scss */
+.bootstrap .page-header h1 {
+  line-height: 1;
+}
+/* line 96, ../sass/_type.scss */
+.bootstrap ul, .bootstrap ol {
+  padding: 0;
+  margin: 0 0 9px 25px;
+}
+/* line 103, ../sass/_type.scss */
+.bootstrap ul ul,
+.bootstrap ul ol,
+.bootstrap ol ol,
+.bootstrap ol ul {
+  margin-bottom: 0;
+}
+/* line 106, ../sass/_type.scss */
+.bootstrap ul {
+  list-style: disc;
+}
+/* line 109, ../sass/_type.scss */
+.bootstrap ol {
+  list-style: decimal;
+}
+/* line 112, ../sass/_type.scss */
+.bootstrap li {
+  line-height: 18px;
+}
+/* line 115, ../sass/_type.scss */
+.bootstrap ul.unstyled {
+  margin-left: 0;
+  list-style: none;
+}
+/* line 121, ../sass/_type.scss */
+.bootstrap dl {
+  margin-bottom: 18px;
+}
+/* line 125, ../sass/_type.scss */
+.bootstrap dt,
+.bootstrap dd {
+  line-height: 18px;
+}
+/* line 128, ../sass/_type.scss */
+.bootstrap dt {
+  font-weight: bold;
+}
+/* line 131, ../sass/_type.scss */
+.bootstrap dd {
+  margin-left: 9px;
+}
+/* line 139, ../sass/_type.scss */
+.bootstrap hr {
+  margin: 18px 0;
+  border: 0;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid white;
+}
+/* line 147, ../sass/_type.scss */
+.bootstrap strong {
+  font-weight: bold;
+}
+/* line 150, ../sass/_type.scss */
+.bootstrap em {
+  font-style: italic;
+}
+/* line 153, ../sass/_type.scss */
+.bootstrap .muted {
+  color: #bfbfbf;
+}
+/* line 158, ../sass/_type.scss */
+.bootstrap abbr {
+  font-size: 90%;
+  text-transform: uppercase;
+  border-bottom: 1px dotted #ddd;
+  cursor: help;
+}
+/* line 166, ../sass/_type.scss */
+.bootstrap blockquote {
+  padding: 0 0 0 15px;
+  margin: 0 0 18px;
+  border-left: 5px solid #e6e6e6;
+}
+/* line 170, ../sass/_type.scss */
+.bootstrap blockquote p {
+  margin-bottom: 0;
+  font-size: 300;
+  font-weight: 16px;
+  line-height: 22.5px;
+}
+/* line 174, ../sass/_type.scss */
+.bootstrap blockquote small {
+  display: block;
+  line-height: 18px;
+  color: #bfbfbf;
+}
+/* line 178, ../sass/_type.scss */
+.bootstrap blockquote small:before {
+  content: '\2014 \00A0';
+}
+/* line 184, ../sass/_type.scss */
+.bootstrap blockquote.pull-right {
+  float: right;
+  padding-left: 0;
+  padding-right: 15px;
+  border-left: 0;
+  border-right: 5px solid #e6e6e6;
+}
+/* line 191, ../sass/_type.scss */
+.bootstrap blockquote.pull-right p,
+.bootstrap blockquote.pull-right small {
+  text-align: right;
+}
+/* line 201, ../sass/_type.scss */
+.bootstrap q:before,
+.bootstrap q:after,
+.bootstrap blockquote:before,
+.bootstrap blockquote:after {
+  content: "";
+}
+/* line 206, ../sass/_type.scss */
+.bootstrap address {
+  display: block;
+  margin-bottom: 18px;
+  line-height: 18px;
+  font-style: normal;
+}
+/* line 214, ../sass/_type.scss */
+.bootstrap small {
+  font-size: 100%;
+}
+/* line 217, ../sass/_type.scss */
+.bootstrap cite {
+  font-style: normal;
 }
 
 /* line 615, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -11440,1436 +11525,112 @@ input[type="submit"].btn.small {
   outline: 1px dotted #666;
 }
 
-/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-transparentpanel {
-  border-color: #e0e0e0;
+/* line 2, ../sass/_doesnotexist.scss */
+.messagemask > div {
+  cursor: default;
+  padding: 5px 10px;
+  background-image: none !important;
 }
 
-/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel {
-  font-size: 12px;
-  line-height: 15px;
-  border-color: #e0e0e0;
-  border-width: 1px;
-  border-style: solid;
-  background-image: none;
-  background-color: #f4f3f3;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
-  background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
+/* line 1, ../sass/_forms-port.scss */
+.formhelp {
+  font-size: 13px;
+  line-height: 18px;
+  color: #bfbfbf;
+  padding-left: 4px;
 }
 
-/* line 271, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-top {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-top-bg.gif');
+/* line 15, ../sass/_forms-port.scss */
+label {
+  font-size: 13px;
+  line-height: 18px;
+  color: #404040;
 }
 
-/* line 275, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-bottom {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-bottom-bg.gif');
+/* line 24, ../sass/_forms-port.scss */
+input,
+textarea {
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* line 279, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-left {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-left-bg.gif');
+/* line 30, ../sass/_forms-port.scss */
+input:focus,
+textarea:focus {
+  outline: 0;
+  border-color: rgba(82, 168, 236, 0.8);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
-/* line 283, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-right {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-right-bg.gif');
+/* line 38, ../sass/_forms-port.scss */
+input[type=file]:focus,
+input[type=checkbox]:focus,
+select:focus {
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+  outline: 1px dotted #666;
 }
 
-/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-text-transparentpanel {
-  color: #333333;
-  font-size: 12px;
-  font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+/* line 3, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner strong {
+  font-size: 15px;
+  line-height: 21px;
 }
-
-/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-body-transparentpanel {
-  background: transparent;
-  border-color: #e0e0e0;
-  color: black;
-  border-width: 0;
-  border-style: solid;
-}
-
-/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-window-header-transparentpanel,
-.x-panel-collapsed .x-panel-header-transparentpanel {
-  border-color: #e0e0e0;
-}
-
-/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-vertical {
-  border-color: #e0e0e0;
-}
-
-/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-left,
-.x-panel-header-transparentpanel-right {
-  background-image: none;
-  background-color: #f4f3f3;
-  background-image: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
-  background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
-}
-
-/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-}
-/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-}
-/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-
-/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-right {
-  background-position: top right;
-}
-
-/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-right {
-  -moz-box-shadow: white -1px 0 0px 0 inset;
-  -webkit-box-shadow: white -1px 0 0px 0 inset;
-  -o-box-shadow: white -1px 0 0px 0 inset;
-  box-shadow: white -1px 0 0px 0 inset;
-}
-
-/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset;
-  -webkit-box-shadow: white 0 -1px 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset;
-  box-shadow: white 0 -1px 0px 0 inset;
-}
-
-/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-left {
-  -moz-box-shadow: white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 1px 0 0px 0 inset;
-  -o-box-shadow: white 1px 0 0px 0 inset;
-  box-shadow: white 1px 0 0px 0 inset;
-}
-
-/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-bottom {
-  background-position: bottom left;
-}
-
-/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-right-tc,
-.x-panel-header-transparentpanel-right-mc,
-.x-panel-header-transparentpanel-right-bc {
-  background-position: right 0;
-}
-
-/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-bottom-tc,
-.x-panel-header-transparentpanel-bottom-mc,
-.x-panel-header-transparentpanel-bottom-bc {
-  background-position: 0 bottom;
-}
-
-/** Transparent panel with overflow visible.
-    Great as container for things with negative margins, such as the
-    inset-header-panel UIs.
-*/
-/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-transparentpanel-overflowvisible {
-  border-color: #e0e0e0;
-}
-
-/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible {
-  font-size: 12px;
-  line-height: 15px;
-  border-color: #e0e0e0;
-  border-width: 1px;
-  border-style: solid;
-  background-image: none;
-  background-color: #f4f3f3;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
-  background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 271, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-top {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-top-bg.gif');
-}
-
-/* line 275, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-bottom {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-bottom-bg.gif');
-}
-
-/* line 279, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-left {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-left-bg.gif');
-}
-
-/* line 283, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-right {
-  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-right-bg.gif');
-}
-
-/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-text-transparentpanel-overflowvisible {
-  color: #333333;
-  font-size: 12px;
-  font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-body-transparentpanel-overflowvisible {
-  background: transparent;
-  border-color: #e0e0e0;
-  color: black;
-  border-width: 0;
-  border-style: solid;
-}
-
-/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-window-header-transparentpanel-overflowvisible,
-.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible {
-  border-color: #e0e0e0;
-}
-
-/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-vertical {
-  border-color: #e0e0e0;
-}
-
-/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-left,
-.x-panel-header-transparentpanel-overflowvisible-right {
-  background-image: none;
-  background-color: #f4f3f3;
-  background-image: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
-  background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
-}
-
-/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-}
-/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-}
-/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-
-/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-right {
-  background-position: top right;
-}
-
-/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-right {
-  -moz-box-shadow: white -1px 0 0px 0 inset;
-  -webkit-box-shadow: white -1px 0 0px 0 inset;
-  -o-box-shadow: white -1px 0 0px 0 inset;
-  box-shadow: white -1px 0 0px 0 inset;
-}
-
-/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset;
-  -webkit-box-shadow: white 0 -1px 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset;
-  box-shadow: white 0 -1px 0px 0 inset;
-}
-
-/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-left {
-  -moz-box-shadow: white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 1px 0 0px 0 inset;
-  -o-box-shadow: white 1px 0 0px 0 inset;
-  box-shadow: white 1px 0 0px 0 inset;
-}
-
-/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-transparentpanel-overflowvisible-bottom {
-  background-position: bottom left;
-}
-
-/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-right-tc,
-.x-panel-header-transparentpanel-overflowvisible-right-mc,
-.x-panel-header-transparentpanel-overflowvisible-right-bc {
-  background-position: right 0;
-}
-
-/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-transparentpanel-overflowvisible-bottom-tc,
-.x-panel-header-transparentpanel-overflowvisible-bottom-mc,
-.x-panel-header-transparentpanel-overflowvisible-bottom-bc {
-  background-position: 0 bottom;
-}
-
-/* line 26, ../sass/_transparentpanel-overflowvisible.scss */
-.x-panel-transparentpanel-overflowvisible {
-  overflow: visible !important;
-}
-/* line 28, ../sass/_transparentpanel-overflowvisible.scss */
-.x-panel-transparentpanel-overflowvisible .x-panel-body-transparentpanel-overflowvisible {
-  overflow: visible !important;
-}
-
-/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-lookslike-parawitheader-panel {
-  border-color: #e0e0e0;
-}
-
-/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel {
-  font-size: 1.2em;
-  line-height: 15px;
-  border-color: white;
-  border-width: 1px;
-  border-style: solid;
-  background-image: none;
-  background-color: white;
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-text-lookslike-parawitheader-panel {
+/* line 7, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner small {
+  font-size: 11px;
   color: gray;
-  font-size: 1.2em;
-  font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* line 11, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
+  color: #46a546;
+}
+/* line 14, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
+  color: #dc5600;
+}
+/* line 18, ../sass/_grid.scss */
+.x-grid-row .x-grid-cell-inner .countbox {
+  background-color: gray;
+  color: white;
+  padding: 2px 4px;
+  margin: 2px 0;
+  display: inline-block;
+  font-size: 11px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  -o-border-radius: 3px 3px 3px 3px;
+  -ms-border-radius: 3px 3px 3px 3px;
+  -khtml-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
 }
 
-/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-body-lookslike-parawitheader-panel {
-  background: transparent;
-  border-color: #e0e0e0;
-  color: #191919;
-  border-width: 0;
-  border-style: solid;
-}
-
-/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-window-header-lookslike-parawitheader-panel,
-.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel {
-  border-color: #e0e0e0;
-}
-
-/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-vertical {
-  border-color: #e0e0e0;
-}
-
-/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-left,
-.x-panel-header-lookslike-parawitheader-panel-right {
-  background-image: none;
-  background-color: white;
-}
-
-/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-}
-/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-}
-/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-
-/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-lookslike-parawitheader-panel-right {
-  background-position: top right;
-}
-
-/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-right {
-  -moz-box-shadow: white -1px 0 0px 0 inset;
-  -webkit-box-shadow: white -1px 0 0px 0 inset;
-  -o-box-shadow: white -1px 0 0px 0 inset;
-  box-shadow: white -1px 0 0px 0 inset;
-}
-
-/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset;
-  -webkit-box-shadow: white 0 -1px 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset;
-  box-shadow: white 0 -1px 0px 0 inset;
-}
-
-/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-left {
-  -moz-box-shadow: white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 1px 0 0px 0 inset;
-  -o-box-shadow: white 1px 0 0px 0 inset;
-  box-shadow: white 1px 0 0px 0 inset;
-}
-
-/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-lookslike-parawitheader-panel-bottom {
-  background-position: bottom left;
-}
-
-/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-right-tc,
-.x-panel-header-lookslike-parawitheader-panel-right-mc,
-.x-panel-header-lookslike-parawitheader-panel-right-bc {
-  background-position: right 0;
-}
-
-/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-lookslike-parawitheader-panel-bottom-tc,
-.x-panel-header-lookslike-parawitheader-panel-bottom-mc,
-.x-panel-header-lookslike-parawitheader-panel-bottom-bc {
-  background-position: 0 bottom;
-}
-
-/* line 23, ../sass/_lookslike-parawithheader-panel.scss */
-.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel {
-  padding: 0 0 8px 0;
-}
-/* line 26, ../sass/_lookslike-parawithheader-panel.scss */
-.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel .x-panel-header-body-lookslike-parawitheader-panel-horizontal .x-panel-header-text-container {
-  height: auto !important;
-  line-height: 1.6em;
-}
-/* line 32, ../sass/_lookslike-parawithheader-panel.scss */
-.x-panel-lookslike-parawitheader-panel .x-panel-body-lookslike-parawitheader-panel {
-  padding: 2px;
-}
-
-/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-inset-header-strong-panel {
-  border-color: #888888;
-}
-
-/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel {
-  font-size: 1.3em;
-  line-height: 15px;
-  border-color: white;
-  border-width: 1px;
-  border-style: solid;
-  background-image: none;
-  background-color: white;
-  -moz-box-shadow: white 0 1px 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset;
-}
-
-/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-text-inset-header-strong-panel {
-  color: #666666;
-  font-size: 1.3em;
-  font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-body-inset-header-strong-panel {
-  background: transparent;
-  border-color: #e0e0e0;
-  color: #191919;
-  border-width: 0;
-  border-style: solid;
-}
-
-/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-window-header-inset-header-strong-panel,
-.x-panel-collapsed .x-panel-header-inset-header-strong-panel {
-  border-color: #e0e0e0;
-}
-
-/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-vertical {
-  border-color: #e0e0e0;
-}
-
-/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-left,
-.x-panel-header-inset-header-strong-panel-right {
-  background-image: none;
-  background-color: white;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-inset-header-strong-panel {
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -o-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-  padding: 3px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: transparent;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-inset-header-strong-panel-mc {
-  background-color: transparent;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-inset-header-strong-panel {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1000606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-inset-header-strong-panel-tl,
-.x-nbr .x-panel-inset-header-strong-panel-bl,
-.x-nbr .x-panel-inset-header-strong-panel-tr,
-.x-nbr .x-panel-inset-header-strong-panel-br,
-.x-nbr .x-panel-inset-header-strong-panel-tc,
-.x-nbr .x-panel-inset-header-strong-panel-bc,
-.x-nbr .x-panel-inset-header-strong-panel-ml,
-.x-nbr .x-panel-inset-header-strong-panel-mr {
-  zoom: 1;
-}
-/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-inset-header-strong-panel-ml,
-.x-nbr .x-panel-inset-header-strong-panel-mr {
-  zoom: 1;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-inset-header-strong-panel-mc {
-  padding: 0 0 0 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-top {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
-  border-bottom-right-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding: 3px 3px 4px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-top-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-top {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1000000px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-top-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-top-corners.gif');
-}
-/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-top-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-top-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-top-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-y;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-top-mc {
-  padding: 0 0 4px 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-right {
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding: 3px 3px 3px 5px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-right-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-right {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000006px 1100600px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-right-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-right-corners.gif');
-}
-/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-right-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-right-bc {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-right-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-x;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-right-mc {
-  padding: 0 0 0 5px;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-bottom {
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
-  border-top-right-radius: 0;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 4px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-bottom-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000000px 1000606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-bottom-corners.gif');
-}
-/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-bottom-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-y;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mc {
-  padding: 4px 0 0 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-left {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 0;
-  -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
-  border-top-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
-  border-bottom-right-radius: 0;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 3px 5px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-left-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-left {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000600px 1100006px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-left-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-left-corners.gif');
-}
-/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-left-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-left-bc {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-left-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-x;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-left-mc {
-  padding: 0 5px 0 0;
-}
-
-/* line 350, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-}
-
-/* line 354, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-right {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-}
-
-/* line 358, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-}
-
-/* line 362, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-left {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-  -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-  box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-}
-
-/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-bottom {
-  background-position: bottom left;
-}
-
-/* line 410, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel .x-panel-header-inset-header-strong-panel-top {
-  border-bottom-width: 1px !important;
-}
-
-/* line 414, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel .x-panel-header-inset-header-strong-panel-right {
-  border-left-width: 1px !important;
-}
-
-/* line 418, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel .x-panel-header-inset-header-strong-panel-bottom {
-  border-top-width: 1px !important;
-}
-
-/* line 422, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel .x-panel-header-inset-header-strong-panel-left {
-  border-right-width: 1px !important;
-}
-
-/* line 426, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-collapsed {
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -o-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-collapsed-top {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 3px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-top-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1000606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-top-corners.gif');
-}
-/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-top-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-y;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mc {
-  padding: 0 0 0 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-collapsed-right {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 3px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-right-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1100606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-right-corners.gif');
-}
-/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bc {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-right-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-x;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-mc {
-  padding: 0 0 0 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-collapsed-bottom {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 3px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-bottom-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1000606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-bottom-corners.gif');
-}
-/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-bottom-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-y;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mc {
-  padding: 0 0 0 0;
-}
-
-/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-panel-header-inset-header-strong-panel-collapsed-left {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  -o-border-top-left-radius: 6px;
-  -ms-border-top-left-radius: 6px;
-  -khtml-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 3px 3px 3px 3px;
-  border-width: 3px;
-  border-style: solid;
-  background-color: white;
-}
-
-/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-left-mc {
-  background-color: white;
-}
-
-/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left {
-  padding: 0 !important;
-  border-width: 0 !important;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
-  border-radius: 0px;
-  background-color: transparent;
-  background-position: 1000606px 1100606px;
-}
-/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bl,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tr,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-br,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-ml,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-mr {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-left-corners.gif');
-}
-/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tc,
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bc {
-  zoom: 1;
-  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-left-sides.gif');
-  background-position: 0 0;
-  background-repeat: repeat-x;
-}
-/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
-.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-mc {
-  padding: 0 0 0 0;
-}
-
-/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-right-tc,
-.x-panel-header-inset-header-strong-panel-right-mc,
-.x-panel-header-inset-header-strong-panel-right-bc {
-  background-position: right 0;
-}
-
-/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-header-inset-header-strong-panel-bottom-tc,
-.x-panel-header-inset-header-strong-panel-bottom-mc,
-.x-panel-header-inset-header-strong-panel-bottom-bc {
-  background-position: 0 bottom;
-}
-
-/* line 22, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel {
-  overflow: visible !important;
-}
-/* line 24, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel {
-  overflow: visible !important;
-}
-/* line 26, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal {
-  overflow: visible !important;
-}
-/* line 28, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner {
-  overflow: visible !important;
-}
-/* line 30, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container {
-  height: auto !important;
-  line-height: 1.6em;
-  overflow: visible !important;
-  position: relative;
-}
-/* line 35, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-strong-panel {
-  padding: 0 15px 0 15px;
-  position: absolute;
-  top: -24px;
-  left: 0;
-  background-color: #fff;
-}
-/* line 46, ../sass/_inset-header-strong-panel.scss */
-.x-panel-inset-header-strong-panel .x-panel-body-inset-header-strong-panel {
-  padding: 10px 20px 20px 20px;
+/* line 31, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner {
+  color: #fff;
+}
+/* line 33, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner small {
+  color: #eee;
+}
+/* line 37, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner .success, .x-grid-row-selected .x-grid-cell-inner small.success {
+  color: #fff;
+}
+/* line 40, ../sass/_grid.scss */
+.x-grid-row-selected .x-grid-cell-inner .danger, .x-grid-row-selected .x-grid-cell-inner small.danger {
+  color: #fff;
 }
 
 /* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
@@ -13698,195 +12459,1434 @@ input[type="submit"].btn.small {
   padding: 15px 20px 20px 20px;
 }
 
-/* line 1, ../sass/_forms-port.scss */
-.formhelp {
-  font-size: 13px;
-  line-height: 18px;
-  color: #bfbfbf;
-  padding-left: 4px;
+/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-inset-header-strong-panel {
+  border-color: #888888;
 }
 
-/* line 15, ../sass/_forms-port.scss */
-label {
-  font-size: 13px;
-  line-height: 18px;
-  color: #404040;
+/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel {
+  font-size: 1.3em;
+  line-height: 15px;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: white;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
 }
 
-/* line 24, ../sass/_forms-port.scss */
-input,
-textarea {
-  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
-  transition: border linear 0.2s, box-shadow linear 0.2s;
-  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-inset-header-strong-panel {
+  color: #666666;
+  font-size: 1.3em;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* line 30, ../sass/_forms-port.scss */
-input:focus,
-textarea:focus {
-  outline: 0;
-  border-color: rgba(82, 168, 236, 0.8);
-  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-inset-header-strong-panel {
+  background: transparent;
+  border-color: #e0e0e0;
+  color: #191919;
+  border-width: 0;
+  border-style: solid;
 }
 
-/* line 38, ../sass/_forms-port.scss */
-input[type=file]:focus,
-input[type=checkbox]:focus,
-select:focus {
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  -o-box-shadow: none;
-  box-shadow: none;
-  outline: 1px dotted #666;
+/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-inset-header-strong-panel,
+.x-panel-collapsed .x-panel-header-inset-header-strong-panel {
+  border-color: #e0e0e0;
 }
 
-/* line 2, ../sass/_doesnotexist.scss */
-.messagemask > div {
-  cursor: default;
-  padding: 5px 10px;
-  background-image: none !important;
+/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-vertical {
+  border-color: #e0e0e0;
 }
 
-/* line 3, ../sass/_grid.scss */
-.x-grid-row .x-grid-cell-inner strong {
-  font-size: 15px;
-  line-height: 21px;
-}
-/* line 7, ../sass/_grid.scss */
-.x-grid-row .x-grid-cell-inner small {
-  font-size: 11px;
-  color: gray;
-}
-/* line 11, ../sass/_grid.scss */
-.x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
-  color: #46a546;
-}
-/* line 14, ../sass/_grid.scss */
-.x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
-  color: #dc5600;
-}
-/* line 18, ../sass/_grid.scss */
-.x-grid-row .x-grid-cell-inner .countbox {
-  background-color: gray;
-  color: white;
-  padding: 2px 4px;
-  margin: 2px 0;
-  display: inline-block;
-  font-size: 11px;
-  -moz-border-radius: 3px 3px 3px 3px;
-  -webkit-border-radius: 3px 3px 3px 3px;
-  -o-border-radius: 3px 3px 3px 3px;
-  -ms-border-radius: 3px 3px 3px 3px;
-  -khtml-border-radius: 3px 3px 3px 3px;
-  border-radius: 3px 3px 3px 3px;
+/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-left,
+.x-panel-header-inset-header-strong-panel-right {
+  background-image: none;
+  background-color: white;
 }
 
-/* line 31, ../sass/_grid.scss */
-.x-grid-row-selected .x-grid-cell-inner {
-  color: #fff;
-}
-/* line 33, ../sass/_grid.scss */
-.x-grid-row-selected .x-grid-cell-inner small {
-  color: #eee;
-}
-/* line 37, ../sass/_grid.scss */
-.x-grid-row-selected .x-grid-cell-inner .success, .x-grid-row-selected .x-grid-cell-inner small.success {
-  color: #fff;
-}
-/* line 40, ../sass/_grid.scss */
-.x-grid-row-selected .x-grid-cell-inner .danger, .x-grid-row-selected .x-grid-cell-inner small.danger {
-  color: #fff;
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-inset-header-strong-panel {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -o-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: transparent;
 }
 
-/* line 5, ../sass/_alerts.scss */
-.alert {
-  padding: 8px 35px 8px 14px;
-  margin-bottom: 18px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-inset-header-strong-panel-mc {
+  background-color: transparent;
 }
 
-/* line 14, ../sass/_alerts.scss */
-.alert,
-.alert-heading {
-  color: #c09853;
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-inset-header-strong-panel {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1000606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-inset-header-strong-panel-tl,
+.x-nbr .x-panel-inset-header-strong-panel-bl,
+.x-nbr .x-panel-inset-header-strong-panel-tr,
+.x-nbr .x-panel-inset-header-strong-panel-br,
+.x-nbr .x-panel-inset-header-strong-panel-tc,
+.x-nbr .x-panel-inset-header-strong-panel-bc,
+.x-nbr .x-panel-inset-header-strong-panel-ml,
+.x-nbr .x-panel-inset-header-strong-panel-mr {
+  zoom: 1;
+}
+/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-inset-header-strong-panel-ml,
+.x-nbr .x-panel-inset-header-strong-panel-mr {
+  zoom: 1;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-inset-header-strong-panel-mc {
+  padding: 0 0 0 0;
 }
 
-/* line 19, ../sass/_alerts.scss */
-.alert .close {
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-top {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
+  -ms-border-bottom-right-radius: 0;
+  -khtml-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
+  -ms-border-bottom-left-radius: 0;
+  -khtml-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 3px 3px 4px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-top-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-top {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1000000px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-top-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-top-corners.gif');
+}
+/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-top-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-top-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-top-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-y;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-top-mc {
+  padding: 0 0 4px 0;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-right {
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
+  -ms-border-top-left-radius: 0;
+  -khtml-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
+  -ms-border-bottom-left-radius: 0;
+  -khtml-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 3px 3px 3px 5px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-right-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-right {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000006px 1100600px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-right-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-right-corners.gif');
+}
+/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-right-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-right-bc {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-right-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-x;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-right-mc {
+  padding: 0 0 0 5px;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-bottom {
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
+  -ms-border-top-left-radius: 0;
+  -khtml-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
+  -ms-border-top-right-radius: 0;
+  -khtml-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 4px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-bottom-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000000px 1000606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-bottom-corners.gif');
+}
+/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-bottom-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-y;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-bottom-mc {
+  padding: 4px 0 0 0;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-left {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
+  -ms-border-top-right-radius: 0;
+  -khtml-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
+  -ms-border-bottom-right-radius: 0;
+  -khtml-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 3px 5px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-left-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-left {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000600px 1100006px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-left-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-left-corners.gif');
+}
+/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-left-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-left-bc {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-left-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-x;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-left-mc {
+  padding: 0 5px 0 0;
+}
+
+/* line 350, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-top {
+  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+}
+
+/* line 354, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-right {
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+}
+
+/* line 358, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-bottom {
+  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+}
+
+/* line 362, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-left {
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+}
+
+/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-bottom {
+  background-position: bottom left;
+}
+
+/* line 410, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel .x-panel-header-inset-header-strong-panel-top {
+  border-bottom-width: 1px !important;
+}
+
+/* line 414, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel .x-panel-header-inset-header-strong-panel-right {
+  border-left-width: 1px !important;
+}
+
+/* line 418, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel .x-panel-header-inset-header-strong-panel-bottom {
+  border-top-width: 1px !important;
+}
+
+/* line 422, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel .x-panel-header-inset-header-strong-panel-left {
+  border-right-width: 1px !important;
+}
+
+/* line 426, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-collapsed {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -o-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-collapsed-top {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-top-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1000606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-top-corners.gif');
+}
+/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-top-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-y;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-top-mc {
+  padding: 0 0 0 0;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-collapsed-right {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-right-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1100606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-right-corners.gif');
+}
+/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-bc {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-right-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-x;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-right-mc {
+  padding: 0 0 0 0;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-collapsed-bottom {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-bottom-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1000606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-bottom-corners.gif');
+}
+/* line 168, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-bottom-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-y;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-bottom-mc {
+  padding: 0 0 0 0;
+}
+
+/* line 58, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-panel-header-inset-header-strong-panel-collapsed-left {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -o-border-top-left-radius: 6px;
+  -ms-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -o-border-top-right-radius: 6px;
+  -ms-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -o-border-bottom-right-radius: 6px;
+  -ms-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -o-border-bottom-left-radius: 6px;
+  -ms-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: white;
+}
+
+/* line 91, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-panel-header-inset-header-strong-panel-collapsed-left-mc {
+  background-color: white;
+}
+
+/* line 104, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1000606px 1100606px;
+}
+/* line 147, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bl,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tr,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-br,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-ml,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-mr {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-left-corners.gif');
+}
+/* line 157, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-tc,
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-bc {
+  zoom: 1;
+  background-image: url('../images/panel-header/panel-header-inset-header-strong-panel-collapsed-left-sides.gif');
+  background-position: 0 0;
+  background-repeat: repeat-x;
+}
+/* line 200, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-panel-header-inset-header-strong-panel-collapsed-left-mc {
+  padding: 0 0 0 0;
+}
+
+/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-right-tc,
+.x-panel-header-inset-header-strong-panel-right-mc,
+.x-panel-header-inset-header-strong-panel-right-bc {
+  background-position: right 0;
+}
+
+/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-inset-header-strong-panel-bottom-tc,
+.x-panel-header-inset-header-strong-panel-bottom-mc,
+.x-panel-header-inset-header-strong-panel-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/* line 22, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel {
+  overflow: visible !important;
+}
+/* line 24, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel {
+  overflow: visible !important;
+}
+/* line 26, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal {
+  overflow: visible !important;
+}
+/* line 28, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner {
+  overflow: visible !important;
+}
+/* line 30, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container {
+  height: auto !important;
+  line-height: 1.6em;
+  overflow: visible !important;
   position: relative;
-  top: -2px;
-  right: -21px;
-  line-height: 18px;
+}
+/* line 35, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-strong-panel {
+  padding: 0 15px 0 15px;
+  position: absolute;
+  top: -24px;
+  left: 0;
+  background-color: #fff;
+}
+/* line 46, ../sass/_inset-header-strong-panel.scss */
+.x-panel-inset-header-strong-panel .x-panel-body-inset-header-strong-panel {
+  padding: 10px 20px 20px 20px;
 }
 
-/* line 29, ../sass/_alerts.scss */
-.alert-success {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-lookslike-parawitheader-panel {
+  border-color: #e0e0e0;
 }
 
-/* line 34, ../sass/_alerts.scss */
-.alert-success,
-.alert-success .alert-heading {
-  color: #468847;
+/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel {
+  font-size: 1.2em;
+  line-height: 15px;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: white;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
 }
 
-/* line 38, ../sass/_alerts.scss */
-.alert-danger,
-.alert-error {
-  background-color: #f2dede;
-  border-color: #eed3d7;
+/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-lookslike-parawitheader-panel {
+  color: gray;
+  font-size: 1.2em;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* line 45, ../sass/_alerts.scss */
-.alert-danger,
-.alert-error,
-.alert-danger .alert-heading,
-.alert-error .alert-heading {
-  color: #b94a48;
+/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-lookslike-parawitheader-panel {
+  background: transparent;
+  border-color: #e0e0e0;
+  color: #191919;
+  border-width: 0;
+  border-style: solid;
 }
 
-/* line 48, ../sass/_alerts.scss */
-.alert-info {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-lookslike-parawitheader-panel,
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel {
+  border-color: #e0e0e0;
 }
 
-/* line 53, ../sass/_alerts.scss */
-.alert-info,
-.alert-info .alert-heading {
-  color: #3a87ad;
+/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-vertical {
+  border-color: #e0e0e0;
 }
 
-/* line 60, ../sass/_alerts.scss */
-.alert-block {
-  padding-top: 14px;
-  padding-bottom: 14px;
+/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-left,
+.x-panel-header-lookslike-parawitheader-panel-right {
+  background-image: none;
+  background-color: white;
 }
 
-/* line 65, ../sass/_alerts.scss */
-.alert-block > p,
-.alert-block > ul {
-  margin-bottom: 0;
+/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+}
+/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+}
+/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-lookslike-parawitheader-panel-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
 }
 
-/* line 68, ../sass/_alerts.scss */
-.alert-block p + p {
-  margin-top: 5px;
+/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-lookslike-parawitheader-panel-right {
+  background-position: top right;
+}
+
+/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-top {
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-right {
+  -moz-box-shadow: white -1px 0 0px 0 inset;
+  -webkit-box-shadow: white -1px 0 0px 0 inset;
+  -o-box-shadow: white -1px 0 0px 0 inset;
+  box-shadow: white -1px 0 0px 0 inset;
+}
+
+/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-bottom {
+  -moz-box-shadow: white 0 -1px 0px 0 inset;
+  -webkit-box-shadow: white 0 -1px 0px 0 inset;
+  -o-box-shadow: white 0 -1px 0px 0 inset;
+  box-shadow: white 0 -1px 0px 0 inset;
+}
+
+/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-left {
+  -moz-box-shadow: white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 1px 0 0px 0 inset;
+  -o-box-shadow: white 1px 0 0px 0 inset;
+  box-shadow: white 1px 0 0px 0 inset;
+}
+
+/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-lookslike-parawitheader-panel-bottom {
+  background-position: bottom left;
+}
+
+/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-right-tc,
+.x-panel-header-lookslike-parawitheader-panel-right-mc,
+.x-panel-header-lookslike-parawitheader-panel-right-bc {
+  background-position: right 0;
+}
+
+/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-lookslike-parawitheader-panel-bottom-tc,
+.x-panel-header-lookslike-parawitheader-panel-bottom-mc,
+.x-panel-header-lookslike-parawitheader-panel-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/* line 23, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel {
+  padding: 0 0 8px 0;
+}
+/* line 26, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-header-lookslike-parawitheader-panel .x-panel-header-body-lookslike-parawitheader-panel-horizontal .x-panel-header-text-container {
+  height: auto !important;
+  line-height: 1.6em;
+}
+/* line 32, ../sass/_lookslike-parawithheader-panel.scss */
+.x-panel-lookslike-parawitheader-panel .x-panel-body-lookslike-parawitheader-panel {
+  padding: 2px;
+}
+
+/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-transparentpanel {
+  border-color: #e0e0e0;
+}
+
+/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel {
+  font-size: 12px;
+  line-height: 15px;
+  border-color: #e0e0e0;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #f4f3f3;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
+  background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 271, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-top {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-top-bg.gif');
+}
+
+/* line 275, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-bottom {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-bottom-bg.gif');
+}
+
+/* line 279, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-left {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-left-bg.gif');
+}
+
+/* line 283, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-right {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-right-bg.gif');
+}
+
+/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-transparentpanel {
+  color: #333333;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-transparentpanel {
+  background: transparent;
+  border-color: #e0e0e0;
+  color: black;
+  border-width: 0;
+  border-style: solid;
+}
+
+/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-transparentpanel,
+.x-panel-collapsed .x-panel-header-transparentpanel {
+  border-color: #e0e0e0;
+}
+
+/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-vertical {
+  border-color: #e0e0e0;
+}
+
+/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-left,
+.x-panel-header-transparentpanel-right {
+  background-image: none;
+  background-color: #f4f3f3;
+  background-image: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
+  background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
+}
+
+/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+}
+/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+}
+/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+
+/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-right {
+  background-position: top right;
+}
+
+/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-top {
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-right {
+  -moz-box-shadow: white -1px 0 0px 0 inset;
+  -webkit-box-shadow: white -1px 0 0px 0 inset;
+  -o-box-shadow: white -1px 0 0px 0 inset;
+  box-shadow: white -1px 0 0px 0 inset;
+}
+
+/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-bottom {
+  -moz-box-shadow: white 0 -1px 0px 0 inset;
+  -webkit-box-shadow: white 0 -1px 0px 0 inset;
+  -o-box-shadow: white 0 -1px 0px 0 inset;
+  box-shadow: white 0 -1px 0px 0 inset;
+}
+
+/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-left {
+  -moz-box-shadow: white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 1px 0 0px 0 inset;
+  -o-box-shadow: white 1px 0 0px 0 inset;
+  box-shadow: white 1px 0 0px 0 inset;
+}
+
+/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-bottom {
+  background-position: bottom left;
+}
+
+/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-right-tc,
+.x-panel-header-transparentpanel-right-mc,
+.x-panel-header-transparentpanel-right-bc {
+  background-position: right 0;
+}
+
+/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-bottom-tc,
+.x-panel-header-transparentpanel-bottom-mc,
+.x-panel-header-transparentpanel-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/** Transparent panel with overflow visible.
+    Great as container for things with negative margins, such as the
+    inset-header-panel UIs.
+*/
+/* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-transparentpanel-overflowvisible {
+  border-color: #e0e0e0;
+}
+
+/* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible {
+  font-size: 12px;
+  line-height: 15px;
+  border-color: #e0e0e0;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #f4f3f3;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
+  background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
+  background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 271, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-top {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-top-bg.gif');
+}
+
+/* line 275, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-bottom {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-bottom-bg.gif');
+}
+
+/* line 279, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-left {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-left-bg.gif');
+}
+
+/* line 283, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-right {
+  background-image: url('../images/panel-header/panel-header-transparentpanel-overflowvisible-right-bg.gif');
+}
+
+/* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-transparentpanel-overflowvisible {
+  color: #333333;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* line 299, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-transparentpanel-overflowvisible {
+  background: transparent;
+  border-color: #e0e0e0;
+  color: black;
+  border-width: 0;
+  border-style: solid;
+}
+
+/* line 314, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-transparentpanel-overflowvisible,
+.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible {
+  border-color: #e0e0e0;
+}
+
+/* line 319, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-vertical {
+  border-color: #e0e0e0;
+}
+
+/* line 326, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-left,
+.x-panel-header-transparentpanel-overflowvisible-right {
+  background-image: none;
+  background-color: #f4f3f3;
+  background-image: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #f0f0f0), color-stop(100%, #d7d7d7));
+  background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
+  background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
+}
+
+/* line 367, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+/* line 371, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+}
+/* line 375, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+}
+/* line 379, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-transparentpanel-overflowvisible-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+
+/* line 384, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-right {
+  background-position: top right;
+}
+
+/* line 388, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-top {
+  -moz-box-shadow: white 0 1px 0px 0 inset;
+  -webkit-box-shadow: white 0 1px 0px 0 inset;
+  -o-box-shadow: white 0 1px 0px 0 inset;
+  box-shadow: white 0 1px 0px 0 inset;
+}
+
+/* line 392, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-right {
+  -moz-box-shadow: white -1px 0 0px 0 inset;
+  -webkit-box-shadow: white -1px 0 0px 0 inset;
+  -o-box-shadow: white -1px 0 0px 0 inset;
+  box-shadow: white -1px 0 0px 0 inset;
+}
+
+/* line 396, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-bottom {
+  -moz-box-shadow: white 0 -1px 0px 0 inset;
+  -webkit-box-shadow: white 0 -1px 0px 0 inset;
+  -o-box-shadow: white 0 -1px 0px 0 inset;
+  box-shadow: white 0 -1px 0px 0 inset;
+}
+
+/* line 400, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-left {
+  -moz-box-shadow: white 1px 0 0px 0 inset;
+  -webkit-box-shadow: white 1px 0 0px 0 inset;
+  -o-box-shadow: white 1px 0 0px 0 inset;
+  box-shadow: white 1px 0 0px 0 inset;
+}
+
+/* line 405, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-nlg .x-panel-header-transparentpanel-overflowvisible-bottom {
+  background-position: bottom left;
+}
+
+/* line 439, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-right-tc,
+.x-panel-header-transparentpanel-overflowvisible-right-mc,
+.x-panel-header-transparentpanel-overflowvisible-right-bc {
+  background-position: right 0;
+}
+
+/* line 445, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-transparentpanel-overflowvisible-bottom-tc,
+.x-panel-header-transparentpanel-overflowvisible-bottom-mc,
+.x-panel-header-transparentpanel-overflowvisible-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/* line 26, ../sass/_transparentpanel-overflowvisible.scss */
+.x-panel-transparentpanel-overflowvisible {
+  overflow: visible !important;
+}
+/* line 28, ../sass/_transparentpanel-overflowvisible.scss */
+.x-panel-transparentpanel-overflowvisible .x-panel-body-transparentpanel-overflowvisible {
+  overflow: visible !important;
 }

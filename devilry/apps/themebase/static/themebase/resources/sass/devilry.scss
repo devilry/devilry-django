@@ -1,7 +1,7 @@
 // Extjs theme for devilry with overrides from Bootstrap (https://github.com/hecbuma/compass-bootstrap/)
 
 // Bootstrap variables
-@import "bootstrap2_variables";
+@import "variables";
 
 // Override extjs variables and import ExtJS
 $color: $grayDark;
@@ -11,22 +11,22 @@ $font-size: $baseFontSize;
 
 // Bootstrap styles
 @import "mixins";
-@import "scaffolding";
-@import "type";
+@import "alerts";
 @import "breadcrumbs";
 @import "buttons";
+@import "scaffolding";
+@import "type";
 
 // Devilry overrides and UIs
 @import "button-uis";
+@import "doesnotexist";
+@import "forms-port";
+@import "grid";
+@import "inset-header-panel";
+@import "inset-header-strong-panel";
+@import "lookslike-parawithheader-panel";
 @import "transparentpanel";
 @import "transparentpanel-overflowvisible";
-@import "lookslike-parawithheader-panel";
-@import "inset-header-strong-panel";
-@import "inset-header-panel";
-@import "forms-port";
-@import "doesnotexist";
-@import "grid";
-@import "alerts";
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
 // You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.
