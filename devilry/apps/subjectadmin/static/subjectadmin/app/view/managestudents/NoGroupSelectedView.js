@@ -14,8 +14,9 @@ Ext.define('subjectadmin.view.managestudents.NoGroupSelectedView' ,{
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'box',
-                html: this.topMessage
+                xtype: 'alertmessage',
+                type: 'info',
+                message: this.topMessage
             }]
         });
         this.callParent(arguments);
