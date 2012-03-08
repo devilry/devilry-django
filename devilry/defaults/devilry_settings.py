@@ -64,8 +64,9 @@ DEVILRY_I18N_DEFAULT_LANGCODE = 'DEFAULT'
 # Use '' for the default locale.
 DEVILRY_I18N_LANGCODEMAPPING = {
                                 'DEFAULT': '',
-                                #'en': '_en_higheredu',
-                                #'en-US': '_en_higheredu'
+                                'en': '',
+                                'en-US': '',
+                                'NO-nb': '_NO-nb'
                                }
 
 
