@@ -1,7 +1,7 @@
 // Extjs theme for devilry with overrides from Bootstrap (https://github.com/hecbuma/compass-bootstrap/)
 
+// Bootstrap variables
 @import "bootstrap2_variables";
-@import "mixins";
 
 // Override extjs variables and import ExtJS
 $color: $grayDark;
@@ -9,11 +9,12 @@ $font-family: $baseFontFamily;
 $font-size: $baseFontSize;
 @import "extjs";
 
-// Basic font and link styles for .bootstrap
+// Bootstrap styles
+@import "mixins";
 @import "scaffolding";
-
-// Headings, body text, lists, code, and more for a versatile and durable typography system
 @import "type";
+@import "breadcrumbs";
+@import "buttons";
 
 // Devilry overrides and UIs
 @import "button-uis";

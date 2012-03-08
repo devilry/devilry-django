@@ -9,7 +9,7 @@ Ext.define('subjectadmin.view.ActionList', {
         '<ul class="boxbody">',
         '    <tpl for="links">',
         '       <li>',
-        '           <a href="{url}" class="btn {buttonSize} {buttonType}" style="{style}">{text}</a>',
+        '           <a href="{url}" class="btn btn-{buttonSize} btn-{buttonType}" style="{style}">{text}</a>',
         '       </li>',
         '    </tpl>',
         '<ul>'

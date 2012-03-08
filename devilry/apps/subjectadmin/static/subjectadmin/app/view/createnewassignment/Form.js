@@ -26,7 +26,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     items: [{
         margin: {top: 0, bottom: 20},
         xtype: 'box',
-        cls: 'metainfo',
+        cls: 'metainfo bootstrap',
         itemId: 'metainfo',
         html: ''
     }, {
@@ -147,7 +147,7 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     }],
 
     initComponent: function() {
-        var cssclasses = 'createnewassignmentform bootstrap';
+        var cssclasses = 'createnewassignmentform';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }

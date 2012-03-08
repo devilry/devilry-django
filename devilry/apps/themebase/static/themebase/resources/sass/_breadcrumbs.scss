@@ -1,0 +1,23 @@
+// BREADCRUMBS
+// -----------
+
+.breadcrumb {
+  padding: 10px 40px;
+  margin: 0;
+  background-color: $almostblack;
+  li {
+    display: inline;
+    a {
+        color: $grayLighter;
+        text-decoration: underline;
+    }
+  }
+  .divider {
+    padding: 0 5px;
+    color: $grayLighter;
+  }
+  .active {
+    color: $grayLighter;
+    font-weight: bold;
+  }
+}

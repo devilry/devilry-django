@@ -37,11 +37,11 @@ $primaryButtonColorDisabled: lighten($blueDark, 25%);
     $color-pressed: $white,
     $color-disabled: $white,
 
-    $font-size: $button-large-font-size,
-    $font-size-over: $button-large-font-size-over,
-    $font-size-focus: $button-large-font-size-focus,
-    $font-size-pressed: $button-large-font-size-pressed,
-    $font-size-disabled: $button-large-font-size-disabled,
+    $font-size: ($baseFontSize + 1px),
+    $font-size-over: ($baseFontSize + 1px),
+    $font-size-focus: ($baseFontSize + 1px),
+    $font-size-pressed: ($baseFontSize + 1px),
+    $font-size-disabled: ($baseFontSize + 1px),
 
     $font-weight: $button-large-font-weight,
     $font-weight-over: $button-large-font-weight-over,
