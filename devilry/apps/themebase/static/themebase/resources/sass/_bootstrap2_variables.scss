@@ -4,6 +4,7 @@ $linkColorHover:        darken($linkColor, 15%) !default;
 
 // Grays
 $black:                 #000 !default;
+$almostblack:           #191919 !default; // Added by devilry
 $grayDarker:            lighten($black, 10%) !default;
 $grayDark:              lighten($black, 25%) !default;
 $gray:                  lighten($black, 50%) !default;
@@ -18,6 +19,7 @@ $green:                 #46a546 !default;
 $red:                   #9d261d !default;
 $yellow:                #ffc40d !default;
 $orange:                #f89406 !default;
+$orangeDark:            #DC5600 !default; // Added by devilry
 $pink:                  #c3325f !default;
 $purple:                #7a43b6 !default;
 

@@ -1,23 +1,22 @@
 .formhelp {
-    font-size: $basefont;
-    line-height: $baseline;
+    font-size: $baseFontSize;
+    line-height: $baseLineHeight;
     color: $grayLight;
     padding-left: 4px;
 }
 
-label,
-input,
-select,
-textarea {
-    @include sans-serif-font(normal,14px,normal);
-}
+//label,
+//input,
+//select,
+//textarea {
+    //@include sans-serif-font(normal,14px,normal);
+//}
 
 label {
-    font-size: $basefont;
-    line-height: $baseline;
+    font-size: $baseFontSize;
+    line-height: $baseLineHeight;
     color: $grayDark;
 }
-
 
 
 // Focus states
@@ -39,24 +38,4 @@ input[type=checkbox]:focus,
 select:focus {
     @include box-shadow(none); // override for file inputs
     outline: 1px dotted #666; // Select elements don't get box-shadow styles, so instead we do outline
-}
-
-
-.form-stacked {
-    label {
-        display: block;
-        float: none;
-        width: auto;
-        font-weight: bold;
-        text-align: left;
-        line-height: 20px;
-        padding-top: 0;
-    }
-
-    input.x-form-text {
-        color: $grayDark !important;
-        font-size: $basefont;
-        border: 1px solid #ccc;
-        @include border-radius(3px);
-    }
 }
