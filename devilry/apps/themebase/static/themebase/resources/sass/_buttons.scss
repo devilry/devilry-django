@@ -32,12 +32,7 @@
 .btn:hover {
   color: $grayDark;
   text-decoration: none;
-  background-color: darken($white, 10%);
-  //background-position: 0 -15px;
-
-  // transition is only when going to hover, otherwise the background
-  // behind the gradient (there for IE<=9 fallback) gets mismatched
-  @include transition(background-position .1s linear);
+  @include background-image(linear-gradient($white, $white 35%, darken($white, 15)));
 }
 
 // Focus state for keyboard and accessibility
@@ -125,7 +120,7 @@
 .btn-primary {
   @include buttonBackground($primaryButtonBackground, adjust-hue($primaryButtonBackground, 20));
   &:hover {
-      @include buttonBackground(darken($primaryButtonBackground, 5%), adjust-hue(darken($primaryButtonBackground, 5%), 20));
+      @include buttonBackground(darken($primaryButtonBackground, 2%), adjust-hue(darken($primaryButtonBackground, 10%), 20));
   }
 }
 // Warning appears are orange
