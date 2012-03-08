@@ -167,7 +167,9 @@ def indata(**indataspec):
                     else:
                         converted_kwargs[paramname] = converted_value
 
-            targetfunc_argslen = (len(targetfunc_argspec.args) - len(targetfunc_argspec.defaults) - 1)
+            targetfunc_argslen = (len(targetfunc_argspec.args) - 1)
+            if targetfunc_argspec.defaults:
+                targetfunc_argslen -= len(targetfunc_argspec.defaults)
             if len(converted_kwargs) < targetfunc_argslen:
                 missing = ', '.join([repr(s) for s in set(targetfunc_argspec.args[1:]).difference(set(kwargs.keys()))])
                 errormsg = ('{funcname}(...) requires {targetfunc_argslen} arguments '

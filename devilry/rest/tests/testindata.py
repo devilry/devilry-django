@@ -37,6 +37,17 @@ class TestIndata(TestCase):
         else:
             self.fail("InvalidIndataError not raised")
 
+    def test_indata_nodefaults(self):
+        class Tst(object):
+            @indata(x=int, y=int)
+            def tst(self, x, y):
+                return x + y
+
+        tst = Tst()
+        self.assertEquals(tst.tst(x="10", y="20"), 30)
+        with self.assertRaises(InvalidIndataError):
+            tst.tst()
+
     def test_unicode_indata(self):
         self.assertEquals(unicode_indata(u'test'), u'test')
         self.assertEquals(unicode_indata(u'\u00e5ge'.encode('utf-8')), u'\u00e5ge')
