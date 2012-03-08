@@ -10,6 +10,7 @@ themebase.no: "Nei"
 themebase.loading: "Laster..."
 themebase.delete_something: "Slett {what}"
 themebase.rename_something: "Endre navn på {what}"
+themebase.cancel: "Avbryt"
 
 themebase.approved: "Godkjent"
 themebase.notapproved: "Ikke godkjent"

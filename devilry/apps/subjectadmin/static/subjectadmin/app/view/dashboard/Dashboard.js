@@ -40,7 +40,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         }, {
             xtype: 'panel',
             margin: {top: 40},
-            title: 'Shortcuts',
+            title: dtranslate('subjectadmin.dashboard.shortcuts'),
             ui: 'inset-header-panel',
             items: {
                 xtype: 'shortcutlist'
@@ -53,7 +53,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         border: false,
         items: [{
             xtype: 'panel',
-            title: 'Messages',
+            title: dtranslate('subjectadmin.dashboard.messages'),
             ui: 'lookslike-parawitheader-panel',
             cls: 'bootstrap',
             html: [

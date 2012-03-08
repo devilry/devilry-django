@@ -11,6 +11,7 @@ themebase.no: 'No'
 themebase.loading: 'Loading...'
 themebase.delete_something: "Delete {what}"
 themebase.rename_something: "Rename {what}"
+themebase.cancel: "Cancel"
 
 themebase.approved: Approved
 themebase.notapproved: Not approved
