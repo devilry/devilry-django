@@ -211,7 +211,7 @@ class GroupDao(object):
 
     def create_noauth(self, assignment, name=None, is_open=None,
                       students=[], examiners=[], tags=[], deadlines=[]):
-        group = AssignmentGroup(parentnode=assignment)
+        group = AssignmentGroup(parentnode_id=assignment.id)
         self._setattr_if_not_none(group, 'name', name)
         self._setattr_if_not_none(group, 'is_open', is_open)
         group.save()
@@ -224,6 +224,10 @@ class GroupDao(object):
         for deadlinedict in deadlines:
             self._create_deadline_from_deadlinedict(group, deadlinedict)
         return group
+
+    def create(self, user, assignment, *args, **kwargs):
+        assignmentadmin_required(user, "i18n.permissiondenied", assignment.id)
+        return self.create_noauth(assignment, *args, **kwargs)
 
 
 

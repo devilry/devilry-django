@@ -266,6 +266,14 @@ class TestGroupDao(TestCase):
         self.assertEquals(set(deadlines),
                           set([datetime(2010, 1, 2, 3, 4, 5), datetime(2010, 2, 3, 4, 5, 6)]))
 
+    def test_create(self):
+        testhelper = self.create_testassignments()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        group = GroupDao().create(testhelper.a1admin, assignment1, name='Superprojectgroup')
+        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
+        self.assertEquals(group_db.name, 'Superprojectgroup')
+        self.assertEquals(group_db.is_open, True)
+
 
 class TestRestGroup(TestCase):
     def setUp(self):
