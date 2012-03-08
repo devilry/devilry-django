@@ -12,6 +12,7 @@ themebase.loading: 'Loading...'
 themebase.delete_something: "Delete {what}"
 themebase.rename_something: "Rename {what}"
 themebase.cancel: "Cancel"
+themebase.selectall: "Select all"
 
 themebase.approved: Approved
 themebase.notapproved: Not approved

@@ -31,15 +31,13 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         this.groupRecord = groupRecord;
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            groupRecord: groupRecord,
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            topMessage: this._createTopMessage(),
-            isProjectAssignment: this.manageStudentsController.isProjectAssignment()
+            topMessage: this._createTopMessage()
         });
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.singlegroup.topmessage'));
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.singlegroupselected.topmessage'));
         return tpl.apply({
             groupunit: this.manageStudentsController.getTranslatedGroupUnit()
         });

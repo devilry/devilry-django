@@ -6,5 +6,18 @@ Ext.define('subjectadmin.view.managestudents.NoGroupSelectedView' ,{
     alias: 'widget.nogroupselectedview',
     cls: 'nogroupselectedview bootstrap',
     ui: 'transparentpanel',
-    html: 'No group selected'
+
+    /**
+     * @cfg {string} topMessage (required)
+     */
+
+    initComponent: function() {
+        Ext.apply(this, {
+            items: [{
+                xtype: 'box',
+                html: this.topMessage
+            }]
+        });
+        this.callParent(arguments);
+    }
 });

@@ -8,10 +8,6 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     ui: 'transparentpanel',
 
     /**
-     * @cfg {subjectadmin.model.Group} groupRecord (required)
-     */
-
-    /**
      * @cfg {string} topMessage (required)
      */
 
@@ -20,8 +16,6 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      */
 
     initComponent: function() {
-        //this.groupRecord.get('students')[0].student__username
-
         Ext.apply(this, {
             items: [{
                 xtype: 'alertmessage',

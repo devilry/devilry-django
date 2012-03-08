@@ -17,8 +17,17 @@ Ext.define('subjectadmin.controller.managestudents.NoGroupSelectedViewPlugin', {
     },
 
     _onNoGroupSelected: function(manageStudentsController) {
-        manageStudentsController.setBody({
-            xtype: 'nogroupselectedview'
+        this.manageStudentsController = manageStudentsController;
+        this.manageStudentsController.setBody({
+            xtype: 'nogroupselectedview',
+            topMessage: this._createTopMessage()
         });
-    }
+    },
+
+    _createTopMessage: function() {
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.nogroupselected.topmessage'));
+        return tpl.apply({
+            groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
+        });
+    },
 });

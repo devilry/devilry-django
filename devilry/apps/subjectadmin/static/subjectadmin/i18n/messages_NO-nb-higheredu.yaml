@@ -59,8 +59,10 @@ subjectadmin.managestudents.addstudents.title: "Legg til studenter"
 subjectadmin.managestudents.addstudents.tips: "Velg studentene du ønsker å legge til på oppgaven, og klikk lagre."
 subjectadmin.managestudents.addstudents.relatedref: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
 subjectadmin.managestudents.addstudents.relatedbtn: "Rediger tilgjengelige studenter"
-subjectadmin.managestudents.singlegroup.topmessage: "En {groupunit} valgt."
+subjectadmin.managestudents.singlegroupselected.topmessage: "En {groupunit} valgt."
+subjectadmin.managestudents.nogroupselected.topmessage: "Ingen {groupunit_plural} valgt."
 subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural}.'
+subjectadmin.managestudents.addstudents: "Legg til studenter"
 subjectadmin.groupunit.projectassignment: 'gruppe'
 subjectadmin.groupunit.projectassignment_plural: 'grupper'
 subjectadmin.groupunit.not_projectassignment: 'student'
