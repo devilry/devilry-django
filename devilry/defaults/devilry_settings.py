@@ -66,7 +66,7 @@ DEVILRY_I18N_LANGCODEMAPPING = {
                                 'DEFAULT': '',
                                 'en': '',
                                 'en-US': '',
-                                'NO-nb': '_NO-nb'
+                                'NO-nb': '_NO-nb-higheredu'
                                }
 
 

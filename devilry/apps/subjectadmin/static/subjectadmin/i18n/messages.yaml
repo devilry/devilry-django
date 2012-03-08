@@ -4,18 +4,18 @@ subjectadmin.assignment.is_anonymous.title: Anonymous
 subjectadmin.assignment.is_anonymous.body: "Examiners and students can <strong>not</strong> see each other and they can <strong>not</strong> communicate."
 subjectadmin.assignment.not_anonymous.title: Not anonymous
 subjectadmin.assignment.not_anonymous.body: Examiners and students can see each other and communicate.
-subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback (students deliver through an alternative channel), set this to <em>Not using Devilry</em>.'
+subjectadmin.assignment.delivery_types.help: 'If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'
 subjectadmin.assignment.delivery_types.label: 'How do students add deliveries?'
 subjectadmin.assignment.delivery_types.electronic : Using Devilry
 subjectadmin.assignment.delivery_types.nonelectronic : Not using Devilry
 subjectadmin.assignment.long_name.help: "Choose a descriptive name for your assignment."
 subjectadmin.assignment.long_name.label: Name
 subjectadmin.assignment.long_name.example: "Example: Obligatory assignment 1"
-subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. 'Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
+subjectadmin.assignment.short_name.help: "Choose a short name with at most 20 letters for your assignment. Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space."
 subjectadmin.assignment.short_name.label: Short name
 subjectadmin.assignment.short_name.example: "Example: assignment1"
-subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment.'
-subjectadmin.assignment.publishing_time.edithelp: 'Choose a time when time when students will be able to start adding deliveries on the assignment.'
+subjectadmin.assignment.publishing_time.help: 'Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.'
+subjectadmin.assignment.publishing_time.edithelp: 'Choose a time when time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.'
 subjectadmin.assignment.publishing_time.label: Publishing time
 subjectadmin.assignment.notpublished.title: Not published
 subjectadmin.assignment.notpublished.body: 'Will be published {publishing_time}.'
@@ -33,7 +33,7 @@ subjectadmin.assignment.error.no_active_periods: "No active periods found."
 subjectadmin.assignment.autosetup_examiners.label: "Automatically setup examiners?"
 subjectadmin.assignment.autosetup_examiners.help: "Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period."
 subjectadmin.assignment.activeperiod.label: "Period"
-subjectadmin.assignment.activeperiod.help: "Choose the period where the assignment belongs."
+subjectadmin.assignment.activeperiod.help: "Choose the subject and period where the assignment should be added. Only active periods are displayed."
 subjectadmin.assignment.waitingforfeedback: Waiting for feedback
 subjectadmin.assignment.upcoming_deadlines: Upcoming deadlines
 subjectadmin.assignment.manage_students: Manage students
@@ -48,7 +48,7 @@ subjectadmin.createnewassignment.success.title: "Created {assignment}"
 
 subjectadmin.dashboard.actionstitle: Actions
 subjectadmin.dashboard.createnewassignment: Create new assignment
-subjectadmin.dashboard.browseall: Browse everything i have access to
+subjectadmin.dashboard.browseall: "Browse ..."
 subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
 "subjectadmin.dashboard.overview-and-statistics": Overview and statistics
 
