@@ -8,8 +8,8 @@ Ext.define('themebase.AlertMessage', {
     cls: 'bootstrap',
     
     tpl: [
-        '<div class="alert-message {type}">',
-        '  <p>{message}</p>',
+        '<div class="alert alert-{type}">',
+        '{message}',
         '</div>'
     ],
 

@@ -1,4 +1,5 @@
 @import "variables";
+@import "bootstrap2_variables";
 @import "mixins";
 
 // Override extjs variables
@@ -28,6 +29,7 @@ $font-size: $basefont;
 @import "forms-port";
 @import "doesnotexist";
 @import "grid";
+@import "alerts";
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
 // You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.
