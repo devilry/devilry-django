@@ -5,6 +5,7 @@ from devilry.rest.indata import indata, InvalidIndataError
 from devilry.rest.indata import bool_indata
 from devilry.rest.indata import unicode_indata
 from devilry.rest.indata import isoformatted_datetime
+from devilry.rest.indata import list_or_tuple_indata
 
 
 class TestIndata(TestCase):
@@ -47,7 +48,6 @@ class TestIndata(TestCase):
         with self.assertRaises(ValueError):
             bool_indata(None)
 
-
     def test_isoformatted_datetime(self):
         self.assertEquals(isoformatted_datetime("2010-02-10T01:02:03"), datetime(2010, 2, 10, 1, 2, 3))
         self.assertEquals(isoformatted_datetime("2010-2-10T1:2:3"), datetime(2010, 2, 10, 1, 2, 3))
@@ -57,3 +57,11 @@ class TestIndata(TestCase):
             isoformatted_datetime(None)
         with self.assertRaises(ValueError):
             isoformatted_datetime(None)
+
+    def test_list_or_tuple_indata(self):
+        self.assertEquals(list_or_tuple_indata([1, 2]), [1, 2])
+        self.assertEquals(list_or_tuple_indata((1, 2)), (1, 2))
+        with self.assertRaises(ValueError):
+            list_or_tuple_indata(None)
+        with self.assertRaises(ValueError):
+            list_or_tuple_indata(set([1, 2]))

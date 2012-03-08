@@ -31,6 +31,16 @@ def unicode_indata(value):
         raise ValueError('Invalid type: ' + str(type(value)))
 
 
+def list_or_tuple_indata(value):
+    """
+    Requires the ``value`` is a list or a tuple.
+    """
+    if isinstance(value, (list, tuple)):
+        return value
+    else:
+        raise ValueError('Invalid type: {0}. Tuple or list required.'.format(type(value)))
+
+
 def bool_indata(value):
     """
     Validator for :func:`indata` that requires that the value is a ``bool`` or
