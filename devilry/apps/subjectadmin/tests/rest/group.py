@@ -9,6 +9,7 @@ from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Deadline
 from devilry.rest.testutils import dummy_urlreverse
+from devilry.rest.testutils import RestClient
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.apps.subjectadmin.rest.group import GroupDao
@@ -277,3 +278,29 @@ class TestRestGroup(TestCase):
         dingus = self.restapi.dao
         # Check the dingus to make sure all parameters was converted correctly
         self.assertEquals(1, len(dingus.calls('list', None, 1001)))
+
+
+
+class TestRestGroupIntegration(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:admin(p1admin)'])
+        self.client = RestClient()
+        self.client.login(username='p1admin', password='test')
+
+    def test_list(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        for studentNum in xrange(3):
+            path = 'uni;sub.p1.a1.g{studentNum}:candidate(stud{studentNum})'.format(studentNum=studentNum)
+            self.testhelper.add_to_path(path)
+        content, response = self.client.rest_list('/subjectadmin/rest/group/',
+                                                  assignmentid=self.testhelper.sub_p1_a1.id)
+        self.assertEquals(len(content), 3)
+        self.assertEquals(set(content[0].keys()),
+                          set([u'name', u'tags', u'students',
+                               u'feedback__is_passing_grade', u'deadlines',
+                               u'id', u'feedback__points', u'feedback__grade',
+                               u'is_open', u'num_deliveries',
+                               u'feedback__save_timestamp', u'examiners']))
