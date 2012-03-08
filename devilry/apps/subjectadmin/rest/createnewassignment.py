@@ -88,7 +88,7 @@ class CreateNewAssignmentDao(object):
         if add_all_relatedstudents:
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
-        return dict(success=True)
+        return assignment
 
     def lookup_period_create(self, user, period_id, *args, **kwargs):
         try:
@@ -119,9 +119,10 @@ class RestCreateNewAssignment(RestBase):
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                autosetup_examiners):
-        return self.dao.lookup_period_create(self.user, period_id, short_name,
-                                             long_name, first_deadline,
-                                             publishing_time, delivery_types,
-                                             anonymous,
-                                             add_all_relatedstudents,
-                                             autosetup_examiners)
+        assignment = self.dao.lookup_period_create(self.user, period_id, short_name,
+                                                   long_name, first_deadline,
+                                                   publishing_time, delivery_types,
+                                                   anonymous,
+                                                   add_all_relatedstudents,
+                                                   autosetup_examiners)
+        return dict(id=assignment.id)

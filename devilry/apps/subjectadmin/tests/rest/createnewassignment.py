@@ -171,7 +171,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
                                                     **data)
         self.assertEquals(response.status_code, 201)
-        self.assertEquals(content['success'], True)
+        self.assertEquals(content.keys(), ['id'])
 
     def test_create_notfound(self):
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
