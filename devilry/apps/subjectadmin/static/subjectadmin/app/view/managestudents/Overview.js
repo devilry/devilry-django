@@ -28,6 +28,7 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
             frame: false,
             items: [{
                 xtype: 'listofgroups',
+                margin: {top:10, right: 0, bottom: 10, left: 20},
                 region: 'west',
                 //border: false,
                 width: 350,
