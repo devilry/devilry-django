@@ -45,8 +45,8 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
             }, {
                 xtype: 'panel',
                 region: 'center',
+                margin: {top:10, right: 20, bottom: 10, left: 20},
                 border: false,
-                bodyPadding: 20,
                 itemId: 'body'
             }]
         });
