@@ -1,25 +1,29 @@
-themebase.create: Create
-themebase.edit: Edit
-themebase.save: Save
-themebase.gotodashboard: Return to dashboard
-themebase.lostserverconnection: Lost connection to the server.
-themebase.next: Next
-themebase.routenotfound: Route not found
-themebase.saving: Saving
-themebase.yes: 'Yes'
-themebase.no: 'No'
-themebase.loading: 'Loading...'
+themebase.create: "Create"
+themebase.edit: "Edit"
+themebase.save: "Save"
+themebase.gotodashboard: "Return to dashboard"
+themebase.lostserverconnection: "Lost connection to the server."
+themebase.next: "Next"
+themebase.routenotfound: "Route not found"
+themebase.saving: "Saving"
+themebase.yes: "Yes"
+themebase.no: "No"
+themebase.loading: "Loading..."
 themebase.delete_something: "Delete {what}"
 themebase.rename_something: "Rename {what}"
 themebase.cancel: "Cancel"
 themebase.selectall: "Select all"
 
-themebase.approved: Approved
-themebase.notapproved: Not approved
-themebase.open: Open
-themebase.closed: Closed
-themebase.deliveries: deliveries
-themebase.delivery: delivery
-themebase.advanced_options: Advanced options
+themebase.passing_grade: "Passed"
+themebase.not_passing_grade: "Failed"
+themebase.points: "Points"
+themebase.grade: "Grade"
+themebase.not_finished_correcting: "Ikke ferdig rettet"
+themebase.open: "Open"
+themebase.closed: "Closed"
+themebase.deliveries: "deliveries"
+themebase.delivery: "delivery"
+themebase.advanced_options: "Advanced options"
+
 themebase.date_emptytext: "YYYY-MM-DD"
 themebase.time_emptytext: "hh:mm"
