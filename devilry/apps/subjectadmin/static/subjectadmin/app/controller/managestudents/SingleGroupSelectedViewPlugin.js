@@ -11,7 +11,9 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     ],
 
     models: [
-        'Candidate'
+        'Candidate',
+        'Examiner',
+        'Tag'
     ],
 
     views: [
@@ -31,6 +33,29 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         this.control({
             'viewport singlegroupview': {
                 render: this._onRender
+            },
+            'viewport singlegroupview studentsingroupgrid': {
+                removeStudent: this._onRemoveStudent
+            },
+
+            'viewport singlegroupview examinersingroupgrid': {
+                removeExaminer: this._onRemoveExaminer
+            },
+            'viewport singlegroupview examinersingroupgrid #addExaminer': {
+                click: this._onAddExaminer
+            },
+            'viewport singlegroupview examinersingroupgrid #removeAllExaminers': {
+                click: this._onRemoveAllExaminers
+            },
+
+            'viewport singlegroupview tagsingroupgrid': {
+                removeTag: this._onRemoveTag
+            },
+            'viewport singlegroupview tagsingroupgrid #addTag': {
+                click: this._onAddTag
+            },
+            'viewport singlegroupview tagsingroupgrid #removeAllTags': {
+                click: this._onRemoveAllTags
             }
         });
     },
@@ -43,6 +68,8 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
             topMessage: this._createTopMessage(),
             studentsStore: this._createStudentsStore(),
+            examinersStore: this._createExaminersStore(),
+            tagsStore: this._createTagsStore(),
             groupRecord: groupRecord
         });
     },
@@ -59,11 +86,51 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     },
 
     _createStudentsStore: function() {
-        console.log(this.groupRecord.get('students'));
         var store = Ext.create('Ext.data.Store', {
             model: this.getCandidateModel(),
             data: this.groupRecord.get('students')
         });
         return store;
-    }
+    },
+    _onRemoveStudent: function(candidateRecord) {
+        alert('Not implemented.');
+        console.log('Remove student:', candidateRecord.data);
+    },
+
+
+    _createExaminersStore: function() {
+        var store = Ext.create('Ext.data.Store', {
+            model: this.getExaminerModel(),
+            data: this.groupRecord.get('examiners')
+        });
+        return store;
+    },
+    _onAddExaminer: function() {
+        alert('Not implemented.');
+    },
+    _onRemoveAllExaminers: function() {
+        alert('Not implemented.');
+    },
+    _onRemoveExaminer: function(examinerRecord) {
+        console.log('Remove examiner:', examinerRecord.data);
+        alert('Not implemented.');
+    },
+
+    _createTagsStore: function() {
+        var store = Ext.create('Ext.data.Store', {
+            model: this.getTagModel(),
+            data: this.groupRecord.get('tags')
+        });
+        return store;
+    },
+    _onAddTag: function() {
+        alert('Not implemented.');
+    },
+    _onRemoveAllTags: function() {
+        alert('Not implemented.');
+    },
+    _onRemoveTag: function(tagRecord) {
+        console.log('Remove tag:', tagRecord.data);
+        alert('Not implemented.');
+    },
 });

@@ -8,7 +8,9 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     ui: 'transparentpanel',
 
     requires: [
-        'subjectadmin.view.managestudents.StudentsInGroupGrid'
+        'subjectadmin.view.managestudents.StudentsInGroupGrid',
+        'subjectadmin.view.managestudents.ExaminersInGroupGrid',
+        'subjectadmin.view.managestudents.TagsInGroupGrid'
     ],
 
     /**
@@ -21,6 +23,18 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
 
     /**
      * @cfg {subjectadmin.model.Group} groupRecord (required)
+     */
+
+    /**
+     * @cfg {Ext.data.Store} studentsStore (required)
+     */
+
+    /**
+     * @cfg {Ext.data.Store} examinersStore (required)
+     */
+
+    /**
+     * @cfg {Ext.data.Store} tagsStore (required)
      */
 
     metaInfoTpl: [
@@ -82,9 +96,19 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 }, {
                     xtype: 'container',
                     columnWidth: .3,
+                    defaults: {
+                        margin: {top: 20}
+                    },
                     items: [{
                         xtype: 'studentsingroupgrid',
+                        margin: {top: 0},
                         store: this.studentsStore
+                    }, {
+                        xtype: 'examinersingroupgrid',
+                        store: this.examinersStore
+                    }, {
+                        xtype: 'tagsingroupgrid',
+                        store: this.tagsStore
                     }]
                 }]
             }]

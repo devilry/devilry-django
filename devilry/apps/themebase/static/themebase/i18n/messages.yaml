@@ -13,6 +13,7 @@ themebase.delete_something: "Delete {what}"
 themebase.rename_something: "Rename {what}"
 themebase.cancel: "Cancel"
 themebase.selectall: "Select all"
+themebase.removeall: "Remove all"
 
 themebase.passing_grade: "Passed"
 themebase.not_passing_grade: "Failed"

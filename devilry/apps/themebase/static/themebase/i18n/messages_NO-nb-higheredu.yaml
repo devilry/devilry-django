@@ -12,6 +12,7 @@ themebase.delete_something: "Slett {what}"
 themebase.rename_something: "Endre navn på {what}"
 themebase.cancel: "Avbryt"
 themebase.selectall: "Velg alle"
+themebase.removeall: "Fjern alle"
 
 themebase.passing_grade: "Bestått"
 themebase.not_passing_grade: "Ikke bestått"
