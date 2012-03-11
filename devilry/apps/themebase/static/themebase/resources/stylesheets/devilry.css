@@ -11164,6 +11164,68 @@ input[type="submit"].btn.small {
   font-style: normal;
 }
 
+/* line 5, ../sass/_labels.scss */
+.label {
+  padding: 2px 4px 3px;
+  font-size: 11.05px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #bfbfbf;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+}
+
+/* line 16, ../sass/_labels.scss */
+.label:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/* line 22, ../sass/_labels.scss */
+.label-important {
+  background-color: #b94a48;
+}
+
+/* line 23, ../sass/_labels.scss */
+.label-important:hover {
+  background-color: #953b39;
+}
+
+/* line 25, ../sass/_labels.scss */
+.label-warning {
+  background-color: #f89406;
+}
+
+/* line 26, ../sass/_labels.scss */
+.label-warning:hover {
+  background-color: #c67605;
+}
+
+/* line 28, ../sass/_labels.scss */
+.label-success {
+  background-color: #468847;
+}
+
+/* line 29, ../sass/_labels.scss */
+.label-success:hover {
+  background-color: #356635;
+}
+
+/* line 31, ../sass/_labels.scss */
+.label-info {
+  background-color: #3a87ad;
+}
+
+/* line 32, ../sass/_labels.scss */
+.label-info:hover {
+  background-color: #2d6987;
+}
+
 /* line 615, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-primary-large {
   border-color: #0064cd;
