@@ -14,6 +14,8 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         'managestudents.SingleGroupSelectedView'
     ],
 
+    refs: [],
+
     init: function() {
         this.application.addListener({
             scope: this,
@@ -32,7 +34,8 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            topMessage: this._createTopMessage()
+            topMessage: this._createTopMessage(),
+            groupRecord: groupRecord
         });
     },
 
