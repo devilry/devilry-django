@@ -49,6 +49,7 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.manageStudentsController.getPrimaryToolbar().insert(1, {
             xtype: 'button',
             itemId: 'addstudents',
+            iconCls: 'icon-add-24',
             text: dtranslate('subjectadmin.managestudents.addstudents')
         });
         //this._onAddstudents();
