@@ -46,7 +46,7 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onManageStudentsLoaded: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
-        this.manageStudentsController.getListofgroupsToolbar().add({
+        this.manageStudentsController.getPrimaryToolbar().insert(1, {
             xtype: 'button',
             itemId: 'addstudents',
             text: dtranslate('subjectadmin.managestudents.addstudents')

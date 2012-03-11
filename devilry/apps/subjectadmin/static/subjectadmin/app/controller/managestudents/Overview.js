@@ -64,7 +64,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      * Get the toolbar for list of groups. Useful if a plugin needs to add
      * items to this toolbar.
      * @return {Ext.toolbar.Toolbar} The toolbar.
-     * @method getListofgroupsToolbar
+     * @method getPrimaryToolbar
      */
 
     refs: [{
@@ -77,8 +77,8 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         ref: 'body',
         selector: 'managestudentsoverview #body'
     }, {
-        ref: 'listofgroupsToolbar',
-        selector: 'managestudentsoverview toolbar[itemId=listofgroupsToolbar]'
+        ref: 'primaryToolbar',
+        selector: 'managestudentsoverview #primaryToolbar'
     }],
 
     init: function() {

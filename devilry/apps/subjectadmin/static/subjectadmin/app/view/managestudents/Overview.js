@@ -26,22 +26,39 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
         Ext.apply(this, {
             layout: 'border',
             frame: false,
+            dockedItems: [{
+                xtype: 'toolbar',
+                itemId: 'primaryToolbar',
+                dock: 'top',
+                padding: {top: 2, right: 40, bottom: 2, left: 40},
+                defaults: {
+                    scale: 'medium',
+                },
+                items: [{
+                    xtype: 'button',
+                    itemId: 'selectall',
+                    text: dtranslate('themebase.selectall')
+                }, '->', {
+                    xtype: 'button',
+                    text: 'Options',
+                    menu: [{
+                        text: dtranslate('subjectadmin.managestudents.make_admins_examiner'),
+                        checked: false
+                    }]
+                }, {
+                    xtype: 'textfield',
+                    itemId: 'search',
+                    margin: {left: 10},
+                    width: 200,
+                    emptyText: dtranslate('subjectadmin.managestudents.search_emptytext')
+                }]
+            }],
             items: [{
                 xtype: 'listofgroups',
                 margin: {top:10, right: 0, bottom: 10, left: 20},
                 region: 'west',
                 //border: false,
-                width: 350,
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    itemId: 'listofgroupsToolbar',
-                    items: [{
-                        xtype: 'button',
-                        itemId: 'selectall',
-                        text: dtranslate('themebase.selectall')
-                    }]
-                }]
+                width: 350
             }, {
                 xtype: 'panel',
                 region: 'center',
