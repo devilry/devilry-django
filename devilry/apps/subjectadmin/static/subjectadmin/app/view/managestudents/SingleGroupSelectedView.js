@@ -36,11 +36,24 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     '</span>',
                 '</tpl>',
                 '<tpl if="!hasFeedback"><span class="label label-info">',
-                    dtranslate('themebase.not_finished_correcting'),
+                    dtranslate('themebase.no_feedback'),
                 '</span></tpl>',
             '</dd>',
+
             '<dt>', Ext.String.capitalize(dtranslate('themebase.deliveries')) ,':</dt> ',
             '<dd>{num_deliveries}</dd>',
+
+            '<dt>', dtranslate('themebase.status'), ':</dt>',
+            '<dd>',
+                '<tpl if="is_open">',
+                    '<span class="label label-success">', dtranslate('themebase.open'), '</span> ',
+                    dtranslate('themebase.open.explained'),
+                '</tpl>',
+                '<tpl if="!is_open">',
+                    '<span class="label label-warning">', dtranslate('themebase.closed'), '</span> ',
+                    dtranslate('themebase.closed.explained'),
+                '</tpl>',
+            '</dd>',
         '</dl>'
     ],
 
@@ -78,6 +91,7 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     _getMetaInfo: function() {
         var tpl = Ext.create('Ext.XTemplate', this.metaInfoTpl);
         var data = Ext.apply({
+            hasFeedback: this.groupRecord.get('feedback__save_timestamp') != null,
             passing_grade_i18n: dtranslate('themebase.passing_grade'),
             not_passing_grade_i18n: dtranslate('themebase.not_passing_grade'),
             points_i18n: dtranslate('themebase.points')

@@ -70,13 +70,13 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
     },
 
     renderCol1: function(unused, unused2, record) {
-        return this.col1Template.apply(Ext.apply(record.data, {
+        return this.col1Template.apply(Ext.apply({
             name: this.getNameDivContent(record),
             username: this.getUsernameDivContent(record),
             notApprovedText: this.notApprovedText,
             hasFeedback: record.get('feedback__save_timestamp') != null,
             approvedText: this.approvedText
-        }));
+        }, record.data));
     },
 
     renderCol2: function(unused, unused2, record) {
