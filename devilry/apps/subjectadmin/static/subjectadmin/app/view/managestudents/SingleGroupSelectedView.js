@@ -7,6 +7,10 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     cls: 'singlegroupview',
     ui: 'transparentpanel',
 
+    requires: [
+        'subjectadmin.view.managestudents.StudentsInGroupGrid'
+    ],
+
     /**
      * @cfg {string} topMessage (required)
      */
@@ -53,6 +57,7 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     '<span class="label label-warning">', dtranslate('themebase.closed'), '</span> ',
                     dtranslate('themebase.closed.explained'),
                 '</tpl>',
+                ' ', dtranslate('subjectadmin.managestudents.open_close_explained_extra'),
             '</dd>',
         '</dl>'
     ],
@@ -78,9 +83,8 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     xtype: 'container',
                     columnWidth: .3,
                     items: [{
-                        xtype: 'panel',
-                        title: 'Students',
-                        html: 'body'
+                        xtype: 'studentsingroupgrid',
+                        store: this.studentsStore
                     }]
                 }]
             }]

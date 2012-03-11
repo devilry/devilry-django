@@ -66,6 +66,8 @@ subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</
 subjectadmin.managestudents.addstudents: "Add students"
 subjectadmin.managestudents.search_emptytext: "Search for students ..."
 subjectadmin.managestudents.make_admins_examiner: "Administrators are examiners on all"
+subjectadmin.managestudents.students.title: "Students"
+subjectadmin.managestudents.open_close_explained_extra: "Examiners can open and close a group at any time to allow/prevent deliveries."
 
 subjectadmin.groupunit.projectassignment: 'group'
 subjectadmin.groupunit.projectassignment_plural: 'groups'

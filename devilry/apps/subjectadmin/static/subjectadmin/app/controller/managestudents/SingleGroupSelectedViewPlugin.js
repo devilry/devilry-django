@@ -10,11 +10,18 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         'themebase.AlertMessage'
     ],
 
+    models: [
+        'Candidate'
+    ],
+
     views: [
         'managestudents.SingleGroupSelectedView'
     ],
 
-    refs: [],
+    //refs: [{
+        //ref: '',
+        //selector: 'singlegroupview'
+    //}],
 
     init: function() {
         this.application.addListener({
@@ -35,6 +42,7 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
             xtype: 'singlegroupview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
             topMessage: this._createTopMessage(),
+            studentsStore: this._createStudentsStore(),
             groupRecord: groupRecord
         });
     },
@@ -47,7 +55,15 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     },
 
     _onRender: function() {
-        console.log(this.groupRecord);
         //console.log('render SingleGroupSelectedView');
+    },
+
+    _createStudentsStore: function() {
+        console.log(this.groupRecord.get('students'));
+        var store = Ext.create('Ext.data.Store', {
+            model: this.getCandidateModel(),
+            data: this.groupRecord.get('students')
+        });
+        return store;
     }
 });

@@ -11,8 +11,8 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
 
     col1TemplateString: [
         '<div class="col1Wrapper">',
-        '   <div class="name"><strong>{name}</strong></div>',
-        '   <div class="username"><small>{username}</small></div>',
+        '   <div class="name"><strong>{displayName}</strong></div>',
+        '   <div class="username"><small>{displayUsername}</small></div>',
         '   <tpl if="hasFeedback">',
         '       <tpl if="feedback__is_passing_grade">',
         '           <div class="passinggrade">',
@@ -70,13 +70,15 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
     },
 
     renderCol1: function(unused, unused2, record) {
-        return this.col1Template.apply(Ext.apply({
-            name: this.getNameDivContent(record),
-            username: this.getUsernameDivContent(record),
+        var data = {
+            displayName: this.getNameDivContent(record),
+            displayUsername: this.getUsernameDivContent(record),
             notApprovedText: this.notApprovedText,
             hasFeedback: record.get('feedback__save_timestamp') != null,
             approvedText: this.approvedText
-        }, record.data));
+        };
+        Ext.apply(data, record.data);
+        return this.col1Template.apply(data);
     },
 
     renderCol2: function(unused, unused2, record) {

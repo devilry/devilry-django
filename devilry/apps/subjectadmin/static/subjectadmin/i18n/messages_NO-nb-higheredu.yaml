@@ -65,6 +65,8 @@ subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</
 subjectadmin.managestudents.addstudents: "Legg til studenter"
 subjectadmin.managestudents.search_emptytext: "Søk etter studenter ..."
 subjectadmin.managestudents.make_admins_examiner: "Administratorer er rettere på alle"
+subjectadmin.managestudents.students.title: "Studenter"
+subjectadmin.managestudents.open_close_explained_extra: "Rettere kan åpne og lukke grupper når som helst for å tillate/hindre nye innleveringer."
 
 subjectadmin.groupunit.projectassignment: 'gruppe'
 subjectadmin.groupunit.projectassignment_plural: 'grupper'
