@@ -118,6 +118,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                 items: [{
                     xtype: 'button',
                     text: 'Advanced',
+                    scale: 'medium',
                     menu: [{
                         text: renameLabel,
                         listeners: {
