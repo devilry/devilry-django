@@ -9,6 +9,7 @@ Ext.define('subjectadmin.Application', {
         'Ext.container.Viewport',
         'jsapp.Router',
         'themebase.RouteNotFound',
+        'themebase.DevilryHeader',
         'themebase.Breadcrumbs'
     ],
 
@@ -87,8 +88,18 @@ Ext.define('subjectadmin.Application', {
             layout: 'fit'
         });
         this.viewport = Ext.create('Ext.container.Viewport', {
+            xtype: 'container',
             layout: 'border',
-            items: [this.breadcrumbs, this.primaryContentContainer]
+            items: [{
+                xtype: 'devilryheader',
+                region: 'north',
+                navclass: 'subjectadmin'
+            }, {
+                xtype: 'container',
+                region: 'center',
+                layout: 'border',
+                items: [this.breadcrumbs, this.primaryContentContainer]
+            }]
         });
     },
 

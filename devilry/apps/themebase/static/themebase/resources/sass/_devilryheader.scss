@@ -1,0 +1,158 @@
+$radiussize_big: 14px;
+$radiussize_small: 6px;
+
+$studentcolor_bg: #77B300;
+$examinercolor_bg: #0077B3;
+$oldadmincolor_bg: #CC4400;
+$subjectadmincolor_bg: #CC4400;
+
+@mixin navitemlink($bg) {
+    background-color: $almostblack;
+    color: #fff;
+    &:hover {
+        color: #fff;
+        background-color: lighten($bg, 6%) !important;
+    }
+}
+
+.devilryheader {
+    background-color: #000; color: #fff;
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 49px; // NOTE: Must match the height of the themebase.DevilryHeader extjs class.
+    overflow: hidden;
+
+    /**
+     *
+     * Heading
+     *
+     */
+    #heading {
+        float: right;
+        position: absolute;
+        bottom: 0;
+        right: 40px;
+        padding: 0 0 3px 0;
+        h1 {
+            font-size: 2.0em;
+            padding: 0;
+            margin: 0;
+            text-align: right;
+            font-family: $baseFontFamily;
+            font-weight: normal;
+            color: #a00;
+            display: inline;
+        }
+
+        /**
+         *
+         * Header userinfo/loginout
+         *
+         */
+        #authenticated-user-bar {
+            //padding-top: 20px;
+            //padding-left: 20px;
+            color: #ccc;
+            font-size: 0.8em;
+            display: inline;
+            padding-right: 40px;
+            padding-bottom: 3px;
+        }
+        #authenticated-user-bar>a.loginout-link {
+            color: #fff;
+            font-weight: bold;
+        }
+        #authenticated-user-bar>a.loginout-link:visited {
+            color: #fff;
+        }
+        #authenticated-user-bar>a.loginout-link:hover {
+            color: #fff;
+        }
+    }
+
+
+
+    /**
+     *
+     * Header navigation bar
+     *
+     */
+    >.nav {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        ul {
+            margin: 0 0 0 40px;
+            padding: 0;
+        }
+        li {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            padding: 0;
+        }
+
+
+        li a {
+            text-decoration: none;
+            display: block;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 10px 20px;
+            font-size: 1.0em;
+            font-weight: normal;
+            color: #08C;
+            border-radius: $radiussize_big $radiussize_small 0 0;
+            font-weight: bold;
+        }
+
+        li.student-navitem a {
+            @include navitemlink($studentcolor_bg);
+        }
+        li.examiner-navitem a {
+            @include navitemlink($examinercolor_bg);
+        }
+        li.oldadmin-navitem a {
+            @include navitemlink($oldadmincolor_bg);
+        }
+        li.subjectadmin-navitem a {
+            @include navitemlink($subjectadmincolor_bg);
+        }
+        li.externallink-navitem a {
+            @include navitemlink(#444);
+            border-radius: $radiussize_small $radiussize_big 0 0;
+            background-image: url(../icons/16x16/external-link.png) !important;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            padding-left: 32px;
+        }
+    }
+
+    /* Color the bottom border of the header with the color of the current section. */
+    >.student {
+        border-bottom: 10px solid $studentcolor_bg;
+        li.student-navitem a {
+            background-color: $studentcolor_bg;
+        }
+    }
+    >.examiner {
+        border-bottom: 10px solid $examinercolor_bg;
+        li.examiner-navitem a {
+            background-color: $examinercolor_bg;
+        }
+    }
+    >.oldadmin {
+        border-bottom: 10px solid $oldadmincolor_bg;
+        li.oldadmin-navitem a {
+            background-color: $oldadmincolor_bg;
+        }
+    }
+    >.subjectadmin {
+        //border-bottom: 2px solid $subjectadmincolor_bg;
+        //border-bottom: 2px solid $;
+        li.subjectadmin-navitem a {
+            background-color: $subjectadmincolor_bg;
+        }
+    }
+}

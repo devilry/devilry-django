@@ -29,5 +29,13 @@ themebase.deliveries: "deliveries"
 themebase.delivery: "delivery"
 themebase.advanced_options: "Advanced options"
 
+themebase.role.student.title: "Student"
+themebase.role.examiner.title: "Examiner"
+themebase.role.subjectadmin.title: "Subject admin"
+themebase.role.nodeadmin.title: "Node admin"
+themebase.role.superadmin.title: "Superadmin"
+themebase.helplink.title: "Help"
+themebase.breadcrumb.prefixtext: "You are here"
+
 themebase.date_emptytext: "YYYY-MM-DD"
 themebase.time_emptytext: "hh:mm"

@@ -11,16 +11,19 @@ Ext.define('themebase.Breadcrumbs', {
 
     tpl: [
         '<ul class="breadcrumb">',
-        '    <tpl for="breadcrumbs">',
-        '       <tpl if="xindex != xcount">',
-        '           <li>',
-        '               <a href="#{url}">{text}</a><span class="divider">/</span>',
-        '           </li>',
-        '       </tpl>',
-        '       <tpl if="xindex == xcount">',
-        '           <li class="active">{text}</li>',
-        '       </tpl>',
-        '    </tpl>',
+            '<li class="prefixtext">',
+                dtranslate('themebase.breadcrumb.prefixtext'),
+            ':</li>',
+            '<tpl for="breadcrumbs">',
+                '<tpl if="xindex != xcount">',
+                    '<li>',
+                        '<a href="#{url}">{text}</a><span class="divider">/</span>',
+                    '</li>',
+                '</tpl>',
+                '<tpl if="xindex == xcount">',
+                    '<li class="active">{text}</li>',
+                '</tpl>',
+            '</tpl>',
         '<ul>'
     ],
 
@@ -60,13 +63,18 @@ Ext.define('themebase.Breadcrumbs', {
 
     clear: function() {
         this.breadcrumbs = [];
-        this.add(this.home.url, this.home.text);
+        //this.add(this.home.url, this.home.text);
     },
 
     draw: function() {
-        this.update({
-            breadcrumbs: this.breadcrumbs
-        });
+        if(this.breadcrumbs.length === 0) {
+            this.hide();
+        } else {
+            this.show();
+            this.update({
+                breadcrumbs: this.breadcrumbs
+            });
+        }
     },
 
     setHome: function() {
