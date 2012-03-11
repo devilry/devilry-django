@@ -66,18 +66,10 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            topMessage: this._createTopMessage(),
             studentsStore: this._createStudentsStore(),
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
             groupRecord: groupRecord
-        });
-    },
-
-    _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.singlegroupselected.topmessage'));
-        return tpl.apply({
-            groupunit: this.manageStudentsController.getTranslatedGroupUnit()
         });
     },
 

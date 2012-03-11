@@ -58,7 +58,8 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                 margin: {top:10, right: 0, bottom: 10, left: 20},
                 region: 'west',
                 //border: false,
-                width: 350
+                resizable: true,
+                width: 300
             }, {
                 xtype: 'panel',
                 region: 'center',

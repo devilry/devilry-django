@@ -14,10 +14,6 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     ],
 
     /**
-     * @cfg {string} topMessage (required)
-     */
-
-    /**
      * @cfg {string} multiselectHowto (required)
      */
 
@@ -81,13 +77,13 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
             items: [{
                 xtype: 'alertmessage',
                 type: 'info',
-                message: [this.topMessage, this.multiselectHowto].join(' ')
+                message: this.multiselectHowto
             }, {
                 xtype: 'container',
                 layout: 'column',
                 items: [{
                     xtype: 'container',
-                    columnWidth: .7,
+                    columnWidth: .63,
                     items: [{
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -95,7 +91,8 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     }]
                 }, {
                     xtype: 'container',
-                    columnWidth: .3,
+                    columnWidth: .37,
+                    padding: {left: 20},
                     defaults: {
                         margin: {top: 20}
                     },
