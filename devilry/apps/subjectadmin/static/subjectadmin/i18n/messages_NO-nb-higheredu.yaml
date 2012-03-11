@@ -59,9 +59,8 @@ subjectadmin.managestudents.addstudents.title: "Legg til studenter"
 subjectadmin.managestudents.addstudents.tips: "Velg studentene du ønsker å legge til på oppgaven, og klikk lagre."
 subjectadmin.managestudents.addstudents.relatedref: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
 subjectadmin.managestudents.addstudents.relatedbtn: "Rediger tilgjengelige studenter"
-subjectadmin.managestudents.singlegroupselected.topmessage: "En {groupunit} valgt."
 subjectadmin.managestudents.nogroupselected.topmessage: "Ingen {groupunit_plural} valgt. Velg en eller flere studenter for å få redigere innstillinger som rettere og tags."
-subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural}.'
+subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural} slik at du kan endre rettere og tags på mange studenter, samt organisere studenter i prosjektgrupper.'
 subjectadmin.managestudents.addstudents: "Legg til studenter"
 subjectadmin.managestudents.search_emptytext: "Søk etter studenter ..."
 subjectadmin.managestudents.make_admins_examiner: "Administratorer er rettere på alle"
