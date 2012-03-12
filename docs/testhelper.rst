@@ -162,4 +162,5 @@ Example
 TestHelper API
 ##############
 
+.. currentmodule:: devilry.apps.core.testhelper
 .. autoclass:: devilry.apps.core.testhelper.TestHelper

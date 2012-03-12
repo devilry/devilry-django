@@ -702,9 +702,11 @@ class TestHelper(object):
             return
         deadlines = self._do_the_deadlines(assignmentgroups, deadlines)
 
-    # splits up a dot separated path, and calls add() with those
-    # pieces as arguments
     def add_to_path(self, path):
+        """
+        Splits up a dot separated path, and calls :meth:`add` with those pieces
+        as arguments.
+        """
         nodes = None
         subjects = None
         periods = None
@@ -735,6 +737,21 @@ class TestHelper(object):
                  assignmentgroups=assignmentgroups, deadlines=deadlines)
 
     def get_object_from_path(self, path):
+        """
+        Get a :class:`~devilry.apps.core.models.Node`,
+        :class:`~devilry.apps.core.models.Subject`,
+        :class:`~devilry.apps.core.models.Period`,
+        :class:`~devilry.apps.core.models.Assignment`,
+        :class:`~devilry.apps.core.models.AssignmentGroup`,
+        :class:`~devilry.apps.core.models.Deadline`,
+        :class:`~devilry.apps.core.models.Delivery` or
+        :class:`~devilry.apps.core.models.Feedback`
+        that was added with :meth:`add`, :meth:`add_feedback`,
+        :meth:`add_to_path`, or :meth:`add_delivery`.
+
+        The path does not have to contain the node path (unless you are looking
+        up a node), since subject shortnames are unique.
+        """
         try:
             nodes, rest = path.split(';', 1)
         except ValueError:
@@ -744,6 +761,10 @@ class TestHelper(object):
 
 
     def set_attributes_from_path(self, path, **attributes):
+        """
+        Shortcut to :meth:`get_object_from_path`, set the given attributes on
+        the object, and call ``obj.save()``.
+        """
         obj = self.get_object_from_path(path)
         for key, value in attributes.iteritems():
             setattr(obj, key, value)
