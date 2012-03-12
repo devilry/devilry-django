@@ -597,11 +597,83 @@ class TestHelper(object):
                     i += 1
         return True
 
-    def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
-            delivery=None, feedback=None, deadlines=None):
+    def add(self, nodes=None, subjects=None, periods=None, assignments=None,
+            assignmentgroups=None, deadlines=None):
+        """
+        Smart add.
+
+        Each attribute is normally just a list of names. The names are
+        ``short_name``, for nodeish types, and a virtual name for
+        assignmentgroups, and deadlines.
+
+        Names can be supplemented by **extras**, which are parameters that
+        tunes the created items. Extras are separated by colon (``:``), and
+        each extra has the following format::
+
+            <name>(<args>)
+
+        :param nodes: List of nodes.
+
+            admin
+                Comma-separated list of admins (usernames) to add to the node.
+            ln
+                Long name of the period. Defaults to capitalize short name.
+
+        :param subjects: List of subjects. Extras:
+
+            admin
+                Comma-separated list of admins (usernames) to add to the node.
+            ln
+                Long name of the period. Defaults to capitalize short name.
+
+        :param periods: List of nodes. Extras:
+
+            admin
+                Comma-separated list of admins (usernames) to add to the node.
+            ln
+                Long name of the period. Defaults to capitalize short name.
+            begins
+                Number of days after *now* that the period begins. Can be a
+                negative number. Defaults to *now*.
+            ends
+                Number of days after ``begins`` that the period begins. Can be
+                a negative number. Defaults to ``5*30``.
+
+        :param assignments: List of assignments.
+
+            admin
+                Comma-separated list of admins (usernames) to add to the node.
+            ln
+                Long name of the period. Defaults to capitalize short name.
+            anon
+                Should the assignment be anonymous? ``true`` or ``false``, and
+                defaults to ``false``.
+            begins
+                Number of days after the start time of the period that the
+                assignment should be published. Can be a negative number.
+                Defaults to 0.
+
+        :param assignmentgroups: List of assignmentgroups. Extras:
+
+            candidate
+                Comma-separated list of candidates (usernames) to add to the
+                group. Optionally, you can add a candidate_id by suffixing the
+                username with ``;<candidate_id>``. Example:
+                ``candidate(student0;2345,student1;5673)``
+            examiner
+                Comma-separated list of examiners (usernames) to add to the group.
+
+        :param deadlines: List of deadlines. Extras:
+
+            ends
+                Number of days after the publishing_time of the deadline ends.
+                Can be a negative number. Defaults to ``10`` days.
+            text
+                Deadline text.
+        """
 
         # see if any of the parameters 'below' are !None
-        args = [subjects, periods, assignments, assignmentgroups, deadlines, delivery, feedback]
+        args = [subjects, periods, assignments, assignmentgroups, deadlines]
         if not self._validate_args(args):
             raise ValueError('Invalid parameters. ')
 
@@ -669,6 +741,13 @@ class TestHelper(object):
             rest = path
         varname = rest.replace('.', '_')
         return vars(self)[varname]
+
+
+    def set_attributes_from_path(self, path, **attributes):
+        obj = self.get_object_from_path(path)
+        for key, value in attributes.iteritems():
+            setattr(obj, key, value)
+        obj.save()
 
     def load_generic_scenario(self):
         # set up the base structure
