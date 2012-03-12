@@ -18,7 +18,7 @@ class TestHelper(object):
     def set_memory_deliverystore(cls):
         FileMeta.deliverystore = MemoryDeliveryStore()
 
-    def create_user(self, name):
+    def create_user(self, name, fullname=None):
         """
         Create a user with the given username. Adds the user to ``self.<name>``.
 
@@ -28,6 +28,10 @@ class TestHelper(object):
         user.set_password('test')
         user.full_clean()
         user.save()
+        if fullname:
+            profile = user.get_profile()
+            profile.full_name = fullname
+            profile.save()
         vars(self)[name] = user
         return user
 
