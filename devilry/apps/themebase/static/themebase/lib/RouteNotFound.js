@@ -3,8 +3,8 @@ Ext.define('themebase.RouteNotFound', {
     alias: 'widget.routenotfound',
     
     tpl: [
-        '<div class="alert-message block-message error">',
-        '  <h1>{title}</h1>',
+        '<div class="alert alert-block error">',
+        '  <h1 class="alert-heading">{title}</h1>',
         '  <p>{route}</p>',
         '  <div class="alert-actions">',
         '    <a class="btn small" href="#">{gotodashboard}</a>',
