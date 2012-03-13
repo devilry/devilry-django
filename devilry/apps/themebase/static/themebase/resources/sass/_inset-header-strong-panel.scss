@@ -6,8 +6,8 @@
     $ui-border-color: #888,
     $ui-border-radius: 6px,
 
-    $ui-header-color: #666,
-    $ui-header-font-size: 1.3em,
+    $ui-header-color: $grayDark,
+    $ui-header-font-size: $baseFontSize + 8px,
     $ui-header-font-weight: normal,
     $ui-header-border-color: #fff,
     $ui-header-background-color: null,
@@ -35,7 +35,7 @@
                     span.x-panel-header-text-inset-header-strong-panel {
                         padding: 0 15px 0 15px;
                         position: absolute;
-                        top: -24px;
+                        top: -27px;
                         left: 0;
                         background-color: #fff;
                     }

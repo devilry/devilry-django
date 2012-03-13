@@ -11704,12 +11704,12 @@ select:focus {
 
 /* line 241, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-inset-header-panel {
-  border-color: #888888;
+  border-color: #dddddd;
 }
 
 /* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-inset-header-panel {
-  font-size: 1.2em;
+  font-size: 17px;
   line-height: 15px;
   border-color: white;
   border-width: 1px;
@@ -11724,8 +11724,8 @@ select:focus {
 
 /* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-inset-header-panel {
-  color: #666666;
-  font-size: 1.2em;
+  color: #404040;
+  font-size: 17px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -11765,8 +11765,8 @@ select:focus {
   -ms-border-radius: 6px;
   -khtml-border-radius: 6px;
   border-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: transparent;
 }
@@ -11836,8 +11836,8 @@ select:focus {
   -ms-border-bottom-left-radius: 0;
   -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
-  padding: 5px 5px 4px 5px;
-  border-width: 1px;
+  padding: 3px 3px 4px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -11911,8 +11911,8 @@ select:focus {
   -ms-border-bottom-left-radius: 0;
   -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 5px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -11986,8 +11986,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 4px 5px 5px 5px;
-  border-width: 1px;
+  padding: 4px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12061,8 +12061,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 5px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12203,8 +12203,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12278,8 +12278,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12353,8 +12353,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12428,8 +12428,8 @@ select:focus {
   -ms-border-bottom-left-radius: 6px;
   -khtml-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  padding: 5px 5px 5px 5px;
-  border-width: 1px;
+  padding: 3px 3px 3px 3px;
+  border-width: 3px;
   border-style: solid;
   background-color: white;
 }
@@ -12535,7 +12535,7 @@ select:focus {
 
 /* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-inset-header-strong-panel {
-  font-size: 1.3em;
+  font-size: 21px;
   line-height: 15px;
   border-color: white;
   border-width: 1px;
@@ -12550,8 +12550,8 @@ select:focus {
 
 /* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-inset-header-strong-panel {
-  color: #666666;
-  font-size: 1.3em;
+  color: #404040;
+  font-size: 21px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -13344,7 +13344,7 @@ select:focus {
 .x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-strong-panel {
   padding: 0 15px 0 15px;
   position: absolute;
-  top: -24px;
+  top: -27px;
   left: 0;
   background-color: #fff;
 }
@@ -13360,7 +13360,7 @@ select:focus {
 
 /* line 246, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-lookslike-parawitheader-panel {
-  font-size: 1.2em;
+  font-size: 17px;
   line-height: 15px;
   border-color: white;
   border-width: 1px;
@@ -13375,8 +13375,8 @@ select:focus {
 
 /* line 290, ../../../../../extjshelpers/static/extjshelpers/extjs/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-lookslike-parawitheader-panel {
-  color: gray;
-  font-size: 1.2em;
+  color: #404040;
+  font-size: 17px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

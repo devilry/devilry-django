@@ -2,12 +2,12 @@
     'inset-header-panel',
 
     $ui-base-color: $panel-base-color,
-    $ui-border-width: 1px,
-    $ui-border-color: #888,
+    $ui-border-width: 3px,
+    $ui-border-color: #ddd,
     $ui-border-radius: 6px,
 
-    $ui-header-color: #666,
-    $ui-header-font-size: 1.2em,
+    $ui-header-color: $grayDark,
+    $ui-header-font-size: $baseFontSize + 4px,
     $ui-header-font-weight: normal,
     $ui-header-border-color: #fff,
     $ui-header-background-color: null,

@@ -6,8 +6,8 @@
     $ui-border-color: $panel-border-color,
     $ui-border-radius: $panel-border-radius,
 
-    $ui-header-color: $gray,
-    $ui-header-font-size: 1.2em,
+    $ui-header-color: $grayDark,
+    $ui-header-font-size: $baseFontSize + 4px,
     $ui-header-font-weight: normal,
     $ui-header-border-color: #fff,
     $ui-header-background-color: null,
