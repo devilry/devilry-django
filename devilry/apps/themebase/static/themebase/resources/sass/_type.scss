@@ -105,9 +105,15 @@
     }
     ul {
       list-style: disc;
+      li {
+          list-style: disc;
+      }
     }
     ol {
       list-style: decimal;
+      li {
+          list-style: decimal;
+      }
     }
     li {
       line-height: $baseLineHeight;
@@ -115,6 +121,9 @@
     ul.unstyled {
       margin-left: 0;
       list-style: none;
+      li {
+          list-style: none;
+      }
     }
 
     // Description Lists
