@@ -26,9 +26,9 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                 }, {
                     url: '#/',
                     text: dtranslate('subjectadmin.dashboard.browseall')
-                }, {
-                    url: '#/@@register-for-final-exams',
-                    text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
+                //}, {
+                    //url: '#/@@register-for-final-exams',
+                    //text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
                 }, {
                     url: '#/@@global-statistics',
                     text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
