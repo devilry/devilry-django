@@ -4,10 +4,12 @@
 Ext.define('subjectadmin.controller.subject.ListAll', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'themebase.RestfulApiProxyErrorHandler'
+    ],
     views: [
         'subject.ListAll'
     ],
-
     stores: [
         'Subjects'
     ],
@@ -26,7 +28,19 @@ Ext.define('subjectadmin.controller.subject.ListAll', {
     },
 
     _onRender: function() {
-        this.subject_shortname = this.getSubjectOverview().subject_shortname;
-        this._loadSubject();
+        this.getSubjectsStore().loadAll({
+            scope: this,
+            callback: this._onLoadSubjects
+        });
+    },
+
+    _onLoadSubjects: function(records, operation) {
+        if(!operation.wasSuccessful()) {
+            var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+            error.addErrors(operation);
+            this.application.showErrorView({
+                message: error.errormessages.join(' ')
+            });
+        }
     }
 });

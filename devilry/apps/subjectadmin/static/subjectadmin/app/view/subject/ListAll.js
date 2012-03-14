@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.subject.ListAll' ,{
         '<ul>',
             '<tpl for=".">',
                 '<li style="margin-bottom: 10px;" class="subject">',
-                    'Hei',
+                    '<li><a href="#/{short_name}/">{long_name}</a></li>',
                 '</li>',
             '</tpl>',
         '<ul>'

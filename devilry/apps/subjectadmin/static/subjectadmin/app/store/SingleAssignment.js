@@ -8,8 +8,7 @@ Ext.define('subjectadmin.store.SingleAssignment', {
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/restfulsimplifiedassignment/',
-        result_fieldgroups: [],
-        exact_number_of_results: 1
+        result_fieldgroups: []
     }),
 
     loadAssignment: function(subject_shortname, period_shortname, assignment_shortname, callbackFn, callbackScope) {

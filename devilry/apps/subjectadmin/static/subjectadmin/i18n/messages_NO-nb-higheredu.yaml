@@ -1,3 +1,5 @@
+subjectadmin.allsubjects: "Alle kurs"
+
 subjectadmin.assignment.anonymous.help: "For <strong>eksamener</strong> burde dette vanligvis være <em>haket av</em>. Hvis en oppgave er anonym, ser rettere en kandidat-id istededenfor et brukernavn. En kandidat-id <strong>må</strong> isåfall settes for hver student."
 subjectadmin.assignment.anonymous.label: "Anonym?"
 subjectadmin.assignment.is_anonymous.title: "Anonym"

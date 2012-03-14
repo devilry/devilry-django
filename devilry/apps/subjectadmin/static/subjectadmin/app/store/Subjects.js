@@ -10,5 +10,11 @@ Ext.define('subjectadmin.store.Subjects', {
             scope: callbackScope,
             callback: callbackFn
         });
-    }
+    },
+
+    loadAll: function(config) {
+        this.proxy.extraParams.limit = 100000;
+        this.proxy.setDevilryFilters([]);
+        this.load(config);
+    },
 });

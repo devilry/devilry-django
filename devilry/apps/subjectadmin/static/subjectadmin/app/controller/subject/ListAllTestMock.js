@@ -1,5 +1,5 @@
 Ext.define('subjectadmin.controller.subject.ListAllTestMock', {
-    extend: 'Ext.app.Controller',
+    extend: 'subjectadmin.controller.subject.ListAll',
 
     views: [
         'subject.ListAllTestMock'
@@ -7,5 +7,9 @@ Ext.define('subjectadmin.controller.subject.ListAllTestMock', {
 
     stores: [
         'SubjectsTestMock'
-    ]
+    ],
+
+    getSubjectsStore: function() {
+        return this.getSubjectsTestMockStore();
+    }
 });

@@ -9,6 +9,7 @@ Ext.define('subjectadmin.Application', {
         'Ext.container.Viewport',
         'jsapp.Router',
         'themebase.RouteNotFound',
+        'themebase.AlertMessage',
         'themebase.DevilryHeader',
         'themebase.Breadcrumbs'
     ],
@@ -110,6 +111,22 @@ Ext.define('subjectadmin.Application', {
         this.primaryContentContainer.add(component);
     },
 
+    /**
+     * Show an error message in the viewport. The URL is not changed, so this is
+     * well suited for fatal errors, such as stores that fails to load.
+     *
+     * @param config Object with ``message`` and optional ``title`` attributes.
+     */
+    showErrorView: function(config) {
+        this.setPrimaryContent({
+            xtype: 'alertmessage',
+            type: 'error',
+            padding: 40,
+            title: config.title,
+            message: config.message
+        });
+    },
+
 
     /*********************************************
      * Routing
@@ -119,7 +136,7 @@ Ext.define('subjectadmin.Application', {
         this.route = Ext.create('jsapp.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/", 'browse');
-        this.route.add("/:subject_shortname", 'showSubject');
+        this.route.add("/:subject_shortname/", 'showSubject');
         this.route.add("/@@create-new-assignment/@@chooseperiod", 'createNewAssignmentChooseperiod');
         this.route.add("/@@create-new-assignment/:period,:delivery_types", 'createNewAssignment');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
@@ -151,7 +168,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     browse: function(routeInfo) {
-        this.breadcrumbs.set([], '/');
+        this.breadcrumbs.set([], dtranslate('subjectadmin.allsubjects'));
         this.setPrimaryContent({
             xtype: 'subjectlistall'
         });
@@ -159,7 +176,10 @@ Ext.define('subjectadmin.Application', {
 
     showSubject: function(routeInfo, subject_shortname) {
         var subjecturl = '/' + subject_shortname;
-        this.breadcrumbs.set([], subject_shortname);
+        this.breadcrumbs.set([{
+            text: dtranslate('subjectadmin.allsubjects'),
+            url: '/'
+        }], subject_shortname);
         this.setPrimaryContent({
             xtype: 'subjectoverview',
             subject_shortname: subject_shortname
