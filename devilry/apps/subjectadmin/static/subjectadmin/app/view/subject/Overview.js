@@ -53,7 +53,7 @@ Ext.define('subjectadmin.view.subject.Overview' ,{
                 items: [{
                     xtype: 'editablesidebarbox',
                     margin: {top: 0},
-                    title: dtranslate('subjectadmin.edit_administrators')
+                    title: dtranslate('subjectadmin.administrators')
                 }]
             }],
             dockedItems: [{

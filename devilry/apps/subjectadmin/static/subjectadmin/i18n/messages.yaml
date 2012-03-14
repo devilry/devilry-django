@@ -1,4 +1,5 @@
 subjectadmin.allsubjects: "All subjects"
+subjectadmin.administrators: "Administrators"
 
 subjectadmin.assignment.anonymous.help: 'For <strong>exams</strong>, this should normally be <em>checked</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'
 subjectadmin.assignment.anonymous.label: 'Anonymous?'
