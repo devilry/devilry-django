@@ -1,0 +1,8 @@
+core.node: "Node"
+core.subject: "Kurs"
+core.subject.plural: "Kurs"
+core.period: "Semester"
+core.period.plural: "Semestre"
+core.periods.active: "Aktive semestre"
+core.assignment: "Oppgave"
+core.assignment.plural: "Oppgaver"
