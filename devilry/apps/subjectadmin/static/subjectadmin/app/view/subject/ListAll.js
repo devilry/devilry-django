@@ -4,10 +4,9 @@
 Ext.define('subjectadmin.view.subject.ListAll' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectlistall',
-    cls: 'subjectlistall',
+    cls: 'subjectlistall bootstrap',
     requires: [
     ],
-    layout: 'fit',
     bodyPadding: 40,
     autoScroll: true,
     store: 'Subjects',
@@ -15,8 +14,8 @@ Ext.define('subjectadmin.view.subject.ListAll' ,{
     listTpl: [
         '<ul>',
             '<tpl for=".">',
-                '<li style="margin-bottom: 10px;" class="subject">',
-                    '<li><a href="#/{short_name}/">{long_name}</a></li>',
+                '<li class="subject">',
+                    '<a href="#/{short_name}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
         '<ul>'
