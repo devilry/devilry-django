@@ -19,8 +19,12 @@ class SeleniumMixin(object):
     def getJsAppJasmineTestUrl(self, appname):
         return '{0}/jasminetest'.format(self.getJsBaseUrl(appname))
 
-    def getHashUrl(self, appname, path):
-        return '{0}#{1}'.format(self.getJsAppTestUrl(appname), path)
+    def getHashUrl(self, appname, path, query=None):
+        if query:
+            query = '?' + query
+        else:
+            query = ''
+        return '{0}{1}#{2}'.format(self.getJsAppTestUrl(appname), query, path)
 
     def driverWaitForCssSelector(self, driver, cssselector, timeout=10):
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_elements_by_css_selector(cssselector))
@@ -57,8 +61,8 @@ class SeleniumTestCase(TestCase, SeleniumMixin):
     def waitForText(self, text, timeout=10):
         return self.driverWaitForText(self.driver, text, timeout)
 
-    def browseToTest(self, path):
-        self.driver.get(self.getHashUrl(self.appname, path))
+    def browseToTest(self, path, query=None):
+        self.driver.get(self.getHashUrl(self.appname, path, query))
 
     def browseToJasmine(self):
         self.driver.get(self.getJsAppJasmineTestUrl(self.appname))
