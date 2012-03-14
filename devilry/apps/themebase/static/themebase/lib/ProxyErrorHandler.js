@@ -1,8 +1,8 @@
 /**
- * 
+ * Base class for proxy error handling.
  */
 Ext.define('themebase.ProxyErrorHandler', {
-    constructor: function(operation) {
+    constructor: function() {
         this.errormessages = [];
         this.fielderrors = {};
     },
