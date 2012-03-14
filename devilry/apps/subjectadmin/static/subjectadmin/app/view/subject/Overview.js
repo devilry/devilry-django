@@ -40,13 +40,13 @@ Ext.define('subjectadmin.view.subject.Overview' ,{
                     xtype: 'panel',
                     itemId: 'actions',
                     ui: 'inset-header-strong-panel',
-                    html: 'TODO'
-                }, {
-                    xtype: 'panel',
-                    margin: {top: 40},
-                    ui: 'inset-header-panel',
-                    title: Ext.String.capitalize(dtranslate('themebase.period.plural')),
-                    html: 'TODO'
+                    html: 'List of periods....'
+                //}, {
+                    //xtype: 'panel',
+                    //margin: {top: 40},
+                    //ui: 'inset-header-panel',
+                    //title: Ext.String.capitalize(dtranslate('themebase.period.plural')),
+                    //html: 'TODO'
                 }]
             }, {
                 xtype: 'container',
