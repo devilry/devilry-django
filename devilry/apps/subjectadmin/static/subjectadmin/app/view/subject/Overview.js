@@ -4,7 +4,7 @@
 Ext.define('subjectadmin.view.subject.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectoverview',
-    cls: 'subjectoverview sidebarlayout',
+    cls: 'subjectoverview',
     requires: [
         'Ext.layout.container.Column',
         'themebase.EditableSidebarBox',
@@ -41,12 +41,6 @@ Ext.define('subjectadmin.view.subject.Overview' ,{
                     itemId: 'actions',
                     ui: 'inset-header-strong-panel',
                     html: 'List of periods....'
-                //}, {
-                    //xtype: 'panel',
-                    //margin: {top: 40},
-                    //ui: 'inset-header-panel',
-                    //title: Ext.String.capitalize(dtranslate('themebase.period.plural')),
-                    //html: 'TODO'
                 }]
             }, {
                 xtype: 'container',

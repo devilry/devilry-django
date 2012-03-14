@@ -17,6 +17,7 @@ Ext.define('subjectadmin.Application', {
         'Shortcuts',
         'Dashboard',
         'CreateNewAssignment',
+        'subject.ListAll',
         'subject.Overview',
         'assignment.Overview',
         'assignment.EditPublishingTime',
@@ -117,6 +118,7 @@ Ext.define('subjectadmin.Application', {
     _setupRoutes: function() {
         this.route = Ext.create('jsapp.Router', this);
         this.route.add("", 'dashboard');
+        this.route.add("/", 'browse');
         this.route.add("/:subject_shortname", 'showSubject');
         this.route.add("/@@create-new-assignment/@@chooseperiod", 'createNewAssignmentChooseperiod');
         this.route.add("/@@create-new-assignment/:period,:delivery_types", 'createNewAssignment');
@@ -145,6 +147,13 @@ Ext.define('subjectadmin.Application', {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'dashboard'
+        });
+    },
+
+    browse: function(routeInfo) {
+        this.breadcrumbs.set([], '/');
+        this.setPrimaryContent({
+            xtype: 'subjectlistall'
         });
     },
 
