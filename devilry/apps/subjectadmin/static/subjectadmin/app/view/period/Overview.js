@@ -1,67 +1,60 @@
 /**
- * Subject overview (overview of an subject).
+ * Period overview (overview of an period).
  */
-Ext.define('subjectadmin.view.subject.Overview' ,{
+Ext.define('subjectadmin.view.period.Overview' ,{
     extend: 'Ext.panel.Panel',
-    alias: 'widget.subjectoverview',
-    cls: 'subjectoverview',
+    alias: 'widget.periodoverview',
+    cls: 'periodoverview',
     requires: [
         'Ext.layout.container.Column',
         'themebase.EditableSidebarBox',
-        'subjectadmin.view.ActionList',
-        'themebase.AlertMessageList'
+        'subjectadmin.view.ActionList'
     ],
 
 
     /**
-     * @cfg {String} subject_shortname (required)
+     * @cfg {String} period_shortname (required)
      */
 
 
     initComponent: function() {
         var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.delete_something')).apply({
-            what: this.subject_shortname
+            what: this.period_shortname
         });
         var renameLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.rename_something')).apply({
-            what: this.subject_shortname
+            what: this.period_shortname
         });
 
 
         Ext.apply(this, {
+            layout: 'column',
             frame: false,
             border: 0,
             bodyPadding: 40,
             autoScroll: true,
 
             items: [{
-                xtype: 'alertmessagelist'
-            }, {
-                xtype: 'panel',
-                ui: 'transparentpanel-overflowvisible',
-                layout: 'column',
+                xtype: 'container',
+                columnWidth: .65,
                 items: [{
-                    xtype: 'container',
-                    columnWidth: .65,
-                    items: [{
-                        xtype: 'panel',
-                        itemId: 'actions',
-                        ui: 'inset-header-strong-panel',
-                        html: 'List of periods....'
-                    }]
-                }, {
-                    xtype: 'container',
-                    border: false,
-                    columnWidth: .35,
-                    margin: {left: 40},
-                    defaults: {
-                        margin: {top: 20},
-                    },
-                    items: [{
-                        xtype: 'editablesidebarbox',
-                        margin: {top: 0},
-                        title: dtranslate('subjectadmin.administrators')
-                    }]
-                }],
+                    xtype: 'panel',
+                    itemId: 'actions',
+                    ui: 'inset-header-strong-panel',
+                    html: 'List of assignments....'
+                }]
+            }, {
+                xtype: 'container',
+                border: false,
+                columnWidth: .35,
+                margin: {left: 40},
+                defaults: {
+                    margin: {top: 20},
+                },
+                items: [{
+                    xtype: 'editablesidebarbox',
+                    margin: {top: 0},
+                    title: dtranslate('subjectadmin.administrators')
+                }]
             }],
             dockedItems: [{
                 xtype: 'toolbar',

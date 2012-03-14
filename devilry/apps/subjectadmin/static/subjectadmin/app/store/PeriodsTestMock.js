@@ -1,15 +1,15 @@
-Ext.define('subjectadmin.store.SubjectsTestMock', {
+Ext.define('subjectadmin.store.PeriodsTestMock', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.SubjectTestMock',
+    model: 'subjectadmin.model.PeriodTestMock',
 
-    loadSubject: function(subject_shortname, callbackFn, callbackScope) {
-        this.loadAll();
+    loadPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
         this.load({
             scope: this,
             callback: function() {
                 // Mock the results of setDevilryFilters
                 var index = this.findBy(function(record) {
-                    return record.get('short_name') == subject_shortname;
+                    return (record.get('parentnode__short_name') == subject_shortname &&
+                            record.get('short_name') == period_shortname);
                 });
 
                 var operation = Ext.create('Ext.data.Operation', {
@@ -48,19 +48,26 @@ Ext.define('subjectadmin.store.SubjectsTestMock', {
         }
 
         var initialData = [{
-            id: 0,
-            short_name:'duck1100',
-            long_name:'DUCK 1100 - Introduction to Python programming'
-        }, {
             id: 1,
-            short_name:'duck-mek2030',
-            long_name: 'DUCK-MEK 2030 - Something Mechanical'
+            parentnode__short_name: 'duck1100',
+            short_name: '2012h',
+            long_name: 'Spring 2012'
+        }, {
+            id: 2,
+            parentnode__short_name:'duck-mek2030',
+            short_name: '2012h',
+            long_name: 'Spring 2012'
+        }, {
+            id: 3,
+            parentnode__short_name:'duck-mek2030',
+            short_name: '2012h-extra',
+            long_name: 'Spring 2012 extra assignments'
         }];
 
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.SubjectTestMock', data);
+            var record = Ext.create('subjectadmin.model.PeriodTestMock', data);
             record.phantom = true; // Force create
             record.save({
                 failure: function(r, op) {

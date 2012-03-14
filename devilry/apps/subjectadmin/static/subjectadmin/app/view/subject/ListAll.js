@@ -6,6 +6,7 @@ Ext.define('subjectadmin.view.subject.ListAll' ,{
     alias: 'widget.subjectlistall',
     cls: 'subjectlistall bootstrap',
     requires: [
+        'themebase.AlertMessageList'
     ],
     bodyPadding: 40,
     autoScroll: true,

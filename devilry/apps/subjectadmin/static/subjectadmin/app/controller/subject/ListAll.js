@@ -38,13 +38,10 @@ Ext.define('subjectadmin.controller.subject.ListAll', {
     },
 
     _onLoadSubjects: function(records, operation) {
-        if(!operation.wasSuccessful()) {
+        if(!operation.success) {
             var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
-            this.getAlertmessagelist().add({
-                type: 'error',
-                message: error.errormessages.join(' ')
-            });
+            this.getAlertmessagelist().addMany(error.errormessages, 'error');
         }
     }
 });
