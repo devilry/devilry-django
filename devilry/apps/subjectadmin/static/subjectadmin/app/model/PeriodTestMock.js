@@ -6,7 +6,7 @@ Ext.define('subjectadmin.model.PeriodTestMock', {
     ],
     proxy: {
         type: 'hiddenelement',
-        id: 'simplifiedperiodproxy',
+        id: 'periodproxy',
 
         validator: function(operation) {
         }

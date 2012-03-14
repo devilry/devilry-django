@@ -13,9 +13,12 @@ Ext.define('subjectadmin.store.Periods', {
         });
     },
 
-    loadAll: function(config) {
+    loadPeriodsInSubject: function(subject_shortname, callbackFn, callbackScope) {
         this.proxy.extraParams.limit = 100000;
         this.proxy.setDevilryFilters([]);
-        this.load(config);
+        this.load({
+            scope: callbackScope,
+            callback: callbackFn
+        });
     }
 });

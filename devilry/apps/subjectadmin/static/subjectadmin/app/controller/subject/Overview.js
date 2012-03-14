@@ -6,11 +6,13 @@ Ext.define('subjectadmin.controller.subject.Overview', {
 
     views: [
         'subject.Overview',
+        'subject.ListOfPeriods',
         'ActionList'
     ],
 
     stores: [
-        'Subjects'
+        'Subjects',
+        'Periods'
     ],
 
     refs: [{
@@ -38,6 +40,7 @@ Ext.define('subjectadmin.controller.subject.Overview', {
     _onSubjectViewRender: function() {
         this.subject_shortname = this.getSubjectOverview().subject_shortname;
         this._loadSubject();
+        this._loadPeriods();
     },
 
     _loadSubject: function() {
@@ -64,4 +67,18 @@ Ext.define('subjectadmin.controller.subject.Overview', {
         this.assignmentRecord = record;
         this.getActions().setTitle(record.get('long_name'));
     },
+
+    _loadPeriods: function() {
+        this.getPeriodsStore().loadPeriodsInSubject(this.subject_shortname, this._onLoadPeriods, this);
+    },
+
+    _onLoadPeriods: function(records, operation) {
+        if(operation.success) {
+            
+        } else {
+            var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+            error.addErrors(operation);
+            this.getAlertmessagelist().addMany(error.errormessages, 'error');
+        }
+    }
 });

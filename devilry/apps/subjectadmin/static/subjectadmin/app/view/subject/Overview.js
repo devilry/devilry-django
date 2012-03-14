@@ -46,7 +46,10 @@ Ext.define('subjectadmin.view.subject.Overview' ,{
                         xtype: 'panel',
                         itemId: 'actions',
                         ui: 'inset-header-strong-panel',
-                        html: 'List of periods....'
+                        layout: 'fit',
+                        items: {
+                            xtype: 'listofperiods'
+                        }
                     }]
                 }, {
                     xtype: 'container',
