@@ -1,5 +1,5 @@
 /**
-One-line messages for highlighting the failure, possible failure, or success of
+Message for highlighting the failure, possible failure, or success of
 an action. Particularly useful for forms.
 */ 
 Ext.define('themebase.AlertMessage', {
@@ -9,7 +9,10 @@ Ext.define('themebase.AlertMessage', {
     
     tpl: [
         '<div class="alert alert-{type}">',
-        '{message}',
+            '<tpl if="title">',
+                '<h1 class="alert-heading">{title}</h1>',
+            '</tpl>',
+            '{message}',
         '</div>'
     ],
 
@@ -28,6 +31,12 @@ Ext.define('themebase.AlertMessage', {
      */
     message: '',
 
+    /**
+     * @cfg
+     * An optional title for the message.
+     */
+    title: null,
+
     initComponent: function() {
         this.callParent(arguments);
         this.update(this.message, this.type);
@@ -44,7 +53,8 @@ Ext.define('themebase.AlertMessage', {
         this.message = message;
         this.callParent([{
             type: this.type,
-            message: this.message
+            message: this.message,
+            title: this.title
         }]);
     }
 });
