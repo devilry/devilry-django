@@ -15,6 +15,9 @@ Ext.define('subjectadmin.controller.subject.ListAll', {
     ],
 
     refs: [{
+        ref: 'alertmessagelist',
+        selector: 'subjectlistall alertmessagelist'
+    }, {
         ref: 'subjectList',
         selector: 'subjectlistall #subjectList'
     }],
@@ -38,7 +41,8 @@ Ext.define('subjectadmin.controller.subject.ListAll', {
         if(!operation.wasSuccessful()) {
             var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
-            this.application.showErrorView({
+            this.getAlertmessagelist().add({
+                type: 'error',
                 message: error.errormessages.join(' ')
             });
         }

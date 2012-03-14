@@ -111,22 +111,6 @@ Ext.define('subjectadmin.Application', {
         this.primaryContentContainer.add(component);
     },
 
-    /**
-     * Show an error message in the viewport. The URL is not changed, so this is
-     * well suited for fatal errors, such as stores that fails to load.
-     *
-     * @param config Object with ``message`` and optional ``title`` attributes.
-     */
-    showErrorView: function(config) {
-        this.setPrimaryContent({
-            xtype: 'alertmessage',
-            type: 'error',
-            padding: 40,
-            title: config.title,
-            message: config.message
-        });
-    },
-
 
     /*********************************************
      * Routing

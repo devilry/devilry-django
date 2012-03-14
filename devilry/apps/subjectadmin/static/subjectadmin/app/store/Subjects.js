@@ -16,5 +16,5 @@ Ext.define('subjectadmin.store.Subjects', {
         this.proxy.extraParams.limit = 100000;
         this.proxy.setDevilryFilters([]);
         this.load(config);
-    },
+    }
 });

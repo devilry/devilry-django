@@ -28,14 +28,16 @@ Ext.define('subjectadmin.view.subject.ListAll' ,{
                 xtype: 'panel',
                 ui: 'inset-header-strong-panel',
                 title: Ext.String.capitalize(dtranslate('core.subject.plural')),
-                itemId: 'subjectList',
                 layout: 'fit',
-                items: {
+                items: [{
+                    xtype: 'alertmessagelist'
+                }, {
                     xtype: 'dataview',
+                    itemId: 'subjectList',
                     tpl: this.listTpl,
                     itemSelector: 'li.subject',
                     store: this.store
-                }
+                }]
             },
         });
         this.callParent(arguments);

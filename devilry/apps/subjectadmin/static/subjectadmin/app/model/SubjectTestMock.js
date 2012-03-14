@@ -6,6 +6,9 @@ Ext.define('subjectadmin.model.SubjectTestMock', {
     ],
     proxy: {
         type: 'hiddenelement',
-        id: 'simplifiedsubjectproxy'
+        id: 'simplifiedsubjectproxy',
+
+        validator: function(operation) {
+        }
     }
 });
