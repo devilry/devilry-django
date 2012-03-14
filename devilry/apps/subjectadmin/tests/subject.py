@@ -11,6 +11,6 @@ class TestSubjectListAll(SeleniumTestCase):
 
     def test_published(self):
         self.browseToTest('/')
-        self.waitForText('Core.subject.plural')
+        self.waitForText('core.subject.plural')
         self.assertTrue('DUCK 1100 - Introduction to Python programming' in self.driver.page_source)
         self.assertTrue('DUCK-MEK 2030 - Something Mechanical' in self.driver.page_source)

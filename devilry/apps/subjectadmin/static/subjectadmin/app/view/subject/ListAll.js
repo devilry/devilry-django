@@ -27,7 +27,7 @@ Ext.define('subjectadmin.view.subject.ListAll' ,{
             items: {
                 xtype: 'panel',
                 ui: 'inset-header-strong-panel',
-                title: Ext.String.capitalize(dtranslate('core.subject.plural')),
+                title: dtranslate('core.subject.plural'),
                 layout: 'fit',
                 items: [{
                     xtype: 'alertmessagelist'
