@@ -39,7 +39,7 @@ Ext.define('themebase.DevilryHeader', {
                     '<li class="examiner-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/examiner/">',
                         dtranslate('themebase.role.examiner.title'),
                     '</a></li>',
-                    '<li class="subjectadmin-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/subjectadmin/ui">',
+                    '<li class="subjectadmin-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/subjectadmin/ui#">',
                         dtranslate('themebase.role.subjectadmin.title'),
                     '</a></li>',
                     //'<li class="oldadmin-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/administrator/">',
