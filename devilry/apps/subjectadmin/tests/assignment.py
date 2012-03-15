@@ -14,9 +14,8 @@ class TestAssignment(SeleniumTestCase):
     def test_shortcuts_render(self):
         self.browseToTest('/duck1100/2012h/week2')
         self.waitForCssSelector('.assignmentoverview')
-        self.assertTrue('subjectadmin.assignment.manage-students' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.manage-deadlines' in self.driver.page_source)
-        self.assertTrue('themebase.delete-something' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.manage_students' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.manage_deadlines' in self.driver.page_source)
 
     def test_notpublished(self):
         self.browseToTest('/duck1100/2012h/week2') # Set to nextmonth in AssignmentTestMock
