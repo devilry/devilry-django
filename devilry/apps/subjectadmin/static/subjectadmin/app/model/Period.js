@@ -4,6 +4,7 @@ Ext.define('subjectadmin.model.Period', {
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/restfulsimplifiedperiod/',
-        result_fieldgroups: []
+        orderby: ['-start_time'],
+        result_fieldgroups: ["subject"],
     }),
 });

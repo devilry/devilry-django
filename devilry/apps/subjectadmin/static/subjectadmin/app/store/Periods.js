@@ -15,7 +15,9 @@ Ext.define('subjectadmin.store.Periods', {
 
     loadPeriodsInSubject: function(subject_shortname, callbackFn, callbackScope) {
         this.proxy.extraParams.limit = 100000;
-        this.proxy.setDevilryFilters([]);
+        this.proxy.setDevilryFilters([
+            {field:"parentnode__short_name", comp:"exact", value:subject_shortname}
+        ]);
         this.load({
             scope: callbackScope,
             callback: callbackFn
