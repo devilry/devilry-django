@@ -7,6 +7,7 @@ Ext.define('subjectadmin.TestApplication', {
         'CreateNewAssignmentTestMock',
         'subject.ListAllTestMock',
         'subject.OverviewTestMock',
+        'period.OverviewTestMock',
         'assignment.OverviewTestMock',
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',

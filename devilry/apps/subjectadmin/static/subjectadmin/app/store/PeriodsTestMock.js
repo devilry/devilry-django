@@ -2,36 +2,37 @@ Ext.define('subjectadmin.store.PeriodsTestMock', {
     extend: 'Ext.data.Store',
     model: 'subjectadmin.model.PeriodTestMock',
 
-    //loadPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
-        //this.load({
-            //scope: this,
-            //callback: function() {
-                //// Mock the results of setDevilryFilters
-                //var index = this.findBy(function(record) {
-                    //return (record.get('parentnode__short_name') == subject_shortname &&
-                            //record.get('short_name') == period_shortname);
-                //});
+    loadPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
+        this._addDataToStore();
+        this.load({
+            scope: this,
+            callback: function() {
+                // Mock the results of setDevilryFilters
+                var index = this.findBy(function(record) {
+                    return (record.get('parentnode__short_name') == subject_shortname &&
+                            record.get('short_name') == period_shortname);
+                });
 
-                //var operation = Ext.create('Ext.data.Operation', {
-                    //action: 'read'
-                //});
-                //operation.setStarted();
-                //var success = index != -1;
-                //var records = [];
-                //if(success) {
-                    //operation.setSuccessful();
-                    //records = [this.getAt(index)];
-                //} else {
-                    //operation.setException({
-                        //status: 400,
-                        //statusText: 'Error'
-                    //});
-                //}
+                var operation = Ext.create('Ext.data.Operation', {
+                    action: 'read'
+                });
+                operation.setStarted();
+                var success = index != -1;
+                var records = [];
+                if(success) {
+                    operation.setSuccessful();
+                    records = [this.getAt(index)];
+                } else {
+                    operation.setException({
+                        status: 400,
+                        statusText: 'Error'
+                    });
+                }
 
-                //Ext.callback(callbackFn, callbackScope, [records, operation]);
-            //}
-        //})
-    //},
+                Ext.callback(callbackFn, callbackScope, [records, operation]);
+            }
+        })
+    },
 
     _addDataToStore: function() {
         var initialData = [{

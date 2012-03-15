@@ -14,6 +14,9 @@ Ext.define('subjectadmin.controller.period.Overview', {
     ],
 
     refs: [{
+        ref: 'globalAlertmessagelist',
+        selector: 'periodoverview>alertmessagelist'
+    }, {
         ref: 'actions',
         selector: 'periodoverview #actions'
     }, {
@@ -33,6 +36,7 @@ Ext.define('subjectadmin.controller.period.Overview', {
     },
 
     _onPeriodViewRender: function() {
+        this.subject_shortname = this.getPeriodOverview().subject_shortname;
         this.period_shortname = this.getPeriodOverview().period_shortname;
         this._loadPeriod();
     },
@@ -40,7 +44,7 @@ Ext.define('subjectadmin.controller.period.Overview', {
     _loadPeriod: function() {
         var store = this.getPeriodsStore();
         store.loadPeriod(
-            this.period_shortname, this._onLoadPeriod, this
+            this.subject_shortname, this.period_shortname, this._onLoadPeriod, this
         );
     },
 
@@ -53,7 +57,9 @@ Ext.define('subjectadmin.controller.period.Overview', {
     },
 
     _onLoadPeriodFailure: function(operation) {
-        // TODO
+        var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+        error.addErrors(operation);
+        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     },
 
     _onLoadPeriodSuccess: function(record) {
