@@ -214,6 +214,9 @@ Ext.define('subjectadmin.Application', {
     showAssignment: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname + '/';
         this.breadcrumbs.set([{
+            text: dtranslate('subjectadmin.allsubjects'),
+            url: '/'
+        }, {
             text: subject_shortname,
             url: subjecturl
         }, {
