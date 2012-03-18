@@ -26,6 +26,7 @@ class TestHelper(object):
         """
         user = User(username=name)
         user.set_password('test')
+        user.email = name + '@example.com'
         user.full_clean()
         user.save()
         if fullname:
@@ -48,6 +49,7 @@ class TestHelper(object):
         :return: The created user object.
         """
         su = User(username=name, is_superuser=True)
+        su.email = name + '@example.com'
         su.set_password("test")
         su.full_clean()
         su.save()
