@@ -57,7 +57,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                 '<p>Please use the help-tab to access guides and tips. Contact ',
                 'drift@example.com if anything is unclear.</p>',
                 '<p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
-                '24. mai from  16:00 to 18:00. Please let us know if this is a ',
+                '24. may from  16:00 to 18:00. Please let us know if this is a ',
                 'bad time, and we will consider re-scheduling the maintainance.',
             ].join(''),
         }]
