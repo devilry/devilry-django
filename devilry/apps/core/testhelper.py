@@ -637,11 +637,11 @@ class TestHelper(object):
             ln
                 Long name of the period. Defaults to capitalize short name.
             begins
-                Number of days after *now* that the period begins. Can be a
+                Number of months after *now* that the period begins. Can be a
                 negative number. Defaults to *now*.
             ends
-                Number of days after ``begins`` that the period begins. Can be
-                a negative number. Defaults to ``5*30``.
+                Number of months after ``begins`` that the period ends. Can be
+                a negative number. Defaults to ``6``.
 
         :param assignments: List of assignments.
 
