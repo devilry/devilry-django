@@ -54,7 +54,7 @@ class TestHelper(object):
         vars(self)[name] = su
         return su
 
-    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True):
+    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True, time_of_delivery=None):
         """
         :param assignmentgroup:
             Expects either a Delivery object or a string path to an
@@ -65,11 +65,16 @@ class TestHelper(object):
             file content as described in Delivery.add_file()
 
         :param after_last_deadline:
-            If true, sets time_of_delivery 1 day later than the
-            assignmentgroups active deadline
-        """
+            If True, sets time_of_delivery 1 day later than the
+            assignmentgroups active deadline. Effectively the same as
+            setting ``time_of_delivery=1``. Ignored i ``time_of_delivery``
+            is used.
 
-        # TODO: add timestamp-parameter for time_of_delivery
+        :param time_of_delivery:
+            Set time_of_delivery to this number of days after the active
+            deadline. Use a negative number to add a delivery before the active
+            deadline.
+        """
 
         if assignmentgroup == None:
             return
@@ -105,7 +110,9 @@ class TestHelper(object):
         for filename in files.keys():
             delivery.add_file(filename, files[filename])
 
-        if after_last_deadline:
+        if time_of_delivery != None:
+            delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=time_of_delivery)
+        elif after_last_deadline:
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
 
