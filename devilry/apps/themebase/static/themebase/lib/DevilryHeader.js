@@ -17,7 +17,7 @@ Ext.define('themebase.DevilryHeader', {
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<div class="devilryheader">',
-            '<div id="heading">',
+            '<div id="heading" style="z-index: 1000;">',
                 '<div id="authenticated-user-bar">',
                     '<tpl if="DevilryUser.is_authenticated">',
                         '<span id="authenticated-user-info">',
