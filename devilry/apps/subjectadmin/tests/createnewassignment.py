@@ -97,7 +97,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self._set_value('short_name', 'servererror')
         self.waitForEnabled(createbutton)
         createbutton.click()
-        self.waitForCssSelector('.alert-message')
+        self.waitForCssSelector('.alert-error')
         self.assertTrue('500: Server error' in self.driver.page_source)
 
     def test_form_lostconnectionerror(self):
@@ -110,7 +110,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self._set_value('short_name', 'noconnection')
         self.waitForEnabled(createbutton)
         createbutton.click()
-        self.waitForCssSelector('.alert-message')
+        self.waitForCssSelector('.alert-error')
         self.assertTrue('themebase.lostserverconnection' in self.driver.page_source)
 
     def test_form_responseData_errors(self):
