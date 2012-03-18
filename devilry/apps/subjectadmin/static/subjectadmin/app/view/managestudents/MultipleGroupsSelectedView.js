@@ -8,12 +8,24 @@ Ext.define('subjectadmin.view.managestudents.MultipleGroupsSelectedView' ,{
     ui: 'transparentpanel',
 
     /**
-     * @cfg {[subjectadmin.model.Group]} groupRecords (required)
+     * @cfg {string} topMessage (required)
+     */
+
+    /**
+     * @cfg {string} multiselectHowto (required)
      */
 
     initComponent: function() {
         Ext.apply(this, {
-            html: Ext.String.format('Selected {0} groups', this.groupRecords.length)
+            items: [{
+                xtype: 'alertmessage',
+                type: 'info',
+                message: [this.topMessage, this.multiselectHowto].join(' ')
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                html: '<strong>NOTE:</strong> This view is incomplete. Please see <a href="http://heim.ifi.uio.no/espeak/devilry-figures/managestudents-multiselect.png" target="_blank">this image mockup</a> of the planned interface.'
+            }]
         });
         this.callParent(arguments);
     }

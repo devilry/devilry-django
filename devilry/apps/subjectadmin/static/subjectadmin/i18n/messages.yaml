@@ -63,8 +63,8 @@ subjectadmin.managestudents.addstudents.tips: Choose the students you want to ad
 subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
 subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
 subjectadmin.managestudents.nogroupselected.topmessage: "No {groupunit_plural} selected. Choose one or more {groupunit_plural} to gain access to settings, such as examiners and tags."
-subjectadmin.managestudents.howto.create_projectgroup: ""
-subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select multiple {groupunit_plural}, which enables you to change examiners and tags on multiple students, and organize students in project groups.'
+subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select multiple {groupunit_plural}.'
+subjectadmin.managestudents.multiselectwhy: 'Selecting multiple {groupunit_plural} enables you to change examiners and tags on multiple students, and organize students in project groups.'
 subjectadmin.managestudents.addstudents: "Add students"
 subjectadmin.managestudents.search_emptytext: "Search for students ..."
 subjectadmin.managestudents.make_admins_examiner: "Administrators are examiners on all"
@@ -75,6 +75,7 @@ subjectadmin.managestudents.tags.title: "Tags"
 subjectadmin.managestudents.remove_student: "Remove student from project group"
 subjectadmin.managestudents.remove_examiner: "Remove examiner"
 subjectadmin.managestudents.remove_tag: "Remove tag"
+subjectadmin.managestudents.multiselect.topmessage: "{numselected} {groupunit_plural} selected."
 
 subjectadmin.groupunit.projectassignment: 'group'
 subjectadmin.groupunit.projectassignment_plural: 'groups'

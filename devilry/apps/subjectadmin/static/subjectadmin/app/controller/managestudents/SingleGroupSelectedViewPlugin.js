@@ -66,6 +66,7 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
+            multiselectWhy: this._getMultiSelectWhy(),
             studentsStore: this._createStudentsStore(),
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
@@ -75,6 +76,12 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
 
     _onRender: function() {
         //console.log('render SingleGroupSelectedView');
+    },
+
+    _getMultiSelectWhy: function() {
+        return Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselectwhy')).apply({
+            groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
+        });
     },
 
     _createStudentsStore: function() {

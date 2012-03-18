@@ -63,7 +63,8 @@ subjectadmin.managestudents.addstudents.tips: "Velg studentene du ønsker å leg
 subjectadmin.managestudents.addstudents.relatedref: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
 subjectadmin.managestudents.addstudents.relatedbtn: "Rediger tilgjengelige studenter"
 subjectadmin.managestudents.nogroupselected.topmessage: "Ingen {groupunit_plural} valgt. Velg en eller flere studenter for å få redigere innstillinger som rettere og tags."
-subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural} slik at du kan endre rettere og tags på mange studenter, samt organisere studenter i prosjektgrupper.'
+subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural}.'
+subjectadmin.managestudents.multiselectwhy: 'Hvis du velger flere studenter kan du endre rettere og tags på mange studenter, samt organisere studenter i prosjektgrupper.'
 subjectadmin.managestudents.addstudents: "Legg til studenter"
 subjectadmin.managestudents.search_emptytext: "Søk etter studenter ..."
 subjectadmin.managestudents.make_admins_examiner: "Administratorer er rettere på alle"
@@ -74,6 +75,7 @@ subjectadmin.managestudents.tags.title: "Tags"
 subjectadmin.managestudents.remove_student: "Fjern student fra prosjektgruppen"
 subjectadmin.managestudents.remove_examiner: "Fjern retter"
 subjectadmin.managestudents.remove_tag: "Fjern tag"
+subjectadmin.managestudents.multiselect.topmessage: "{numselected} {groupunit_plural} er valgt."
 
 subjectadmin.groupunit.projectassignment: 'gruppe'
 subjectadmin.groupunit.projectassignment_plural: 'grupper'

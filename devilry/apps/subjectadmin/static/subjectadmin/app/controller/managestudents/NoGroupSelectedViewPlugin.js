@@ -9,6 +9,10 @@ Ext.define('subjectadmin.controller.managestudents.NoGroupSelectedViewPlugin', {
         'managestudents.NoGroupSelectedView'
     ],
 
+    requires: [
+        'themebase.AlertMessage'
+    ],
+
     init: function() {
         this.application.addListener({
             scope: this,

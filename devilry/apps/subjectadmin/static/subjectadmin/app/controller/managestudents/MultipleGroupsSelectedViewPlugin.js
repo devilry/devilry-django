@@ -10,6 +10,10 @@ Ext.define('subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlu
         'managestudents.MultipleGroupsSelectedView'
     ],
 
+    requires: [
+        'themebase.AlertMessage'
+    ],
+
     init: function() {
         this.application.addListener({
             scope: this,
@@ -24,13 +28,23 @@ Ext.define('subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlu
 
     _onMultipleGroupsSelected: function(manageStudentsController, groupRecords) {
         this.groupRecords = groupRecords;
-        manageStudentsController.setBody({
+        this.manageStudentsController = manageStudentsController;
+        this.manageStudentsController.setBody({
             xtype: 'multiplegroupsview',
-            groupRecords: groupRecords
+            multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
+            topMessage: this._createTopMessage()
         });
     },
 
     _onRender: function() {
         //console.log('render MultipleGroupsSelectedView');
-    }
+    },
+
+    _createTopMessage: function() {
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselect.topmessage'));
+        return tpl.apply({
+            numselected: this.groupRecords.length,
+            groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
+        });
+    },
 });
