@@ -29,9 +29,9 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
                 //}, {
                     //url: '#/@@register-for-final-exams',
                     //text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
-                }, {
-                    url: '#/@@global-statistics',
-                    text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
+                //}, {
+                    //url: '#/@@global-statistics',
+                    //text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
                 }]
             }]
         }, {
