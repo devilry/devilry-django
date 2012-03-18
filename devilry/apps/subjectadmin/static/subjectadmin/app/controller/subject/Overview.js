@@ -78,7 +78,7 @@ Ext.define('subjectadmin.controller.subject.Overview', {
         } else {
             var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
-            this.getAlertmessagelist().addMany(error.errormessages, 'error');
+            this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
         }
     }
 });

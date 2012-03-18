@@ -3,7 +3,7 @@ Ext.define('subjectadmin.store.SubjectsTestMock', {
     model: 'subjectadmin.model.SubjectTestMock',
 
     loadSubject: function(subject_shortname, callbackFn, callbackScope) {
-        this.loadAll();
+        this._loadData();
         this.load({
             scope: this,
             callback: function() {
@@ -33,20 +33,7 @@ Ext.define('subjectadmin.store.SubjectsTestMock', {
         })
     },
 
-    loadAll: function(config) {
-
-        // Simulate servererror if ``servererror`` in querystring
-        var query = Ext.Object.fromQueryString(window.location.search);
-        if(query.servererror) {
-            var operation = Ext.create('Ext.data.Operation');
-            operation.setException({
-                status: 500,
-                statusText: "Server error"
-            });
-            Ext.callback(config.callback, config.scope, [undefined, operation]);
-            return;
-        }
-
+    _loadData: function() {
         var initialData = [{
             id: 0,
             short_name:'duck1100',
@@ -68,6 +55,24 @@ Ext.define('subjectadmin.store.SubjectsTestMock', {
                 }
             });
         }, this);
+    },
+
+    loadAll: function(config) {
+        console.log(config);
+
+        // Simulate servererror if ``servererror`` in querystring
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(query.servererror) {
+            var operation = Ext.create('Ext.data.Operation');
+            operation.setException({
+                status: 500,
+                statusText: "Server error"
+            });
+            Ext.callback(config.callback, config.scope, [undefined, operation]);
+            return;
+        }
+
+        this._loadData();
 
         this.load(config);
     }
