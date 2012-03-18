@@ -85,8 +85,8 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         return store;
     },
     _onRemoveStudent: function(candidateRecord) {
-        alert('Not implemented.');
-        console.log('Remove student:', candidateRecord.data);
+        Ext.MessageBox.alert('Not implemented', 'See <a href="https://github.com/devilry/devilry-django/issues/215" target="_blank">issue 215</a> for info about how this will work.');
+        //console.log('Remove student:', candidateRecord.data);
     },
 
 
