@@ -61,7 +61,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     items: {
                         xtype: 'actionlist',
                         links: [{
-                            url: Ext.String.format('{0}/@@manage-students', this.url),
+                            url: Ext.String.format('{0}@@manage-students', this.url),
                             text: dtranslate('subjectadmin.assignment.manage_students')
                         }, {
                             url: '#',

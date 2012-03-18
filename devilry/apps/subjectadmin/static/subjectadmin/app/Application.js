@@ -128,7 +128,7 @@ Ext.define('subjectadmin.Application', {
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
-        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname", 'showAssignment');
+        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/", 'showAssignment');
         this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/@@manage-students", 'manageStudents');
         this.setupExtraRoutes();
         this.route.start();
@@ -233,8 +233,8 @@ Ext.define('subjectadmin.Application', {
     },
 
     manageStudents: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
-        var subjecturl = '/' + subject_shortname;
-        var periodurl = subjecturl + '/' + period_shortname;
+        var subjecturl = '/' + subject_shortname + '/';
+        var periodurl = subjecturl + period_shortname + '/';
         this.breadcrumbs.set([{
             text: dtranslate('subjectadmin.allsubjects'),
             url: '/'
@@ -246,7 +246,7 @@ Ext.define('subjectadmin.Application', {
             url: periodurl
         }, {
             text: assignment_shortname,
-            url: periodurl + '/' + assignment_shortname
+            url: periodurl + assignment_shortname + '/'
         }], dtranslate('subjectadmin.managestudents.breadcrumbtitle'));
         this.setPrimaryContent({
             xtype: 'managestudentsoverview',

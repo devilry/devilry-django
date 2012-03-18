@@ -5,25 +5,25 @@ class TestAssignment(SeleniumTestCase):
     appname = 'subjectadmin'
 
     def test_doesnotexists(self):
-        self.browseToTest('/a/b/c') # This is not a valid path to an assignment
+        self.browseToTest('/a/b/c/') # This is not a valid path to an assignment
         self.waitForCssSelector('.assignmentoverview')
         self.waitForCssSelector('.messagemask')
         self.assertTrue('themebase.doesnotexist' in self.driver.page_source)
         self.assertTrue('a.b.c' in self.driver.page_source)
 
     def test_shortcuts_render(self):
-        self.browseToTest('/duck1100/2012h/week2')
+        self.browseToTest('/duck1100/2012h/week2/')
         self.waitForCssSelector('.assignmentoverview')
         self.assertTrue('subjectadmin.assignment.manage_students' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.manage_deadlines' in self.driver.page_source)
 
     def test_notpublished(self):
-        self.browseToTest('/duck1100/2012h/week2') # Set to nextmonth in AssignmentTestMock
+        self.browseToTest('/duck1100/2012h/week2/') # Set to nextmonth in AssignmentTestMock
         self.waitForText('subjectadmin.assignment.notpublished.title')
         self.assertTrue('not published' in self.driver.page_source)
 
     def test_published(self):
-        self.browseToTest('/duck1100/2012h/week1') # Set to yesterday in AssignmentTestMock
+        self.browseToTest('/duck1100/2012h/week1/') # Set to yesterday in AssignmentTestMock
         self.waitForText('subjectadmin.assignment.published.title')
         self.assertTrue('is published' in self.driver.page_source)
 
@@ -32,7 +32,7 @@ class TestEditPublishingTime(SeleniumTestCase):
     appname = 'subjectadmin'
 
     def afterSetUp(self):
-        self.browseToTest('/duck1100/2012h/week1') # Set to yesterday in AssignmentTestMock
+        self.browseToTest('/duck1100/2012h/week1/') # Set to yesterday in AssignmentTestMock
         self.waitForCssSelector('.editpublishingtime-widget button')
         button = self.driver.find_element_by_css_selector('.editpublishingtime-widget button')
         button.click()
@@ -82,7 +82,7 @@ class TestEditAnonymous(SeleniumTestCase):
     appname = 'subjectadmin'
 
     def afterSetUp(self):
-        self.browseToTest('/duck1100/2012h/week1')
+        self.browseToTest('/duck1100/2012h/week1/')
         self.waitForCssSelector('.editanonymous-widget button')
         button = self.driver.find_element_by_css_selector('.editanonymous-widget button')
         button.click()
