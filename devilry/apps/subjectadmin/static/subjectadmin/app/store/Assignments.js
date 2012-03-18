@@ -2,7 +2,7 @@
  * Used by the {@link subjectadmin.controller.Assignment} controller to load
  * a single assignment into its view. We need a store because we use a query.
  */
-Ext.define('subjectadmin.store.SingleAssignment', {
+Ext.define('subjectadmin.store.Assignments', {
     extend: 'Ext.data.Store',
     model: 'subjectadmin.model.Assignment',
 

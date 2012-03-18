@@ -1,10 +1,10 @@
 /**
  * Mixin for controllers that need to load an assignment from {@link
- * subjectadmin.store.SingleAssignment}.
+ * subjectadmin.store.Assignments}.
  *
  * Requirements for the class using the mixin:
  *
- * - The ``SingleAssignment`` store in stores.
+ * - The ``Assignments`` store in stores.
  * - Methods to get the short names: ``getSubjectShortname()``,
  *   ``getPeriodShortname()``, ``getAssignmentShortname()``
  * - ``getMaskElement()`` method to get an element that is masked with the
@@ -19,7 +19,7 @@
  *             'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
  *         },
  *         stores: [
- *             'SingleAssignment'
+ *             'Assignments'
  *         ],
  *         _onRender: function() {
  *             ...
@@ -41,7 +41,7 @@ Ext.define('subjectadmin.utils.LoadAssignmentMixin', {
      * error on the ``this.getMaskElement()`` element on error.
      * */
     loadAssignment: function() {
-        var store = this.getSingleAssignmentStore();
+        var store = this.getAssignmentsStore();
         store.loadAssignment(
             this.subject_shortname, this.period_shortname, this.assignment_shortname,
             this._onLoadAssignment, this

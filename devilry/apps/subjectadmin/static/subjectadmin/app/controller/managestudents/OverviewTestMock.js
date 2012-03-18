@@ -12,7 +12,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
     ],
 
     stores: [
-        'SingleAssignmentTestMock',
+        'AssignmentsTestMock',
         'RelatedStudentsTestMock',
         'RelatedExaminersTestMock',
         'GroupsTestMock'
@@ -213,8 +213,8 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         this.callParent();
     },
 
-    getSingleAssignmentStore: function() {
-        return this.getSingleAssignmentTestMockStore();
+    getAssignmentsStore: function() {
+        return this.getAssignmentsTestMockStore();
     },
 
     setupProxies: function(assignmentid) {

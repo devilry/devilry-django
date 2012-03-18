@@ -14,7 +14,7 @@ Ext.define('subjectadmin.controller.assignment.Overview', {
     ],
 
     stores: [
-        'SingleAssignment'
+        'Assignments'
     ],
 
     refs: [{

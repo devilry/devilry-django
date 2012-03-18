@@ -47,7 +47,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      */
 
     stores: [
-        'SingleAssignment',
+        'Assignments',
         'RelatedStudents',
         'RelatedExaminers',
         'Groups'

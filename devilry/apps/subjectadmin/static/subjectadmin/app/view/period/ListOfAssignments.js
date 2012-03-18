@@ -5,7 +5,7 @@ Ext.define('subjectadmin.view.period.ListOfAssignments', {
     extend: 'Ext.view.View',
     alias: 'widget.listofassignments',
     cls: 'listofassignments bootstrap',
-    store: 'SingleAssignment',
+    store: 'Assignments',
 
     tpl: [
         '<ul>',

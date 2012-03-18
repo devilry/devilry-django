@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.store.SingleAssignmentTestMock', {
+Ext.define('subjectadmin.store.AssignmentsTestMock', {
     extend: 'Ext.data.Store',
     model: 'subjectadmin.model.AssignmentTestMock',
     requires: [

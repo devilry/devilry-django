@@ -2,7 +2,7 @@ Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
     extend: 'subjectadmin.controller.assignment.Overview',
 
     stores: [
-        'SingleAssignmentTestMock'
+        'AssignmentsTestMock'
     ],
 
     init: function() {
@@ -42,7 +42,7 @@ Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
 
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
-        var store = this.getSingleAssignmentTestMockStore();
+        var store = this.getAssignmentsTestMockStore();
         Ext.Array.each(initialData, function(data) {
             var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
             record.phantom = true; // Force create
@@ -53,11 +53,11 @@ Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
             });
         }, this);
 
-        //this.getSingleAssignmentTestMockStore().proxy.setData(initialData);
+        //this.getAssignmentsTestMockStore().proxy.setData(initialData);
         this.callParent();
     },
 
-    getSingleAssignmentStore: function() {
-        return this.getSingleAssignmentTestMockStore();
+    getAssignmentsStore: function() {
+        return this.getAssignmentsTestMockStore();
     }
 });

@@ -12,7 +12,7 @@ Ext.define('subjectadmin.controller.period.Overview', {
 
     stores: [
         'Periods',
-        'SingleAssignment'
+        'Assignments'
     ],
 
     refs: [{
@@ -25,10 +25,6 @@ Ext.define('subjectadmin.controller.period.Overview', {
         ref: 'periodOverview',
         selector: 'periodoverview'
     }],
-
-    getAssignmentsStore: function() {
-        return this.getSingleAssignmentStore();
-    },
 
     init: function() {
         this.control({
