@@ -104,11 +104,12 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         alert('Not implemented.');
     },
     _onRemoveExaminer: function(examinerRecord) {
-        console.log('Remove examiner:', examinerRecord.data);
+        //console.log('Remove examiner:', examinerRecord.data);
         alert('Not implemented.');
     },
 
     _createTagsStore: function() {
+        //console.log(this.groupRecord.data);
         var store = Ext.create('Ext.data.Store', {
             model: this.getTagModel(),
             data: this.groupRecord.get('tags')
@@ -122,7 +123,7 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
         alert('Not implemented.');
     },
     _onRemoveTag: function(tagRecord) {
-        console.log('Remove tag:', tagRecord.data);
+        //console.log('Remove tag:', tagRecord.data);
         alert('Not implemented.');
     },
 });

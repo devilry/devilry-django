@@ -46,7 +46,9 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
     _loadGroupsIntoStore: function() {
         var initialData = [{
             "name": null,
-            "tags": ['group1'],
+            "tags": [{
+                tag: 'group1'
+            }],
             "num_deliveries": 1,
             "students": [{
                 "student__devilryuserprofile__full_name": "The Student0",
@@ -71,7 +73,11 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         }, {
             "name": null,
             "num_deliveries": 3,
-            "tags": ['group1'],
+            "tags": [{
+                tag: 'group1',
+            }, {
+                tag: 'learningdisabilities'
+            }],
             "students": [{
                 "student__devilryuserprofile__full_name": "The Student1",
                 "candidate_id": null,
