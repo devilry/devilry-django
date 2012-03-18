@@ -1,7 +1,13 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core import management
-from devilry.apps.core.testhelper import TestHelper
 
+from devilry.apps.core.testhelper import TestHelper
+from devilry.utils.command import setup_logging, get_verbosity
+
+
+
+logger = logging.getLogger(__name__)
 
 
 def autocreate_usernames(fullnames):
@@ -28,22 +34,36 @@ good_students = [('baldr', 'God of beauty'),
 
 
 class Command(BaseCommand):
-    help = 'Create a databse of static data for the selenium tests.'
+    help = 'Create a database of static data for demo purposes.'
 
     def create_duck1100(self):
-        assignments = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7']
+        assignments = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck1100:ln(DUCK1100 - Getting started with python)"],
-                            periods=["year20xx:begins(-30):ends(100)"],
+                            periods=["year20xx:begins(-4):ends(6)"],
                             assignments=assignments)
+
+        anotherTryVerdict = {'grade': '5/20', 'points': 5, 'is_passing_grade': False}
+        failedVerdict = {'grade': '2/20', 'points': 2, 'is_passing_grade': False}
         for groupnum, names in enumerate(bad_students):
             username, fullname = names
             for assignment in assignments:
-                path = 'duckburgh.ifi;duck1100.year20xx.{assignment}.badgroup{groupnum}'.format(**vars)
+                path = 'duckburgh.ifi;duck1100.year20xx.{assignment}.badgroup{groupnum}'.format(**vars())
                 extras = ':candidate({username}):examiner(donald)'.format(**vars())
-                self.testhelper.add_to_path(path + extras)
-
-
+                to_be_added = path + extras
+                self.testhelper.add_to_path(to_be_added)
+                logger.debug('Created ' + to_be_added)
+                self.testhelper.add_to_path(path + '.d1:ends(10)')
+                self.testhelper.add_delivery(path, {'bad.py': ['print ', 'bah']})
+                self.testhelper.add_delivery(path, {'superbad.py': ['print ', 'superbah']},
+                                             after_last_deadline=True)
+                self.testhelper.add_feedback(path, verdict=anotherTryVerdict)
+                self.testhelper.add_to_path(path + '.d2:ends(20)')
+                self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']})
+                self.testhelper.add_feedback(path, verdict=failedVerdict)
+                group = self.testhelper.get_object_from_path(path)
+                group.is_open = False
+                group.save()
 
     #def create_duck1010(self):
         #self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
@@ -60,11 +80,12 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        management.call_command('flush', verbosity=0, interactive=False)
-        management.call_command('loaddata', 'dev_grandma', verbosity=0, interactive=False)
-        #management.call_command('loaddata', 'dev_duckburghusers', verbosity=0, interactive=False)
+        verbosity = get_verbosity(options)
+        setup_logging(verbosity)
+        management.call_command('flush', verbosity=verbosity, interactive=False)
 
         self.testhelper = TestHelper()
+        self.testhelper.create_superuser('grandma')
         self.create_users(bad_students)
         self.create_users(medium_students)
         self.create_users(good_students)
