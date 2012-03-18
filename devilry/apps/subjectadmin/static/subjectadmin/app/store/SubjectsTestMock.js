@@ -58,7 +58,6 @@ Ext.define('subjectadmin.store.SubjectsTestMock', {
     },
 
     loadAll: function(config) {
-        console.log(config);
 
         // Simulate servererror if ``servererror`` in querystring
         var query = Ext.Object.fromQueryString(window.location.search);
