@@ -77,7 +77,7 @@ Ext.define('subjectadmin.view.period.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: 'Advanced',
+                    text: dtranslate('themebase.advanced'),
                     scale: 'medium',
                     menu: [{
                         text: renameLabel,

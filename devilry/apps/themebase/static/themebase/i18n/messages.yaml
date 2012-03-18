@@ -14,6 +14,8 @@ themebase.rename_something: "Rename {what}"
 themebase.cancel: "Cancel"
 themebase.selectall: "Select all"
 themebase.removeall: "Remove all"
+themebase.advanced: "Advanced"
+themebase.advanced_options: "Advanced options"
 
 themebase.passing_grade: "Passed"
 themebase.not_passing_grade: "Failed"
@@ -27,7 +29,6 @@ themebase.closed.explained: "The current grade is the final grade. The student(s
 themebase.status: "Status"
 themebase.deliveries: "deliveries"
 themebase.delivery: "delivery"
-themebase.advanced_options: "Advanced options"
 
 themebase.role.student.title: "Student"
 themebase.role.examiner.title: "Examiner"

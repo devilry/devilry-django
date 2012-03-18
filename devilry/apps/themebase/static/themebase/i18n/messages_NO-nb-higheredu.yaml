@@ -13,6 +13,8 @@ themebase.rename_something: "Endre navn på {what}"
 themebase.cancel: "Avbryt"
 themebase.selectall: "Velg alle"
 themebase.removeall: "Fjern alle"
+themebase.advanced: "Avansert"
+themebase.advanced_options: "Avanserte valg"
 
 themebase.passing_grade: "Bestått"
 themebase.not_passing_grade: "Ikke bestått"
@@ -26,7 +28,6 @@ themebase.closed.explained: "Nåværende karakter er endelig karakter. Det er ik
 themebase.status: "Status"
 themebase.deliveries: "innleveringer"
 themebase.delivery: "innlevering"
-themebase.advanced_options: "Avanserte valg"
 
 themebase.role.student.title: "Student"
 themebase.role.examiner.title: "Retter"
