@@ -4,7 +4,7 @@ from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 class TestSubjectListAll(SeleniumTestCase):
     appname = 'subjectadmin'
 
-    def test_doesnotexists(self):
+    def test_servererror(self):
         self.browseToTest('/', query='servererror=1') # subjectadmin.store.SubjectsTestMock simulates servererror with this querystring
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('500: Server error' in self.driver.page_source)
