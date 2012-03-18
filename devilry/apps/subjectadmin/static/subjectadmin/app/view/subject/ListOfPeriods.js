@@ -1,5 +1,5 @@
 /**
- * List of all Subjects that the user have permission to view.
+ * List of periods within a subject.
  */
 Ext.define('subjectadmin.view.subject.ListOfPeriods', {
     extend: 'Ext.view.View',

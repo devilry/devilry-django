@@ -51,10 +51,9 @@ Ext.define('subjectadmin.view.period.Overview' ,{
                         itemId: 'actions',
                         ui: 'inset-header-strong-panel',
                         layout: 'fit',
-                        html: 'list of assignments...'
-                        //items: {
-                            //xtype: 'listofassignments'
-                        //}
+                        items: {
+                            xtype: 'listofassignments'
+                        }
                     }]
                 }, {
                     xtype: 'container',

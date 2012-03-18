@@ -6,11 +6,13 @@ Ext.define('subjectadmin.controller.period.Overview', {
 
     views: [
         'period.Overview',
+        'period.ListOfAssignments',
         'ActionList'
     ],
 
     stores: [
-        'Periods'
+        'Periods',
+        'SingleAssignment'
     ],
 
     refs: [{
@@ -23,6 +25,10 @@ Ext.define('subjectadmin.controller.period.Overview', {
         ref: 'periodOverview',
         selector: 'periodoverview'
     }],
+
+    getAssignmentsStore: function() {
+        return this.getSingleAssignmentStore();
+    },
 
     init: function() {
         this.control({
@@ -39,6 +45,7 @@ Ext.define('subjectadmin.controller.period.Overview', {
         this.subject_shortname = this.getPeriodOverview().subject_shortname;
         this.period_shortname = this.getPeriodOverview().period_shortname;
         this._loadPeriod();
+        this._loadAssignments();
     },
 
     _loadPeriod: function() {
@@ -67,4 +74,18 @@ Ext.define('subjectadmin.controller.period.Overview', {
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
     },
+
+    _loadAssignments: function() {
+        this.getAssignmentsStore().loadAssignmentsInPeriod(this.subject_shortname, this.period_shortname, this._onLoadAssignments, this);
+    },
+
+    _onLoadAssignments: function(records, operation) {
+        if(operation.success) {
+            
+        } else {
+            var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+            error.addErrors(operation);
+            this.getAlertmessagelist().addMany(error.errormessages, 'error');
+        }
+    }
 });

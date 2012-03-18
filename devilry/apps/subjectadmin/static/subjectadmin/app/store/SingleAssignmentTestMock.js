@@ -42,5 +42,32 @@ Ext.define('subjectadmin.store.SingleAssignmentTestMock', {
                 Ext.callback(callbackFn, callbackScope, [records, operation]);
             }
         })
+    },
+
+    loadAssignmentsInPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
+        // Simulate servererror if ``servererror`` in querystring
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(query.servererror) {
+            var operation = Ext.create('Ext.data.Operation');
+            operation.setException({
+                status: 500,
+                statusText: "Server error"
+            });
+            Ext.callback(callbackFn, callbackScope, [undefined, operation]);
+            return;
+        }
+
+        //this._addDataToStore();
+
+        this.load({
+            scope: this,
+            callback: function(records, operation) {
+                this.filterBy(function(record) {
+                    return (record.get('parentnode__parentnode__short_name') == subject_shortname &&
+                            record.get('parentnode__short_name') == period_shortname);
+                });
+                Ext.callback(callbackFn, callbackScope, [this.data.items, operation]);
+            }
+        });
     }
 });
