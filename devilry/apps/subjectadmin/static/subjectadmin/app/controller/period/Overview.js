@@ -6,8 +6,7 @@ Ext.define('subjectadmin.controller.period.Overview', {
 
     views: [
         'period.Overview',
-        'period.ListOfAssignments',
-        'ActionList'
+        'period.ListOfAssignments'
     ],
 
     stores: [
@@ -77,7 +76,6 @@ Ext.define('subjectadmin.controller.period.Overview', {
 
     _onLoadAssignments: function(records, operation) {
         if(operation.success) {
-            
         } else {
             var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
