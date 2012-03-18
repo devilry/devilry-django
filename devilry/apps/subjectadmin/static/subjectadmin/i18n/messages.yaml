@@ -50,7 +50,7 @@ subjectadmin.createnewassignment.success.addanother_similar: "Add another <em>{d
 subjectadmin.createnewassignment.success.title: "Created {assignment}"
 
 subjectadmin.dashboard.messages: Messages
-subjectadmin.dashboard.shortcuts: Shortcuts
+subjectadmin.dashboard.shortcuts: Subjects/assignments
 subjectadmin.dashboard.actionstitle: Actions
 subjectadmin.dashboard.createnewassignment: Create new assignment
 subjectadmin.dashboard.browseall: "Browse ..."

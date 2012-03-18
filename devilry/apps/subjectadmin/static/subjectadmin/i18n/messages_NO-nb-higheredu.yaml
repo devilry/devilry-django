@@ -50,7 +50,7 @@ subjectadmin.createnewassignment.success.addanother_similar: "Legg til enda en <
 subjectadmin.createnewassignment.success.title: "Opprettet {assignment}"
 
 subjectadmin.dashboard.messages: "Beskjeder"
-subjectadmin.dashboard.shortcuts: "Snarveier"
+subjectadmin.dashboard.shortcuts: "Kurs/oppgaver"
 subjectadmin.dashboard.actionstitle: "Handlinger"
 subjectadmin.dashboard.createnewassignment: "Sett opp en ny oppgave"
 subjectadmin.dashboard.browseall: "Utforsk ..."
