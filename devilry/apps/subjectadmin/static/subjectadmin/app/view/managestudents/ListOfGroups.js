@@ -35,7 +35,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
         '       <div class="open"><small class="success">{openText}</small></div>',
         '   </tpl>',
         '   <tpl if="!is_open">',
-        '       <div class="closed"><small class="danger">{closedText}</small></div>',
+        '       <div class="closed"><small>{closedText}</small></div>',
         '   </tpl>',
         '   <tpl if="num_deliveries != 0">',
         '       <div class="num_deliveries countbox">',
