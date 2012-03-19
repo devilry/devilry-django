@@ -63,7 +63,7 @@ subjectadmin.managestudents.addstudents.tips: Choose the students you want to ad
 subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
 subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
 subjectadmin.managestudents.nogroupselected.topmessage: "No {groupunit_plural} selected. Choose one or more {groupunit_plural} to gain access to settings, such as examiners and tags."
-subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select multiple {groupunit_plural}.'
+subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'
 subjectadmin.managestudents.multiselectwhy: 'Selecting multiple {groupunit_plural} enables you to change examiners and tags on multiple students, and organize students in project groups.'
 subjectadmin.managestudents.addstudents: "Add students"
 subjectadmin.managestudents.search_emptytext: "Search for students ..."
