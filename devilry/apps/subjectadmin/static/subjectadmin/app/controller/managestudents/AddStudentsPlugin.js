@@ -88,6 +88,6 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSave: function(button) {
-        console.log('save');
+        alert('Not implemented yet');
     }
 });
