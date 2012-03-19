@@ -35,6 +35,10 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                     scale: 'medium',
                 },
                 items: [{
+                    xtype: 'button',
+                    itemId: 'selectall',
+                    text: dtranslate('themebase.selectall')
+                }, {
                     xtype: 'combobox',
                     itemId: 'sortby',
                     queryMode: 'local',
@@ -69,10 +73,6 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                             {value:'is_open', label:"View: Group by open/closed"},
                         ]
                     })
-                }, {
-                    xtype: 'button',
-                    itemId: 'selectall',
-                    text: dtranslate('themebase.selectall')
                 }, '->', {
                     xtype: 'button',
                     text: 'Options',
