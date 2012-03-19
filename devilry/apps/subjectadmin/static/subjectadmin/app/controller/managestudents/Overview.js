@@ -98,6 +98,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview #viewselect': {
                 select: this._onSelectViewSelect
+            },
+            'viewport managestudentsoverview #search': {
+                change: this._onSearchChange
             }
         });
     },
@@ -118,6 +121,10 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             scope: this
         });
         this._sortBy('fullname'); // NOTE: This must match the field selected as value for the sortby in the view.
+    },
+
+    _onSearchChange: function(field, newValue, oldValue) {
+        alert('Search is not supported yet');
     },
 
     _onSelectViewSelect: function(combo, records) {
