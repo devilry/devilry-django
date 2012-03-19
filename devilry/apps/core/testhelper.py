@@ -424,6 +424,9 @@ class TestHelper(object):
             else:
                 raise ValueError("anon must be 'true' or 'false'")
 
+        if extras['ln']:
+            assignment.long_name = extras['ln'][0]
+
         assignment.full_clean()
         assignment.save()
 
@@ -449,7 +452,7 @@ class TestHelper(object):
                     assignment_name = assignment
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['admin', 'pub', 'anon'])
+                users = self._parse_extras(extras_arg, ['admin', 'pub', 'anon', 'ln'])
                 new_assignment = self._create_or_add_assignment(assignment_name, period, users)
                 created_assignments.append(new_assignment)
         return created_assignments
