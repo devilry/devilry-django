@@ -46,7 +46,7 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onManageStudentsLoaded: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
-        this.manageStudentsController.getPrimaryToolbar().insert(1, {
+        this.manageStudentsController.getPrimaryToolbar().insert(2, {
             xtype: 'button',
             itemId: 'addstudents',
             iconCls: 'icon-add-24',

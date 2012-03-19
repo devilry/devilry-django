@@ -35,6 +35,23 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                     scale: 'medium',
                 },
                 items: [{
+                    xtype: 'combobox',
+                    itemId: 'sortby',
+                    queryMode: 'local',
+                    valueField: 'value',
+                    displayField: 'label',
+                    forceSelection: true,
+                    editable: false,
+                    value: 'fullname',
+                    store: Ext.create('Ext.data.Store', {
+                        fields: ['value', 'label'],
+                        data : [
+                            {value:'lastname', label:"Sort by: Last name"},
+                            {value:'username', label:"Sort by: Username"},
+                            {value:'fullname', label:"Sort by: Full name"}
+                        ]
+                    })
+                }, {
                     xtype: 'button',
                     itemId: 'selectall',
                     text: dtranslate('themebase.selectall')

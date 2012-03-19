@@ -92,6 +92,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview #selectall': {
                 click: this._onSelectAll
+            },
+            'viewport managestudentsoverview #sortby': {
+                select: this._onSortBySelect
             }
         });
     },
@@ -111,6 +114,72 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             fn: this._onSelectAll,
             scope: this
         });
+    },
+
+    _onSortBySelect: function(combo, records) {
+        var sortby = records[0].get('value');
+        this._sortBy(sortby)
+    },
+
+    _sortBy: function(sortby) {
+        var sorter = null;
+        if(sortby == 'username') {
+            sorter = this._sortByUsername;
+        } else if(sortby == 'fullname') {
+            sorter = this._sortByFullname;
+        } else if(sortby == 'lastname') {
+            sorter = this._sortByLastname;
+        } else {
+            throw "Invalid sorter: " + sortby;
+        }
+        this.getGroupsStore().sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: Ext.bind(sorter, this)
+        }));
+    },
+
+    _cmp: function(x, y) {
+        return x > y? 1 : x < y ? -1 : 0;
+    },
+
+    _sortByUsername: function(a, b) {
+        this._sortByListProperty('students', 'student__username', a, b);
+    },
+
+    _sortByFullname: function(a, b) {
+        this._sortByListProperty('students', 'student__devilryuserprofile__full_name', a, b);
+    },
+
+    _sortByListProperty: function(listproperty, attribute, a, b) {
+        var listA = a.get(listproperty);
+        var listB = b.get(listproperty);
+        if(listA.length == 0) {
+            return -1;
+        }
+        if(listB.length == 0) {
+            return 1;
+        }
+        return this._cmp(listA[0][attribute], listB[0][attribute]);
+    },
+
+    _getLastname: function(fullname) {
+        var split = fullname.split(/\s+/);
+        return split[split.length-1];
+    },
+
+    _sortByLastname: function(a, b) {
+        var listA = a.get('students');
+        var listB = b.get('students');
+        if(listA.length == 0) {
+            return -1;
+        }
+        if(listB.length == 0) {
+            return 1;
+        }
+        var attribute = 'student__devilryuserprofile__full_name';
+        return this._cmp(
+            this._getLastname(listA[0][attribute]),
+            this._getLastname(listB[0][attribute])
+        );
     },
 
     _onSelectAll: function() {
