@@ -141,7 +141,7 @@ class Command(BaseCommand):
     def create_duck1100(self):
         assignments = ['week{0}:pub({1})'.format(weeknum, weeknum*7) for weeknum in xrange(1, 10)]
         periods = ['year20xx:begins(-2):ends(6):ln(Year 20xx)',
-                   'inthepast:begins(-14):ends(6):ln(Year 20xx minus one)']
+                   'inthepast:begins(-14):ends(6):ln(Year 20xx minus one year)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck1100:ln(DUCK1100 - Getting started with python)"],
                             periods=periods,
@@ -165,7 +165,7 @@ class Command(BaseCommand):
     def create_duck1010(self):
         assignments = ['oblig{num}:pub({pub}):ln(Obligatorisk oppgave {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
         periods = ['year20xx:begins(-2):ends(6):ln(Year 20xx)',
-                   'inthepast:begins(-14):ends(6):ln(Year 20xx minus one)']
+                   'inthepast:begins(-14):ends(6):ln(Year 20xx minus one year)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck1010:ln(DUCK1010 - Objektorientert programmering)"],
                             periods=periods,
