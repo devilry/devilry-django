@@ -661,7 +661,7 @@ class TestHelper(object):
             anon
                 Should the assignment be anonymous? ``true`` or ``false``, and
                 defaults to ``false``.
-            begins
+            pub
                 Number of days after the start time of the period that the
                 assignment should be published. Can be a negative number.
                 Defaults to 0.
