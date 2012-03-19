@@ -60,7 +60,7 @@ subjectadmin.dashboard.registerqualifiesforfinal: "Registrer studenter som kvali
 subjectadmin.managestudents.breadcrumbtitle: "Students"
 subjectadmin.managestudents.addstudents.title: "Legg til studenter"
 subjectadmin.managestudents.addstudents.tips: "Velg studentene du ønsker å legge til på oppgaven, og klikk lagre."
-subjectadmin.managestudents.addstudents.relatedref: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
+subjectadmin.managestudents.addstudents.onlyrelatedisavailable: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
 subjectadmin.managestudents.addstudents.relatedbtn: "Rediger tilgjengelige studenter"
 subjectadmin.managestudents.nogroupselected.topmessage: "Ingen {groupunit_plural} valgt. Velg en eller flere studenter for å få redigere innstillinger som rettere og tags."
 subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural}.'

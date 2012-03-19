@@ -57,11 +57,13 @@ subjectadmin.dashboard.browseall: "Browse ..."
 subjectadmin.dashboard.registerqualifiesforfinal: Register students that qualify for final exams
 "subjectadmin.dashboard.overview-and-statistics": Overview and statistics
 
-subjectadmin.managestudents.breadcrumbtitle: Manage students
-subjectadmin.managestudents.addstudents.title: Add students
-subjectadmin.managestudents.addstudents.tips: Choose the students you want to add to the assignment, and click save.
-subjectadmin.managestudents.addstudents.relatedref: "Only students registered on {periodpath} is available in the list."
-subjectadmin.managestudents.addstudents.relatedbtn: Manage available students
+subjectadmin.managestudents.breadcrumbtitle: "Manage students"
+subjectadmin.managestudents.addstudents.title: "Add students"
+subjectadmin.managestudents.addstudents.tips: "Choose the students you want to add to the assignment, and click save."
+subjectadmin.managestudents.addstudents.allignored: "All students registered on <strong>{periodpath}</strong> is already added to the assignment. Use the button below to go to {periodpath} and add more students."
+subjectadmin.managestudents.addstudents.someignored: "<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment."
+subjectadmin.managestudents.addstudents.onlyrelatedisavailable: "Only students registered on <em>{periodpath}</em> is available in the list."
+subjectadmin.managestudents.addstudents.relatedbtn: "Manage available students"
 subjectadmin.managestudents.nogroupselected.topmessage: "No {groupunit_plural} selected. Choose one or more {groupunit_plural} to gain access to settings, such as examiners and tags."
 subjectadmin.managestudents.multiselecthowto: 'Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'
 subjectadmin.managestudents.multiselectwhy: 'Selecting multiple {groupunit_plural} enables you to change examiners and tags on multiple students, and organize students in project groups.'

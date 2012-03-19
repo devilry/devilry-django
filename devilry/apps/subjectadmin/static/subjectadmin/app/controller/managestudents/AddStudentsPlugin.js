@@ -56,7 +56,7 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onRelatedLinkClick: function(ev) {
-        console.log('_onRelatedLinkClick');
+        alert('Not implemented yet');
     },
 
     _onAddstudents: function() {
@@ -70,7 +70,8 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
                 '{0}.{1}',
                 this.manageStudentsController.getSubjectShortname(),
                 this.manageStudentsController.getPeriodShortname()
-            )
+            ),
+            ignoredcount: relatedStudentsStore.getTotalCount() - relatedStudentsStore.getCount()
         }).show();
     },
 

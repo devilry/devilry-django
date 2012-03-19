@@ -12,11 +12,20 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
     ],
 
     /**
-     * @cfg relatedStudentsStore
+     * @cfg {Ext.data.Store} relatedStudentsStore (required)
+     */
+
+    /**
+     * @cfg {string} periodpath (required)
+     */
+
+    /**
+     * @cfg {string} ignoredcount (required)
      */
 
     initComponent: function() {
         var selModel = Ext.create('themebase.GridMultiSelectModel');
+        var someIgnoredTpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.addstudents.someignored'));
         Ext.apply(this, {
             layout: 'border',
             closable: false,
@@ -48,14 +57,28 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                 bodyPadding: 20,
                 items: [{
                     xtype: 'box',
+                    cls: 'bootstrap',
                     html: Ext.create('Ext.XTemplate',
-                        '<p>',
-                        dtranslate('subjectadmin.managestudents.addstudents.tips'),
-                        '</p><p>',
-                        dtranslate('subjectadmin.managestudents.addstudents.relatedref'),
-                        '</p>'
+                        '<tpl if="allIgnored"><p>',
+                            dtranslate('subjectadmin.managestudents.addstudents.allignored'),
+                        '</p></tpl>',
+                        '<tpl if="!allIgnored">',
+                            '<p>',
+                                dtranslate('subjectadmin.managestudents.addstudents.tips'),
+                            '</p>',
+                            '<tpl if="hasIgnored"><p>',
+                                someIgnoredTpl.apply({
+                                    ignoredcount: this.ignoredcount
+                                }),
+                            '</p></tpl>',
+                            '<p>',
+                                dtranslate('subjectadmin.managestudents.addstudents.onlyrelatedisavailable'),
+                            '</p>',
+                        '</tpl>'
                     ).apply({
-                        periodpath: 'stuff'
+                        periodpath: this.periodpath,
+                        hasIgnored: this.ignoredcount > 0,
+                        allIgnored: this.relatedStudentsStore.getTotalCount() == this.ignoredcount
                     })
                 }, {
                     xtype: 'button',
