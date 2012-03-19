@@ -62,7 +62,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
                 header: 'Col1',  dataIndex: 'id', flex: 1,
                 renderer: this.renderCol1
             }, {
-                header: 'Col2',  dataIndex: 'id', width: 100,
+                header: 'Col2',  dataIndex: 'id', width: 115,
                 renderer: this.renderCol2
             }],
         });
