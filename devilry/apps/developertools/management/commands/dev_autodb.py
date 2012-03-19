@@ -30,12 +30,12 @@ medium_students = [('dewey', 'Dewey Duck'),
                    ('july', 'July Duck')]
 medium_students_usernames = get_usernames(medium_students)
 
-good_students = [('baldr', 'God of beauty'),
-                 ('freyja', 'Goddess of love'),
-                 ('freyr', 'God of fertility'),
-                 ('kvasir', 'God of inspiration'),
-                 ('loki', 'Trickster and god of mischief'),
-                 ('thor', 'God of thunder and battle'),
+good_students = [('baldr', 'God of Beauty'),
+                 ('freyja', 'Goddess of Love'),
+                 ('freyr', 'God of Fertility'),
+                 ('kvasir', 'God of Inspiration'),
+                 ('loki', 'Trickster and god of Mischief'),
+                 ('thor', 'God of thunder and Battle'),
                  ('odin', 'The "All Father"')]
 good_students_usernames = get_usernames(good_students)
 
@@ -115,6 +115,29 @@ class Command(BaseCommand):
     def _onlyNames(self, nameWithExtras):
         return [name.split(':')[0] for name in nameWithExtras]
 
+    def _getUser(self, username):
+        return getattr(self.testhelper, username)
+
+    def _addRelatedExaminersFromList(self, period, listOfUsernames):
+        for username in listOfUsernames:
+            tags = ','.join(self._getTagsForExaminer(username))
+            period.relatedexaminer_set.create(user=self._getUser(username),
+                                              tags=tags)
+
+    def _addRelatedExaminers(self, period):
+        self._addRelatedExaminersFromList(period, self.examiners.keys())
+
+    def _addRelatedStudentsFromList(self, period, listOfUsernames):
+        for username in listOfUsernames:
+            tags = ','.join(self._getTagsFor(username))
+            period.relatedstudent_set.create(user=self._getUser(username),
+                                              tags=tags)
+
+    def _addRelatedStudents(self, period):
+        self._addRelatedStudentsFromList(period, good_students_usernames)
+        self._addRelatedStudentsFromList(period, medium_students_usernames)
+        self._addRelatedStudentsFromList(period, bad_students_usernames)
+
     def create_duck1100(self):
         assignments = ['week{0}:pub({1})'.format(weeknum, weeknum*7) for weeknum in xrange(1, 10)]
         periods = ['year20xx:begins(-2):ends(6):ln(Year 20xx)',
@@ -132,6 +155,9 @@ class Command(BaseCommand):
         periodnames = self._onlyNames(periods)
         for periodname in periodnames:
             periodpath = 'duckburgh.ifi;duck1100.' + periodname
+            period = self.testhelper.get_object_from_path(periodpath)
+            self._addRelatedStudents(period)
+            self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
@@ -153,6 +179,9 @@ class Command(BaseCommand):
         periodnames = self._onlyNames(periods)
         for periodname in periodnames:
             periodpath = 'duckburgh.ifi;duck1010.' + periodname
+            period = self.testhelper.get_object_from_path(periodpath)
+            self._addRelatedStudents(period)
+            self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
@@ -175,9 +204,10 @@ class Command(BaseCommand):
         raise LookupError('No examiner defined for {0}'.format(username))
 
     def _getTagsFor(self, username):
+        tags = []
         if self._getExaminerFor(username) == 'donald':
             tags = ['group1']
-        else:
+        elif self._getExaminerFor(username) == 'scrooge':
             tags = ['group2']
         if username in good_students_usernames:
             tags.append('goodstudent')
@@ -188,6 +218,12 @@ class Command(BaseCommand):
     def _setTagsFor(self, group, username):
         for tag in self._getTagsFor(username):
             group.tags.create(tag=tag)
+
+    def _getTagsForExaminer(self, username):
+        if username == 'donald':
+            return ['group1']
+        elif username == 'scrooge':
+            return ['group2']
 
     def handle(self, *args, **options):
         verbosity = get_verbosity(options)
