@@ -170,10 +170,10 @@ class Command(BaseCommand):
                             subjects=["duck1010:ln(DUCK1010 - Objektorientert programmering)"],
                             periods=periods,
                             assignments=assignments)
-        anotherTryVerdict = {'grade': 'approved', 'points': 0, 'is_passing_grade': False}
-        failedVerdict = {'grade': 'not approved', 'points': 0, 'is_passing_grade': False}
-        okVerdict = {'grade': 'approved', 'points': 1, 'is_passing_grade': True}
-        goodVerdict = {'grade': 'not approved', 'points': 1, 'is_passing_grade': True}
+        anotherTryVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
+        failedVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
+        okVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
+        goodVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
 
         assignmentnames = [name.split(':')[0] for name in assignments]
         periodnames = self._onlyNames(periods)
