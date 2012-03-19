@@ -76,17 +76,17 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     items: [{
                         xtype: 'panel',
                         ui: 'inset-header-panel',
-                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25),
-                        columnWidth: .5,
                         margin: {right: 20},
-                        html: 'TODO'
+                        columnWidth: .5,
+                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming_deadlines'), 25),
+                        html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                     }, {
                         xtype: 'panel',
                         ui: 'inset-header-panel',
+                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25),
                         columnWidth: .5,
                         margin: {left: 20},
-                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming_deadlines'), 25),
-                        html: 'TODO'
+                        html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                     }]
                 }]
             }, {
