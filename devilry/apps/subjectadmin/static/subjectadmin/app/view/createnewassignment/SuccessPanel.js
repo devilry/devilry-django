@@ -70,7 +70,7 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
 
         var links = [{
             url: Ext.String.format(
-                '#/{0}/{1}/{2}',
+                '#/{0}/{1}/{2}/',
                 this.config.subject_short_name,
                 this.config.period_short_name,
                 this.config.short_name
