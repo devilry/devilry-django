@@ -20,7 +20,7 @@ Ext.define('subjectadmin.controller.Shortcuts', {
             'viewport shortcutlist': {
                 render: function(list) {
                     this.getActiveAssignmentsStore().on('load', this._onActiveAssignmentsStoreLoad, this);
-                    this.getActiveAssignmentsStore().load();
+                    this.getActiveAssignmentsStore().loadActiveAssignments();
                 }
             }
         });
