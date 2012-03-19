@@ -5,5 +5,9 @@ Ext.define('subjectadmin.store.ActivePeriodsTestMock', {
     proxy: {
         type: 'hiddenelement',
         id: 'activeperiodproxy'
+    },
+
+    loadActivePeriods: function(config) {
+        return this.load(config);
     }
 });
