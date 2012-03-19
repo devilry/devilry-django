@@ -116,7 +116,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         if(this.getActivePeriodsStore().getCount() > 0) {
             Ext.callback(callback, this);
         } else {
-            this.getActivePeriodsStore().load({
+            this.getActivePeriodsStore().loadActivePeriods({
                 scope: this,
                 callback: callback
             });
