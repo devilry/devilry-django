@@ -94,7 +94,10 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
                 click: this._onSelectAll
             },
             'viewport managestudentsoverview #sortby': {
-                select: this._onSortBySelect
+                select: this._onSelectSortBy
+            },
+            'viewport managestudentsoverview #viewselect': {
+                select: this._onSelectViewSelect
             }
         });
     },
@@ -114,11 +117,21 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
             fn: this._onSelectAll,
             scope: this
         });
+        this._sortBy('fullname'); // NOTE: This must match the field selected as value for the sortby in the view.
     },
 
-    _onSortBySelect: function(combo, records) {
+    _onSelectViewSelect: function(combo, records) {
+        var view = records[0].get('value');
+        this._view(view);
+    },
+
+    _view: function(view) {
+        alert('Not implemented');
+    },
+
+    _onSelectSortBy: function(combo, records) {
         var sortby = records[0].get('value');
-        this._sortBy(sortby)
+        this._sortBy(sortby);
     },
 
     _sortBy: function(sortby) {

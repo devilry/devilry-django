@@ -42,13 +42,31 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                     displayField: 'label',
                     forceSelection: true,
                     editable: false,
-                    value: 'fullname',
+                    value: 'fullname', // NOTE: This must match the argument to _sortBy in _onRenderListOfGroups in the controller
                     store: Ext.create('Ext.data.Store', {
                         fields: ['value', 'label'],
                         data : [
+                            {value:'fullname', label:"Sort by: Full name"},
                             {value:'lastname', label:"Sort by: Last name"},
-                            {value:'username', label:"Sort by: Username"},
-                            {value:'fullname', label:"Sort by: Full name"}
+                            {value:'username', label:"Sort by: Username"}
+                        ]
+                    })
+                }, {
+                    xtype: 'combobox',
+                    itemId: 'viewselect',
+                    queryMode: 'local',
+                    valueField: 'value',
+                    displayField: 'label',
+                    forceSelection: true,
+                    editable: false,
+                    value: 'flat',
+                    store: Ext.create('Ext.data.Store', {
+                        fields: ['value', 'label'],
+                        data : [
+                            {value:'flat', label:"View: Flat"},
+                            {value:'examiner', label:"View: Group by examiner"},
+                            {value:'is_passing_grade', label:"View: Group by passed/failed"},
+                            {value:'is_open', label:"View: Group by open/closed"},
                         ]
                     })
                 }, {
