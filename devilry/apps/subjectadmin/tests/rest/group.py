@@ -8,16 +8,10 @@ from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Deadline
-from devilry.rest.testutils import dummy_urlreverse
 from devilry.utils.rest_testclient import RestClient
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.apps.subjectadmin.rest.group import GroupDao
-from devilry.apps.subjectadmin.rest.group import RestGroup
-from devilry.apps.subjectadmin.rest.group import _studentdict_indata
-from devilry.apps.subjectadmin.rest.group import _examinerdict_indata
-from devilry.apps.subjectadmin.rest.group import _tagdict_indata
-from devilry.apps.subjectadmin.rest.group import _deadlinedict_indata
 
 
 
@@ -279,101 +273,6 @@ class TestGroupDao(TestCase):
         self.assertEquals(group_db.is_open, True)
 
 
-class TestRestGroupIndata(TestCase):
-    def test_studentdict_indata(self):
-        _studentdict_indata(dict(candidate_id=u'candid333',
-                                 student__username=u'someusername',
-                                 student__email=u'myemail',
-                                 student__devilryuserprofile__full_name=u'Somename'))
-        with self.assertRaises(ValueError):
-            # Missing attribute
-            _studentdict_indata(dict(candidate_id=u'candid333',
-                                     student__username=u'someusername',
-                                     student__devilryuserprofile__full_name=u'Somename'))
-        with self.assertRaises(ValueError):
-            # Invalid candidate_id type
-            _studentdict_indata(dict(candidate_id=10,
-                                     student__email=u'myemail',
-                                     student__username=u'someusername',
-                                     student__devilryuserprofile__full_name=u'Somename'))
-
-    def test_examinerdict_indata(self):
-        _examinerdict_indata(dict(user__username=u'someusername',
-                                  user__email=u'myemail',
-                                  user__devilryuserprofile__full_name=u'Somename'))
-        with self.assertRaises(ValueError):
-            # Missing attribute
-            _examinerdict_indata(dict(user__username=u'someusername',
-                                      user__devilryuserprofile__full_name=u'Somename'))
-        with self.assertRaises(ValueError):
-            # Invalid type
-            _examinerdict_indata(dict(user__username=10,
-                                      user__email=u'myemail',
-                                      user__devilryuserprofile__full_name=u'Somename'))
-
-    def test_tagdict_indata(self):
-        self.assertEquals(_tagdict_indata(dict(tag=u'group1')),
-                          dict(tag=u'group1'))
-        with self.assertRaises(ValueError):
-            # Missing attribute
-            _tagdict_indata(dict())
-        with self.assertRaises(ValueError):
-            # Invalid type
-            _tagdict_indata(dict(tag=10))
-
-    def test_deadlinedict_indata(self):
-        self.assertEquals(_deadlinedict_indata(dict(deadline=u'2011-01-02T03:04:05')),
-                          dict(deadline=datetime(2011, 1, 2, 3, 4, 5)))
-        with self.assertRaises(ValueError):
-            # Missing attribute
-            _deadlinedict_indata(dict())
-        with self.assertRaises(ValueError):
-            # Invalid type
-            _deadlinedict_indata(dict(deadline='a'))
-
-
-class TestRestGroup(TestCase):
-    def setUp(self):
-        self.restapi = RestGroup(daocls=Dingus(), apiname='api',
-                                 apiversion='1.0', user="FAKEUSER",
-                                 url_reverse=dummy_urlreverse)
-
-    def test_list(self):
-        self.restapi.list(assignmentid=1001)
-        dingus = self.restapi.dao
-        # Check the dingus to make sure all parameters was converted correctly
-        self.assertEquals(1, len(dingus.calls('list', "FAKEUSER", 1001)))
-
-    def test_create_minimal(self):
-        self.restapi.create(assignmentid=1)
-        dingus = self.restapi.dao
-        self.assertEquals(1, len(dingus.calls('create', 'FAKEUSER', 1, name=None,
-                                              is_open=True, students=[],
-                                              examiners=[], tags=[], deadlines=[])))
-
-    def test_create(self):
-        self.restapi.create(assignmentid=2, name="Testgroup", is_open=False,
-                            students=[dict(candidate_id=u'candid334',
-                                           student__username=u'someusername2',
-                                           student__email=u'myemail2',
-                                           student__devilryuserprofile__full_name=u'Somename2')],
-                            examiners=[dict(user__username=u'someexaminer',
-                                            user__email=u'myemail',
-                                            user__devilryuserprofile__full_name=u'Some examiner')],
-                            tags=[dict(tag='group1')],
-                            deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
-        dingus = self.restapi.dao
-        self.assertEquals(1, len(dingus.calls('create', 'FAKEUSER', 2, name='Testgroup',
-                                              is_open=False,
-                                              students=[dict(candidate_id=u'candid334',
-                                                             student__username=u'someusername2',
-                                                             student__email=u'myemail2',
-                                                             student__devilryuserprofile__full_name=u'Somename2')],
-                                              examiners=[dict(user__username=u'someexaminer',
-                                                              user__email=u'myemail',
-                                                              user__devilryuserprofile__full_name=u'Some examiner')],
-                                              tags=[dict(tag='group1')],
-                                              deadlines=[dict(deadline=datetime(2011, 1, 2, 3, 4, 5))])))
 
 
 class TestRestGroupIntegration(TestCase):
@@ -402,12 +301,14 @@ class TestRestGroupIntegration(TestCase):
                                u'feedback__save_timestamp', u'examiners']))
 
     def test_create(self):
-        data = dict(students=[dict(candidate_id=u'candid334',
+        data = dict(
+                    students=[dict(candidate_id=u'candid334',
                                    student__username=u'student0',
                                    student__email=u'myemail2',
                                    student__devilryuserprofile__full_name=u'Somename2')],
                     tags=[dict(tag='group1')],
-                    deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
+                    deadlines=[dict(deadline=u'2011-01-02 03:04:05')]
+                   )
         content, response = self.client.rest_post(self.a1url, data)
         self.assertEquals(content.keys(), ['id'])
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()

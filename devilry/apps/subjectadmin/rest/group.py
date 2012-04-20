@@ -1,21 +1,17 @@
-from devilry.rest.indata import indata
-from devilry.rest.restbase import RestBase
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from djangorestframework.views import View
+from djangorestframework.resources import FormResource
+from django import forms
 
 from devilry.apps.core.models import (AssignmentGroup,
                                       AssignmentGroupTag,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-from devilry.rest.indata import NoneOr
-from devilry.rest.indata import bool_indata
-from devilry.rest.indata import unicode_indata
-from devilry.rest.indata import ListOrTupleOfSomethingIndata
-from devilry.rest.indata import isoformatted_datetime
-from devilry.rest.indata import DictWithValidatedValuesIndata
 from auth import assignmentadmin_required
+from fields import ListOfDictField
 
 
 class GroupDao(object):
@@ -219,66 +215,39 @@ class GroupDao(object):
 
 
 
+class TagsField(ListOfDictField):
+    class Form(forms.Form):
+        tag = forms.CharField()
 
-# These validators are used with ListOrTupleOfSomethingIndata to validate input to the Rest api
-_studentdict_indata = DictWithValidatedValuesIndata(candidate_id=unicode_indata,
-                                                    student__username=unicode_indata,
-                                                    student__email=unicode_indata,
-                                                    student__devilryuserprofile__full_name=unicode_indata)
-_examinerdict_indata = DictWithValidatedValuesIndata(user__username=unicode_indata,
-                                                     user__email=unicode_indata,
-                                                     user__devilryuserprofile__full_name=unicode_indata)
-_tagdict_indata = DictWithValidatedValuesIndata(tag=unicode_indata)
-_deadlinedict_indata = DictWithValidatedValuesIndata(deadline=isoformatted_datetime)
+class StudentsField(ListOfDictField):
+    class Form(forms.Form):
+        candidate_id = forms.CharField()
+        student__username = forms.CharField()
+        student__email = forms.CharField()
+        student__devilryuserprofile__full_name = forms.CharField()
 
+class DeadlinesField(ListOfDictField):
+    class Form(forms.Form):
+        deadline = forms.DateTimeField()
 
+class ExaminersField(ListOfDictField):
+    class Form(forms.Form):
+        user__username = forms.CharField()
+        user__email = forms.CharField()
+        user__devilryuserprofile__full_name = forms.CharField()
 
-class RestGroup(RestBase):
-    def __init__(self, daocls=GroupDao, **basekwargs):
-        super(RestGroup, self).__init__(**basekwargs)
-        self.dao = daocls()
-
-    @indata(assignmentid=int)
-    def list(self, assignmentid):
-        return self.dao.list(self.user, assignmentid)
-
-
-    @indata(assignmentid=int,
-            name=NoneOr(unicode_indata),
-            is_open=NoneOr(bool_indata),
-            students=ListOrTupleOfSomethingIndata(_studentdict_indata),
-            examiners=ListOrTupleOfSomethingIndata(_examinerdict_indata),
-            tags=ListOrTupleOfSomethingIndata(_tagdict_indata),
-            deadlines=ListOrTupleOfSomethingIndata(_deadlinedict_indata))
-    def create(self, assignmentid, name=None, is_open=True, students=[],
-               examiners=[], tags=[], deadlines=[]):
-        group = self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
-                                students=students, examiners=examiners, tags=tags,
-                                deadlines=deadlines)
-        return dict(id=group.id)
-
-    #@indata(id=int, short_name=unicode, long_name=unicode)
-    #def update(self, id, short_name, long_name):
-        #return self.todict(self.dao.update(self.user, id, short_name, long_name))
-
-    ##    @indata(parentnode_id=force_list)
-##    def batch(self, create=[], update=[], delete=[]):
-##        for kw in create:
-##            self.create(**kw)
-##        for kw in update:
-##            self.update(**kw)
-##        for kw in delete:
-##            self.delete(**kw)
-
-    #def _get_items(self, parentnode_id):
-        #return [self.todict(item) for item in self.dao.list(self.user, parentnode_id)]
-
-
-
-from djangorestframework.views import View
+class RestGroupRootForm(forms.Form):
+    name = forms.CharField(required=False)
+    is_open = forms.BooleanField(required=False)
+    tags = TagsField(required=False)
+    students = StudentsField(required=False)
+    deadlines = DeadlinesField(required=False)
+    examiners = ExaminersField(required=False)
 
 
 class AltRestGroupRoot(View):
+    resource = FormResource
+    form = RestGroupRootForm
     def __init__(self, daocls=GroupDao):
         self.dao = daocls()
 
@@ -286,9 +255,6 @@ class AltRestGroupRoot(View):
         return self.dao.list(self.user, assignmentid)
 
     def post(self, request, assignmentid):
-        #group = self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
-                                #students=students, examiners=examiners, tags=tags,
-                                #deadlines=deadlines)
         group = self.dao.create(self.user, assignmentid, **self.CONTENT)
         return dict(id=group.id)
 
