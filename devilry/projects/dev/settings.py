@@ -24,6 +24,8 @@ INSTALLED_APPS += [
                   #'devilry.apps.coredao',
                   #'devilry.apps.corerest',
 
+                  'errortemplates',
+                  'djangorestframework',
                   'devilry.apps.jsapp',
                   'devilry.apps.themebase',
                   'devilry.apps.subjectadmin',
