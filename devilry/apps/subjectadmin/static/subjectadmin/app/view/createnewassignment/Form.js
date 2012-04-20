@@ -58,6 +58,25 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
         margin: {top: 5},
         html: dtranslate('subjectadmin.assignment.short_name.help')
 
+    // How do students add deliveries
+    }, {
+        xtype: 'radiogroup',
+        fieldLabel: dtranslate('subjectadmin.assignment.delivery_types.label'),
+        vertical: true,
+        itemId: 'deliveryTypesRadioGroup',
+        cls: 'delivery_types-radiogroup',
+        columns: 1,
+        items: [{
+            boxLabel: dtranslate('subjectadmin.assignment.delivery_types.electronic'),
+            name: 'delivery_types',
+            inputValue: 0,
+            checked: true
+        }, {
+            boxLabel: dtranslate('subjectadmin.assignment.delivery_types.nonelectronic'),
+            name: 'delivery_types',
+            inputValue: 1
+        }]
+
     // First deadline
     }, {
         xtype: 'themebase-datetimefield',

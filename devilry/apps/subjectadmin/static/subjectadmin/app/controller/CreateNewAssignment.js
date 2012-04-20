@@ -23,27 +23,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     ],
 
     refs: [{
-    // Page one
-        ref: 'nextFromPageOneButton',
-        selector: 'chooseperiod nextbutton'
-    }, {
-        ref: 'choosePeriod',
-        selector: 'chooseperiod'
-    }, {
-        ref: 'activePeriodsList',
-        selector: 'chooseperiod activeperiodslist'
-    }, {
-        ref: 'deliveryTypesRadioGroup',
-        selector: 'chooseperiod #deliveryTypesRadioGroup'
-    }, {
-        ref: 'pageOneForm',
-        selector: 'chooseperiod form'
-    }, {
-        ref: 'pageOneAlertMessageList',
-        selector: 'chooseperiod alertmessagelist'
-
-    // Page two
-    }, {
         ref: 'createNewAssignmentForm',
         selector: 'createnewassignmentform'
     }, {
@@ -55,6 +34,9 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'metainfo',
         selector: 'createnewassignmentform #metainfo'
+    }, {
+        ref: 'deliveryTypesRadioGroup',
+        selector: 'createnewassignmentform #deliveryTypesRadioGroup'
     }, {
         ref: 'firstDeadlineField',
         selector: 'createnewassignmentform themebase-datetimefield[name=first_deadline]'
@@ -92,8 +74,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform createbutton': {
                 click: this._onCreate,
             },
-            'viewport createnewassignmentform combobox[name=delivery_types]': {
-                select: this._onDeliveryTypesSelect
+            'viewport createnewassignmentform radiogroup radio': {
+                change: this._onDeliveryTypesSelect
             },
             'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
                 change: this._onAddRelatedStudentChange
@@ -123,90 +105,15 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
-    //////////////////////////////////////////////
-    //
-    // Page one
-    //
-    //////////////////////////////////////////////
+    //_selectAppropriateDeliverytypes: function() {
+        //var radioButtons = this.getDeliveryTypesRadioGroup().query('radio');
+        //var index = 0;
+        //if(this.successPanelSetupConfig) {
+            //index = this.successPanelSetupConfig.delivery_types;
+        //}
+        //radioButtons[index].setValue(true);
+    //},
 
-    _onRenderPageOneForm: function() {
-        this.getPageOneForm().keyNav = Ext.create('Ext.util.KeyNav', this.getPageOneForm().el, {
-            enter: this._onNextFromPageOne,
-            scope: this
-        });
-        this._selectAppropriateDeliverytypes();
-    },
-
-    _onRenderActivePeriodlist: function() {
-        this.getActivePeriodsList().getEl().mask(dtranslate('themebase.loading'));
-        this._loadPeriodsIfNotLoaded(this._addItemsToActivePeriodList);
-    },
-
-    _handleNoActivePeriods: function() {
-        this.getNextFromPageOneButton().disable();
-        this.getPageOneAlertMessageList().add({
-            message: dtranslate('subjectadmin.assignment.error.no_active_periods'),
-            type: 'error'
-        });
-    },
-
-    _addItemsToActivePeriodList: function() {
-        this.getActivePeriodsList().removeAll();
-        if(this.getActivePeriodsStore().getCount() === 0) {
-            this.getActivePeriodsList().getEl().unmask();
-            this._handleNoActivePeriods();
-        }
-        Ext.defer(function() {
-            this.getActivePeriodsStore().each(function(periodRecord, index) {
-                this.getActivePeriodsList().addPeriod(periodRecord);
-            }, this);
-            this.getActivePeriodsList().getEl().unmask();
-            this._focusAndSelectAppropriatePeriod();
-        }, 50, this);
-    },
-
-    _focusAndSelectAppropriatePeriod: function() {
-        var radioButtons = this.getActivePeriodsList().query('radio');
-        var focusindex = 0;
-        if(this.successPanelSetupConfig) {
-            var period_id = this.successPanelSetupConfig.period_id;
-            var index = this.getActivePeriodsStore().findBy(function(record) {
-                return record.get('id') == period_id;
-            });
-            if(index != -1) {
-                focusindex = index;
-            }
-        }
-        radioButtons[focusindex].setValue(true);
-        radioButtons[focusindex].focus();
-    },
-
-    _selectAppropriateDeliverytypes: function() {
-        var radioButtons = this.getDeliveryTypesRadioGroup().query('radio');
-        var index = 0;
-        if(this.successPanelSetupConfig) {
-            index = this.successPanelSetupConfig.delivery_types;
-        }
-        radioButtons[index].setValue(true);
-    },
-
-    _onNextFromPageOne: function() {
-        var formvalues = this.getPageOneForm().getForm().getFieldValues();
-        var delivery_types = formvalues.delivery_types;
-        var activeperiod = formvalues.activeperiod;
-        var nexturlformat = '/@@create-new-assignment/{0},{1}';
-        var nexturl = Ext.String.format(nexturlformat, activeperiod, delivery_types);
-        this.application.route.navigate(nexturl);
-    },
-
-
-
-
-    //////////////////////////////////////////////
-    //
-    // Page two
-    //
-    //////////////////////////////////////////////
 
     _onRenderLongName: function(field) {
         field.focus();
@@ -214,8 +121,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _onRenderCreateNewAssignmentForm: function() {
         this.period_id = this.getCreateNewAssignment().period_id;
-        this.delivery_types = this.getCreateNewAssignment().delivery_types;
-        this._loadPeriodsIfNotLoaded(this._showPageOneMetadata);
+        this._loadPeriodsIfNotLoaded(this._showMetadata);
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
             enter: this._onCreate,
             scope: this
@@ -238,20 +144,13 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _showPageOneMetadata: function() {
+    _showMetadata: function() {
         var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
         if(periodRecord) {
-            var type;
-            if(this.delivery_types == 0) {
-                type = dtranslate('subjectadmin.assignment.delivery_types.electronic');
-            } else {
-                type = dtranslate('subjectadmin.assignment.delivery_types.nonelectronic');
-            }
             var metatext = Ext.create('Ext.XTemplate',
                 dtranslate('subjectadmin.createnewassignment.metatext')
             ).apply({
-                period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name'),
-                type: type
+                period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name')
             });
             this.getMetainfo().update(metatext);
             this.periodRecord = periodRecord;
@@ -260,9 +159,8 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
-    _onDeliveryTypesSelect: function(combo, records) {
-        var record = records[0];
-        var is_electronic = record.get('value') === 0;
+    _onDeliveryTypesSelect: function(radio, records) {
+        var is_electronic = radio.getGroupValue() === 0;
         if(is_electronic) {
             this.getFirstDeadlineField().show();
             this.getFirstDeadlineHelp().show();
@@ -284,12 +182,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _setInitialValues: Ext.emptyFn,
 
-    //_setInitialValues: function() {
-        //this.getCreateNewAssignmentForm().getForm().setValues({
-            //long_name: 'A',
-            //short_name: 'a'
-        //})
-    //},
+    _setInitialValues: function() {
+        this.getCreateNewAssignmentForm().getForm().setValues({
+            long_name: 'A',
+            short_name: 'a'
+        })
+    },
 
     _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
@@ -306,7 +204,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this.getPageTwoAlertMessageList().removeAll();
         var values = this._getFormValues();
         values.period_id = this.period_id;
-        values.delivery_types = this.delivery_types;
+        //values.delivery_types = this.delivery_types;
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);

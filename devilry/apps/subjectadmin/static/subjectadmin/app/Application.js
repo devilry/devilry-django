@@ -124,8 +124,8 @@ Ext.define('subjectadmin.Application', {
         this.route.add("/:subject_shortname/", 'showSubject');
         this.route.add("/:subject_shortname/:period_shortname/", 'showPeriod');
         this.route.add("/@@create-new-assignment/@@chooseperiod", 'createNewAssignmentChooseperiod');
-        this.route.add("/@@create-new-assignment/:period,:delivery_types", 'createNewAssignment');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
+        this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         //this.route.add("/:subject/:period", 'period_show');
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
         this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/", 'showAssignment');
@@ -195,12 +195,11 @@ Ext.define('subjectadmin.Application', {
         });
     },
 
-    createNewAssignment: function(routeInfo, period_id, delivery_types) {
+    createNewAssignment: function(routeInfo, period_id) {
         this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
-            period_id: period_id,
-            delivery_types: delivery_types
+            period_id: period_id
         });
     },
 

@@ -5,6 +5,10 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
         'themebase.PrimaryButton'
     ],
 
+    /**
+     * @cfg period_id
+     */
+
     border: 0,
     bodyPadding: 40,
     autoScroll: true,

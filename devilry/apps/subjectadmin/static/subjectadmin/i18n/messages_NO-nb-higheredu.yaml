@@ -43,7 +43,7 @@ subjectadmin.assignment.manage_students: "Studenter &mdash; Se på og rediger"
 subjectadmin.assignment.manage_deadlines: "Deadlines &mdash; Se på og rediger"
 
 subjectadmin.createnewassignment.title: "Lag ny oppgave"
-subjectadmin.createnewassignment.metatext: "Lag en ny oppgave på <em>{period}</em>. Studenter legger til oppgaver: <em>{type}</em>."
+subjectadmin.createnewassignment.metatext: "Lag en ny oppgave på <em>{period}</em>."
 subjectadmin.createnewassignment.success.gotocreated: "Gå til {assignment}"
 subjectadmin.createnewassignment.success.addanother: "Legg til enda en oppgave"
 subjectadmin.createnewassignment.success.addanother_similar: "Legg til enda en <em>{deliverytype}</em>-oppgave på <em>{period}</em>"

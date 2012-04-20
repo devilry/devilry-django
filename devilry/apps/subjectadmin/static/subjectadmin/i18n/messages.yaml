@@ -43,7 +43,7 @@ subjectadmin.assignment.manage_students: Manage students
 subjectadmin.assignment.manage_deadlines: Manage deadlines
 
 subjectadmin.createnewassignment.title: Create new assignment
-subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>. Students add deliveries <em>{type}</em>."
+subjectadmin.createnewassignment.metatext: "Create new assignment in <em>{period}</em>."
 subjectadmin.createnewassignment.success.gotocreated: "Go to {assignment}"
 subjectadmin.createnewassignment.success.addanother: "Add another assignment"
 subjectadmin.createnewassignment.success.addanother_similar: "Add another <em>{deliverytype}</em>-assignment in <em>{period}</em>"
