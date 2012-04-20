@@ -15,7 +15,7 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
     items: [{
         xtype: 'panel',
         itemId: 'body',
-        title: 'Heu',
+        title: '',
         ui: 'inset-header-strong-panel'
     }],
 
@@ -57,17 +57,6 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
             assignment: this.assignment
         });
 
-        var type;
-        if(this.delivery_types == 0) {
-            type = dtranslate('subjectadmin.assignment.delivery_types.electronic');
-        } else {
-            type = dtranslate('subjectadmin.assignment.delivery_types.nonelectronic');
-        }
-        var another_similarText = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.createnewassignment.success.addanother_similar')).apply({
-            period: this.period,
-            deliverytype: type
-        });
-
         var links = [{
             url: Ext.String.format(
                 '#/{0}/{1}/{2}/',
@@ -77,18 +66,13 @@ Ext.define('subjectadmin.view.createnewassignment.SuccessPanel' ,{
             ),
             text: gotoText
         }, {
-            url: '#/@@create-new-assignment/@@chooseperiod',
-            buttonType: 'default',
-            buttonSize: 'normal',
-            text: dtranslate('subjectadmin.createnewassignment.success.addanother')
-        }, {
             url: Ext.String.format(
-                '#/@@create-new-assignment/{0},{1}',
-                this.config.period_id, this.config.delivery_types
+                '#/@@create-new-assignment/{0}',
+                this.config.period_id
             ),
             buttonType: 'default',
             buttonSize: 'normal',
-            text: another_similarText
+            text: dtranslate('subjectadmin.createnewassignment.success.addanother')
         }]
         this.bodyPanel.add({
             xtype: 'actionlist',

@@ -181,12 +181,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _setInitialValues: Ext.emptyFn,
 
-    //_setInitialValues: function() {
-        //this.getCreateNewAssignmentForm().getForm().setValues({
-            //long_name: 'A',
-            //short_name: 'a'
-        //})
-    //},
+    _setInitialValues: function() {
+        this.getCreateNewAssignmentForm().getForm().setValues({
+            long_name: 'A',
+            short_name: 'a'
+        })
+    },
 
     _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
@@ -203,7 +203,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this.getPageTwoAlertMessageList().removeAll();
         var values = this._getFormValues();
         values.period_id = this.period_id;
-        //values.delivery_types = this.delivery_types;
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
@@ -218,7 +217,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         this._unmask();
         this.successPanelSetupConfig = {
             period_id: this.period_id,
-            delivery_types: this.delivery_types,
             period_short_name: this.periodRecord.get('short_name'),
             subject_short_name: this.periodRecord.get('parentnode__short_name'),
             short_name: this._getFormValues().short_name

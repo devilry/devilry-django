@@ -4,38 +4,8 @@ from devilry.apps.jsapp.seleniumhelpers import SeleniumTestCase
 class TestCreateNewAssignment(SeleniumTestCase):
     appname = 'subjectadmin'
 
-    def test_chooseperiod_render(self):
-        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
-        self.waitForCssSelector('.activeperiodslist')
-        self.assertTrue('duck-mek2030.2012h' in self.driver.page_source)
-        self.assertTrue('duck1100.2011h' in self.driver.page_source)
-        self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.activeperiod.help' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.activeperiod.label' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
-        self.assertTrue('subjectadmin.assignment.delivery_types.label' in self.driver.page_source)
-        self.assertTrue('themebase.next' in self.driver.page_source)
-
-    def test_chooseperiod_first_checked(self):
-        self.browseToTest('/@@create-new-assignment/@@chooseperiod')
-        self.waitForCssSelector('.activeperiodslist input[aria-checked=true]') # NOTE: We wait for aria-checked because just waiting for activeperiodslist may lead to timing miss when waiting for focus.
-        periodRadioButtons = self.driver.find_elements_by_css_selector('.activeperiodslist input[role=radio]')
-        self.assertEquals(periodRadioButtons[0].get_attribute('aria-checked'), 'true')
-        self.assertEquals(periodRadioButtons[1].get_attribute('aria-checked'), 'false')
-
-        deliverytypesRadioButtons = self.driver.find_elements_by_css_selector('.delivery_types-radiogroup input[role=radio]')
-        self.assertEquals(deliverytypesRadioButtons[0].get_attribute('aria-checked'), 'true')
-        self.assertEquals(deliverytypesRadioButtons[1].get_attribute('aria-checked'), 'false')
-
-
-    def test_chooseperiod_no_periods(self):
-        url = self.getJsAppTestUrl(self.appname) + '?loadNoPeriods=yes#/@@create-new-assignment/@@chooseperiod'
-        self.driver.get(url)
-        self.waitForCssSelector('.alertmessagelist')
-        self.assertTrue('subjectadmin.assignment.error.no_active_periods' in self.driver.page_source)
-
     def test_form_render(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertTrue('subjectadmin.createnewassignment.title' in self.driver.page_source)
@@ -47,8 +17,11 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.short_name.help' in self.driver.page_source)
         self.assertTrue('subjectadmin.assignment.short_name.label' in self.driver.page_source)
 
+        self.assertTrue('subjectadmin.assignment.delivery_types.help' in self.driver.page_source)
+        self.assertTrue('subjectadmin.assignment.delivery_types.label' in self.driver.page_source)
+
     def test_form_render_advanced_fieldset(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self.assertFalse('subjectadmin.assignment.anonymous.label' in self.driver.page_source)
@@ -74,7 +47,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         field.send_keys(value)
 
     def test_form_createbutton(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
@@ -88,7 +61,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.waitForEnabled(createbutton)
 
     def test_form_servererror(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -101,7 +74,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('500: Server error' in self.driver.page_source)
 
     def test_form_lostconnectionerror(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
         createbutton = self.driver.find_element_by_css_selector('.createbutton button')
         self._set_value('long_name', 'Just to enable the button')
@@ -138,7 +111,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.error.not_active_period' in self.driver.page_source)
 
     def test_success(self):
-        self.browseToTest('/@@create-new-assignment/1,0')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self._set_value('long_name', 'Test')
@@ -155,7 +128,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertEquals(links[1].text, u'subjectadmin.createnewassignment.success.addanother')
         self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/@@chooseperiod')
         self.assertEquals(links[2].text, u'subjectadmin.createnewassignment.success.addanother_similar')
-        self.assertEquals(links[2].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/1,0')
+        self.assertEquals(links[2].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/1')
 
     def test_success_direct(self):
         self.browseToTest('/@@create-new-assignment/@@success')
@@ -163,7 +136,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         self.assertTrue('This page is only available after creating a new assignment.' in self.driver.page_source)
 
     def test_success_addanother(self):
-        self.browseToTest('/@@create-new-assignment/1,1')
+        self.browseToTest('/@@create-new-assignment/1')
         self.waitForCssSelector('.createnewassignmentform')
 
         self._set_value('long_name', 'Test')
