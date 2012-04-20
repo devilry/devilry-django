@@ -222,7 +222,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     },
 
     setupProxies: function(periodid, assignmentid) {
-        this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
+        //this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
+        var groupsurl = Ext.String.format('{0}{1}', this.getGroupsStore().proxy.baseurl, assignmentid);
+        this.getGroupsStore().proxy.url = groupsurl;
         this.getRelatedStudentsStore().proxy.extraParams.periodid = periodid;
         this.getRelatedExaminersStore().proxy.extraParams.periodid = periodid;
     },

@@ -21,9 +21,10 @@ Ext.define('subjectadmin.model.Group', {
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/rest/group/',
+        baseurl: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/rest/group/',
+        url: null, // We use baseurl to dynamically set the url suffixed with assignmentid
         extraParams: {
-            _devilry_accept: 'application/json'
+            format: 'json'
         },
         reader: {
             type: 'json',
