@@ -8,7 +8,6 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
     ],
     views: [
         'ActivePeriodsList',
-        'createnewassignment.ChoosePeriod',
         'createnewassignment.Form',
         'createnewassignment.SuccessPanel',
         'createnewassignment.CreateNewAssignment'
@@ -182,12 +181,12 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _setInitialValues: Ext.emptyFn,
 
-    _setInitialValues: function() {
-        this.getCreateNewAssignmentForm().getForm().setValues({
-            long_name: 'A',
-            short_name: 'a'
-        })
-    },
+    //_setInitialValues: function() {
+        //this.getCreateNewAssignmentForm().getForm().setValues({
+            //long_name: 'A',
+            //short_name: 'a'
+        //})
+    //},
 
     _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
