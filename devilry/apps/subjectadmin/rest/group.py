@@ -3,6 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
+from djangorestframework.permissions import IsAuthenticated
+from djangorestframework.permissions import BasePermission
+from djangorestframework import status
+from djangorestframework.response import ErrorResponse
 from django import forms
 
 from devilry.apps.core.models import (AssignmentGroup,
@@ -12,6 +16,7 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Deadline)
 from auth import assignmentadmin_required
 from fields import ListOfDictField
+from errors import ForbiddenError
 
 
 class GroupDao(object):
@@ -245,9 +250,26 @@ class RestGroupRootForm(forms.Form):
     examiners = ExaminersField(required=False)
 
 
-class AltRestGroupRoot(View):
+class IsAssignmentAdmin(BasePermission):
+    def check_permission(self, user):
+        if len(self.view.args) != 1:
+            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
+                                {'detail': 'The IsAssignmentAdmin permission checker requires an assignmentid.'})
+        assignmentid = self.view.args[0]
+
+        # TODO: Should update assignmentadmin_required to raise ErrorResponse
+        # TODO: Only check this here, not in create and list in the DAO
+        try:
+            assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
+        except ForbiddenError, e:
+            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
+                                {'detail': 'Permission denied.'})
+
+
+class RestGroupRoot(View):
     resource = FormResource
     form = RestGroupRootForm
+    permissions = (IsAuthenticated, IsAssignmentAdmin)
     def __init__(self, daocls=GroupDao):
         self.dao = daocls()
 
@@ -258,7 +280,8 @@ class AltRestGroupRoot(View):
         group = self.dao.create(self.user, assignmentid, **self.CONTENT)
         return dict(id=group.id)
 
-class AltRestGroup(View):
+class RestGroup(View):
+    permissions = (IsAuthenticated, IsAssignmentAdmin)
     def __init__(self, daocls=GroupDao):
         self.dao = daocls()
 
