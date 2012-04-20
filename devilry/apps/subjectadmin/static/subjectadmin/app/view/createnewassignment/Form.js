@@ -76,6 +76,10 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
             name: 'delivery_types',
             inputValue: 1
         }]
+    }, {
+        xtype: 'formhelp',
+        margin: {top: 5},
+        html: dtranslate('subjectadmin.assignment.delivery_types.help')
 
     // First deadline
     }, {
