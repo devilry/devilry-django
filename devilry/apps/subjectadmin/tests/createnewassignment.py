@@ -151,7 +151,7 @@ class TestCreateNewAssignment(SeleniumTestCase):
         links = self.driver.find_elements_by_css_selector('.actionlist a')
         self.assertEquals(len(links), 3)
         self.assertEquals(links[0].text, u'subjectadmin.createnewassignment.success.gotocreated')
-        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8000/subjectadmin/test#/duck1100/2012h/sometest')
+        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8000/subjectadmin/test#/duck1100/2012h/sometest/')
         self.assertEquals(links[1].text, u'subjectadmin.createnewassignment.success.addanother')
         self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/@@chooseperiod')
         self.assertEquals(links[2].text, u'subjectadmin.createnewassignment.success.addanother_similar')
