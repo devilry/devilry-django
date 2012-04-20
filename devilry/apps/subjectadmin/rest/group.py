@@ -273,3 +273,28 @@ class RestGroup(RestBase):
     #def _get_items(self, parentnode_id):
         #return [self.todict(item) for item in self.dao.list(self.user, parentnode_id)]
 
+
+
+from djangorestframework.views import View
+
+
+class AltRestGroupRoot(View):
+    def __init__(self, daocls=GroupDao):
+        self.dao = daocls()
+
+    def get(self, request, assignmentid):
+        return self.dao.list(self.user, assignmentid)
+
+    def post(self, request, assignmentid):
+        #group = self.dao.create(self.user, assignmentid, name=name, is_open=is_open,
+                                #students=students, examiners=examiners, tags=tags,
+                                #deadlines=deadlines)
+        group = self.dao.create(self.user, assignmentid, **self.CONTENT)
+        return dict(id=group.id)
+
+class AltRestGroup(View):
+    def __init__(self, daocls=GroupDao):
+        self.dao = daocls()
+
+    def put(self, request, assignmentid):
+        return self.dao.list(self.user, assignmentid)

@@ -9,7 +9,7 @@ from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Deadline
 from devilry.rest.testutils import dummy_urlreverse
-from devilry.rest.testutils import RestClient
+from devilry.utils.rest_testclient import RestClient
 
 from devilry.apps.subjectadmin.rest.errors import PermissionDeniedError
 from devilry.apps.subjectadmin.rest.group import GroupDao
@@ -386,13 +386,13 @@ class TestRestGroupIntegration(TestCase):
         self.client = RestClient()
         self.testhelper.create_user('student0')
         self.client.login(username='p1admin', password='test')
+        self.a1url = '/subjectadmin/rest/group/{0}'.format(self.testhelper.sub_p1_a1.id)
 
     def test_list(self):
         for studentNum in xrange(3):
             path = 'uni;sub.p1.a1.g{studentNum}:candidate(stud{studentNum})'.format(studentNum=studentNum)
             self.testhelper.add_to_path(path)
-        content, response = self.client.rest_list('/subjectadmin/rest/group/',
-                                                  assignmentid=self.testhelper.sub_p1_a1.id)
+        content, response = self.client.rest_get(self.a1url)
         self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
                           set([u'name', u'tags', u'students',
@@ -402,12 +402,14 @@ class TestRestGroupIntegration(TestCase):
                                u'feedback__save_timestamp', u'examiners']))
 
     def test_create(self):
-        content, response = self.client.rest_create('/subjectadmin/rest/group/',
-                                                    assignmentid=self.testhelper.sub_p1_a1.id,
-                                                    students=[dict(candidate_id=u'candid334',
-                                                                   student__username=u'student0',
-                                                                   student__email=u'myemail2',
-                                                                   student__devilryuserprofile__full_name=u'Somename2')],
-                                                    tags=[dict(tag='group1')],
-                                                    deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
+        data = dict(students=[dict(candidate_id=u'candid334',
+                                   student__username=u'student0',
+                                   student__email=u'myemail2',
+                                   student__devilryuserprofile__full_name=u'Somename2')],
+                    tags=[dict(tag='group1')],
+                    deadlines=[dict(deadline=u'2011-01-02T03:04:05')])
+        content, response = self.client.rest_post(self.a1url, data)
         self.assertEquals(content.keys(), ['id'])
+        groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
+        self.assertEquals(len(groups), 1)
+        self.assertEquals(content['id'], groups[0].id)
