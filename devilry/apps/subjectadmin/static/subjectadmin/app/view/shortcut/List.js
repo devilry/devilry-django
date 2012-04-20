@@ -1,19 +1,20 @@
-Ext.define('subjectadmin.view.shortcut.List' ,{
+Ext.define('subjectadmin.view.shortcut.List', {
     extend: 'Ext.Component',
     alias: 'widget.shortcutlist',
-    cls: 'shortcutlist bootstrap',
+    cls: 'shortcutlist',
 
     tpl: new Ext.XTemplate([
         '<ul>',
         '    <tpl for="items">',
         '       <li>',
-        '           <a href="#/{subject}/">{subject}</a>',
+        '           <a class="subjectlink" href="#/{subject}/">{subject}</a>',
         '           <ul>',
-        '           <tpl for="assignments">',
-        '               <li class="shortcut-list-item">',
-        '                   <a href="#/{subject}/{period}/{assignment}/">{displayName}</a>',
-        '               </li>',
-        '           </tpl>',
+        '               <li><a class="btn btn-primary" href="#">Add assignment</a></li>',
+        '               <tpl for="assignments">',
+        '                   <li class="shortcut-list-item">',
+        '                       <a class="assignmentlink" href="#/{subject}/{period}/{assignment}/">{displayName}</a>',
+        '                   </li>',
+        '               </tpl>',
         '           </ul>',
         '       </li>',
         '    </tpl>',

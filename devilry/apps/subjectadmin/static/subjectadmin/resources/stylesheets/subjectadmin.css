@@ -3,42 +3,42 @@
   margin: 0;
 }
 /* line 4, ../sass/subjectadmin.scss */
-.shortcutlist > ul a {
+.shortcutlist > ul a.subjectlink, .shortcutlist > ul a.assignmentlink {
   color: #444;
   text-decoration: underline;
 }
 /* line 8, ../sass/subjectadmin.scss */
+.shortcutlist > ul li {
+  list-style: none;
+  margin: 5px 0 5px 0;
+}
+/* line 12, ../sass/subjectadmin.scss */
 .shortcutlist > ul > li {
   margin-top: 15px;
-  list-style: none;
 }
-/* line 10, ../sass/subjectadmin.scss */
-.shortcutlist > ul > li:first-child {
-  margin-top: 0;
-}
-/* line 14, ../sass/subjectadmin.scss */
+/* line 17, ../sass/subjectadmin.scss */
 .shortcutlist > ul > li > a {
   font-size: 1.2em;
 }
-/* line 18, ../sass/subjectadmin.scss */
-.shortcutlist > ul > li ul li {
-  list-style: disc;
+/* line 20, ../sass/subjectadmin.scss */
+.shortcutlist > ul > li ul {
+  margin-left: 20px;
 }
 
-/* line 29, ../sass/subjectadmin.scss */
+/* line 30, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul {
   list-style: none;
   margin: 0;
 }
-/* line 32, ../sass/subjectadmin.scss */
+/* line 33, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li {
   margin: 20px 0 0 0;
 }
-/* line 34, ../sass/subjectadmin.scss */
+/* line 35, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li:first-child {
   margin-top: 0;
 }
-/* line 37, ../sass/subjectadmin.scss */
+/* line 38, ../sass/subjectadmin.scss */
 .subjectadmin .actionlist ul li a {
   white-space: nowrap;
   overflow: hidden;
