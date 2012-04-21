@@ -67,6 +67,6 @@ def reset():
 @task
 def autodb():
     """
-    Run ``bin/django_dev.py dev_autodb``
+    Run ``bin/django_dev.py dev_autodb -v2``
     """
-    local('bin/django_dev.py dev_autodb')
+    local('bin/django_dev.py dev_autodb -v2')
