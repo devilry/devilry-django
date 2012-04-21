@@ -1,0 +1,53 @@
+/* line 2, ../sass/subjectadmin.scss */
+.shortcutlist > ul {
+  margin: 0;
+}
+/* line 4, ../sass/subjectadmin.scss */
+.shortcutlist > ul a.subjectlink, .shortcutlist > ul a.assignmentlink {
+  color: #444;
+  text-decoration: underline;
+}
+/* line 8, ../sass/subjectadmin.scss */
+.shortcutlist > ul li {
+  list-style: none;
+  margin: 5px 0 5px 0;
+}
+/* line 12, ../sass/subjectadmin.scss */
+.shortcutlist > ul > li {
+  margin-top: 15px;
+}
+/* line 17, ../sass/subjectadmin.scss */
+.shortcutlist > ul > li > a {
+  font-size: 1.2em;
+}
+/* line 20, ../sass/subjectadmin.scss */
+.shortcutlist > ul > li ul {
+  margin-left: 20px;
+}
+
+/* line 30, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul {
+  list-style: none;
+  margin: 0;
+}
+/* line 33, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li {
+  margin: 20px 0 0 0;
+}
+/* line 35, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li:first-child {
+  margin-top: 0;
+}
+/* line 38, ../sass/subjectadmin.scss */
+.subjectadmin .actionlist ul li a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* line 2, ../sass/_managestudents.scss */
+.listofgroups .col2Wrapper {
+  text-align: right;
+  padding-right: 15px;
+}

@@ -1,0 +1,82 @@
+subjectadmin.allsubjects: "Alle kurs"
+subjectadmin.administrators: "Administratorer"
+
+subjectadmin.assignment.anonymous.help: "For <strong>eksamener</strong> burde dette vanligvis være <em>haket av</em>. Hvis en oppgave er anonym, ser rettere en kandidat-id istededenfor et brukernavn. En kandidat-id <strong>må</strong> isåfall settes for hver student."
+subjectadmin.assignment.anonymous.label: "Anonym?"
+subjectadmin.assignment.is_anonymous.title: "Anonym"
+subjectadmin.assignment.is_anonymous.body: "Rettere og studenter kan <strong>ikke</strong> se hverandre, og de kan <strong>ikke</strong> kommunisere."
+subjectadmin.assignment.not_anonymous.title: "Ikke anonym"
+subjectadmin.assignment.not_anonymous.body: "Rettere og studenter kan se hverandre, og de kan kommunisere."
+subjectadmin.assignment.delivery_types.help: "Hvis du kun bruker Devilry til å gi tilbakemelding, og studenter lever på papir eller på en annen måte (muntlig, epost, ...), velg <em>Ikke via Devilry</em>."
+subjectadmin.assignment.delivery_types.label: 'Hvordan leverer studenter oppgaver?'
+subjectadmin.assignment.delivery_types.electronic : "Via Devilry"
+subjectadmin.assignment.delivery_types.nonelectronic : "Ikke via Devilry"
+subjectadmin.assignment.long_name.help: "Velg et navn på oppgaven."
+subjectadmin.assignment.long_name.label: "Navn"
+subjectadmin.assignment.long_name.example: "Eksempel: Obligatorisk oppgave 1"
+subjectadmin.assignment.short_name.help: "Velg et kort navn med maks 20 bokstaver. Kan kun inneholde de engelske bokstavene <em>a-z</em>, <em>tall</em>, <em>'_'</em> og <em>'-'</em>. Dette navet brukes på steder der det vanlige navnet tar for mye plass."
+subjectadmin.assignment.short_name.label: "Kort navn"
+subjectadmin.assignment.short_name.example: "Eksempel: oblig1"
+subjectadmin.assignment.publishing_time.help: "Velg en tid når studentene får tilgang til å levere på denne oppgaven. Standardvalget er å la studentene starte å levere så for oppgaven er laget. Merk at studentene også må være lagt til på oppgaven for å kunne levere."
+subjectadmin.assignment.publishing_time.edithelp: "Velg en tid når studentene får tilgang til å levere på denne oppgaven. Merk at studentene også må være lagt til på oppgaven for å kunne levere."
+subjectadmin.assignment.publishing_time.label: "Når skal oppgaven publiseres?"
+subjectadmin.assignment.notpublished.title: "Ikke publisert"
+subjectadmin.assignment.notpublished.body: 'Kommer til å publiseres {publishing_time}.'
+subjectadmin.assignment.published.title: Publisert
+subjectadmin.assignment.published.body: 'Ble publisert {publishing_time}.'
+subjectadmin.assignment.gradeeditor: "Karakterplugin"
+subjectadmin.assignment.add_all_relatedstudents.label: "Legg til alle studentene på denne oppgaven?"
+subjectadmin.assignment.add_all_relatedstudents.help: "Hvis du velger dette, vil alle studentene som er registrert på semesteret automatisk legges til på oppgaven nå den lages."
+subjectadmin.assignment.first_deadline.label: "Første deadline"
+subjectadmin.assignment.first_deadline.help: "Deadline som legges til som standard på hver student når de legges til på oppgaven."
+subjectadmin.assignment.error.period_doesnotexist: "Det finnes ingen semester med id {period_id}."
+subjectadmin.assignment.error.not_active_period: "Semesteret med id {period_id} er ikke aktiv."
+subjectadmin.assignment.error.first_deadline_none: "Feltet kreves når man automatisk legger til studenter registrert på semesteret på en oppgave."
+subjectadmin.assignment.error.no_active_periods: "Ingen aktive semestre funnet."
+subjectadmin.assignment.autosetup_examiners.label: "Sett opp rettere automatisk?"
+subjectadmin.assignment.autosetup_examiners.help: "Automatisk sett opp rettere på denne oppgaven ved å matche tags på rettere og studenter registrert på semesteret."
+subjectadmin.assignment.activeperiod.label: "Semester"
+subjectadmin.assignment.activeperiod.help: "Velg fag og semester der du vil legge til oppgaven. Kun aktive semestre vises."
+subjectadmin.assignment.waitingforfeedback: "Venter på tilbakemelding"
+subjectadmin.assignment.upcoming_deadlines: "Deadlines i nær fremtid"
+subjectadmin.assignment.manage_students: "Studenter &mdash; Se på og rediger"
+subjectadmin.assignment.manage_deadlines: "Deadlines &mdash; Se på og rediger"
+
+subjectadmin.createnewassignment.title: "Lag ny oppgave"
+subjectadmin.createnewassignment.metatext: "Lag en ny oppgave på <em>{period}</em>."
+subjectadmin.createnewassignment.success.gotocreated: "Gå til {assignment}"
+subjectadmin.createnewassignment.success.addanother: "Legg til enda en oppgave"
+subjectadmin.createnewassignment.success.title: "Opprettet {assignment}"
+
+subjectadmin.dashboard.messages: "Beskjeder"
+subjectadmin.dashboard.shortcuts: "Kurs/oppgaver"
+subjectadmin.dashboard.actionstitle: "Handlinger"
+subjectadmin.dashboard.createnewassignment: "Sett opp en ny oppgave"
+subjectadmin.dashboard.browseall: "Utforsk ..."
+subjectadmin.dashboard.registerqualifiesforfinal: "Registrer studenter som kvalifiserer for avsluttende eksamen"
+"subjectadmin.dashboard.overview-and-statistics": "Statistikk"
+
+subjectadmin.managestudents.breadcrumbtitle: "Students"
+subjectadmin.managestudents.addstudents.title: "Legg til studenter"
+subjectadmin.managestudents.addstudents.tips: "Velg studentene du ønsker å legge til på oppgaven, og klikk lagre."
+subjectadmin.managestudents.addstudents.onlyrelatedisavailable: "Kun studenter registrert på {periodpath} er tilgjengelig i listen."
+subjectadmin.managestudents.addstudents.relatedbtn: "Rediger tilgjengelige studenter"
+subjectadmin.managestudents.nogroupselected.topmessage: "Ingen {groupunit_plural} valgt. Velg en eller flere studenter for å få redigere innstillinger som rettere og tags."
+subjectadmin.managestudents.multiselecthowto: 'Hold nede <strong>{shortcutkey}</strong> for å velge flere {groupunit_plural}.'
+subjectadmin.managestudents.multiselectwhy: 'Hvis du velger flere studenter kan du endre rettere og tags på mange studenter, samt organisere studenter i prosjektgrupper.'
+subjectadmin.managestudents.addstudents: "Legg til studenter"
+subjectadmin.managestudents.search_emptytext: "Søk etter studenter ..."
+subjectadmin.managestudents.make_admins_examiner: "Administratorer er rettere på alle"
+subjectadmin.managestudents.open_close_explained_extra: "Rettere kan åpne og lukke grupper når som helst for å tillate/hindre nye innleveringer."
+subjectadmin.managestudents.students.title: "Studenter"
+subjectadmin.managestudents.examiners.title: "Rettere"
+subjectadmin.managestudents.tags.title: "Tags"
+subjectadmin.managestudents.remove_student: "Fjern student fra prosjektgruppen"
+subjectadmin.managestudents.remove_examiner: "Fjern retter"
+subjectadmin.managestudents.remove_tag: "Fjern tag"
+subjectadmin.managestudents.multiselect.topmessage: "{numselected} {groupunit_plural} er valgt."
+
+subjectadmin.groupunit.projectassignment: 'gruppe'
+subjectadmin.groupunit.projectassignment_plural: 'grupper'
+subjectadmin.groupunit.not_projectassignment: 'student'
+subjectadmin.groupunit.not_projectassignment_plural: 'studenter'

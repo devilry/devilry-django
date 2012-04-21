@@ -1,0 +1,48 @@
+Metadata-Version: 1.0
+Name: devilry-subjectadmin
+Version: 1.0
+Summary: Subject (course) administrator interface for Devilry.
+Home-page: https://github.com/devilry/devilry_subjectadmin
+Author: Espen Angell Kristiansen
+Author-email: UNKNOWN
+License: BSD
+Description: ###########################
+        devilry_subjectadmin
+        ###########################
+        
+        Subject (course) administrator interface for Devilry.
+        
+        
+        Issues/contribute
+        =================
+        
+        Report any issues at the `Devilry github project page <devilry_subjectadmin>`_, and feel free
+        to add your own guides/experiences to the wiki, and to contribute changes using
+        pull requests.
+        
+        
+        Install
+        =======
+        
+        (as soon as we put it on pypi, for now, clone the git repo)
+        
+        ::
+        
+            $ pip install devilry_subjectadmin
+        
+        
+        Setup
+        =====
+        
+        Add ``'something'`` to ``INSTALLED_APPS``.
+        
+        
+        .. _`devilry_subjectadmin`: https://github.com/devilry/devilry_subjectadmin
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
