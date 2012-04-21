@@ -26,7 +26,7 @@ coverage_html_report/
 cookies.txt
 .devilry/
 *.bak
-devilry_xmlrpc_client.egg-info/
+*.egg-info/
 dist/
 cscope.out
 Session.vim
@@ -51,15 +51,12 @@ docs/restfulapi/
 */downloads
 */eggs
 */parts
-*/devilry.egg-info/
 */devilry-static-files/
 */example-productionenv/bin/
-devilry.egg-info/
 productionenv/
 *.exe
 devilry_all_uncompiled.js
 devilryrestfullib/build/
-devilryrestfullib/devilryrestfullib.egg-info/
 
 # devenv
 devenv/deliverystorehier/
