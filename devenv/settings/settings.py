@@ -28,7 +28,7 @@ INSTALLED_APPS += [
                   'djangorestframework',
                   'devilry.apps.jsapp',
                   'devilry.apps.themebase',
-                  'devilry.apps.subjectadmin',
+                  'devilry_subjectadmin',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
