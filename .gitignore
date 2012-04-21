@@ -65,6 +65,7 @@ devilryrestfullib/devilryrestfullib.egg-info/
 devenv/deliverystorehier/
 devenv/static/
 devenv/bin/
+devenv/virtualenv/
 
 # Intellij files
 # see: http://devnet.jetbrains.net/docs/DOC-1186
