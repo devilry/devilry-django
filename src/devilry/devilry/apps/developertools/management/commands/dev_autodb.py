@@ -155,6 +155,7 @@ class Command(BaseCommand):
         periodnames = self._onlyNames(periods)
         for periodname in periodnames:
             periodpath = 'duckburgh.ifi;duck1100.' + periodname
+            logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
@@ -179,6 +180,7 @@ class Command(BaseCommand):
         periodnames = self._onlyNames(periods)
         for periodname in periodnames:
             periodpath = 'duckburgh.ifi;duck1010.' + periodname
+            logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
@@ -228,10 +230,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         verbosity = get_verbosity(options)
         setup_logging(verbosity)
-        management.call_command('flush', verbosity=verbosity, interactive=False)
+        logging.info('Running manage.py flush')
+        management.call_command('flush', verbosity=0, interactive=False)
 
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
+        logging.info('Creating users')
         self.create_users(bad_students)
         self.create_users(medium_students)
         self.create_users(good_students)
@@ -243,5 +247,6 @@ class Command(BaseCommand):
                            ('gladstone', 'Gladstone Gander'),
                            ('fethry', 'Fethry Duck')])
         self._distributeStudentToExaminers()
+        logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
         self.create_duck1100()
         self.create_duck1010()
