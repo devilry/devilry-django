@@ -51,7 +51,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 MEDIA_ROOT = join(parent_dir, "filestore")
-ROOT_URLCONF = 'devilry.projects.dev.urls'
+ROOT_URLCONF = 'settings.urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
