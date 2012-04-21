@@ -36,6 +36,7 @@ exampledata-backup.tar.bz2
 .#*
 docs/restfulapi/
 .sass-cache/
+.mr.developer.cfg
 
 */.installed.cfg
 */bin/buildout
