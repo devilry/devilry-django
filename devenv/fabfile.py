@@ -11,12 +11,18 @@ def virtualenv():
     local('virtualenv virtualenv')
 
 @task
-def bootstrap(config='develop.cfg'):
+def bootstrap():
     """
     Run bootstrap with the python executable in the virtualenv.
     """
-    local('virtualenv/bin/python bootstrap.py -c {}'.format(config))
+    local('virtualenv/bin/python ../bootstrap.py')
 
+@task
+def buildout():
+    """
+    Run bin/buildout.
+    """
+    local('bin/buildout')
 
 @task
 def clean():
@@ -35,16 +41,32 @@ def clean():
 @task
 def syncdb():
     """
-    Run ``bin/django_dev.py syncdb --noinput``
+    Run ``bin/django_dev.py syncdb -v0 --noinput``
     """
-    local('bin/django_dev.py syncdb --noinput')
+    local('bin/django_dev.py syncdb -v0 --noinput')
+
+@task
+def autogen_extjsmodels():
+    """
+    Run ``bin/django_dev.py dev_autogen_extjsmodels``
+    """
+    local('bin/django_dev.py dev_autogen_extjsmodels')
 
 @task
 def reset():
     """
-    Run the following tasks: clean, virtualenv, bootstrap, syncdb
+    Run the following tasks: clean, virtualenv, bootstrap, buildout, syncdb
     """
     clean()
     virtualenv()
     bootstrap()
+    buildout()
     syncdb()
+    autogen_extjsmodels()
+
+@task
+def autodb():
+    """
+    Run ``bin/django_dev.py dev_autodb``
+    """
+    local('bin/django_dev.py dev_autodb')
