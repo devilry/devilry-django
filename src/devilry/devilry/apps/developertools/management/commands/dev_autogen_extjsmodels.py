@@ -73,7 +73,8 @@ class Command(BaseCommand):
         path = join(dirpath, 'restful-generated-models.django.js')
         logging.info('Creating: %s', path)
         logging.debug('%s: %s', path, content)
-        makedirs(dirpath)
+        if not exists(dirpath):
+            makedirs(dirpath)
         open(path, 'w').write(content)
 
     def _get_js_for_model(self, restfulcls):
