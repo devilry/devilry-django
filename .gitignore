@@ -53,7 +53,6 @@ docs/restfulapi/
 */parts
 */devilry.egg-info/
 */devilry-static-files/
-devenv/static/
 */example-productionenv/bin/
 devilry.egg-info/
 productionenv/
@@ -61,8 +60,11 @@ productionenv/
 devilry_all_uncompiled.js
 devilryrestfullib/build/
 devilryrestfullib/devilryrestfullib.egg-info/
-src/devilry/devilry/projects/dev/deliverystorehier/
-devenv/.noseids
+
+# devenv
+devenv/deliverystorehier/
+devenv/static/
+devenv/bin/
 
 # Intellij files
 # see: http://devnet.jetbrains.net/docs/DOC-1186
