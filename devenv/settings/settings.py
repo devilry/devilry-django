@@ -201,7 +201,9 @@ LOGGING = {
             'propagate': False
         },
         'devilry.utils.devilry_email': {
-            'handlers': ['allButExceptionTracebacks', 'console', 'mail_admins'],
+            'handlers': ['allButExceptionTracebacks',
+                         # 'console', # Uncomment this if you want to see every email sent in the console
+                         'mail_admins'],
             'level': 'DEBUG',
             'propagate': False
         },
