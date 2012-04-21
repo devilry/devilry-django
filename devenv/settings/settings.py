@@ -24,11 +24,13 @@ INSTALLED_APPS += [
                   #'devilry.apps.coredao',
                   #'devilry.apps.corerest',
 
-                  'errortemplates',
-                  'djangorestframework',
-                  'devilry.apps.jsapp',
-                  'devilry.apps.themebase',
-                  'devilry_subjectadmin',
+                   'errortemplates',
+                   'djangorestframework',
+                   'devilry.apps.jsapp',
+                   'devilry.apps.themebase',
+                   'devilry_subjectadmin',
+                   'seleniumhelpers',
+                   'extjs4',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
