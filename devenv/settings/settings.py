@@ -1,11 +1,11 @@
 from os.path import abspath, dirname, join
 from devilry.defaults.settings import *
 
-this_dir = dirname(abspath(__file__))
+parent_dir = dirname(dirname(abspath(__file__)))
 
 DATABASES = {"default": {
                          'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                         'NAME': join(this_dir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+                         'NAME': join(parent_dir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
                          'USER': '',             # Not used with sqlite3.
                          'PASSWORD': '',         # Not used with sqlite3.
                          'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
@@ -50,14 +50,14 @@ ADMINS = (
      ('Devilry admin', 'admin@example.com'),
 )
 MANAGERS = ADMINS
-MEDIA_ROOT = join(this_dir, "filestore")
+MEDIA_ROOT = join(parent_dir, "filestore")
 ROOT_URLCONF = 'devilry.projects.dev.urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
-#DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(this_dir, 'deliverystorehier')
+#DELIVERY_STORE_ROOT = join(parent_dir, 'deliverystore')
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(parent_dir, 'deliverystorehier')
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
@@ -71,7 +71,7 @@ SELENIUM_BROWSER = os.environ.get('SELENIUM_BROWSER', 'Chrome')
 ##
 DEVILRY_SEND_EMAIL_TO_USERS = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = join(this_dir, 'email_log')
+EMAIL_FILE_PATH = join(parent_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'
@@ -119,7 +119,7 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
 ]
 
 
-logdir = join(this_dir, 'log')
+logdir = join(parent_dir, 'log')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
