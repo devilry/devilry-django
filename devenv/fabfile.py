@@ -70,3 +70,18 @@ def autodb():
     Run ``bin/django_dev.py dev_autodb -v2``
     """
     local('bin/django_dev.py dev_autodb -v2')
+
+@task
+def extjsbuild_server():
+    """
+    Run ``bin/django_dev.py runserver --settings settings.extjsbuild``
+    """
+    local('bin/django_dev.py runserver --settings settings.extjsbuild')
+
+
+@task
+def noextjsdebug_server():
+    """
+    Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
+    """
+    local('bin/django_dev.py runserver --settings settings.noextjsdebug')
