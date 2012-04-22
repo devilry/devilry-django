@@ -1,37 +1,26 @@
-{% extends "theme/common.django.html" %}
+{% load static %}
+{% load i18n %}
+<html>
+    <title>Devilry - Log in</title>
 
-{% block title %}Log in{% endblock %}
+    <body>
+        <link rel="stylesheet" type="text/css" href="{% static "authenticate/style.css" %}"/>
+        
 
-{% block onready %}
-    Ext.getBody().unmask();
-    Ext.create('Ext.container.Viewport', {
-        layout: 'border',
-        style: 'background-color: transparent',
-        items: [{
-            region: 'north',
-            xtype: 'pageheader'
-        }, {
-            region: 'south',
-            xtype: 'pagefooter'
-        }, {
-            region: 'center',
-            xtype: 'box',
-            padding: {left: 20, right: 20},
-            html:
-                {% if login_failed %}
-                    '<p class="error">Invalid username or password.</p>' +
-                {% endif %}
-                '<form method="post" action="{% url login %}">' +
-                '    <table>' +
-                '    {{ form.as_table|escapejs }}' +
-                '    </table>' +
-                '    <p>' +
-                '       <input type="submit" name="login" value="Log in"/>' +
-                '    </p>' +
-                '</form>'
-        }]
-    });
-{% endblock %}
+        <div class="hero-unit">
+            <h1>Devilry &mdash; login</h1>
 
-{% block bodyContent %}
-{% endblock %}
+            {% if login_failed %}
+                <p class="error">{% trans "Invalid username or password." %}</p>
+            {% endif %}
+            <form method="post" action="{% url login %}">
+                <ul class="formul">
+                    {{ form.as_ul }}
+                </ul>
+                <p>
+                <input type="submit" name="login" value="Log in"/>
+                </p>
+            </form>
+        </div>        
+    </body>
+</html>
