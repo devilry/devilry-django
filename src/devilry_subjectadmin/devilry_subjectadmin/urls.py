@@ -6,8 +6,8 @@ from views import AppView
 
 
 urlpatterns = patterns('devilry_subjectadmin',
-                       ('rest/',include('devilry_subjectadmin.rest.urls')),
-                       ('newui', login_required(AppView.as_view())),
+                       ('^rest/', include('devilry_subjectadmin.rest.urls')),
+                       ('^$', login_required(AppView.as_view())),
                        *create_app_urls(appname='devilry_subjectadmin',
                                         with_css=True,
                                         include_old_exjsclasses=True,
