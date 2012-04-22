@@ -2,8 +2,13 @@
 {% load i18n %}
 {% load static %}
 
-{% block head %}
+{% block css %}
 {{ block.super }}
+<link rel="stylesheet" type="text/css"
+    href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
+{% endblock %}
+
+{% block app %}
 <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages{{ DEVILRY_I18N_CURRENT_LOCALE }}.js"></script>
 <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
@@ -26,10 +31,6 @@
         username: '{{ user.username }}'
     };
 </script>
-{% endblock %}
 
-{% block css %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css"
-    href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
 {% endblock %}
