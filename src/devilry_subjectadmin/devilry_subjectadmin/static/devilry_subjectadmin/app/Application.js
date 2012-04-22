@@ -78,6 +78,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     launch: function() {
+        console.log('launch');
         this._createViewport();
         this._setupRoutes();
     },
