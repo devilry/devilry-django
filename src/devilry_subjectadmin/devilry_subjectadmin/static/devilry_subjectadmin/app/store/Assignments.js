@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
     model: 'devilry_subjectadmin.model.Assignment',
 
     loadAssignment: function(subject_shortname, period_shortname, assignment_shortname, callbackFn, callbackScope) {
+        this.proxy.extraParams.exact_number_of_results = 1;
         this.proxy.setDevilryFilters([
             {field:"parentnode__parentnode__short_name", comp:"exact", value:subject_shortname},
             {field:"parentnode__short_name", comp:"exact", value:period_shortname},
