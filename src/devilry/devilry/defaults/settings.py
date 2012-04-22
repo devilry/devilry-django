@@ -55,7 +55,8 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.media",
                                "django.core.context_processors.debug",
                                'devilry.apps.theme.templatecontext.template_variables',
-                               'devilry.apps.i18n.templatecontext.template_variables')
+                               'devilry.apps.i18n.templatecontext.template_variables',
+                               'extjs4.context_processors.extjs4')
 
 
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',

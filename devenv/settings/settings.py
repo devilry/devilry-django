@@ -43,6 +43,7 @@ INSTALLED_APPS += [
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
 
 # Make this unique, and don't share it with anybody.
