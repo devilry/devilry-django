@@ -1,7 +1,7 @@
 /**
  * List of assignments within a period.
  */
-Ext.define('subjectadmin.view.period.ListOfAssignments', {
+Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
     extend: 'Ext.view.View',
     alias: 'widget.listofassignments',
     cls: 'listofassignments bootstrap',

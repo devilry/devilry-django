@@ -1,10 +1,10 @@
 /**
- * Used by the {@link subjectadmin.controller.Assignment} controller to load
+ * Used by the {@link devilry_subjectadmin.controller.Assignment} controller to load
  * a single assignment into its view. We need a store because we use a query.
  */
-Ext.define('subjectadmin.store.Assignments', {
+Ext.define('devilry_subjectadmin.store.Assignments', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.Assignment',
+    model: 'devilry_subjectadmin.model.Assignment',
 
     loadAssignment: function(subject_shortname, period_shortname, assignment_shortname, callbackFn, callbackScope) {
         this.proxy.setDevilryFilters([

@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.controller.period.OverviewTestMock', {
-    extend: 'subjectadmin.controller.period.Overview',
+Ext.define('devilry_subjectadmin.controller.period.OverviewTestMock', {
+    extend: 'devilry_subjectadmin.controller.period.Overview',
 
     views: [
         'period.Overview',

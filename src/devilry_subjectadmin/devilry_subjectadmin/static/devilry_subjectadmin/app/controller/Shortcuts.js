@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.controller.Shortcuts', {
+Ext.define('devilry_subjectadmin.controller.Shortcuts', {
     extend: 'Ext.app.Controller',
 
     views: [

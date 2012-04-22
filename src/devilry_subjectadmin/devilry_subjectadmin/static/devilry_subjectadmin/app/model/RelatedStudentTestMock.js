@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.model.RelatedStudentTestMock', {
-    extend: 'subjectadmin.model.RelatedStudent',
+Ext.define('devilry_subjectadmin.model.RelatedStudentTestMock', {
+    extend: 'devilry_subjectadmin.model.RelatedStudent',
     requires: [
         'jsapp.HiddenElementProxy'
     ],

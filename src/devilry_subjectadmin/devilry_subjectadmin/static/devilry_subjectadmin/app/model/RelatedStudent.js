@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.model.RelatedStudent', {
+Ext.define('devilry_subjectadmin.model.RelatedStudent', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [

@@ -1,8 +1,8 @@
-Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
-    extend: 'subjectadmin.controller.managestudents.Overview',
+Ext.define('devilry_subjectadmin.controller.managestudents.OverviewTestMock', {
+    extend: 'devilry_subjectadmin.controller.managestudents.Overview',
 
     requires: [
-        'subjectadmin.model.GroupTestMock',
+        'devilry_subjectadmin.model.GroupTestMock',
         'jsapp.HiddenElementProxy'
     ],
 
@@ -36,7 +36,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
+            var record = Ext.create('devilry_subjectadmin.model.AssignmentTestMock', data);
             record.phantom = true; // Force create
             record.save();
         }, this);
@@ -128,7 +128,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.GroupTestMock', Ext.apply(data));
+            var record = Ext.create('devilry_subjectadmin.model.GroupTestMock', Ext.apply(data));
             record.phantom = true; // Force create
             record.save();
         }, this);
@@ -155,7 +155,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.RelatedExaminerTestMock', Ext.apply(data));
+            var record = Ext.create('devilry_subjectadmin.model.RelatedExaminerTestMock', Ext.apply(data));
             record.phantom = true; // Force create
             record.save();
         }, this);
@@ -208,7 +208,7 @@ Ext.define('subjectadmin.controller.managestudents.OverviewTestMock', {
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.RelatedStudentTestMock', Ext.apply(data));
+            var record = Ext.create('devilry_subjectadmin.model.RelatedStudentTestMock', Ext.apply(data));
             record.phantom = true; // Force create
             record.save();
         }, this);

@@ -1,9 +1,9 @@
 /** Subjectadmin Application. */
-Ext.define('subjectadmin.Application', {
+Ext.define('devilry_subjectadmin.Application', {
     extend: 'Ext.app.Application',
 
-    name: 'subjectadmin',
-    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/subjectadmin/app',
+    name: 'devilry_subjectadmin',
+    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
 
     requires: [
         'Ext.container.Viewport',
@@ -36,14 +36,14 @@ Ext.define('subjectadmin.Application', {
            /**
              * @event
              * Fired when an assignment is successfully loaded by the assignment.Overview.
-             * @param {subjectadmin.model.Assignment} assignmentRecord
+             * @param {devilry_subjectadmin.model.Assignment} assignmentRecord
              */
             'assignmentSuccessfullyLoaded',
 
             /**
              * @event
              * Fired when the students manager on an assigmment is successfully loaded.
-             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {devilry_subjectadmin.controller.managestudents.Overview} manageStudentsController
              */
             'managestudentsSuccessfullyLoaded',
 
@@ -52,7 +52,7 @@ Ext.define('subjectadmin.Application', {
              * Fired when no groups are selected in the students manager on an
              * assignment. This happens when the manager is loaded, and
              * whenever all groups are deselected.
-             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {devilry_subjectadmin.controller.managestudents.Overview} manageStudentsController
              */
             'managestudentsNoGroupSelected',
 
@@ -60,8 +60,8 @@ Ext.define('subjectadmin.Application', {
              * @event
              * Fired when a single group is selected in the students manager on
              * an assignment.
-             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
-             * @param {subjectadmin.model.Group} groupRecord
+             * @param {devilry_subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {devilry_subjectadmin.model.Group} groupRecord
              */
             'managestudentsSingleGroupSelected',
 
@@ -69,8 +69,8 @@ Ext.define('subjectadmin.Application', {
              * @event
              * Fired when multiple groups are selected in the students manager
              * on an assignment.
-             * @param {subjectadmin.controller.managestudents.Overview} manageStudentsController
-             * @param {[subjectadmin.model.Group]} groupRecords
+             * @param {devilry_subjectadmin.controller.managestudents.Overview} manageStudentsController
+             * @param {[devilry_subjectadmin.model.Group]} groupRecords
              */
             'managestudentsMultipleGroupsSelected'
         );
@@ -78,7 +78,6 @@ Ext.define('subjectadmin.Application', {
     },
 
     launch: function() {
-        console.log('launch');
         this._createViewport();
         this._setupRoutes();
     },
@@ -154,7 +153,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     browse: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('subjectadmin.allsubjects'));
+        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.allsubjects'));
         this.setPrimaryContent({
             xtype: 'subjectlistall'
         });
@@ -163,7 +162,7 @@ Ext.define('subjectadmin.Application', {
     showSubject: function(routeInfo, subject_shortname) {
         var subjecturl = '/' + subject_shortname;
         this.breadcrumbs.set([{
-            text: dtranslate('subjectadmin.allsubjects'),
+            text: dtranslate('devilry_subjectadmin.allsubjects'),
             url: '/'
         }], subject_shortname);
         this.setPrimaryContent({
@@ -175,7 +174,7 @@ Ext.define('subjectadmin.Application', {
     showPeriod: function(routeInfo, subject_shortname, period_shortname) {
         var subjecturl = '/' + subject_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('subjectadmin.allsubjects'),
+            text: dtranslate('devilry_subjectadmin.allsubjects'),
             url: '/'
         }, {
             text: subject_shortname,
@@ -189,7 +188,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     createNewAssignment: function(routeInfo, period_id) {
-        this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
             period_id: period_id
@@ -197,7 +196,7 @@ Ext.define('subjectadmin.Application', {
     },
 
     createNewAssignmentSuccess: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.createnewassignment.title'));
         this.setPrimaryContent({
             xtype: 'createnewassignment-successpanel'
         });
@@ -206,7 +205,7 @@ Ext.define('subjectadmin.Application', {
     showAssignment: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('subjectadmin.allsubjects'),
+            text: dtranslate('devilry_subjectadmin.allsubjects'),
             url: '/'
         }, {
             text: subject_shortname,
@@ -228,7 +227,7 @@ Ext.define('subjectadmin.Application', {
         var subjecturl = '/' + subject_shortname + '/';
         var periodurl = subjecturl + period_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('subjectadmin.allsubjects'),
+            text: dtranslate('devilry_subjectadmin.allsubjects'),
             url: '/'
         }, {
             text: subject_shortname,
@@ -239,7 +238,7 @@ Ext.define('subjectadmin.Application', {
         }, {
             text: assignment_shortname,
             url: periodurl + assignment_shortname + '/'
-        }], dtranslate('subjectadmin.managestudents.breadcrumbtitle'));
+        }], dtranslate('devilry_subjectadmin.managestudents.breadcrumbtitle'));
         this.setPrimaryContent({
             xtype: 'managestudentsoverview',
             subject_shortname: subject_shortname,

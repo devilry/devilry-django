@@ -1,7 +1,7 @@
 /**
  * List of groups.
  */
-Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     extend: 'Ext.grid.Panel',
     alias: 'widget.listofgroups',
     cls: 'listofgroups',
@@ -124,7 +124,7 @@ Ext.define('subjectadmin.view.managestudents.ListOfGroups' ,{
     getUsernameDivContent: function(record) {
         var students = record.get('students');
         if(students.length == 0) {
-            return dtranslate('subjectadmin.managestudents.group-have-no-students');
+            return dtranslate('devilry_subjectadmin.managestudents.group-have-no-students');
         }
         var firstStudent = students[0];
         return firstStudent.student__username;

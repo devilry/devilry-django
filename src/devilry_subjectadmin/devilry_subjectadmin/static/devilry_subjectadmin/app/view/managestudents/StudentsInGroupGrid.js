@@ -1,7 +1,7 @@
 /**
  * The grid that shows students on a single group.
  */
-Ext.define('subjectadmin.view.managestudents.StudentsInGroupGrid', {
+Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.studentsingroupgrid',
     cls: 'studentsingroupgrid',
@@ -22,7 +22,7 @@ Ext.define('subjectadmin.view.managestudents.StudentsInGroupGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            title: dtranslate('subjectadmin.managestudents.students.title'),
+            title: dtranslate('devilry_subjectadmin.managestudents.students.title'),
             columns: [{
                 header: 'Name',
                 flex: 1,
@@ -35,7 +35,7 @@ Ext.define('subjectadmin.view.managestudents.StudentsInGroupGrid', {
                 width: 20,
                 items: [{
                     icon: DevilrySettings.DEVILRY_STATIC_URL + '/themebase/resources/icons/16x16/delete.png',
-                    tooltip: dtranslate('subjectadmin.managestudents.remove_student'),
+                    tooltip: dtranslate('devilry_subjectadmin.managestudents.remove_student'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
                     },

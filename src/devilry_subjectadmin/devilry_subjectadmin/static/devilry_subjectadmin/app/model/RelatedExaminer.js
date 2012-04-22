@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.model.RelatedExaminer', {
+Ext.define('devilry_subjectadmin.model.RelatedExaminer', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [

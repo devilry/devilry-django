@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.shortcut.List', {
+Ext.define('devilry_subjectadmin.view.shortcut.List', {
     extend: 'Ext.Component',
     alias: 'widget.shortcutlist',
     cls: 'shortcutlist',

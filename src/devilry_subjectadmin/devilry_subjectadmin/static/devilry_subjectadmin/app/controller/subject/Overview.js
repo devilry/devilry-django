@@ -1,7 +1,7 @@
 /**
  * Controller for the subject overview.
  */
-Ext.define('subjectadmin.controller.subject.Overview', {
+Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     extend: 'Ext.app.Controller',
 
     views: [

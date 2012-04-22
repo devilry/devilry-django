@@ -1,7 +1,7 @@
 /**
  * A window for adding students to an assignment.
  * */
-Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
+Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.addstudentswindow',
     cls: 'addstudentswindow',
@@ -25,7 +25,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
 
     initComponent: function() {
         var selModel = Ext.create('themebase.GridMultiSelectModel');
-        var someIgnoredTpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.addstudents.someignored'));
+        var someIgnoredTpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.addstudents.someignored'));
         Ext.apply(this, {
             layout: 'border',
             closable: false,
@@ -33,7 +33,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
             height: 500,
             maximizable: true,
             modal: true,
-            title: dtranslate('subjectadmin.managestudents.addstudents.title'),
+            title: dtranslate('devilry_subjectadmin.managestudents.addstudents.title'),
             items: [{
                 xtype: 'grid',
                 region: 'center',
@@ -60,11 +60,11 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                     cls: 'bootstrap',
                     html: Ext.create('Ext.XTemplate',
                         '<tpl if="allIgnored"><p>',
-                            dtranslate('subjectadmin.managestudents.addstudents.allignored'),
+                            dtranslate('devilry_subjectadmin.managestudents.addstudents.allignored'),
                         '</p></tpl>',
                         '<tpl if="!allIgnored">',
                             '<p>',
-                                dtranslate('subjectadmin.managestudents.addstudents.tips'),
+                                dtranslate('devilry_subjectadmin.managestudents.addstudents.tips'),
                             '</p>',
                             '<tpl if="hasIgnored"><p>',
                                 someIgnoredTpl.apply({
@@ -72,7 +72,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                                 }),
                             '</p></tpl>',
                             '<p>',
-                                dtranslate('subjectadmin.managestudents.addstudents.onlyrelatedisavailable'),
+                                dtranslate('devilry_subjectadmin.managestudents.addstudents.onlyrelatedisavailable'),
                             '</p>',
                         '</tpl>'
                     ).apply({
@@ -83,7 +83,7 @@ Ext.define('subjectadmin.view.managestudents.AddStudentsWindow', {
                 }, {
                     xtype: 'button',
                     itemId: 'relatedLink',
-                    text: dtranslate('subjectadmin.managestudents.addstudents.relatedbtn')
+                    text: dtranslate('devilry_subjectadmin.managestudents.addstudents.relatedbtn')
                 }]
             }],
             buttons: ['->', {

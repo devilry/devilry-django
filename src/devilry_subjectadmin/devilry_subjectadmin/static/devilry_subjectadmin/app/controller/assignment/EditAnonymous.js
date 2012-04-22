@@ -1,7 +1,7 @@
 /**
  * Controller for editing the anonymous attribute of an assignment.
  */
-Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
+Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     extend: 'Ext.app.Controller',
 
     requires: [
@@ -123,11 +123,11 @@ Ext.define('subjectadmin.controller.assignment.EditAnonymous', {
         var title, body;
 
         if(anonymous) {
-            title = dtranslate('subjectadmin.assignment.is_anonymous.title');
-            body = dtranslate('subjectadmin.assignment.is_anonymous.body');
+            title = dtranslate('devilry_subjectadmin.assignment.is_anonymous.title');
+            body = dtranslate('devilry_subjectadmin.assignment.is_anonymous.body');
         } else {
-            title = dtranslate('subjectadmin.assignment.not_anonymous.title');
-            body = dtranslate('subjectadmin.assignment.not_anonymous.body');
+            title = dtranslate('devilry_subjectadmin.assignment.not_anonymous.title');
+            body = dtranslate('devilry_subjectadmin.assignment.not_anonymous.body');
         }
         var anonymous = this.assignmentRecord.get('anonymous');
         this.getAnonymousWidget().updateTitle(title);

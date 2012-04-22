@@ -1,7 +1,7 @@
 /**
  * Controller for the list of all subjects.
  */
-Ext.define('subjectadmin.controller.subject.ListAll', {
+Ext.define('devilry_subjectadmin.controller.subject.ListAll', {
     extend: 'Ext.app.Controller',
 
     requires: [

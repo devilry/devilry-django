@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.model.CreateNewAssignmentTestMock', {
-    extend: 'subjectadmin.model.CreateNewAssignment',
+Ext.define('devilry_subjectadmin.model.CreateNewAssignmentTestMock', {
+    extend: 'devilry_subjectadmin.model.CreateNewAssignment',
     requires: [
         'jsapp.HiddenElementProxy'
     ],

@@ -1,5 +1,5 @@
 /** Assignment model. */
-Ext.define('subjectadmin.model.CreateNewAssignment', {
+Ext.define('devilry_subjectadmin.model.CreateNewAssignment', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [

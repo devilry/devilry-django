@@ -1,9 +1,9 @@
 /**
- * Plugin for {@link subjectadmin.controller.managestudents.Overview} that
+ * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
  * adds the ability to show information about and edit a multiple groups when
  * they are selected.
  */
-Ext.define('subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlugin', {
+Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
@@ -41,7 +41,7 @@ Ext.define('subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlu
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselect.topmessage'));
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselect.topmessage'));
         return tpl.apply({
             numselected: this.groupRecords.length,
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)

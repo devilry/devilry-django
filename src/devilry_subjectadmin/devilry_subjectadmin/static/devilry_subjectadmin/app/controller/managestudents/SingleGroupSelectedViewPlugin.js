@@ -1,9 +1,9 @@
 /**
- * Plugin for {@link subjectadmin.controller.managestudents.Overview} that
+ * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
  * adds the ability to show information about and edit a single group when
  * it is selected.
  */
-Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin', {
+Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
     requires: [
@@ -79,7 +79,7 @@ Ext.define('subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin
     },
 
     _getMultiSelectWhy: function() {
-        return Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselectwhy')).apply({
+        return Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselectwhy')).apply({
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });
     },

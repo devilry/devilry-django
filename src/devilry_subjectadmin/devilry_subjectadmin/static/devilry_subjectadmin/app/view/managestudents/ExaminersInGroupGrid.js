@@ -1,7 +1,7 @@
 /**
  * The grid that shows examiners on a single group.
  */
-Ext.define('subjectadmin.view.managestudents.ExaminersInGroupGrid', {
+Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.examinersingroupgrid',
     cls: 'examinersingroupgrid',
@@ -22,7 +22,7 @@ Ext.define('subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            title: dtranslate('subjectadmin.managestudents.examiners.title'),
+            title: dtranslate('devilry_subjectadmin.managestudents.examiners.title'),
             tools: [{
                 xtype: 'splitbutton',
                 iconCls: 'icon-add-16',
@@ -45,7 +45,7 @@ Ext.define('subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                 width: 20,
                 items: [{
                     icon: DevilrySettings.DEVILRY_STATIC_URL + '/themebase/resources/icons/16x16/delete.png',
-                    tooltip: dtranslate('subjectadmin.managestudents.remove_examiner'),
+                    tooltip: dtranslate('devilry_subjectadmin.managestudents.remove_examiner'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
                     },

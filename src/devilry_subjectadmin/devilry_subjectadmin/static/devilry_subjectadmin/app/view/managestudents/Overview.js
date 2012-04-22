@@ -1,12 +1,12 @@
 /**
  * Manage students overview (overview of all students on an assignment).
  */
-Ext.define('subjectadmin.view.managestudents.Overview' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.managestudentsoverview',
     cls: 'managestudentsoverview sidebarlayout',
     requires: [
-        'subjectadmin.view.managestudents.ListOfGroups'
+        'devilry_subjectadmin.view.managestudents.ListOfGroups'
     ],
 
 
@@ -77,7 +77,7 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                     xtype: 'button',
                     text: 'Options',
                     menu: [{
-                        text: dtranslate('subjectadmin.managestudents.make_admins_examiner'),
+                        text: dtranslate('devilry_subjectadmin.managestudents.make_admins_examiner'),
                         checked: false
                     }]
                 }, {
@@ -85,7 +85,7 @@ Ext.define('subjectadmin.view.managestudents.Overview' ,{
                     itemId: 'search',
                     margin: {left: 10},
                     width: 200,
-                    emptyText: dtranslate('subjectadmin.managestudents.search_emptytext')
+                    emptyText: dtranslate('devilry_subjectadmin.managestudents.search_emptytext')
                 }]
             }],
             items: [{

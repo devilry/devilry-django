@@ -1,6 +1,6 @@
-Ext.define('subjectadmin.store.ActivePeriodsTestMock', {
+Ext.define('devilry_subjectadmin.store.ActivePeriodsTestMock', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.PeriodTestMock',
+    model: 'devilry_subjectadmin.model.PeriodTestMock',
 
     proxy: {
         type: 'hiddenelement',

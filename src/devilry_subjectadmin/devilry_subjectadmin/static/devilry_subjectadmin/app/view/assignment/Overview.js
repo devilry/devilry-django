@@ -1,16 +1,16 @@
 /**
  * Assignment overview (overview of an assignment).
  */
-Ext.define('subjectadmin.view.assignment.Overview' ,{
+Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentoverview',
     cls: 'assignmentoverview sidebarlayout',
     requires: [
         'Ext.layout.container.Column',
         'themebase.EditableSidebarBox',
-        'subjectadmin.view.assignment.EditPublishingTimeWidget',
-        'subjectadmin.view.assignment.EditAnonymousWidget',
-        'subjectadmin.view.ActionList'
+        'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
+        'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
+        'devilry_subjectadmin.view.ActionList'
     ],
 
 
@@ -62,10 +62,10 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         xtype: 'actionlist',
                         links: [{
                             url: Ext.String.format('{0}@@manage-students', this.url),
-                            text: dtranslate('subjectadmin.assignment.manage_students')
+                            text: dtranslate('devilry_subjectadmin.assignment.manage_students')
                         }, {
                             url: Ext.String.format('{0}@@manage-deadlines', this.url),
-                            text: dtranslate('subjectadmin.assignment.manage_deadlines')
+                            text: dtranslate('devilry_subjectadmin.assignment.manage_deadlines')
                         }]
                     }
                 }, {
@@ -78,12 +78,12 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                         ui: 'inset-header-panel',
                         margin: {right: 20},
                         columnWidth: .5,
-                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.upcoming_deadlines'), 25),
+                        title: Ext.String.ellipsis(dtranslate('devilry_subjectadmin.assignment.upcoming_deadlines'), 25),
                         html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                     }, {
                         xtype: 'panel',
                         ui: 'inset-header-panel',
-                        title: Ext.String.ellipsis(dtranslate('subjectadmin.assignment.waitingforfeedback'), 25),
+                        title: Ext.String.ellipsis(dtranslate('devilry_subjectadmin.assignment.waitingforfeedback'), 25),
                         columnWidth: .5,
                         margin: {left: 20},
                         html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
@@ -101,7 +101,7 @@ Ext.define('subjectadmin.view.assignment.Overview' ,{
                     xtype: 'editablesidebarbox',
                     itemId: 'gradeeditor',
                     margin: {top: 0},
-                    title: dtranslate('subjectadmin.assignment.gradeeditor')
+                    title: dtranslate('devilry_subjectadmin.assignment.gradeeditor')
                 }, {
                     xtype: 'editpublishingtime-widget',
                     disabled: true

@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
+Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.createnewassignment',
     requires: [
@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
     items: [{
         xtype: 'panel',
         ui: 'inset-header-strong-panel',
-        title: dtranslate('subjectadmin.createnewassignment.title'),
+        title: dtranslate('devilry_subjectadmin.createnewassignment.title'),
         items: { // Note: We wrap this in an extra container to avoid that the create button ends up at the bottom of the screen
             xtype: 'createnewassignmentform'
         }

@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.model.GroupTestMock', {
-    extend: 'subjectadmin.model.Group',
+Ext.define('devilry_subjectadmin.model.GroupTestMock', {
+    extend: 'devilry_subjectadmin.model.Group',
     requires: [
         'jsapp.HiddenElementProxy'
     ],

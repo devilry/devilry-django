@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.controller.CreateNewAssignmentTestMock', {
-    extend: 'subjectadmin.controller.CreateNewAssignment',
+Ext.define('devilry_subjectadmin.controller.CreateNewAssignmentTestMock', {
+    extend: 'devilry_subjectadmin.controller.CreateNewAssignment',
 
     models: [
         'CreateNewAssignmentTestMock'

@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.controller.ShortcutsTestMock', {
-    extend: 'subjectadmin.controller.Shortcuts',
+Ext.define('devilry_subjectadmin.controller.ShortcutsTestMock', {
+    extend: 'devilry_subjectadmin.controller.Shortcuts',
 
     stores: [
         'ActiveAssignmentsTestMock'

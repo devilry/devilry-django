@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
-    extend: 'subjectadmin.controller.assignment.Overview',
+Ext.define('devilry_subjectadmin.controller.assignment.OverviewTestMock', {
+    extend: 'devilry_subjectadmin.controller.assignment.Overview',
 
     stores: [
         'AssignmentsTestMock'
@@ -44,7 +44,7 @@ Ext.define('subjectadmin.controller.assignment.OverviewTestMock', {
         //// load(), thus simulating loading from a server.
         //var store = this.getAssignmentsTestMockStore();
         //Ext.Array.each(initialData, function(data) {
-            //var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
+            //var record = Ext.create('devilry_subjectadmin.model.AssignmentTestMock', data);
             //record.phantom = true; // Force create
             //record.save({
                 //failure: function(r, op) {

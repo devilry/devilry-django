@@ -1,6 +1,6 @@
-Ext.define('subjectadmin.store.Subjects', {
+Ext.define('devilry_subjectadmin.store.Subjects', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.Subject',
+    model: 'devilry_subjectadmin.model.Subject',
 
     loadSubject: function(subject_shortname, callbackFn, callbackScope) {
         this.proxy.extraParams.exact_number_of_results = 1;

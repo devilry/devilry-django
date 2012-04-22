@@ -1,14 +1,14 @@
 /**
  * Subject overview (overview of an subject).
  */
-Ext.define('subjectadmin.view.subject.Overview' ,{
+Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectoverview',
     cls: 'subjectoverview',
     requires: [
         'Ext.layout.container.Column',
         'themebase.EditableSidebarBox',
-        'subjectadmin.view.ActionList',
+        'devilry_subjectadmin.view.ActionList',
         'themebase.AlertMessageList'
     ],
 
@@ -62,7 +62,7 @@ Ext.define('subjectadmin.view.subject.Overview' ,{
                     items: [{
                         xtype: 'editablesidebarbox',
                         margin: {top: 0},
-                        title: dtranslate('subjectadmin.administrators')
+                        title: dtranslate('devilry_subjectadmin.administrators')
                     }]
                 }],
             }],

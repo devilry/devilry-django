@@ -3,14 +3,14 @@
  *
  * Provides loading of stores required for student management, and leaves everything else 
  * to plugins. The plugins get a reference to this controller from the
- * {@link subjectadmin.Application#managestudentsSuccessfullyLoaded} event, and
+ * {@link devilry_subjectadmin.Application#managestudentsSuccessfullyLoaded} event, and
  * they use the documented methods to hook themselves into the user interface.
  */
-Ext.define('subjectadmin.controller.managestudents.Overview', {
+Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     extend: 'Ext.app.Controller',
 
     mixins: {
-        'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
+        'loadAssignment': 'devilry_subjectadmin.utils.LoadAssignmentMixin'
     },
 
     requires: [
@@ -26,7 +26,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      * Get the related examiners store.
      * This store is automatically loaded with all the related examiners on the
      * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
-     * @return {subjectadmin.store.RelatedExaminers} Store.
+     * @return {devilry_subjectadmin.store.RelatedExaminers} Store.
      * @method getRelatedExaminersStore
      */
 
@@ -34,7 +34,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      * Get the related students store.
      * This store is automatically loaded with all the related students on the
      * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
-     * @return {subjectadmin.store.RelatedStudents} Store.
+     * @return {devilry_subjectadmin.store.RelatedStudents} Store.
      * @method getRelatedStudentsStore
      */
 
@@ -42,7 +42,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
      * Get the groups store.
      * This store is automatically loaded with all the groups on the assignment
      * before the ``managestudentsSuccessfullyLoaded`` event is fired.
-     * @return {subjectadmin.store.Groups} Store.
+     * @return {devilry_subjectadmin.store.Groups} Store.
      * @method getGroupsStore
      */
 
@@ -56,7 +56,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
 
     /**
      * Get the main view for managestudents.
-     * @return {subjectadmin.view.managestudents.Overview} The overview.
+     * @return {devilry_subjectadmin.view.managestudents.Overview} The overview.
      * @method getOverview
      */
 
@@ -272,7 +272,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     /**
      * Get the contents of the groups store (see {@link #getGroupsStore}
      * as an object with usernames as key and an array of
-     * {@link subjectadmin.model.Group} records for values.
+     * {@link devilry_subjectadmin.model.Group} records for values.
      *
      * The values are arrays because we support the same user in multiple
      * groups on the same assignment.
@@ -335,7 +335,7 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
         if(Ext.isMac) {
             shortcutkey = 'CMD';
         }
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.multiselecthowto'));
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselecthowto'));
         return tpl.apply({
             shortcutkey: shortcutkey,
             groupunit_plural: this.getTranslatedGroupUnit(true)
@@ -349,9 +349,9 @@ Ext.define('subjectadmin.controller.managestudents.Overview', {
     getTranslatedGroupUnit: function(pluralize) {
         var translatekey;
         if(this.isProjectAssignment()) {
-            translatekey = 'subjectadmin.groupunit.projectassignment';
+            translatekey = 'devilry_subjectadmin.groupunit.projectassignment';
         } else {
-            translatekey = 'subjectadmin.groupunit.not_projectassignment';
+            translatekey = 'devilry_subjectadmin.groupunit.not_projectassignment';
         }
         if(pluralize) {
             translatekey += '_plural';

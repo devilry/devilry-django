@@ -1,8 +1,8 @@
 /**
  * Model for the items in the array in the ``examiner``-attribute of
- * {@link subjectadmin.model.Group}.
+ * {@link devilry_subjectadmin.model.Group}.
  */
-Ext.define('subjectadmin.model.Examiner', {
+Ext.define('devilry_subjectadmin.model.Examiner', {
     extend: 'Ext.data.Model',
     idProperty: 'user__username',
     fields: [

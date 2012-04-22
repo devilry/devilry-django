@@ -1,7 +1,7 @@
 /**
  * List of all Subjects that the user have permission to view.
  */
-Ext.define('subjectadmin.view.subject.ListAll' ,{
+Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectlistall',
     cls: 'subjectlistall bootstrap',

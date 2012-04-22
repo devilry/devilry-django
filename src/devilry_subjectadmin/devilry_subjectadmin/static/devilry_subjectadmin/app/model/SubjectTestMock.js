@@ -1,5 +1,5 @@
 /** Test mockup model for Subject. */
-Ext.define('subjectadmin.model.SubjectTestMock', {
+Ext.define('devilry_subjectadmin.model.SubjectTestMock', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedSubject',
     requires: [
         'jsapp.HiddenElementProxy'

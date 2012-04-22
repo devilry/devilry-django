@@ -1,5 +1,5 @@
 /** Subject model. */
-Ext.define('subjectadmin.model.Subject', {
+Ext.define('devilry_subjectadmin.model.Subject', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedSubject',
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {

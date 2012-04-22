@@ -1,5 +1,5 @@
 /** Groups on an assignment. */
-Ext.define('subjectadmin.store.Groups', {
+Ext.define('devilry_subjectadmin.store.Groups', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.Group'
+    model: 'devilry_subjectadmin.model.Group'
 });

@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.ActivePeriodsList', {
+Ext.define('devilry_subjectadmin.view.ActivePeriodsList', {
     extend: 'Ext.form.RadioGroup',
     alias: 'widget.activeperiodslist',
     cls: 'activeperiodslist',

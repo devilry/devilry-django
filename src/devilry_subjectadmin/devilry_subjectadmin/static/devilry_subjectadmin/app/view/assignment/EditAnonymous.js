@@ -1,7 +1,7 @@
 /**
  * A window for editing the anonymous attribute of an Assignment.
  * */
-Ext.define('subjectadmin.view.assignment.EditAnonymous', {
+Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
     extend: 'Ext.window.Window',
     alias: 'widget.editanonymous',
     cls: 'editanonymous bootstrap',
@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.assignment.EditAnonymous', {
             height: 270,
             closable: false,
             modal: true,
-            title: dtranslate('subjectadmin.assignment.anonymous.label'),
+            title: dtranslate('devilry_subjectadmin.assignment.anonymous.label'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
@@ -28,13 +28,13 @@ Ext.define('subjectadmin.view.assignment.EditAnonymous', {
                 },
                 items: [{
                     xtype: 'box',
-                    html: dtranslate('subjectadmin.assignment.anonymous.help'),
+                    html: dtranslate('devilry_subjectadmin.assignment.anonymous.help'),
                     margin: {bottom: 20}
                 }, {
                     xtype: 'alertmessagelist'
                 }, {
                     xtype: 'checkbox',
-                    boxLabel: dtranslate('subjectadmin.assignment.anonymous.label'),
+                    boxLabel: dtranslate('devilry_subjectadmin.assignment.anonymous.label'),
                     name: 'anonymous',
                     uncheckedValue: false,
                     inputValue: true,

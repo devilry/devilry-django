@@ -1,5 +1,5 @@
 /** Test mockup model for Period. */
-Ext.define('subjectadmin.model.PeriodTestMock', {
+Ext.define('devilry_subjectadmin.model.PeriodTestMock', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
     requires: [
         'jsapp.HiddenElementProxy'

@@ -1,7 +1,7 @@
 /**
  * A panel that displays information about multple groups.
  */
-Ext.define('subjectadmin.view.managestudents.MultipleGroupsSelectedView' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.multiplegroupsview',
     cls: 'multiplegroupsview',

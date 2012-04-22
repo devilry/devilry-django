@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.controller.Dashboard', {
+Ext.define('devilry_subjectadmin.controller.Dashboard', {
     extend: 'Ext.app.Controller',
 
     views: [

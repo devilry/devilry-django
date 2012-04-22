@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.store.GroupsTestMock', {
+Ext.define('devilry_subjectadmin.store.GroupsTestMock', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.GroupTestMock'
+    model: 'devilry_subjectadmin.model.GroupTestMock'
 });

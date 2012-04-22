@@ -1,7 +1,7 @@
 /**
  * Controller for editing publishing time of an assignment.
  */
-Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
+Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     extend: 'Ext.app.Controller',
 
     requires: [
@@ -126,11 +126,11 @@ Ext.define('subjectadmin.controller.assignment.EditPublishingTime', {
         fallback += ' ' + (published? 'is published': 'not published');
 
         if(published) {
-            title = dtranslate('subjectadmin.assignment.published.title');
-            tpl = dtranslate('subjectadmin.assignment.published.body', fallback);
+            title = dtranslate('devilry_subjectadmin.assignment.published.title');
+            tpl = dtranslate('devilry_subjectadmin.assignment.published.body', fallback);
         } else {
-            title = dtranslate('subjectadmin.assignment.notpublished.title');
-            tpl = dtranslate('subjectadmin.assignment.notpublished.body', fallback);
+            title = dtranslate('devilry_subjectadmin.assignment.notpublished.title');
+            tpl = dtranslate('devilry_subjectadmin.assignment.notpublished.body', fallback);
         }
         var publishing_time = this.assignmentRecord.get('publishing_time');
         this.getPublishingTimeWidget().updateTitle(title);

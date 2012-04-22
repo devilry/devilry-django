@@ -1,7 +1,7 @@
 /**
  * Group-model for the ``/subjectadmin/rest/group`` API.
  */
-Ext.define('subjectadmin.model.Group', {
+Ext.define('devilry_subjectadmin.model.Group', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [

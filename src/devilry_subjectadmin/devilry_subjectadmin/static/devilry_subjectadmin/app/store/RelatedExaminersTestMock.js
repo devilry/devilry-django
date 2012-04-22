@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.store.RelatedExaminersTestMock', {
+Ext.define('devilry_subjectadmin.store.RelatedExaminersTestMock', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.RelatedExaminerTestMock'
+    model: 'devilry_subjectadmin.model.RelatedExaminerTestMock'
 });

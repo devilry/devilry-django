@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.createnewassignment.Form', {
+Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
     extend: 'Ext.form.Panel',
     alias: 'widget.createnewassignmentform',
     requires: [
@@ -36,62 +36,62 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
     // Long name
     }, {
         name: "long_name",
-        fieldLabel: dtranslate('subjectadmin.assignment.long_name.label'),
+        fieldLabel: dtranslate('devilry_subjectadmin.assignment.long_name.label'),
         xtype: 'textfield',
-        emptyText: dtranslate('subjectadmin.assignment.long_name.example'),
+        emptyText: dtranslate('devilry_subjectadmin.assignment.long_name.example'),
         allowBlank: false,
         width: 400
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.long_name.help')
+        html: dtranslate('devilry_subjectadmin.assignment.long_name.help')
 
     // Short name
     }, {
         name: "short_name",
-        fieldLabel: dtranslate('subjectadmin.assignment.short_name.label'),
+        fieldLabel: dtranslate('devilry_subjectadmin.assignment.short_name.label'),
         xtype: 'textfield',
         allowBlank: false,
-        emptyText: dtranslate('subjectadmin.assignment.short_name.example'),
+        emptyText: dtranslate('devilry_subjectadmin.assignment.short_name.example'),
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.short_name.help')
+        html: dtranslate('devilry_subjectadmin.assignment.short_name.help')
 
     // How do students add deliveries
     }, {
         xtype: 'radiogroup',
-        fieldLabel: dtranslate('subjectadmin.assignment.delivery_types.label'),
+        fieldLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.label'),
         vertical: true,
         itemId: 'deliveryTypesRadioGroup',
         cls: 'delivery_types-radiogroup',
         columns: 1,
         items: [{
-            boxLabel: dtranslate('subjectadmin.assignment.delivery_types.electronic'),
+            boxLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.electronic'),
             name: 'delivery_types',
             inputValue: 0,
             checked: true
         }, {
-            boxLabel: dtranslate('subjectadmin.assignment.delivery_types.nonelectronic'),
+            boxLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.nonelectronic'),
             name: 'delivery_types',
             inputValue: 1
         }]
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.delivery_types.help')
+        html: dtranslate('devilry_subjectadmin.assignment.delivery_types.help')
 
     // First deadline
     }, {
         xtype: 'themebase-datetimefield',
         name: 'first_deadline',
         width: 300,
-        fieldLabel: dtranslate('subjectadmin.assignment.first_deadline.label')
+        fieldLabel: dtranslate('devilry_subjectadmin.assignment.first_deadline.label')
     }, {
         xtype: 'formhelp',
         itemId: 'first_deadline-help',
         margin: {top: 5},
-        html: dtranslate('subjectadmin.assignment.first_deadline.help')
+        html: dtranslate('devilry_subjectadmin.assignment.first_deadline.help')
 
     }, {
         xtype: 'fieldset',
@@ -109,36 +109,36 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
             margin: {top: 0},
             name: 'anonymous',
             labelAlign: 'left',
-            boxLabel: dtranslate('subjectadmin.assignment.anonymous.label')
+            boxLabel: dtranslate('devilry_subjectadmin.assignment.anonymous.label')
         }, {
             xtype: 'formhelp',
             margin: {top: 5},
-            html: dtranslate('subjectadmin.assignment.anonymous.help')
+            html: dtranslate('devilry_subjectadmin.assignment.anonymous.help')
 
         // Publishing time
         }, {
             xtype: 'themebase-datetimefield',
             width: 300,
-            fieldLabel: dtranslate('subjectadmin.assignment.publishing_time.label'),
+            fieldLabel: dtranslate('devilry_subjectadmin.assignment.publishing_time.label'),
             name: "publishing_time",
             value: new Date()
         }, {
             xtype: 'formhelp',
             margin: {top: 5},
-            html: dtranslate('subjectadmin.assignment.publishing_time.help')
+            html: dtranslate('devilry_subjectadmin.assignment.publishing_time.help')
 
         // Add all related students
         }, {
             xtype: 'checkboxfield',
             name:'add_all_relatedstudents',
             margin: {top: 20},
-            boxLabel: dtranslate('subjectadmin.assignment.add_all_relatedstudents.label'),
+            boxLabel: dtranslate('devilry_subjectadmin.assignment.add_all_relatedstudents.label'),
             checked: true,
             labelAlign: 'left'
         }, {
             xtype: 'formhelp',
             margin: {bottom: 10},
-            html: dtranslate('subjectadmin.assignment.add_all_relatedstudents.help')
+            html: dtranslate('devilry_subjectadmin.assignment.add_all_relatedstudents.help')
 
         // Autosetup examiners
         }, {
@@ -147,12 +147,12 @@ Ext.define('subjectadmin.view.createnewassignment.Form', {
             name: 'autosetup_examiners',
             checked: true,
             labelAlign: 'left',
-            boxLabel: dtranslate('subjectadmin.assignment.autosetup_examiners.label')
+            boxLabel: dtranslate('devilry_subjectadmin.assignment.autosetup_examiners.label')
         }, {
             xtype: 'formhelp',
             itemId: 'autosetup_examiners-help',
             margin: {top: 5},
-            html: dtranslate('subjectadmin.assignment.autosetup_examiners.help')
+            html: dtranslate('devilry_subjectadmin.assignment.autosetup_examiners.help')
         }]
     }],
 

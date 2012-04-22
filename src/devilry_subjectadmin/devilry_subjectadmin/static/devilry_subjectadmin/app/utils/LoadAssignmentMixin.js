@@ -1,6 +1,6 @@
 /**
  * Mixin for controllers that need to load an assignment from {@link
- * subjectadmin.store.Assignments}.
+ * devilry_subjectadmin.store.Assignments}.
  *
  * Requirements for the class using the mixin:
  *
@@ -14,9 +14,9 @@
  * Example
  * =======
  *
- *     Ext.define('subjectadmin.controller.assignment.Overview', {
+ *     Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
  *         mixins: {
- *             'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
+ *             'loadAssignment': 'devilry_subjectadmin.utils.LoadAssignmentMixin'
  *         },
  *         stores: [
  *             'Assignments'
@@ -35,7 +35,7 @@
  *         onLoadAssignmentSuccess: function(record) { ... },
  *     });
  */
-Ext.define('subjectadmin.utils.LoadAssignmentMixin', {
+Ext.define('devilry_subjectadmin.utils.LoadAssignmentMixin', {
     /** Load assignment.
      * Calls ``this.onLoadAssignmentSuccess(record)`` on success, and shows an
      * error on the ``this.getMaskElement()`` element on error.

@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.model.RelatedExaminerTestMock', {
-    extend: 'subjectadmin.model.RelatedExaminer',
+Ext.define('devilry_subjectadmin.model.RelatedExaminerTestMock', {
+    extend: 'devilry_subjectadmin.model.RelatedExaminer',
     requires: [
         'jsapp.HiddenElementProxy'
     ],

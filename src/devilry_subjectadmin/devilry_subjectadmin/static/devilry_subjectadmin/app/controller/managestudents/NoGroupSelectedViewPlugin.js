@@ -1,8 +1,8 @@
 /**
- * Plugin for {@link subjectadmin.controller.managestudents.Overview} that
+ * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
  * adds the ability to show information when no group is selected.
  */
-Ext.define('subjectadmin.controller.managestudents.NoGroupSelectedViewPlugin', {
+Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
@@ -29,7 +29,7 @@ Ext.define('subjectadmin.controller.managestudents.NoGroupSelectedViewPlugin', {
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('subjectadmin.managestudents.nogroupselected.topmessage'));
+        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.nogroupselected.topmessage'));
         return tpl.apply({
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });

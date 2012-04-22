@@ -1,16 +1,16 @@
 /**
  * A panel that displays information about a single group.
  */
-Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.singlegroupview',
     cls: 'singlegroupview',
     ui: 'transparentpanel',
 
     requires: [
-        'subjectadmin.view.managestudents.StudentsInGroupGrid',
-        'subjectadmin.view.managestudents.ExaminersInGroupGrid',
-        'subjectadmin.view.managestudents.TagsInGroupGrid'
+        'devilry_subjectadmin.view.managestudents.StudentsInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.TagsInGroupGrid'
     ],
 
     /**
@@ -18,7 +18,7 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      */
 
     /**
-     * @cfg {subjectadmin.model.Group} groupRecord (required)
+     * @cfg {devilry_subjectadmin.model.Group} groupRecord (required)
      */
 
     /**
@@ -67,7 +67,7 @@ Ext.define('subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     '<span class="label label-warning">', dtranslate('themebase.closed'), '</span> ',
                     dtranslate('themebase.closed.explained'),
                 '</tpl>',
-                ' ', dtranslate('subjectadmin.managestudents.open_close_explained_extra'),
+                ' ', dtranslate('devilry_subjectadmin.managestudents.open_close_explained_extra'),
             '</dd>',
         '</dl>'
     ],

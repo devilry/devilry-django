@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.model.ActiveAssignmentTestMock', {
-    extend: 'subjectadmin.model.ActiveAssignment',
+Ext.define('devilry_subjectadmin.model.ActiveAssignmentTestMock', {
+    extend: 'devilry_subjectadmin.model.ActiveAssignment',
     requires: [
         'jsapp.HiddenElementProxy'
     ],

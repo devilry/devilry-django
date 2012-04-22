@@ -1,7 +1,7 @@
 /**
  * List of periods within a subject.
  */
-Ext.define('subjectadmin.view.subject.ListOfPeriods', {
+Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
     extend: 'Ext.view.View',
     alias: 'widget.listofperiods',
     cls: 'listofperiods bootstrap',

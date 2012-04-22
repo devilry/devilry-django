@@ -1,5 +1,5 @@
 /** Period model. */
-Ext.define('subjectadmin.model.Period', {
+Ext.define('devilry_subjectadmin.model.Period', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {

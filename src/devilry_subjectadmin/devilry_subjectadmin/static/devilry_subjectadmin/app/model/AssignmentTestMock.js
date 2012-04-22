@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.model.AssignmentTestMock', {
+Ext.define('devilry_subjectadmin.model.AssignmentTestMock', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
     requires: [
         'jsapp.HiddenElementProxy'

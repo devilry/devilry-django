@@ -1,5 +1,5 @@
 /** Assignment model. */
-Ext.define('subjectadmin.model.Assignment', {
+Ext.define('devilry_subjectadmin.model.Assignment', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {

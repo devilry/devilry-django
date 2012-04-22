@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.JasmineTestApplication', {
-    extend: 'subjectadmin.TestApplication',
+Ext.define('devilry_subjectadmin.JasmineTestApplication', {
+    extend: 'devilry_subjectadmin.TestApplication',
     requires: ['jsapp.JasmineTest'],
 
     launch: function() {

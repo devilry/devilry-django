@@ -1,4 +1,4 @@
 /** ActiveAssignment model. */
-Ext.define('subjectadmin.model.ActiveAssignment', {
+Ext.define('devilry_subjectadmin.model.ActiveAssignment', {
     extend: 'devilry.apps.administrator.simplified.SimplifiedAssignment'
 });

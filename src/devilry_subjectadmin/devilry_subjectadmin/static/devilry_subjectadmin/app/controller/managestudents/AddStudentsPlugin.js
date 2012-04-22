@@ -1,11 +1,11 @@
 /**
- * Plugin for {@link subjectadmin.controller.managestudents.Overview} that
+ * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
  * adds the ability to add students (groups with a single student) to an
  * assignment.
  *
  * Adds a _add students_ button to the list of groups toolbar.
  */
-Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
+Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
@@ -50,7 +50,7 @@ Ext.define('subjectadmin.controller.managestudents.AddStudentsPlugin', {
             xtype: 'button',
             itemId: 'addstudents',
             iconCls: 'icon-add-24',
-            text: dtranslate('subjectadmin.managestudents.addstudents')
+            text: dtranslate('devilry_subjectadmin.managestudents.addstudents')
         });
         //this._onAddstudents();
     },

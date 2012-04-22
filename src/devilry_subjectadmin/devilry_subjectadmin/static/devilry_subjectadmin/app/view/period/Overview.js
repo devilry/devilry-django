@@ -1,7 +1,7 @@
 /**
  * Period overview (overview of an period).
  */
-Ext.define('subjectadmin.view.period.Overview' ,{
+Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.periodoverview',
     cls: 'periodoverview',
@@ -9,7 +9,7 @@ Ext.define('subjectadmin.view.period.Overview' ,{
         'Ext.layout.container.Column',
         'themebase.EditableSidebarBox',
         'themebase.AlertMessageList',
-        'subjectadmin.view.ActionList'
+        'devilry_subjectadmin.view.ActionList'
     ],
 
     /**
@@ -66,7 +66,7 @@ Ext.define('subjectadmin.view.period.Overview' ,{
                     items: [{
                         xtype: 'editablesidebarbox',
                         margin: {top: 0},
-                        title: dtranslate('subjectadmin.administrators')
+                        title: dtranslate('devilry_subjectadmin.administrators')
                     }]
                 }],
             }],

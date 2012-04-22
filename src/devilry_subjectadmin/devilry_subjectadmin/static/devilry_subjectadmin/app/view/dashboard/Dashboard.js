@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
+Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.dashboard',
     cls: 'dashboard',
@@ -15,29 +15,29 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         items: [{
             xtype: 'panel',
             cls: 'centerbox',
-            title: dtranslate('subjectadmin.dashboard.actionstitle'),
+            title: dtranslate('devilry_subjectadmin.dashboard.actionstitle'),
             ui: 'inset-header-strong-panel',
             items: [{
                 xtype: 'actionlist',
                 cls: 'centerbody',
                 links: [{
                     url: '#/@@create-new-assignment/@@chooseperiod',
-                    text: dtranslate('subjectadmin.dashboard.createnewassignment')
+                    text: dtranslate('devilry_subjectadmin.dashboard.createnewassignment')
                 }, {
                     url: '#/',
-                    text: dtranslate('subjectadmin.dashboard.browseall')
+                    text: dtranslate('devilry_subjectadmin.dashboard.browseall')
                 //}, {
                     //url: '#/@@register-for-final-exams',
-                    //text: dtranslate('subjectadmin.dashboard.registerqualifiesforfinal')
+                    //text: dtranslate('devilry_subjectadmin.dashboard.registerqualifiesforfinal')
                 //}, {
                     //url: '#/@@global-statistics',
-                    //text: dtranslate('subjectadmin.dashboard.overview-and-statistics')
+                    //text: dtranslate('devilry_subjectadmin.dashboard.overview-and-statistics')
                 }]
             }]
         }, {
             xtype: 'panel',
             margin: {top: 40},
-            title: dtranslate('subjectadmin.dashboard.shortcuts'),
+            title: dtranslate('devilry_subjectadmin.dashboard.shortcuts'),
             ui: 'inset-header-panel',
             items: {
                 xtype: 'shortcutlist'
@@ -50,7 +50,7 @@ Ext.define('subjectadmin.view.dashboard.Dashboard' ,{
         border: false,
         items: [{
             xtype: 'panel',
-            title: dtranslate('subjectadmin.dashboard.messages'),
+            title: dtranslate('devilry_subjectadmin.dashboard.messages'),
             ui: 'lookslike-parawitheader-panel',
             cls: 'bootstrap',
             html: [

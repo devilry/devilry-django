@@ -1,11 +1,11 @@
 /**
  * Controller for the assignment overview.
  */
-Ext.define('subjectadmin.controller.assignment.Overview', {
+Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     extend: 'Ext.app.Controller',
 
     mixins: {
-        'loadAssignment': 'subjectadmin.utils.LoadAssignmentMixin'
+        'loadAssignment': 'devilry_subjectadmin.utils.LoadAssignmentMixin'
     },
 
     views: [

@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.store.RelatedExaminers', {
+Ext.define('devilry_subjectadmin.store.RelatedExaminers', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.RelatedExaminer'
+    model: 'devilry_subjectadmin.model.RelatedExaminer'
 });

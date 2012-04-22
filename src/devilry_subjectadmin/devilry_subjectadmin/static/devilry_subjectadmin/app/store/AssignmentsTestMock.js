@@ -1,6 +1,6 @@
-Ext.define('subjectadmin.store.AssignmentsTestMock', {
+Ext.define('devilry_subjectadmin.store.AssignmentsTestMock', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.AssignmentTestMock',
+    model: 'devilry_subjectadmin.model.AssignmentTestMock',
     requires: [
         'Ext.data.Operation'
     ],
@@ -83,7 +83,7 @@ Ext.define('subjectadmin.store.AssignmentsTestMock', {
         // Add data to the proxy. This will be available in the store after a
         // load(), thus simulating loading from a server.
         Ext.Array.each(initialData, function(data) {
-            var record = Ext.create('subjectadmin.model.AssignmentTestMock', data);
+            var record = Ext.create('devilry_subjectadmin.model.AssignmentTestMock', data);
             record.phantom = true; // Force create
             record.save({
                 //success: function(r) {

@@ -1,6 +1,6 @@
-Ext.define('subjectadmin.store.ActiveAssignments', {
+Ext.define('devilry_subjectadmin.store.ActiveAssignments', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.ActiveAssignment',
+    model: 'devilry_subjectadmin.model.ActiveAssignment',
     requires: [
         'Ext.Date'
     ],

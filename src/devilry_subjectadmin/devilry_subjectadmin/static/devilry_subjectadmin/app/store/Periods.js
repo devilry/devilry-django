@@ -1,6 +1,6 @@
-Ext.define('subjectadmin.store.Periods', {
+Ext.define('devilry_subjectadmin.store.Periods', {
     extend: 'Ext.data.Store',
-    model: 'subjectadmin.model.Period',
+    model: 'devilry_subjectadmin.model.Period',
 
     loadPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
         this.proxy.setDevilryFilters([

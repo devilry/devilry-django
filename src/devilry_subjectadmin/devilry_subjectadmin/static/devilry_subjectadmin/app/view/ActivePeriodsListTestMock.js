@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.view.ActivePeriodsListTestMock', {
-    extend: 'subjectadmin.view.ActivePeriodsList',
+Ext.define('devilry_subjectadmin.view.ActivePeriodsListTestMock', {
+    extend: 'devilry_subjectadmin.view.ActivePeriodsList',
     alias: 'widget.activeperiodslist',
     store: 'ActivePeriodsTestMock'
 });

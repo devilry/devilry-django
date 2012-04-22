@@ -1,4 +1,4 @@
-Ext.define('subjectadmin.controller.CreateNewAssignment', {
+Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
 
     requires: [
@@ -135,7 +135,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
 
     _handleNotActivePeriod: function() {
         var message = Ext.create('Ext.XTemplate',
-            dtranslate('subjectadmin.assignment.error.not_active_period')
+            dtranslate('devilry_subjectadmin.assignment.error.not_active_period')
         ).apply({period_id: this.period_id});
         this.getPageTwoAlertMessageList().add({
             message: message,
@@ -147,7 +147,7 @@ Ext.define('subjectadmin.controller.CreateNewAssignment', {
         var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
         if(periodRecord) {
             var metatext = Ext.create('Ext.XTemplate',
-                dtranslate('subjectadmin.createnewassignment.metatext')
+                dtranslate('devilry_subjectadmin.createnewassignment.metatext')
             ).apply({
                 period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name')
             });

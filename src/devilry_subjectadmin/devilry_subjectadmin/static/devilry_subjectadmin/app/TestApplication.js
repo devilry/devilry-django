@@ -1,5 +1,5 @@
-Ext.define('subjectadmin.TestApplication', {
-    extend: 'subjectadmin.Application',
+Ext.define('devilry_subjectadmin.TestApplication', {
+    extend: 'devilry_subjectadmin.Application',
 
     controllers: [
         'ShortcutsTestMock',

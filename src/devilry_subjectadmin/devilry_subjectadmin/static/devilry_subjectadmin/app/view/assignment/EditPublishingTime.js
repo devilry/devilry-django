@@ -1,7 +1,7 @@
 /**
  * A window for editing the publishing time of an Assignment.
  * */
-Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
+Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
     extend: 'Ext.window.Window',
     alias: 'widget.editpublishingtime',
     cls: 'editpublishingtime bootstrap',
@@ -16,7 +16,7 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
             height: 270,
             closable: false,
             modal: true,
-            title: dtranslate('subjectadmin.assignment.publishing_time.label'),
+            title: dtranslate('devilry_subjectadmin.assignment.publishing_time.label'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
@@ -28,7 +28,7 @@ Ext.define('subjectadmin.view.assignment.EditPublishingTime', {
                 },
                 items: [{
                     xtype: 'box',
-                    html: dtranslate('subjectadmin.assignment.publishing_time.edithelp'),
+                    html: dtranslate('devilry_subjectadmin.assignment.publishing_time.edithelp'),
                     margin: {bottom: 20}
                 }, {
                     xtype: 'alertmessagelist'
