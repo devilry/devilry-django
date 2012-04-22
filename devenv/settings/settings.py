@@ -31,6 +31,7 @@ INSTALLED_APPS += [
                    'devilry_subjectadmin',
                    'seleniumhelpers',
                    'extjs4',
+                   'djangosenchatools',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
