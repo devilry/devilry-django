@@ -113,6 +113,16 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
 class TestEditAnonymous(SubjectAdminSeleniumTestCase):
 
     def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.create_superuser('grandma')
+        self.login('grandma')
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['2012h:begins(-3)'],
+                            assignments=['week1'])
+
+        self.week1 = self.testhelper.duck1100_2012h_week1
+
         self.browseTo('/duck1100/2012h/week1/')
         self.waitForCssSelector('.editanonymous-widget button')
         button = self.selenium.find_element_by_css_selector('.editanonymous-widget button')
@@ -130,8 +140,9 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.assertTrue('subjectadmin.assignment.anonymous.help' in self.selenium.page_source)
         self.anonymouscheckbox.click()
         self.savebutton.click()
-        self.waitForText('subjectadmin.assignment.is_anonymous.body') # If this times out, the proxy has not been updated
-        self.waitForText('subjectadmin.assignment.is_anonymous.title') # If this times out, the proxy has not been updated
+        self.waitForText('subjectadmin.assignment.is_anonymous.body') # If this times out, is has not been updated
+        self.waitForText('subjectadmin.assignment.is_anonymous.title') # If this times out, is has not been updated
+        self.assertTrue(Assignment.objects.get(pk=self.week1.pk).anonymous)
 
     def test_cancel(self):
         self.failIfCssSelectorFound(self.editanonymous_window, '.x-tool-close') # Make sure window does not have closable set to true
@@ -139,6 +150,9 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.assertFalse('.editanonymous' in self.selenium.page_source)
 
     def test_editanonymous_nochange(self):
+        self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
         self.savebutton.click()
-        self.waitForText('subjectadmin.assignment.not_anonymous.body') # If this times out, the proxy has not been updated
-        self.waitForText('subjectadmin.assignment.not_anonymous.title') # If this times out, the proxy has not been updated
+        self.waitForText('subjectadmin.assignment.not_anonymous.title') # If this times out, it has not been updated
+        self.waitForText('subjectadmin.assignment.not_anonymous.body') # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.week1.pk)
+        self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
