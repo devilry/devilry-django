@@ -400,8 +400,13 @@ class TestHelper(object):
 ##
 #######
     def _create_or_add_assignment(self, assignment_name, parentnode, extras):
+        # NOTE: Set default publishing_time two seconds after start_time to
+        # make sure it evaluates as "within" the period.
+        publishing_time = parentnode.start_time + timedelta(seconds=2)
+
+
         assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
-                                long_name=assignment_name.capitalize(), publishing_time=parentnode.start_time)
+                                long_name=assignment_name.capitalize(), publishing_time=publishing_time)
         try:
             assignment.full_clean()
             assignment.save()
