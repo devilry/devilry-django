@@ -31,7 +31,7 @@ def clean():
     """
     print('Are you sure you want to completely reset the environment? This '
           'will run "git clean -dfx --exclude src/", which removes any '
-          'untracked files except those in src/, i.e:')
+          'untracked files in devenv/:')
     local('git clean -ndfx .')
     ok = raw_input('Proceed (y/N)? ')
     if ok != 'y':
