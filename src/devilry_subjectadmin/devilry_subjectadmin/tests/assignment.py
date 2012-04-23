@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
 
 from base import SubjectAdminSeleniumTestCase
@@ -48,7 +50,15 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
 
 class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
     def setUp(self):
-        self.browseTo('/duck1100/2012h/week1/') # Set to yesterday in AssignmentTestMock
+        self.testhelper = TestHelper()
+        self.testhelper.create_superuser('grandma')
+        self.login('grandma')
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['2012h:begins(-3)'],
+                            assignments=['week1'])
+
+        self.browseTo('/duck1100/2012h/week1/')
         self.waitForCssSelector('.editpublishingtime-widget button')
         button = self.selenium.find_element_by_css_selector('.editpublishingtime-widget button')
         button.click()
@@ -70,18 +80,24 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
     def test_editpublishingtime(self):
         self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.selenium.page_source)
         self.assertTrue('subjectadmin.assignment.publishing_time.edithelp' in self.selenium.page_source)
-        self._set_datetime('2012-01-10', '12:00')
+        yesterday = datetime.now() - timedelta(days=1)
+        isoday_yesterday = yesterday.date().isoformat()
+        self._set_datetime(isoday_yesterday, '12:00')
         self.savebutton.click()
-        self.waitForText('2012-01-10T12:00') # If this times out, the proxy has not been updated
-        self.assertTrue('2012-01-10 12:00 is published' in self.selenium.page_source)
+        self.waitForText('{isoday_yesterday} 12:00 is published'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_2012h_week1.pk)
+        self.assertEquals(week1.publishing_time.date(), yesterday.date())
 
     def test_editpublishingtime_notpublished(self):
         self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.selenium.page_source)
         self.assertTrue('subjectadmin.assignment.publishing_time.edithelp' in self.selenium.page_source)
-        self._set_datetime('3012-01-10', '12:00') # If Devilry is still in use in 3012, we can afford to fix this:)
+        tomorrow = datetime.now() + timedelta(days=1)
+        isoday_tomorrow = tomorrow.date().isoformat()
+        self._set_datetime(isoday_tomorrow, '12:00')
         self.savebutton.click()
-        self.waitForText('3012-01-10T12:00') # If this times out, the proxy has not been updated
-        self.assertTrue('3012-01-10 12:00 not published' in self.selenium.page_source)
+        self.waitForText('{isoday_tomorrow} 12:00 not published'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_2012h_week1.pk)
+        self.assertEquals(week1.publishing_time.date(), tomorrow.date())
 
     def test_cancel(self):
         self.failIfCssSelectorFound(self.editpublishingtime_window, '.x-tool-close')  # Make sure window does not have closable set to true
@@ -89,9 +105,9 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self.assertFalse('.editpublishingtime' in self.selenium.page_source)
 
     def test_editpublishingtime_errorhandling(self):
-        self._set_datetime('2012-02-01', '12:00') # subjectadmin.model.AssignmentTestMock defines day 01 to raise an error (for _this_ testcase)
+        self._set_datetime('2000-02-01', '12:00')
         self.savebutton.click()
-        self.waitForText('It is triggered since the day of month is "1" (for testing only).') # If this times out, the error was not added to the body
+        self.waitForText("Publishing time must be within it's period")
 
 
 class TestEditAnonymous(SubjectAdminSeleniumTestCase):
