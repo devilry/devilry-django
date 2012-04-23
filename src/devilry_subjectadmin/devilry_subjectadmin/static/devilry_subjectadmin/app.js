@@ -155,7 +155,7 @@ Ext.application({
     },
 
     browse: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.allsubjects'));
+        this.breadcrumbs.set([], gettext("All subjects"));
         this.setPrimaryContent({
             xtype: 'subjectlistall'
         });
@@ -164,7 +164,7 @@ Ext.application({
     showSubject: function(routeInfo, subject_shortname) {
         var subjecturl = '/' + subject_shortname;
         this.breadcrumbs.set([{
-            text: dtranslate('devilry_subjectadmin.allsubjects'),
+            text: gettext("All subjects"),
             url: '/'
         }], subject_shortname);
         this.setPrimaryContent({
@@ -176,7 +176,7 @@ Ext.application({
     showPeriod: function(routeInfo, subject_shortname, period_shortname) {
         var subjecturl = '/' + subject_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('devilry_subjectadmin.allsubjects'),
+            text: gettext("All subjects"),
             url: '/'
         }, {
             text: subject_shortname,
@@ -207,7 +207,7 @@ Ext.application({
     showAssignment: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
         var subjecturl = '/' + subject_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('devilry_subjectadmin.allsubjects'),
+            text: gettext("All subjects"),
             url: '/'
         }, {
             text: subject_shortname,
@@ -229,7 +229,7 @@ Ext.application({
         var subjecturl = '/' + subject_shortname + '/';
         var periodurl = subjecturl + period_shortname + '/';
         this.breadcrumbs.set([{
-            text: dtranslate('devilry_subjectadmin.allsubjects'),
+            text: gettext("All subjects"),
             url: '/'
         }, {
             text: subject_shortname,
@@ -240,7 +240,7 @@ Ext.application({
         }, {
             text: assignment_shortname,
             url: periodurl + assignment_shortname + '/'
-        }], dtranslate('devilry_subjectadmin.managestudents.breadcrumbtitle'));
+        }], gettext('Manage students'));
         this.setPrimaryContent({
             xtype: 'managestudentsoverview',
             subject_shortname: subject_shortname,
