@@ -15,16 +15,16 @@ class TestSubjectadminRequired(TestCase):
         self.testhelper.create_superuser("superuser")
 
     def test_superuser(self):
-        subjectadmin_required(self.testhelper.superuser, "", None) # Calls is_superuser and exits without further checks
+        subjectadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
 
     def test_admin_allowed(self):
-        subjectadmin_required(self.testhelper.s1admin, "",
+        subjectadmin_required(self.testhelper.s1admin,
                                  self.testhelper.s1.id)
 
     def test_nonadmin_denied(self):
         self.assertRaises(PermissionDeniedError,
                           subjectadmin_required, self.testhelper.s1admin,
-                          "", self.testhelper.s2.id) # s1admin is not admin on s2..
+                          self.testhelper.s2.id) # s1admin is not admin on s2..
 
 class TestPeriodadminRequired(TestCase):
     def setUp(self):
@@ -35,16 +35,16 @@ class TestPeriodadminRequired(TestCase):
         self.testhelper.create_superuser("superuser")
 
     def test_superuser(self):
-        periodadmin_required(self.testhelper.superuser, "", None) # Calls is_superuser and exits without further checks
+        periodadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
 
     def test_admin_allowed(self):
-        periodadmin_required(self.testhelper.p1admin, "",
+        periodadmin_required(self.testhelper.p1admin,
                                  self.testhelper.sub_p1.id)
 
     def test_nonadmin_denied(self):
         self.assertRaises(PermissionDeniedError,
                           periodadmin_required, self.testhelper.p1admin,
-                          "", self.testhelper.sub_p2.id) # p1admin is not admin on p2..
+                          self.testhelper.sub_p2.id) # p1admin is not admin on p2..
 
 
 class TestAssignmentAdminRequired(TestCase):
@@ -59,13 +59,13 @@ class TestAssignmentAdminRequired(TestCase):
         self.assignment2 = self.testhelper.duck1010_firstsem_a2
 
     def test_superuser(self):
-        assignmentadmin_required(self.testhelper.superuser, "", None) # Calls is_superuser and exits without further checks
+        assignmentadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
 
     def test_admin_allowed(self):
-        assignmentadmin_required(self.testhelper.a1admin, "",
+        assignmentadmin_required(self.testhelper.a1admin,
                                  self.assignment1.id)
 
     def test_nonadmin_denied(self):
         self.assertRaises(PermissionDeniedError,
                           assignmentadmin_required, self.testhelper.a1admin,
-                          "", self.assignment2.id) # a1admin is not admin on a2
+                          self.assignment2.id) # a1admin is not admin on a2

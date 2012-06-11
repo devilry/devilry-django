@@ -2,15 +2,15 @@
 Exceptions for ``devilry_subjectadmin.rest``.
 """
 
-from devilry.rest.error import ForbiddenError
+from djangorestframework.response import ErrorResponse
+from djangorestframework import status
 
 
-class PermissionDeniedError(ForbiddenError):
+
+class PermissionDeniedError(ErrorResponse):
     """
     Raised to signal permission denied.
     """
-
-class NotPermittedToDeleteNonEmptyError(PermissionDeniedError):
-    """
-    Raised to signal that the used do not have permission to delete non-empty item.
-    """
+    def __init__(self, errormsg):
+        super(PermissionDeniedError, self).__init__(status.HTTP_403_FORBIDDEN,
+                                                    {'detail': errormsg})
