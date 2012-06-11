@@ -19,7 +19,7 @@ def _admin_required(nodecls, user, errormsg, objid):
         raise PermissionDeniedError(errormsg)
 
 
-def subjectadmin_required(user, subjectid):
+def _subjectadmin_required(user, subjectid):
     """
     Raise :exc:`devilry_subjectadmin.rest.errors.PermissionDeniedError` unless
     the given ``user`` is admin on all of the given Subjects.
@@ -39,7 +39,7 @@ def periodadmin_required(user, periodid):
     _admin_required(Period, user, _('Permission denied'), periodid)
 
 
-def assignmentadmin_required(user, assignmentid):
+def _assignmentadmin_required(user, assignmentid):
     """
     Raise :exc:`devilry_subjectadmin.rest.errors.PermissionDeniedError` unless
     the given ``user`` is admin on all of the given Assignments.
@@ -54,4 +54,4 @@ class IsAssignmentAdmin(BasePermission):
         if len(self.view.args) != 1:
             raise PermissionDeniedError('The IsAssignmentAdmin permission checker requires an assignmentid.')
         assignmentid = self.view.args[0]
-        assignmentadmin_required(user, assignmentid)
+        _assignmentadmin_required(user, assignmentid)

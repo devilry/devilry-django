@@ -1,9 +1,9 @@
 from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_subjectadmin.rest.auth import (subjectadmin_required,
+from devilry_subjectadmin.rest.auth import (_subjectadmin_required,
                                                  periodadmin_required,
-                                                 assignmentadmin_required)
+                                                 _assignmentadmin_required)
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
 
 
@@ -15,15 +15,15 @@ class TestSubjectadminRequired(TestCase):
         self.testhelper.create_superuser("superuser")
 
     def test_superuser(self):
-        subjectadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
+        _subjectadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
 
     def test_admin_allowed(self):
-        subjectadmin_required(self.testhelper.s1admin,
+        _subjectadmin_required(self.testhelper.s1admin,
                                  self.testhelper.s1.id)
 
     def test_nonadmin_denied(self):
         self.assertRaises(PermissionDeniedError,
-                          subjectadmin_required, self.testhelper.s1admin,
+                          _subjectadmin_required, self.testhelper.s1admin,
                           self.testhelper.s2.id) # s1admin is not admin on s2..
 
 class TestPeriodadminRequired(TestCase):
@@ -59,13 +59,13 @@ class TestAssignmentAdminRequired(TestCase):
         self.assignment2 = self.testhelper.duck1010_firstsem_a2
 
     def test_superuser(self):
-        assignmentadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
+        _assignmentadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
 
     def test_admin_allowed(self):
-        assignmentadmin_required(self.testhelper.a1admin,
+        _assignmentadmin_required(self.testhelper.a1admin,
                                  self.assignment1.id)
 
     def test_nonadmin_denied(self):
         self.assertRaises(PermissionDeniedError,
-                          assignmentadmin_required, self.testhelper.a1admin,
+                          _assignmentadmin_required, self.testhelper.a1admin,
                           self.assignment2.id) # a1admin is not admin on a2
