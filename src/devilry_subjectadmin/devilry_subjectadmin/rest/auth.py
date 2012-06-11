@@ -2,6 +2,7 @@
 Re-usable authentification methods.
 """
 
+from django.utils.translation import ugettext as _
 from devilry.apps.core.models import (Subject,
                                       Period,
                                       Assignment)
@@ -29,7 +30,7 @@ def subjectadmin_required(user, errormsg, *subjectids):
     _admin_required(Subject, user, errormsg, *subjectids)
 
 
-def periodadmin_required(user, errormsg, *periodids):
+def periodadmin_required(user, *periodids):
     """
     Raise :exc:`devilry_subjectadmin.rest.errors.PermissionDeniedError` unless
     the given ``user`` is admin on all of the given Periods.
@@ -37,7 +38,7 @@ def periodadmin_required(user, errormsg, *periodids):
     :param errormsg: Error message for PermissionDeniedError.
     :param periodids: ID of Periods to check.
     """
-    _admin_required(Period, user, errormsg, *periodids)
+    _admin_required(Period, user, _('Permission denied'), *periodids)
 
 
 def assignmentadmin_required(user, errormsg, *assignmentids):
@@ -48,4 +49,4 @@ def assignmentadmin_required(user, errormsg, *assignmentids):
     :param errormsg: Error message for PermissionDeniedError.
     :param assignmentids: ID of Assignments to check.
     """
-    _admin_required(Assignment, user, errormsg, *assignmentids)
+    _admin_required(Assignment, user, _('Permission denied'), *assignmentids)

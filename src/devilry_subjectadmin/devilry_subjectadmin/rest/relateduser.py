@@ -24,7 +24,7 @@ class RelatedUserDaoBase(object):
         return self.corecls.objects.filter(period=periodid).select_related('feedback').values(*self.readfields)
 
     def list(self, user, periodid):
-        periodadmin_required(user, "i18n.permissiondenied", periodid)
+        periodadmin_required(user, periodid)
         return [u for u in self._get_relatedusers(periodid)] # Convert from ValuesQuerySet
 
 
