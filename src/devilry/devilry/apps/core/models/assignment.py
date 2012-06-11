@@ -173,5 +173,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             if self.publishing_time < self.parentnode.start_time  or \
                     self.publishing_time > self.parentnode.end_time:
                 raise ValidationError(
-                    _("Publishing time must be within it's period (%(period)s)."
-                      % dict(period=unicode(self.parentnode))))
+                      _("The publishing time, {publishing_time}, is invalid. "
+                        "It must be within it's period, {period}, "
+                        "which lasts from {start_time} to {end_time}").format(publishing_time = self.publishing_time,
+                                                                              period=unicode(self.parentnode),
+                                                                              end_time=self.parentnode.end_time,
+                                                                              start_time=self.parentnode.start_time))
