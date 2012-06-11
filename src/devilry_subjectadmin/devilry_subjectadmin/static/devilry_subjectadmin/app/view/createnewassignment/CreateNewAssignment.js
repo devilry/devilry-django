@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
     items: [{
         xtype: 'panel',
         ui: 'inset-header-strong-panel',
-        title: dtranslate('devilry_subjectadmin.createnewassignment.title'),
+        title: gettext('Create new assignment'),
         items: { // Note: We wrap this in an extra container to avoid that the create button ends up at the bottom of the screen
             xtype: 'createnewassignmentform'
         }

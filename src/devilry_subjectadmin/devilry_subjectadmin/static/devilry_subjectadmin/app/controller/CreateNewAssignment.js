@@ -135,7 +135,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _handleNotActivePeriod: function() {
         var message = Ext.create('Ext.XTemplate',
-            dtranslate('devilry_subjectadmin.assignment.error.not_active_period')
+            gettext('Period {period_id} is not an active period.')
         ).apply({period_id: this.period_id});
         this.getPageTwoAlertMessageList().add({
             message: message,
@@ -147,7 +147,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
         if(periodRecord) {
             var metatext = Ext.create('Ext.XTemplate',
-                dtranslate('devilry_subjectadmin.createnewassignment.metatext')
+                gettext('Create new assignment in <em>{period}</em>.')
             ).apply({
                 period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name')
             });
@@ -238,7 +238,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _mask: function() {
-        this.getCreateNewAssignmentForm().getEl().mask(dtranslate('themebase.saving'))
+        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'))
     },
     _unmask: function() {
         this.getCreateNewAssignmentForm().getEl().unmask();

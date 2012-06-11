@@ -36,66 +36,66 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
     // Long name
     }, {
         name: "long_name",
-        fieldLabel: dtranslate('devilry_subjectadmin.assignment.long_name.label'),
+        fieldLabel: gettext('Long name'),
         xtype: 'textfield',
-        emptyText: dtranslate('devilry_subjectadmin.assignment.long_name.example'),
+        emptyText: gettext('Example of assignment long name'),
         allowBlank: false,
         width: 400
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('devilry_subjectadmin.assignment.long_name.help')
+        html: gettext('Choose a descriptive name for your assignment.')
 
     // Short name
     }, {
         name: "short_name",
-        fieldLabel: dtranslate('devilry_subjectadmin.assignment.short_name.label'),
+        fieldLabel: gettext('Short name'),
         xtype: 'textfield',
         allowBlank: false,
-        emptyText: dtranslate('devilry_subjectadmin.assignment.short_name.example'),
+        emptyText: gettext('assignment-shortname-example'),
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('devilry_subjectadmin.assignment.short_name.help')
+        html: gettext("Choose a short name with at most 20 letters for your assignment. Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space.")
 
     // How do students add deliveries
     }, {
         xtype: 'radiogroup',
-        fieldLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.label'),
+        fieldLabel: gettext('How do students add deliveries?'),
         vertical: true,
         itemId: 'deliveryTypesRadioGroup',
         cls: 'delivery_types-radiogroup',
         columns: 1,
         items: [{
-            boxLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.electronic'),
+            boxLabel: gettext('Using Devilry'),
             name: 'delivery_types',
             inputValue: 0,
             checked: true
         }, {
-            boxLabel: dtranslate('devilry_subjectadmin.assignment.delivery_types.nonelectronic'),
+            boxLabel: gettext('Not using Devilry'),
             name: 'delivery_types',
             inputValue: 1
         }]
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
-        html: dtranslate('devilry_subjectadmin.assignment.delivery_types.help')
+        html: gettext('If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.')
 
     // First deadline
     }, {
         xtype: 'themebase-datetimefield',
         name: 'first_deadline',
         width: 300,
-        fieldLabel: dtranslate('devilry_subjectadmin.assignment.first_deadline.label')
+        fieldLabel: gettext('First deadline')
     }, {
         xtype: 'formhelp',
         itemId: 'first_deadline-help',
         margin: {top: 5},
-        html: dtranslate('devilry_subjectadmin.assignment.first_deadline.help')
+        html: gettext('The default deadline added to each student when adding new students to the assignment.')
 
     }, {
         xtype: 'fieldset',
-        title: dtranslate('themebase.advanced_options'),
+        title: gettext('Advanced options'),
         cls: 'advanced_options_fieldset',
         collapsible: true,
         collapsed: true,
@@ -109,36 +109,36 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             margin: {top: 0},
             name: 'anonymous',
             labelAlign: 'left',
-            boxLabel: dtranslate('devilry_subjectadmin.assignment.anonymous.label')
+            boxLabel: gettext('Anonymous?')
         }, {
             xtype: 'formhelp',
             margin: {top: 5},
-            html: dtranslate('devilry_subjectadmin.assignment.anonymous.help')
+            html: gettext('For <strong>exams</strong>, this should normally be <em>checked</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.')
 
         // Publishing time
         }, {
             xtype: 'themebase-datetimefield',
             width: 300,
-            fieldLabel: dtranslate('devilry_subjectadmin.assignment.publishing_time.label'),
+            fieldLabel: gettext('Publishing time'),
             name: "publishing_time",
             value: new Date()
         }, {
             xtype: 'formhelp',
             margin: {top: 5},
-            html: dtranslate('devilry_subjectadmin.assignment.publishing_time.help')
+            html: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.')
 
         // Add all related students
         }, {
             xtype: 'checkboxfield',
             name:'add_all_relatedstudents',
             margin: {top: 20},
-            boxLabel: dtranslate('devilry_subjectadmin.assignment.add_all_relatedstudents.label'),
+            boxLabel: gettext('Add all students to this assignment?'),
             checked: true,
             labelAlign: 'left'
         }, {
             xtype: 'formhelp',
             margin: {bottom: 10},
-            html: dtranslate('devilry_subjectadmin.assignment.add_all_relatedstudents.help')
+            html: gettext('If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.')
 
         // Autosetup examiners
         }, {
@@ -147,12 +147,12 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             name: 'autosetup_examiners',
             checked: true,
             labelAlign: 'left',
-            boxLabel: dtranslate('devilry_subjectadmin.assignment.autosetup_examiners.label')
+            boxLabel: gettext('Automatically setup examiners?')
         }, {
             xtype: 'formhelp',
             itemId: 'autosetup_examiners-help',
             margin: {top: 5},
-            html: dtranslate('devilry_subjectadmin.assignment.autosetup_examiners.help')
+            html: gettext('Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period.')
         }]
     }],
 
