@@ -21,7 +21,7 @@ class TestGroupDao(TestCase):
         testhelper.add(nodes='uni',
                        subjects=['duck1010'],
                        periods=['firstsem'],
-                       assignments=['a1:admin(a1admin)', 'a2:admin(a2admin)'])
+                       assignments=['a1', 'a2'])
         testhelper.create_superuser("superuser")
         return testhelper
 
@@ -39,16 +39,10 @@ class TestGroupDao(TestCase):
                                     verdict=dict(grade='A', points=100, is_passing_grade=True))
         return testhelper
 
-    def test_read_permissiondenied(self):
-        testhelper = self.create_testdata()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        with self.assertRaises(PermissionDeniedError):
-            GroupDao().list(testhelper.a2admin, assignment1.id)
-
     def test_read(self):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupDao().list(testhelper.a1admin, assignment1.id)
+        groups = GroupDao().list(assignment1.id)
         # We only check a few values here. The most important thing is that the
         # database queries are sane, since the other stuff is tested in
         # smaller units
@@ -267,7 +261,7 @@ class TestGroupDao(TestCase):
     def test_create(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(testhelper.a1admin, assignment1.id, name='Superprojectgroup')
+        group = GroupDao().create(assignment1.id, name='Superprojectgroup')
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         self.assertEquals(group_db.name, 'Superprojectgroup')
         self.assertEquals(group_db.is_open, True)
@@ -280,14 +274,14 @@ class TestRestGroupIntegration(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
-                            periods=['p1:admin(p1admin)'],
-                            assignments=['a1'])
+                            periods=['p1'],
+                            assignments=['a1:admin(a1admin)'])
         self.client = RestClient()
         self.testhelper.create_user('student0')
-        self.client.login(username='p1admin', password='test')
-        self.a1url = '/subjectadmin/rest/group/{0}'.format(self.testhelper.sub_p1_a1.id)
+        self.a1url = '/devilry_subjectadmin/rest/group/{0}'.format(self.testhelper.sub_p1_a1.id)
 
     def test_list(self):
+        self.client.login(username='a1admin', password='test')
         for studentNum in xrange(3):
             path = 'uni;sub.p1.a1.g{studentNum}:candidate(stud{studentNum})'.format(studentNum=studentNum)
             self.testhelper.add_to_path(path)
@@ -301,6 +295,7 @@ class TestRestGroupIntegration(TestCase):
                                u'feedback__save_timestamp', u'examiners']))
 
     def test_create(self):
+        self.client.login(username='a1admin', password='test')
         data = dict(
                     students=[dict(candidate_id=u'candid334',
                                    student__username=u'student0',
@@ -314,3 +309,9 @@ class TestRestGroupIntegration(TestCase):
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)
+
+    def test_noperm(self):
+        self.client.login(username='student0', password='test')
+        content, response = self.client.rest_post(self.a1url, {})
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(content, {u'detail': u'Permission denied'})

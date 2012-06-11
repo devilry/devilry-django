@@ -4,9 +4,6 @@ from django.contrib.auth.models import User
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.permissions import BasePermission
-from djangorestframework import status
-from djangorestframework.response import ErrorResponse
 from django import forms
 
 from devilry.apps.core.models import (AssignmentGroup,
@@ -14,9 +11,8 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-from auth import assignmentadmin_required
+from auth import IsAssignmentAdmin
 from fields import ListOfDictField
-from errors import ForbiddenError
 
 
 class GroupDao(object):
@@ -99,7 +95,7 @@ class GroupDao(object):
         self._merge_with_groupsdict(groupsdict, deadlines, 'deadlines')
         return groupsdict.values()
 
-    def list(self, user, assignmentid):
+    def list(self, assignmentid):
         """
         Returns a list of one dict for each group in the assignment with the
         given ``assignmentid``. The dict has the following keys:
@@ -124,7 +120,6 @@ class GroupDao(object):
         - deadlines --- list of dicts with the following keys:
             - deadline --- datetime
         """
-        assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
         groups = self._get_groups(assignmentid)
         candidates = self._get_candidates(assignmentid)
         examiners = self._get_examiners(assignmentid)
@@ -213,8 +208,7 @@ class GroupDao(object):
             self._create_deadline_from_deadlinedict(group, deadlinedict)
         return group
 
-    def create(self, user, assignmentid, *args, **kwargs):
-        assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
+    def create(self, assignmentid, *args, **kwargs):
         return self.create_noauth(assignmentid, *args, **kwargs)
 
 
@@ -250,22 +244,6 @@ class RestGroupRootForm(forms.Form):
     examiners = ExaminersField(required=False)
 
 
-class IsAssignmentAdmin(BasePermission):
-    def check_permission(self, user):
-        if len(self.view.args) != 1:
-            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
-                                {'detail': 'The IsAssignmentAdmin permission checker requires an assignmentid.'})
-        assignmentid = self.view.args[0]
-
-        # TODO: Should update assignmentadmin_required to raise ErrorResponse
-        # TODO: Only check this here, not in create and list in the DAO
-        try:
-            assignmentadmin_required(user, "i18n.permissiondenied", assignmentid)
-        except ForbiddenError, e:
-            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
-                                {'detail': 'Permission denied.'})
-
-
 class RestGroupRoot(View):
     resource = FormResource
     form = RestGroupRootForm
@@ -274,10 +252,10 @@ class RestGroupRoot(View):
         self.dao = daocls()
 
     def get(self, request, assignmentid):
-        return self.dao.list(self.user, assignmentid)
+        return self.dao.list(assignmentid)
 
     def post(self, request, assignmentid):
-        group = self.dao.create(self.user, assignmentid, **self.CONTENT)
+        group = self.dao.create(assignmentid, **self.CONTENT)
         return dict(id=group.id)
 
 class RestGroup(View):
@@ -286,4 +264,4 @@ class RestGroup(View):
         self.dao = daocls()
 
     def put(self, request, assignmentid):
-        return self.dao.list(self.user, assignmentid)
+        return self.dao.list(assignmentid)
