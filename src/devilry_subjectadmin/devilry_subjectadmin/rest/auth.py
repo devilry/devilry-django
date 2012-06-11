@@ -50,6 +50,11 @@ def _assignmentadmin_required(user, assignmentid):
 
 
 class IsAssignmentAdmin(BasePermission):
+    """
+    Djangorestframework permission checker that checks if the requesting user
+    has admin-permissions on the assignment given as the first argument to the
+    view.
+    """
     def check_permission(self, user):
         if len(self.view.args) != 1:
             raise PermissionDeniedError('The IsAssignmentAdmin permission checker requires an assignmentid.')
