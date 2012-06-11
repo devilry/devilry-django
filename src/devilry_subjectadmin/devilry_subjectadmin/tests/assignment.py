@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
 
-from base import SubjectAdminSeleniumTestCase
+from .base import SubjectAdminSeleniumTestCase
 
 
 
