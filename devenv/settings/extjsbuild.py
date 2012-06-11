@@ -1,6 +1,6 @@
 # Use this settings module with runserver when running senchatoolsbuild:
 #
-#    $ bin/django_dev.py runserver --settings settings.djangosenchatools_settings
+#    $ bin/django_dev.py runserver --settings settings.extjsbuild
 #    and in another terminal:
 #    $ bin/django_dev.py senchatoolsbuild --buildall
 #
