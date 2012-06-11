@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from devilry.apps.core.testhelper import TestHelper
 
 from .base import SubjectAdminSeleniumTestCase
@@ -13,7 +14,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
-                            periods=['2012h'])
+                            periods=['2012h:begins(-1)'])
         self.period_id = self.testhelper.duck1100_2012h.id
 
     def test_form_render(self):
@@ -59,6 +60,10 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         field = self.selenium.find_element_by_css_selector('input[name={0}]'.format(fieldname))
         field.send_keys(value)
 
+    def _set_datetime_value(self, fieldclass, value):
+        field = self.selenium.find_element_by_css_selector('.{fieldclass} .datetimefield_date input[type=text]'.format(fieldclass=fieldclass))
+        field.send_keys(value)
+
     def test_form_createbutton(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.createnewassignmentform')
@@ -73,25 +78,27 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_value('short_name', 'test')
         self.waitForEnabled(createbutton)
 
-    #def test_success(self):
-        #self.browseToTest('/@@create-new-assignment/1')
-        #self.waitForCssSelector('.createnewassignmentform')
+    def test_success(self):
+        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
+        self.waitForCssSelector('.createnewassignmentform')
 
-        #self._set_value('long_name', 'Test')
-        #self._set_value('short_name', 'sometest')
-        #createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
-        #self.waitForEnabled(createbutton)
-        #createbutton.click()
+        self._set_value('long_name', 'Test')
+        self._set_value('short_name', 'sometest')
+        tomorrow = date.today() + timedelta(days=1)
+        self.selenium.find_element_by_css_selector('.first_deadline .datetimefield_date input[type=text]').send_keys(tomorrow.isoformat())
+        self.selenium.find_element_by_css_selector('.first_deadline .datetimefield_time input[type=text]').send_keys('15:00')
 
-        #self.waitForCssSelector('.createnewassignment-successpanel')
-        #links = self.selenium.find_elements_by_css_selector('.actionlist a')
-        #self.assertEquals(len(links), 2)
-        #self.assertEquals(links[0].text, u'subjectadmin.createnewassignment.success.gotocreated')
-        #self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8000/subjectadmin/test#/duck1100/2012h/sometest/')
-        #self.assertEquals(links[1].text, u'subjectadmin.createnewassignment.success.addanother')
-        #self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8000/subjectadmin/test#/@@create-new-assignment/1')
+        createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
 
-    #def test_success_direct(self):
-        #self.browseToTest('/@@create-new-assignment/@@success')
-        #self.waitForCssSelector('.x-message-box')
-        #self.assertTrue('This page is only available after creating a new assignment.' in self.selenium.page_source)
+        self.waitForCssSelector('.createnewassignment-successpanel')
+        links = self.selenium.find_elements_by_css_selector('.actionlist a')
+        self.assertEquals(len(links), 2)
+        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8081/devilry_subjectadmin/#/duck1100/2012h/sometest/')
+        self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8081/devilry_subjectadmin/#/@@create-new-assignment/1')
+
+    def test_success_direct(self):
+        self.browseTo('/@@create-new-assignment/@@success')
+        self.waitForCssSelector('.x-message-box')
+        self.assertTrue('This page is only available after creating a new assignment.' in self.selenium.page_source)

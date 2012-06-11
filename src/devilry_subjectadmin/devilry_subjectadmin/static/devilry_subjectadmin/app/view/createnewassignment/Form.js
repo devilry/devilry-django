@@ -84,6 +84,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
     // First deadline
     }, {
         xtype: 'themebase-datetimefield',
+        cls: 'first_deadline',
         name: 'first_deadline',
         width: 300,
         fieldLabel: gettext('First deadline')

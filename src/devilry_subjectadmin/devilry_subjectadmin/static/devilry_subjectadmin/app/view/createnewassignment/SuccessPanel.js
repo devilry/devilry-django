@@ -46,14 +46,14 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.SuccessPanel' ,{
     },
 
     _setTitle: function() {
-        var title = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.createnewassignment.success.title')).apply({
+        var title = Ext.create('Ext.XTemplate', gettext('Created {assignment}')).apply({
             assignment: this.assignment
         });
         this.bodyPanel.setTitle(title);
     },
 
     _addLinks: function() {
-        var gotoText = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.createnewassignment.success.gotocreated')).apply({
+        var gotoText = Ext.create('Ext.XTemplate', gettext('Go to {assignment}')).apply({
             assignment: this.assignment
         });
 
@@ -72,7 +72,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.SuccessPanel' ,{
             ),
             buttonType: 'default',
             buttonSize: 'normal',
-            text: dtranslate('devilry_subjectadmin.createnewassignment.success.addanother')
+            text: gettext('Add another assignment')
         }]
         this.bodyPanel.add({
             xtype: 'actionlist',

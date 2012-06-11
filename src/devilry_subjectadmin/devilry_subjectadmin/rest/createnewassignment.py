@@ -1,6 +1,6 @@
-from devilry.apps.core.models import Assignment
-from auth import periodadmin_required
+from django.utils.translation import ugettext as _
 
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
 from devilry.rest.restbase import RestBase
 from devilry.rest.indata import indata
@@ -9,6 +9,8 @@ from devilry.rest.indata import NoneOr
 from devilry.rest.indata import bool_indata
 from devilry.rest.error import NotFoundError
 from devilry.rest.error import BadRequestFieldError
+
+from auth import periodadmin_required
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -66,7 +68,7 @@ class CreateNewAssignmentDao(object):
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
         if not first_deadline:
-            raise BadRequestFieldError('first_deadline', 'subjectadmin.assignment.error.first_deadline_none')
+            raise BadRequestFieldError('first_deadline', _('Required when automatically adding related students'))
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
         else:
@@ -81,7 +83,7 @@ class CreateNewAssignmentDao(object):
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                autosetup_examiners):
-        periodadmin_required(user, "i18n.permissiondenied", period.id)
+        periodadmin_required(user, period.id)
         assignment = self._create_assignment(period, short_name, long_name,
                                              first_deadline, publishing_time,
                                              delivery_types, anonymous)
@@ -119,10 +121,13 @@ class RestCreateNewAssignment(RestBase):
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                autosetup_examiners):
-        assignment = self.dao.lookup_period_create(self.user, period_id, short_name,
-                                                   long_name, first_deadline,
-                                                   publishing_time, delivery_types,
-                                                   anonymous,
-                                                   add_all_relatedstudents,
-                                                   autosetup_examiners)
-        return dict(id=assignment.id)
+        from django.db import transaction
+        with transaction.commit_on_success():
+            # Need to use a transaction since we potentially perform multiple changes.
+            assignment = self.dao.lookup_period_create(self.user, period_id, short_name,
+                                                       long_name, first_deadline,
+                                                       publishing_time, delivery_types,
+                                                       anonymous,
+                                                       add_all_relatedstudents,
+                                                       autosetup_examiners)
+            return dict(id=assignment.id)
