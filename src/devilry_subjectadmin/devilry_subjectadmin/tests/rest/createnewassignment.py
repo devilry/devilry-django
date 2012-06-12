@@ -6,11 +6,12 @@ from django.contrib.auth.models import User
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
-from devilry_subjectadmin.rest.createnewassignment import RestCreateNewAssignment
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
-from devilry.rest.testutils import dummy_urlreverse
-from devilry.rest.testutils import isoformat_datetime
-from devilry.rest.testutils import RestClient
+from devilry.utils.rest_testclient import RestClient
+
+
+def isoformat_datetime(datetimeobj):
+    return datetimeobj.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TestRestCreateNewAssignmentDao(TestCase):
@@ -124,29 +125,6 @@ class TestRestCreateNewAssignmentDao(TestCase):
             dao.lookup_period_create(nobody, **kw)
 
 
-class TestRestCreateNewAssignment(TestCase):
-    def setUp(self):
-        self.restapi = RestCreateNewAssignment(daocls=Dingus(), apiname='api',
-                                               apiversion='1.0', user=None,
-                                               url_reverse=dummy_urlreverse)
-
-    def test_create(self):
-        publishing_time = datetime(2010, 1, 1, 1, 1, 1)
-        first_deadline = datetime(2011, 2, 2, 2, 2, 2)
-        self.restapi.create(period_id=1001,
-                            short_name='a', long_name='Aa',
-                            first_deadline=isoformat_datetime(first_deadline),
-                            publishing_time=isoformat_datetime(publishing_time),
-                            delivery_types=0, anonymous=False,
-                            add_all_relatedstudents=False,
-                            autosetup_examiners=False)
-        dingus = self.restapi.dao
-        # Check the dingus to make sure all parameters was converted correctly
-        self.assertEquals(1, len(dingus.calls('lookup_period_create', None,
-                                              1001, 'a', 'Aa', first_deadline,
-                                              publishing_time, 0, False, False,
-                                              False)))
-
 
 class TestRestCreateNewAssignmentIntegration(TestCase):
     def setUp(self):
@@ -156,52 +134,57 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                             periods=['p1:admin(p1admin)', 'p2'])
         self.client = RestClient()
         p1admin = User.objects.get(username='p1admin')
+        self.urlformat = '/devilry_subjectadmin/rest/createnewassignment/{period_id}/'
+        self.url = self.urlformat.format(period_id=self.testhelper.sub_p1.id)
+
+    def _login_p1admin(self):
         self.client.login(username='p1admin', password='test')
 
     def test_create(self):
+        self._login_p1admin()
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
         first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        data = dict(period_id=self.testhelper.sub_p1.id,
-                    short_name='a', long_name='Aa',
+        data = dict(short_name='a', long_name='Aa',
                     first_deadline=isoformat_datetime(first_deadline),
                     publishing_time=isoformat_datetime(publishing_time),
                     delivery_types=0, anonymous=False,
                     add_all_relatedstudents=False,
                     autosetup_examiners=False)
-        content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
-                                                    **data)
+        content, response = self.client.rest_post(self.url, data)
         self.assertEquals(response.status_code, 201)
         self.assertEquals(content.keys(), ['id'])
 
     def test_create_notfound(self):
+        self._login_p1admin()
+        invalidurl = self.urlformat.format(period_id=20000)
+        content, response = self.client.rest_post(invalidurl, {})
+        self.assertEquals(response.status_code, 403)
+
+    def test_create_permissiondenied(self):
+        self.testhelper.create_user('nopermsuser')
+        self.client.login(username='nopermsuser', password='test')
+        content, response = self.client.rest_post(self.url, {})
+        self.assertEquals(response.status_code, 403)
+
+    def test_create_validation(self):
+        self._login_p1admin()
+        content, response = self.client.rest_post(self.url, {})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content.keys(), ['field_errors'])
+        for fieldname in ['delivery_types', 'long_name', 'publishing_time', 'short_name']:
+            self.assertEquals(content['field_errors'][fieldname], [u'This field is required.'])
+
+    def test_create_first_deadline_none(self):
+        self._login_p1admin()
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
         first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        data = dict(period_id=20000,
-                    short_name='a', long_name='Aa',
+        data = dict(short_name='a', long_name='Aa',
+                    first_deadline=None,
                     publishing_time=isoformat_datetime(publishing_time),
                     delivery_types=0, anonymous=False,
-                    add_all_relatedstudents=False,
-                    first_deadline=isoformat_datetime(first_deadline),
+                    add_all_relatedstudents=True,
                     autosetup_examiners=False)
-        content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
-                                                    **data)
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(content['i18nErrormessages'],
-                          [[u'subjectadmin.assignment.error.period_doesnotexist',
-                            {'period_id': 20000}]])
-
-    #def test_create_first_deadline_none(self):
-        #publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
-        #first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        #data = dict(period_id=self.testhelper.sub_p1.id,
-                    #short_name='a', long_name='Aa',
-                    #first_deadline=None,
-                    #publishing_time=isoformat_datetime(publishing_time),
-                    #delivery_types=0, anonymous=False,
-                    #add_all_relatedstudents=True,
-                    #autosetup_examiners=False)
-        #content, response = self.client.rest_create('/subjectadmin/rest/createnewassignment/',
-                                                    #**data)
-        #self.assertEquals(response.status_code, 400)
-        #self.assertEquals(content['i18nFielderrors'],
-                          #{'first_deadline': [[u'subjectadmin.assignment.error.first_deadline_none', {}]]})
+        content, response = self.client.rest_post(self.url, data)
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['field_errors']['first_deadline'],
+                          [u'Required when automatically adding related students'])

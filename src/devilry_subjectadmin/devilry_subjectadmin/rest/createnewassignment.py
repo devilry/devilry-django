@@ -1,16 +1,16 @@
 from django.utils.translation import ugettext as _
+from django.db import transaction
+from django import forms
+from djangorestframework.views import View
+from djangorestframework.resources import FormResource
+from djangorestframework.response import Response
+from djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
-from devilry.rest.restbase import RestBase
-from devilry.rest.indata import indata
-from devilry.rest.indata import isoformatted_datetime
-from devilry.rest.indata import NoneOr
-from devilry.rest.indata import bool_indata
-from devilry.rest.error import NotFoundError
-from devilry.rest.error import BadRequestFieldError
 
-from auth import periodadmin_required
+from .auth import IsPeriodAdmin
+from .errors import BadRequestFieldError
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -83,7 +83,6 @@ class CreateNewAssignmentDao(object):
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, add_all_relatedstudents,
                autosetup_examiners):
-        periodadmin_required(user, period.id)
         assignment = self._create_assignment(period, short_name, long_name,
                                              first_deadline, publishing_time,
                                              delivery_types, anonymous)
@@ -93,41 +92,34 @@ class CreateNewAssignmentDao(object):
         return assignment
 
     def lookup_period_create(self, user, period_id, *args, **kwargs):
-        try:
-            period = Period.objects.get(id=period_id)
-        except Period.DoesNotExist:
-            raise NotFoundError('subjectadmin.assignment.error.period_doesnotexist',
-                                period_id=period_id)
-        else:
-            return self.create(user, period, *args, **kwargs)
+        period = Period.objects.get(id=period_id)
+        return self.create(user, period, *args, **kwargs)
 
 
 
-class RestCreateNewAssignment(RestBase):
-    def __init__(self, daocls=CreateNewAssignmentDao, **basekwargs):
-        super(RestCreateNewAssignment, self).__init__(**basekwargs)
-        self.dao = daocls()
 
-    @indata(period_id = int,
-            short_name = unicode,
-            long_name = unicode,
-            first_deadline = NoneOr(isoformatted_datetime),
-            publishing_time = isoformatted_datetime,
-            delivery_types = int,
-            anonymous = bool_indata,
-            add_all_relatedstudents = bool_indata,
-            autosetup_examiners = bool_indata)
-    def create(self, period_id,
-               short_name, long_name, first_deadline, publishing_time,
-               delivery_types, anonymous, add_all_relatedstudents,
-               autosetup_examiners):
-        from django.db import transaction
+
+class RestCreateNewAssignmentForm(forms.Form):
+    short_name = forms.CharField(required=True)
+    long_name = forms.CharField(required=True)
+    first_deadline = forms.DateTimeField(required=False)
+    publishing_time = forms.DateTimeField(required=True)
+    delivery_types = forms.IntegerField(required=True)
+    anonymous = forms.BooleanField(required=False)
+    add_all_relatedstudents = forms.BooleanField(required=False)
+    autosetup_examiners = forms.BooleanField(required=False)
+
+
+class RestCreateNewAssignmentRoot(View):
+    resource = FormResource
+    form = RestCreateNewAssignmentForm
+    permissions = (IsAuthenticated, IsPeriodAdmin)
+
+    def __init__(self):
+        self.dao = CreateNewAssignmentDao()
+
+    def post(self, request, period_id):
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
-            assignment = self.dao.lookup_period_create(self.user, period_id, short_name,
-                                                       long_name, first_deadline,
-                                                       publishing_time, delivery_types,
-                                                       anonymous,
-                                                       add_all_relatedstudents,
-                                                       autosetup_examiners)
-            return dict(id=assignment.id)
+            assignment = self.dao.lookup_period_create(self.user, period_id, **self.CONTENT)
+            return Response(status=201, content=dict(id=assignment.id))
