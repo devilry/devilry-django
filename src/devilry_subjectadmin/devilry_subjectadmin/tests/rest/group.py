@@ -278,7 +278,7 @@ class TestRestGroupIntegration(TestCase):
                             assignments=['a1:admin(a1admin)'])
         self.client = RestClient()
         self.testhelper.create_user('student0')
-        self.a1url = '/devilry_subjectadmin/rest/group/{0}'.format(self.testhelper.sub_p1_a1.id)
+        self.a1url = '/devilry_subjectadmin/rest/group/{0}/'.format(self.testhelper.sub_p1_a1.id)
 
     def test_list(self):
         self.client.login(username='a1admin', password='test')
@@ -305,6 +305,7 @@ class TestRestGroupIntegration(TestCase):
                     deadlines=[dict(deadline=u'2011-01-02 03:04:05')]
                    )
         content, response = self.client.rest_post(self.a1url, data)
+        self.assertEquals(response.status_code, 201)
         self.assertEquals(content.keys(), ['id'])
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)

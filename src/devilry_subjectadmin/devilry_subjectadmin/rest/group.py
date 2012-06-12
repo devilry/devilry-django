@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
+from djangorestframework.response import Response
 from django import forms
 
 from devilry.apps.core.models import (AssignmentGroup,
@@ -248,20 +249,20 @@ class RestGroupRoot(View):
     resource = FormResource
     form = RestGroupRootForm
     permissions = (IsAuthenticated, IsAssignmentAdmin)
-    def __init__(self, daocls=GroupDao):
-        self.dao = daocls()
+    def __init__(self):
+        self.dao = GroupDao()
 
     def get(self, request, assignmentid):
         return self.dao.list(assignmentid)
 
     def post(self, request, assignmentid):
         group = self.dao.create(assignmentid, **self.CONTENT)
-        return dict(id=group.id)
+        return Response(201, dict(id=group.id))
 
-class RestGroup(View):
-    permissions = (IsAuthenticated, IsAssignmentAdmin)
-    def __init__(self, daocls=GroupDao):
-        self.dao = daocls()
+#class RestGroup(View):
+    #permissions = (IsAuthenticated, IsAssignmentAdmin)
+    #def __init__(self, daocls=GroupDao):
+        #self.dao = daocls()
 
-    def put(self, request, assignmentid):
-        return self.dao.list(assignmentid)
+    #def put(self, request, assignmentid):
+        #return self.dao.list(assignmentid)
