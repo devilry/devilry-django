@@ -67,6 +67,10 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
                                                                                                                           field=field))
         field.send_keys(value)
 
+    def _set_first_deadline(self, date, time):
+        self._set_datetime_value('first_deadline', 'date', date)
+        self._set_datetime_value('first_deadline', 'time', time)
+
     def test_form_createbutton(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.createnewassignmentform')
@@ -81,13 +85,21 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_value('short_name', 'test')
         self.waitForEnabled(createbutton)
 
+    def _click_createbutton(self):
+        createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
 
-    #def test_duplicate(self):
-        #self.testhelper.add_to_path('uni;duck1100.2012h.a1')
-        #self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        #self.waitForCssSelector('.createnewassignmentform')
-        #self._set_value('long_name', 'A1')
-        #self._set_value('short_name', 'a1')
+    def test_duplicate(self):
+        self.testhelper.add_to_path('uni;duck1100.2012h.a1')
+        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
+        self.waitForCssSelector('.createnewassignmentform')
+        self._set_value('long_name', 'A1')
+        self._set_value('short_name', 'a1')
+        self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
+        self._click_createbutton()
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
 
     def test_success(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
@@ -95,12 +107,8 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
         self._set_value('long_name', 'Test')
         self._set_value('short_name', 'sometest')
-        self._set_datetime_value('first_deadline', 'date', self.tomorrow.isoformat())
-        self._set_datetime_value('first_deadline', 'time', '15:00')
-
-        createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
-        self.waitForEnabled(createbutton)
-        createbutton.click()
+        self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
+        self._click_createbutton()
 
         self.waitForCssSelector('.createnewassignment-successpanel')
         links = self.selenium.find_elements_by_css_selector('.actionlist a')
