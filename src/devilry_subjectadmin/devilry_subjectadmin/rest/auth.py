@@ -65,13 +65,15 @@ class IsSubjectAdmin(BasePermission):
 class IsPeriodAdmin(BasePermission):
     """
     Djangorestframework permission checker that checks if the requesting user
-    has admin-permissions on the period given as the first argument to the
-    view.
+    has admin-permissions on the period given in ``CONTENT['period_id']``.
     """
+    #: The CONTENT-key containing the period-id
+    PERIODID_KEY = 'period_id'
+
     def check_permission(self, user):
-        if not 'period_id' in self.view.CONTENT:
+        if not self.PERIODID_KEY in self.view.CONTENT:
             raise PermissionDeniedError('The IsPeriodAdmin permission checker requires period_id as part of the request data.')
-        period_id = self.view.CONTENT['period_id']
+        period_id = self.view.CONTENT[self.PERIODID_KEY]
         periodadmin_required(user, period_id)
 
 
