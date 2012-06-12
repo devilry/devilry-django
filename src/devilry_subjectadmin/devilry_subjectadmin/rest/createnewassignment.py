@@ -10,9 +10,10 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
 from devilry.apps.core.models.deliverytypes import as_choices_tuple
 
-from .auth import IsPeriodAdmin
+from .auth import periodadmin_required
 from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
+from. errors import PermissionDeniedError
 from .viewbase import SelfdocumentingRestView
 
 
@@ -127,15 +128,22 @@ class RestCreateNewAssignment(SelfdocumentingRestView):
     """
     resource = FormResource
     form = RestCreateNewAssignmentForm
-    permissions = (IsAuthenticated, IsPeriodAdmin)
+    permissions = (IsAuthenticated,)
 
     def __init__(self):
         self.dao = CreateNewAssignmentDao()
+
+    def _require_periodadmin(self, user):
+        if not 'period_id' in self.CONTENT:
+            raise PermissionDeniedError('period_id is a required parameter.')
+        period_id = self.CONTENT['period_id']
+        periodadmin_required(user, period_id)
 
     def post(self, request):
         """
         Create an assignment, and add related students if requested.
         """
+        self._require_periodadmin(request.user)
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
             try:
