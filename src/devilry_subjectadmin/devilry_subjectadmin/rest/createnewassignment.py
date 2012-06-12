@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _
 from django.db import transaction
 from django import forms
+from django.core.exceptions import ValidationError
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.response import Response
@@ -11,6 +12,7 @@ from devilry.apps.core.models import Period
 
 from .auth import IsPeriodAdmin
 from .errors import BadRequestFieldError
+from .errors import ValidationErrorResponse
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -123,5 +125,9 @@ class RestCreateNewAssignmentRoot(View):
     def post(self, request):
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
-            assignment = self.dao.lookup_period_create(self.user, **self.CONTENT)
-            return Response(status=201, content=dict(id=assignment.id))
+            try:
+                assignment = self.dao.lookup_period_create(self.user, **self.CONTENT)
+            except ValidationError, e:
+                raise ValidationErrorResponse(e)
+            else:
+                return Response(status=201, content=dict(id=assignment.id))
