@@ -2,6 +2,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
 
     requires: [
+        'Ext.Date',
         'themebase.NextButton',
         'themebase.form.ErrorUtils',
         'themebase.DjangoRestframeworkProxyErrorHandler'
@@ -179,15 +180,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
-    _setInitialValues: Ext.emptyFn,
-
-    //_setInitialValues: function() {
-        //this.getCreateNewAssignmentForm().getForm().setValues({
-            //long_name: 'A',
-            //short_name: 'a'
-        //})
-    //},
-
     _onCreate: function() {
         if(this.getCreateNewAssignmentForm().getForm().isValid()) {
             this._save();
@@ -202,6 +194,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _save: function() {
         this.getPageTwoAlertMessageList().removeAll();
         var values = this._getFormValues();
+        var NON_ELECTRONIC = 1;
+        if(values.delivery_types === NON_ELECTRONIC) {
+            values.first_deadline = new Date(Ext.Date.now());
+        }
         values.period_id = this.period_id;
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
@@ -243,6 +239,15 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _unmask: function() {
         this.getCreateNewAssignmentForm().getEl().unmask();
     },
+
+    _setInitialValues: Ext.emptyFn,
+
+    //_setInitialValues: function() {
+        //this.getCreateNewAssignmentForm().getForm().setValues({
+            //long_name: 'A2',
+            //short_name: 'a2'
+        //})
+    //},
 
 
 
