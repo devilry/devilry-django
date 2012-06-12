@@ -187,7 +187,7 @@ LOGGING = {
     },
     'loggers': {
         'devilry.utils.logexceptionsmiddleware': {
-            'handlers': ['exceptionTracebacksFile', 'mail_admins'],
+            'handlers': ['exceptionTracebacksFile', 'console'],
             'level': 'ERROR',
             'propagate': False
         },
