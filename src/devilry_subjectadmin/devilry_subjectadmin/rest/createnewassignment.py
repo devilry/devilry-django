@@ -2,17 +2,18 @@ from django.utils.translation import ugettext as _
 from django.db import transaction
 from django import forms
 from django.core.exceptions import ValidationError
-from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.response import Response
 from djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
+from devilry.apps.core.models.deliverytypes import as_choices_tuple
 
 from .auth import IsPeriodAdmin
 from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
+from .viewbase import SelfdocumentingRestView
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -103,18 +104,27 @@ class CreateNewAssignmentDao(object):
 datetime_input_formats = ['%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S']
 
 class RestCreateNewAssignmentForm(forms.Form):
-    period_id = forms.IntegerField(required=True)
+    period_id = forms.IntegerField(required=True,
+                                   help_text='The ID of the period where you want to create the assignment.')
     short_name = forms.CharField(required=True)
     long_name = forms.CharField(required=True)
-    first_deadline = forms.DateTimeField(required=False, input_formats=datetime_input_formats)
-    publishing_time = forms.DateTimeField(required=True, input_formats=datetime_input_formats)
-    delivery_types = forms.IntegerField(required=True)
+    first_deadline = forms.DateTimeField(required=False, input_formats=datetime_input_formats,
+                                         help_text='The initial deadline (YYYY-MM-DD HH:MM). Required if add_all_relatedstudents is true.')
+    publishing_time = forms.DateTimeField(required=True, input_formats=datetime_input_formats,
+                                          help_text='YYYY-MM-DD HH:MM')
+    delivery_types = forms.IntegerField(required=True,
+                                        help_text=', '.join(['{0}: {1}'.format(*choice) for choice in as_choices_tuple()]))
     anonymous = forms.BooleanField(required=False)
-    add_all_relatedstudents = forms.BooleanField(required=False)
-    autosetup_examiners = forms.BooleanField(required=False)
+    add_all_relatedstudents = forms.BooleanField(required=False,
+                                                 help_text='Add all related students to individual groups on the assignment.')
+    autosetup_examiners = forms.BooleanField(required=False,
+                                             help_text='Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period. Ignored unless ``add_all_relatedstudents`` is true.')
 
 
-class RestCreateNewAssignmentRoot(View):
+class RestCreateNewAssignment(SelfdocumentingRestView):
+    """
+    Simplifies creating and setting up new assignments.
+    """
     resource = FormResource
     form = RestCreateNewAssignmentForm
     permissions = (IsAuthenticated, IsPeriodAdmin)
@@ -123,6 +133,9 @@ class RestCreateNewAssignmentRoot(View):
         self.dao = CreateNewAssignmentDao()
 
     def post(self, request):
+        """
+        Create an assignment, and add related students if requested.
+        """
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
             try:
