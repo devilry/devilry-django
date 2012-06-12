@@ -202,10 +202,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _save: function() {
         this.getPageTwoAlertMessageList().removeAll();
         var values = this._getFormValues();
-        values.period_id = this.period_id;
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
+        var url = Ext.String.format('{0}{1}/', assignment.proxy.baseurl, this.period_id);
+        assignment.proxy.url = url;
         this._mask();
         assignment.save({
             scope: this,

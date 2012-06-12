@@ -109,21 +109,6 @@ class TestRestCreateNewAssignmentDao(TestCase):
         group = self.testhelper.sub_p1_a1.assignmentgroups.all()[0]
         self.assertEquals(group.examiners.all().count(), 1)
 
-    def test_create_permissions(self):
-        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
-        #first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        kw = dict(period_id=self.testhelper.sub_p1.id,
-                  short_name='a',
-                  long_name='Aa', publishing_time=publishing_time,
-                  delivery_types=0, anonymous=False,
-                  add_all_relatedstudents=False, first_deadline=None,
-                  autosetup_examiners=False)
-        dao = CreateNewAssignmentDao()
-        dao.lookup_period_create(self.testhelper.p1admin, **kw)
-        nobody = self.testhelper.create_user('nobody')
-        with self.assertRaises(PermissionDeniedError):
-            dao.lookup_period_create(nobody, **kw)
-
 
 
 class TestRestCreateNewAssignmentIntegration(TestCase):

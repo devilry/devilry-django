@@ -5,6 +5,7 @@ from relateduser import RestRelatedStudent
 from relateduser import RestRelatedExaminer
 from createnewassignment import RestCreateNewAssignmentRoot
 
+
 urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^group/(\w+)/$', RestGroupRoot.as_view()),
                        url(r'^createnewassignment/(\w+)/$', RestCreateNewAssignmentRoot.as_view()),
