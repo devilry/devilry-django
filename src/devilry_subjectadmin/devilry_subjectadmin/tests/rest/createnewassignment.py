@@ -118,37 +118,43 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                             subjects=['sub'],
                             periods=['p1:admin(p1admin)', 'p2'])
         self.client = RestClient()
-        p1admin = User.objects.get(username='p1admin')
-        self.urlformat = '/devilry_subjectadmin/rest/createnewassignment/{period_id}/'
-        self.url = self.urlformat.format(period_id=self.testhelper.sub_p1.id)
+        self.url = '/devilry_subjectadmin/rest/createnewassignment/'
 
     def _login_p1admin(self):
         self.client.login(username='p1admin', password='test')
 
-    def test_create(self):
-        self._login_p1admin()
+
+    def _get_testdata(self):
         publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
         first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        data = dict(short_name='a', long_name='Aa',
+        return dict(period_id=self.testhelper.sub_p1.id,
+                    short_name='a', long_name='Aa',
                     first_deadline=isoformat_datetime(first_deadline),
                     publishing_time=isoformat_datetime(publishing_time),
                     delivery_types=0, anonymous=False,
                     add_all_relatedstudents=False,
                     autosetup_examiners=False)
-        content, response = self.client.rest_post(self.url, data)
+
+    def test_create(self):
+        self._login_p1admin()
+        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
+        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
+        content, response = self.client.rest_post(self.url, self._get_testdata())
         self.assertEquals(response.status_code, 201)
         self.assertEquals(content.keys(), ['id'])
 
     def test_create_notfound(self):
         self._login_p1admin()
-        invalidurl = self.urlformat.format(period_id=20000)
-        content, response = self.client.rest_post(invalidurl, {})
+        data = self._get_testdata()
+        data['period_id'] = 200000
+        content, response = self.client.rest_post(self.url, data)
         self.assertEquals(response.status_code, 403)
 
     def test_create_permissiondenied(self):
         self.testhelper.create_user('nopermsuser')
         self.client.login(username='nopermsuser', password='test')
-        content, response = self.client.rest_post(self.url, {})
+        data = self._get_testdata()
+        content, response = self.client.rest_post(self.url, data)
         self.assertEquals(response.status_code, 403)
 
     def test_create_validation(self):
@@ -161,14 +167,9 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
 
     def test_create_first_deadline_none(self):
         self._login_p1admin()
-        publishing_time = self.testhelper.sub_p1.start_time + timedelta(days=1)
-        first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
-        data = dict(short_name='a', long_name='Aa',
-                    first_deadline=None,
-                    publishing_time=isoformat_datetime(publishing_time),
-                    delivery_types=0, anonymous=False,
-                    add_all_relatedstudents=True,
-                    autosetup_examiners=False)
+        data = self._get_testdata()
+        data['first_deadline'] = None
+        data['add_all_relatedstudents'] = True
         content, response = self.client.rest_post(self.url, data)
         self.assertEquals(response.status_code, 400)
         self.assertEquals(content['field_errors']['first_deadline'],
