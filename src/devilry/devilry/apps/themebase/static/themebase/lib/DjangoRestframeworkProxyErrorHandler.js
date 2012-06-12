@@ -19,8 +19,8 @@ Ext.define('themebase.DjangoRestframeworkProxyErrorHandler', {
     },
 
     _addMessages: function(responseData) {
-        if(responseData.details) {
-            this.errormessages.push(responseData.details);
+        if(responseData.detail) {
+            this.errormessages.push(responseData.detail);
         }
     },
 
