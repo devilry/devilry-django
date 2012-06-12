@@ -98,12 +98,14 @@ class CreateNewAssignmentDao(object):
 
 
 
+datetime_input_formats = ['%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S']
 
 class RestCreateNewAssignmentForm(forms.Form):
+    period_id = forms.IntegerField(required=True)
     short_name = forms.CharField(required=True)
     long_name = forms.CharField(required=True)
-    first_deadline = forms.DateTimeField(required=False)
-    publishing_time = forms.DateTimeField(required=True)
+    first_deadline = forms.DateTimeField(required=False, input_formats=datetime_input_formats)
+    publishing_time = forms.DateTimeField(required=True, input_formats=datetime_input_formats)
     delivery_types = forms.IntegerField(required=True)
     anonymous = forms.BooleanField(required=False)
     add_all_relatedstudents = forms.BooleanField(required=False)
@@ -118,8 +120,8 @@ class RestCreateNewAssignmentRoot(View):
     def __init__(self):
         self.dao = CreateNewAssignmentDao()
 
-    def post(self, request, period_id):
+    def post(self, request):
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
-            assignment = self.dao.lookup_period_create(self.user, period_id, **self.CONTENT)
+            assignment = self.dao.lookup_period_create(self.user, **self.CONTENT)
             return Response(status=201, content=dict(id=assignment.id))

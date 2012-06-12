@@ -19,8 +19,7 @@ Ext.define('devilry_subjectadmin.model.CreateNewAssignment', {
 
     proxy: {
         type: 'rest',
-        baseurl: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/createnewassignment/',
-        url: null, // We use baseurl to dynamically set the url suffixed with assignmentid
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/createnewassignment/',
         extraParams: {
             format: 'json'
         },

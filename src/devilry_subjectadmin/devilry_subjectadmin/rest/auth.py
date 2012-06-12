@@ -69,10 +69,10 @@ class IsPeriodAdmin(BasePermission):
     view.
     """
     def check_permission(self, user):
-        if len(self.view.args) != 1:
-            raise PermissionDeniedError('The IsPeriodAdmin permission checker requires an assignmentid.')
-        periodid = self.view.args[0]
-        periodadmin_required(user, periodid)
+        if not 'period_id' in self.view.CONTENT:
+            raise PermissionDeniedError('The IsPeriodAdmin permission checker requires period_id as part of the request data.')
+        period_id = self.view.CONTENT['period_id']
+        periodadmin_required(user, period_id)
 
 
 class IsAssignmentAdmin(BasePermission):
