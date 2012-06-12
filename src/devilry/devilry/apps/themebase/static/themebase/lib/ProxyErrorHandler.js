@@ -7,6 +7,13 @@ Ext.define('themebase.ProxyErrorHandler', {
         this.fielderrors = {};
     },
 
+
+    /** Check if the list of errormessages and fielderrors are empty, and
+     * return ``true`` if one of them contains at least one error message. */
+    hasErrors: function() {
+        return this.errormessages.length > 0 || Ext.Object.getSize(this.fielderrors) > 0;
+    },
+
     /**
      * Add error from an ``Ext.data.Operation`` object. Uses
      * {@link #getErrorMessageFromOperation} to find the error message.
