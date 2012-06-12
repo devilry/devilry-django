@@ -142,6 +142,9 @@ class RestCreateNewAssignment(SelfdocumentingRestView):
     def post(self, request):
         """
         Create an assignment, and add related students if requested.
+
+        ## Parameters
+        {parametertable}
         """
         self._require_periodadmin(request.user)
         with transaction.commit_on_success():
