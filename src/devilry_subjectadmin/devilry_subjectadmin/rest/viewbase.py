@@ -23,7 +23,7 @@ class SelfdocumentingRestView(View):
                 meta = 'required'
             else:
                 meta = 'optional'
-            out.write('<td>{field.name}<br/><small>{meta}</small></td>'.format(field=field,
+            out.write('<td><strong>{field.name}</strong><br/><small>{meta}</small></td>'.format(field=field,
                                                                                meta=meta))
             out.write('<td>{field.field.help_text}</td>'.format(field=field))
             out.write('</tr>')
