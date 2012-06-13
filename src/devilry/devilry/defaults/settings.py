@@ -7,6 +7,7 @@ TIME_ZONE = 'Europe/Oslo'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
+USE_L10N = True
 DATETIME_FORMAT = "N j, Y, H:i"
 LOGIN_URL = '/authenticate/login'
 STATIC_URL = '/static/'
