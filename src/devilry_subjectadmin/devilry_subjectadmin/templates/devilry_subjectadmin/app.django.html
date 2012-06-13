@@ -32,21 +32,9 @@
         is_superuser: {{ user.is_superuser|lower }},
         username: '{{ user.username }}'
     };
-
-
-    /* Add Django CSRF protection headers to every Ajax request */
-    Ext.require(["Ext.util.Cookies", "Ext.Ajax"], function(){
-        // Add csrf token to every ajax request
-        var token = Ext.util.Cookies.get('csrftoken');
-        if(!token){
-            Ext.Error.raise("Missing csrftoken cookie");
-        } else {
-            Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-                'X-CSRFToken': token
-            });
-        }
-    });
 </script>
+
+{% include "devilry_extjsextras/extjsajax_django_csrf.django.html" %}
 
 <script type="text/javascript" src="{% url devilry_subjectadmin_i18n %}"></script>
 
