@@ -34,8 +34,7 @@
     };
 </script>
 
-{% include "devilry_extjsextras/extjsajax_django_csrf.django.html" %}
-
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
 <script type="text/javascript" src="{% url devilry_subjectadmin_i18n %}"></script>
 
 {{ block.super }}
