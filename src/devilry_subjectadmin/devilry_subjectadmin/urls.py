@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from views import AppView
 
-i18n_packages = ('devilry_subjectadmin',)
+i18n_packages = ('devilry_subjectadmin', 'devilry_extjsextras')
 
 urlpatterns = patterns('devilry_subjectadmin',
                        url('^rest/', include('devilry_subjectadmin.rest.urls')),
