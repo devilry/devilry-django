@@ -9,10 +9,12 @@
 {% endblock %}
 
 {% block app %}
-<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/translations/messages{{ DEVILRY_I18N_CURRENT_LOCALE }}.js"></script>
-<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/i18n/i18n.js"></script>
 
 <script type="text/javascript">
+    function dtranslate(key) {
+        return 'USE_GETTEXT:' + key;
+    }
+
     var DevilrySettings = {
         DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
         DEVILRY_URLPATH_PREFIX: '{{ DEVILRY_URLPATH_PREFIX }}',
