@@ -29,6 +29,7 @@ INSTALLED_APPS += [
                    'devilry.apps.jsapp',
                    'devilry.apps.themebase',
                    'devilry_subjectadmin',
+                   'devilry_extjsextras',
                    'seleniumhelpers',
                    'extjs4',
                    'djangosenchatools',
