@@ -66,9 +66,10 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(parent_dir, 'deliverystorehier')
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
-import os
-SKIP_SELENIUMTESTS = os.environ.get('SKIP_SELENIUMTESTS', False)
-SELENIUM_BROWSER = os.environ.get('SELENIUM_BROWSER', 'Chrome')
+## django_seleniumhelpers
+## - http://django_seleniumhelpers.readthedocs.org/
+#SKIP_SELENIUMTESTS = True
+SELENIUM_BROWSER = 'Firefox' # Default selenium browser
 
 
 ##
