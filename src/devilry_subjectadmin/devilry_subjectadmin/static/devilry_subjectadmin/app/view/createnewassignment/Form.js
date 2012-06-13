@@ -6,12 +6,12 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         'Ext.form.field.Text',
         'Ext.form.field.Hidden',
         'Ext.toolbar.Toolbar',
-        //'themebase.form.DateField',
-        //'themebase.form.TimeField',
-        'themebase.form.DateTimeField',
-        'themebase.CreateButton',
-        'themebase.AlertMessageList',
-        'themebase.form.Help',
+        //'devilry_extjsextras.form.DateField',
+        //'devilry_extjsextras.form.TimeField',
+        'devilry_extjsextras.form.DateTimeField',
+        'devilry_extjsextras.CreateButton',
+        'devilry_extjsextras.AlertMessageList',
+        'devilry_extjsextras.form.Help',
     ],
     ui: 'transparentpanel',
 
@@ -83,7 +83,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
     // First deadline
     }, {
-        xtype: 'themebase-datetimefield',
+        xtype: 'devilry_extjsextras-datetimefield',
         cls: 'first_deadline',
         name: 'first_deadline',
         width: 300,
@@ -118,7 +118,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
         // Publishing time
         }, {
-            xtype: 'themebase-datetimefield',
+            xtype: 'devilry_extjsextras-datetimefield',
             width: 300,
             fieldLabel: gettext('Publishing time'),
             name: "publishing_time",

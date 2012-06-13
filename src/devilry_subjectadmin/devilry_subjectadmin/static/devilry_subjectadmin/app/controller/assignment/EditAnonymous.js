@@ -5,8 +5,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'themebase.form.ErrorUtils',
-        'themebase.RestfulApiProxyErrorHandler'
+        'devilry_extjsextras.form.ErrorUtils',
+        'devilry_extjsextras.RestfulApiProxyErrorHandler'
     ],
 
     views: [
@@ -78,7 +78,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         if(oldValue != newValue) {
             var assignmentRecord = this.assignmentRecord;
             form.updateRecord(assignmentRecord);
-            this._getMaskElement().mask(dtranslate('themebase.saving'));
+            this._getMaskElement().mask(dtranslate('devilry_extjsextras.saving'));
             assignmentRecord.save({
                 scope: this,
                 success: this._onSaveSuccess,
@@ -101,13 +101,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onSaveFailure: function(record, operation) {
         this._getMaskElement().unmask();
-        var errorhandler = Ext.create('themebase.RestfulApiProxyErrorHandler');
+        var errorhandler = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler');
         errorhandler.addErrors(operation);
         this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
-        themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
+        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(
             this.getFormPanel(), errorhandler.fielderrors, this.getAlertMessageList()
         );
-        themebase.form.ErrorUtils.markFieldErrorsAsInvalid(
+        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(
             this.getFormPanel(), errorhandler.fielderrors
         );
     },

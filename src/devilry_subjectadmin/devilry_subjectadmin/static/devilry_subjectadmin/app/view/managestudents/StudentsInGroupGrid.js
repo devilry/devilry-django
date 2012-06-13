@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
-                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/themebase/resources/icons/16x16/delete.png',
+                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
                     tooltip: dtranslate('devilry_subjectadmin.managestudents.remove_student'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);

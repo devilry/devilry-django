@@ -4,16 +4,16 @@ Ext.application({
     paths: {
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
         'jsapp': DevilrySettings.DEVILRY_STATIC_URL + '/jsapp/lib',
-        'themebase': DevilrySettings.DEVILRY_STATIC_URL + '/themebase/lib'
+        'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras'
     },
 
     requires: [
         'Ext.container.Viewport',
         'jsapp.Router',
-        'themebase.RouteNotFound',
-        'themebase.AlertMessage',
-        'themebase.DevilryHeader',
-        'themebase.Breadcrumbs'
+        'devilry_extjsextras.RouteNotFound',
+        'devilry_extjsextras.AlertMessage',
+        'devilry_extjsextras.DevilryHeader',
+        'devilry_extjsextras.Breadcrumbs'
     ],
 
     controllers: [

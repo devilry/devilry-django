@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     cls: 'assignmentoverview sidebarlayout',
     requires: [
         'Ext.layout.container.Column',
-        'themebase.EditableSidebarBox',
+        'devilry_extjsextras.EditableSidebarBox',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
         'devilry_subjectadmin.view.ActionList'
@@ -36,10 +36,10 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
             this.subject_shortname, this.period_shortname,
             this.assignment_shortname
         );
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.delete_something')).apply({
+        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
             what: assignment
         });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.rename_something')).apply({
+        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
             what: assignment
         });
 
@@ -116,7 +116,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: dtranslate('themebase.advanced'),
+                    text: dtranslate('devilry_extjsextras.advanced'),
                     scale: 'medium',
                     menu: [{
                         text: renameLabel,

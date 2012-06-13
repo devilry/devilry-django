@@ -2,7 +2,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
     extend: 'Ext.panel.Panel',
     alias: 'widget.createnewassignment',
     requires: [
-        'themebase.PrimaryButton'
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**

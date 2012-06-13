@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     ],
 
     requires: [
-        'themebase.AlertMessage'
+        'devilry_extjsextras.AlertMessage'
     ],
 
     init: function() {

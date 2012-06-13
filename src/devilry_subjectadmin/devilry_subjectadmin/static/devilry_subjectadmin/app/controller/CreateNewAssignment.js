@@ -3,9 +3,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     requires: [
         'Ext.Date',
-        'themebase.NextButton',
-        'themebase.form.ErrorUtils',
-        'themebase.DjangoRestframeworkProxyErrorHandler'
+        'devilry_extjsextras.NextButton',
+        'devilry_extjsextras.form.ErrorUtils',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
     ],
     views: [
         'ActivePeriodsList',
@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         selector: 'createnewassignmentform #deliveryTypesRadioGroup'
     }, {
         ref: 'firstDeadlineField',
-        selector: 'createnewassignmentform themebase-datetimefield[name=first_deadline]'
+        selector: 'createnewassignmentform devilry_extjsextras-datetimefield[name=first_deadline]'
     }, {
         ref: 'firstDeadlineHelp',
         selector: 'createnewassignmentform #first_deadline-help'
@@ -222,13 +222,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
-        var errorhandler = Ext.create('themebase.DjangoRestframeworkProxyErrorHandler');
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.getPageTwoAlertMessageList().addMany(errorhandler.errormessages, 'error');
-        themebase.form.ErrorUtils.addFieldErrorsToAlertMessageList(
+        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(
             this.getCreateNewAssignmentForm(), errorhandler.fielderrors, this.getPageTwoAlertMessageList()
         );
-        themebase.form.ErrorUtils.markFieldErrorsAsInvalid(
+        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(
             this.getCreateNewAssignmentForm(), errorhandler.fielderrors
         );
     },

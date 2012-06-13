@@ -6,9 +6,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
     alias: 'widget.addstudentswindow',
     cls: 'addstudentswindow',
     requires: [
-        'themebase.SaveButton',
-        'themebase.CancelButton',
-        'themebase.GridMultiSelectModel'
+        'devilry_extjsextras.SaveButton',
+        'devilry_extjsextras.CancelButton',
+        'devilry_extjsextras.GridMultiSelectModel'
     ],
 
     /**
@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
      */
 
     initComponent: function() {
-        var selModel = Ext.create('themebase.GridMultiSelectModel');
+        var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
         var someIgnoredTpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.addstudents.someignored'));
         Ext.apply(this, {
             layout: 'border',

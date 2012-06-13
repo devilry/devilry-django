@@ -7,9 +7,9 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     cls: 'subjectoverview',
     requires: [
         'Ext.layout.container.Column',
-        'themebase.EditableSidebarBox',
+        'devilry_extjsextras.EditableSidebarBox',
         'devilry_subjectadmin.view.ActionList',
-        'themebase.AlertMessageList'
+        'devilry_extjsextras.AlertMessageList'
     ],
 
 
@@ -19,10 +19,10 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
 
 
     initComponent: function() {
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.delete_something')).apply({
+        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
             what: this.subject_shortname
         });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.rename_something')).apply({
+        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
             what: this.subject_shortname
         });
 
@@ -72,7 +72,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: dtranslate('themebase.advanced'),
+                    text: dtranslate('devilry_extjsextras.advanced'),
                     scale: 'medium',
                     menu: [{
                         text: renameLabel,

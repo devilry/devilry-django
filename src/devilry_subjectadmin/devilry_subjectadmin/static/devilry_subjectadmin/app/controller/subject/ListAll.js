@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.controller.subject.ListAll', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'themebase.RestfulApiProxyErrorHandler'
+        'devilry_extjsextras.RestfulApiProxyErrorHandler'
     ],
     views: [
         'subject.ListAll'
@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.controller.subject.ListAll', {
 
     _onLoadSubjects: function(records, operation) {
         if(!operation.success) {
-            var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+            var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
             this.getAlertmessagelist().addMany(error.errormessages, 'error');
         }

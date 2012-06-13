@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     extend: 'Ext.app.Controller',
 
     requires: [
-        'themebase.AlertMessage'
+        'devilry_extjsextras.AlertMessage'
     ],
 
     models: [

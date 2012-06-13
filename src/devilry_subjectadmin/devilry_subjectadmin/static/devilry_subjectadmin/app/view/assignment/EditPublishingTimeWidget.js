@@ -4,7 +4,7 @@
  * display widget to change the publishing_time.
  * */
 Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
-    extend: 'themebase.EditableSidebarBox',
+    extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.editpublishingtime-widget',
     cls: 'editpublishingtime-widget'
 });

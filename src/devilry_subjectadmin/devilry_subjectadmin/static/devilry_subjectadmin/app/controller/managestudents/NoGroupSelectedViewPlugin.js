@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
     ],
 
     requires: [
-        'themebase.AlertMessage'
+        'devilry_extjsextras.AlertMessage'
     ],
 
     init: function() {

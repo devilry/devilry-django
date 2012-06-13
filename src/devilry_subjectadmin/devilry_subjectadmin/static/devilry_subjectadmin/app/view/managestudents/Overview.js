@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 items: [{
                     xtype: 'button',
                     itemId: 'selectall',
-                    text: dtranslate('themebase.selectall')
+                    text: dtranslate('devilry_extjsextras.selectall')
                 }, {
                     xtype: 'combobox',
                     itemId: 'sortby',

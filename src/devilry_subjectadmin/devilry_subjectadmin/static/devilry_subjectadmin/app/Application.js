@@ -8,10 +8,10 @@ Ext.define('devilry_subjectadmin.Application', {
     requires: [
         'Ext.container.Viewport',
         'jsapp.Router',
-        'themebase.RouteNotFound',
-        'themebase.AlertMessage',
-        'themebase.DevilryHeader',
-        'themebase.Breadcrumbs'
+        'devilry_extjsextras.RouteNotFound',
+        'devilry_extjsextras.AlertMessage',
+        'devilry_extjsextras.DevilryHeader',
+        'devilry_extjsextras.Breadcrumbs'
     ],
 
     controllers: [

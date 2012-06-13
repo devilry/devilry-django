@@ -7,8 +7,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     cls: 'periodoverview',
     requires: [
         'Ext.layout.container.Column',
-        'themebase.EditableSidebarBox',
-        'themebase.AlertMessageList',
+        'devilry_extjsextras.EditableSidebarBox',
+        'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.ActionList'
     ],
 
@@ -23,10 +23,10 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
 
     initComponent: function() {
         var periodpath = Ext.String.format('{0}.{1}', this.subject_shortname, this.period_shortname);
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.delete_something')).apply({
+        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
             what: this.periodpath
         });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('themebase.rename_something')).apply({
+        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
             what: this.periodpath
         });
 
@@ -76,7 +76,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: dtranslate('themebase.advanced'),
+                    text: dtranslate('devilry_extjsextras.advanced'),
                     scale: 'medium',
                     menu: [{
                         text: renameLabel,

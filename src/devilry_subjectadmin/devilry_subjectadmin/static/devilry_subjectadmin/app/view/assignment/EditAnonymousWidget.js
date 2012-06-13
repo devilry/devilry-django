@@ -3,7 +3,7 @@
  * button which a controller can use to handle changing the attribute.
  * */
 Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousWidget', {
-    extend: 'themebase.EditableSidebarBox',
+    extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.editanonymous-widget',
     cls: 'editanonymous-widget'
 });

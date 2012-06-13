@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                 iconCls: 'icon-add-16',
                 itemId: 'addExaminer',
                 menu: [{
-                    text: dtranslate('themebase.removeall'),
+                    text: dtranslate('devilry_extjsextras.removeall'),
                     itemId: 'removeAllExaminers',
                     iconCls: 'icon-delete-16'
                 }]
@@ -44,7 +44,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
-                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/themebase/resources/icons/16x16/delete.png',
+                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
                     tooltip: dtranslate('devilry_subjectadmin.managestudents.remove_examiner'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);

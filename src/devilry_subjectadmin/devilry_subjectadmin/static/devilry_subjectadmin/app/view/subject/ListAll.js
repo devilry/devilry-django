@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
     alias: 'widget.subjectlistall',
     cls: 'subjectlistall bootstrap',
     requires: [
-        'themebase.AlertMessageList'
+        'devilry_extjsextras.AlertMessageList'
     ],
     bodyPadding: 40,
     autoScroll: true,

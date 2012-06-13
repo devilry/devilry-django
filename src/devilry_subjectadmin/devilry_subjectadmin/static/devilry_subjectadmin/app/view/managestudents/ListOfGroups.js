@@ -48,12 +48,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
 
     initComponent: function() {
-        this.approvedText = dtranslate('themebase.passing_grade');
-        this.notApprovedText = dtranslate('themebase.not_passing_grade');
-        this.openText = dtranslate('themebase.open');
-        this.closedText = dtranslate('themebase.closed');
-        this.deliveriesText = dtranslate('themebase.deliveries');
-        this.deliveryText = dtranslate('themebase.delivery');
+        this.approvedText = dtranslate('devilry_extjsextras.passing_grade');
+        this.notApprovedText = dtranslate('devilry_extjsextras.not_passing_grade');
+        this.openText = dtranslate('devilry_extjsextras.open');
+        this.closedText = dtranslate('devilry_extjsextras.closed');
+        this.deliveriesText = dtranslate('devilry_extjsextras.deliveries');
+        this.deliveryText = dtranslate('devilry_extjsextras.delivery');
 
         this.col1Template = Ext.create('Ext.XTemplate', this.col1TemplateString);
         this.col2Template = Ext.create('Ext.XTemplate', this.col2TemplateString);

@@ -59,7 +59,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _onLoadPeriodFailure: function(operation) {
-        var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
         error.addErrors(operation);
         this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     },
@@ -77,7 +77,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     _onLoadAssignments: function(records, operation) {
         if(operation.success) {
         } else {
-            var error = Ext.create('themebase.RestfulApiProxyErrorHandler', operation);
+            var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
             this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
         }

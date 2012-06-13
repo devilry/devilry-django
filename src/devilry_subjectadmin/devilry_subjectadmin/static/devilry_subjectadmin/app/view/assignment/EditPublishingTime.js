@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
     alias: 'widget.editpublishingtime',
     cls: 'editpublishingtime bootstrap',
     requires: [
-        'themebase.SaveButton'
+        'devilry_extjsextras.SaveButton'
     ],
 
     initComponent: function() {
@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
                 }, {
                     xtype: 'alertmessagelist'
                 }, {
-                    xtype: 'themebase-datetimefield',
+                    xtype: 'devilry_extjsextras-datetimefield',
                     name: 'publishing_time',
                     margin: {top: 20}
                 }],

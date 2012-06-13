@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.utils.LoadAssignmentMixin', {
         );
         Ext.defer(function() { // NOTE: The delay is required for the mask to draw itself correctly.
             this.getMaskElement().mask(tpl.apply({
-                title: dtranslate('themebase.doesnotexist'),
+                title: dtranslate('devilry_extjsextras.doesnotexist'),
                 subject_shortname: this.getSubjectShortname(),
                 period_shortname: this.getPeriodShortname(),
                 assignment_shortname: this.getAssignmentShortname()
