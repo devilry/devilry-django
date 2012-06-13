@@ -30,12 +30,12 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
     /**
      * @cfg {string} dateFieldEmptyText ``emptyText`` attribute for the date field.
      */
-    dateFieldEmptyText: dtranslate('devilry_extjsextras.date_emptytext'),
+    dateFieldEmptyText: pgettext('extjs date emptytext', 'YYYY-MM-DD'),
 
     /**
      * @cfg {string} dateFieldEmptyText ``emptyText`` attribute for the time field.
      */
-    timeFieldEmptyText: dtranslate('devilry_extjsextras.time_emptytext'),
+    timeFieldEmptyText: pgettext('extjs time emptytext', 'hh:mm'),
     
     // properties
     

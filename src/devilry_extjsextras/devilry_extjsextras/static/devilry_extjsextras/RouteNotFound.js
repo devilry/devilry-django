@@ -13,8 +13,8 @@ Ext.define('devilry_extjsextras.RouteNotFound', {
     ],
 
     data: {
-        title: dtranslate('devilry_extjsextras.routenotfound'),
-        gotodashboard: dtranslate('devilry_extjsextras.gotodashboard')
+        title: gettext('Route not found'),
+        gotodashboard: gettext('Return to dashboard')
     },
 
     /**

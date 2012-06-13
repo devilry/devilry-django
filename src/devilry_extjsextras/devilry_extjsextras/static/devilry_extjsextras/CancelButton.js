@@ -6,5 +6,5 @@ Ext.define('devilry_extjsextras.CancelButton', {
     alias: 'widget.cancelbutton',
     scale: 'medium',
     cls: 'cancelbutton',
-    text: dtranslate('devilry_extjsextras.cancel')
+    text: pgettext('uibutton', 'Cancel')
 });

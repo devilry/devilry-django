@@ -19,14 +19,14 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
      * Initial data for the ``bodyTpl``.
      */
     data: {
-        text: dtranslate('devilry_extjsextras.loading')
+        text: gettext('Loading...')
     },
 
     /**
      * @cfg {String} buttontext (optional)
-     * Button text. Defaults to ``dtranslate('devilry_extjsextras.edit')``.
+     * Button text. Defaults to "Edit" (translated).
      */
-    buttonText: dtranslate('devilry_extjsextras.edit'),
+    buttonText: pgettext('uibutton', 'Edit'),
 
     initComponent: function() {
         var cssclasses = 'editablesidebarbox';
