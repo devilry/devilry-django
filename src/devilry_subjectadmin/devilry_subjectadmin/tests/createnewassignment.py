@@ -6,8 +6,6 @@ from .base import SubjectAdminSeleniumTestCase
 
 
 class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
-    appname = 'subjectadmin'
-
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
@@ -48,7 +46,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertFalse('Add all students to this assignment?' in self.selenium.page_source)
         self.assertFalse('Automatically setup examiners?' in self.selenium.page_source)
 
-        fieldsetbutton = self.selenium.find_element_by_css_selector('fieldset.advanced_options_fieldset>legend>div.x-tool')
+        fieldsetbutton = self.selenium.find_element_by_css_selector('.advanced_options_fieldset legend .x-tool img')
         fieldsetbutton.click()
 
         self.assertTrue('Anonymous?' in self.selenium.page_source)
