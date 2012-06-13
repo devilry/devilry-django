@@ -16,7 +16,6 @@ setup(name = 'devilry_subjectadmin',
       long_description = open(join(this_dir, 'README.rst')).read().strip(),
       zip_safe=False,
       classifiers=[
-                   'Development Status :: 5 - Production/Stable',
                    'Environment :: Web Environment',
                    'Framework :: Django',
                    'Intended Audience :: Developers',
