@@ -13,32 +13,26 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         xtype: 'container',
         columnWidth: .65,
         items: [{
-            xtype: 'panel',
-            cls: 'centerbox',
-            title: dtranslate('devilry_subjectadmin.dashboard.actionstitle'),
-            ui: 'inset-header-strong-panel',
-            items: [{
-                xtype: 'actionlist',
-                cls: 'centerbody',
-                links: [{
-                    url: '#/@@create-new-assignment/@@chooseperiod',
-                    text: dtranslate('devilry_subjectadmin.dashboard.createnewassignment')
-                }, {
-                    url: '#/',
-                    text: dtranslate('devilry_subjectadmin.dashboard.browseall')
+            //xtype: 'panel',
+            //cls: 'centerbox',
+            //title: pgettext('subjectadmin dashboard', 'Actions'),
+            //ui: 'inset-header-strong-panel',
+            //items: [{
+                //xtype: 'actionlist',
+                //cls: 'centerbody',
+                //links: [{
+                    //url: '#/@@create-new-assignment/@@chooseperiod',
+                    //text: dtranslate('devilry_subjectadmin.dashboard.createnewassignment')
                 //}, {
-                    //url: '#/@@register-for-final-exams',
-                    //text: dtranslate('devilry_subjectadmin.dashboard.registerqualifiesforfinal')
-                //}, {
-                    //url: '#/@@global-statistics',
-                    //text: dtranslate('devilry_subjectadmin.dashboard.overview-and-statistics')
-                }]
-            }]
-        }, {
+                    //url: '#/',
+                    //text: dtranslate('devilry_subjectadmin.dashboard.browseall')
+                //}]
+            //}]
+        //}, {
             xtype: 'panel',
             margin: {top: 40},
-            title: dtranslate('devilry_subjectadmin.dashboard.shortcuts'),
-            ui: 'inset-header-panel',
+            title: pgettext('subjectadmin dashboard', 'Active subjects'),
+            ui: 'inset-header-strong-panel',
             items: {
                 xtype: 'shortcutlist'
             }

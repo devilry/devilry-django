@@ -4,6 +4,9 @@ Ext.define('devilry_subjectadmin.view.shortcut.List', {
     cls: 'shortcutlist',
 
     tpl: new Ext.XTemplate([
+        '<p>',
+        gettext('Active your courses are shown below.'),
+        '</p>',
         '<ul>',
         '    <tpl for="items">',
         '       <li>',
@@ -18,6 +21,11 @@ Ext.define('devilry_subjectadmin.view.shortcut.List', {
         '           </ul>',
         '       </li>',
         '    </tpl>',
-        '<ul>'
+        '<ul>',
+        '<p>',
+            '<a href="#/" class="btn">',
+                gettext('Browse all your subjects (including old/archived)'),
+            '<a>',
+        '</p>',
     ])
 });

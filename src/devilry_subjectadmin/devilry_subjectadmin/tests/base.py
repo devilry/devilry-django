@@ -15,3 +15,7 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys(password)
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
+
+    def get_absolute_url(self, path):
+        return '{live_server_url}/devilry_subjectadmin/#{path}'.format(live_server_url=self.live_server_url,
+                                                                       path=path)
