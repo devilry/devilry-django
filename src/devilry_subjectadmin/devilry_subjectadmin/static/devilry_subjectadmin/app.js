@@ -130,7 +130,6 @@ Ext.application({
         //this.route.add("/:subject/:period/@@edit", 'period_edit');
         this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/", 'showAssignment');
         this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/@@manage-students", 'manageStudents');
-        this.setupExtraRoutes();
         this.route.start();
     },
     
