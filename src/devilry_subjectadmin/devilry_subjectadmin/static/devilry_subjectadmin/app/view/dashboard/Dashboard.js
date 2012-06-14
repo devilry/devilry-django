@@ -13,24 +13,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         xtype: 'container',
         columnWidth: .65,
         items: [{
-            //xtype: 'panel',
-            //cls: 'centerbox',
-            //title: pgettext('subjectadmin dashboard', 'Actions'),
-            //ui: 'inset-header-strong-panel',
-            //items: [{
-                //xtype: 'actionlist',
-                //cls: 'centerbody',
-                //links: [{
-                    //url: '#/@@create-new-assignment/@@chooseperiod',
-                    //text: dtranslate('devilry_subjectadmin.dashboard.createnewassignment')
-                //}, {
-                    //url: '#/',
-                    //text: dtranslate('devilry_subjectadmin.dashboard.browseall')
-                //}]
-            //}]
-        //}, {
             xtype: 'panel',
-            margin: {top: 40},
             title: pgettext('subjectadmin dashboard', 'Active subjects'),
             ui: 'inset-header-strong-panel',
             items: {
@@ -44,7 +27,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         border: false,
         items: [{
             xtype: 'panel',
-            title: dtranslate('devilry_subjectadmin.dashboard.messages'),
+            title: pgettext('subjectadmin dashboard', 'Messages'),
             ui: 'lookslike-parawitheader-panel',
             cls: 'bootstrap',
             html: [
