@@ -1,4 +1,4 @@
-Ext.define('jsapp.Router', {
+Ext.define('devilry_extjsextras.Router', {
     extend: 'Ext.util.Observable',
     requires: [
         'Ext.util.History'

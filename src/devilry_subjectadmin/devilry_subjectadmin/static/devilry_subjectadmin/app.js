@@ -3,13 +3,12 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
     paths: {
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
-        'jsapp': DevilrySettings.DEVILRY_STATIC_URL + '/jsapp/lib',
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras'
     },
 
     requires: [
         'Ext.container.Viewport',
-        'jsapp.Router',
+        'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_extjsextras.DevilryHeader',
@@ -120,7 +119,7 @@ Ext.application({
      ********************************************/
 
     _setupRoutes: function() {
-        this.route = Ext.create('jsapp.Router', this);
+        this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/", 'browse');
         this.route.add("/:subject_shortname/", 'showSubject');
@@ -135,10 +134,6 @@ Ext.application({
         this.route.start();
     },
     
-    /** Primary for TestApplication. However, it may be useful for someone
-     * extending this app. */
-    setupExtraRoutes: Ext.emptyFn,
-
     routeNotFound: function(routeInfo) {
         this.breadcrumbs.set([], dtranslate('theme.routenotfound'));
         this.setPrimaryContent({
