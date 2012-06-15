@@ -140,6 +140,9 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
         period_id = self.CONTENT['period_id']
         periodadmin_required(user, period_id)
 
+    def postprocess_docs(self, docs):
+        return docs.format(parametertable=self.docformat_form())
+
     def post(self, request):
         """
         Create an assignment, and add related students if requested.
