@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
     listTpl: [
         '<ul>',
             '<tpl for=".">',
-                '<li class="subject">',
+                '<li class="devilry_subject devilry_subject_{short_name}">',
                     '<a href="#/{short_name}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
@@ -27,15 +27,16 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
             items: {
                 xtype: 'panel',
                 ui: 'inset-header-strong-panel',
-                title: dtranslate('core.subject.plural'),
+                title: gettext('All subjects'),
                 layout: 'fit',
                 items: [{
                     xtype: 'alertmessagelist'
                 }, {
                     xtype: 'dataview',
                     itemId: 'subjectList',
+                    cls: 'devilry_allSubjectsList',
                     tpl: this.listTpl,
-                    itemSelector: 'li.subject',
+                    itemSelector: 'li.devilry_subject',
                     store: this.store
                 }]
             },
