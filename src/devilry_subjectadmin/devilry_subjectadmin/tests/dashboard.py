@@ -17,12 +17,9 @@ class TestDashboard(SubjectAdminSeleniumTestCase):
                             subjects=['duck1010'],
                             periods=['oldperiod:begins(-100)'],
                             assignments=['oldassignment'])
-        #self.testhelper.add_to_path('uni;duck1100.2012h.extraassignment')
-        #self.testhelper.add_to_path('uni;duck1000.oldstuff.oldassignment')
 
     def test_dashboard(self):
         self.browseTo('')
-        #raw_input('ENTER')
         self.waitForCssSelector('.shortcutlist')
         self.assertTrue('Active subjects' in self.selenium.page_source)
         self.assertFalse('oldperiod' in self.selenium.page_source)
