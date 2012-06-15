@@ -214,5 +214,17 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False
         },
+        'devilry': {
+            'handlers': ['allButExceptionTracebacks',
+                         'console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'devilry_subjectadmin': {
+            'handlers': ['allButExceptionTracebacks',
+                         'console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
     }
 }
