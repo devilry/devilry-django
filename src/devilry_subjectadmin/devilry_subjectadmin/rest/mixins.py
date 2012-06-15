@@ -1,10 +1,9 @@
-from djangorestframework.views import View
 from djangorestframework.compat import apply_markdown
 from djangorestframework.views import _remove_leading_indent
 from django.utils.safestring import mark_safe
 from cStringIO import StringIO
 
-class SelfdocumentingRestView(View):
+class SelfdocumentingMixin(object):
     def get_method_docs(self, methodname):
         method = getattr(self, methodname, None)
         if not method or not method.__doc__:

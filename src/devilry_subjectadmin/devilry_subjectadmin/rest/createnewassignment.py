@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from djangorestframework.resources import FormResource
 from djangorestframework.response import Response
 from djangorestframework.permissions import IsAuthenticated
+from djangorestframework.views import View
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
@@ -14,7 +15,7 @@ from .auth import periodadmin_required
 from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
 from. errors import PermissionDeniedError
-from .viewbase import SelfdocumentingRestView
+from .mixins import SelfdocumentingMixin
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -122,7 +123,7 @@ class RestCreateNewAssignmentForm(forms.Form):
                                              help_text='Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period. Ignored unless ``add_all_relatedstudents`` is true.')
 
 
-class RestCreateNewAssignment(SelfdocumentingRestView):
+class RestCreateNewAssignment(SelfdocumentingMixin, View):
     """
     Simplifies creating and setting up new assignments.
     """
