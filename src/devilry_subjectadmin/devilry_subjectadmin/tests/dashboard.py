@@ -10,7 +10,7 @@ class TestDashboard(SubjectAdminSeleniumTestCase):
         self.login('grandma')
 
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100', 'duck1010:ln(DUCK 1000 - Programming)'],
+                            subjects=['duck1100', 'duck1010:ln(DUCK 1010 - Programming)'],
                             periods=['2012h:begins(-1)'],
                             assignments=['week1:ln(Week One)', 'week2', 'week3', 'week4'])
         self.testhelper.add(nodes='uni',
