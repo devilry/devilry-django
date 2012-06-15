@@ -79,3 +79,29 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
             return True
         else:
             return False
+
+    def is_empty(self):
+        """
+        Check if this node is empty (has no children). Used by
+        :meth:`.can_delete` to determine if non-super-users are allowed to
+        delete a node, but may also be useful in other situations.
+        """
+        return False
+
+    def can_delete(self, user_obj):
+        """
+        Check if the given user is permitted to delete this object. A user is
+        permitted to delete an object if the user is superadmin, or if the user
+        is admin on the parentnode (uses :meth:`.is_admin`). Only superusers
+        are allowed to delete nodes where :meth:`.is_empty` returns ``False``.
+
+        :return: ``True`` if the user is permitted to delete this object.
+        """
+        if self.id == None:
+            return False
+        if user_obj.is_superuser:
+            return True
+        if self.parentnode != None and self.is_empty():
+            return self.parentnode.is_admin(user_obj)
+        else:
+            return False
