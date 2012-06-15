@@ -11,11 +11,6 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100', 'duck1010:ln(DUCK 1010 - Programming)', 'duck9000'])
 
-    #def test_servererror(self):
-        #self.browseToTest('/', query='servererror=1') # subjectadmin.store.SubjectsTestMock simulates servererror with this querystring
-        #self.waitForCssSelector('.alertmessagelist')
-        #self.assertTrue('500: Server error' in self.selenium.page_source)
-
     def test_published(self):
         self.browseTo('/')
         self.waitForCssSelector('.devilry_allSubjectsList')

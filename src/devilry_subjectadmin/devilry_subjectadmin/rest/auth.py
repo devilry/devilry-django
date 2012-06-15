@@ -56,10 +56,19 @@ class IsSubjectAdmin(BasePermission):
     view.
     """
     def check_permission(self, user):
-        if len(self.view.args) != 1:
-            raise PermissionDeniedError('The IsSubjectAdmin permission checker requires an assignmentid.')
-        subjectid = self.view.args[0]
+        subjectid = self.get_subjectid()
         _subjectadmin_required(user, subjectid)
+
+    def get_subjectid(self):
+        """
+        Get the subjectid from the view.
+
+        :raise PermissionDeniedError: If the subjectid can not be determined.
+        """
+        try:
+            self.view.kwargs['id']
+        except KeyError, e:
+            raise PermissionDeniedError('The IsSubjectAdmin permission checker requires an assignmentid.')
 
 
 class IsAssignmentAdmin(BasePermission):
