@@ -15,7 +15,7 @@ def _admin_required(nodecls, user, errormsg, objid):
         return
     if objid == None:
         raise PermissionDeniedError(errormsg)
-    if nodecls.where_is_admin(user).filter(id=objid).count() == 0:
+    if nodecls.where_is_admin_or_superadmin(user).filter(id=objid).count() == 0:
         raise PermissionDeniedError(errormsg)
 
 
@@ -66,7 +66,7 @@ class IsSubjectAdmin(BasePermission):
         :raise PermissionDeniedError: If the subjectid can not be determined.
         """
         try:
-            self.view.kwargs['id']
+            return self.view.kwargs['id']
         except KeyError, e:
             raise PermissionDeniedError('The IsSubjectAdmin permission checker requires an assignmentid.')
 
