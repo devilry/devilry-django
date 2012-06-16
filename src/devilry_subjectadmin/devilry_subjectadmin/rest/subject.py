@@ -32,7 +32,6 @@ class ListSubjectRest(SelfdocumentingMixin, ListModelMixin, ModelView):
 
     def get_queryset(self):
         qry = self.resource.model.where_is_admin_or_superadmin(self.user)
-        #qry = qry.prefetch_related('admins', 'admins__devilryuserprofile')
         qry = qry.order_by('short_name')
         return qry
 
@@ -102,7 +101,6 @@ class SubjectInstanceResource(SubjectResource):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
         return [self.format_adminuser(user)
                 for user in instance.admins.all().prefetch_related('devilryuserprofile')]
-
 
 class InstanceSubjectRest(InstanceModelView):
     """

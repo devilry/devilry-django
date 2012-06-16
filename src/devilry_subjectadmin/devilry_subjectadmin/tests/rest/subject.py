@@ -30,7 +30,7 @@ class TestRestListSubjectRest(TestCase):
         self.assertEquals(content[1]['long_name'], 'Something fancy')
         self.assertEquals(content[2]['short_name'], 'duck4000')
         self.assertEquals(set(content[0].keys()),
-                          set(['id', 'parentnode_id', 'etag', 'short_name', 'long_name']))
+                          set(['id', 'parentnode', 'etag', 'short_name', 'long_name']))
 
     def test_singleadmin(self):
         content, response = self._listas('singleadmin')
