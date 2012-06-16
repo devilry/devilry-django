@@ -72,6 +72,6 @@ class TestPeriod(TestCase, TestHelper):
         self.assertEquals(q.count(), 2)
 
     def test_is_empty(self):
-        self.assertFalse(self.inf1100.is_empty())
+        self.assertFalse(self.inf1100_old.is_empty())
         self.add(nodes="uio.ifi", subjects=['duck9000'], periods=['emptyperiod'])
         self.assertTrue(self.duck9000_emptyperiod.is_empty())
