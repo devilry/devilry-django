@@ -42,4 +42,5 @@ class BaseNodeInstanceResource(ModelResource):
     def admins(self, instance):
         if not isinstance(instance, self.model):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
-        return [self.format_adminuser(user) for user in instance.admins.all()]
+        return [self.format_adminuser(user)
+                for user in instance.admins.all().prefetch_related('devilryuserprofile')]

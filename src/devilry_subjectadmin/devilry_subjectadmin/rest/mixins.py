@@ -1,7 +1,62 @@
+from logging import getLogger
 from djangorestframework.compat import apply_markdown
 from djangorestframework.views import _remove_leading_indent
 from django.utils.safestring import mark_safe
 from cStringIO import StringIO
+
+from .errors import PermissionDeniedError
+
+logger = getLogger(__name__)
+
+
+
+class BaseNodeInstanceRestMixin(object):
+    def put(self, request, id=None):
+        subject = super(BaseNodeInstanceRestMixin, self).put(request, id=id)
+        modelname = self.resource.model.__name__
+        logger.info('User=%s updated %s id=%s (%s)', self.user, modelname, id, subject)
+        return subject
+
+    def get_queryset(self):
+        qry = self.resource.model.where_is_admin_or_superadmin(self.user)
+        # NOTE: Using prefetch_related will make return from PUT be wrong
+        #       because the cached value will be returned, not the updated one.
+        #qry = qry.prefetch_related('admins__devilryuserprofile')
+        qry = qry.order_by('short_name')
+        return qry
+
+    def can_delete(self):
+        return self._get_instance_or_404().can_delete()
+
+    def _get_instance_or_404(self, *args, **kwargs):
+        from djangorestframework.response import ErrorResponse
+        from djangorestframework import status
+
+        model = self.resource.model
+        query_kwargs = self.get_query_kwargs(self.request, *args, **kwargs)
+        try:
+            return self.get_instance(**query_kwargs)
+        except model.DoesNotExist:
+            raise ErrorResponse(status.HTTP_404_NOT_FOUND, None, {})
+
+    def delete(self, request, *args, **kwargs):
+        instance = self._get_instance_or_404(*args, **kwargs)
+        instanceid = instance.id
+        instanceident = unicode(instance)
+        modelname = self.resource.model.__name__
+        if instance.can_delete(self.user):
+            instance.delete()
+            logger.info('User=%s deleted %s id=%s (%s)', self.user, modelname, instanceid, instanceident)
+            return {'id': instanceid}
+        else:
+            logger.warn(('User=%s tried to delete %s id=%s (%s). They where rejected '
+                         'because of lacking permissions. Since the user-interface',
+                         'should make it impossible to perform this action, huge amounts of'
+                         'such attempts by this user may be an attempt at trying '
+                         'to delete things that they should not attempt to delete.'),
+                        self.user, modelname, instanceid, instanceident)
+            raise PermissionDeniedError()
+
 
 
 class SelfdocumentingMixin(object):
