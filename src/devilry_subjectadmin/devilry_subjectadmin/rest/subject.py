@@ -31,13 +31,23 @@ class ListSubjectRest(SelfdocumentingMixin, ListModelMixin, ModelView):
 
 
 class SubjectInstanceResource(SubjectResource):
-    fields = SubjectResource.fields + ('can_delete',)
+    fields = SubjectResource.fields + ('can_delete', 'admins')
 
     def can_delete(self, instance):
-        if isinstance(instance, Subject):
-            return instance.can_delete(self.view.user)
-        else:
-            return None
+        if not isinstance(instance, Subject):
+            return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
+        return instance.can_delete(self.view.user)
+
+    def admins(self, instance):
+        if not isinstance(instance, Subject):
+            return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
+        admins = {}
+        for user in instance.admins.all():
+            admins[user.username] = {'email': user.email,
+                                     'username': user.username,
+                                     'id': user.id,
+                                     'full_name': user.devilryuserprofile.full_name}
+        return admins
 
 class InstanceSubjectRest(InstanceModelView):
     """
