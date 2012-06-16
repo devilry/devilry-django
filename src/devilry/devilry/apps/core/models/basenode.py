@@ -86,7 +86,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         :meth:`.can_delete` to determine if non-super-users are allowed to
         delete a node, but may also be useful in other situations.
         """
-        return False
+        raise NotImplementedError('is_empty must be implemented in subclasses.')
 
     def can_delete(self, user_obj):
         """
