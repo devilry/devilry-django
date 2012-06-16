@@ -3,6 +3,7 @@ from djangorestframework.views import _remove_leading_indent
 from django.utils.safestring import mark_safe
 from cStringIO import StringIO
 
+
 class SelfdocumentingMixin(object):
     '''
     ``djangorestframework`` view mixin that makes it more convenient to provide
