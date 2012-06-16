@@ -15,7 +15,7 @@ class TestPeriod(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi",
                  subjects=["inf1100"],
-                 periods=["old:begins(-2):ends(1)", "looong"],
+                 periods=["old:begins(-2):ends(1)", "looong:begins(-1):ends(1)"],
                  assignments=["assignment1", "assignment2"],
                  assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
 
@@ -63,10 +63,15 @@ class TestPeriod(TestCase, TestHelper):
 
     def test_published_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
-        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.student1:examiner(examiner1)')
+        self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(1).oblig1.student1:examiner(examiner1)')
         q = Period.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
         assignment1010 = self.inf1010_spring10_oblig1_student1.parentnode
         assignment1010.publishing_time = datetime.now() + timedelta(10)
         assignment1010.save()
         self.assertEquals(q.count(), 2)
+
+    def test_is_empty(self):
+        self.assertFalse(self.inf1100.is_empty())
+        self.add(nodes="uio.ifi", subjects=['duck9000'], periods=['emptyperiod'])
+        self.assertTrue(self.duck9000_emptyperiod.is_empty())

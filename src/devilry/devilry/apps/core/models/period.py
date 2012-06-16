@@ -162,6 +162,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_relatedstudent(cls, user_obj):
         return Q(relatedstudent__user=user_obj)
 
+    def is_empty(self):
+        """
+        Returns ``True`` if this Period does not contain any assignments.
+        """
+        return self.assignments.count() == 0
+
 
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
