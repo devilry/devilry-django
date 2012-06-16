@@ -87,4 +87,8 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     def q_is_candidate(cls, user_obj):
         return Q(periods__assignments__assignmentgroups__candidates__student=user_obj)
 
-
+    def is_empty(self):
+        """
+        Returns ``True`` if this Subject does not contain any periods.
+        """
+        return self.periods.count() == 0

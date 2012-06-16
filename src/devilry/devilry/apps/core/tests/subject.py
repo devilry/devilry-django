@@ -13,7 +13,7 @@ class TestSubject(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1060:admin(teacher1)", "inf1100"],
-                 periods=["autumn10", "spring9"],
+                 periods=["autumn10:begins(-1)", "spring9:begins(-1)"],
                  assignments=["assignment1", "assignment2"],
                  assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
         
@@ -71,16 +71,21 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(q[0].short_name, 'inf1060')
         self.assertEquals(q[1].short_name, 'inf1100')
 
-        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
+        self.add_to_path('uio.ifi;inf1010.spring10:begins(-1).oblig1.group1')
         self.inf1010_spring10_oblig1_group1.examiners.create(user=examiner1)
         self.inf1010_spring10_oblig1_group1.save()
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
         self.assertEquals(q[0].short_name, 'inf1010')
         self.assertEquals(q[1].short_name, 'inf1060')
-        
+
         assignment1010 = self.inf1010_spring10_oblig1_group1.parentnode
         assignment1010.publishing_time = datetime.now() + timedelta(10)
         assignment1010.save()
         q = Subject.published_where_is_examiner(examiner1)
         self.assertEquals(q.count(), 2)
+
+    def test_is_empty(self):
+        self.assertFalse(self.inf1060.is_empty())
+        self.add(nodes="uio.ifi", subjects=['duck9000'])
+        self.assertTrue(self.duck9000.is_empty())
