@@ -129,6 +129,6 @@ class Node(models.Model, BaseNode, Etag):
 
     def is_empty(self):
         """
-        Returns ``True if this Node does not contain any childnodes or subjects.
+        Returns ``True`` if this Node does not contain any childnodes or subjects.
         """
         return self.child_nodes.count() == 0 and self.subjects.count() == 0
