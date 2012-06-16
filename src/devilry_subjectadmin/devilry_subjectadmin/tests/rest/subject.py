@@ -74,18 +74,55 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['id'], self.testhelper.duck2000.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
         self.assertEquals(content['long_name'], self.testhelper.duck2000.long_name)
-        self.assertEquals(content['parentnode_id'], self.testhelper.duck2000.parentnode_id)
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000.parentnode_id)
         self.assertEquals(content['can_delete'], self.testhelper.duck2000.can_delete(self.testhelper.uniadmin))
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode_id', 'id']))
+                          set(['short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id']))
 
         self.assertEquals(len(content['admins']), 1)
-        self.assertTrue('duck2000admin' in content['admins'])
-        self.assertEquals(content['admins']['duck2000admin']['email'], 'duck2000admin@example.com')
-        self.assertEquals(set(content['admins']['duck2000admin'].keys()),
+        self.assertEquals(content['admins'][0]['email'], 'duck2000admin@example.com')
+        self.assertEquals(set(content['admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000.id))
         self.assertFalse(content['can_delete'])
+
+    def test_put(self):
+        self.client.login(username='duck2000admin', password='test')
+        data = {'short_name': 'duck2000',
+                'long_name': 'Updated',
+                'admins': [],
+                'parentnode': 1}
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000.id),
+                                                 data=data)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['id'], self.testhelper.duck2000.id)
+        self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
+        self.assertEquals(content['long_name'], 'Updated')
+        self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(set(content.keys()),
+                          set(['short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id']))
+
+    def test_put_admins(self):
+        self.client.login(username='duck2000admin', password='test')
+        self.testhelper.create_user('user1')
+        self.testhelper.create_user('user2')
+        self.testhelper.create_user('user3')
+        data = {'short_name': 'duck2000',
+                'long_name': 'Updated',
+                'admins': [{'username': 'user1',
+                             'email': 'ignored',
+                             'full_name': 'ignored!'},
+                           {'username': 'user2'},
+                           {'id': self.testhelper.user3.id}],
+                'parentnode': 1}
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000.id),
+                                                 data=data)
+        self.assertEquals(response.status_code, 200)
+        admins = content['admins']
+        self.assertEquals(len(content['admins']), 3)
+        admins.sort(cmp=lambda a,b: cmp(a['username'], b['username']))
+        self.assertEquals(admins[0]['username'], 'user1')
+        self.assertEquals(admins[2]['username'], 'user3')
