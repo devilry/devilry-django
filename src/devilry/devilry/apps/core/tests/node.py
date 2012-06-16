@@ -14,7 +14,7 @@ class TestNode(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)")
         self.add(nodes="uio.phys")
-        self.add(nodes="uio.deepdummy1.deepdummy2.deepdummy3")
+        self.add(nodes="uio.deepdummy1:admin(deepdummyadmin).deepdummy2.deepdummy3")
 
     def test_unique(self):
         n = Node(parentnode=self.uio_deepdummy1, short_name='ifi', long_name='Ifi')
@@ -121,3 +121,19 @@ class TestNode(TestCase, TestHelper):
         pk_verify.sort()
         self.assertEquals(set(pks), set(pk_verify))
 
+    def test_is_empty(self):
+        self.assertTrue(self.uio_ifi.is_empty())
+        self.assertFalse(self.uio.is_empty())
+        self.add(nodes="uio.ifi", subjects=['duck1010'])
+        self.assertFalse(self.uio_ifi.is_empty())
+
+    def test_can_delete(self):
+        self.create_superuser('grandma')
+        self.assertTrue(self.uio_deepdummy1_deepdummy2_deepdummy3.can_delete(self.deepdummyadmin)) # Admin on parent, and empty
+        self.assertFalse(self.uio_deepdummy1_deepdummy2.can_delete(self.deepdummyadmin)) # Not empty (contains childnodes)
+
+        self.assertTrue(self.uio_ifi.can_delete(self.grandma)) # Superadmin
+        self.assertFalse(self.uio_ifi.can_delete(self.ifiadmin)) # Not admin on parentnode
+        self.assertTrue(self.uio_ifi.can_delete(self.uioadmin)) # Admin on parentnode
+        self.add(nodes="uio.ifi", subjects=['duck1010'])
+        self.assertFalse(self.uio_ifi.can_delete(self.uioadmin)) # Not empty (contains a subject)

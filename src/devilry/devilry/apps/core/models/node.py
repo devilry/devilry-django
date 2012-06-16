@@ -126,3 +126,9 @@ class Node(models.Model, BaseNode, Etag):
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(pk__in=cls._get_nodepks_where_isadmin(user_obj))
+
+    def is_empty(self):
+        """
+        Returns ``True if this Node does not contain any childnodes or subjects.
+        """
+        return self.child_nodes.count() == 0 and self.subjects.count() == 0
