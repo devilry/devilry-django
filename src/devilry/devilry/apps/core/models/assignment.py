@@ -179,3 +179,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                               period=unicode(self.parentnode),
                                                                               end_time=self.parentnode.end_time,
                                                                               start_time=self.parentnode.start_time))
+
+
+    def is_empty(self):
+        """
+        Returns ``True`` if this Assignment does not contain any AssignmentGroups.
+        """
+        return self.assignmentgroups.count() == 0

@@ -16,7 +16,7 @@ class TestAssignment(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
-                 periods=["old:begins(-2):ends(1)", "looong"],
+                 periods=["old:begins(-2):ends(1)", "looong:begins(-1):ends(10)"],
                  assignments=["assignment1", "assignment2"],
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)", "g2:examiner(examiner2)",
                                    "g3:candidate(student2,student3):examiner(examiner1,examiner2)"])
@@ -97,7 +97,7 @@ class TestAssignment(TestCase, TestHelper):
         self.assertEquals(q[2].short_name, 'assignment3')
         
         #Create group2 with examiner1 as examiner
-        self.add_to_path('uio.ifi;inf1010.spring10.assignment0.group2:examiner(examiner1)')
+        self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(2).assignment0.group2:examiner(examiner1)')
         q = Assignment.active_where_is_examiner(examiner1)
         self.assertEquals(q.count(), 4)
         self.inf1010_spring10.end_time = past
@@ -114,7 +114,7 @@ class TestAssignment(TestCase, TestHelper):
         q = Assignment.old_where_is_examiner(examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldassignment')
-        
+
         # Set as examiner on group1
         self.add_to_path('uio.ifi;inf1100.looong.assignment1.group1:examiner(examiner3)')
         q = Assignment.old_where_is_examiner(examiner3)
@@ -144,3 +144,11 @@ class TestAssignment(TestCase, TestHelper):
 
     def test_get_path(self):
         self.assertEquals(self.inf1100_looong_assignment1.get_path(), 'inf1100.looong.assignment1')
+
+    def test_is_empty(self):
+        self.assertFalse(self.inf1100_old_assignment1.is_empty())
+        self.add(nodes="uio.ifi",
+                 subjects=['duck9000'],
+                 periods=['someperiod'],
+                 assignments=['emptyassignment'])
+        self.assertTrue(self.duck9000_someperiod_emptyassignment.is_empty())
