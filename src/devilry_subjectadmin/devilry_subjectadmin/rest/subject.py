@@ -31,8 +31,10 @@ class ListSubjectRest(SelfdocumentingMixin, ListModelMixin, ModelView):
     resource = SubjectResource
 
     def get_queryset(self):
-        return self.resource.model.where_is_admin_or_superadmin(self.user).order_by('short_name')
-
+        qry = self.resource.model.where_is_admin_or_superadmin(self.user)
+        #qry = qry.prefetch_related('admins', 'admins__devilryuserprofile')
+        qry = qry.order_by('short_name')
+        return qry
 
 from django.forms import ValidationError
 
@@ -77,21 +79,30 @@ class SubjectInstanceResource(SubjectResource):
             #del data['id']
         #return super(SubjectInstanceResource, self).validate_request(data, files)
 
+    def get_queryset(self):
+        qry = self.resource.model.where_is_admin_or_superadmin(self.user)
+        qry = qry.order_by('short_name')
+        return qry
+
     def can_delete(self, instance):
         if not isinstance(instance, Subject):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
         return instance.can_delete(self.view.user)
 
     def format_adminuser(self, user):
-        return {'email': user.email,
+        return {
+                'email': user.email,
                 'username': user.username,
                 'id': user.id,
-                'full_name': user.devilryuserprofile.full_name}
+                'full_name': user.devilryuserprofile.full_name
+               }
 
     def admins(self, instance):
         if not isinstance(instance, Subject):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
-        return [self.format_adminuser(user) for user in instance.admins.all()]
+        return [self.format_adminuser(user)
+                for user in instance.admins.all().prefetch_related('devilryuserprofile')]
+
 
 class InstanceSubjectRest(InstanceModelView):
     """
