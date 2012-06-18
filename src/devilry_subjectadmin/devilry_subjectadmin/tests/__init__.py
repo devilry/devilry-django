@@ -1,4 +1,3 @@
-from jasmine import *
 from dashboard import *
 from subject import *
 from period import *
