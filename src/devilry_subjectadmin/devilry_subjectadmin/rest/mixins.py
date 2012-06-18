@@ -60,7 +60,10 @@ class BaseNodeInstanceRestMixin(object):
             raise PermissionDeniedError()
 
     def postprocess_docs_formatkw(self):
-        specify_helptext = {'inherited_admins': self.inherited_admins_help}
+        specify_helptext = {'inherited_admins': self.inherited_admins_help,
+                            'can_delete': 'Can the authenticated user delete this object?',
+                            'parentnode': 'ID of the parentnode.',
+                            'id': 'The unique ID of the object.'}
         return dict(paramteterstable=self.htmlformat_parameters_from_form(),
                     responsetable=self.htmlformat_response_from_fields(specify_helptext=specify_helptext),
                     delete_responsetable=self.html_create_attrtable({'id': {'help': 'The ID of the deleted object.'}}))
