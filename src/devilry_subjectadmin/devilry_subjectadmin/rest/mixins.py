@@ -167,9 +167,10 @@ class SelfdocumentingMixin(object):
         """
         out = StringIO()
         out.write('<tr>')
-        out.write('<td><strong>{fieldname}</strong>'.format(fieldname=fieldname))
+        out.write('<td><p><strong>{fieldname}</strong>'.format(fieldname=fieldname))
         if meta:
-            out.write('<br/><small>{meta}</small></td>'.format(meta=meta))
+            out.write('<br/><small>{meta}</small>'.format(meta=meta))
+        out.write('</p></td>')
         out.write('<td>{help}</td>'.format(help=self.convert_docs_to_html(help)))
         out.write('</tr>')
         return out.getvalue()
@@ -237,10 +238,11 @@ class SelfdocumentingMixin(object):
             if field.name in self.resource.fields:
                 help = field.field.help_text
                 fieldshelp[field.name] = dict(fieldname=field.name, help=help)
-        for fieldname, fieldhelp in specify_helptext.iteritems():
-            if not fieldname in self.resource.fields:
-                raise ValueError('``{fieldname}`` (from specify_helptext) is not in ``self.resource.fields``.'.format(fieldname=fieldname))
-            fieldshelp[fieldname] = fieldhelp
+        for fieldname in self.resource.fields:
+            help = specify_helptext.get(fieldname, '')
+            if not help and fieldname in fieldshelp:
+                continue # Use form-help if help is not in specify_helptext
+            fieldshelp[fieldname] = dict(fieldname=fieldname, help=help)
         return self.html_create_attrtable(fieldshelp)
 
     def postprocess_docs(self, htmldocs):
