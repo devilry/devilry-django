@@ -1,27 +1,15 @@
 from djangorestframework.views import ModelView, InstanceModelView
-from djangorestframework.mixins import ListModelMixin
 
 from .mixins import BaseNodeInstanceRestMixin
 from .mixins import SelfdocumentingBaseNodeMixin
+from .mixins import BaseNodeListModelMixin
+from .mixins import BaseNodeCreateModelMixin
 
 
-class ListOrCreateSubjectView(SelfdocumentingBaseNodeMixin, ListModelMixin, ModelView):
-    def get_queryset(self):
-        qry = self.resource.model.where_is_admin_or_superadmin(self.user)
-        qry = qry.order_by('short_name')
-        return qry
-
-    def get_restdocs(self):
-        return """
-        List the {modelname} where the authenticated user is admin.
-
-        ## Returns
-        List of maps/dicts with the following attributes:
-        {responsetable}
-        """
-
+class BaseNodeListOrCreateView(SelfdocumentingBaseNodeMixin, BaseNodeListModelMixin, BaseNodeCreateModelMixin, ModelView):
     def postprocess_docs(self, docs):
-        return docs.format(modelname=self.resource.model.__name__,
+        return docs.format(create_paramteterstable=self.htmldoc_parameterstable(),
+                           modelname=self.resource.model.__name__,
                            responsetable=self.htmldoc_responsetable())
 
 
@@ -41,7 +29,7 @@ class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
         Update the {modelname} and its admins.
 
         ## Parameters
-        {paramteterstable}
+        {update_parameterstable}
         """
 
     def delete_restdocs(self):
@@ -56,6 +44,6 @@ class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
 
     def postprocess_docs(self, docs):
         return docs.format(modelname=self.resource.model.__name__,
-                           paramteterstable=self.htmldoc_parameterstable(),
+                           update_parameterstable=self.htmldoc_parameterstable(),
                            responsetable=self.htmldoc_responsetable(),
                            delete_responsetable=self.htmldoc_responsetable())

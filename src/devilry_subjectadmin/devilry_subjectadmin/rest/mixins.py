@@ -1,10 +1,13 @@
 from logging import getLogger
 from djangorestframework.compat import apply_markdown
 from djangorestframework.views import _remove_leading_indent
+from djangorestframework.mixins import ListModelMixin
+from djangorestframework.mixins import CreateModelMixin
 from django.utils.safestring import mark_safe
 from cStringIO import StringIO
 
 from .errors import PermissionDeniedError
+from .auth import nodeadmin_required
 
 logger = getLogger(__name__)
 
@@ -357,3 +360,37 @@ class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
 
     def htmldoc_parameterstable(self):
         return self.htmlformat_parameters_from_form()
+
+
+class BaseNodeListModelMixin(ListModelMixin):
+    def get_restdocs(self):
+        return """
+        List the {modelname} where the authenticated user is admin.
+
+        ## Returns
+        List of maps/dicts with the following attributes:
+        {responsetable}
+        """
+
+    def get_queryset(self):
+        qry = self.resource.model.where_is_admin_or_superadmin(self.user)
+        qry = qry.order_by('short_name')
+        return qry
+
+
+class BaseNodeCreateModelMixin(CreateModelMixin):
+    def _require_nodeadmin(self, user):
+        if not 'parentnode' in self.CONTENT:
+            raise PermissionDeniedError('parentnode is a required parameter.')
+        parentnode = self.CONTENT['parentnode']
+        nodeadmin_required(user, parentnode.id)
+
+    def post(self, request):
+        """
+        Create new {modelname}.
+
+        ## Parameters
+        {create_paramteterstable}
+        """
+        self._require_nodeadmin(request.user)
+        return super(BaseNodeCreateModelMixin, self).post(request)

@@ -5,10 +5,10 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 
 
-class TestRestListSubjectRest(TestCase):
+class TestRestListOrCreateSubjectRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck2000:admin(adminone,admintwo):ln(Something fancy)',
                                       'duck3000',
                                       'duck1000:admin(adminone)',
@@ -32,17 +32,38 @@ class TestRestListSubjectRest(TestCase):
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name']))
 
-    def test_singleadmin(self):
+    def test_list_singleadmin(self):
         content, response = self._listas('singleadmin')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 1)
         self.assertEquals(content[0]['short_name'], 'duck4000')
 
-    def test_nonadmin(self):
+    def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
         content, response = self._listas('otheruser')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 0)
+
+    def _createas(self, username, data):
+        self.client.login(username=username, password='test')
+        return self.client.rest_post(self.url, data)
+
+    def test_create(self):
+        self.testhelper.create_user('testadmin')
+        content, response = self._createas('uniadmin',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [],
+                                            #'admins': [{'id': self.testhelper.testadmin.id}],
+                                            'parentnode': self.testhelper.uni.id})
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(content['long_name'], 'Test')
+        self.assertEquals(content['short_name'], 'test')
+        self.assertEquals(content['parentnode'], self.testhelper.uni.id)
+        created = Subject.objects.get(id=content['id'])
+        self.assertEquals(created.short_name, 'test')
+        self.assertEquals(created.long_name, 'Test')
+        self.assertEquals(created.parentnode.id, self.testhelper.uni.id)
 
 
 class TestRestInstanceSubjectRest(TestCase):

@@ -4,7 +4,7 @@ from djangorestframework.permissions import IsAuthenticated
 
 from .auth import IsSubjectAdmin
 from .viewbase import BaseNodeInstanceModelView
-from .viewbase import ListOrCreateSubjectView
+from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
 
 
@@ -19,7 +19,7 @@ class SubjectInstanceResource(BaseNodeInstanceResource):
     fields = SubjectResource.fields + ('can_delete', 'admins', 'inherited_admins')
 
 
-class ListSubjectRest(ListOrCreateSubjectView):
+class ListOrCreateSubjectRest(BaseNodeListOrCreateView):
     """
     List the subjects where the authenticated user is admin.
     """

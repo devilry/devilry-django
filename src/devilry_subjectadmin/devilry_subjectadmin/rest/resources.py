@@ -8,10 +8,10 @@ from .formfields import DevilryUserMultipleChoiceField
 _admins_helptext = """
 List of maps(dict/hashmap/object). Each map contains the following attributes:
 
-- id (unique user-id),
-- username (unique user-id that may be changed)
-- email
-- full_name
+- ``id`` (unique user-id). Eighter ``id`` or ``username`` must be supplied. ``id`` is preferred.
+- ``username`` (unique user-id). Eighter ``id`` or ``username`` must be supplied. ``username`` is ignored  if ``id`` is supplied.
+- ``email`` (ignored, but including it does not raise an error).
+- ``full_name`` (ignored, but including it does not raise an error).
 """
 
 class BaseNodeInstanceResource(ModelResource):
