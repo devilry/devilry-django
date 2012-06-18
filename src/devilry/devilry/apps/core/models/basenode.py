@@ -46,6 +46,25 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         return u', '.join([u.username for u in self.admins.all()])
     get_admins.short_description = _('Administrators')
 
+    def _get_inherited_admins(self, admins):
+        for admin in self.admins.all():
+            admins[admin.id] = admin
+        if self.parentnode:
+            self.parentnode._get_inherited_admins(admins)
+
+    def get_inherited_admins(self):
+        """
+        Get list of inherited admins.
+
+        :return:
+            List of :class:`django.contrib.auth.models.User` objects. Does
+            not contain duplicates.
+        """
+        admins = {}
+        if self.parentnode:
+            self.parentnode._get_inherited_admins(admins)
+        return admins.values()
+
     def is_admin(self, user_obj):
         """ Check if the given user is admin on this node or any parentnode.
 
