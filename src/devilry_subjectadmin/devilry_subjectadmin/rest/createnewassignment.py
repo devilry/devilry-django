@@ -141,7 +141,7 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
         periodadmin_required(user, period_id)
 
     def postprocess_docs(self, docs):
-        return docs.format(parametertable=self.docformat_form())
+        return docs.format(parametertable=self.htmlformat_parameters_from_form())
 
     def post(self, request):
         """

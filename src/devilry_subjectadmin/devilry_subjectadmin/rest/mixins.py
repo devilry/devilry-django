@@ -58,7 +58,6 @@ class BaseNodeInstanceRestMixin(object):
             raise PermissionDeniedError()
 
 
-
 class SelfdocumentingMixin(object):
     '''
     ``djangorestframework`` view mixin that makes it more convenient to provide
@@ -120,7 +119,7 @@ class SelfdocumentingMixin(object):
                 """
 
             def postprocess_docs(self, docs):
-                return docs.format(parametertable=self.docformat_form())
+                return docs.format(parametertable=self.htmlformat_parameters_from_form())
     '''
     def get_unformatted_docs_for_method(self, methodname):
         """
@@ -153,42 +152,102 @@ class SelfdocumentingMixin(object):
         """
         return _remove_leading_indent(docs)
 
-    def docformat_form(self, boundform=None, override_helptext={}):
+
+    def html_create_attrtablerow(self, fieldname, meta='', help=''):
         """
-        Document in the given bound form as a html table.
+        Create a HTML table row with one cell for fieldname and optional meta,
+        and one cell for field-help.
+
+        :param fieldname:
+            Name of the field.
+        :param meta:
+            Short metadata string, such as "required" or "optional".
+        :param help:
+            Help text for the field. Formatted using :meth:`.convert_docs_to_html`.
+        """
+        out = StringIO()
+        out.write('<tr>')
+        out.write('<td><strong>{fieldname}</strong>'.format(fieldname=fieldname))
+        if meta:
+            out.write('<br/><small>{meta}</small></td>'.format(meta=meta))
+        out.write('<td>{help}</td>'.format(help=self.convert_docs_to_html(help)))
+        out.write('</tr>')
+        return out.getvalue()
+
+    def html_create_attrtable(self, fieldshelp):
+        """
+        Create a HTML formatted table of attributes with help and optinal meta
+        (such as required or optional).
+
+        :param fieldshelp:
+            List of dicts. Each dict is parameters for :meth:`.html_create_attrtablerow`.
+        """
+        out = StringIO()
+        out.write('<table>')
+        for fieldname in sorted(fieldshelp.keys()):
+            rowspec = fieldshelp[fieldname]
+            out.write(self.html_create_attrtablerow(**rowspec))
+        out.write('</table>')
+        return out.getvalue()
+
+    def htmlformat_parameters_from_form(self, boundform=None, override_helptext={}):
+        """
+        Generate parameter docs from the given bound form as a html table.
 
         :param boundform:
-            Defaults to ``get_bound_form()`` if it is ``None``.
+            Defaults to ``self.get_bound_form()`` if it is ``None``.
         :param override_helptext:
             Override helptext for specific fields. Keys are fieldnames,
             and values are overridden helptext for that field.
 
-        .. seealso:: :meth:`.postprocess_docs`.
+        .. seealso:: :meth:`.postprocess_docs`, :meth:`.htmlformat_response_from_fields`, :meth:`.html_create_attrtable`.
         """
-        out = StringIO()
-        out.write('<table>')
         form = boundform or self.get_bound_form()
+        fieldshelp = {}
         for field in form:
-            out.write('<tr>')
             if field.field.required:
                 meta = 'required'
             else:
                 meta = 'optional'
-            out.write('<td><strong>{field.name}</strong><br/><small>{meta}</small></td>'.format(field=field,
-                                                                                                meta=meta))
-            help_text = override_helptext.get(field.name, field.field.help_text)
-            out.write('<td>{help_text}</td>'.format(help_text=help_text))
-            out.write('</tr>')
-            #print '{field.name!r} {field.field.help_text!r} {field.field.required!r}'.format(field=field)
-        out.write('</table>')
-        table = out.getvalue()
-        return table
+            help = override_helptext.get(field.name, field.field.help_text)
+            fieldshelp[field.name] = dict(fieldname=field.name, meta=meta, help=help)
+        return self.html_create_attrtable(fieldshelp)
+
+    def htmlformat_response_from_fields(self, boundform=None, specify_helptext={}):
+        """
+        Uses :meth:`.html_create_attrtable` to create a table documenting the
+        response from GET/POST/PUT. Creates the ``fieldshelp`` parameter by:
+
+            - Adding all fields in ``boundform`` that are in
+              ``self.resource.fields`` (get help from the field help_text).
+            - Add fields from ``specify_helptext`` (overrides fields from ``boundform``).
+
+        :param boundform:
+            Defaults to ``self.get_bound_form()`` if it is ``None``.
+        :param specify_helptext:
+            Mapping of fieldname to help-text for that field. Overrides help
+            from ``boundform``.  Keys can be any fieldname from
+            ``self.resource.fields``.
+        :return: A HTML table.
+        :rtype: str
+        """
+        fieldshelp = {}
+        form = boundform or self.get_bound_form()
+        for field in form:
+            if field.name in self.resource.fields:
+                help = field.field.help_text
+                fieldshelp[field.name] = dict(fieldname=field.name, help=help)
+        for fieldname, fieldhelp in specify_helptext.iteritems():
+            if not fieldname in self.resource.fields:
+                raise ValueError('``{fieldname}`` (from specify_helptext) is not in ``self.resource.fields``.'.format(fieldname=fieldname))
+            fieldshelp[fieldname] = fieldhelp
+        return self.html_create_attrtable(fieldshelp)
 
     def postprocess_docs(self, htmldocs):
         """
         Postprocess docs after they have been converted to HTML. Override this
         method to add generated data to the docs. Typically used with
-        :meth:`.docformat_form`::
+        :meth:`.htmlformat_parameters_from_form`::
 
             from djangorestframework.views import View
             class MyView(SelfdocumentingMixin, View):
@@ -202,7 +261,7 @@ class SelfdocumentingMixin(object):
                     \"\"\"
 
                 def postprocess_docs(self, docs):
-                    return docs.format(parametertable=self.docformat_form())
+                    return docs.format(parametertable=self.htmlformat_parameters_from_form())
         """
         return htmldocs
 

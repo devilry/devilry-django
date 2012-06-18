@@ -34,6 +34,15 @@ class ListSubjectRest(SelfdocumentingMixin, ListModelMixin, ModelView):
         qry = qry.order_by('short_name')
         return qry
 
+    def get_restdocs(self):
+        return """
+        List the subjects where the authenticated user is admin.
+
+        ## Returns
+        Map/dict with the following attributes:
+
+        """
+
 
 class InstanceSubjectRest(SelfdocumentingMixin, BaseNodeInstanceRestMixin, InstanceModelView):
     """
@@ -41,3 +50,25 @@ class InstanceSubjectRest(SelfdocumentingMixin, BaseNodeInstanceRestMixin, Insta
     """
     permissions = (IsAuthenticated, IsSubjectAdmin)
     resource = SubjectInstanceResource
+
+    def postprocess_docs(self, docs):
+        return docs.format(parametertable=self.htmlformat_parameters_from_form(),
+                           fieldstable=self.htmlformat_response_from_fields())
+
+    def get_restdocs(self):
+        return """
+        Get info about the subject and its admins.
+
+        ## Returns
+        Map/dict with the following attributes:
+
+        {fieldstable}
+        """
+
+    def put_restdocs(self):
+        return """
+        Update the subject and its admins.
+
+        ## Parameters
+        {parametertable}
+        """

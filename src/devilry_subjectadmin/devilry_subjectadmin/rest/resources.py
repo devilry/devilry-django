@@ -5,6 +5,15 @@ from django.contrib.auth.models import User
 from .formfields import DevilryUserMultipleChoiceField
 
 
+_admins_helptext = """
+List of maps(dict/hashmap/object). Each map contains the following attributes:
+
+- id (unique user-id),
+- username (unique user-id that may be changed)
+- email
+- full_name
+"""
+
 class BaseNodeInstanceResource(ModelResource):
 
     def parentnode(self, instance):
@@ -17,7 +26,8 @@ class BaseNodeInstanceResource(ModelResource):
         class GeneratedInstanceForm(forms.ModelForm):
             class Meta:
                 model = resourcemodel
-            admins = DevilryUserMultipleChoiceField(queryset=queryset, required=False)
+            admins = DevilryUserMultipleChoiceField(queryset=queryset, required=False,
+                                                    help_text=_admins_helptext)
         return GeneratedInstanceForm
 
     # NOTE: We may have to do something like this to allow for "id" in PUT:
