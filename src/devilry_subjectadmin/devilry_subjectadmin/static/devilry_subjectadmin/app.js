@@ -122,7 +122,7 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/", 'browse');
-        this.route.add("/:subject_shortname/", 'showSubject');
+        this.route.add("/:subject_id/", 'showSubject');
         this.route.add("/:subject_shortname/:period_shortname/", 'showPeriod');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
@@ -155,15 +155,14 @@ Ext.application({
         });
     },
 
-    showSubject: function(routeInfo, subject_shortname) {
-        var subjecturl = '/' + subject_shortname;
+    showSubject: function(routeInfo, subject_id) {
         this.breadcrumbs.set([{
             text: gettext("All subjects"),
             url: '/'
-        }], subject_shortname);
+        }], subject_id);
         this.setPrimaryContent({
             xtype: 'subjectoverview',
-            subject_shortname: subject_shortname
+            subject_id: subject_id
         });
     },
 

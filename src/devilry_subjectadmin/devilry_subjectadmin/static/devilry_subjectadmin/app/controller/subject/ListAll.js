@@ -31,13 +31,14 @@ Ext.define('devilry_subjectadmin.controller.subject.ListAll', {
     },
 
     _onRender: function() {
-        this.getSubjectsStore().loadAll({
+        this.getSubjectsStore().load({
             scope: this,
             callback: this._onLoadSubjects
         });
     },
 
     _onLoadSubjects: function(records, operation) {
+        console.log(records);
         if(!operation.success) {
             var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);

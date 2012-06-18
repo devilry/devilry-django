@@ -14,6 +14,8 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         'Subjects',
         'Periods'
     ],
+    
+    models: ['Subject'],
 
     refs: [{
         ref: 'globalAlertmessagelist',
@@ -38,20 +40,24 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     _onSubjectViewRender: function() {
-        this.subject_shortname = this.getSubjectOverview().subject_shortname;
+        this.subject_id = this.getSubjectOverview().subject_id;
         this._loadSubject();
         this._loadPeriods();
     },
 
     _loadSubject: function() {
-        this.getSubjectsStore().loadSubject(
-            this.subject_shortname, this._onLoadSubject, this
-        );
+        //this.getSubjectsStore().loadSubject(
+            //this.subject_id, this._onLoadSubject, this
+        //);
+        this.getSubjectModel().load(this.subject_id, {
+            callback: this._onLoadSubject,
+            scope: this
+        });
     },
 
-    _onLoadSubject: function(records, operation) {
+    _onLoadSubject: function(record, operation) {
         if(operation.success) {
-            this._onLoadSubjectSuccess(records[0]);
+            this._onLoadSubjectSuccess(record);
         } else {
             this._onLoadSubjectFailure(operation);
         }
@@ -69,7 +75,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     _loadPeriods: function() {
-        this.getPeriodsStore().loadPeriodsInSubject(this.subject_shortname, this._onLoadPeriods, this);
+        this.getPeriodsStore().loadPeriodsInSubject(this.subject_id, this._onLoadPeriods, this);
     },
 
     _onLoadPeriods: function(records, operation) {

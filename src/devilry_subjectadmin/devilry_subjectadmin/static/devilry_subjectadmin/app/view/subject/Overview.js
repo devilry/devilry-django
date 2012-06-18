@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
 
 
     /**
-     * @cfg {String} subject_shortname (required)
+     * @cfg {String} subject_id (required)
      */
 
 
