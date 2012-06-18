@@ -11,6 +11,8 @@ logger = getLogger(__name__)
 
 
 class BaseNodeInstanceRestMixin(object):
+    inherited_admins_help = """List of inherited administrators. Same format as ``admins``."""
+
     def put(self, request, id=None):
         subject = super(BaseNodeInstanceRestMixin, self).put(request, id=id)
         modelname = self.resource.model.__name__
@@ -57,6 +59,15 @@ class BaseNodeInstanceRestMixin(object):
                         self.user, modelname, instanceid, instanceident)
             raise PermissionDeniedError()
 
+    def postprocess_docs_formatkw(self):
+        specify_helptext = {'inherited_admins': self.inherited_admins_help}
+        return dict(paramteterstable=self.htmlformat_parameters_from_form(),
+                    responsetable=self.htmlformat_response_from_fields(specify_helptext=specify_helptext),
+                    delete_responsetable=self.html_create_attrtable({'id': {'help': 'The ID of the deleted object.'}}))
+
+    def postprocess_docs(self, docs):
+        return docs.format(**self.postprocess_docs_formatkw())
+
 
 class SelfdocumentingMixin(object):
     '''
@@ -73,7 +84,7 @@ class SelfdocumentingMixin(object):
           self-documenting features of djangorestframework, and because
           markdown is a good and easy-to-extend markup language for HTML
           generation.
-        - 
+        - Minimal amounts of magic.
 
     Simple example::
 
@@ -115,11 +126,11 @@ class SelfdocumentingMixin(object):
                 Update something.
 
                 ## Parameters:
-                {parametertable}
+                {paramteterstable}
                 """
 
             def postprocess_docs(self, docs):
-                return docs.format(parametertable=self.htmlformat_parameters_from_form())
+                return docs.format(paramteterstable=self.htmlformat_parameters_from_form())
     '''
     def get_unformatted_docs_for_method(self, methodname):
         """
@@ -187,7 +198,7 @@ class SelfdocumentingMixin(object):
         out.write('<table>')
         for fieldname in sorted(fieldshelp.keys()):
             rowspec = fieldshelp[fieldname]
-            out.write(self.html_create_attrtablerow(**rowspec))
+            out.write(self.html_create_attrtablerow(fieldname=fieldname, **rowspec))
         out.write('</table>')
         return out.getvalue()
 
@@ -211,7 +222,7 @@ class SelfdocumentingMixin(object):
             else:
                 meta = 'optional'
             help = override_helptext.get(field.name, field.field.help_text)
-            fieldshelp[field.name] = dict(fieldname=field.name, meta=meta, help=help)
+            fieldshelp[field.name] = dict(meta=meta, help=help)
         return self.html_create_attrtable(fieldshelp)
 
     def htmlformat_response_from_fields(self, boundform=None, specify_helptext={}):
@@ -237,12 +248,12 @@ class SelfdocumentingMixin(object):
         for field in form:
             if field.name in self.resource.fields:
                 help = field.field.help_text
-                fieldshelp[field.name] = dict(fieldname=field.name, help=help)
+                fieldshelp[field.name] = dict(help=help)
         for fieldname in self.resource.fields:
             help = specify_helptext.get(fieldname, '')
             if not help and fieldname in fieldshelp:
                 continue # Use form-help if help is not in specify_helptext
-            fieldshelp[fieldname] = dict(fieldname=fieldname, help=help)
+            fieldshelp[fieldname] = dict(help=help)
         return self.html_create_attrtable(fieldshelp)
 
     def postprocess_docs(self, htmldocs):
@@ -259,11 +270,11 @@ class SelfdocumentingMixin(object):
                     Create something.
 
                     ## Parameters
-                    {parametertable}
+                    {paramteterstable}
                     \"\"\"
 
                 def postprocess_docs(self, docs):
-                    return docs.format(parametertable=self.htmlformat_parameters_from_form())
+                    return docs.format(paramteterstable=self.htmlformat_parameters_from_form())
         """
         return htmldocs
 

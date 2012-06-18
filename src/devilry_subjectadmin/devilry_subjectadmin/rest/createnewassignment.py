@@ -141,14 +141,14 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
         periodadmin_required(user, period_id)
 
     def postprocess_docs(self, docs):
-        return docs.format(parametertable=self.htmlformat_parameters_from_form())
+        return docs.format(paramteterstable=self.htmlformat_parameters_from_form())
 
     def post(self, request):
         """
         Create an assignment, and add related students if requested.
 
         ## Parameters
-        {parametertable}
+        {paramteterstable}
         """
         self._require_periodadmin(request.user)
         with transaction.commit_on_success():

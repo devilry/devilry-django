@@ -77,11 +77,17 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['parentnode'], self.testhelper.duck2000.parentnode_id)
         self.assertEquals(content['can_delete'], self.testhelper.duck2000.can_delete(self.testhelper.uniadmin))
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id']))
+                          set(['short_name', 'long_name', 'admins', 'etag',
+                               'can_delete', 'parentnode', 'id', 'inherited_admins']))
 
         self.assertEquals(len(content['admins']), 1)
         self.assertEquals(content['admins'][0]['email'], 'duck2000admin@example.com')
         self.assertEquals(set(content['admins'][0].keys()),
+                          set(['email', 'username', 'id', 'full_name']))
+
+        self.assertEquals(len(content['inherited_admins']), 1)
+        self.assertEquals(content['inherited_admins'][0]['email'], 'uniadmin@example.com')
+        self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
     def test_get_can_not_delete(self):

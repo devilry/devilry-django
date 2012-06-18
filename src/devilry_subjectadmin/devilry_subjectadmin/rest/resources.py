@@ -34,7 +34,7 @@ class BaseNodeInstanceResource(ModelResource):
     #def validate_request(self, data, files=None):
         #if 'id' in data:
             #del data['id']
-        #return super(BaseNodeResource, self).validate_request(data, files)
+        #return super(BaseNodeInstanceResource, self).validate_request(data, files)
 
     def can_delete(self, instance):
         if not isinstance(instance, self.model):
@@ -54,3 +54,8 @@ class BaseNodeInstanceResource(ModelResource):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
         return [self.format_adminuser(user)
                 for user in instance.admins.all().prefetch_related('devilryuserprofile')]
+
+    def inherited_admins(self, instance):
+        if isinstance(instance, self.model):
+            return [self.format_adminuser(user)
+                    for user in instance.get_inherited_admins()]

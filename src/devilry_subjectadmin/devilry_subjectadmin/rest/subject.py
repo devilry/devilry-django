@@ -18,7 +18,7 @@ class SubjectResource(BaseNodeInstanceResource):
 
 class SubjectInstanceResource(BaseNodeInstanceResource):
     model = Subject
-    fields = SubjectResource.fields + ('can_delete', 'admins')
+    fields = SubjectResource.fields + ('can_delete', 'admins', 'inherited_admins')
 
 
 
@@ -39,21 +39,17 @@ class ListSubjectRest(SelfdocumentingMixin, ListModelMixin, ModelView):
         List the subjects where the authenticated user is admin.
 
         ## Returns
-        Map/dict with the following attributes:
+        List of maps/dicts with the following attributes:
 
         """
 
 
-class InstanceSubjectRest(SelfdocumentingMixin, BaseNodeInstanceRestMixin, InstanceModelView):
+class InstanceSubjectRest(BaseNodeInstanceRestMixin, SelfdocumentingMixin, InstanceModelView):
     """
     This API provides read, update and delete on a single subject.
     """
     permissions = (IsAuthenticated, IsSubjectAdmin)
     resource = SubjectInstanceResource
-
-    def postprocess_docs(self, docs):
-        return docs.format(parametertable=self.htmlformat_parameters_from_form(),
-                           fieldstable=self.htmlformat_response_from_fields())
 
     def get_restdocs(self):
         return """
@@ -61,8 +57,7 @@ class InstanceSubjectRest(SelfdocumentingMixin, BaseNodeInstanceRestMixin, Insta
 
         ## Returns
         Map/dict with the following attributes:
-
-        {fieldstable}
+        {responsetable}
         """
 
     def put_restdocs(self):
@@ -70,5 +65,15 @@ class InstanceSubjectRest(SelfdocumentingMixin, BaseNodeInstanceRestMixin, Insta
         Update the subject and its admins.
 
         ## Parameters
-        {parametertable}
+        {paramteterstable}
+        """
+
+    def delete_restdocs(self):
+        return """
+        Delete the subject. Only possible if the authenticated user is
+        superadmin, or if the subject is empty (does not contain any periods).
+
+        ## Returns
+        Map/dict with a single attribute:
+        {delete_responsetable}
         """
