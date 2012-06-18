@@ -11,7 +11,10 @@ logger = getLogger(__name__)
 
 
 class BaseNodeInstanceRestMixin(object):
-    inherited_admins_help = """List of inherited administrators. Same format as ``admins``."""
+    """
+    Implements ``put``, ``delete`` and ``get_queryset`` that should work for
+    any :class:`devilry.apps.core.models.BaseNode` subclass.
+    """
 
     def put(self, request, id=None):
         subject = super(BaseNodeInstanceRestMixin, self).put(request, id=id)
@@ -58,18 +61,6 @@ class BaseNodeInstanceRestMixin(object):
                          'to delete things that they should not attempt to delete.'),
                         self.user, modelname, instanceid, instanceident)
             raise PermissionDeniedError()
-
-    def postprocess_docs_formatkw(self):
-        specify_helptext = {'inherited_admins': self.inherited_admins_help,
-                            'can_delete': 'Can the authenticated user delete this object?',
-                            'parentnode': 'ID of the parentnode.',
-                            'id': 'The unique ID of the object.'}
-        return dict(paramteterstable=self.htmlformat_parameters_from_form(),
-                    responsetable=self.htmlformat_response_from_fields(specify_helptext=specify_helptext),
-                    delete_responsetable=self.html_create_attrtable({'id': {'help': 'The ID of the deleted object.'}}))
-
-    def postprocess_docs(self, docs):
-        return docs.format(**self.postprocess_docs_formatkw())
 
 
 class SelfdocumentingMixin(object):
@@ -346,3 +337,23 @@ class SelfdocumentingMixin(object):
     def get_description(self, html=False):
         html = self.get_docs_html()
         return mark_safe(html)
+
+
+class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
+    """
+    Mixin for documentation generation for BaseNode REST APIs.
+    """
+    inherited_admins_help = """List of inherited administrators. Same format as ``admins``."""
+
+    def htmldoc_responsetable(self):
+        specify_helptext = {'inherited_admins': self.inherited_admins_help,
+                            'can_delete': 'Can the authenticated user delete this object?',
+                            'parentnode': 'ID of the parentnode.',
+                            'id': 'The unique ID of the object.'}
+        return self.htmlformat_response_from_fields(specify_helptext=specify_helptext)
+
+    def htmldoc_delete_responsetable(self):
+        return self.html_create_attrtable({'id': {'help': 'The ID of the deleted object.'}})
+
+    def htmldoc_parameterstable(self):
+        return self.htmlformat_parameters_from_form()
