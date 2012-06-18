@@ -49,12 +49,10 @@ class TestRestListOrCreateSubjectRest(TestCase):
         return self.client.rest_post(self.url, data)
 
     def test_create(self):
-        self.testhelper.create_user('testadmin')
         content, response = self._createas('uniadmin',
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
-                                            #'admins': [{'id': self.testhelper.testadmin.id}],
                                             'parentnode': self.testhelper.uni.id})
         self.assertEquals(response.status_code, 201)
         self.assertEquals(content['long_name'], 'Test')
@@ -64,6 +62,30 @@ class TestRestListOrCreateSubjectRest(TestCase):
         self.assertEquals(created.short_name, 'test')
         self.assertEquals(created.long_name, 'Test')
         self.assertEquals(created.parentnode.id, self.testhelper.uni.id)
+        admins = created.admins.all()
+        self.assertEquals(len(admins), 0)
+
+    def test_create_nobody(self):
+        content, response = self._createas('nobody',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [],
+                                            'parentnode': self.testhelper.uni.id})
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(content['detail'], 'Permission denied')
+
+    def test_create_admins(self):
+        self.testhelper.create_user('testadmin')
+        content, response = self._createas('uniadmin',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [{'id': self.testhelper.testadmin.id}],
+                                            'parentnode': self.testhelper.uni.id})
+        self.assertEquals(response.status_code, 201)
+        created = Subject.objects.get(id=content['id'])
+        admins = created.admins.all()
+        self.assertEquals(len(admins), 1)
+        self.assertEquals(admins[0].username, 'testadmin')
 
 
 class TestRestInstanceSubjectRest(TestCase):
