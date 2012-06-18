@@ -3,7 +3,8 @@ Re-usable authentification methods.
 """
 
 from django.utils.translation import ugettext as _
-from devilry.apps.core.models import (Subject,
+from devilry.apps.core.models import (Node,
+                                      Subject,
                                       Period,
                                       Assignment)
 from djangorestframework.permissions import BasePermission
@@ -17,6 +18,16 @@ def _admin_required(nodecls, user, errormsg, objid):
         raise PermissionDeniedError(errormsg)
     if nodecls.where_is_admin_or_superadmin(user).filter(id=objid).count() == 0:
         raise PermissionDeniedError(errormsg)
+
+
+def nodeadmin_required(user, nodeid):
+    """
+    Raise :exc:`devilry_subjectadmin.rest.errors.PermissionDeniedError` unless
+    the given ``user`` is admin on all of the given Node.
+
+    :param nodeid: ID of Node to check.
+    """
+    _admin_required(Node, user, _('Permission denied'),  nodeid)
 
 
 def _subjectadmin_required(user, subjectid):

@@ -1,10 +1,31 @@
 from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_subjectadmin.rest.auth import (_subjectadmin_required,
-                                                 periodadmin_required,
-                                                 _assignmentadmin_required)
+from devilry_subjectadmin.rest.auth import (nodeadmin_required,
+                                            _subjectadmin_required,
+                                            periodadmin_required,
+                                            _assignmentadmin_required)
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
+
+
+class TestNodeadminRequired(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='n1:admin(n1admin)')
+        self.testhelper.add(nodes='n2')
+        self.testhelper.create_superuser("superuser")
+
+    def test_superuser(self):
+        nodeadmin_required(self.testhelper.superuser, None) # Calls is_superuser and exits without further checks
+
+    def test_admin_allowed(self):
+        nodeadmin_required(self.testhelper.n1admin,
+                                 self.testhelper.n1.id)
+
+    def test_nonadmin_denied(self):
+        self.assertRaises(PermissionDeniedError,
+                          nodeadmin_required, self.testhelper.n1admin,
+                          self.testhelper.n2.id) # s1admin is not admin on s2..
 
 
 class TestSubjectadminRequired(TestCase):
