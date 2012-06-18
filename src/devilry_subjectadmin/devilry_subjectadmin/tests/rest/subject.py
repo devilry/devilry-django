@@ -109,7 +109,8 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['long_name'], 'Updated')
         self.assertEquals(content['parentnode'], 1)
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id']))
+                          set(['short_name', 'long_name', 'admins', 'etag',
+                               'can_delete', 'parentnode', 'id', 'inherited_admins']))
 
     def test_put_admins(self):
         self.client.login(username='duck2000admin', password='test')
