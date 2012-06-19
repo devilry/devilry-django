@@ -78,9 +78,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
             help_text=_(
                 'Start time and end time defines when the period is active.'))
     admins = models.ManyToManyField(User, blank=True)
-    minimum_points = models.PositiveIntegerField(default=0,
-            help_text=_('Students must get at least this many points to '\
-                    'pass the period.'))
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod
