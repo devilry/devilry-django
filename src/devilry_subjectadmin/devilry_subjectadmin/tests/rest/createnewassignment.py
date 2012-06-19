@@ -9,9 +9,7 @@ from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
 from devilry.utils.rest_testclient import RestClient
 
-
-def isoformat_datetime(datetimeobj):
-    return datetimeobj.strftime('%Y-%m-%d %H:%M:%S')
+from .common import isoformat_datetime
 
 
 class TestRestCreateNewAssignmentDao(TestCase):
