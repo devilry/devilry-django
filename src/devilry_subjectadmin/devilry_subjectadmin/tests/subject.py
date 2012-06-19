@@ -11,6 +11,10 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100', 'duck1010:ln(DUCK 1010 - Programming)', 'duck9000'])
 
+
+    def _geturl(self, subject):
+        return '#/{0}/'.format(subject.id)
+
     def test_published(self):
         self.browseTo('/')
         self.waitForCssSelector('.devilry_allSubjectsList')
@@ -22,9 +26,9 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('.devilry_subject_duck1010')), 1)
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('.devilry_subject_duck9000')), 1)
         self.assertTrue('DUCK 1010 - Programming' in self.selenium.page_source)
-        self.assertTrue('#/duck1100/' in self.selenium.page_source)
-        self.assertTrue('#/duck1010/' in self.selenium.page_source)
-        self.assertTrue('#/duck9000/' in self.selenium.page_source)
+        self.assertTrue(self._geturl(self.testhelper.duck1100) in self.selenium.page_source)
+        self.assertTrue(self._geturl(self.testhelper.duck1010) in self.selenium.page_source)
+        self.assertTrue(self._geturl(self.testhelper.duck9000) in self.selenium.page_source)
 
 
 #class TestSubjectOverview(SeleniumTestCase):

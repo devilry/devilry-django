@@ -38,7 +38,6 @@ Ext.define('devilry_subjectadmin.controller.subject.ListAll', {
     },
 
     _onLoadSubjects: function(records, operation) {
-        console.log(records);
         if(!operation.success) {
             var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
             error.addErrors(operation);
