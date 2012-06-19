@@ -1,0 +1,198 @@
+from datetime import datetime, timedelta
+from django.test import TestCase
+
+from devilry.apps.core.models import Period
+from devilry.apps.core.testhelper import TestHelper
+from devilry.utils.rest_testclient import RestClient
+
+from .common import isoformat_datetime
+
+
+def isoformat_relativetime(days):
+    now = datetime.now()
+    if days < 0:
+        dt = now - timedelta(days=days)
+    else:
+        dt = now + timedelta(days=days)
+    return isoformat_datetime(dt)
+
+
+class TestRestListOrCreatePeriodRest(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['duck2000'],
+                            periods=['one:admin(adminone)',
+                                     'two',
+                                     'three:admin(adminone)'])
+        self.client = RestClient()
+        self.url = '/devilry_subjectadmin/rest/period/'
+        self.testhelper.create_user('nobody')
+
+    def _listas(self, username):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self.url)
+
+    def test_list(self):
+        content, response = self._listas('adminone')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 2)
+        self.assertEquals(set(content[0].keys()),
+                          set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
+                               'start_time', 'end_time']))
+
+    def test_list_nonadmin(self):
+        self.testhelper.create_user('otheruser')
+        content, response = self._listas('otheruser')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 0)
+
+    def _createas(self, username, data):
+        self.client.login(username=username, password='test')
+        return self.client.rest_post(self.url, data)
+
+    def test_create(self):
+        content, response = self._createas('uniadmin',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [],
+                                            'start_time': isoformat_relativetime(days=-2),
+                                            'end_time': isoformat_relativetime(days=2),
+                                            'parentnode': self.testhelper.duck2000.id})
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(content['long_name'], 'Test')
+        self.assertEquals(content['short_name'], 'test')
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000.id)
+        created = Period.objects.get(id=content['id'])
+        self.assertEquals(created.short_name, 'test')
+        self.assertEquals(created.long_name, 'Test')
+        self.assertEquals(created.parentnode.id, self.testhelper.duck2000.id)
+        admins = created.admins.all()
+        self.assertEquals(len(admins), 0)
+
+    def test_create_nobody(self):
+        content, response = self._createas('nobody',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [],
+                                            'start_time': isoformat_relativetime(days=-2),
+                                            'end_time': isoformat_relativetime(days=2),
+                                            'parentnode': self.testhelper.duck2000.id})
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(content['detail'], 'Permission denied')
+
+    def test_create_admins(self):
+        self.testhelper.create_user('testadmin')
+        content, response = self._createas('uniadmin',
+                                           {'short_name': 'test',
+                                            'long_name': 'Test',
+                                            'admins': [{'id': self.testhelper.testadmin.id}],
+                                            'start_time': isoformat_relativetime(days=-2),
+                                            'end_time': isoformat_relativetime(days=2),
+                                            'parentnode': self.testhelper.duck2000.id})
+        self.assertEquals(response.status_code, 201)
+        created = Period.objects.get(id=content['id'])
+        admins = created.admins.all()
+        self.assertEquals(len(admins), 1)
+        self.assertEquals(admins[0].username, 'testadmin')
+
+
+class TestRestInstancePeriodRest(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['duck2000:admin(duck2000admin)'],
+                            periods=['periodone:admin(oneadmin)',
+                                     'periodtwo',
+                                     'periodthree:admin(adminone)'])
+        self.client = RestClient()
+
+    def _geturl(self, periodid):
+        return '/devilry_subjectadmin/rest/period/{0}'.format(periodid)
+
+    def test_delete_denied(self):
+        self.client.login(username='nobody', password='test')
+        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertEquals(response.status_code, 403)
+
+    def test_delete(self):
+        self.client.login(username='uniadmin', password='test')
+        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
+        self.assertEquals(Period.objects.filter(id=self.testhelper.duck2000_periodone.id).count(), 0)
+
+    def test_get(self):
+        self.client.login(username='duck2000admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
+        self.assertEquals(content['short_name'], self.testhelper.duck2000_periodone.short_name)
+        self.assertEquals(content['long_name'], self.testhelper.duck2000_periodone.long_name)
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000_periodone.parentnode_id)
+        self.assertEquals(content['can_delete'], self.testhelper.duck2000_periodone.can_delete(self.testhelper.uniadmin))
+        self.assertEquals(set(content.keys()),
+                          set(['short_name', 'long_name', 'admins', 'etag',
+                               'can_delete', 'parentnode', 'id', 'inherited_admins',
+                               'start_time', 'end_time']))
+
+        self.assertEquals(len(content['admins']), 1)
+        self.assertEquals(content['admins'][0]['email'], 'oneadmin@example.com')
+        self.assertEquals(set(content['admins'][0].keys()),
+                          set(['email', 'username', 'id', 'full_name']))
+
+        self.assertEquals(len(content['inherited_admins']), 2)
+        self.assertEquals(set(content['inherited_admins'][0].keys()),
+                          set(['email', 'username', 'id', 'full_name']))
+        inherited_adminusernames = [user['username'] for user in content['inherited_admins']]
+        self.assertIn('uniadmin', inherited_adminusernames)
+        self.assertIn('duck2000admin', inherited_adminusernames)
+
+    def test_get_can_not_delete(self):
+        self.client.login(username='oneadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertFalse(content['can_delete'])
+
+    def test_put(self):
+        self.client.login(username='oneadmin', password='test')
+        data = {'short_name': 'duck2000',
+                'long_name': 'Updated',
+                'admins': [],
+                'start_time': isoformat_relativetime(days=-2),
+                'end_time': isoformat_relativetime(days=2),
+                'parentnode': 1}
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
+                                                 data=data)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['id'], self.testhelper.duck2000.id)
+        self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
+        self.assertEquals(content['long_name'], 'Updated')
+        self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(set(content.keys()),
+                          set(['short_name', 'long_name', 'admins', 'etag',
+                               'can_delete', 'parentnode', 'id', 'inherited_admins',
+                               'start_time', 'end_time']))
+
+    def test_put_admins(self):
+        self.client.login(username='oneadmin', password='test')
+        self.testhelper.create_user('user1')
+        self.testhelper.create_user('user2')
+        self.testhelper.create_user('user3')
+        data = {'short_name': 'duck2000',
+                'long_name': 'Updated',
+                'admins': [{'username': 'user1',
+                             'email': 'ignored',
+                             'full_name': 'ignored!'},
+                           {'username': 'user2'},
+                           {'id': self.testhelper.user3.id}],
+                'start_time': isoformat_relativetime(days=-2),
+                'end_time': isoformat_relativetime(days=2),
+                'parentnode': 1}
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
+                                                 data=data)
+        self.assertEquals(response.status_code, 200)
+        admins = content['admins']
+        self.assertEquals(len(content['admins']), 3)
+        admins.sort(cmp=lambda a,b: cmp(a['username'], b['username']))
+        self.assertEquals(admins[0]['username'], 'user1')
+        self.assertEquals(admins[2]['username'], 'user3')
