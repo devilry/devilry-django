@@ -79,6 +79,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     _onLoadPeriods: function(records, operation) {
+        console.log('periods', records);
         if(operation.success) {
             
         } else {

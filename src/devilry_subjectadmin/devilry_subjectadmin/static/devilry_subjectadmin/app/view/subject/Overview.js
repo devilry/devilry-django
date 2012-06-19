@@ -19,11 +19,11 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
 
 
     initComponent: function() {
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
-            what: this.subject_shortname
+        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+            something: this.subject_shortname
         });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
-            what: this.subject_shortname
+        var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
+            something: this.subject_shortname
         });
 
 
@@ -62,7 +62,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     items: [{
                         xtype: 'editablesidebarbox',
                         margin: {top: 0},
-                        title: dtranslate('devilry_subjectadmin.administrators')
+                        title: gettext('Administrators')
                     }]
                 }],
             }],
@@ -72,7 +72,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: dtranslate('devilry_extjsextras.advanced'),
+                    text: gettext('Advanced'),
                     scale: 'medium',
                     menu: [{
                         text: renameLabel,
