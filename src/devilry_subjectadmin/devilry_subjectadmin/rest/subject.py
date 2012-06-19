@@ -8,8 +8,6 @@ from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
 
 
-logger = getLogger(__name__)
-
 class SubjectResource(BaseNodeInstanceResource):
     model = Subject
     fields = ('id', 'parentnode', 'short_name', 'long_name', 'etag')
