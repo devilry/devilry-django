@@ -41,7 +41,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100:admin(duck1100adm)',
-                                      'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm)'])
+                                      'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm1,duck1010adm2,duck1010adm3)'])
         self.testhelper.add(nodes='uni',
                             subjects=['duck1010'],
                             periods=['period1:ln(Period One)', 'period2', 'period3'])
@@ -50,7 +50,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
                             periods=['spring01'])
 
     def test_doesnotexists(self):
-        self.login('duck1010adm')
+        self.login('duck1010adm1')
         self.browseTo('/100000/')
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
@@ -62,8 +62,8 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
-    def test_published(self):
-        self.login('duck1010adm')
+    def test_overview(self):
+        self.login('duck1010adm1')
         self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
         self.waitForCssSelector('.devilry_subjectoverview')
         self.waitForText('DUCK 1010 - Programming')
@@ -74,3 +74,10 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.assertTrue('period2' in self.selenium.page_source)
         self.assertTrue('period3' in self.selenium.page_source)
         self.assertFalse('spring01' in self.selenium.page_source)
+
+    def test_admins(self):
+        self.login('duck1010adm1')
+        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self.waitForCssSelector('.devilry_administratorlist')
+        adminlist = self.selenium.find_element_by_css_selector('.devilry_administratorlist')
+        self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 3)

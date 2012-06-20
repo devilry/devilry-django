@@ -62,6 +62,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     items: [{
                         xtype: 'editablesidebarbox',
                         margin: {top: 0},
+                        itemId: 'admins',
                         title: gettext('Administrators')
                     }]
                 }],

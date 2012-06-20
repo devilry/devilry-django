@@ -26,6 +26,9 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     }, {
         ref: 'subjectOverview',
         selector: 'subjectoverview'
+    }, {
+        ref: 'adminsBox',
+        selector: 'subjectoverview #admins'
     }],
 
     init: function() {
@@ -56,9 +59,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     _loadSubject: function() {
-        //this.getSubjectsStore().loadSubject(
-            //this.subject_id, this._onLoadSubject, this
-        //);
         this.getSubjectModel().load(this.subject_id, {
             callback: this._onLoadSubject,
             scope: this
@@ -79,10 +79,28 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     },
 
+    _initAdmins: function() {
+        console.log(this.assignmentRecord.get('admins'));
+        this.getAdminsBox().updateBody([
+            '<ul class="devilry_administratorlist">',
+                '<tpl for="admins">',
+                    '<li>',
+                        '<a href="mailto:{email}">',
+                            '{full_name} ({username})',
+                        '</a>',
+                    '</li>',
+                '</tpl>',
+            '</ul>',
+        ], {
+            admins: this.assignmentRecord.get('admins')
+        });
+    },
+
     _onLoadSubjectSuccess: function(record) {
         this.assignmentRecord = record;
         this.getActions().setTitle(record.get('long_name'));
         this._setBreadcrumbs([], record.get('short_name'));
+        this._initAdmins();
     },
 
     _loadPeriods: function() {
