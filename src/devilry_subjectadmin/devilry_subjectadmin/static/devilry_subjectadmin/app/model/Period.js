@@ -1,10 +1,29 @@
 /** Period model. */
 Ext.define('devilry_subjectadmin.model.Period', {
-    extend: 'devilry.apps.administrator.simplified.SimplifiedPeriod',
+    extend: 'Ext.data.Model',
 
-    proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/restfulsimplifiedperiod/',
-        orderby: ['-start_time'],
-        result_fieldgroups: ["subject"],
-    }),
+    idProperty: 'id',
+    fields: [
+        {name: 'id', type: 'auto'},
+        {name: 'parentnode', type: 'auto'},
+        {name: 'short_name',  type: 'string'},
+        {name: 'long_name',  type: 'string'},
+        {name: 'can_delete',  type: 'bool'},
+        {name: 'etag',  type: 'string'},
+        {name: 'admins',  type: 'auto'},
+        {name: 'inherited_admins',  type: 'auto'},
+        {name: 'start_time',  type: 'auto'},
+        {name: 'end_time',  type: 'auto'},
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/period/',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json'
+        }
+    }
 });

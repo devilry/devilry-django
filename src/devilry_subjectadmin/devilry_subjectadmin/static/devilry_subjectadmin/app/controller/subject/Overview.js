@@ -39,7 +39,17 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         });
     },
 
+    _setBreadcrumbs: function(breadcrumbsExtra, current) {
+        var breadcrumbsBase = [{
+            text: gettext("All subjects"),
+            url: '/'
+        }];
+        var breadcrumbs = breadcrumbsBase.concat(breadcrumbsExtra);
+        this.application.breadcrumbs.set(breadcrumbs, current);
+    },
+
     _onSubjectViewRender: function() {
+        this._setBreadcrumbs([], gettext('Loading ...'));
         this.subject_id = this.getSubjectOverview().subject_id;
         this._loadSubject();
         this._loadPeriods();
@@ -72,6 +82,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     _onLoadSubjectSuccess: function(record) {
         this.assignmentRecord = record;
         this.getActions().setTitle(record.get('long_name'));
+        this._setBreadcrumbs([], record.get('short_name'));
     },
 
     _loadPeriods: function() {

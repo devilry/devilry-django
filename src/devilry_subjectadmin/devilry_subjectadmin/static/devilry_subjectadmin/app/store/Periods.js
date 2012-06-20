@@ -2,22 +2,8 @@ Ext.define('devilry_subjectadmin.store.Periods', {
     extend: 'Ext.data.Store',
     model: 'devilry_subjectadmin.model.Period',
 
-    loadPeriod: function(subject_shortname, period_shortname, callbackFn, callbackScope) {
-        this.proxy.setDevilryFilters([
-            {field:"parentnode__short_name", comp:"exact", value:subject_shortname},
-            {field:"short_name", comp:"exact", value:period_shortname}
-        ]);
-        this.load({
-            scope: callbackScope,
-            callback: callbackFn
-        });
-    },
-
-    loadPeriodsInSubject: function(subject_shortname, callbackFn, callbackScope) {
-        this.proxy.extraParams.limit = 100000;
-        this.proxy.setDevilryFilters([
-            {field:"parentnode__short_name", comp:"exact", value:subject_shortname}
-        ]);
+    loadPeriodsInSubject: function(subject_id, callbackFn, callbackScope) {
+        this.proxy.extraParams.parentnode = subject_id;
         this.load({
             scope: callbackScope,
             callback: callbackFn

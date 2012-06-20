@@ -86,7 +86,10 @@ Ext.application({
     _createViewport: function() {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
             region: 'north',
-            //height: 30
+            defaultBreadcrumbs: [{
+                text: gettext("Subjectadmin"),
+                url: ''
+            }]
         });
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
@@ -159,7 +162,7 @@ Ext.application({
         this.breadcrumbs.set([{
             text: gettext("All subjects"),
             url: '/'
-        }], subject_id);
+        }]);
         this.setPrimaryContent({
             xtype: 'subjectoverview',
             subject_id: subject_id

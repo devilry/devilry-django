@@ -1,6 +1,5 @@
 /** Subject model. */
 Ext.define('devilry_subjectadmin.model.Subject', {
-    extend: 'devilry.apps.administrator.simplified.SimplifiedSubject',
     extend: 'Ext.data.Model',
 
     idProperty: 'id',
