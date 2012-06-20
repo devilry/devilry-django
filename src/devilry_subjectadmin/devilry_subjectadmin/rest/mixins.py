@@ -373,14 +373,20 @@ class BaseNodeListModelMixin(ListModelMixin):
         return """
         List the {modelname} where the authenticated user is admin.
 
+        # Parameters
+        {parameterstable}
+
         # Returns
         List of maps/dicts with the following attributes:
         {responsetable}
         """
 
     def postprocess_get_docs(self, docs):
+        parameterstable = self.html_create_attrtable({'parentnode': {'help': 'The ID of a parentnode. Restrict response to items within the parentnode.',
+                                                                     'meta': 'optional'}})
         return docs.format(modelname=self.resource.model.__name__,
-                           responsetable=self.htmldoc_responsetable())
+                           responsetable=self.htmldoc_responsetable(),
+                           parameterstable=parameterstable)
 
     def _parse_getparam_form(self):
         bound_form = self.getparam_form(self.request.GET)
