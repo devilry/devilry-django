@@ -45,15 +45,20 @@ class TestBaseNode(TestCase, TestHelper):
         self.add(nodes='uio.matnat:admin(matnatadm).ifi:admin(ifiadmin,ifiadmin2)',
                  subjects=['duck2000:admin(duck2000adm)'],
                  periods=['aboutnow:admin(aboutnowadm)'])
-        admins = self.duck2000_aboutnow.get_inherited_admins()
+        admins = [a.user for a in self.duck2000_aboutnow.get_inherited_admins()]
         self.assertEquals(len(admins), 5)
         self.assertTrue(self.duck2000adm in admins)
         self.assertTrue(self.uioadmin in admins)
         self.assertTrue(self.ifiadmin2 in admins)
         self.assertFalse(self.aboutnowadm in admins)
 
-        admins = self.uio_matnat_ifi.get_inherited_admins()
+        admins = [a.user for a in self.uio_matnat_ifi.get_inherited_admins()]
         self.assertEquals(len(admins), 2)
         self.assertTrue(self.uioadmin in admins)
         self.assertTrue(self.matnatadm in admins)
         self.assertFalse(self.ifiadmin2 in admins)
+
+        inherited_admins = self.duck2000_aboutnow.get_inherited_admins()
+        inherited_admins.sort(cmp=lambda a,b: cmp(a.user.username, b.user.username))
+        self.assertEquals(inherited_admins[0].user.username, 'duck2000adm')
+        self.assertEquals(inherited_admins[0].basenode.short_name, 'duck2000')

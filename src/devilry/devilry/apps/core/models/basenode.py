@@ -4,6 +4,20 @@ from django.contrib.auth.models import User
 from abstract_is_admin import AbstractIsAdmin
 from save_interface import SaveInterface
 
+class InheritedAdmin(object):
+    """
+    Stores reference to inherited admin, both to the
+    :class:`django.contrib.auth.models.User` object, and to the
+    :class:`.BaseNode` object.
+    """
+    def __init__(self, user, basenode):
+        #: The :class:`django.contrib.auth.models.User`
+        self.user = user
+
+        #: The BaseNode
+        self.basenode = basenode
+
+
 class BaseNode(AbstractIsAdmin, SaveInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
@@ -48,7 +62,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
 
     def _get_inherited_admins(self, admins):
         for admin in self.admins.all().select_related('devilryuserprofile'):
-            admins[admin.id] = admin
+            admins[admin.id] = InheritedAdmin(user=admin, basenode=self)
         if self.parentnode:
             self.parentnode._get_inherited_admins(admins)
 
@@ -57,7 +71,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         Get list of inherited admins.
 
         :return:
-            List of :class:`django.contrib.auth.models.User` objects. Does
+            List of :class:`.InheritedAdmin` objects. Does
             not contain duplicates.
         """
         admins = {}
