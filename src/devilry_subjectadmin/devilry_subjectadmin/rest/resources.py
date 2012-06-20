@@ -49,6 +49,12 @@ class BaseNodeInstanceResource(ModelResource):
                 'full_name': user.devilryuserprofile.full_name
                }
 
+    def format_inheritedadmin(self, inheritedadmin):
+        return {'user': self.format_adminuser(inheritedadmin.user),
+                'basenode': {'type': inheritedadmin.basenode.__class__,
+                             'path': inheritedadmin.basenode.get_path(),
+                             'id': inheritedadmin.basenode.id}}
+
     def admins(self, instance):
         if not isinstance(instance, self.model):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
@@ -57,5 +63,5 @@ class BaseNodeInstanceResource(ModelResource):
 
     def inherited_admins(self, instance):
         if isinstance(instance, self.model):
-            return [self.format_adminuser(user)
-                    for user in instance.get_inherited_admins()]
+            return [self.format_inheritedadmin(inheritedadmin)
+                    for inheritedadmin in instance.get_inherited_admins()]

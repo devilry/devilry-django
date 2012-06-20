@@ -341,14 +341,22 @@ class SelfdocumentingMixin(object):
         return mark_safe(html)
 
 
+inherited_admins_help = """
+List of inherited administrators. Each entry in the list contains a map/object
+with the following attributes:
+- ``user``: Same format as the entries in ``admins``.
+- ``basenode``: Map/object with the following attributes:
+    - ``type``: The type of the basenode.
+    - ``path``: Unique path to the basenode.
+    - ``id``: The ID of the basenode.
+"""
 class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
     """
     Mixin for documentation generation for BaseNode REST APIs.
     """
-    inherited_admins_help = """List of inherited administrators. Same format as ``admins``."""
 
     def htmldoc_responsetable(self):
-        specify_helptext = {'inherited_admins': self.inherited_admins_help,
+        specify_helptext = {'inherited_admins': inherited_admins_help,
                             'can_delete': 'Can the authenticated user delete this object?',
                             'parentnode': 'ID of the parentnode.',
                             'id': 'The unique ID of the object.'}

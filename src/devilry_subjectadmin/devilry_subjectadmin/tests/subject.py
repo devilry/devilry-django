@@ -36,10 +36,12 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('li.devilry_subject')), 1)
 
 
+
+
 class TestSubjectOverview(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni:admin(uniadmin)',
+        self.testhelper.add(nodes='uni:admin(uniadmin,anotheruniadmin)',
                             subjects=['duck1100:admin(duck1100adm)',
                                       'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm1,duck1010adm2,duck1010adm3)'])
         self.testhelper.add(nodes='uni',
@@ -76,15 +78,26 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.assertFalse('spring01' in self.selenium.page_source)
 
     def test_admins(self):
+        self.testhelper.duck1010adm3.devilryuserprofile.full_name = 'Duck1010 admin three'
+        self.testhelper.duck1010adm3.devilryuserprofile.save()
         self.login('duck1010adm1')
         self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
         self.waitForCssSelector('.devilry_administratorlist')
         adminlist = self.selenium.find_element_by_css_selector('.devilry_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 3)
+        self.assertTrue('>duck1010adm1<' in self.selenium.page_source)
+        self.assertTrue('>duck1010adm2<' in self.selenium.page_source)
+        self.assertFalse('>duck1010adm3<' in self.selenium.page_source)
+        self.assertTrue('Duck1010 admin three' in self.selenium.page_source)
 
     def test_inherited_admins(self):
+        self.testhelper.uniadmin.devilryuserprofile.full_name = 'Uni admin'
+        self.testhelper.uniadmin.devilryuserprofile.save()
         self.login('duck1010adm1')
         self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
         self.waitForCssSelector('.devilry_inherited_administratorlist')
         adminlist = self.selenium.find_element_by_css_selector('.devilry_inherited_administratorlist')
-        self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 1)
+        self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 2)
+        self.assertTrue('>anotheruniadmin<' in self.selenium.page_source)
+        self.assertFalse('>uniadmin<' in self.selenium.page_source)
+        self.assertTrue('Uni admin' in self.selenium.page_source)
