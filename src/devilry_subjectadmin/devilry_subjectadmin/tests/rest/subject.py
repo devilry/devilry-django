@@ -17,9 +17,9 @@ class TestRestListOrCreateSubjectRest(TestCase):
         self.url = '/devilry_subjectadmin/rest/subject/'
         self.testhelper.create_user('nobody')
 
-    def _listas(self, username):
+    def _listas(self, username, **data):
         self.client.login(username=username, password='test')
-        return self.client.rest_get(self.url)
+        return self.client.rest_get(self.url, **data)
 
     def test_list(self):
         content, response = self._listas('adminone')
@@ -43,6 +43,16 @@ class TestRestListOrCreateSubjectRest(TestCase):
         content, response = self._listas('otheruser')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 0)
+
+    def test_list_in_node(self):
+        self.testhelper.add(nodes='othernode:admin(otheradmin)',
+                            subjects=['s1', 's2'])
+        content, response = self._listas('otheradmin',
+                                         parentnode=self.testhelper.othernode.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 2)
+        shortnames = set([p['short_name'] for p in content])
+        self.assertEquals(shortnames, set(['s1', 's2']))
 
     def _createas(self, username, data):
         self.client.login(username=username, password='test')
