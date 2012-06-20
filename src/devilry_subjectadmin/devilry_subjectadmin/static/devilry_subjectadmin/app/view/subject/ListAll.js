@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectlistall',
-    cls: 'subjectlistall bootstrap',
+    cls: 'devilry_subjectlistall bootstrap',
     requires: [
         'devilry_extjsextras.AlertMessageList'
     ],

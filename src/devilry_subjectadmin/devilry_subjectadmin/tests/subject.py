@@ -40,20 +40,37 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100', 'duck1010:ln(DUCK 1010 - Programming)'])
+                            subjects=['duck1100:admin(duck1100adm)',
+                                      'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm)'])
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1010'],
+                            periods=['period1:ln(Period One)', 'period2', 'period3'])
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['spring01'])
 
-    #def test_doesnotexists(self):
-        #self.browseToTest('/a/')
-        #self.waitForCssSelector('.subjectoverview')
-        #self.waitForCssSelector('.alertmessagelist')
-        #self.assertTrue('400: Error' in self.selenium.page_source)
+    def test_doesnotexists(self):
+        self.login('duck1010adm')
+        self.browseTo('/100000/')
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
+
+    def test_doesnotexists_superadmin(self):
+        self.testhelper.create_superuser('grandma')
+        self.login('grandma')
+        self.browseTo('/100000/')
+        self.waitForCssSelector('.alertmessagelist')
+        self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
     def test_published(self):
-        self.browseToTest('/{0}/')
-        self.waitForCssSelector('.subjectoverview')
-        #self.waitForText('DUCK-MEK 2030 - Something Mechanical')
-        #self.assertTrue('>Spring 2012 extra assignments<' in self.selenium.page_source)
-        #self.assertTrue('>Spring 2012<' in self.selenium.page_source)
-        #self.assertTrue('subjectadmin.administrators' in self.selenium.page_source)
-        #self.assertTrue('#/duck-mek2030/2012h-extra/' in self.selenium.page_source)
-        #self.assertTrue('#/duck-mek2030/2012h/' in self.selenium.page_source)
+        self.login('duck1010adm')
+        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self.waitForCssSelector('.devilry_subjectoverview')
+        self.waitForText('DUCK 1010 - Programming')
+        self.waitForCssSelector('li.devilry_period')
+        periodlist = self.selenium.find_element_by_css_selector('.devilry_listofperiods')
+        self.assertEquals(len(periodlist.find_elements_by_css_selector('li.devilry_period')), 3)
+        self.assertTrue('Period One' in self.selenium.page_source)
+        self.assertTrue('period2' in self.selenium.page_source)
+        self.assertTrue('period3' in self.selenium.page_source)
+        self.assertFalse('spring01' in self.selenium.page_source)

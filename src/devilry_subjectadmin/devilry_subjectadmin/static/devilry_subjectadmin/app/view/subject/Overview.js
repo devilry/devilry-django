@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.subjectoverview',
-    cls: 'subjectoverview',
+    cls: 'devilry_subjectoverview',
     requires: [
         'Ext.layout.container.Column',
         'devilry_extjsextras.EditableSidebarBox',
