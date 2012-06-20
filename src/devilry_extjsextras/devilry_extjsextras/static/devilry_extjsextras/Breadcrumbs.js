@@ -27,6 +27,12 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
         '<ul>'
     ],
 
+    /**
+     * @cfg
+     * 
+     */
+    defaultBreadcrumbs: undefined,
+
     initComponent: function() {
         this.clear();
         this.callParent(arguments);
@@ -47,11 +53,18 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
      * */
     set: function(breadcrumbs, current) {
         this.clear();
+        if(this.defaultBreadcrumbs) {
+            this.addMany(this.defaultBreadcrumbs);
+        }
+        this.addMany(breadcrumbs);
+        this.add('', current)
+        this.draw();
+    },
+
+    addMany: function(breadcrumbs) {
         Ext.Array.each(breadcrumbs, function(breadcrumb) {
             this.add(breadcrumb.url, breadcrumb.text);
         }, this);
-        this.add('', current)
-        this.draw();
     },
 
     add: function(url, text) {
