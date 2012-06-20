@@ -128,7 +128,21 @@ class SelfdocumentingMixin(object):
 
             def postprocess_docs(self, docs):
                 return docs.format(paramteterstable=self.htmlformat_parameters_from_form())
+
+            def post(self):
+                """
+                ## Parameters
+                {paramteterstable}
+                """
+
+            def postprocess_post_docs(self, docs):
+                """
+                Overrides postprocess_docs() for the POST docs.
+                """
+                params = self.html_create_attrtable({'id': {'help': 'The ID of the deleted object.'}})
+                return docs.format(paramteterstable=params)
     '''
+
     def get_unformatted_docs_for_method(self, methodname):
         """
         Get docs for the given method. Tries to find docs in the following
@@ -209,7 +223,7 @@ class SelfdocumentingMixin(object):
             Override helptext for specific fields. Keys are fieldnames,
             and values are overridden helptext for that field.
 
-        .. seealso:: :meth:`.postprocess_docs`, :meth:`.htmlformat_response_from_fields`, :meth:`.html_create_attrtable`.
+        .. seealso:: :meth:`.htmlformat_response_from_fields`, :meth:`.html_create_attrtable`.
         """
         form = boundform or self.get_bound_form()
         fieldshelp = {}
@@ -253,37 +267,11 @@ class SelfdocumentingMixin(object):
             fieldshelp[fieldname] = dict(help=help)
         return self.html_create_attrtable(fieldshelp)
 
-    def postprocess_docs(self, htmldocs):
-        """
-        Postprocess docs after they have been converted to HTML. Override this
-        method to add generated data to the docs. Typically used with
-        :meth:`.htmlformat_parameters_from_form`::
-
-            from djangorestframework.views import View
-            class MyView(SelfdocumentingMixin, View):
-                form = SomeForm
-                def post(self, request):
-                    \"\"\"
-                    Create something.
-
-                    ## Parameters
-                    {paramteterstable}
-                    \"\"\"
-
-                def postprocess_docs(self, docs):
-                    return docs.format(paramteterstable=self.htmlformat_parameters_from_form())
-        """
-        return htmldocs
-
     def convert_docs_to_html(self, docs):
         """
         Convert the given docs to to html.
         Defaults to formatting the docs using markdown, but you can override
         this method if you want something else.
-
-        If you do not want to use markdown, you should override this method,
-        :meth:`.format_docs_methodheading` and perhaps
-        :meth:`.get_all_unformatted_docs`.
         """
         return apply_markdown(docs)
 
@@ -298,47 +286,58 @@ class SelfdocumentingMixin(object):
         """
         return '\n# {methodname}\n'.format(methodname=methodname.upper())
 
-
     def get_unformatted_docs_for_class(self):
         return self.remove_leading_indent_from_docs(self.__doc__ or '')
 
-    def get_unformatted_docs_for_all_methods(self):
-        """
-        Return the docs for all methods as a dict containing an entry for each
-        method with docs (the key is the methodname, and the value is the
-        docs).
-        """
-        method_docs = {}
-        for methodname in self.allowed_methods:
-            methodname = methodname.lower()
-            docs = self.get_unformatted_docs_for_method(methodname)
-            if docs:
-                method_docs[methodname] = '{heading}{docs}'.format(heading=self.format_methodheading_for_docs(methodname),
-                                                                   docs=docs)
-        return method_docs
+    def class_htmldocs(self):
+        return self.convert_docs_to_html(self.get_unformatted_docs_for_class())
 
-    def get_all_unformatted_docs(self):
-        """
-        Merge the response from :meth:`.get_unformatted_docs_for_class` and
-        :meth:`get_unformatted_docs_for_all_methods` into a single string.
-        """
-        docs = self.get_unformatted_docs_for_class()
-        method_docs = self.get_unformatted_docs_for_all_methods()
-        if method_docs:
-            docs = docs + '\n\n' + '\n\n'.join([method_docs[key] for key in sorted(method_docs.keys())])
-        return docs
+    def method_htmldocs(self, methodname):
+        htmldocs = self.convert_docs_to_html(self.get_unformatted_docs_for_method(methodname))
+        return '<h1>{methodname}</h1>\n{htmldocs}'.format(methodname=methodname.upper(),
+                                                          htmldocs=htmldocs)
 
-    def get_docs_html(self):
+    def get_htmldocs(self):
+        return self.method_htmldocs('get')
+
+    def post_htmldocs(self):
+        return self.method_htmldocs('post')
+
+    def put_htmldocs(self):
+        return self.method_htmldocs('put')
+
+    def delete_htmldocs(self):
+        return self.method_htmldocs('delete')
+
+    def _postprocess_docs(self, htmldocs, methodname=None):
+        if methodname:
+            postprocess_method = 'postprocess_{methodname}_docs'.format(methodname=methodname)
+            if hasattr(self, postprocess_method):
+                return getattr(self, postprocess_method)(htmldocs)
+        if hasattr(self, 'postprocess_docs'):
+            return self.postprocess_docs(htmldocs)
+        return htmldocs
+
+    def all_htmldocs(self):
         """
         Get the HTML-formatted docs for this view.
         """
-        docs = self.get_all_unformatted_docs()
-        docs = self.convert_docs_to_html(docs)
-        docs = self.postprocess_docs(docs)
-        return docs
+        classhtmldocs = self.class_htmldocs()
+        docs = []
+        if classhtmldocs:
+            docs.append(self._postprocess_docs(classhtmldocs))
+        for methodname in self.allowed_methods:
+            methodname = methodname.lower()
+            htmlmethod = '{methodname}_htmldocs'.format(methodname=methodname)
+            if not hasattr(self, htmlmethod):
+                continue
+            htmldocs = getattr(self, htmlmethod)()
+            if htmldocs:
+                docs.append(self._postprocess_docs(htmldocs, methodname))
+        return '\n\n'.join(docs)
 
     def get_description(self, html=False):
-        html = self.get_docs_html()
+        html = self.all_htmldocs()
         return mark_safe(html)
 
 
@@ -374,10 +373,14 @@ class BaseNodeListModelMixin(ListModelMixin):
         return """
         List the {modelname} where the authenticated user is admin.
 
-        ## Returns
+        # Returns
         List of maps/dicts with the following attributes:
         {responsetable}
         """
+
+    def postprocess_get_docs(self, docs):
+        return docs.format(modelname=self.resource.model.__name__,
+                           responsetable=self.htmldoc_responsetable())
 
     def _parse_getparam_form(self):
         bound_form = self.getparam_form(self.request.GET)
@@ -422,8 +425,12 @@ class BaseNodeCreateModelMixin(CreateModelMixin):
         """
         Create new {modelname}.
 
-        ## Parameters
+        # Parameters
         {create_paramteterstable}
         """
         self._require_nodeadmin(request.user)
         return super(BaseNodeCreateModelMixin, self).post(request)
+
+    def postprocess_post_docs(self, docs):
+        return docs.format(create_paramteterstable=self.htmldoc_parameterstable(),
+                           modelname=self.resource.model.__name__)

@@ -7,10 +7,8 @@ from .mixins import BaseNodeCreateModelMixin
 
 
 class BaseNodeListOrCreateView(SelfdocumentingBaseNodeMixin, BaseNodeListModelMixin, BaseNodeCreateModelMixin, ModelView):
-    def postprocess_docs(self, docs):
-        return docs.format(create_paramteterstable=self.htmldoc_parameterstable(),
-                           modelname=self.resource.model.__name__,
-                           responsetable=self.htmldoc_responsetable())
+    """
+    """
 
 
 class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
@@ -19,7 +17,7 @@ class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
         return """
         Get info about the {modelname} and its admins.
 
-        ## Returns
+        # Returns
         Map/dict with the following attributes:
         {responsetable}
         """
@@ -28,7 +26,7 @@ class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
         return """
         Update the {modelname} and its admins.
 
-        ## Parameters
+        # Parameters
         {update_parameterstable}
         """
 
@@ -37,7 +35,7 @@ class BaseNodeInstanceModelView(BaseNodeInstanceRestMixin,
         Delete the {modelname}. Only possible if the authenticated user is
         superadmin, or if the {modelname} is empty.
 
-        ## Returns
+        # Returns
         Map/dict with a single attribute:
         {delete_responsetable}
         """
