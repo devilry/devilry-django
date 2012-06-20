@@ -29,9 +29,9 @@ class TestRestListOrCreatePeriodRest(TestCase):
         self.url = '/devilry_subjectadmin/rest/period/'
         self.testhelper.create_user('nobody')
 
-    def _listas(self, username):
+    def _listas(self, username, **data):
         self.client.login(username=username, password='test')
-        return self.client.rest_get(self.url)
+        return self.client.rest_get(self.url, **data)
 
     def test_list(self):
         content, response = self._listas('adminone')
@@ -46,6 +46,17 @@ class TestRestListOrCreatePeriodRest(TestCase):
         content, response = self._listas('otheruser')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 0)
+
+    def test_list_in_subject(self):
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['duck9000'],
+                            periods=['p1', 'p2'])
+        content, response = self._listas('uniadmin',
+                                         parentnode=self.testhelper.duck9000.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 2)
+        shortnames = set([p['short_name'] for p in content])
+        self.assertEquals(shortnames, set(['p1', 'p2']))
 
     def _createas(self, username, data):
         self.client.login(username=username, password='test')

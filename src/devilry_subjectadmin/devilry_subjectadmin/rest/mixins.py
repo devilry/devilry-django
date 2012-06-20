@@ -362,7 +362,14 @@ class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
         return self.htmlformat_parameters_from_form()
 
 
+from django import forms
+class FilterBaseNodeQuerySetForm(forms.Form):
+    parentnode = forms.IntegerField(required=False)
+
+
 class BaseNodeListModelMixin(ListModelMixin):
+    getparam_form = FilterBaseNodeQuerySetForm
+
     def get_restdocs(self):
         return """
         List the {modelname} where the authenticated user is admin.
@@ -372,8 +379,34 @@ class BaseNodeListModelMixin(ListModelMixin):
         {responsetable}
         """
 
+    def _parse_getparam_form(self):
+        bound_form = self.getparam_form(self.request.GET)
+        if bound_form.is_valid():
+            self.GETPARAMS = bound_form.cleaned_data
+        else:
+            detail = {}
+
+            # Add any non-field errors
+            if bound_form.non_field_errors():
+                detail[u'errors'] = bound_form.non_field_errors()
+
+            # Add standard field errors
+            field_errors = dict((key, map(unicode, val))
+                                for (key, val) in bound_form.errors.iteritems()
+                                if not key.startswith('__'))
+
+            if field_errors:
+                detail[u'field_errors'] = field_errors
+            from djangorestframework import status
+            from djangorestframework.response import ErrorResponse
+            raise ErrorResponse(status.HTTP_400_BAD_REQUEST, detail)
+
+
     def get_queryset(self):
+        self._parse_getparam_form()
         qry = self.resource.model.where_is_admin_or_superadmin(self.user)
+        if self.GETPARAMS['parentnode'] != None:
+            qry = qry.filter(parentnode=self.GETPARAMS['parentnode'])
         qry = qry.order_by('short_name')
         return qry
 
