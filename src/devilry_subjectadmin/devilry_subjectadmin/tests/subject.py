@@ -39,7 +39,7 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
 class TestSubjectOverview(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck1100:admin(duck1100adm)',
                                       'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm1,duck1010adm2,duck1010adm3)'])
         self.testhelper.add(nodes='uni',
@@ -81,3 +81,10 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_administratorlist')
         adminlist = self.selenium.find_element_by_css_selector('.devilry_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 3)
+
+    def test_inherited_admins(self):
+        self.login('duck1010adm1')
+        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self.waitForCssSelector('.devilry_inherited_administratorlist')
+        adminlist = self.selenium.find_element_by_css_selector('.devilry_inherited_administratorlist')
+        self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 1)

@@ -80,8 +80,8 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     _initAdmins: function() {
-        console.log(this.assignmentRecord.get('admins'));
         this.getAdminsBox().updateBody([
+            gettext('On this subject:'),
             '<ul class="devilry_administratorlist">',
                 '<tpl for="admins">',
                     '<li>',
@@ -91,8 +91,19 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
                     '</li>',
                 '</tpl>',
             '</ul>',
+            gettext('Inherited:'),
+            '<ul class="devilry_inherited_administratorlist">',
+                '<tpl for="inherited_admins">',
+                    '<li>',
+                        '<a href="mailto:{email}">',
+                            '{full_name} ({username})',
+                        '</a>',
+                    '</li>',
+                '</tpl>',
+            '</ul>'
         ], {
-            admins: this.assignmentRecord.get('admins')
+            admins: this.assignmentRecord.get('admins'),
+            inherited_admins: this.assignmentRecord.get('inherited_admins')
         });
     },
 
