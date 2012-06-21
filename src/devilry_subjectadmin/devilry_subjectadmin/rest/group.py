@@ -252,11 +252,11 @@ class RestGroupRoot(View):
     def __init__(self):
         self.dao = GroupDao()
 
-    def get(self, request, assignmentid):
-        return self.dao.list(assignmentid)
+    def get(self, request, id):
+        return self.dao.list(id)
 
-    def post(self, request, assignmentid):
-        group = self.dao.create(assignmentid, **self.CONTENT)
+    def post(self, request, id):
+        group = self.dao.create(id, **self.CONTENT)
         return Response(201, dict(id=group.id))
 
 #class RestGroup(View):

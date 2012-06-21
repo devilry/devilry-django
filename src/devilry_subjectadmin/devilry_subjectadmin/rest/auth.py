@@ -77,7 +77,7 @@ class BaseIsAdmin(BasePermission):
 class IsSubjectAdmin(BaseIsAdmin):
     """
     Djangorestframework permission checker that checks if the requesting user
-    has admin-permissions on the subject given as the first argument to the
+    has admin-permissions on the subject given as the id kwarg to the
     view.
     """
     def check_permission(self, user):
@@ -88,7 +88,7 @@ class IsSubjectAdmin(BaseIsAdmin):
 class IsPeriodAdmin(BaseIsAdmin):
     """
     Djangorestframework permission checker that checks if the requesting user
-    has admin-permissions on the period given as the first argument to the
+    has admin-permissions on the period given as the id kwarg to the
     view.
     """
     def check_permission(self, user):
@@ -96,14 +96,12 @@ class IsPeriodAdmin(BaseIsAdmin):
         periodadmin_required(user, periodid)
 
 
-class IsAssignmentAdmin(BasePermission):
+class IsAssignmentAdmin(BaseIsAdmin):
     """
     Djangorestframework permission checker that checks if the requesting user
-    has admin-permissions on the assignment given as the first argument to the
+    has admin-permissions on the assignment given as the id kwarg  to the
     view.
     """
     def check_permission(self, user):
-        if len(self.view.args) != 1:
-            raise PermissionDeniedError('The IsAssignmentAdmin permission checker requires an assignmentid.')
-        assignmentid = self.view.args[0]
+        assignmentid = self.get_id()
         _assignmentadmin_required(user, assignmentid)
