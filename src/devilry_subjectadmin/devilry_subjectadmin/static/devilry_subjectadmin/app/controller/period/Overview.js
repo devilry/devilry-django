@@ -133,5 +133,5 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
     onLoadSubjectFailure: function(operation) {
         this._onLoadFailure(operation);
-    },
+    }
 });

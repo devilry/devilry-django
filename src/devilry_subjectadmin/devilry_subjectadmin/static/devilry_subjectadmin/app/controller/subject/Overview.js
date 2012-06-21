@@ -3,6 +3,9 @@
  */
 Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     extend: 'Ext.app.Controller',
+    mixins: {
+        'loadSubject': 'devilry_subjectadmin.utils.LoadSubjectMixin',
+    },
 
     views: [
         'subject.Overview',
@@ -70,29 +73,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     _onSubjectViewRender: function() {
         this._setBreadcrumbs([], gettext('Loading ...'));
         this.subject_id = this.getSubjectOverview().subject_id;
-        this._loadSubject();
-        this._loadPeriods();
-    },
-
-    _loadSubject: function() {
-        this.getSubjectModel().load(this.subject_id, {
-            callback: this._onLoadSubject,
-            scope: this
-        });
-    },
-
-    _onLoadSubject: function(record, operation) {
-        if(operation.success) {
-            this._onLoadSubjectSuccess(record);
-        } else {
-            this._onLoadSubjectFailure(operation);
-        }
-    },
-
-    _onLoadSubjectFailure: function(operation) {
-        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-        error.addErrors(operation);
-        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
+        this.loadSubject(this.subject_id);
     },
 
     _initAdmins: function() {
@@ -134,14 +115,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         });
     },
 
-    _onLoadSubjectSuccess: function(record) {
-        this.subjectRecord = record;
-        this.getActions().setTitle(record.get('long_name'));
-        this._setBreadcrumbs([], record.get('short_name'));
-        this._initAdmins();
-        this._setMenuLabels();
-    },
-
     _setMenuLabels: function() {
         var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
             something: this.subjectRecord.get('short_name')
@@ -165,5 +138,20 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
             error.addErrors(operation);
             this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
         }
+    },
+
+
+    /** Implement methods required by LoadSubjectMixin */
+    onLoadSubjectSuccess: function(record) {
+        this.subjectRecord = record;
+        this.getActions().setTitle(record.get('long_name'));
+        this._setBreadcrumbs([], record.get('short_name'));
+        this._initAdmins();
+        this._setMenuLabels();
+    },
+    onLoadSubjectFailure: function(operation) {
+        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
+        error.addErrors(operation);
+        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     }
 });
