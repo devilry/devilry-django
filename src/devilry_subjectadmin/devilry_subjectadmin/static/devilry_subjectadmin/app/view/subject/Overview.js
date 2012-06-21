@@ -69,13 +69,16 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
+                    id: 'menubarAdvancedButton',
                     text: gettext('Advanced'),
                     scale: 'medium',
                     menu: [{
                         itemId: 'renameButton',
+                        id: 'menubarAdvancedRenameButton',
                         text: renameLabel
                     }, {
                         itemId: 'deleteButton',
+                        id: 'menubarAdvancedDeleteButton',
                         text: deleteLabel
                     }]
                 }]

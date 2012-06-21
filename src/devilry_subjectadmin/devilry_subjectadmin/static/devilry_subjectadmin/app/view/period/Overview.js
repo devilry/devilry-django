@@ -18,13 +18,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
 
 
     initComponent: function() {
-        var periodpath = Ext.String.format('{0}.{1}', this.subject_shortname, this.period_shortname);
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
-            what: this.periodpath
-        });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
-            what: this.periodpath
-        });
+        var deleteLabel = gettext('Loading ...');
+        var renameLabel = gettext('Loading ...');
 
 
         Ext.apply(this, {
@@ -62,7 +57,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     items: [{
                         xtype: 'editablesidebarbox',
                         margin: {top: 0},
-                        title: dtranslate('devilry_subjectadmin.administrators')
+                        title: gettext('Administrators')
                     }]
                 }],
             }],
@@ -72,28 +67,21 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 padding: {left: 40, top: 1, bottom: 1, right: 40},
                 items: [{
                     xtype: 'button',
-                    text: dtranslate('devilry_extjsextras.advanced'),
+                    id: 'menubarAdvancedButton',
+                    text: gettext('Advanced'),
                     scale: 'medium',
                     menu: [{
-                        text: renameLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
+                        itemId: 'renameButton',
+                        id: 'menubarAdvancedRenameButton',
+                        text: renameLabel
                     }, {
-                        text: deleteLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
+                        itemId: 'deleteButton',
+                        id: 'menubarAdvancedDeleteButton',
+                        text: deleteLabel
                     }]
                 }]
             }]
         });
         this.callParent(arguments);
-    },
-
-    _notImplemented: function() {
-        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     }
 });
