@@ -144,8 +144,12 @@ class TestRestInstancePeriodRest(TestCase):
 
         self.assertEquals(len(content['inherited_admins']), 2)
         self.assertEquals(set(content['inherited_admins'][0].keys()),
+                          set(['basenode', 'user']))
+        self.assertEquals(set(content['inherited_admins'][0]['basenode'].keys()),
+                          set(['type', 'path', 'id']))
+        self.assertEquals(set(content['inherited_admins'][0]['user'].keys()),
                           set(['email', 'username', 'id', 'full_name']))
-        inherited_adminusernames = [user['username'] for user in content['inherited_admins']]
+        inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
         self.assertIn('uniadmin', inherited_adminusernames)
         self.assertIn('duck2000admin', inherited_adminusernames)
 

@@ -139,9 +139,14 @@ class TestRestInstanceSubjectRest(TestCase):
                           set(['email', 'username', 'id', 'full_name']))
 
         self.assertEquals(len(content['inherited_admins']), 1)
-        self.assertEquals(content['inherited_admins'][0]['email'], 'uniadmin@example.com')
         self.assertEquals(set(content['inherited_admins'][0].keys()),
+                          set(['basenode', 'user']))
+        self.assertEquals(set(content['inherited_admins'][0]['basenode'].keys()),
+                          set(['type', 'path', 'id']))
+        self.assertEquals(set(content['inherited_admins'][0]['user'].keys()),
                           set(['email', 'username', 'id', 'full_name']))
+        inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
+        self.assertEquals(inherited_adminusernames, ['uniadmin'])
 
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')
