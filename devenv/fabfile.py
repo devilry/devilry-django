@@ -85,3 +85,13 @@ def noextjsdebug_server():
     Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
     """
     local('bin/django_dev.py runserver --settings settings.noextjsdebug')
+
+@task
+def jsbuild(appname):
+    print
+    print 'NOTE: Make sure:'
+    print
+    print '   bin/fab extjsbuild_server'
+    print
+    print 'is running in another terminal'
+    local('bin/django_dev.py senchatoolsbuild --app {appname}'.format(appname=appname))
