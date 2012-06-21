@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.utils.LoadPeriodMixin', {
                 if(operation.success) {
                     this.onLoadPeriodSuccess(record);
                 } else {
-                    this.onLoadFailure(operation);
+                    this.onLoadPeriodFailure(operation);
                 }
             }
         });

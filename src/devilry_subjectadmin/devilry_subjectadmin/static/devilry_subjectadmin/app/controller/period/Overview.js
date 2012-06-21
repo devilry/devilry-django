@@ -131,7 +131,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
     },
-    onLoadSubjectFailure: function(operation) {
+    onLoadPeriodFailure: function(operation) {
         this._onLoadFailure(operation);
     }
 });

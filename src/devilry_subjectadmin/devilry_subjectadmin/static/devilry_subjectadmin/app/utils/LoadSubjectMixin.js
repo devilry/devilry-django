@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.utils.LoadSubjectMixin', {
                 if(operation.success) {
                     this.onLoadSubjectSuccess(record);
                 } else {
-                    this.onLoadFailure(operation);
+                    this.onLoadSubjectFailure(operation);
                 }
             }
         });
