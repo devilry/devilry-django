@@ -125,8 +125,8 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/", 'browse');
-        this.route.add("/:subject_id/", 'showSubject');
-        this.route.add("/:subject_shortname/:period_shortname/", 'showPeriod');
+        this.route.add("/subject/:subject_id/", 'showSubject');
+        this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         //this.route.add("/:subject/:period", 'period_show');
@@ -159,29 +159,16 @@ Ext.application({
     },
 
     showSubject: function(routeInfo, subject_id) {
-        this.breadcrumbs.set([{
-            text: gettext("All subjects"),
-            url: '/'
-        }]);
         this.setPrimaryContent({
             xtype: 'subjectoverview',
             subject_id: subject_id
         });
     },
 
-    showPeriod: function(routeInfo, subject_shortname, period_shortname) {
-        var subjecturl = '/' + subject_shortname + '/';
-        this.breadcrumbs.set([{
-            text: gettext("All subjects"),
-            url: '/'
-        }, {
-            text: subject_shortname,
-            url: subjecturl
-        }], period_shortname);
+    showPeriod: function(routeInfo, period_id) {
         this.setPrimaryContent({
             xtype: 'periodoverview',
-            subject_shortname: subject_shortname,
-            period_shortname: period_shortname
+            period_id: period_id
         });
     },
 

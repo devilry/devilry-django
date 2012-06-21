@@ -11,7 +11,7 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
                             subjects=['duck1100:admin(duck1100adm)', 'duck1010:ln(DUCK 1010 - Programming)', 'duck9000'])
 
     def _geturl(self, subject):
-        return '#/{0}/'.format(subject.id)
+        return '#/subject/{0}/'.format(subject.id)
 
     def test_listall(self):
         self.login('uniadmin')
@@ -46,42 +46,52 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
                                       'duck1010:ln(DUCK 1010 - Programming):admin(duck1010adm1,duck1010adm2,duck1010adm3)'])
         self.testhelper.add(nodes='uni',
                             subjects=['duck1010'],
-                            periods=['period1:ln(Period One)', 'period2', 'period3'])
+                            periods=['period1:ln(Period One)', 'period2:ln(Period Two)', 'period3:ln(Period Three)'])
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
-                            periods=['spring01'])
+                            periods=['spring01:ln(Spring Year One)'])
+
+    def _get_period_url(self, period):
+        return '#/period/{0}/'.format(period.id)
+
+    def _browseToSubject(self, id):
+        self.browseTo('/subject/{id}/'.format(id=id))
 
     def test_doesnotexists(self):
         self.login('duck1010adm1')
-        self.browseTo('/100000/')
+        self._browseToSubject(100000)
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
 
     def test_doesnotexists_superadmin(self):
         self.testhelper.create_superuser('grandma')
         self.login('grandma')
-        self.browseTo('/100000/')
+        self._browseToSubject(100000)
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
     def test_overview(self):
         self.login('duck1010adm1')
-        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self._browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.waitForText('DUCK 1010 - Programming')
         self.waitForCssSelector('li.devilry_period')
         periodlist = self.selenium.find_element_by_css_selector('.devilry_listofperiods')
         self.assertEquals(len(periodlist.find_elements_by_css_selector('li.devilry_period')), 3)
         self.assertTrue('Period One' in self.selenium.page_source)
-        self.assertTrue('period2' in self.selenium.page_source)
-        self.assertTrue('period3' in self.selenium.page_source)
-        self.assertFalse('spring01' in self.selenium.page_source)
+        self.assertTrue('Period Two' in self.selenium.page_source)
+        self.assertTrue('Period Three' in self.selenium.page_source)
+        self.assertFalse('Spring Year One' in self.selenium.page_source)
+        self.assertIn(self._get_period_url(self.testhelper.duck1010_period1), self.selenium.page_source)
+        self.assertIn(self._get_period_url(self.testhelper.duck1010_period2), self.selenium.page_source)
+        self.assertIn(self._get_period_url(self.testhelper.duck1010_period3), self.selenium.page_source)
+        self.assertNotIn(self._get_period_url(self.testhelper.duck1100_spring01), self.selenium.page_source)
 
     def test_admins(self):
         self.testhelper.duck1010adm3.devilryuserprofile.full_name = 'Duck1010 admin three'
         self.testhelper.duck1010adm3.devilryuserprofile.save()
         self.login('duck1010adm1')
-        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self._browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_administratorlist')
         adminlist = self.selenium.find_element_by_css_selector('.devilry_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 3)
@@ -94,7 +104,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.testhelper.uniadmin.devilryuserprofile.full_name = 'Uni admin'
         self.testhelper.uniadmin.devilryuserprofile.save()
         self.login('duck1010adm1')
-        self.browseTo('/{0}/'.format(self.testhelper.duck1010.id))
+        self._browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_inherited_administratorlist')
         adminlist = self.selenium.find_element_by_css_selector('.devilry_inherited_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 2)

@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
         '<ul>',
             '<tpl for=".">',
                 '<li class="devilry_period">',
-                    '<a href="#/{parentnode__short_name}/{short_name}/">{long_name}</a>',
+                    '<a href="#/period/{id}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
         '<ul>'

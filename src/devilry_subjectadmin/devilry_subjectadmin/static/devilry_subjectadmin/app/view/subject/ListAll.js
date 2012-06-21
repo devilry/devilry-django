@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
         '<ul>',
             '<tpl for=".">',
                 '<li class="devilry_subject devilry_subject_{short_name}">',
-                    '<a href="#/{id}/">{long_name}</a>',
+                    '<a href="#/subject/{id}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
         '<ul>'
