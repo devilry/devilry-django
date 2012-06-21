@@ -1,22 +1,23 @@
 from django.test import TestCase
 
-from devilry.apps.core.models import Period
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 
 from .common import isoformat_relativetime
 
-
-class TestRestListOrCreatePeriodRest(TestCase):
+class TestRestListOrCreateAssignmentRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck2000'],
-                            periods=['one:admin(adminone)',
-                                     'two',
-                                     'three:admin(adminone)'])
+                            periods=['someperiod:begins(-2):ends(6)'],
+                            assignments=['first:admin(firstadmin)',
+                                         'second:admin(secondadmin,firstadmin)',
+                                         'third'])
+        self.testhelper.add_to_path('uni;duck9000.otherperiod:begins(-3):ends(6).someassignment:admin(firstadmin)')
         self.client = RestClient()
-        self.url = '/devilry_subjectadmin/rest/period/'
+        self.url = '/devilry_subjectadmin/rest/assignment/'
         self.testhelper.create_user('nobody')
 
     def _listas(self, username, **data):
@@ -24,12 +25,12 @@ class TestRestListOrCreatePeriodRest(TestCase):
         return self.client.rest_get(self.url, **data)
 
     def test_list(self):
-        content, response = self._listas('adminone')
+        content, response = self._listas('firstadmin')
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(content), 2)
+        self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
-                               'start_time', 'end_time']))
+                               'publishing_time', 'delivery_types', 'scale_points_percent']))
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
@@ -38,15 +39,16 @@ class TestRestListOrCreatePeriodRest(TestCase):
         self.assertEquals(len(content), 0)
 
     def test_list_in_subject(self):
-        self.testhelper.add(nodes='uni:admin(uniadmin)',
-                            subjects=['duck9000'],
-                            periods=['p1', 'p2'])
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['per'],
+                            assignments=['a', 'b'])
         content, response = self._listas('uniadmin',
-                                         parentnode=self.testhelper.duck9000.id)
+                                         parentnode=self.testhelper.sub_per.id)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 2)
-        shortnames = set([p['short_name'] for p in content])
-        self.assertEquals(shortnames, set(['p1', 'p2']))
+        shortnames = set([a['short_name'] for a in content])
+        self.assertEquals(shortnames, set(['a', 'b']))
 
     def _createas(self, username, data):
         self.client.login(username=username, password='test')
@@ -57,17 +59,22 @@ class TestRestListOrCreatePeriodRest(TestCase):
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
-                                            'start_time': isoformat_relativetime(days=-2),
-                                            'end_time': isoformat_relativetime(days=2),
-                                            'parentnode': self.testhelper.duck2000.id})
+                                            'publishing_time': isoformat_relativetime(days=2),
+                                            'scale_points_percent': 100,
+                                            'delivery_types': 0,
+                                            'parentnode': self.testhelper.duck2000_someperiod.id})
         self.assertEquals(response.status_code, 201)
+        self.assertEquals(content['delivery_types'], 0)
+        self.assertEquals(content['scale_points_percent'], 100)
         self.assertEquals(content['long_name'], 'Test')
         self.assertEquals(content['short_name'], 'test')
-        self.assertEquals(content['parentnode'], self.testhelper.duck2000.id)
-        created = Period.objects.get(id=content['id'])
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod.id)
+        created = Assignment.objects.get(id=content['id'])
         self.assertEquals(created.short_name, 'test')
         self.assertEquals(created.long_name, 'Test')
-        self.assertEquals(created.parentnode.id, self.testhelper.duck2000.id)
+        self.assertEquals(created.delivery_types, 0)
+        self.assertEquals(created.scale_points_percent, 100)
+        self.assertEquals(created.parentnode.id, self.testhelper.duck2000_someperiod.id)
         admins = created.admins.all()
         self.assertEquals(len(admins), 0)
 
@@ -76,9 +83,10 @@ class TestRestListOrCreatePeriodRest(TestCase):
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
-                                            'start_time': isoformat_relativetime(days=-2),
-                                            'end_time': isoformat_relativetime(days=2),
-                                            'parentnode': self.testhelper.duck2000.id})
+                                            'publishing_time': isoformat_relativetime(days=-2),
+                                            'scale_points_percent': 100,
+                                            'delivery_types': 0,
+                                            'parentnode': self.testhelper.duck2000_someperiod.id})
         self.assertEquals(response.status_code, 403)
         self.assertEquals(content['detail'], 'Permission denied')
 
@@ -88,57 +96,61 @@ class TestRestListOrCreatePeriodRest(TestCase):
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [{'id': self.testhelper.testadmin.id}],
-                                            'start_time': isoformat_relativetime(days=-2),
-                                            'end_time': isoformat_relativetime(days=2),
+                                            'publishing_time': isoformat_relativetime(days=-2),
+                                            'scale_points_percent': 100,
+                                            'delivery_types': 0,
                                             'parentnode': self.testhelper.duck2000.id})
         self.assertEquals(response.status_code, 201)
-        created = Period.objects.get(id=content['id'])
+        created = Assignment.objects.get(id=content['id'])
         admins = created.admins.all()
         self.assertEquals(len(admins), 1)
         self.assertEquals(admins[0].username, 'testadmin')
 
 
-class TestRestInstancePeriodRest(TestCase):
+
+class TestRestInstanceAssignmentRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck2000:admin(duck2000admin)'],
-                            periods=['periodone:admin(oneadmin)',
-                                     'periodtwo',
-                                     'periodthree:admin(adminone)'])
+                            periods=['someperiod:begins(-2):ends(6)'],
+                            assignments=['first:admin(firstadmin)',
+                                         'second:admin(secondadmin,firstadmin)',
+                                         'third'])
         self.client = RestClient()
 
-    def _geturl(self, periodid):
-        return '/devilry_subjectadmin/rest/period/{0}'.format(periodid)
+    def _geturl(self, assignmentid):
+        return '/devilry_subjectadmin/rest/assignment/{0}'.format(assignmentid)
 
     def test_delete_denied(self):
         self.client.login(username='nobody', password='test')
-        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_periodone.id))
+        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_someperiod_first.id))
         self.assertEquals(response.status_code, 403)
 
     def test_delete(self):
         self.client.login(username='uniadmin', password='test')
-        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_periodone.id))
+        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000_someperiod_first.id))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
-        self.assertEquals(Period.objects.filter(id=self.testhelper.duck2000_periodone.id).count(), 0)
+        self.assertEquals(content['id'], self.testhelper.duck2000_someperiod_first.id)
+        self.assertEquals(Assignment.objects.filter(id=self.testhelper.duck2000_someperiod_first.id).count(), 0)
 
     def test_get(self):
         self.client.login(username='duck2000admin', password='test')
-        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_someperiod_first.id))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
-        self.assertEquals(content['short_name'], self.testhelper.duck2000_periodone.short_name)
-        self.assertEquals(content['long_name'], self.testhelper.duck2000_periodone.long_name)
-        self.assertEquals(content['parentnode'], self.testhelper.duck2000_periodone.parentnode_id)
-        self.assertEquals(content['can_delete'], self.testhelper.duck2000_periodone.can_delete(self.testhelper.uniadmin))
+        self.assertEquals(content['id'], self.testhelper.duck2000_someperiod_first.id)
+        self.assertEquals(content['short_name'], self.testhelper.duck2000_someperiod_first.short_name)
+        self.assertEquals(content['long_name'], self.testhelper.duck2000_someperiod_first.long_name)
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod_first.parentnode_id)
+        self.assertEquals(content['can_delete'], self.testhelper.duck2000_someperiod_first.can_delete(self.testhelper.uniadmin))
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time']))
+                               'publishing_time', 'delivery_types',
+                               'scale_points_percent']))
 
         self.assertEquals(len(content['admins']), 1)
-        self.assertEquals(content['admins'][0]['email'], 'oneadmin@example.com')
+        self.assertEquals(content['admins'][0]['email'], 'firstadmin@example.com')
         self.assertEquals(set(content['admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
@@ -154,34 +166,39 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertIn('duck2000admin', inherited_adminusernames)
 
     def test_get_can_not_delete(self):
-        self.client.login(username='oneadmin', password='test')
-        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.client.login(username='firstadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_someperiod_first.id))
+        self.assertEquals(response.status_code, 200)
         self.assertFalse(content['can_delete'])
 
     def test_put(self):
-        self.client.login(username='oneadmin', password='test')
+        self.client.login(username='firstadmin', password='test')
         data = {'short_name': 'duck2000',
                 'long_name': 'Updated',
                 'admins': [],
-                'start_time': isoformat_relativetime(days=-2),
-                'end_time': isoformat_relativetime(days=2),
+                'publishing_time': isoformat_relativetime(days=-2),
+                'scale_points_percent': 80,
+                'delivery_types': 0,
                 'parentnode': 1}
-        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
+        self.assertEquals(content['id'], self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
         self.assertEquals(content['long_name'], 'Updated')
         self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(content['scale_points_percent'], 80)
+        self.assertEquals(content['delivery_types'], 0)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time']))
-        updated = Period.objects.get(id=self.testhelper.duck2000_periodone.id)
+                               'publishing_time', 'delivery_types',
+                               'scale_points_percent']))
+        updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
     def test_put_admins(self):
-        self.client.login(username='oneadmin', password='test')
+        self.client.login(username='firstadmin', password='test')
         self.testhelper.create_user('user1')
         self.testhelper.create_user('user2')
         self.testhelper.create_user('user3')
@@ -192,10 +209,11 @@ class TestRestInstancePeriodRest(TestCase):
                              'full_name': 'ignored!'},
                            {'username': 'user2'},
                            {'id': self.testhelper.user3.id}],
-                'start_time': isoformat_relativetime(days=-2),
-                'end_time': isoformat_relativetime(days=2),
+                'publishing_time': isoformat_relativetime(days=-2),
+                'scale_points_percent': 80,
+                'delivery_types': 0,
                 'parentnode': 1}
-        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
         admins = content['admins']
@@ -203,5 +221,5 @@ class TestRestInstancePeriodRest(TestCase):
         admins.sort(cmp=lambda a,b: cmp(a['username'], b['username']))
         self.assertEquals(admins[0]['username'], 'user1')
         self.assertEquals(admins[2]['username'], 'user3')
-        updated = Period.objects.get(id=self.testhelper.duck2000_periodone.id)
+        updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.admins.all().count(), 3)
