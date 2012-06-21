@@ -87,6 +87,19 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.assertIn(self._get_period_url(self.testhelper.duck1010_period3), self.selenium.page_source)
         self.assertNotIn(self._get_period_url(self.testhelper.duck1100_spring01), self.selenium.page_source)
 
+    def test_menubar(self):
+        self.login('duck1010adm1')
+        self._browseToSubject(self.testhelper.duck1010.id)
+        self.waitForCssSelector('.devilry_subjectoverview')
+        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
+        advancedButton.click()
+        self.waitForText('Delete duck1010')
+        self.waitForText('Rename duck1010')
+        self.assertEquals(self.selenium.find_element_by_css_selector('#menubarAdvancedDeleteButton .x-menu-item-text').text,
+                          'Delete duck1010')
+        self.assertEquals(self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton .x-menu-item-text').text,
+                          'Rename duck1010')
+
     def test_admins(self):
         self.testhelper.duck1010adm3.devilryuserprofile.full_name = 'Duck1010 admin three'
         self.testhelper.duck1010adm3.devilryuserprofile.save()
