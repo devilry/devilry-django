@@ -124,3 +124,13 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.assertTrue('>anotheruniadmin<' in self.selenium.page_source)
         self.assertFalse('>uniadmin<' in self.selenium.page_source)
         self.assertTrue('Uni admin' in self.selenium.page_source)
+
+    def test_breadcrumb(self):
+        self.login('duck1010adm1')
+        self._browseToSubject(self.testhelper.duck1010.id)
+        self.waitForCssSelector('.breadcrumb')
+        def breadcrumbLoaded(breadcrumb):
+            return 'duck1010' in breadcrumb.text
+        breadcrumb = self.selenium.find_element_by_css_selector('.breadcrumb')
+        self.waitFor(breadcrumb, breadcrumbLoaded)
+        self.assertEquals(breadcrumb.text, 'You are here:Subjectadmin/All subjects/duck1010')

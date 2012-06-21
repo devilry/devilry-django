@@ -4,6 +4,11 @@
 Ext.define('devilry_subjectadmin.controller.period.Overview', {
     extend: 'Ext.app.Controller',
 
+    mixins: {
+        'loadSubject': 'devilry_subjectadmin.utils.LoadSubjectMixin',
+        'loadPeriod': 'devilry_subjectadmin.utils.LoadPeriodMixin'
+    },
+
     views: [
         'period.Overview',
         'period.ListOfAssignments'
@@ -14,6 +19,10 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         'Assignments'
     ],
     models: ['Period', 'Subject'],
+
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
 
     refs: [{
         ref: 'globalAlertmessagelist',
@@ -54,57 +63,19 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _onPeriodViewRender: function() {
+        this._setBreadcrumbs([], gettext('Loading ...'));
         this.period_id = this.getPeriodOverview().period_id;
-        this._loadPeriod();
+        this.loadPeriod(this.period_id);
         this._loadAssignments();
     },
 
-    _loadPeriod: function() {
-        this.getPeriodModel().load(this.period_id, {
-            callback: this._onLoadPeriod,
-            scope: this
-        });
-    },
-
-    _onLoadPeriod: function(record, operation) {
-        if(operation.success) {
-            this._onLoadPeriodSuccess(record);
-        } else {
-            this._onLoadFailure(operation);
-        }
-    },
-
-    _onLoadFailure: function(operation) {
-        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-        error.addErrors(operation);
-        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
-    },
-
-    _onLoadPeriodSuccess: function(record) {
-        this.periodRecord = record;
-        this._loadSubject();
-        //this.application.fireEvent('periodSuccessfullyLoaded', record);
-        this.getActions().setTitle(record.get('long_name'));
-    },
-
-    _loadSubject: function() {
-        this.getSubjectModel().load(this.subject_id, {
-            callback: this._onLoadSubject,
-            scope: this
-        });
-    },
-
-    _onLoadSubject: function(record, operation) {
-        if(operation.success) {
-            this._onLoadSubjectSuccess(record);
-        } else {
-            this._onLoadFailure(operation);
-        }
-    },
-
-    _onLoadSubjectSuccess: function(record) {
-        this.subjectRecord = record;
-        this._setMenuLabels();
+    _setBreadcrumbs: function(breadcrumbsExtra, current) {
+        var breadcrumbsBase = [{
+            text: gettext("All subjects"),
+            url: '/'
+        }];
+        var breadcrumbs = breadcrumbsBase.concat(breadcrumbsExtra);
+        this.application.breadcrumbs.set(breadcrumbs, current);
     },
 
     _setMenuLabels: function() {
@@ -132,5 +103,35 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
             error.addErrors(operation);
             this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
         }
-    }
+    },
+
+    _onLoadFailure: function(operation) {
+        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
+        error.addErrors(operation);
+        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
+    },
+
+    /** Implement methods required by LoadSubjectMixin */
+    onLoadSubjectSuccess: function(record) {
+        this.subjectRecord = record;
+        this._setBreadcrumbs([{
+            text: this.subjectRecord.get('short_name'),
+            url: devilry_subjectadmin.utils.UrlLookup.subjectOverview(this.subjectRecord.get('id'))
+        }], this.periodRecord.get('short_name'));
+        this._setMenuLabels();
+    },
+    onLoadSubjectFailure: function(operation) {
+        this._onLoadFailure(operation);
+    },
+
+    /** Implement methods required by LoadPeriodMixin */
+    onLoadPeriodSuccess: function(record) {
+        this.periodRecord = record;
+        this.loadSubject(this.periodRecord.get('parentnode'));
+        //this.application.fireEvent('periodSuccessfullyLoaded', record);
+        this.getActions().setTitle(record.get('long_name'));
+    },
+    onLoadSubjectFailure: function(operation) {
+        this._onLoadFailure(operation);
+    },
 });
