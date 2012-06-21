@@ -13,11 +13,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     ],
 
     /**
-     * @cfg {String} subject_shortname (required)
-     */
-
-    /**
-     * @cfg {String} period_shortname (required)
+     * @cfg {String} period_id (required)
      */
 
 

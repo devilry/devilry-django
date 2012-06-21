@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         'Periods',
         'Assignments'
     ],
+    models: ['Period'],
 
     refs: [{
         ref: 'globalAlertmessagelist',
@@ -37,22 +38,21 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _onPeriodViewRender: function() {
-        this.subject_shortname = this.getPeriodOverview().subject_shortname;
-        this.period_shortname = this.getPeriodOverview().period_shortname;
+        this.period_id = this.getPeriodOverview().period_id;
         this._loadPeriod();
         this._loadAssignments();
     },
 
     _loadPeriod: function() {
-        var store = this.getPeriodsStore();
-        store.loadPeriod(
-            this.subject_shortname, this.period_shortname, this._onLoadPeriod, this
-        );
+        this.getPeriodModel().load(this.period_id, {
+            callback: this._onLoadPeriod,
+            scope: this
+        });
     },
 
-    _onLoadPeriod: function(records, operation) {
+    _onLoadPeriod: function(record, operation) {
         if(operation.success) {
-            this._onLoadPeriodSuccess(records[0]);
+            this._onLoadPeriodSuccess(record);
         } else {
             this._onLoadPeriodFailure(operation);
         }
@@ -65,13 +65,13 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _onLoadPeriodSuccess: function(record) {
-        this.assignmentRecord = record;
+        this.periodRecord = record;
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
     },
 
     _loadAssignments: function() {
-        this.getAssignmentsStore().loadAssignmentsInPeriod(this.subject_shortname, this.period_shortname, this._onLoadAssignments, this);
+        //this.getAssignmentsStore().loadAssignmentsInPeriod(this.subject_shortname, this.period_shortname, this._onLoadAssignments, this);
     },
 
     _onLoadAssignments: function(records, operation) {
