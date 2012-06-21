@@ -1,20 +1,10 @@
-from datetime import datetime, timedelta
 from django.test import TestCase
 
 from devilry.apps.core.models import Period
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 
-from .common import isoformat_datetime
-
-
-def isoformat_relativetime(days):
-    now = datetime.now()
-    if days < 0:
-        dt = now - timedelta(days=days)
-    else:
-        dt = now + timedelta(days=days)
-    return isoformat_datetime(dt)
+from .common import isoformat_relativetime
 
 
 class TestRestListOrCreatePeriodRest(TestCase):
