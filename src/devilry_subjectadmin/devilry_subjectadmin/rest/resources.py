@@ -51,7 +51,7 @@ class BaseNodeInstanceResource(ModelResource):
 
     def format_inheritedadmin(self, inheritedadmin):
         return {'user': self.format_adminuser(inheritedadmin.user),
-                'basenode': {'type': inheritedadmin.basenode.__class__,
+                'basenode': {'type': inheritedadmin.basenode.__class__.__name__,
                              'path': inheritedadmin.basenode.get_path(),
                              'id': inheritedadmin.basenode.id}}
 
