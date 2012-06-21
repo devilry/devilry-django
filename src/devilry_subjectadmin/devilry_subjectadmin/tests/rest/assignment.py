@@ -30,7 +30,8 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
-                               'publishing_time', 'delivery_types', 'scale_points_percent']))
+                               'publishing_time', 'delivery_types',
+                               'scale_points_percent', 'first_deadline']))
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
@@ -147,7 +148,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent']))
+                               'scale_points_percent', 'first_deadline']))
 
         self.assertEquals(len(content['admins']), 1)
         self.assertEquals(content['admins'][0]['email'], 'firstadmin@example.com')
@@ -193,7 +194,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent']))
+                               'scale_points_percent', 'first_deadline']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 

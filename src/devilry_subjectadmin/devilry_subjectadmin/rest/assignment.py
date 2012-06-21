@@ -10,7 +10,8 @@ from .resources import BaseNodeInstanceResource
 class AssignmentResource(BaseNodeInstanceResource):
     model = Assignment
     fields = ('id', 'parentnode', 'short_name', 'long_name', 'etag',
-              'publishing_time', 'delivery_types', 'scale_points_percent')
+              'publishing_time', 'delivery_types', 'scale_points_percent',
+              'first_deadline')
 
 class AssignmentInstanceResource(BaseNodeInstanceResource):
     model = Assignment
