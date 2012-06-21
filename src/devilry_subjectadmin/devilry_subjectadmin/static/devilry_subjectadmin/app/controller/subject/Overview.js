@@ -21,6 +21,12 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         ref: 'globalAlertmessagelist',
         selector: 'subjectoverview>alertmessagelist'
     }, {
+        ref: 'deleteButton',
+        selector: 'subjectoverview #deleteButton'
+    }, {
+        ref: 'renameButton',
+        selector: 'subjectoverview #renameButton'
+    }, {
         ref: 'actions',
         selector: 'subjectoverview #actions'
     }, {
@@ -38,8 +44,18 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
             },
             'viewport subjectoverview editablesidebarbox[itemId=gradeeditor] button': {
                 click: this._onEditGradeEditor
+            },
+            'viewport subjectoverview #deleteButton': {
+                click: this._onNotImplemented
+            },
+            'viewport subjectoverview #renameButton': {
+                click: this._onNotImplemented
             }
         });
+    },
+
+    _onNotImplemented: function() {
+        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     },
 
     _setBreadcrumbs: function(breadcrumbsExtra, current) {
@@ -113,16 +129,28 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
                 '</tpl>',
             '</ul>'
         ], {
-            admins: this.assignmentRecord.get('admins'),
-            inherited_admins: this.assignmentRecord.get('inherited_admins')
+            admins: this.subjectRecord.get('admins'),
+            inherited_admins: this.subjectRecord.get('inherited_admins')
         });
     },
 
     _onLoadSubjectSuccess: function(record) {
-        this.assignmentRecord = record;
+        this.subjectRecord = record;
         this.getActions().setTitle(record.get('long_name'));
         this._setBreadcrumbs([], record.get('short_name'));
         this._initAdmins();
+        this._setMenuLabels();
+    },
+
+    _setMenuLabels: function() {
+        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+            something: this.subjectRecord.get('short_name')
+        });
+        var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
+            something: this.subjectRecord.get('short_name')
+        });
+        this.getDeleteButton().setText(deleteLabel);
+        this.getRenameButton().setText(renameLabel);
     },
 
     _loadPeriods: function() {

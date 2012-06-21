@@ -19,12 +19,8 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
 
 
     initComponent: function() {
-        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
-            something: this.subject_shortname
-        });
-        var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
-            something: this.subject_shortname
-        });
+        var deleteLabel = gettext('Loading ...');
+        var renameLabel = gettext('Loading ...');
 
 
         Ext.apply(this, {
@@ -76,25 +72,15 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     text: gettext('Advanced'),
                     scale: 'medium',
                     menu: [{
-                        text: renameLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
+                        itemId: 'renameButton',
+                        text: renameLabel
                     }, {
-                        text: deleteLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
+                        itemId: 'deleteButton',
+                        text: deleteLabel
                     }]
                 }]
             }]
         });
         this.callParent(arguments);
-    },
-
-    _notImplemented: function() {
-        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     }
 });
