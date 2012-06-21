@@ -74,6 +74,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this._setBreadcrumbs([], gettext('Loading ...'));
         this.subject_id = this.getSubjectOverview().subject_id;
         this.loadSubject(this.subject_id);
+        this._loadPeriods();
     },
 
     _initAdmins: function() {
