@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.periodoverview',
-    cls: 'periodoverview',
+    cls: 'devilry_periodoverview',
     requires: [
         'Ext.layout.container.Column',
         'devilry_extjsextras.EditableSidebarBox',
