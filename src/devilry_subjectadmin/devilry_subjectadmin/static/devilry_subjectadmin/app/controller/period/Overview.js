@@ -13,10 +13,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         'period.ListOfAssignments'
     ],
 
-    stores: [
-        'Periods',
-        'Assignments'
-    ],
+    stores: ['Assignments'],
     models: ['Period'],
 
     requires: [
@@ -78,9 +75,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _setMenuLabels: function() {
-        var periodpath = Ext.String.format('{0}.{1}',
-            this.subjectRecord.get('short_name'),
-            this.periodRecord.get('short_name'));
+        var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
         var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
             something: periodpath,
         });
@@ -125,6 +120,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.periodRecord);
+        this._setMenuLabels();
     },
     _onLoadPeriodFailure: function(operation) {
         this._onLoadFailure(operation);

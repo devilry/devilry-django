@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     extend: 'Ext.app.Controller',
     mixins: {
-        'loadSubject': 'devilry_subjectadmin.utils.LoadSubjectMixin',
+        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
     },
 
     views: [
@@ -13,11 +13,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         'ActionList'
     ],
 
-    stores: [
-        'Subjects',
-        'Periods'
-    ],
-    
+    stores: ['Periods'],
     models: ['Subject'],
 
     refs: [{
@@ -61,19 +57,10 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     },
 
-    _setBreadcrumbs: function(breadcrumbsExtra, current) {
-        var breadcrumbsBase = [{
-            text: gettext("All subjects"),
-            url: '/'
-        }];
-        var breadcrumbs = breadcrumbsBase.concat(breadcrumbsExtra);
-        this.application.breadcrumbs.set(breadcrumbs, current);
-    },
-
     _onSubjectViewRender: function() {
-        this._setBreadcrumbs([], gettext('Loading ...'));
+        this.setLoadingBreadcrumb();
         this.subject_id = this.getSubjectOverview().subject_id;
-        this.loadSubject(this.subject_id);
+        this._loadSubject(this.subject_id);
         this._loadPeriods();
     },
 
@@ -143,14 +130,26 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
 
 
     /** Implement methods required by LoadSubjectMixin */
-    onLoadSubjectSuccess: function(record) {
+    _loadSubject: function(subject_id) {
+        this.getSubjectModel().load(subject_id, {
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this._onLoadSubjectSuccess(record);
+                } else {
+                    this._onLoadSubjectFailure(operation);
+                }
+            }
+        });
+    },
+    _onLoadSubjectSuccess: function(record) {
         this.subjectRecord = record;
         this.getActions().setTitle(record.get('long_name'));
-        this._setBreadcrumbs([], record.get('short_name'));
+        this.setBreadcrumb(this.subjectRecord);
         this._initAdmins();
         this._setMenuLabels();
     },
-    onLoadSubjectFailure: function(operation) {
+    _onLoadSubjectFailure: function(operation) {
         var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
         error.addErrors(operation);
         this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');

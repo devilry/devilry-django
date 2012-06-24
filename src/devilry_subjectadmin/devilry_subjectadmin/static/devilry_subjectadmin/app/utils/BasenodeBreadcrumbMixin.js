@@ -26,5 +26,16 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
 
     setLoadingBreadcrumb: function() {
         this.application.breadcrumbs.set([], gettext('Loading ...'));
+    },
+
+    getPathFromBreadcrumb: function(basenodeRecord) {
+        var path = '';
+        Ext.Array.each(basenodeRecord.get('breadcrumb'), function(item) {
+            if(item.type === 'Node') {
+                return false; // break
+            }
+            path += item.short_name + '.';
+        }, this, true);
+        return path + basenodeRecord.get('short_name');
     }
 });

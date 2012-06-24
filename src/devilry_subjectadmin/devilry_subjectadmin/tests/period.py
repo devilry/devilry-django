@@ -28,13 +28,6 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
     def test_breadcrumb(self):
-        print
-        print
-        print self.testhelper.duck9000_period1.admins.all()
-        print self.testhelper.duck9000_period1.where_is_admin_or_superadmin(self.testhelper.period1admin)
-        print self.testhelper.duck9000_period1.id
-        print
-        print
         self.login('period1admin')
         self._browseToPeriod(self.testhelper.duck9000_period1.id)
         self.waitForCssSelector('.breadcrumb')
