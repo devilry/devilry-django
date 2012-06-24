@@ -7,9 +7,9 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     cls: 'devilry_subjectoverview',
     requires: [
         'Ext.layout.container.Column',
-        'devilry_extjsextras.EditableSidebarBox',
         'devilry_subjectadmin.view.ActionList',
-        'devilry_extjsextras.AlertMessageList'
+        'devilry_extjsextras.AlertMessageList',
+        'devilry_subjectadmin.view.AdminsBox'
     ],
 
 
@@ -21,7 +21,6 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     initComponent: function() {
         var deleteLabel = gettext('Loading ...');
         var renameLabel = gettext('Loading ...');
-
 
         Ext.apply(this, {
             frame: false,
@@ -56,10 +55,8 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                         margin: {top: 20},
                     },
                     items: [{
-                        xtype: 'editablesidebarbox',
-                        margin: {top: 0},
-                        itemId: 'admins',
-                        title: gettext('Administrators')
+                        xtype: 'adminsbox',
+                        margin: {top: 0}
                     }]
                 }],
             }],

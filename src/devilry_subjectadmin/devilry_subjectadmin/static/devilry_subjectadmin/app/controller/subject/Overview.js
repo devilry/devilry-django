@@ -32,8 +32,8 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         ref: 'subjectOverview',
         selector: 'subjectoverview'
     }, {
-        ref: 'adminsBox',
-        selector: 'subjectoverview #admins'
+        ref: 'adminsbox',
+        selector: 'subjectoverview adminsbox'
     }],
 
     init: function() {
@@ -62,45 +62,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.subject_id = this.getSubjectOverview().subject_id;
         this._loadSubject(this.subject_id);
         this._loadPeriods();
-    },
-
-    _initAdmins: function() {
-        this.getAdminsBox().updateBody([
-            gettext('On this subject:'),
-            '<ul class="devilry_administratorlist">',
-                '<tpl for="admins">',
-                    '<li>',
-                        '<a href="mailto:{email}">',
-                            '<tpl if="full_name != null">',
-                                '{full_name}',
-                            '</tpl>',
-                            '<tpl if="full_name == null">',
-                                '{username}',
-                            '</tpl>',
-                        '</a>',
-                    '</li>',
-                '</tpl>',
-            '</ul>',
-            gettext('Inherited:'),
-            '<ul class="devilry_inherited_administratorlist">',
-                '<tpl for="inherited_admins">',
-                    '<li>',
-                        '<a href="mailto:{user.email}">',
-                            '<tpl if="user.full_name != null">',
-                                '{user.full_name}',
-                            '</tpl>',
-                            '<tpl if="user.full_name == null">',
-                                '{user.username}',
-                            '</tpl>',
-                        '</a>',
-                        ' ({basenode.path})',
-                    '</li>',
-                '</tpl>',
-            '</ul>'
-        ], {
-            admins: this.subjectRecord.get('admins'),
-            inherited_admins: this.subjectRecord.get('inherited_admins')
-        });
     },
 
     _setMenuLabels: function() {
@@ -146,7 +107,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.subjectRecord = record;
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.subjectRecord);
-        this._initAdmins();
+        this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
         this._setMenuLabels();
     },
     _onLoadSubjectFailure: function(operation) {
