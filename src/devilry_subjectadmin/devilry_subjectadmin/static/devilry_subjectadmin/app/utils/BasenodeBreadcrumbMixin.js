@@ -11,16 +11,14 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
         }];
 
         Ext.each(basenodeRecord.get('breadcrumb'), function(item) {
-            var url;
-            try {
-                url = devilry_subjectadmin.utils.UrlLookup.overviewByType(item.type, item.id);
-            } catch(e) {
-                url = '/doesnotexist' // TODO: Do not catch this exception when all overviews are in place
+            var ignore = item.type === 'Node';
+            if(!ignore) {
+                var url = devilry_subjectadmin.utils.UrlLookup.overviewByType(item.type, item.id);
+                breadcrumb.push({
+                    text: item.short_name,
+                    url: url
+                });
             }
-            breadcrumb.push({
-                text: item.short_name,
-                url: url
-            });
         });
 
         this.application.breadcrumbs.set(breadcrumb, basenodeRecord.get('short_name'));
