@@ -163,10 +163,11 @@ class TestRestInstanceSubjectRest(TestCase):
         self.client.login(username='s1admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.s1.id))
         self.assertEquals(response.status_code, 200)
+        th = self.testhelper
         self.assertEquals(content['breadcrumb'],
-                          [{u'id': 2, u'short_name': u'duck', u'type': u'Node'},
-                           {u'id': 3, u'short_name': u'mat', u'type': u'Node'},
-                           {u'id': 4, u'short_name': u'inf', u'type': u'Node'}])
+                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
+                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
+                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')

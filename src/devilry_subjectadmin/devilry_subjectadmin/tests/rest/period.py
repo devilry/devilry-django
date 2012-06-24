@@ -168,11 +168,12 @@ class TestRestInstancePeriodRest(TestCase):
         self.client.login(username='p1admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.s1_p1.id))
         self.assertEquals(response.status_code, 200)
+        th = self.testhelper
         self.assertEquals(content['breadcrumb'],
-                          [{u'id': 2, u'short_name': u'duck', u'type': u'Node'},
-                           {u'id': 3, u'short_name': u'mat', u'type': u'Node'},
-                           {u'id': 4, u'short_name': u'inf', u'type': u'Node'},
-                           {u'id': 2, u'short_name': u's1', u'type': u'Subject'}])
+                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
+                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
+                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'},
+                           {u'id': th.s1.id, u'short_name': u's1', u'type': u'Subject'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='oneadmin', password='test')
