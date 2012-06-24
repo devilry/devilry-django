@@ -12,6 +12,7 @@ Ext.define('devilry_subjectadmin.model.Subject', {
         {name: 'etag',  type: 'string'},
         {name: 'admins',  type: 'auto'},
         {name: 'inherited_admins',  type: 'auto'},
+        {name: 'breadcrumb',  type: 'auto'}
     ],
 
     proxy: {

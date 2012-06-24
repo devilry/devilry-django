@@ -14,6 +14,7 @@ Ext.define('devilry_subjectadmin.model.Period', {
         {name: 'inherited_admins',  type: 'auto'},
         {name: 'start_time',  type: 'auto'},
         {name: 'end_time',  type: 'auto'},
+        {name: 'breadcrumb',  type: 'auto'}
     ],
 
     proxy: {
