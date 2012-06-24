@@ -1,11 +1,31 @@
 /** Assignment model. */
 Ext.define('devilry_subjectadmin.model.Assignment', {
-    extend: 'devilry.apps.administrator.simplified.SimplifiedAssignment',
+    extend: 'Ext.data.Model',
 
-    proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/restfulsimplifiedassignment/',
-        headers: {X_DEVILRY_USE_EXTJS: true},
-        orderby: ['-publishing_time'],
-        result_fieldgroups: ["subject", "period"]
-    }),
+    idProperty: 'id',
+    fields: [
+        {name: 'admins',  type: 'auto'},
+        {name: 'breadcrumb',  type: 'auto'},
+        {name: 'can_delete',  type: 'bool'},
+        {name: 'etag',  type: 'string'},
+        {name: 'first_deadline',  type: 'date'},
+        {name: 'id', type: 'auto'},
+        {name: 'inherited_admins',  type: 'auto'},
+        {name: 'long_name',  type: 'string'},
+        {name: 'parentnode', type: 'auto'},
+        {name: 'publishing_time',  type: 'date'},
+        {name: 'short_name',  type: 'string'},
+        {name: 'scale_points_percent',  type: 'int'}
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/assignment/',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json'
+        }
+    }
 });

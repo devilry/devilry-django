@@ -4,14 +4,14 @@
 Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
     extend: 'Ext.view.View',
     alias: 'widget.listofassignments',
-    cls: 'listofassignments bootstrap',
+    cls: 'devilry_listofassignments bootstrap',
     store: 'Assignments',
 
     tpl: [
         '<ul>',
             '<tpl for=".">',
                 '<li class="assignment">',
-                    '<a href="#/{parentnode__parentnode__short_name}/{parentnode__short_name}/{short_name}/">{long_name}</a>',
+                    '<a href="#/assignment/{id}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
         '<ul>'

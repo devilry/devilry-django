@@ -65,7 +65,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setLoadingBreadcrumb();
         this.period_id = this.getPeriodOverview().period_id;
         this._loadPeriod(this.period_id);
-        this._loadAssignments();
+        this._loadAssignments(this.period_id);
     },
 
     _setBreadcrumbs: function(breadcrumbsExtra, current) {
@@ -88,8 +88,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.getRenameButton().setText(renameLabel);
     },
 
-    _loadAssignments: function() {
-        //this.getAssignmentsStore().loadAssignmentsInPeriod(this.subject_shortname, this.period_shortname, this._onLoadAssignments, this);
+    _loadAssignments: function(period_id) {
+        this.getAssignmentsStore().loadAssignmentsInPeriod(period_id, this._onLoadAssignments, this);
     },
 
     _onLoadAssignments: function(records, operation) {
