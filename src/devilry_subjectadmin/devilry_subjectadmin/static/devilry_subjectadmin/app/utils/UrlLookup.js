@@ -10,10 +10,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     },
 
     overviewByType: function(type, id) {
-        var lowertype = type.toLowerCase();
-        if(lowertype === 'period') {
+        if(type === 'Period') {
             return this.periodOverview(id);
-        } else if(lowertype === 'subject') {
+        } else if(type === 'Subject') {
             return this.subjectOverview(id);
         } else {
             Ext.Error.raise({
