@@ -5,8 +5,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     extend: 'Ext.app.Controller',
 
     mixins: {
-        'loadSubject': 'devilry_subjectadmin.utils.LoadSubjectMixin',
-        'loadPeriod': 'devilry_subjectadmin.utils.LoadPeriodMixin'
+        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
     },
 
     views: [
@@ -18,7 +17,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         'Periods',
         'Assignments'
     ],
-    models: ['Period', 'Subject'],
+    models: ['Period'],
 
     requires: [
         'devilry_subjectadmin.utils.UrlLookup'
@@ -63,9 +62,9 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
 
     _onPeriodViewRender: function() {
-        this._setBreadcrumbs([], gettext('Loading ...'));
+        this.setLoadingBreadcrumb();
         this.period_id = this.getPeriodOverview().period_id;
-        this.loadPeriod(this.period_id);
+        this._loadPeriod(this.period_id);
         this._loadAssignments();
     },
 
@@ -99,9 +98,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     _onLoadAssignments: function(records, operation) {
         if(operation.success) {
         } else {
-            var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-            error.addErrors(operation);
-            this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
+            this._onLoadFailure(operation);
         }
     },
 
@@ -111,27 +108,25 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     },
 
-    /** Implement methods required by LoadSubjectMixin */
-    onLoadSubjectSuccess: function(record) {
-        this.subjectRecord = record;
-        this._setBreadcrumbs([{
-            text: this.subjectRecord.get('short_name'),
-            url: devilry_subjectadmin.utils.UrlLookup.subjectOverview(this.subjectRecord.get('id'))
-        }], this.periodRecord.get('short_name'));
-        this._setMenuLabels();
+    _loadPeriod: function(subject_id) {
+        this.getPeriodModel().load(subject_id, {
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this._onLoadPeriodSuccess(record);
+                } else {
+                    this._onLoadPeriodFailure(operation);
+                }
+            }
+        });
     },
-    onLoadSubjectFailure: function(operation) {
-        this._onLoadFailure(operation);
-    },
-
-    /** Implement methods required by LoadPeriodMixin */
-    onLoadPeriodSuccess: function(record) {
+    _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
-        this.loadSubject(this.periodRecord.get('parentnode'));
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
+        this.setBreadcrumb(this.periodRecord);
     },
-    onLoadPeriodFailure: function(operation) {
+    _onLoadPeriodFailure: function(operation) {
         this._onLoadFailure(operation);
     }
 });
