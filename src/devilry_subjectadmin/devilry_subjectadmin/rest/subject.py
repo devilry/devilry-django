@@ -14,7 +14,8 @@ class SubjectResource(BaseNodeInstanceResource):
 
 class SubjectInstanceResource(BaseNodeInstanceResource):
     model = Subject
-    fields = SubjectResource.fields + ('can_delete', 'admins', 'inherited_admins')
+    fields = SubjectResource.fields + ('can_delete', 'admins', 'inherited_admins',
+                                       'breadcrumb')
 
 
 class ListOrCreateSubjectRest(BaseNodeListOrCreateView):

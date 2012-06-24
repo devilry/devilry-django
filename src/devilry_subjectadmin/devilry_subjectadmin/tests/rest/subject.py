@@ -131,13 +131,22 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['can_delete'], self.testhelper.duck2000.can_delete(self.testhelper.uniadmin))
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
-                               'can_delete', 'parentnode', 'id', 'inherited_admins']))
+                               'can_delete', 'parentnode', 'id', 'inherited_admins',
+                               'breadcrumb']))
 
+    def test_get_admins(self):
+        self.client.login(username='uniadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['admins']), 1)
         self.assertEquals(content['admins'][0]['email'], 'duck2000admin@example.com')
         self.assertEquals(set(content['admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
+    def test_get_inherited_admins(self):
+        self.client.login(username='uniadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['inherited_admins']), 1)
         self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['basenode', 'user']))
@@ -147,6 +156,17 @@ class TestRestInstanceSubjectRest(TestCase):
                           set(['email', 'username', 'id', 'full_name']))
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
         self.assertEquals(inherited_adminusernames, ['uniadmin'])
+
+    def test_get_breadcrumb(self):
+        self.testhelper.add(nodes='duck.mat.inf',
+                            subjects=['s1:admin(s1admin)'])
+        self.client.login(username='s1admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.s1.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': 2, u'short_name': u'duck', u'type': u'Node'},
+                           {u'id': 3, u'short_name': u'mat', u'type': u'Node'},
+                           {u'id': 4, u'short_name': u'inf', u'type': u'Node'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')
@@ -168,7 +188,8 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['parentnode'], 1)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
-                               'can_delete', 'parentnode', 'id', 'inherited_admins']))
+                               'can_delete', 'parentnode', 'id', 'inherited_admins',
+                               'breadcrumb']))
 
     def test_put_admins(self):
         self.client.login(username='duck2000admin', password='test')
