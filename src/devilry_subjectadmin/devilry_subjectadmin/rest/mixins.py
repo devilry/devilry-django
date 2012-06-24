@@ -342,7 +342,7 @@ class SelfdocumentingMixin(object):
 
 
 inherited_admins_help = """
-List of inherited administrators. Each entry in the list contains a map/object
+List of inherited administrators. Each entry in the list is a map/object
 with the following attributes:
 - ``user``: Same format as the entries in ``admins``.
 - ``basenode``: Map/object with the following attributes:
@@ -350,6 +350,18 @@ with the following attributes:
     - ``path``: Unique path to the basenode.
     - ``id``: The ID of the basenode.
 """
+
+breadcrumb_help = """
+List of parentnodes with topmost node first in the list, and the direct
+parentnode of the current basenode at the end of the list. Each entry in the list
+is a map/object with the following attributes:
+
+- ``id``: The ID of the basenode.
+- ``short_name``: The short name of the basenode.
+- ``type``: The type of the basenode.
+"""
+
+
 class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
     """
     Mixin for documentation generation for BaseNode REST APIs.
@@ -357,6 +369,7 @@ class SelfdocumentingBaseNodeMixin(SelfdocumentingMixin):
 
     def htmldoc_responsetable(self):
         specify_helptext = {'inherited_admins': inherited_admins_help,
+                            'breadcrumb': breadcrumb_help,
                             'can_delete': 'Can the authenticated user delete this object?',
                             'parentnode': 'ID of the parentnode.',
                             'id': 'The unique ID of the object.'}
