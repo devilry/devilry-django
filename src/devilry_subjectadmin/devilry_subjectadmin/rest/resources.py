@@ -49,9 +49,12 @@ class BaseNodeInstanceResource(ModelResource):
                 'full_name': user.devilryuserprofile.full_name
                }
 
+    def _get_typename(self, basenode):
+        return basenode.__class__.__name__
+
     def format_inheritedadmin(self, inheritedadmin):
         return {'user': self.format_adminuser(inheritedadmin.user),
-                'basenode': {'type': inheritedadmin.basenode.__class__.__name__,
+                'basenode': {'type': self._get_typename(inheritedadmin.basenode),
                              'path': inheritedadmin.basenode.get_path(),
                              'id': inheritedadmin.basenode.id}}
 
@@ -65,3 +68,17 @@ class BaseNodeInstanceResource(ModelResource):
         if isinstance(instance, self.model):
             return [self.format_inheritedadmin(inheritedadmin)
                     for inheritedadmin in instance.get_inherited_admins()]
+
+    def _add_breadcrumbitem(self, breadcrumb, basenode):
+        if basenode == None:
+            return
+        self._add_breadcrumbitem(breadcrumb, basenode.parentnode) # Add parent before self to get reversed result
+        breadcrumb.append({'id': basenode.id,
+                           'type': self._get_typename(basenode),
+                           'short_name': basenode.short_name})
+
+    def breadcrumb(self, instance):
+        if isinstance(instance, self.model):
+            breadcrumb = []
+            self._add_breadcrumbitem(breadcrumb, instance.parentnode)
+            return breadcrumb

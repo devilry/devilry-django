@@ -135,13 +135,21 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time']))
+                               'start_time', 'end_time', 'breadcrumb']))
 
+    def test_get_admins(self):
+        self.client.login(username='duck2000admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['admins']), 1)
         self.assertEquals(content['admins'][0]['email'], 'oneadmin@example.com')
         self.assertEquals(set(content['admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
+    def test_get_inherited_admins(self):
+        self.client.login(username='duck2000admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['inherited_admins']), 2)
         self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['basenode', 'user']))
@@ -152,6 +160,19 @@ class TestRestInstancePeriodRest(TestCase):
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
         self.assertIn('uniadmin', inherited_adminusernames)
         self.assertIn('duck2000admin', inherited_adminusernames)
+
+    def test_get_breadcrumb(self):
+        self.testhelper.add(nodes='duck.mat.inf',
+                            subjects=['s1'],
+                            periods=['p1:admin(p1admin)'])
+        self.client.login(username='p1admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.s1_p1.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': 2, u'short_name': u'duck', u'type': u'Node'},
+                           {u'id': 3, u'short_name': u'mat', u'type': u'Node'},
+                           {u'id': 4, u'short_name': u'inf', u'type': u'Node'},
+                           {u'id': 2, u'short_name': u's1', u'type': u'Subject'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='oneadmin', password='test')
@@ -176,7 +197,7 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time']))
+                               'start_time', 'end_time', 'breadcrumb']))
         updated = Period.objects.get(id=self.testhelper.duck2000_periodone.id)
         self.assertEquals(updated.long_name, 'Updated')
 

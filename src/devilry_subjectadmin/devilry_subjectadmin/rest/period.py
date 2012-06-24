@@ -14,7 +14,8 @@ class PeriodResource(BaseNodeInstanceResource):
 
 class PeriodInstanceResource(BaseNodeInstanceResource):
     model = Period
-    fields = PeriodResource.fields + ('can_delete', 'admins', 'inherited_admins')
+    fields = PeriodResource.fields + ('can_delete', 'admins', 'inherited_admins',
+                                      'breadcrumb')
 
 
 class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
