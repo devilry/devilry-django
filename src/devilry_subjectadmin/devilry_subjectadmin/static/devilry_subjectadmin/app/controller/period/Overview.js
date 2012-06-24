@@ -35,6 +35,9 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     }, {
         ref: 'renameButton',
         selector: 'periodoverview #renameButton'
+    }, {
+        ref: 'adminsbox',
+        selector: 'periodoverview adminsbox'
     }],
 
     init: function() {
@@ -74,8 +77,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.application.breadcrumbs.set(breadcrumbs, current);
     },
 
-    _setMenuLabels: function() {
-        var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
+    _setMenuLabels: function(periodpath) {
         var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
             something: periodpath,
         });
@@ -117,10 +119,12 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
     _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
+        var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.periodRecord);
-        this._setMenuLabels();
+        this._setMenuLabels(periodpath);
+        this.getAdminsbox().setBasenodeRecord(this.periodRecord, periodpath);
     },
     _onLoadPeriodFailure: function(operation) {
         this._onLoadFailure(operation);

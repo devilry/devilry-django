@@ -55,9 +55,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         margin: {top: 20},
                     },
                     items: [{
-                        xtype: 'editablesidebarbox',
-                        margin: {top: 0},
-                        title: gettext('Administrators')
+                        xtype: 'adminsbox',
+                        margin: {top: 0}
                     }]
                 }],
             }],

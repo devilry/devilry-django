@@ -62,7 +62,6 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
      * The unique path to the basenode.
      */
     setBasenodeRecord: function(basenodeRecord, path) {
-        console.log(basenodeRecord.get('inherited_admins'));
         this.update({
             loading: false,
             path: path,
