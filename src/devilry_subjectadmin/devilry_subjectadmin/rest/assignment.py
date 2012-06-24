@@ -15,7 +15,8 @@ class AssignmentResource(BaseNodeInstanceResource):
 
 class AssignmentInstanceResource(BaseNodeInstanceResource):
     model = Assignment
-    fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins')
+    fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
+                                          'breadcrumb')
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):

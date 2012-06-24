@@ -148,13 +148,22 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent', 'first_deadline']))
+                               'scale_points_percent', 'first_deadline',
+                               'breadcrumb']))
 
+    def test_get_admins(self):
+        self.client.login(username='duck2000admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_someperiod_first.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['admins']), 1)
         self.assertEquals(content['admins'][0]['email'], 'firstadmin@example.com')
         self.assertEquals(set(content['admins'][0].keys()),
                           set(['email', 'username', 'id', 'full_name']))
 
+    def test_get_inherited_admins(self):
+        self.client.login(username='duck2000admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_someperiod_first.id))
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content['inherited_admins']), 2)
         self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['basenode', 'user']))
@@ -165,6 +174,22 @@ class TestRestInstanceAssignmentRest(TestCase):
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
         self.assertIn('uniadmin', inherited_adminusernames)
         self.assertIn('duck2000admin', inherited_adminusernames)
+
+    def test_get_breadcrumb(self):
+        self.testhelper.add(nodes='duck.mat.inf',
+                            subjects=['s1'],
+                            periods=['p1'],
+                            assignments=['a1:admin(a1admin)'])
+        self.client.login(username='a1admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.s1_p1_a1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
+                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
+                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'},
+                           {u'id': th.s1.id, u'short_name': u's1', u'type': u'Subject'},
+                           {u'id': th.s1_p1.id, u'short_name': u'p1', u'type': u'Period'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='firstadmin', password='test')
@@ -194,7 +219,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent', 'first_deadline']))
+                               'scale_points_percent', 'first_deadline',
+                               'breadcrumb']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
