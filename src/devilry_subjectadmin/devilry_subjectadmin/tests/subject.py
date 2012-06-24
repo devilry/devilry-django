@@ -70,7 +70,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
-    def test_overview(self):
+    def test_list_of_periods(self):
         self.login('duck1010adm1')
         self._browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')

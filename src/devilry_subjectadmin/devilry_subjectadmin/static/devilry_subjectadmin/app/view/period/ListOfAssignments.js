@@ -10,11 +10,11 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
     tpl: [
         '<ul>',
             '<tpl for=".">',
-                '<li class="assignment">',
+                '<li class="devilry_assignment">',
                     '<a href="#/assignment/{id}/">{long_name}</a>',
                 '</li>',
             '</tpl>',
         '<ul>'
     ],
-    itemSelector: 'li.assignment',
+    itemSelector: 'li.devilry_assignment',
 });

@@ -9,7 +9,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck9000'],
-                            periods=['period1:admin(period1admin)'])
+                            periods=['period1:admin(period1admin):ln(Period One)'])
 
     def _browseToPeriod(self, id):
         self.browseTo('/period/{id}/'.format(id=id))
@@ -49,3 +49,25 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
                           'Delete duck9000.period1')
         self.assertEquals(self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton .x-menu-item-text').text,
                           'Rename duck9000.period1')
+
+    def _get_assignment_url(self, assignment):
+        return '#/assignment/{0}/'.format(assignment.id)
+
+    def test_list_of_assignments(self):
+        self.testhelper.add_to_path('uni;duck9000.period1.a1:ln(Assignment One)')
+        self.testhelper.add_to_path('uni;duck9000.period1.a2:ln(Assignment Two)')
+        self.testhelper.add_to_path('uni;duck9000.period2.first:ln(First Assignment)')
+
+        self.login('period1admin')
+        self._browseToPeriod(self.testhelper.duck9000_period1.id)
+        self.waitForText('Period One')
+        self.waitForCssSelector('li.devilry_assignment')
+
+        assignmentlist = self.selenium.find_element_by_css_selector('.devilry_listofassignments')
+        self.assertEquals(len(assignmentlist.find_elements_by_css_selector('li.devilry_assignment')), 2)
+        self.assertTrue('Assignment One' in self.selenium.page_source)
+        self.assertTrue('Assignment Two' in self.selenium.page_source)
+        self.assertFalse('First Assignment' in self.selenium.page_source)
+        self.assertIn(self._get_assignment_url(self.testhelper.duck9000_period1_a1), self.selenium.page_source)
+        self.assertIn(self._get_assignment_url(self.testhelper.duck9000_period1_a2), self.selenium.page_source)
+        self.assertNotIn(self._get_assignment_url(self.testhelper.duck9000_period2_first), self.selenium.page_source)
