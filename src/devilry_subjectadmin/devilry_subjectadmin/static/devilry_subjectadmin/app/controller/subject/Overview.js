@@ -4,7 +4,8 @@
 Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     extend: 'Ext.app.Controller',
     mixins: {
-        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
+        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
+        'onLoadFailure': 'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
     },
 
     views: [
@@ -86,14 +87,10 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         if(operation.success) {
             
         } else {
-            var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-            error.addErrors(operation);
-            this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
+            this.onLoadFailure(operation);
         }
     },
 
-
-    /** Implement methods required by LoadSubjectMixin */
     _loadSubject: function(subject_id) {
         this.getSubjectModel().load(subject_id, {
             scope: this,
@@ -101,7 +98,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
                 if(operation.success) {
                     this._onLoadSubjectSuccess(record);
                 } else {
-                    this._onLoadSubjectFailure(operation);
+                    this.onLoadFailure(operation);
                 }
             }
         });
@@ -113,10 +110,5 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
         this.getBasenodehierlocation().setLocation(this.subjectRecord);
         this._setMenuLabels();
-    },
-    _onLoadSubjectFailure: function(operation) {
-        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-        error.addErrors(operation);
-        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     }
 });

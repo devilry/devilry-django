@@ -5,7 +5,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     extend: 'Ext.app.Controller',
 
     mixins: {
-        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
+        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
+        'onLoadFailure': 'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
     },
 
     views: [
@@ -98,14 +99,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     _onLoadAssignments: function(records, operation) {
         if(operation.success) {
         } else {
-            this._onLoadFailure(operation);
+            this.onLoadFailure(operation);
         }
-    },
-
-    _onLoadFailure: function(operation) {
-        var error = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler', operation);
-        error.addErrors(operation);
-        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
     },
 
     _loadPeriod: function(subject_id) {
@@ -131,6 +126,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.getBasenodehierlocation().setLocation(this.periodRecord);
     },
     _onLoadPeriodFailure: function(operation) {
-        this._onLoadFailure(operation);
+        this.onLoadFailure(operation);
     }
 });
