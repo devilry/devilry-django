@@ -136,7 +136,6 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         var alertmessagelist = this.down('alertmessagelist');
-        console.log(errorhandler);
         alertmessagelist.addMany(errorhandler.errormessages, 'error');
         devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(this._getFormPanel(),
             errorhandler.fielderrors, alertmessagelist);
@@ -153,7 +152,10 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         this._close();
     },
 
+    /** We reload the page on close even when there is no changes, because we
+     * do not track if the cancel button was clicked after a failed save or
+     * not, and failed save leaves the record changed. */
     _close: function() {
-        this.close();
+        window.location.reload();
     }
 });
