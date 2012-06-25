@@ -11,7 +11,8 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     views: [
         'subject.Overview',
         'subject.ListOfPeriods',
-        'ActionList'
+        'ActionList',
+        'RenameBasenodeWindow'
     ],
 
     stores: ['Periods'],
@@ -52,7 +53,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
                 click: this._onNotImplemented
             },
             'viewport subjectoverview #renameButton': {
-                click: this._onNotImplemented
+                click: this._onRenameButton
             }
         });
     },
@@ -110,5 +111,11 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
         this.getBasenodehierlocation().setLocation(this.subjectRecord);
         this._setMenuLabels();
-    }
+    },
+
+    _onRenameButton: function() {
+        Ext.create('devilry_subjectadmin.view.RenameBasenodeWindow', {
+            basenodeRecord: this.subjectRecord
+        }).show();
+    },
 });
