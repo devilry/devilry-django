@@ -64,6 +64,14 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         return inherited_admins;
     },
 
+    initComponent: function() {
+        this.callParent(arguments);
+        this.add({
+            xtype: 'box',
+            html: gettext('Loading ...')
+        });
+    },
+
     /**
      * @param {Object} basenodeRecord (required)
      * A basenode record with ``admins`` and ``inherited_admins`` fields.
@@ -72,9 +80,8 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
      * The unique path to the basenode.
      */
     setBasenodeRecord: function(basenodeRecord, path) {
-        //this.down('#admins').update({
-            ////inherited_admins: basenodeRecord.get('inherited_admins')
-        //});
+        this.setLoading(false);
+        this.removeAll();
         this.add([{
             xtype: 'box',
             tpl: this.adminsTpl,
