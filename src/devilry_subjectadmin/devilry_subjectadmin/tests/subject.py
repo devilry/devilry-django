@@ -133,4 +133,4 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase):
             return 'duck1010' in breadcrumb.text
         breadcrumb = self.selenium.find_element_by_css_selector('.breadcrumb')
         self.waitFor(breadcrumb, breadcrumbLoaded)
-        self.assertEquals(breadcrumb.text, 'You are here:Subjectadmin/All subjects/duck1010')
+        self.assertEquals(breadcrumb.text, 'Subjectadmin/All subjects/duck1010')
