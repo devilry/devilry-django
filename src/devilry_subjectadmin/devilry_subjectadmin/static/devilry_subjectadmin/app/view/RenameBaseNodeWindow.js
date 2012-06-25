@@ -12,6 +12,9 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         'devilry_extjsextras.form.Help',
         'devilry_extjsextras.SaveButton'
     ],
+    mixins: {
+        'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    },
 
     /**
      * @cfg {Object} basenodeRecord (required)
@@ -133,14 +136,8 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
-        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
-        errorhandler.addErrors(response, operation);
         var alertmessagelist = this.down('alertmessagelist');
-        alertmessagelist.addMany(errorhandler.errormessages, 'error');
-        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(this._getFormPanel(),
-            errorhandler.fielderrors, alertmessagelist);
-        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(this._getFormPanel(),
-            errorhandler.fielderrors);
+        this.handleProxyError(alertmessagelist, this._getFormPanel(), response, operation);
     },
 
     _unmask: function() {
