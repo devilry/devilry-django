@@ -11,9 +11,6 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
 
     tpl: [
         '<ul class="breadcrumb">',
-            '<li class="prefixtext">',
-                gettext('You are here'),
-            ':</li>',
             '<tpl for="breadcrumbs">',
                 '<tpl if="xindex != xcount">',
                     '<li>',
