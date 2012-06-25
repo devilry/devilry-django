@@ -17,7 +17,6 @@ class SubjectInstanceResource(BaseNodeInstanceResource):
     fields = SubjectResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                        'breadcrumb')
 
-
 class ListOrCreateSubjectRest(BaseNodeListOrCreateView):
     """
     List the subjects where the authenticated user is admin.

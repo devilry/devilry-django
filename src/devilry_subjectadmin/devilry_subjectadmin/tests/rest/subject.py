@@ -213,3 +213,16 @@ class TestRestInstanceSubjectRest(TestCase):
         admins.sort(cmp=lambda a,b: cmp(a['username'], b['username']))
         self.assertEquals(admins[0]['username'], 'user1')
         self.assertEquals(admins[2]['username'], 'user3')
+
+    def test_put_generated_fields(self):
+        self.client.login(username='duck2000admin', password='test')
+        data = {'short_name': 'duck2000',
+                'long_name': 'Updated',
+                'admins': [],
+                'parentnode': 1,
+                'breadcrumb': [],
+                'can_delete': False,
+                'inherited_admins': []}
+        content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000.id),
+                                                 data=data)
+        self.assertEquals(response.status_code, 200)

@@ -36,6 +36,13 @@ class BaseNodeInstanceResource(ModelResource):
             #del data['id']
         #return super(BaseNodeInstanceResource, self).validate_request(data, files)
 
+    def validate_request(self, data, files=None):
+        form = self.view.get_bound_form()
+        for fieldname in data.keys():
+            if not fieldname in form.fields:
+                del data[fieldname]
+        return super(BaseNodeInstanceResource, self).validate_request(data, files)
+
     def can_delete(self, instance):
         if not isinstance(instance, self.model):
             return None # This happens if we do not return the instance from one of the functions (I.E.: return a dict instead)
