@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     setBreadcrumb: function(basenodeRecord) {
         var breadcrumb = [{
             text: gettext("All subjects"),
-            url: '/'
+            url: '#/'
         }];
 
         Ext.each(basenodeRecord.get('breadcrumb'), function(item) {
