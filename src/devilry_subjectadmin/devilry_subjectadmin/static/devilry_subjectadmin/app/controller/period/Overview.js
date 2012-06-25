@@ -38,6 +38,9 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     }, {
         ref: 'adminsbox',
         selector: 'periodoverview adminsbox'
+    }, {
+        ref: 'basenodehierlocation',
+        selector: 'periodoverview basenodehierlocation'
     }],
 
     init: function() {
@@ -125,6 +128,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setBreadcrumb(this.periodRecord);
         this._setMenuLabels(periodpath);
         this.getAdminsbox().setBasenodeRecord(this.periodRecord, periodpath);
+        this.getBasenodehierlocation().setLocation(this.periodRecord);
     },
     _onLoadPeriodFailure: function(operation) {
         this._onLoadFailure(operation);

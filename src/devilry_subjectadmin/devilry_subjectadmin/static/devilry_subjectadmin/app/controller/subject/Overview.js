@@ -34,6 +34,9 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     }, {
         ref: 'adminsbox',
         selector: 'subjectoverview adminsbox'
+    }, {
+        ref: 'basenodehierlocation',
+        selector: 'subjectoverview basenodehierlocation'
     }],
 
     init: function() {
@@ -108,6 +111,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.subjectRecord);
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
+        this.getBasenodehierlocation().setLocation(this.subjectRecord);
         this._setMenuLabels();
     },
     _onLoadSubjectFailure: function(operation) {

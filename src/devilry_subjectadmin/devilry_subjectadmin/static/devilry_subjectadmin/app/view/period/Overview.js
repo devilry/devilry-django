@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'Ext.layout.container.Column',
         'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AlertMessageList',
-        'devilry_subjectadmin.view.ActionList'
+        'devilry_subjectadmin.view.ActionList',
+        'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
     /**
@@ -57,6 +58,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     items: [{
                         xtype: 'adminsbox',
                         margin: {top: 0}
+                    }, {
+                        xtype: 'basenodehierlocation'
                     }]
                 }],
             }],
