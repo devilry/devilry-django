@@ -14,7 +14,7 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
             '<tpl for="breadcrumbs">',
                 '<tpl if="xindex != xcount">',
                     '<li>',
-                        '<a href="#{url}">{text}</a><span class="divider">/</span>',
+                        '<a href="{url}">{text}</a><span class="divider">/</span>',
                     '</li>',
                 '</tpl>',
                 '<tpl if="xindex == xcount">',
