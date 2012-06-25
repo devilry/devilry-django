@@ -344,6 +344,7 @@ class SelfdocumentingMixin(object):
 inherited_admins_help = """
 List of inherited administrators. Each entry in the list is a map/object
 with the following attributes:
+
 - ``user``: Same format as the entries in ``admins``.
 - ``basenode``: Map/object with the following attributes:
     - ``type``: The type of the basenode.
