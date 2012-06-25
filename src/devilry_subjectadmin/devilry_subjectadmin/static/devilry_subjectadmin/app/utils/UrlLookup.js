@@ -14,6 +14,8 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
             return this.periodOverview(id);
         } else if(type === 'Subject') {
             return this.subjectOverview(id);
+        } else if(type === 'Node') {
+            return '/nodeoverview-does-not-exist-yet';
         } else {
             Ext.Error.raise({
                 msg: 'The given type does not have an overview',

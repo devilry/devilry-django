@@ -7,13 +7,11 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     bodyCls: 'devilry_adminsbox bootstrap',
     title: gettext('Administrators'),
     ui: 'lookslike-parawitheader-panel',
+    requires: ['devilry_subjectadmin.utils.UrlLookup'],
 
-    tpl: [
-        '<tpl if="loading">',
-            '{loading}',
-        '</tpl>',
-        '<tpl if="!loading">',
-            '{path}:',
+    adminsTpl: [
+        '{path}: ',
+        '<tpl if="admins.length &gt; 0">',
             '<ul class="devilry_administratorlist">',
                 '<tpl for="admins">',
                     '<li>',
@@ -28,7 +26,14 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                     '</li>',
                 '</tpl>',
             '</ul>',
-            gettext('Inherited:'),
+        '</tpl>',
+        '<tpl if="admins.length == 0">',
+            '<p><em>', gettext('No administrators') ,'</em></p>',
+        '</tpl>'
+    ],
+    inheritedAdminsTpl: [
+        gettext('Inherited:'),
+        '<tpl if="inherited_admins.length &gt; 0">',
             '<ul class="devilry_inherited_administratorlist">',
                 '<tpl for="inherited_admins">',
                     '<li>',
@@ -40,18 +45,23 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                                 '{user.username}',
                             '</tpl>',
                         '</a>',
-                        ' ({basenode.path})',
+                        ' (<a href="{url}">{basenode.path}</a>)',
                     '</li>',
                 '</tpl>',
             '</ul>',
+        '</tpl>',
+        '<tpl if="inherited_admins.length == 0">',
+            '<p><em>', gettext('No administrators') ,'</em></p>',
         '</tpl>'
     ],
 
-    initComponent: function() {
-        this.data = {
-            loading: gettext('Loading ...')
-        };
-        this.callParent(arguments);
+
+    _get_inherited_with_urls: function(basenodeRecord) {
+        var inherited_admins = Ext.clone(basenodeRecord.get('inherited_admins'));
+        Ext.Array.each(inherited_admins, function(admin) {
+            admin.url = devilry_subjectadmin.utils.UrlLookup.overviewByType(admin.basenode.type, admin.basenode.id);
+        }, this);
+        return inherited_admins;
     },
 
     /**
@@ -62,11 +72,22 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
      * The unique path to the basenode.
      */
     setBasenodeRecord: function(basenodeRecord, path) {
-        this.update({
-            loading: false,
-            path: path,
-            admins: basenodeRecord.get('admins'),
-            inherited_admins: basenodeRecord.get('inherited_admins')
-        });
+        //this.down('#admins').update({
+            ////inherited_admins: basenodeRecord.get('inherited_admins')
+        //});
+        this.add([{
+            xtype: 'box',
+            tpl: this.adminsTpl,
+            data: {
+                path: path,
+                admins: basenodeRecord.get('admins')
+            }
+        }, {
+            xtype: 'box',
+            tpl: this.inheritedAdminsTpl,
+            data: {
+                inherited_admins: this._get_inherited_with_urls(basenodeRecord)
+            }
+        }]);
     }
 });
