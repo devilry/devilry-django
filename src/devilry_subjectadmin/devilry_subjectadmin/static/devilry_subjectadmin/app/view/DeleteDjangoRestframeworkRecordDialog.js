@@ -31,6 +31,14 @@ Ext.define('devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog', {
      */
 
     initComponent: function() {
+        this.addEvents({
+            /**
+             * @event
+             * Fired when the record has been deleted successfully.
+             * */
+            "deleteSuccess" : true
+        });
+
         this.callParent(arguments);
         this.mon(this.basenodeRecord.proxy, {
             scope:this,
@@ -40,7 +48,6 @@ Ext.define('devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog', {
             scope: this,
             deleteConfirmed: this._onDeleteConfirmed
         });
-        
     },
 
     _onProxyError: function(proxy, response, operation) {
@@ -50,6 +57,14 @@ Ext.define('devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog', {
     },
 
     _onDeleteConfirmed: function() {
-        this.basenodeRecord.destroy();
+        this.basenodeRecord.destroy({
+            scope: this,
+            success: this._onDeleteSuccessful
+        });
+    },
+
+    _onDeleteSuccessful: function() {
+        this.fireEvent('deleteSuccess');
+        this.close();
     }
 });

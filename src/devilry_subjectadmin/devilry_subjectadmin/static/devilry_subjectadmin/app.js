@@ -116,6 +116,13 @@ Ext.application({
         this.primaryContentContainer.add(component);
     },
 
+    /** Called after something has been deleted.
+     * @param short_description A short description of the item that was deleted.
+     * */
+    onAfterDelete: function(short_description) {
+        this.route.navigate('');
+    },
+
 
     /** Used by controllers to set the page title (the title-tag). */
     setTitle: function(title) {

@@ -125,9 +125,16 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         }).show();
     },
     _onDelete: function() {
+        var short_description = this.subjectRecord.get('short_name');
         devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog.showIfCanDelete({
             basenodeRecord: this.subjectRecord,
-            short_description: this.subjectRecord.get('short_name')
+            short_description: short_description,
+            listeners: {
+                scope: this,
+                deleteSuccess: function() {
+                    this.application.onAfterDelete(short_description);
+                }
+            }
         });
     }
 });
