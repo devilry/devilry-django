@@ -120,6 +120,13 @@ class TestRestInstanceSubjectRest(TestCase):
         self.assertEquals(content['id'], self.testhelper.duck2000.id)
         self.assertEquals(Subject.objects.filter(id=self.testhelper.duck2000.id).count(), 0)
 
+    def test_delete_notempty(self):
+        self.testhelper.add_to_path('uni;duck2000.p1')
+        self.client.login(username='uniadmin', password='test')
+        content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000.id))
+        print content
+        self.assertEquals(response.status_code, 403)
+
     def test_get(self):
         self.client.login(username='uniadmin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000.id))

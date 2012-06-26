@@ -63,7 +63,8 @@ class BaseNodeInstanceRestMixin(object):
                          'such attempts by this user may be an attempt at trying '
                          'to delete things that they should not attempt to delete.'),
                         self.user, modelname, instanceid, instanceident)
-            raise PermissionDeniedError()
+            raise PermissionDeniedError('Not permitted to delete {modelname} with id={instanceid}.'.format(modelname=modelname,
+                                                                                                           instanceid=instanceid))
 
 
 class SelfdocumentingMixin(object):
