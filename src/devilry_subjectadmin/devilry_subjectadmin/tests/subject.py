@@ -2,6 +2,7 @@ from devilry.apps.core.testhelper import TestHelper
 
 from .base import SubjectAdminSeleniumTestCase
 from .base import RenameBasenodeTestMixin
+from .base import DeleteBasenodeTestMixin
 
 
 class TestSubjectListAll(SubjectAdminSeleniumTestCase):
@@ -39,7 +40,7 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
 
 
 
-class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin):
+class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin,anotheruniadmin)',
@@ -120,6 +121,32 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin)
         self._browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.rename_test_failure_helper()
+
+    def test_delete(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['willbedeleted'])
+        self.login('uniadmin')
+        self._browseToSubject(self.testhelper.willbedeleted.id)
+        self.waitForCssSelector('.devilry_subjectoverview')
+        subjecturl = self.selenium.current_url
+        self.perform_delete()
+        self.waitFor(self.selenium, lambda s: s.current_url != subjecturl) # Will time out and fail unless the page is changed after delete
+
+    def test_delete_notparentadmin(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['willbedeleted:admin(willbedeletedadm)'])
+        self.login('willbedeletedadm')
+        self._browseToSubject(self.testhelper.willbedeleted.id)
+        self.waitForCssSelector('.devilry_subjectoverview')
+        self.click_delete_button()
+        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+
+    def test_delete_not_empty(self):
+        self.login('uniadmin')
+        self._browseToSubject(self.testhelper.duck1010.id)
+        self.waitForCssSelector('.devilry_subjectoverview')
+        self.click_delete_button()
+        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
     def test_title(self):
         self.login('duck1010adm1')

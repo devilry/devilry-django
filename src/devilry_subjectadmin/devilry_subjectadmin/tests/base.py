@@ -23,7 +23,8 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
 
 class RenameBasenodeTestMixin(object):
     def _init_renametest(self):
-        self._click_advancedbutton()
+        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
+        advancedButton.click()
         self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton').click()
         self.waitForCssSelector('.devilry_rename_basenode_window')
         window = self.selenium.find_element_by_css_selector('.devilry_rename_basenode_window')
@@ -59,3 +60,20 @@ class RenameBasenodeTestMixin(object):
         savebutton.click()
         self.waitForCssSelector('.alertmessagelist', within=window)
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.alertmessagelist .alert-error')), 1)
+
+class DeleteBasenodeTestMixin(object):
+    def click_delete_button(self):
+        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
+        advancedButton.click()
+        self.selenium.find_element_by_css_selector('#menubarAdvancedDeleteButton').click()
+
+    def perform_delete(self):
+        self.click_delete_button()
+        self.waitForCssSelector('.devilry_confirmdeletedialog')
+        window = self.selenium.find_element_by_css_selector('.devilry_confirmdeletedialog')
+        inputfield = self._get_field('.devilry_confirmdeletedialog', 'confirm_text')
+        deletebutton = window.find_element_by_css_selector('.devilry_deletebutton button')
+        inputfield.send_keys('DELETE')
+        self.waitForEnabled(deletebutton)
+        deletebutton.click()
+        print dir(self.selenium)
