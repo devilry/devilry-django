@@ -106,6 +106,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
     _onLoadSubjectSuccess: function(record) {
         this.subjectRecord = record;
+        this.application.setTitle(this.subjectRecord.get('short_name'));
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.subjectRecord);
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));

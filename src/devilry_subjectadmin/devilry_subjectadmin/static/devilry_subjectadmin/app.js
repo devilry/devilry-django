@@ -117,6 +117,12 @@ Ext.application({
     },
 
 
+    /** Used by controllers to set the page title (the title-tag). */
+    setTitle: function(title) {
+        window.document.title = Ext.String.format('{0} - Devilry', title);
+    },
+
+
     /*********************************************
      * Routing
      ********************************************/
