@@ -12,7 +12,12 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         'subject.Overview',
         'subject.ListOfPeriods',
         'ActionList',
-        'RenameBasenodeWindow'
+        'RenameBasenodeWindow',
+        'DeleteDjangoRestframeworkRecordDialog'
+    ],
+
+    requires: [
+        'devilry_extjsextras.ConfirmDeleteDialog'
     ],
 
     stores: ['Periods'],
@@ -50,10 +55,10 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
                 click: this._onEditGradeEditor
             },
             'viewport subjectoverview #deleteButton': {
-                click: this._onNotImplemented
+                click: this._onDelete
             },
             'viewport subjectoverview #renameButton': {
-                click: this._onRenameButton
+                click: this._onRename
             }
         });
     },
@@ -114,9 +119,15 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this._setMenuLabels();
     },
 
-    _onRenameButton: function() {
+    _onRename: function() {
         Ext.create('devilry_subjectadmin.view.RenameBasenodeWindow', {
             basenodeRecord: this.subjectRecord
         }).show();
     },
+    _onDelete: function() {
+        devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog.showIfCanDelete({
+            basenodeRecord: this.subjectRecord,
+            short_description: this.subjectRecord.get('short_name')
+        });
+    }
 });
