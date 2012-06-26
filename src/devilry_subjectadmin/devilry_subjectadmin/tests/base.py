@@ -19,3 +19,43 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
     def get_absolute_url(self, path):
         return '{live_server_url}/devilry_subjectadmin/#{path}'.format(live_server_url=self.live_server_url,
                                                                        path=path)
+
+
+class RenameBasenodeTestMixin(object):
+    def _init_renametest(self):
+        self._click_advancedbutton()
+        self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton').click()
+        self.waitForCssSelector('.devilry_rename_basenode_window')
+        window = self.selenium.find_element_by_css_selector('.devilry_rename_basenode_window')
+        short_name = self._get_field('.devilry_rename_basenode_window', 'short_name')
+        long_name = self._get_field('.devilry_rename_basenode_window', 'long_name')
+        savebutton = window.find_element_by_css_selector('.savebutton button')
+        return window, short_name, long_name, savebutton
+
+    def rename_test_helper(self, basenode):
+        window, short_name, long_name, savebutton = self._init_renametest()
+        self.assertEquals(short_name.get_attribute('value'), basenode.short_name)
+        self.assertEquals(long_name.get_attribute('value'), basenode.long_name)
+
+        short_name.clear()
+        self.waitForDisabled(savebutton)
+        short_name.send_keys('renamed-shortname')
+        long_name.clear()
+        self.waitForDisabled(savebutton)
+        long_name.send_keys('Renamed long name')
+        self.waitForEnabled(savebutton)
+
+        savebutton.click()
+        self.waitForTitleContains('renamed-shortname')
+        updated = basenode.__class__.objects.get(id=basenode.id)
+        self.assertEquals(updated.short_name, 'renamed-shortname')
+        self.assertEquals(updated.long_name, 'Renamed long name')
+
+    def rename_test_failure_helper(self):
+        window, short_name, long_name, savebutton = self._init_renametest()
+        short_name.clear()
+        short_name.send_keys('Renamed-shortname')
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.alertmessagelist .alert-error')), 0)
+        savebutton.click()
+        self.waitForCssSelector('.alertmessagelist', within=window)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.alertmessagelist .alert-error')), 1)
