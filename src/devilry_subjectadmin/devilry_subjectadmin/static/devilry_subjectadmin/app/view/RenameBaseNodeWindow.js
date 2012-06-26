@@ -133,7 +133,6 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         if(oldShortname != newShortname) {
             var basenodeRecord = this.basenodeRecord;
             form.updateRecord(basenodeRecord);
-            console.log(basenodeRecord.data);
             this._getMaskElement().setLoading(gettext('Saving ...'));
             basenodeRecord.save({
                 scope: this,
