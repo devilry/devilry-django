@@ -1,4 +1,5 @@
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models import Subject
 
 from .base import SubjectAdminSeleniumTestCase
 from .base import RenameBasenodeTestMixin
@@ -131,6 +132,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         subjecturl = self.selenium.current_url
         self.perform_delete()
         self.waitFor(self.selenium, lambda s: s.current_url != subjecturl) # Will time out and fail unless the page is changed after delete
+        self.assertEquals(Subject.objects.filter(id=self.testhelper.willbedeleted.id).count(), 0)
 
     def test_delete_notparentadmin(self):
         self.testhelper.add(nodes='uni',

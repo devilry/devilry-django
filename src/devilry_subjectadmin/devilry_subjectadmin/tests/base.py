@@ -76,4 +76,3 @@ class DeleteBasenodeTestMixin(object):
         inputfield.send_keys('DELETE')
         self.waitForEnabled(deletebutton)
         deletebutton.click()
-        print dir(self.selenium)
