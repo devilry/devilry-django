@@ -13,7 +13,7 @@ Ext.define('devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog', {
             if(options.basenodeRecord.get('can_delete')) {
                 Ext.create('devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog', options).show();
             } else {
-                var msg = gettext('You do not have permissions required to delete {short_description}. Only superusers can delete non-empty items.');
+                var msg = gettext('You do not have permissions required to delete {short_description}. Only superusers can delete non-empty items. You can only delete items where you are admin on an item higher up in the hierarchy.');
                 Ext.Msg.show({
                     title: gettext('Permission denied'),
                     icon: Ext.Msg.INFO,
