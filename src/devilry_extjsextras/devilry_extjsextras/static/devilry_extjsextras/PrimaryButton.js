@@ -5,7 +5,7 @@ click by default).
 Ext.define('devilry_extjsextras.PrimaryButton', {
     extend: 'Ext.button.Button',
     alias: 'widget.primarybutton',
-    cls: 'primarybutton',
+    cls: 'devilry_primarybutton',
     scale: 'large',
     ui: 'primary'
 });
