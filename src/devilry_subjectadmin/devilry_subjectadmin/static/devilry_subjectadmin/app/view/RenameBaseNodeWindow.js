@@ -3,7 +3,7 @@
  * */
 Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
     extend: 'Ext.window.Window',
-    cls: 'devilry_rename_basenode bootstrap',
+    cls: 'devilry_rename_basenode_window bootstrap',
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
         'devilry_extjsextras.form.ErrorUtils',
@@ -84,6 +84,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                     }
                 }, {
                     xtype: 'savebutton',
+                    formBind: true,
                     listeners: {
                         scope: this,
                         click: this._onSave
