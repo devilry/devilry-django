@@ -124,8 +124,8 @@ class TestRestInstanceSubjectRest(TestCase):
         self.testhelper.add_to_path('uni;duck2000.p1')
         self.client.login(username='uniadmin', password='test')
         content, response = self.client.rest_delete(self._geturl(self.testhelper.duck2000.id))
-        print content
         self.assertEquals(response.status_code, 403)
+        self.assertIn('Only superadmins can delete non-empty items', content['detail'])
 
     def test_get(self):
         self.client.login(username='uniadmin', password='test')

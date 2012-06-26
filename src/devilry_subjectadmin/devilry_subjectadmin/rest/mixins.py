@@ -58,13 +58,15 @@ class BaseNodeInstanceRestMixin(object):
             return {'id': instanceid}
         else:
             logger.warn(('User=%s tried to delete %s id=%s (%s). They where rejected '
-                         'because of lacking permissions. Since the user-interface',
-                         'should make it impossible to perform this action, huge amounts of'
+                         'because of lacking permissions. Since the user-interface '
+                         'should make it impossible to perform this action, huge amounts of '
                          'such attempts by this user may be an attempt at trying '
                          'to delete things that they should not attempt to delete.'),
                         self.user, modelname, instanceid, instanceident)
-            raise PermissionDeniedError('Not permitted to delete {modelname} with id={instanceid}.'.format(modelname=modelname,
-                                                                                                           instanceid=instanceid))
+            msg = ('Not permitted to delete {modelname} with id={instanceid}. '
+                   'Only superadmins can delete non-empty items.')
+            raise PermissionDeniedError(msg.format(modelname=modelname,
+                                                   instanceid=instanceid))
 
 
 class SelfdocumentingMixin(object):
