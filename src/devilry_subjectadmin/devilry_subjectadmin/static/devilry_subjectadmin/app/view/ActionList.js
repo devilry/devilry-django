@@ -4,12 +4,13 @@
 Ext.define('devilry_subjectadmin.view.ActionList', {
     extend: 'Ext.Component',
     alias: 'widget.actionlist',
+    cls: 'devilry_subjectadmin_actionlist bootstrap',
 
     tpl: [
-        '<ul class="boxbody">',
+        '<ul>',
         '    <tpl for="links">',
         '       <li>',
-        '           <a href="{url}" class="btn btn-{buttonSize} btn-{buttonType}" style="{style}">{text}</a>',
+        '           <a href="{url}" style="{style}">{text}</a>',
         '       </li>',
         '    </tpl>',
         '<ul>'

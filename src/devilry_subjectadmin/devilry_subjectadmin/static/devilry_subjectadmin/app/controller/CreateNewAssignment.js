@@ -1,5 +1,10 @@
 Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     extend: 'Ext.app.Controller',
+    mixins: {
+        'basenodeBreadcrumbMixin': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
+        'onLoadFailure': 'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
+        'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    },
 
     requires: [
         'Ext.Date',
@@ -8,18 +13,14 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
     ],
     views: [
-        'ActivePeriodsList',
         'createnewassignment.Form',
         'createnewassignment.SuccessPanel',
         'createnewassignment.CreateNewAssignment'
     ],
 
     models: [
-        'CreateNewAssignment'
-    ],
-
-    stores: [
-        'ActivePeriods'
+        'CreateNewAssignment',
+        'Period'
     ],
 
     refs: [{
@@ -29,7 +30,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'createNewAssignment',
         selector: 'createnewassignment'
     }, {
-        ref: 'pageTwoAlertMessageList',
+        ref: 'globalAlertmessagelist',
         selector: 'createnewassignment alertmessagelist'
     }, {
         ref: 'metainfo',
@@ -54,17 +55,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     init: function() {
         this.control({
             // Page one
-            'viewport chooseperiod form': {
-                afterrender: this._onRenderPageOneForm
-            },
-            'viewport chooseperiod activeperiodslist': {
-                afterrender: this._onRenderActivePeriodlist
-            },
-            'viewport chooseperiod nextbutton': {
-                click: this._onNextFromPageOne
-            },
-
-            // Page two
             'viewport createnewassignmentform': {
                 render: this._onRenderCreateNewAssignmentForm,
             },
@@ -94,17 +84,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _loadPeriodsIfNotLoaded: function(callback) {
-        if(this.getActivePeriodsStore().getCount() > 0) {
-            Ext.callback(callback, this);
-        } else {
-            this.getActivePeriodsStore().loadActivePeriods({
-                scope: this,
-                callback: callback
-            });
-        }
-    },
-
     //_selectAppropriateDeliverytypes: function() {
         //var radioButtons = this.getDeliveryTypesRadioGroup().query('radio');
         //var index = 0;
@@ -120,8 +99,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onRenderCreateNewAssignmentForm: function() {
-        this.period_id = this.getCreateNewAssignment().period_id;
-        this._loadPeriodsIfNotLoaded(this._showMetadata);
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
             enter: this._onCreate,
             scope: this
@@ -129,34 +106,49 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this._setInitialValues();
 
         this.getCreateNewAssignmentForm().mon(this.getCreateNewAssignmentModel().proxy, {
-            scope:this,
+            scope: this,
             exception: this._onProxyError
         });
+        this.period_id = this.getCreateNewAssignment().period_id;
+        this._loadPeriod(this.period_id);
     },
 
-    _handleNotActivePeriod: function() {
+    _loadPeriod: function(period_id) {
+        this.getPeriodModel().load(period_id, {
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this._onLoadPeriodSuccess(record);
+                } else {
+                    this._onLoadPeriodFailure(operation);
+                }
+            }
+        });
+    },
+    _onLoadPeriodSuccess: function(record) {
+        this.periodRecord = record;
+        this.periodpath = this.getPathFromBreadcrumb(this.periodRecord);
+        this._setMetadata();
+    },
+    _onLoadPeriodFailure: function(operation) {
         var message = Ext.create('Ext.XTemplate',
-            gettext('Period {period_id} is not an active period.')
+            gettext('Period {period_id} could not be loaded.')
         ).apply({period_id: this.period_id});
-        this.getPageTwoAlertMessageList().add({
+        this.onLoadFailure(operation);
+        this.getGlobalAlertmessagelist().add({
             message: message,
             type: 'error'
         });
     },
 
-    _showMetadata: function() {
-        var periodRecord = this.getActivePeriodsStore().findRecord('id', this.period_id);
-        if(periodRecord) {
-            var metatext = Ext.create('Ext.XTemplate',
-                gettext('Create new assignment in <em>{period}</em>.')
-            ).apply({
-                period: periodRecord.get('parentnode__short_name') + '.' + periodRecord.get('short_name')
-            });
-            this.getMetainfo().update(metatext);
-            this.periodRecord = periodRecord;
-        } else {
-            this._handleNotActivePeriod();
-        }
+    _setMetadata: function() {
+        var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
+        var metatext = Ext.create('Ext.XTemplate',
+            gettext('Create new assignment in <em>{period}</em>.')
+        ).apply({
+            period: periodpath
+        });
+        this.getMetainfo().update(metatext);
     },
 
     _onDeliveryTypesSelect: function(radio, records) {
@@ -192,7 +184,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _save: function() {
-        this.getPageTwoAlertMessageList().removeAll();
+        this.getGlobalAlertmessagelist().removeAll();
         var values = this._getFormValues();
         var NON_ELECTRONIC = 1;
         if(values.delivery_types === NON_ELECTRONIC) {
@@ -209,28 +201,21 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _onSuccessfulSave: function() {
+    _onSuccessfulSave: function(record) {
         this._unmask();
         this.successPanelSetupConfig = {
-            period_id: this.period_id,
-            period_short_name: this.periodRecord.get('short_name'),
-            subject_short_name: this.periodRecord.get('parentnode__short_name'),
-            short_name: this._getFormValues().short_name
+            period_id: this.periodRecord.get('id'),
+            periodpath : this.periodpath,
+            short_name: record.get('short_name'),
+            assignment_id: record.get('id')
         };
         this.application.route.navigate('/@@create-new-assignment/@@success');
     },
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
-        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
-        errorhandler.addErrors(response, operation);
-        this.getPageTwoAlertMessageList().addMany(errorhandler.errormessages, 'error');
-        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(
-            this.getCreateNewAssignmentForm(), errorhandler.fielderrors, this.getPageTwoAlertMessageList()
-        );
-        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(
-            this.getCreateNewAssignmentForm(), errorhandler.fielderrors
-        );
+        this.handleProxyError(this.getGlobalAlertmessagelist(), this.getCreateNewAssignmentForm(),
+            response, operation);
     },
 
     _mask: function() {

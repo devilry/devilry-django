@@ -171,7 +171,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
     }],
 
     initComponent: function() {
-        var cssclasses = 'createnewassignmentform';
+        var cssclasses = 'devilry_subjectadmin_createnewassignmentform';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }
