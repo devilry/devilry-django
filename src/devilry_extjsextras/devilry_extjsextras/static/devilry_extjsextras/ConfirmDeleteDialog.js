@@ -29,7 +29,7 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
      * however it can be overridden.  Can use ``required_confirm_text`` and
      * ``short_description`` as template variables.
      */
-    helptpl: gettext('Type {required_confirm_text} in the field below and click delete or press return to delete {short_description}.'),
+    helptpl: gettext('Type {required_confirm_text} in the field below to confirm that you really intend to delete {short_description}.'),
 
     _apply_template: function(tpl, data) {
         return Ext.create('Ext.XTemplate', tpl).apply(data);
