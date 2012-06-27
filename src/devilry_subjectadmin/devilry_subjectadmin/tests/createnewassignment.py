@@ -9,12 +9,12 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
-        self.login('grandma')
         self.tomorrow = date.today() + timedelta(days=1)
 
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
-                            periods=['2012h:begins(-1)'])
+                            periods=['2012h:begins(-1):ends(6):admin(2012hadmin)'])
+        self.login('2012hadmin')
         self.period_id = self.testhelper.duck1100_2012h.id
 
     def test_form_render(self):
