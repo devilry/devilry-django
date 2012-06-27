@@ -139,7 +139,8 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         first_deadline = self.testhelper.sub_p1.start_time + timedelta(days=2)
         content, response = self.client.rest_post(self.url, self._get_testdata())
         self.assertEquals(response.status_code, 201)
-        self.assertEquals(content.keys(), ['id'])
+        self.assertEquals(set(content.keys()),
+                          set(['id', 'period_id', 'short_name', 'long_name', 'first_deadline', 'anonymous']))
 
     def test_create_notfound(self):
         self._login_p1admin()

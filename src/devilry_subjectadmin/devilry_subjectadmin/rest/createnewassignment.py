@@ -126,6 +126,14 @@ class RestCreateNewAssignmentForm(forms.Form):
 class RestCreateNewAssignmentResource(FormResource):
     form = RestCreateNewAssignmentForm
 
+    def validate_request(self, data, files=None):
+        """
+        Remove ``id`` from input data to enable us to have it in models.
+        """
+        if 'id' in data:
+            del data['id']
+        return super(RestCreateNewAssignmentResource, self).validate_request(data, files)
+
 
 class RestCreateNewAssignment(SelfdocumentingMixin, View):
     """
@@ -161,4 +169,9 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
-                return Response(status=201, content=dict(id=assignment.id))
+                return Response(status=201, content=dict(id=assignment.id,
+                                                         period_id=assignment.parentnode_id,
+                                                         short_name=assignment.short_name,
+                                                         long_name=assignment.long_name,
+                                                         first_deadline=assignment.first_deadline,
+                                                         anonymous=assignment.anonymous))
