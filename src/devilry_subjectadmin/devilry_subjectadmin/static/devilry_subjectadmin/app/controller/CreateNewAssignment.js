@@ -95,7 +95,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
 
     _onRenderLongName: function(field) {
-        field.focus();
+        Ext.defer(function() {
+            // NOTE: Using defer avoids that the text style remains
+            // emptyText-gray (I assume it does no because render is fired
+            // before the style is applied).
+            field.focus();
+        }, 100);
     },
 
     _onRenderCreateNewAssignmentForm: function() {
