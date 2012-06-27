@@ -13,9 +13,9 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
-                            periods=['2012h:begins(-1):ends(6):admin(2012hadmin)'])
-        self.login('2012hadmin')
-        self.period_id = self.testhelper.duck1100_2012h.id
+                            periods=['periodone:begins(-1):ends(6):admin(periodoneadmin)'])
+        self.login('periodoneadmin')
+        self.period_id = self.testhelper.duck1100_periodone.id
 
     def test_form_render(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
@@ -89,7 +89,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         createbutton.click()
 
     def test_duplicate(self):
-        self.testhelper.add_to_path('uni;duck1100.2012h.a1')
+        self.testhelper.add_to_path('uni;duck1100.periodone.a1')
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
         self._set_value('long_name', 'A1')
@@ -120,7 +120,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def _create_related_student(self, username, candidate_id=None, tags=None):
         user = self.testhelper.create_user(username)
-        relatedstudent = self.testhelper.duck1100_2012h.relatedstudent_set.create(user=user,
+        relatedstudent = self.testhelper.duck1100_periodone.relatedstudent_set.create(user=user,
                                                                           candidate_id=candidate_id)
         if tags:
             relatedstudent.tags = tags
@@ -129,7 +129,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def _create_related_examiner(self, username, tags=None):
         user = self.testhelper.create_user(username)
-        relatedexaminer = self.testhelper.duck1100_2012h.relatedexaminer_set.create(user=user)
+        relatedexaminer = self.testhelper.duck1100_periodone.relatedexaminer_set.create(user=user)
         if tags:
             relatedexaminer.tags = tags
             relatedexaminer.save()
