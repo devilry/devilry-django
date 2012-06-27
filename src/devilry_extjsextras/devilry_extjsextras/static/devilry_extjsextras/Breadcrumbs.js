@@ -2,15 +2,10 @@
 Ext.define('devilry_extjsextras.Breadcrumbs', {
     extend: 'Ext.Component',
     alias: 'widget.breadcrumbs',
-    cls: 'breadcrumb-component',
-
-    home: {
-        url: '',
-        text: 'Dashboard'
-    },
+    cls: 'devilry_breadcrumbcomponent',
 
     tpl: [
-        '<ul class="breadcrumb">',
+        '<ul class="devilry_breadcrumb">',
             '<tpl for="breadcrumbs">',
                 '<tpl if="xindex != xcount">',
                     '<li>',
@@ -73,7 +68,6 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
 
     clear: function() {
         this.breadcrumbs = [];
-        //this.add(this.home.url, this.home.text);
     },
 
     draw: function() {
