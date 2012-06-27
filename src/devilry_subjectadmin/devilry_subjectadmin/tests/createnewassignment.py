@@ -73,7 +73,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
-        createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
+        createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
         self.assertFalse(createbutton.is_enabled())
 
         # Make sure the create button is clickable after both short and long names are entered.
@@ -84,7 +84,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.waitForEnabled(createbutton)
 
     def _click_createbutton(self):
-        createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
+        createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
         self.waitForEnabled(createbutton)
         createbutton.click()
 
