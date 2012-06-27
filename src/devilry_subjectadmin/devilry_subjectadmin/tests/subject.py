@@ -178,4 +178,4 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.login('duck1010adm1')
         self._browseToSubject(self.testhelper.duck1010.id)
         breadcrumbtext = self.get_breadcrumbstring('duck1010')
-        self.assertEquals(breadcrumbtext, 'Subjectadmin/All subjects/duck1010')
+        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1010'])

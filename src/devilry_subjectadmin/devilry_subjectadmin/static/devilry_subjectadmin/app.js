@@ -85,11 +85,11 @@ Ext.application({
 
     _createViewport: function() {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
-            region: 'north',
-            defaultBreadcrumbs: [{
-                text: gettext("Subjectadmin"),
-                url: ''
-            }]
+            region: 'north'
+            //defaultBreadcrumbs: [{
+                //text: gettext("Subjectadmin"),
+                //url: ''
+            //}]
         });
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',

@@ -1,3 +1,4 @@
+import re
 from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
 from django.conf import settings
@@ -19,14 +20,13 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
     def get_absolute_url(self, path):
         return '{live_server_url}/devilry_subjectadmin/#{path}'.format(live_server_url=self.live_server_url,
                                                                        path=path)
-
     def get_breadcrumbstring(self, expected_contains):
         self.waitForCssSelector('.devilry_breadcrumb')
         def breadcrumbLoaded(breadcrumb):
             return expected_contains in breadcrumb.text
         breadcrumb = self.selenium.find_element_by_css_selector('.devilry_breadcrumb')
         self.waitFor(breadcrumb, breadcrumbLoaded)
-        return breadcrumb.text
+        return re.split('\s*\/\s*', breadcrumb.text)
 
 
 class RenameBasenodeTestMixin(object):
