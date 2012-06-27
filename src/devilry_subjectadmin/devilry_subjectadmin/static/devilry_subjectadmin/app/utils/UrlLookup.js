@@ -9,6 +9,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         return Ext.String.format('#/period/{0}/', period_id);
     },
 
+    assignmentOverview: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/', assignment_id);
+    },
+
     overviewByType: function(type, id) {
         if(type === 'Period') {
             return this.periodOverview(id);
