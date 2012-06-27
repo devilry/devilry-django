@@ -154,3 +154,8 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.browseTo('/@@create-new-assignment/@@success')
         self.waitForCssSelector('.x-message-box')
         self.assertTrue('This page is only available after creating a new assignment.' in self.selenium.page_source)
+
+    def test_breadcrumb(self):
+        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
+        breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
+        self.assertEquals(breadcrumbtext, ['Create new assignment'])

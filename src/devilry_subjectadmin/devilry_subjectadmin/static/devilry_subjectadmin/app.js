@@ -150,7 +150,7 @@ Ext.application({
     },
     
     routeNotFound: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('theme.routenotfound'));
+        this.breadcrumbs.set([], gettext('Route not found'));
         this.setPrimaryContent({
             xtype: 'routenotfound',
             route: routeInfo.token
@@ -186,7 +186,7 @@ Ext.application({
     },
 
     createNewAssignment: function(routeInfo, period_id) {
-        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], gettext('Create new assignment'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
             period_id: period_id
@@ -194,7 +194,7 @@ Ext.application({
     },
 
     createNewAssignmentSuccess: function(routeInfo) {
-        this.breadcrumbs.set([], dtranslate('devilry_subjectadmin.createnewassignment.title'));
+        this.breadcrumbs.set([], gettext('Create new assignment'));
         this.setPrimaryContent({
             xtype: 'createnewassignment-successpanel'
         });
