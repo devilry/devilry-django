@@ -30,12 +30,8 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
     def test_breadcrumb(self):
         self.login('period1admin')
         self._browseToPeriod(self.testhelper.duck9000_period1.id)
-        self.waitForCssSelector('.breadcrumb')
-        def breadcrumbLoaded(breadcrumb):
-            return 'duck9000' in breadcrumb.text
-        breadcrumb = self.selenium.find_element_by_css_selector('.breadcrumb')
-        self.waitFor(breadcrumb, breadcrumbLoaded)
-        self.assertEquals(breadcrumb.text, 'Subjectadmin/All subjects/duck9000/period1')
+        breadcrumbtext = self.get_breadcrumbstring('duck9000')
+        self.assertEquals(breadcrumbtext, 'Subjectadmin/All subjects/duck9000/period1')
 
     def test_menubar(self):
         self.login('period1admin')

@@ -177,9 +177,5 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
     def test_breadcrumb(self):
         self.login('duck1010adm1')
         self._browseToSubject(self.testhelper.duck1010.id)
-        self.waitForCssSelector('.breadcrumb')
-        def breadcrumbLoaded(breadcrumb):
-            return 'duck1010' in breadcrumb.text
-        breadcrumb = self.selenium.find_element_by_css_selector('.breadcrumb')
-        self.waitFor(breadcrumb, breadcrumbLoaded)
-        self.assertEquals(breadcrumb.text, 'Subjectadmin/All subjects/duck1010')
+        breadcrumbtext = self.get_breadcrumbstring('duck1010')
+        self.assertEquals(breadcrumbtext, 'Subjectadmin/All subjects/duck1010')
