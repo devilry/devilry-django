@@ -63,7 +63,6 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
             flex:1,
             isFormField:false, //exclude from field query's
             emptyText: this.dateFieldEmptyText,
-            cls: 'datetimefield_date',
             submitValue:false
         }, me.dateConfig));
         me.items.push(me.dateField);
@@ -72,7 +71,6 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
             flex:1,
             isFormField:false, //exclude from field query's
             emptyText: this.timeFieldEmptyText,
-            cls: 'datetimefield_time',
             submitValue:false
         }, me.timeConfig));
         me.items.push(me.timeField);

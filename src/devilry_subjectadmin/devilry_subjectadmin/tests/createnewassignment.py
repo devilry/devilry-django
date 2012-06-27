@@ -61,7 +61,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         field.send_keys(value)
 
     def _set_datetime_value(self, fieldclass, field, value):
-        field = self.selenium.find_element_by_css_selector('.{fieldclass} .datetimefield_{field} input[type=text]'.format(fieldclass=fieldclass,
+        field = self.selenium.find_element_by_css_selector('.{fieldclass} .devilry_extjsextras_{field}field input[type=text]'.format(fieldclass=fieldclass,
                                                                                                                           field=field))
         field.send_keys(value)
 
