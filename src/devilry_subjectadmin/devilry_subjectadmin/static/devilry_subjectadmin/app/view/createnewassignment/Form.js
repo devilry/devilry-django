@@ -38,7 +38,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         name: "long_name",
         fieldLabel: gettext('Long name'),
         xtype: 'textfield',
-        emptyText: gettext('Example of assignment long name'),
+        emptyText: pgettext('createnewassignment', 'Obligatory assignment one'),
         allowBlank: false,
         width: 400
     }, {
@@ -52,7 +52,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         fieldLabel: gettext('Short name'),
         xtype: 'textfield',
         allowBlank: false,
-        emptyText: gettext('assignment-shortname-example'),
+        emptyText: pgettext('createnewassignment', 'oblig-1'),
     }, {
         xtype: 'formhelp',
         margin: {top: 5},
