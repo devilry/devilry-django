@@ -103,8 +103,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         }
     },
 
-    _loadPeriod: function(subject_id) {
-        this.getPeriodModel().load(subject_id, {
+    _loadPeriod: function(period_id) {
+        this.getPeriodModel().load(period_id, {
             scope: this,
             callback: function(record, operation) {
                 if(operation.success) {
