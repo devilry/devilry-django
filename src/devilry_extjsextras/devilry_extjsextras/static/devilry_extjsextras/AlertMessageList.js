@@ -11,7 +11,7 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     ],
     ui: 'transparentpanel',
     alias: 'widget.alertmessagelist',
-    cls: 'alertmessagelist',
+    cls: 'devilry_alertmessagelist',
     hidden: true,
 
     constructor: function() {

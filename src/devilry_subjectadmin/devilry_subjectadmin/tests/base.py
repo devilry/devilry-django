@@ -54,10 +54,10 @@ class RenameBasenodeTestMixin(object):
         window, short_name, long_name, savebutton = self._init_renametest()
         short_name.clear()
         short_name.send_keys('Renamed-shortname')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.alertmessagelist .alert-error')), 0)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_alertmessagelist .alert-error')), 0)
         savebutton.click()
-        self.waitForCssSelector('.alertmessagelist', within=window)
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.alertmessagelist .alert-error')), 1)
+        self.waitForCssSelector('.devilry_alertmessagelist', within=window)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_alertmessagelist .alert-error')), 1)
 
 class DeleteBasenodeTestMixin(object):
     def click_delete_button(self):

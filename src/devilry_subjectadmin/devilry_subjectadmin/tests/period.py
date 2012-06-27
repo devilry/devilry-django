@@ -17,14 +17,14 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
     def test_doesnotexists(self):
         self.login('uniadmin')
         self._browseToPeriod(100000)
-        self.waitForCssSelector('.alertmessagelist')
+        self.waitForCssSelector('.devilry_alertmessagelist')
         self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
 
     def test_doesnotexists_superadmin(self):
         self.testhelper.create_superuser('grandma')
         self.login('grandma')
         self._browseToPeriod(100000)
-        self.waitForCssSelector('.alertmessagelist')
+        self.waitForCssSelector('.devilry_alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
     def test_breadcrumb(self):
