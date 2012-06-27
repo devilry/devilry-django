@@ -74,15 +74,15 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this._loadPeriods();
     },
 
-    _setMenuLabels: function() {
-        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
-            something: this.subjectRecord.get('short_name')
-        });
+    _setDangerousActionsLabels: function() {
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: this.subjectRecord.get('short_name')
         });
-        this.getDeleteButton().setText(deleteLabel);
-        this.getRenameButton().setText(renameLabel);
+        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+            something: this.subjectRecord.get('short_name')
+        });
+        this.getRenameButton().setTitleText(renameLabel);
+        this.getDeleteButton().setTitleText(deleteLabel);
     },
 
     _loadPeriods: function() {
@@ -116,7 +116,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.setBreadcrumb(this.subjectRecord);
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
         this.getBasenodehierlocation().setLocation(this.subjectRecord);
-        this._setMenuLabels();
+        this._setDangerousActionsLabels();
     },
 
     _onRename: function() {

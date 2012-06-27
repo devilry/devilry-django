@@ -23,14 +23,12 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
 
 class RenameBasenodeTestMixin(object):
     def _init_renametest(self):
-        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
-        advancedButton.click()
-        self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton').click()
+        self.selenium.find_element_by_css_selector('#subjectRenameButton button').click()
         self.waitForCssSelector('.devilry_rename_basenode_window')
         window = self.selenium.find_element_by_css_selector('.devilry_rename_basenode_window')
         short_name = self._get_field('.devilry_rename_basenode_window', 'short_name')
         long_name = self._get_field('.devilry_rename_basenode_window', 'long_name')
-        savebutton = window.find_element_by_css_selector('.savebutton button')
+        savebutton = window.find_element_by_css_selector('.devilry_savebutton button')
         return window, short_name, long_name, savebutton
 
     def rename_test_helper(self, basenode):
@@ -63,9 +61,7 @@ class RenameBasenodeTestMixin(object):
 
 class DeleteBasenodeTestMixin(object):
     def click_delete_button(self):
-        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
-        advancedButton.click()
-        self.selenium.find_element_by_css_selector('#menubarAdvancedDeleteButton').click()
+        self.selenium.find_element_by_css_selector('#subjectDeleteButton button').click()
 
     def perform_delete(self):
         self.click_delete_button()

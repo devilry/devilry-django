@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
         'devilry_subjectadmin.view.ActionList',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.AdminsBox',
+        'devilry_extjsextras.SingleActionBox',
         'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
@@ -46,6 +47,33 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                         items: {
                             xtype: 'listofperiods'
                         }
+                    }, {
+                        xtype: 'panel',
+                        margin: {top: 40},
+                        itemId: 'dangerousactions',
+                        ui: 'inset-header-panel',
+                        title: gettext('Dangerous actions'),
+                        layout: 'anchor',
+                        defaults: {
+                            anchor: '100%',
+                            margin: {top: 10}
+                        },
+                        items: [{
+                            xtype: 'singleactionbox',
+                            margin: {top: 0},
+                            itemId: 'renameButton',
+                            id: 'subjectRenameButton',
+                            titleText: renameLabel,
+                            bodyHtml: gettext('Renaming a subject should not done without a certain amount of consideration. The name of a subject, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                            buttonText: gettext('Rename') + ' ...'
+                        }, {
+                            xtype: 'singleactionbox',
+                            itemId: 'deleteButton',
+                            id: 'subjectDeleteButton',
+                            titleText: deleteLabel,
+                            bodyHtml: gettext('Once you delete a subject, there is no going back. Only superusers can delete a non-empty subject.'),
+                            buttonText: gettext('Delete') + ' ...'
+                        }]
                     }]
                 }, {
                     xtype: 'container',
@@ -62,26 +90,6 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                         xtype: 'basenodehierlocation'
                     }]
                 }],
-            }],
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                padding: {left: 40, top: 1, bottom: 1, right: 40},
-                items: [{
-                    xtype: 'button',
-                    id: 'menubarAdvancedButton',
-                    text: gettext('Advanced'),
-                    scale: 'medium',
-                    menu: [{
-                        itemId: 'renameButton',
-                        id: 'menubarAdvancedRenameButton',
-                        text: renameLabel
-                    }, {
-                        itemId: 'deleteButton',
-                        id: 'menubarAdvancedDeleteButton',
-                        text: deleteLabel
-                    }]
-                }]
             }]
         });
         this.callParent(arguments);
