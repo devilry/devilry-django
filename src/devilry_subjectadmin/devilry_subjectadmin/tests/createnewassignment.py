@@ -96,7 +96,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_value('short_name', 'a1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self._click_createbutton()
-        self.waitForCssSelector('.devilry_alertmessagelist')
+        self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
 
     def test_success(self):

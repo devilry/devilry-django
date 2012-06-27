@@ -24,7 +24,7 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
         self.waitForCssSelector('.devilry_extjsextras_breadcrumb')
         def breadcrumbLoaded(breadcrumb):
             return expected_contains in breadcrumb.text
-        breadcrumb = self.selenium.find_element_by_css_selector('.devilry_breadcrumb')
+        breadcrumb = self.selenium.find_element_by_css_selector('.devilry_extjsextras_breadcrumb')
         self.waitFor(breadcrumb, breadcrumbLoaded)
         return re.split('\s*\/\s*', breadcrumb.text)
 
@@ -36,7 +36,7 @@ class RenameBasenodeTestMixin(object):
         window = self.selenium.find_element_by_css_selector('.devilry_rename_basenode_window')
         short_name = self._get_field('.devilry_rename_basenode_window', 'short_name')
         long_name = self._get_field('.devilry_rename_basenode_window', 'long_name')
-        savebutton = window.find_element_by_css_selector('.devilry_savebutton button')
+        savebutton = window.find_element_by_css_selector('.devilry_extjsextras_savebutton button')
         return window, short_name, long_name, savebutton
 
     def rename_test_helper(self, basenode):
@@ -62,10 +62,10 @@ class RenameBasenodeTestMixin(object):
         window, short_name, long_name, savebutton = self._init_renametest()
         short_name.clear()
         short_name.send_keys('Renamed-shortname')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_alertmessagelist .alert-error')), 0)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 0)
         savebutton.click()
-        self.waitForCssSelector('.devilry_alertmessagelist', within=window)
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_alertmessagelist .alert-error')), 1)
+        self.waitForCssSelector('.devilry_extjsextras_alertmessagelist', within=window)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 1)
 
 class DeleteBasenodeTestMixin(object):
     def click_delete_button(self):
