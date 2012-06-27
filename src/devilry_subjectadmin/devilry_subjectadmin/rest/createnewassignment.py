@@ -123,12 +123,15 @@ class RestCreateNewAssignmentForm(forms.Form):
                                              help_text='Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period. Ignored unless ``add_all_relatedstudents`` is true.')
 
 
+class RestCreateNewAssignmentResource(FormResource):
+    form = RestCreateNewAssignmentForm
+
+
 class RestCreateNewAssignment(SelfdocumentingMixin, View):
     """
     Simplifies creating and setting up new assignments.
     """
-    resource = FormResource
-    form = RestCreateNewAssignmentForm
+    resource = RestCreateNewAssignmentResource
     permissions = (IsAuthenticated,)
 
     def __init__(self):

@@ -19,7 +19,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def test_form_render(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
         self.assertTrue('Create new assignment' in self.selenium.page_source)
 
@@ -33,12 +33,12 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def test_invalid_period(self):
         self.browseTo('/@@create-new-assignment/1001')
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
         self.assertTrue('Period 1001 is not an active period.' in self.selenium.page_source)
 
     def test_form_render_advanced_fieldset(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
         self.assertTrue('Advanced options' in self.selenium.page_source)
 
         self.assertFalse('Anonymous?' in self.selenium.page_source)
@@ -71,7 +71,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def test_form_createbutton(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
         createbutton = self.selenium.find_element_by_css_selector('.createbutton button')
         self.assertFalse(createbutton.is_enabled())
@@ -91,7 +91,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
     def test_duplicate(self):
         self.testhelper.add_to_path('uni;duck1100.2012h.a1')
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
         self._set_value('long_name', 'A1')
         self._set_value('short_name', 'a1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
@@ -101,21 +101,20 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def test_success(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.createnewassignmentform')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
         self._set_value('long_name', 'Test')
         self._set_value('short_name', 'sometest')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self._click_createbutton()
 
-        self.waitForCssSelector('.createnewassignment-successpanel')
+        self.waitForCssSelector('.devilry_subjectadmin_createnewassignment_successpanel')
         links = self.selenium.find_elements_by_css_selector('.actionlist a')
         self.assertEquals(len(links), 2)
-        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8081/devilry_subjectadmin/#/duck1100/2012h/sometest/')
-        self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8081/devilry_subjectadmin/#/@@create-new-assignment/1')
-
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.long_name, 'Test')
+        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8081/devilry_subjectadmin/#/assignment/{0}/'.format(created.id))
+        self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8081/devilry_subjectadmin/#/@@create-new-assignment/{0}'.format(self.period_id))
         return created
 
 
