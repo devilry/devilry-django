@@ -73,7 +73,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
     },
     onLoadAssignmentFailure: function(operation) {
-        console.log('LOAD ERROR', operation);
         this.onLoadFailure(operation);
     },
 

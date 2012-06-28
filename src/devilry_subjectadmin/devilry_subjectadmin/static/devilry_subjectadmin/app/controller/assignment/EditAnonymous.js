@@ -3,6 +3,9 @@
  */
 Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     extend: 'Ext.app.Controller',
+    mixins: {
+        'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    },
 
     requires: [
         'devilry_extjsextras.form.ErrorUtils',
@@ -17,6 +20,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     controllers: [
         'assignment.Overview'
     ],
+
+    models: ['Assignment'],
 
     refs: [{
         ref: 'editAnonymous',
@@ -59,13 +64,16 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        console.log(assignmentRecord.data);
         this.getAnonymousWidget().enable();
         this._updateAnonymousWidget();
     },
 
     _onRenderWindow: function() {
         this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
+        this.getEditAnonymous().mon(this.getAssignmentModel().proxy, {
+            scope: this,
+            exception: this._onProxyError
+        });
     },
 
     _close: function() {
@@ -73,6 +81,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     },
 
     _onSave: function() {
+        this.getAlertMessageList().removeAll();
         var form = this.getFormPanel().getForm();
         var oldValue = this.assignmentRecord.get('anonymous');
         var newValue = form.getValues().anonymous;
@@ -82,8 +91,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             this._getMaskElement().mask(gettext('Saving ...'));
             assignmentRecord.save({
                 scope: this,
-                success: this._onSaveSuccess,
-                failure: this._onSaveFailure
+                success: this._onSaveSuccess
             });
         } else {
             this._close();
@@ -100,9 +108,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         this._updateAnonymousWidget();
     },
 
-    _onSaveFailure: function(record, operation) {
+    _onProxyError: function(proxy, response, operation) {
         this._getMaskElement().unmask();
-        console.log('ERROR', operation);
+        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel,
+            response, operation);
     },
 
     _onEdit: function() {
