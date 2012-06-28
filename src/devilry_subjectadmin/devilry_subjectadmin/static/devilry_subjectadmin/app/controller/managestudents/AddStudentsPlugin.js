@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             xtype: 'button',
             itemId: 'addstudents',
             iconCls: 'icon-add-24',
-            text: dtranslate('devilry_subjectadmin.managestudents.addstudents')
+            text: gettext('Add students')
         });
         //this._onAddstudents();
     },

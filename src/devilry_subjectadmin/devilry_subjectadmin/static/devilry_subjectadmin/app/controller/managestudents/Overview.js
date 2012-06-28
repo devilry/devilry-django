@@ -348,15 +348,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
     getTranslatedGroupUnit: function(pluralize) {
         var translatekey;
-        if(this.isProjectAssignment()) {
-            translatekey = 'devilry_subjectadmin.groupunit.projectassignment';
-        } else {
-            translatekey = 'devilry_subjectadmin.groupunit.not_projectassignment';
-        }
+        var count = 0;
         if(pluralize) {
-            translatekey += '_plural';
+            count = 10;
         }
-        return dtranslate(translatekey);
+        if(this.isProjectAssignment()) {
+            return npgettext('groupunit', 'project group', 'project groups', count);
+        } else {
+            return npgettext('groupunit', 'student', 'students', count);
+        }
     },
 
     /**

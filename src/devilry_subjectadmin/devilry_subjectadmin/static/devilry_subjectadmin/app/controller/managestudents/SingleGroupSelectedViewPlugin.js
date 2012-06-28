@@ -79,7 +79,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _getMultiSelectWhy: function() {
-        return Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselectwhy')).apply({
+        return Ext.create('Ext.XTemplate', gettext('Selecting multiple {groupunit_plural} enables you to change examiners and tags on multiple students, and organize students in project groups.')).apply({
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });
     },

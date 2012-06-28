@@ -41,7 +41,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselect.topmessage'));
+        var tpl = Ext.create('Ext.XTemplate', gettext('{numselected} {groupunit_plural} selected.'));
         return tpl.apply({
             numselected: this.groupRecords.length,
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)

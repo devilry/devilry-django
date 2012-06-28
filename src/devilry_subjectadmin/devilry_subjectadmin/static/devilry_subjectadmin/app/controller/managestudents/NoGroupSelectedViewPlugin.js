@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.nogroupselected.topmessage'));
+        var tpl = Ext.create('Ext.XTemplate', gettext('No {groupunit_plural} selected. Choose one or more {groupunit_plural} to gain access to settings, such as examiners and tags.'));
         return tpl.apply({
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });
