@@ -16,7 +16,6 @@ class RedirectToFrontpage(View):
 urlpatterns = patterns('',
                        # Custom urls for this project
                        (r'^$', RedirectToFrontpage.as_view()),
-                       (r'^corerest/', include('devilry.apps.corerest.urls')),
                        (r'^devilry_subjectadmin/', include('devilry_subjectadmin.urls')),
 
                        # Add the default Devilry urls
