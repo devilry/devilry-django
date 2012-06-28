@@ -41,11 +41,13 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 itemId: 'body',
                 cls: 'bootstrap',
                 padding: {top: 3},
-                columnWidth: .76,
+                columnWidth: 1,
                 html: ''
             }, {
                 xtype: 'button',
-                columnWidth: .24,
+                scale: 'medium',
+                margin: {left: 15},
+                width: 60,
                 text: this.buttonText
             }]
         });
