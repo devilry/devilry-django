@@ -76,6 +76,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             enter: this._onSave,
             scope: this
         });
+        Ext.defer(function() {
+            this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
+        }, 200, this);
     },
 
     _onSave: function() {
