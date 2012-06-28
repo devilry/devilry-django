@@ -61,12 +61,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         this.loadAssignment(this.assignment_id);
     },
 
-    getPath: function() {
+    _getPath: function() {
         return this.getPathFromBreadcrumb(this.assignmentRecord);
     },
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
+        this.application.setTitle(this._getPath());
         this.setBreadcrumb(this.assignmentRecord);
         this.getActions().setTitle(record.get('long_name'));
         this._setDangerousActionsLabels();
@@ -77,7 +78,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     },
 
     _setDangerousActionsLabels: function() {
-        var assignmentPath = this.getPath();
+        var assignmentPath = this._getPath();
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: assignmentPath
         });
@@ -98,7 +99,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         }).show();
     },
     _onDelete: function() {
-        var short_description = this.getPath();
+        var short_description = this._getPath();
         devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog.showIfCanDelete({
             basenodeRecord: this.assignmentRecord,
             short_description: short_description,
