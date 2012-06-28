@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'admins',  type: 'auto'},
         {name: 'breadcrumb',  type: 'auto'},
         {name: 'can_delete',  type: 'bool'},
+        {name: 'anonymous',  type: 'bool'},
         {name: 'etag',  type: 'string'},
         {name: 'first_deadline',  type: 'date'},
         {name: 'id', type: 'auto'},

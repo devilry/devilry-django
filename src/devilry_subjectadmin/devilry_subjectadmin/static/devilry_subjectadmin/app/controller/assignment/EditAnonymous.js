@@ -59,6 +59,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
+        console.log(assignmentRecord.data);
         this.getAnonymousWidget().enable();
         this._updateAnonymousWidget();
     },
@@ -78,7 +79,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         if(oldValue != newValue) {
             var assignmentRecord = this.assignmentRecord;
             form.updateRecord(assignmentRecord);
-            this._getMaskElement().mask(dtranslate('devilry_extjsextras.saving'));
+            this._getMaskElement().mask(gettext('Saving ...'));
             assignmentRecord.save({
                 scope: this,
                 success: this._onSaveSuccess,
@@ -101,15 +102,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onSaveFailure: function(record, operation) {
         this._getMaskElement().unmask();
-        var errorhandler = Ext.create('devilry_extjsextras.RestfulApiProxyErrorHandler');
-        errorhandler.addErrors(operation);
-        this.getAlertMessageList().addMany(errorhandler.errormessages, 'error');
-        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(
-            this.getFormPanel(), errorhandler.fielderrors, this.getAlertMessageList()
-        );
-        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(
-            this.getFormPanel(), errorhandler.fielderrors
-        );
+        console.log('ERROR', operation);
     },
 
     _onEdit: function() {
@@ -123,11 +116,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         var title, body;
 
         if(anonymous) {
-            title = dtranslate('devilry_subjectadmin.assignment.is_anonymous.title');
-            body = dtranslate('devilry_subjectadmin.assignment.is_anonymous.body');
+            title = gettext('Anonymous');
+            body = gettext('Examiners and students can <strong>not</strong> see each other and they can <strong>not</strong> communicate.');
         } else {
-            title = dtranslate('devilry_subjectadmin.assignment.not_anonymous.title');
-            body = dtranslate('devilry_subjectadmin.assignment.not_anonymous.body');
+            title = gettext('Not anonymous');
+            body = gettext('Examiners and students can see each other and communicate.');
         }
         var anonymous = this.assignmentRecord.get('anonymous');
         this.getAnonymousWidget().updateTitle(title);

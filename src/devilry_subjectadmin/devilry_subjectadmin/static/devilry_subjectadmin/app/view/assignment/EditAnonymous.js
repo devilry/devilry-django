@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
     extend: 'Ext.window.Window',
     alias: 'widget.editanonymous',
-    cls: 'editanonymous bootstrap',
+    cls: 'devilry_editanonymous bootstrap',
     requires: [
         'devilry_extjsextras.SaveButton'
     ],
@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
             height: 270,
             closable: false,
             modal: true,
-            title: dtranslate('devilry_subjectadmin.assignment.anonymous.label'),
+            title: gettext('Anonymous'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
@@ -28,13 +28,13 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
                 },
                 items: [{
                     xtype: 'box',
-                    html: dtranslate('devilry_subjectadmin.assignment.anonymous.help'),
+                    html: gettext('For <strong>exams</strong>, this should normally be <em>checked</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'),
                     margin: {bottom: 20}
                 }, {
                     xtype: 'alertmessagelist'
                 }, {
                     xtype: 'checkbox',
-                    boxLabel: dtranslate('devilry_subjectadmin.assignment.anonymous.label'),
+                    boxLabel: gettext('Anonymous'),
                     name: 'anonymous',
                     uncheckedValue: false,
                     inputValue: true,
