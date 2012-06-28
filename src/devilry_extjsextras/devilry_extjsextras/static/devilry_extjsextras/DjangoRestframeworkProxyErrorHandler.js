@@ -29,8 +29,7 @@ Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
 
     /**
      * Add errors from an extjs response object (such as the one given to proxy
-     * exception events) on the format produced by the python function
-    * ``devilry.rest.errorhandlers.create_errordict``.
+     * exception events).
      */
     addRestErrorsFromResponse: function(response) {
         var responseData = this._decodeResponseTextJSON(response);
