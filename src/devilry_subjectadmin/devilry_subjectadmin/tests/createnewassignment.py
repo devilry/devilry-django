@@ -24,11 +24,12 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertTrue('Create new assignment' in self.selenium.page_source)
 
         self.assertTrue('Long name' in self.selenium.page_source)
-        self.assertTrue('Example of assignment long name' in self.selenium.page_source)
+        self.assertTrue('Example: Obligatory assignment one' in self.selenium.page_source)
         self.assertTrue('Choose a descriptive name for your assignment' in self.selenium.page_source)
 
-        self.assertTrue('Choose a short name with at most 20 letters for your assignment' in self.selenium.page_source)
         self.assertTrue('Short name' in self.selenium.page_source)
+        self.assertTrue('Example: oblig-1' in self.selenium.page_source)
+        self.assertTrue('Choose a short name with at most 20 letters for your assignment' in self.selenium.page_source)
         self.assertTrue('How do students add deliveries?' in self.selenium.page_source)
 
     def test_invalid_period(self):
