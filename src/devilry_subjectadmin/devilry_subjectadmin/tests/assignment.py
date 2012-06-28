@@ -31,41 +31,41 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
 
     def test_shortcuts_render(self):
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
         self.login('week2admin')
-        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.assertTrue('Manage students' in self.selenium.page_source)
         self.assertTrue('Manage deadlines' in self.selenium.page_source)
 
     def test_title(self):
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
         self.login('week2admin')
-        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        self.assertEquals(self.selenium.title, 'duck1100.period1.week2 - Devilry')
+        self.assertEquals(self.selenium.title, 'sub.period1.week2 - Devilry')
 
     def test_notpublished(self):
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
         self.login('week2admin')
-        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
         self.waitForText('>Not published')
 
     def test_published(self):
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1:begins(-2)'],
                             assignments=['week2:admin(week2admin)'])
         self.login('week2admin')
-        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
         self.waitForText('>Published')
 
 
@@ -75,8 +75,8 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
 
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
-                            subjects=['duck1010'],
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['sub'],
                             periods=['period1:begins(-2):admin(p1admin)'],
                             assignments=['week1:admin(weekadmin)'])
 
@@ -85,51 +85,54 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
 
     def test_rename(self):
         self.login('weekadmin')
-        self._browseToAssignment(self.testhelper.duck1010_period1_week1.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        self.rename_test_helper(self.testhelper.duck1010_period1_week1)
+        self.rename_test_helper(self.testhelper.sub_period1_week1)
 
     def test_rename_failure(self):
         self.login('weekadmin')
-        self._browseToAssignment(self.testhelper.duck1010_period1_week1.id)
+        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.rename_test_failure_helper()
 
-    #def test_delete(self):
-        #self.testhelper.add(nodes='uni',
-                            #subjects=['duck1100'],
-                            #periods=['period1:begins(-2):admin(p1admin)'],
-                            #assignments=['willbedeleted'])
-        #self.login('p1admin')
-        #self._browseToAssignment(self.testhelper.willbedeleted.id)
-        #self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        #assignmenturl = self.selenium.current_url
-        #self.perform_delete()
-        #self.waitFor(self.selenium, lambda s: s.current_url != assignmenturl) # Will time out and fail unless the page is changed after delete
-        #self.assertEquals(Assignment.objects.filter(id=self.testhelper.willbedeleted.id).count(), 0)
+    def test_delete(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['period1:begins(-2):admin(p1admin)'],
+                            assignments=['willbedeleted'])
+        self.login('p1admin')
+        self._browseToAssignment(self.testhelper.sub_period1_willbedeleted.id)
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
+        assignmenturl = self.selenium.current_url
+        self.perform_delete()
+        self.waitFor(self.selenium, lambda s: s.current_url != assignmenturl) # Will time out and fail unless the page is changed after delete
+        self.assertEquals(Assignment.objects.filter(id=self.testhelper.sub_period1_willbedeleted.id).count(), 0)
 
-    #def test_delete_notparentadmin(self):
-        #self.testhelper.add(nodes='uni',
-                            #assignments=['willbedeleted:admin(willbedeletedadm)'])
-        #self.login('willbedeletedadm')
-        #self._browseToAssignment(self.testhelper.willbedeleted.id)
-        #self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        #self.click_delete_button()
-        #self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+    def test_delete_notparentadmin(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['period1:begins(-2)'],
+                            assignments=['willbedeleted:admin(willbedeletedadm)'])
+        self.login('willbedeletedadm')
+        self._browseToAssignment(self.testhelper.sub_period1_willbedeleted.id)
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
+        self.click_delete_button()
+        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
-    #def test_delete_not_empty(self):
-        #self.login('uniadmin')
-        #self._browseToAssignment(self.testhelper.duck1010_period1_week1.id)
-        #self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        #self.click_delete_button()
-        #self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+    def test_delete_not_empty(self):
+        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(goodStud1)')
+        self.login('uniadmin')
+        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
+        self.click_delete_button()
+        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
 
 class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1:begins(-3)'],
                             assignments=['week1:admin(week1admin)'])
         self.login('week1admin')
@@ -161,7 +164,7 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self._set_datetime(isoday_yesterday, '12:00')
         self.savebutton.click()
         self.waitForText('Publishing time was {isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
-        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
+        week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
         self.assertEquals(week1.publishing_time.date(), yesterday.date())
 
     def test_editpublishingtime_notpublished(self):
@@ -170,7 +173,7 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self._set_datetime(isoday_tomorrow, '12:00')
         self.savebutton.click()
         self.waitForText('Will be published {isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
-        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
+        week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
         self.assertEquals(week1.publishing_time.date(), tomorrow.date())
 
     def test_cancel(self):
@@ -189,14 +192,14 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
+                            subjects=['sub'],
                             periods=['period1:begins(-3)'],
                             assignments=['week1:admin(week1admin)'])
         self.login('week1admin')
 
-        self.week1 = self.testhelper.duck1100_period1_week1
+        self.week1 = self.testhelper.sub_period1_week1
 
-        self.browseTo('/assignment/{0}/'.format(self.testhelper.duck1100_period1_week1.id))
+        self.browseTo('/assignment/{0}/'.format(self.testhelper.sub_period1_week1.id))
         self.waitForCssSelector('.devilry_subjectadmin_editanonymous_widget button')
         button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous_widget button')
         button.click()
