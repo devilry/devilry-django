@@ -31,7 +31,6 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.extjshelpers',
                   'devilry.apps.extjsux',
                   'devilry.apps.developertools',
-                  'devilry.apps.i18n',
                   'devilry.apps.jsfiledownload',
 
                   'devilry.apps.approved_gradeeditor',
@@ -56,12 +55,10 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.media",
                                "django.core.context_processors.debug",
                                'devilry.apps.theme.templatecontext.template_variables',
-                               'devilry.apps.i18n.templatecontext.template_variables',
                                'extjs4.context_processors.extjs4')
 
 
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'django.contrib.sessions.middleware.SessionMiddleware',
                       'django.contrib.auth.middleware.AuthenticationMiddleware',
-                      'django.middleware.transaction.TransactionMiddleware',
-                      'devilry.apps.i18n.middleware.LocaleMiddleware']
+                      'django.middleware.transaction.TransactionMiddleware']

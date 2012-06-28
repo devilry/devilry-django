@@ -4,7 +4,6 @@
     core.models
     userobj
     core.deliverystore
-    i18n
 
     testsuite
     testhelper
@@ -59,15 +58,6 @@ Plugin development
 
 * **The basics:** :ref:`plugins`
 * **Grade editors:** :ref:`Overview <apps.gradeeditors>`
-
-
-Translating Devilry
-######################################################################
-
-* :ref:`i18n-gui`
-* :ref:`i18n-geek`
-* :ref:`i18n-sysadmin`
-* :ref:`i18n-middleware`
 
 
 Simplified API
