@@ -12,6 +12,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         'assignment.EditPublishingTimeWidget'
     ],
 
+    requires: [
+        'Ext.util.KeyNav'
+    ],
+
     models: ['Assignment'],
     controllers: [
         'assignment.Overview'
@@ -41,8 +45,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editpublishingtime': {
-                render: this._onRenderWindow
+            'editpublishingtime form': {
+                render: this._onRenderForm
             },
             'editpublishingtime savebutton': {
                 click: this._onSave
@@ -62,11 +66,15 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         this._updatePublishingTimeWidget();
     },
 
-    _onRenderWindow: function() {
+    _onRenderForm: function() {
         this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
         this.getEditPublishingTime().mon(this.getAssignmentModel().proxy, {
             scope: this,
             exception: this._onProxyError
+        });
+        this.getFormPanel().keyNav = Ext.create('Ext.util.KeyNav', this.getFormPanel().el, {
+            enter: this._onSave,
+            scope: this
         });
     },
 
