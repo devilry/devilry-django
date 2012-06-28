@@ -36,4 +36,4 @@ class ValidationErrorResponse(ErrorResponse):
             del message_dict['__all__'] # We assume __all__ is duplicated in messages
         super(ValidationErrorResponse, self).__init__(status.HTTP_400_BAD_REQUEST,
                                                    {'field_errors': message_dict,
-                                                    'messages': messages})
+                                                    'errors': messages})

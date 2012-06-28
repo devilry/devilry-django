@@ -22,8 +22,8 @@ Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
         if(responseData.detail) {
             this.errormessages.push(responseData.detail);
         }
-        if(responseData.messages) {
-            this.errormessages = this.errormessages.concat(responseData.messages);
+        if(responseData.errors) {
+            this.errormessages = this.errormessages.concat(responseData.errors);
         }
     },
 
