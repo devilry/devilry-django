@@ -31,7 +31,8 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent', 'first_deadline']))
+                               'scale_points_percent', 'first_deadline',
+                               'anonymous']))
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
@@ -60,6 +61,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
+                                            'anonymous': True,
                                             'publishing_time': isoformat_relativetime(days=2),
                                             'scale_points_percent': 100,
                                             'delivery_types': 0,
@@ -69,11 +71,13 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(content['scale_points_percent'], 100)
         self.assertEquals(content['long_name'], 'Test')
         self.assertEquals(content['short_name'], 'test')
+        self.assertEquals(content['anonymous'], True)
         self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod.id)
         created = Assignment.objects.get(id=content['id'])
         self.assertEquals(created.short_name, 'test')
         self.assertEquals(created.long_name, 'Test')
         self.assertEquals(created.delivery_types, 0)
+        self.assertEquals(created.anonymous, True)
         self.assertEquals(created.scale_points_percent, 100)
         self.assertEquals(created.parentnode.id, self.testhelper.duck2000_someperiod.id)
         admins = created.admins.all()
@@ -149,7 +153,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
                                'scale_points_percent', 'first_deadline',
-                               'breadcrumb']))
+                               'breadcrumb', 'anonymous']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -220,7 +224,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
                                'scale_points_percent', 'first_deadline',
-                               'breadcrumb']))
+                               'breadcrumb', 'anonymous']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
