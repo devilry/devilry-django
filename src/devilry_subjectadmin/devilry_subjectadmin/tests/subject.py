@@ -102,11 +102,6 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.assertIn('Once you delete a subject, there is no going back', self.selenium.page_source)
         self.assertIn('Renaming a subject should not done without a certain amount of consideration', self.selenium.page_source)
 
-    def _get_field(self, containercls, fieldname):
-        field = self.selenium.find_element_by_css_selector('{0} input[name={1}]'.format(containercls, fieldname))
-        #field.send_keys(value)
-        return field
-
     def test_rename(self):
         self.login('duck1010adm1')
         self._browseToSubject(self.testhelper.duck1010.id)

@@ -32,6 +32,10 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
 class RenameBasenodeTestMixin(object):
     renamebutton_id = None
 
+    def _get_field(self, containercls, fieldname):
+        field = self.selenium.find_element_by_css_selector('{0} input[name={1}]'.format(containercls, fieldname))
+        return field
+
     def _init_renametest(self):
         self.selenium.find_element_by_css_selector('#{0} button'.format(self.renamebutton_id)).click()
         self.waitForCssSelector('.devilry_rename_basenode_window')
