@@ -15,7 +15,8 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'parentnode', type: 'auto'},
         {name: 'publishing_time',  type: 'date'},
         {name: 'short_name',  type: 'string'},
-        {name: 'scale_points_percent',  type: 'int'}
+        {name: 'scale_points_percent',  type: 'int'},
+        {name: 'delivery_types',  type: 'int'}
     ],
 
     proxy: {
