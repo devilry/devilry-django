@@ -30,8 +30,10 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
 
 
 class RenameBasenodeTestMixin(object):
+    renamebutton_id = None
+
     def _init_renametest(self):
-        self.selenium.find_element_by_css_selector('#subjectRenameButton button').click()
+        self.selenium.find_element_by_css_selector('#{0} button'.format(self.renamebutton_id)).click()
         self.waitForCssSelector('.devilry_rename_basenode_window')
         window = self.selenium.find_element_by_css_selector('.devilry_rename_basenode_window')
         short_name = self._get_field('.devilry_rename_basenode_window', 'short_name')
@@ -68,8 +70,10 @@ class RenameBasenodeTestMixin(object):
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 1)
 
 class DeleteBasenodeTestMixin(object):
+    deletebutton_id = None
+
     def click_delete_button(self):
-        self.selenium.find_element_by_css_selector('#subjectDeleteButton button').click()
+        self.selenium.find_element_by_css_selector('#{0} button'.format(self.deletebutton_id)).click()
 
     def perform_delete(self):
         self.click_delete_button()

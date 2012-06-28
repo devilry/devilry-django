@@ -42,6 +42,9 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
 
 
 class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
+    renamebutton_id = 'subjectRenameButton'
+    deletebutton_id = 'subjectDeleteButton'
+
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin,anotheruniadmin)',
