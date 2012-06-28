@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
     extend: 'Ext.window.Window',
     alias: 'widget.editpublishingtime',
-    cls: 'editpublishingtime bootstrap',
+    cls: 'devilry_subjectadmin_editpublishingtime bootstrap',
     requires: [
         'devilry_extjsextras.SaveButton'
     ],
@@ -12,11 +12,11 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
-            width: 330,
-            height: 270,
+            width: 460,
+            height: 290,
             closable: false,
             modal: true,
-            title: dtranslate('devilry_subjectadmin.assignment.publishing_time.label'),
+            title: gettext('Publishing time'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
@@ -27,15 +27,17 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
                     anchor: '100%'
                 },
                 items: [{
-                    xtype: 'box',
-                    html: dtranslate('devilry_subjectadmin.assignment.publishing_time.edithelp'),
-                    margin: {bottom: 20}
-                }, {
                     xtype: 'alertmessagelist'
                 }, {
+                    xtype: 'box',
+                    tpl: '<p>{help}</p>',
+                    data: {
+                        help: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment as well before they can add any deliveries. ')
+                    },
+                    margin: {bottom: 10}
+                }, {
                     xtype: 'devilry_extjsextras-datetimefield',
-                    name: 'publishing_time',
-                    margin: {top: 20}
+                    name: 'publishing_time'
                 }],
                 buttons: ['->', {
                     xtype: 'cancelbutton'

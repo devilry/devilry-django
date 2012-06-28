@@ -6,5 +6,5 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
     extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.editpublishingtime-widget',
-    cls: 'editpublishingtime-widget'
+    cls: 'devilry_subjectadmin_editpublishingtime_widget'
 });

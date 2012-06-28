@@ -54,66 +54,64 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
         #self.waitForText('Published')
 
 
-#class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
-    #def setUp(self):
-        #self.testhelper = TestHelper()
-        #self.testhelper.create_superuser('grandma')
-        #self.login('grandma')
-        #self.testhelper.add(nodes='uni',
-                            #subjects=['duck1100'],
-                            #periods=['period1:begins(-3)'],
-                            #assignments=['week1'])
+class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.create_superuser('grandma')
+        self.login('grandma')
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['period1:begins(-3)'],
+                            assignments=['week1'])
 
-        #self.browseTo('/duck1100/period1/week1/')
-        #self.waitForCssSelector('.editpublishingtime-widget button')
-        #button = self.selenium.find_element_by_css_selector('.editpublishingtime-widget button')
-        #button.click()
-        #self.waitForCssSelector('.editpublishingtime')
+        self.browseTo('/assignment/1/')
+        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget button')
+        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime_widget button')
+        button.click()
+        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime')
 
-        #editpublishingtime_window = self.selenium.find_element_by_css_selector('.editpublishingtime')
-        #self.datefield = editpublishingtime_window.find_element_by_css_selector('.themebase-datefield input')
-        #self.timefield = editpublishingtime_window.find_element_by_css_selector('.themebase-timefield input')
-        #self.savebutton = editpublishingtime_window.find_element_by_css_selector('.savebutton button')
-        #self.cancelbutton = editpublishingtime_window.find_element_by_css_selector('.cancelbutton')
-        #self.editpublishingtime_window = editpublishingtime_window
+        editpublishingtime_window = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime')
+        self.datefield = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_datefield input')
+        self.timefield = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_timefield input')
+        self.savebutton = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_savebutton button')
+        self.cancelbutton = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_cancelbutton')
+        self.editpublishingtime_window = editpublishingtime_window
 
-    #def _set_datetime(self, date, time):
-        #self.datefield.clear()
-        #self.timefield.clear()
-        #self.datefield.send_keys(date)
-        #self.timefield.send_keys(time)
+    def _set_datetime(self, date, time):
+        self.datefield.clear()
+        self.timefield.clear()
+        self.datefield.send_keys(date)
+        self.timefield.send_keys(time)
 
-    #def test_editpublishingtime(self):
-        #self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.selenium.page_source)
-        #self.assertTrue('subjectadmin.assignment.publishing_time.edithelp' in self.selenium.page_source)
-        #yesterday = datetime.now() - timedelta(days=1)
-        #isoday_yesterday = yesterday.date().isoformat()
-        #self._set_datetime(isoday_yesterday, '12:00')
-        #self.savebutton.click()
-        #self.waitForText('{isoday_yesterday} 12:00 is published'.format(**vars())) # If this times out, it has not been updated
-        #week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
-        #self.assertEquals(week1.publishing_time.date(), yesterday.date())
+    def test_editpublishingtime(self):
+        self.assertTrue('Published' in self.selenium.page_source)
+        self.assertTrue('Choose a time when time when students will be able to start adding deliveries on the assignment' in self.selenium.page_source)
+        yesterday = datetime.now() - timedelta(days=1)
+        isoday_yesterday = yesterday.date().isoformat()
+        self._set_datetime(isoday_yesterday, '12:00')
+        self.savebutton.click()
+        self.waitForText('Publishing time was {isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
+        self.assertEquals(week1.publishing_time.date(), yesterday.date())
 
-    #def test_editpublishingtime_notpublished(self):
-        #self.assertTrue('subjectadmin.assignment.publishing_time.label' in self.selenium.page_source)
-        #self.assertTrue('subjectadmin.assignment.publishing_time.edithelp' in self.selenium.page_source)
-        #tomorrow = datetime.now() + timedelta(days=1)
-        #isoday_tomorrow = tomorrow.date().isoformat()
-        #self._set_datetime(isoday_tomorrow, '12:00')
-        #self.savebutton.click()
-        #self.waitForText('{isoday_tomorrow} 12:00 not published'.format(**vars())) # If this times out, it has not been updated
-        #week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
-        #self.assertEquals(week1.publishing_time.date(), tomorrow.date())
+    def test_editpublishingtime_notpublished(self):
+        tomorrow = datetime.now() + timedelta(days=1)
+        isoday_tomorrow = tomorrow.date().isoformat()
+        self._set_datetime(isoday_tomorrow, '12:00')
+        self.savebutton.click()
+        self.waitForText('Will be published {isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.duck1100_period1_week1.pk)
+        self.assertEquals(week1.publishing_time.date(), tomorrow.date())
 
-    #def test_cancel(self):
-        #self.failIfCssSelectorFound(self.editpublishingtime_window, '.x-tool-close')  # Make sure window does not have closable set to true
-        #self.cancelbutton.click()
-        #self.assertFalse('.editpublishingtime' in self.selenium.page_source)
+    def test_cancel(self):
+        self.failIfCssSelectorFound(self.editpublishingtime_window, '.x-tool-close')  # Make sure window does not have closable set to true
+        self.cancelbutton.click()
+        self.assertFalse('.devilry_subjectadmin_editpublishingtime' in self.selenium.page_source)
 
-    #def test_editpublishingtime_errorhandling(self):
-        #self._set_datetime('2000-02-01', '12:00')
-        #self.savebutton.click()
-        #self.waitForText("Publishing time must be within it's period")
+    def test_editpublishingtime_errorhandling(self):
+        self._set_datetime('2000-02-01', '12:00')
+        self.savebutton.click()
+        self.waitForText("The publishing time, 2000-02-01 12:00:00, is invalid")
 
 
 class TestEditAnonymous(SubjectAdminSeleniumTestCase):
