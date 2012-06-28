@@ -47,11 +47,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
 
     stores: [
-        'Assignments',
         'RelatedStudents',
         'RelatedExaminers',
         'Groups'
     ],
+
+    models: ['Assignment'],
 
 
     /**
