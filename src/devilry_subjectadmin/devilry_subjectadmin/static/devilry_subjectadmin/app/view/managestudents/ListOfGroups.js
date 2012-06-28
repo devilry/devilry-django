@@ -48,12 +48,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
 
     initComponent: function() {
-        this.approvedText = dtranslate('devilry_extjsextras.passing_grade');
-        this.notApprovedText = dtranslate('devilry_extjsextras.not_passing_grade');
-        this.openText = dtranslate('devilry_extjsextras.open');
-        this.closedText = dtranslate('devilry_extjsextras.closed');
-        this.deliveriesText = dtranslate('devilry_extjsextras.deliveries');
-        this.deliveryText = dtranslate('devilry_extjsextras.delivery');
+        this.approvedText = pgettext('group', 'Passed');
+        this.notApprovedText = pgettext('group', 'Failed');
+        this.openText = pgettext('group', 'Open');
+        this.closedText = pgettext('group', 'Closed');
+        this.deliveriesText = gettext('Deliveries');
+        this.deliveryText = gettext('Delivery');
 
         this.col1Template = Ext.create('Ext.XTemplate', this.col1TemplateString);
         this.col2Template = Ext.create('Ext.XTemplate', this.col2TemplateString);
@@ -124,7 +124,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     getUsernameDivContent: function(record) {
         var students = record.get('students');
         if(students.length == 0) {
-            return dtranslate('devilry_subjectadmin.managestudents.group-have-no-students');
+            return gettext('Group have no students');
         }
         var firstStudent = students[0];
         return firstStudent.student__username;

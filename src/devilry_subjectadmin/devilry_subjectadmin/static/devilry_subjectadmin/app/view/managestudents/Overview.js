@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 items: [{
                     xtype: 'button',
                     itemId: 'selectall',
-                    text: dtranslate('devilry_extjsextras.selectall')
+                    text: gettext('Select all')
                 }, {
                     xtype: 'combobox',
                     itemId: 'sortby',
@@ -77,7 +77,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                     xtype: 'button',
                     text: 'Options',
                     menu: [{
-                        text: dtranslate('devilry_subjectadmin.managestudents.make_admins_examiner'),
+                        text: gettext('Administrators are examiners on all'),
                         checked: false
                     }]
                 }, {
@@ -85,7 +85,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                     itemId: 'search',
                     margin: {left: 10},
                     width: 200,
-                    emptyText: dtranslate('devilry_subjectadmin.managestudents.search_emptytext')
+                    emptyText: gettext('Search for students ...')
                 }]
             }],
             items: [{

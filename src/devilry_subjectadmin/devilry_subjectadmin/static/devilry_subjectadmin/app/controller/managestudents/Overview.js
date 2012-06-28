@@ -110,7 +110,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.subject_shortname = this.getOverview().subject_shortname;
         this.period_shortname = this.getOverview().period_shortname;
         this.assignment_shortname = this.getOverview().assignment_shortname;
-        //this.getOverview().getEl().mask(dtranslate('devilry_extjsextras.loading'));
         this.loadAssignment();
     },
 
@@ -336,7 +335,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         if(Ext.isMac) {
             shortcutkey = 'CMD';
         }
-        var tpl = Ext.create('Ext.XTemplate', dtranslate('devilry_subjectadmin.managestudents.multiselecthowto'));
+        var tpl = Ext.create('Ext.XTemplate', gettext('Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'));
         return tpl.apply({
             shortcutkey: shortcutkey,
             groupunit_plural: this.getTranslatedGroupUnit(true)
