@@ -117,7 +117,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
         if(anonymous) {
             title = gettext('Anonymous');
-            body = gettext('Examiners and students can <strong>not</strong> see each other and they can <strong>not</strong> communicate.');
+            body = gettext('Examiners and students can not see each other and they can not communicate.');
         } else {
             title = gettext('Not anonymous');
             body = gettext('Examiners and students can see each other and communicate.');

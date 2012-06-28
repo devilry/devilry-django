@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
     extend: 'Ext.window.Window',
     alias: 'widget.editanonymous',
-    cls: 'devilry_editanonymous bootstrap',
+    cls: 'devilry_subjectadmin_editanonymous bootstrap',
     requires: [
         'devilry_extjsextras.SaveButton'
     ],
