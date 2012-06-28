@@ -1,8 +1,0 @@
-core.node: "Node"
-core.subject: "Subject"
-core.subject.plural: "Subjects"
-core.period: "Period"
-core.period.plural: "Periods"
-core.periods.active: "Active periods"
-core.assignment: "Assignment"
-core.assignment.plural: "Assignments"
