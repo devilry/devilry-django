@@ -88,6 +88,33 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         margin: {left: 20},
                         html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                     }]
+                }, {
+                    xtype: 'panel',
+                    margin: {top: 40},
+                    itemId: 'dangerousactions',
+                    ui: 'inset-header-panel',
+                    title: gettext('Dangerous actions'),
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%',
+                        margin: {top: 10}
+                    },
+                    items: [{
+                        xtype: 'singleactionbox',
+                        margin: {top: 0},
+                        itemId: 'renameButton',
+                        id: 'assignmentRenameButton',
+                        titleText: gettext('Loading ...'),
+                        bodyHtml: gettext('Renaming an assignment should not done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                        buttonText: gettext('Rename') + ' ...'
+                    }, {
+                        xtype: 'singleactionbox',
+                        itemId: 'deleteButton',
+                        id: 'assignmentDeleteButton',
+                        titleText: gettext('Loading ...'),
+                        bodyHtml: gettext('Once you delete an assignment, there is no going back. Only superusers can delete a non-empty assignment.'),
+                        buttonText: gettext('Delete') + ' ...'
+                    }]
                 }]
             }, {
                 xtype: 'container',
@@ -109,35 +136,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     xtype: 'editanonymous-widget',
                     disabled: true
                 }]
-            }],
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                padding: {left: 40, top: 1, bottom: 1, right: 40},
-                items: [{
-                    xtype: 'button',
-                    text: dtranslate('devilry_extjsextras.advanced'),
-                    scale: 'medium',
-                    menu: [{
-                        text: renameLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
-                    }, {
-                        text: deleteLabel,
-                        listeners: {
-                            scope: this,
-                            click: this._notImplemented
-                        }
-                    }]
-                }]
             }]
         });
         this.callParent(arguments);
-    },
-
-    _notImplemented: function() {
-        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
     }
 });

@@ -5,7 +5,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     extend: 'Ext.app.Controller',
 
     mixins: {
-        'loadAssignment': 'devilry_subjectadmin.utils.LoadAssignmentMixin'
+        'loadAssignment': 'devilry_subjectadmin.utils.LoadAssignmentMixin',
+        'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
+        'onLoadFailure': 'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
     },
 
     views: [
@@ -13,8 +15,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         'ActionList'
     ],
 
-    stores: [
-        'Assignments'
+    models: [
+        'Assignment'
     ],
 
     refs: [{
@@ -40,24 +42,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     },
 
     _onAssignmentViewRender: function() {
-        this.subject_shortname = this.getAssignmentOverview().subject_shortname;
-        this.period_shortname = this.getAssignmentOverview().period_shortname;
-        this.assignment_shortname = this.getAssignmentOverview().assignment_shortname;
-        this.loadAssignment();
-    },
-
-    getSubjectShortname: function() {
-        return this.subject_shortname;
-    },
-    getPeriodShortname: function() {
-        return this.period_shortname;
-    },
-    getAssignmentShortname: function() {
-        return this.assignment_shortname;
-    },
-
-    getMaskElement: function() {
-        return this.getAssignmentOverview().getEl();
+        this.assignment_id = this.getAssignmentOverview().assignment_id;
+        this.loadAssignment(this.assignment_id);
     },
 
     onLoadAssignmentSuccess: function(record) {
@@ -68,5 +54,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
 
     _onEditGradeEditor: function() {
         Ext.MessageBox.alert('Error', 'Not implemented yet');
+    },
+
+
+    onLoadAssignmentFailure: function(operation) {
+        console.log('LOAD ERROR', operation);
     }
 });

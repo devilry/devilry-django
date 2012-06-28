@@ -140,12 +140,10 @@ Ext.application({
         this.route.add("/", 'browse');
         this.route.add("/subject/:subject_id/", 'showSubject');
         this.route.add("/period/:period_id/", 'showPeriod');
+        this.route.add("/assignment/:assignment_id/", 'showAssignment');
+        this.route.add("/assignment/:assignment_id/@@manage-students", 'manageStudents');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
-        //this.route.add("/:subject/:period", 'period_show');
-        //this.route.add("/:subject/:period/@@edit", 'period_edit');
-        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/", 'showAssignment');
-        this.route.add("/:subject_shortname/:period_shortname/:assignment_shortname/@@manage-students", 'manageStudents');
         this.route.start();
     },
     
@@ -200,24 +198,11 @@ Ext.application({
         });
     },
 
-    showAssignment: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
-        var subjecturl = '/' + subject_shortname + '/';
-        this.breadcrumbs.set([{
-            text: gettext("All subjects"),
-            url: '/'
-        }, {
-            text: subject_shortname,
-            url: subjecturl
-        }, {
-            text: period_shortname,
-            url: subjecturl + period_shortname + '/'
-        }], assignment_shortname);
+    showAssignment: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
             xtype: 'assignmentoverview',
             url: routeInfo.url,
-            subject_shortname: subject_shortname,
-            period_shortname: period_shortname,
-            assignment_shortname: assignment_shortname
+            assignment_id: assignment_id
         });
     },
 
