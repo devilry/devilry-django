@@ -7,11 +7,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     },
 
-    requires: [
-        'devilry_extjsextras.form.ErrorUtils',
-        'devilry_extjsextras.RestfulApiProxyErrorHandler'
-    ],
-
     views: [
         'assignment.EditAnonymous',
         'assignment.EditAnonymousWidget'
@@ -83,19 +78,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     _onSave: function() {
         this.getAlertMessageList().removeAll();
         var form = this.getFormPanel().getForm();
-        var oldValue = this.assignmentRecord.get('anonymous');
-        var newValue = form.getValues().anonymous;
-        if(oldValue != newValue) {
-            var assignmentRecord = this.assignmentRecord;
-            form.updateRecord(assignmentRecord);
-            this._getMaskElement().mask(gettext('Saving ...'));
-            assignmentRecord.save({
-                scope: this,
-                success: this._onSaveSuccess
-            });
-        } else {
-            this._close();
-        }
+        var assignmentRecord = this.assignmentRecord;
+        form.updateRecord(assignmentRecord);
+        this._getMaskElement().mask(gettext('Saving ...'));
+        assignmentRecord.save({
+            scope: this,
+            success: this._onSaveSuccess
+        });
     },
 
     _getMaskElement: function() {

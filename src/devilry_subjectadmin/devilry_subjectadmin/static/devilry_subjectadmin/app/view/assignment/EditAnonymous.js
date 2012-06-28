@@ -12,7 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
-            width: 330,
+            width: 460,
             height: 270,
             closable: false,
             modal: true,
@@ -30,15 +30,17 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
                     xtype: 'alertmessagelist'
                 }, {
                     xtype: 'box',
-                    html: gettext('For <strong>exams</strong>, this should normally be <em>checked</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.'),
-                    margin: {bottom: 20}
+                    tpl: '<p>{help}</p>',
+                    data: {
+                        help: gettext('For <strong>exams</strong>, this should normally be <em>checked</em>. If an assignment is anonymous, examiners see a candidate-id instead of a username. A candidate-id <strong>must</strong> be set for each student.')
+                    },
+                    margin: {bottom: 10}
                 }, {
                     xtype: 'checkbox',
                     boxLabel: gettext('Anonymous'),
                     name: 'anonymous',
                     uncheckedValue: false,
-                    inputValue: true,
-                    margin: {top: 20}
+                    inputValue: true
                 }],
                 buttons: ['->', {
                     xtype: 'cancelbutton'
