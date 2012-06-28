@@ -28,6 +28,8 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         var title = this._apply_template(gettext('Rename {something}'), {
             something: this.basenodeRecord.get('short_name')
         });
+        this.originalShortname = this.basenodeRecord.get('short_name');
+        this.originalLongname = this.basenodeRecord.get('long_name');
         Ext.apply(this, {
             layout: 'fit',
             width: 430,
@@ -128,9 +130,9 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
     _onSave: function() {
         var form = this._getForm();
         var values = form.getValues();
-        var oldShortname = this.basenodeRecord.get('short_name');
         var newShortname = values.short_name;
-        if(oldShortname != newShortname) {
+        var newLongname = values.long_name;
+        if(this.originalShortname != newShortname || this.originalLongname != newLongname) {
             var basenodeRecord = this.basenodeRecord;
             form.updateRecord(basenodeRecord);
             this._getMaskElement().setLoading(gettext('Saving ...'));
@@ -147,6 +149,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
         var alertmessagelist = this.down('alertmessagelist');
+        alertmessagelist.removeAll();
         this.handleProxyError(alertmessagelist, this._getFormPanel(), response, operation);
     },
 
