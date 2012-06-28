@@ -9,7 +9,6 @@
     testhelper
 
     plugins
-    jsapp
 
     simplified
     restful
@@ -89,7 +88,6 @@ Integration with the ExtJS javascript library
 
 * :ref:`extjshelpers`
 * `Javascript classes <javascript>`_
-* :ref:`jsapp`
 
 
 Utils
