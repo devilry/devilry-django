@@ -74,7 +74,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         xtype: 'panel',
                         margin: {top: 40},
                         itemId: 'dangerousactions',
-                        ui: 'inset-header-panel',
+                        ui: 'inset-header-danger-panel',
                         title: gettext('Dangerous actions'),
                         layout: 'anchor',
                         defaults: {
