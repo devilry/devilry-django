@@ -1,6 +1,7 @@
 from djangorestframework.resources import ModelResource
 from django import forms
 from django.contrib.auth.models import User
+from django.forms.fields import DateTimeField
 
 from .formfields import DevilryUserMultipleChoiceField
 
@@ -41,6 +42,12 @@ class BaseNodeInstanceResource(ModelResource):
         for fieldname in data.keys():
             if not fieldname in form.fields:
                 del data[fieldname]
+            else:
+                field = form.fields[fieldname]
+                value = data[fieldname]
+                if value and isinstance(field, DateTimeField):
+                    if 'T' in value:
+                        data[fieldname] = value.replace('T', ' ')
         return super(BaseNodeInstanceResource, self).validate_request(data, files)
 
     def can_delete(self, instance):
