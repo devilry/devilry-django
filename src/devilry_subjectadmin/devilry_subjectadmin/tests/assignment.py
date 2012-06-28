@@ -37,32 +37,33 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
         self.assertTrue('Manage students' in self.selenium.page_source)
         self.assertTrue('Manage deadlines' in self.selenium.page_source)
 
-    #def test_notpublished(self):
-        #self.testhelper.add(nodes='uni',
-                            #subjects=['duck1100'],
-                            #periods=['period1'],
-                            #assignments=['week2:pub(2)'])
-        #self._browseToAssignment(self.duck1100_period1_week2.id)
-        #self.waitForText('Not published')
+    def test_notpublished(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['period1'],
+                            assignments=['week2:pub(2):admin(week2admin)'])
+        self.login('week2admin')
+        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self.waitForText('>Not published')
 
-    #def test_published(self):
-        #self.testhelper.add(nodes='uni',
-                            #subjects=['duck1100'],
-                            #periods=['period1:begins(-2)'],
-                            #assignments=['week2'])
-        #self.browseTo('/duck1100/period1/week2/')
-        #self.waitForText('Published')
+    def test_published(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['duck1100'],
+                            periods=['period1:begins(-2):admin(week2admin)'],
+                            assignments=['week2'])
+        self.login('week2admin')
+        self._browseToAssignment(self.testhelper.duck1100_period1_week2.id)
+        self.waitForText('>Published')
 
 
 class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.create_superuser('grandma')
-        self.login('grandma')
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
                             periods=['period1:begins(-3)'],
-                            assignments=['week1'])
+                            assignments=['week1:admin(week1admin)'])
+        self.login('week1admin')
 
         self.browseTo('/assignment/1/')
         self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget button')
@@ -118,12 +119,11 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
 
     def setUp(self):
         self.testhelper = TestHelper()
-        self.testhelper.create_superuser('grandma')
-        self.login('grandma')
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
                             periods=['period1:begins(-3)'],
-                            assignments=['week1'])
+                            assignments=['week1:admin(week1admin)'])
+        self.login('week1admin')
 
         self.week1 = self.testhelper.duck1100_period1_week1
 
