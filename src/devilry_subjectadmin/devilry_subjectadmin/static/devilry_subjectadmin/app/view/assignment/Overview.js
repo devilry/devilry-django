@@ -7,43 +7,18 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     cls: 'assignmentoverview sidebarlayout',
     requires: [
         'Ext.layout.container.Column',
+        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.EditableSidebarBox',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
         'devilry_subjectadmin.view.ActionList'
     ],
 
-
     /**
-     * @cfg {String} url (required)
+     * @cfg {String} assignment_id (required)
      */
-
-    /**
-     * @cfg {String} subject_shortname (required)
-     */
-
-    /**
-     * @cfg {String} period_shortname (required)
-     */
-
-    /**
-     * @cfg {String} assignment_shortname (required)
-     */
-
 
     initComponent: function() {
-        var assignment = Ext.String.format('{0}.{1}.{2}',
-            this.subject_shortname, this.period_shortname,
-            this.assignment_shortname
-        );
-        var deleteLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.delete_something')).apply({
-            what: assignment
-        });
-        var renameLabel = Ext.create('Ext.XTemplate', dtranslate('devilry_extjsextras.rename_something')).apply({
-            what: assignment
-        });
-
-
         Ext.apply(this, {
             layout: 'column',
             frame: false,
@@ -58,14 +33,15 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     xtype: 'panel',
                     itemId: 'actions',
                     ui: 'inset-header-strong-panel',
+                    title: gettext('Loading ...'),
                     items: {
                         xtype: 'actionlist',
                         links: [{
-                            url: Ext.String.format('{0}@@manage-students', this.url),
-                            text: dtranslate('devilry_subjectadmin.assignment.manage_students')
+                            url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
+                            text: gettext('Manage students')
                         }, {
-                            url: Ext.String.format('{0}@@manage-deadlines', this.url),
-                            text: dtranslate('devilry_subjectadmin.assignment.manage_deadlines')
+                            url: devilry_subjectadmin.utils.UrlLookup.manageDeadlines(this.assignment_id),
+                            text: gettext('Manage deadlines')
                         }]
                     }
                 }, {
@@ -78,12 +54,12 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         ui: 'inset-header-panel',
                         margin: {right: 20},
                         columnWidth: .5,
-                        title: Ext.String.ellipsis(dtranslate('devilry_subjectadmin.assignment.upcoming_deadlines'), 25),
+                        title: gettext('Upcoming deadlines'),
                         html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                     }, {
                         xtype: 'panel',
                         ui: 'inset-header-panel',
-                        title: Ext.String.ellipsis(dtranslate('devilry_subjectadmin.assignment.waitingforfeedback'), 25),
+                        title: gettext('Waiting for feedback'),
                         columnWidth: .5,
                         margin: {left: 20},
                         html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
@@ -128,7 +104,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     xtype: 'editablesidebarbox',
                     itemId: 'gradeeditor',
                     margin: {top: 0},
-                    title: dtranslate('devilry_subjectadmin.assignment.gradeeditor')
+                    title: gettext('Grade editor')
                 }, {
                     xtype: 'editpublishingtime-widget',
                     disabled: true

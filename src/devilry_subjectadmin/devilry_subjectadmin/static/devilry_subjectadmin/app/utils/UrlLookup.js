@@ -13,6 +13,14 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         return Ext.String.format('#/assignment/{0}/', assignment_id);
     },
 
+    manageStudents: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/@@manage-students', assignment_id);
+    },
+
+    manageDeadlines: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/@@manage-deadlines', assignment_id);
+    },
+
     overviewByType: function(type, id) {
         if(type === 'Period') {
             return this.periodOverview(id);
