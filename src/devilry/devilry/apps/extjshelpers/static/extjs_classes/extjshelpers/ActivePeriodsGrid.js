@@ -7,8 +7,8 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: dtranslate('core.periods.noactive.title'),
-            msg: dtranslate('core.periods.noactive.body')
+            title: 'No active periods',
+            msg: 'You are not registered on any active periods.'
         },
         pageSize: 30,
         dashboard_url: undefined
@@ -51,12 +51,12 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
             store: this.store,
             flex: 1,
             columns: [{
-                text: dtranslate('core.subject'),
+                text: 'Subject',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
                 flex: 30,
             },{
-                text: dtranslate('core.period'),
+                text: 'Period',
                 menuDisabled: true,
                 dataIndex: 'long_name',
                 flex: 20,
@@ -71,7 +71,7 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
         });
         this.add({
             xtype: 'box',
-            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>', dtranslate('extjshelpers.periods.active'))
+            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>', 'No active periods')
         });
         this.add(activePeriodsGrid);
     }

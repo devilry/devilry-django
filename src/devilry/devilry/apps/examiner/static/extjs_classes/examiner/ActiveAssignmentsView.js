@@ -7,8 +7,8 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: dtranslate('examiner.assignments.noactive.title'),
-            msg: dtranslate('examiner.assignments.noactive.body')
+            title: 'No active assignments',
+            msg: 'You are not registered on any assignments in an active period.'
         },
         pageSize: 30,
         dashboard_url: undefined
@@ -56,17 +56,17 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             flex: 1,
             //features: [groupingFeature],
             columns: [{
-                text: dtranslate('core.subject'),
+                text: 'Subject',
                 menuDisabled: true,
                 dataIndex: 'parentnode__parentnode__long_name',
                 flex: 20,
             },{
-                text: dtranslate('core.period'),
+                text: 'Period',
                 menuDisabled: true,
                 dataIndex: 'parentnode__long_name',
                 flex: 10,
             },{
-                text: dtranslate('core.assignment'),
+                text: 'Assignment',
                 menuDisabled: true,
                 flex: 20,
                 dataIndex: 'long_name'
@@ -92,7 +92,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         });
         this.add({
             xtype: 'box',
-            html: '<div class="section"><h2>' + dtranslate('examiner.assignments.withinactiveperiod') + '</h2></div>'
+            html: '<div class="section"><h2>' + 'Assignments in an active period' + '</h2></div>'
         });
         this.add(activeAssignmentsGrid);
     }
