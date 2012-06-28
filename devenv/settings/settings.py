@@ -22,7 +22,7 @@ INSTALLED_APPS += [
 
                    'errortemplates',
                    'djangorestframework',
-                   'devilry.apps.themebase',
+                   'devilry_theme',
                    'devilry_subjectadmin',
                    'devilry_extjsextras',
                    'seleniumhelpers',
