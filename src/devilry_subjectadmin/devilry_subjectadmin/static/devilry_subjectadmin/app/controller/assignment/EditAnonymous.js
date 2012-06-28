@@ -42,8 +42,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous': {
-                render: this._onRenderWindow
+            'editanonymous form': {
+                render: this._onRenderForm
             },
             'editanonymous savebutton': {
                 click: this._onSave
@@ -63,12 +63,19 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         this._updateAnonymousWidget();
     },
 
-    _onRenderWindow: function() {
+    _onRenderForm: function() {
         this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
         this.getEditAnonymous().mon(this.getAssignmentModel().proxy, {
             scope: this,
             exception: this._onProxyError
         });
+        this.getFormPanel().keyNav = Ext.create('Ext.util.KeyNav', this.getFormPanel().el, {
+            enter: this._onSave,
+            scope: this
+        });
+        Ext.defer(function() {
+            this.getFormPanel().down('checkbox').focus();
+        }, 100, this);
     },
 
     _close: function() {
