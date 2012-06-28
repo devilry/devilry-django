@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import patterns, url
 
 from .group import RestGroupRoot
-from .relateduser import RestRelatedStudent
-from .relateduser import RestRelatedExaminer
+#from .relateduser import RestRelatedStudent
+#from .relateduser import RestRelatedExaminer
 from .createnewassignment import RestCreateNewAssignment
 from .subject import ListOrCreateSubjectRest
 from .subject import InstanceSubjectRest
@@ -21,7 +21,7 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^period/(?P<id>[^/]+)$', InstancePeriodRest.as_view()),
                        url(r'^assignment/$', ListOrCreateAssignmentRest.as_view()),
                        url(r'^assignment/(?P<id>[^/]+)$', InstanceAssignmentRest.as_view()),
-                       RestRelatedStudent.create_url("relatedstudent", "restrelatedstudent-api", "1.0"),
-                       RestRelatedExaminer.create_url("relatedexaminer", "restrelatedexaminer-api", "1.0"),
+                       #RestRelatedStudent.create_url("relatedstudent", "restrelatedstudent-api", "1.0"),
+                       #RestRelatedExaminer.create_url("relatedexaminer", "restrelatedexaminer-api", "1.0"),
                        #RestCreateNewAssignment.create_url("createnewassignment", "restgroup-api", "1.0"),
                       )
