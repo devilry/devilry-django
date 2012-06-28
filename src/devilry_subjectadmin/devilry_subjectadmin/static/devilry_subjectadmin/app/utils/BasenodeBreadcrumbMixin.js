@@ -34,8 +34,9 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
             if(item.type === 'Node') {
                 return false; // break
             }
-            path += item.short_name + '.';
+            console.log(item.short_name);
+            path = item.short_name + '.' + path;
         }, this, true);
-        return path + basenodeRecord.get('short_name');
+        return path + '.' + basenodeRecord.get('short_name');
     }
 });
