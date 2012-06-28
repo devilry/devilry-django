@@ -13,13 +13,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            title: dtranslate('devilry_subjectadmin.managestudents.tags.title'),
+            title: gettext('Tags'),
             tools: [{
                 xtype: 'splitbutton',
                 iconCls: 'icon-add-16',
                 itemId: 'addTag',
                 menu: [{
-                    text: dtranslate('devilry_extjsextras.removeall'),
+                    text: gettext('Remove all'),
                     itemId: 'removeAllTags',
                     iconCls: 'icon-delete-16'
                 }]
@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
                 width: 20,
                 items: [{
                     icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
-                    tooltip: dtranslate('devilry_subjectadmin.managestudents.remove_tag'),
+                    tooltip: gettext('Remove tag'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
                     },

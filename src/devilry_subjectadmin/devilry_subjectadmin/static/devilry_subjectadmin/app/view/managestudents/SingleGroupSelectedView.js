@@ -61,13 +61,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
             '<dd>',
                 '<tpl if="is_open">',
                     '<span class="label label-success">', gettext('group', 'Open'), '</span> ',
-                    dtranslate('devilry_extjsextras.open.explained'),
+                    gettext('The student(s) can add more deliveries.'),
                 '</tpl>',
                 '<tpl if="!is_open">',
-                    '<span class="label label-warning">', dtranslate('devilry_extjsextras.closed'), '</span> ',
-                    dtranslate('devilry_extjsextras.closed.explained'),
+                    '<span class="label label-warning">', gettext('group', 'Closed'), '</span> ',
+                    gettext('The current grade is the final grade. The student(s) can <strong>not</strong> add more deliveries.'),
                 '</tpl>',
-                ' ', dtranslate('devilry_subjectadmin.managestudents.open_close_explained_extra'),
+                ' ', gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
             '</dd>',
         '</dl>'
     ],
@@ -121,9 +121,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         var tpl = Ext.create('Ext.XTemplate', this.metaInfoTpl);
         var data = Ext.apply({
             hasFeedback: this.groupRecord.get('feedback__save_timestamp') != null,
-            passing_grade_i18n: dtranslate('devilry_extjsextras.passing_grade'),
-            not_passing_grade_i18n: dtranslate('devilry_extjsextras.not_passing_grade'),
-            points_i18n: dtranslate('devilry_extjsextras.points')
+            passing_grade_i18n: pgettext('group', 'Passed'),
+            not_passing_grade_i18n: pgettext('group', 'Failed'),
+            points_i18n: pgettext('group', 'Points')
         }, this.groupRecord.data);
         return tpl.apply(data);
     }
