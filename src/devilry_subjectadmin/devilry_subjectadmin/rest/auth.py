@@ -72,7 +72,7 @@ class BaseIsAdmin(BasePermission):
             return self.view.kwargs['id']
         except KeyError, e:
             raise PermissionDeniedError(('The {classname} permission checker '
-                                         'requires the ``id`` parameter.').format(classname=self.__class__.name))
+                                         'requires the ``id`` parameter.').format(classname=self.__class__.__name__))
 
 class IsSubjectAdmin(BaseIsAdmin):
     """
