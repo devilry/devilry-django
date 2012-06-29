@@ -93,6 +93,7 @@ Manage related users.
 
 
 
+from django import forms
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
 from djangorestframework.views import InstanceModelView
@@ -100,16 +101,46 @@ from djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import RelatedExaminer
 
 from .auth import IsPeriodAdmin
+from .mixins import GetParamFormMixin
+
+
+
+class ListGetparamForm(forms.Form):
+    period = forms.IntegerField(required=True)
+
+
+class IsPeriodAdminGetParam(IsPeriodAdmin):
+    def get_id(self):
+        return self.view.GETPARAMS['period']
 
 
 class RelatedExaminerResource(ModelResource):
     model = RelatedExaminer
     fields = ('id', 'period', 'user', 'tags')
 
+    def user(self, instance):
+        if isinstance(instance, self.model):
+            user = instance.user
+            return {'email': user.email,
+                    'username': user.username,
+                    'id': user.id,
+                    'full_name': user.devilryuserprofile.full_name}
 
-class ListOrCreateRelatedExaminerRest(ListOrCreateModelView):
-    permissions = (IsAuthenticated, IsPeriodAdmin)
+    def period(self, instance):
+        if isinstance(instance, self.model):
+            return instance.period_id
+
+
+class ListOrCreateRelatedExaminerRest(ListOrCreateModelView, GetParamFormMixin):
+    getparam_form = ListGetparamForm
+    permissions = (IsAuthenticated, IsPeriodAdminGetParam)
     resource = RelatedExaminerResource
+
+    def get_queryset(self):
+        qry = self.resource.model.objects.filter(period=self.GETPARAMS['period'])
+        qry = qry.select_related('user', 'user__devilryuserprofile')
+        return qry
+
 
 class InstanceRelatedExaminerRest(InstanceModelView):
     permissions = (IsAuthenticated, IsPeriodAdmin)

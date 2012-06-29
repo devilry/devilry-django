@@ -391,7 +391,47 @@ class FilterBaseNodeQuerySetForm(forms.Form):
     parentnode = forms.IntegerField(required=False)
 
 
-class BaseNodeListModelMixin(ListModelMixin):
+class GetParamFormMixin(object):
+    #: The form class to use to evaluate the GET parameters.
+    getparam_form = None
+
+
+    @property
+    def GETPARAMS(self):
+        if not hasattr(self, '_GETPARAMS'):
+            self._GETPARAMS = self._parse_getparam_form()
+        return self._GETPARAMS
+
+    def _parse_getparam_form(self):
+        """
+        Parse the GET params using :obj:`.getparam_form`, and place the results
+        in ``self.GETPARAMS``.
+
+        :raise ErrorResponse: If validation fails.
+        """
+        bound_form = self.getparam_form(self.request.GET)
+        if bound_form.is_valid():
+            return bound_form.cleaned_data
+        else:
+            detail = {}
+
+            # Add any non-field errors
+            if bound_form.non_field_errors():
+                detail[u'errors'] = bound_form.non_field_errors()
+
+            # Add standard field errors
+            field_errors = dict((key, map(unicode, val))
+                                for (key, val) in bound_form.errors.iteritems()
+                                if not key.startswith('__'))
+
+            if field_errors:
+                detail[u'field_errors'] = field_errors
+            from djangorestframework import status
+            from djangorestframework.response import ErrorResponse
+            raise ErrorResponse(status.HTTP_400_BAD_REQUEST, detail)
+
+
+class BaseNodeListModelMixin(ListModelMixin, GetParamFormMixin):
     getparam_form = FilterBaseNodeQuerySetForm
 
     def get_restdocs(self):
@@ -413,31 +453,7 @@ class BaseNodeListModelMixin(ListModelMixin):
                            responsetable=self.htmldoc_responsetable(),
                            parameterstable=parameterstable)
 
-    def _parse_getparam_form(self):
-        bound_form = self.getparam_form(self.request.GET)
-        if bound_form.is_valid():
-            self.GETPARAMS = bound_form.cleaned_data
-        else:
-            detail = {}
-
-            # Add any non-field errors
-            if bound_form.non_field_errors():
-                detail[u'errors'] = bound_form.non_field_errors()
-
-            # Add standard field errors
-            field_errors = dict((key, map(unicode, val))
-                                for (key, val) in bound_form.errors.iteritems()
-                                if not key.startswith('__'))
-
-            if field_errors:
-                detail[u'field_errors'] = field_errors
-            from djangorestframework import status
-            from djangorestframework.response import ErrorResponse
-            raise ErrorResponse(status.HTTP_400_BAD_REQUEST, detail)
-
-
     def get_queryset(self):
-        self._parse_getparam_form()
         qry = self.resource.model.where_is_admin_or_superadmin(self.user)
         if self.GETPARAMS['parentnode'] != None:
             qry = qry.filter(parentnode=self.GETPARAMS['parentnode'])
