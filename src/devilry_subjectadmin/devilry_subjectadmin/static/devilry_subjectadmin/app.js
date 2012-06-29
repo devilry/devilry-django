@@ -206,27 +206,10 @@ Ext.application({
         });
     },
 
-    manageStudents: function(routeInfo, subject_shortname, period_shortname, assignment_shortname) {
-        var subjecturl = '/' + subject_shortname + '/';
-        var periodurl = subjecturl + period_shortname + '/';
-        this.breadcrumbs.set([{
-            text: gettext("All subjects"),
-            url: '/'
-        }, {
-            text: subject_shortname,
-            url: subjecturl
-        }, {
-            text: period_shortname,
-            url: periodurl
-        }, {
-            text: assignment_shortname,
-            url: periodurl + assignment_shortname + '/'
-        }], gettext('Manage students'));
+    manageStudents: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
             xtype: 'managestudentsoverview',
-            subject_shortname: subject_shortname,
-            period_shortname: period_shortname,
-            assignment_shortname: assignment_shortname
+            assignment_id: assignment_id
         });
     }
 });

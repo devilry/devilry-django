@@ -11,15 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
 
 
     /**
-     * @cfg {String} subject_shortname (required)
-     */
-
-    /**
-     * @cfg {String} period_shortname (required)
-     */
-
-    /**
-     * @cfg {String} assignment_shortname (required)
+     * @cfg {String} assignment_id (required)
      */
 
     initComponent: function() {

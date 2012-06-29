@@ -107,10 +107,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _onRender: function() {
-        this.subject_shortname = this.getOverview().subject_shortname;
-        this.period_shortname = this.getOverview().period_shortname;
-        this.assignment_shortname = this.getOverview().assignment_shortname;
-        this.loadAssignment();
+        this.assignment_id = this.getOverview().assignment_id;
+        this.loadAssignment(this.assignment_id);
     },
 
     _onRenderListOfGroups: function() {
@@ -206,25 +204,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
-    /** Get the short name for the current subject. */
-    getSubjectShortname: function() {
-        return this.subject_shortname;
-    },
-
-    /** Get the short name for the current period. */
-    getPeriodShortname: function() {
-        return this.period_shortname;
-    },
-
-    /** Get the short name for the current assignment. */
-    getAssignmentShortname: function() {
-        return this.assignment_shortname;
-    },
-
     setupProxies: function(periodid, assignmentid) {
-        //this.getGroupsStore().proxy.extraParams.assignmentid = assignmentid;
-        var groupsurl = Ext.String.format('{0}{1}/', this.getGroupsStore().proxy.baseurl, assignmentid);
-        this.getGroupsStore().proxy.url = groupsurl;
+        this.getGroupsStore().loadGroupsInAssignment(assignmentid);
         this.getRelatedStudentsStore().proxy.extraParams.periodid = periodid;
         this.getRelatedExaminersStore().proxy.extraParams.periodid = periodid;
     },
@@ -233,6 +214,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.assignmentRecord = record;
         //console.log('Assignment:', record.data);
         this._loadUserStores();
+    },
+    onLoadAssignmentFailure: function(operation) {
+        console.log('ASSIGNMENT LOAD FAILED', operation);
     },
 
     /**
@@ -246,7 +230,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             this.assignmentRecord.get('id')
         );
         this.getOverview().setLoading(true);
-        this.loadedStores = 0;
+        this._tmp_loadedStores = {
+            total: 0,
+            successful: 0,
+            failed: 0
+        }
         var loadConfig = {
             scope: this,
             callback: this._onUserStoreLoaded
@@ -262,10 +250,24 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * Called for each of the user stores, and calls _onAllUserStoresLoaded
      * when all of them are finished loading.
      */
-    _onUserStoreLoaded: function() {
-        this.loadedStores ++;
-        if(this.loadedStores == 3) { // Groups, RelatedStudents, RelatedExaminers
+    _onUserStoreLoaded: function(records, operation) {
+        this._tmp_loadedStores.total ++;
+        if(operation.success) {
+            this._tmp_loadedStores.successful ++;
+        } else {
+            this._tmp_loadedStores.failed ++;
+        }
+        var all_loaded = this._tmp_loadedStores.total == 3; // Groups, RelatedStudents, RelatedExaminers
+        if(all_loaded && this._tmp_loadedStores.failed == 0) { 
             this._onAllUserStoresLoaded();
+        } else {
+            this.getOverview().setLoading(false);
+            var errormsg = gettext('Failed to load parts of the page. Please try to reload the page.');
+            Ext.Msg.show({
+                title: 'Error',
+                msg: errormsg,
+                icon: Ext.Msg.ERROR
+            });
         }
     },
 
@@ -293,7 +295,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onAllUserStoresLoaded: function() {
         this.getOverview().setLoading(false);
-        this.getOverview().addClass('all-items-loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
+        this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
         this._handleNoGroupsSelected();
     },
