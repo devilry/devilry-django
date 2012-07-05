@@ -70,6 +70,18 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin, 
         self.assertIn('Once you delete a period, there is no going back', self.selenium.page_source)
         self.assertIn('Renaming a period should not done without a certain amount of consideration', self.selenium.page_source)
 
+    def test_rename(self):
+        self.login('period1admin')
+        self._browseToPeriod(self.testhelper.duck9000_period1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
+        self.rename_test_helper(self.testhelper.duck9000_period1)
+
+    def test_rename_failure(self):
+        self.login('period1admin')
+        self._browseToPeriod(self.testhelper.duck9000_period1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
+        self.rename_test_failure_helper()
+
     def test_delete(self):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
