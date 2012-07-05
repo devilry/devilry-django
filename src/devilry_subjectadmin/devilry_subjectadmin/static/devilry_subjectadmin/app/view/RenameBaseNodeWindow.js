@@ -32,7 +32,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         this.originalLongname = this.basenodeRecord.get('long_name');
         Ext.apply(this, {
             layout: 'fit',
-            width: 430,
+            width: 600,
             height: 370,
             closable: false,
             modal: true,
