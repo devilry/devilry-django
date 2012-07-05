@@ -139,6 +139,7 @@ class ListOrCreateRelatedExaminerRest(ListOrCreateModelView, GetParamFormMixin):
     def get_queryset(self):
         qry = self.resource.model.objects.filter(period=self.GETPARAMS['period'])
         qry = qry.select_related('user', 'user__devilryuserprofile')
+        qry = qry.order_by('user__devilryuserprofile__full_name')
         return qry
 
 
