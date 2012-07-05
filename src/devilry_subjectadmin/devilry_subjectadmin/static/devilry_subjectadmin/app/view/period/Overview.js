@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.periodoverview',
-    cls: 'devilry_periodoverview',
+    cls: 'devilry_subjectadmin_periodoverview',
     requires: [
         'Ext.layout.container.Column',
         'devilry_extjsextras.EditableSidebarBox',
@@ -46,6 +46,33 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         items: {
                             xtype: 'listofassignments'
                         }
+                    }, {
+                        xtype: 'panel',
+                        margin: {top: 40},
+                        itemId: 'dangerousactions',
+                        ui: 'inset-header-danger-panel',
+                        title: gettext('Dangerous actions'),
+                        layout: 'anchor',
+                        defaults: {
+                            anchor: '100%',
+                            margin: {top: 10}
+                        },
+                        items: [{
+                            xtype: 'singleactionbox',
+                            margin: {top: 0},
+                            itemId: 'renameButton',
+                            id: 'periodRenameButton',
+                            titleText: gettext('Loading ...'),
+                            bodyHtml: gettext('Renaming a period should not done without a certain amount of consideration. The name of an period, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                            buttonText: gettext('Rename') + ' ...'
+                        }, {
+                            xtype: 'singleactionbox',
+                            itemId: 'deleteButton',
+                            id: 'periodDeleteButton',
+                            titleText: gettext('Loading ...'),
+                            bodyHtml: gettext('Once you delete a period, there is no going back. Only superusers can delete a non-empty period.'),
+                            buttonText: gettext('Delete') + ' ...'
+                        }]
                     }]
                 }, {
                     xtype: 'container',
@@ -62,26 +89,6 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         xtype: 'basenodehierlocation'
                     }]
                 }],
-            }],
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'top',
-                padding: {left: 40, top: 1, bottom: 1, right: 40},
-                items: [{
-                    xtype: 'button',
-                    id: 'menubarAdvancedButton',
-                    text: gettext('Advanced'),
-                    scale: 'medium',
-                    menu: [{
-                        itemId: 'renameButton',
-                        id: 'menubarAdvancedRenameButton',
-                        text: renameLabel
-                    }, {
-                        itemId: 'deleteButton',
-                        id: 'menubarAdvancedDeleteButton',
-                        text: deleteLabel
-                    }]
-                }]
             }]
         });
         this.callParent(arguments);

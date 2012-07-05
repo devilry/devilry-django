@@ -49,20 +49,21 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
             'viewport periodoverview': {
                 render: this._onPeriodViewRender
             },
-            'viewport periodoverview editablesidebarbox[itemId=gradeeditor] button': {
-                click: this._onEditGradeEditor
-            },
             'viewport periodoverview #deleteButton': {
-                click: this._onNotImplemented
+                click: this._onDelete
             },
             'viewport periodoverview #renameButton': {
-                click: this._onNotImplemented
+                click: this._onRename
             }
         });
     },
 
     _onNotImplemented: function() {
         Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
+    },
+
+    _getPath: function() {
+        return this.getPathFromBreadcrumb(this.periodRecord);
     },
 
     _onPeriodViewRender: function() {
@@ -81,15 +82,16 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.application.breadcrumbs.set(breadcrumbs, current);
     },
 
-    _setMenuLabels: function(periodpath) {
+    _setMenuLabels: function() {
+        var periodpath = this._getPath();
         var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
             something: periodpath,
         });
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: periodpath,
         });
-        this.getDeleteButton().setText(deleteLabel);
-        this.getRenameButton().setText(renameLabel);
+        this.getDeleteButton().setTitleText(deleteLabel);
+        this.getRenameButton().setTitleText(renameLabel);
     },
 
     _loadAssignments: function(period_id) {
@@ -117,15 +119,33 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     },
     _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
-        var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.periodRecord);
-        this._setMenuLabels(periodpath);
-        this.getAdminsbox().setBasenodeRecord(this.periodRecord, periodpath);
+        this._setMenuLabels();
+        this.getAdminsbox().setBasenodeRecord(this.periodRecord, this._getPath());
         this.getBasenodehierlocation().setLocation(this.periodRecord);
     },
     _onLoadPeriodFailure: function(operation) {
         this.onLoadFailure(operation);
+    },
+
+    _onRename: function() {
+        Ext.create('devilry_subjectadmin.view.RenameBasenodeWindow', {
+            basenodeRecord: this.periodRecord
+        }).show();
+    },
+    _onDelete: function() {
+        var short_description = this._getPath();
+        devilry_subjectadmin.view.DeleteDjangoRestframeworkRecordDialog.showIfCanDelete({
+            basenodeRecord: this.periodRecord,
+            short_description: short_description,
+            listeners: {
+                scope: this,
+                deleteSuccess: function() {
+                    this.application.onAfterDelete(short_description);
+                }
+            }
+        });
     }
 });

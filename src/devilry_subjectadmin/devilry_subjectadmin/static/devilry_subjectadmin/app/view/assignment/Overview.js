@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentoverview',
-    cls: 'devilry_subjectadmin_assignmentoverview sidebarlayout',
+    cls: 'devilry_subjectadmin_assignmentoverview',
     requires: [
         'Ext.layout.container.Column',
         'devilry_subjectadmin.utils.UrlLookup',

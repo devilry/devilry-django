@@ -33,19 +33,6 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
         breadcrumbtext = self.get_breadcrumbstring('duck9000')
         self.assertEquals(breadcrumbtext, ['All subjects', 'duck9000', 'period1'])
 
-    def test_menubar(self):
-        self.login('period1admin')
-        self._browseToPeriod(self.testhelper.duck9000_period1.id)
-        self.waitForCssSelector('.devilry_periodoverview')
-        advancedButton = self.selenium.find_element_by_css_selector('#menubarAdvancedButton button')
-        advancedButton.click()
-        self.waitForText('Delete duck9000.period1')
-        self.waitForText('Rename duck9000.period1')
-        self.assertEquals(self.selenium.find_element_by_css_selector('#menubarAdvancedDeleteButton .x-menu-item-text').text,
-                          'Delete duck9000.period1')
-        self.assertEquals(self.selenium.find_element_by_css_selector('#menubarAdvancedRenameButton .x-menu-item-text').text,
-                          'Rename duck9000.period1')
-
     def _get_assignment_url(self, assignment):
         return '#/assignment/{0}/'.format(assignment.id)
 
@@ -67,3 +54,12 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase):
         self.assertIn(self._get_assignment_url(self.testhelper.duck9000_period1_a1), self.selenium.page_source)
         self.assertIn(self._get_assignment_url(self.testhelper.duck9000_period1_a2), self.selenium.page_source)
         self.assertNotIn(self._get_assignment_url(self.testhelper.duck9000_period2_first), self.selenium.page_source)
+
+    def test_dangerous_panel(self):
+        self.login('period1admin')
+        self._browseToPeriod(self.testhelper.duck9000_period1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
+        self.waitForText('Delete duck9000.period1')
+        self.waitForText('Rename duck9000.period1')
+        self.assertIn('Once you delete a period, there is no going back', self.selenium.page_source)
+        self.assertIn('Renaming a period should not done without a certain amount of consideration', self.selenium.page_source)
