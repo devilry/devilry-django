@@ -6,7 +6,7 @@ from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
 
 
-class TestRelatedUserRestMixin(object):
+class TestListOrCreateRelatedUserMixin(object):
     def setUp(self):
         self.client = RestClient()
         self.testhelper = TestHelper()
@@ -85,7 +85,7 @@ class TestRelatedUserRestMixin(object):
 
     def get_valid_createdata(self):
         """
-        Overridden in TestRelatedStudentRest.
+        Overridden in TestListOrCreateRelatedStudentRest.
         """
         return {'period': self.testhelper.sub_p1.id,
                 'user': self.testhelper.testuser.id, # TODO: Support username
@@ -118,7 +118,7 @@ class TestRelatedUserRestMixin(object):
 
 
 
-class TestRelatedExaminerRest(TestRelatedUserRestMixin, TestCase):
+class TestListOrCreateRelatedExaminerRest(TestListOrCreateRelatedUserMixin, TestCase):
     modelcls = RelatedExaminer
 
     def get_url(self):
@@ -130,7 +130,7 @@ class TestRelatedExaminerRest(TestRelatedUserRestMixin, TestCase):
                                                           tags=tags)
 
 
-class TestRelatedStudentRest(TestRelatedUserRestMixin, TestCase):
+class TestListOrCreateRelatedStudentRest(TestListOrCreateRelatedUserMixin, TestCase):
     modelcls = RelatedStudent
 
     def get_url(self):
@@ -143,16 +143,16 @@ class TestRelatedStudentRest(TestRelatedUserRestMixin, TestCase):
                                                          candidate_id='cid{0}'.format(index))
 
     def test_list(self):
-        content = super(TestRelatedStudentRest, self).test_list()
+        content = super(TestListOrCreateRelatedStudentRest, self).test_list()
         first, second, last = content
         self.assertEquals(first['candidate_id'], 'cid0')
 
     def get_valid_createdata(self):
-        data = super(TestRelatedStudentRest, self).get_valid_createdata()
+        data = super(TestListOrCreateRelatedStudentRest, self).get_valid_createdata()
         data['candidate_id'] = 'cand0'
         return data
 
     def test_create(self):
-        content, created = super(TestRelatedStudentRest, self).test_create()
+        content, created = super(TestListOrCreateRelatedStudentRest, self).test_create()
         self.assertEquals(content['candidate_id'], 'cand0')
         self.assertEquals(created.candidate_id, 'cand0')
