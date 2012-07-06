@@ -20,7 +20,10 @@ class ListGetparamForm(forms.Form):
 
 class IsPeriodAdminGetParam(IsPeriodAdmin):
     def get_id(self):
-        return self.view.GETPARAMS['period']
+        if self.view.request.method == 'POST':
+            return self.view.CONTENT['period'].id
+        else:
+            return self.view.GETPARAMS['period']
 
 
 class RelatedUserResource(ModelResource):
