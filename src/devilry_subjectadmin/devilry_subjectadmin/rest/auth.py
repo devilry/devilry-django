@@ -62,6 +62,8 @@ def _assignmentadmin_required(user, assignmentid):
 
 
 class BaseIsAdmin(BasePermission):
+    ID_KWARG = 'id'
+
     def get_id(self):
         """
         Get the ``id`` from the view kwargs.
@@ -69,7 +71,7 @@ class BaseIsAdmin(BasePermission):
         :raise PermissionDeniedError: If the ``id`` can not be determined.
         """
         try:
-            return self.view.kwargs['id']
+            return self.view.kwargs[self.ID_KWARG]
         except KeyError, e:
             raise PermissionDeniedError(('The {classname} permission checker '
                                          'requires the ``id`` parameter.').format(classname=self.__class__.__name__))

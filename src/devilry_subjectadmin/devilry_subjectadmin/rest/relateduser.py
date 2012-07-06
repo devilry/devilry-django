@@ -18,12 +18,8 @@ class ListGetparamForm(forms.Form):
     period = forms.IntegerField(required=True)
 
 
-class IsPeriodAdminGetParam(IsPeriodAdmin):
-    def get_id(self):
-        if self.view.request.method == 'POST':
-            return self.view.CONTENT['period'].id
-        else:
-            return self.view.GETPARAMS['period']
+class IsPeriodAdminPeriodIdKwarg(IsPeriodAdmin):
+    ID_KWARG = 'period_id'
 
 
 class RelatedUserResource(ModelResource):
@@ -44,16 +40,30 @@ class RelatedUserResource(ModelResource):
 
 class ListOrCreateRelatedUserRestMixin(object):
     getparam_form = ListGetparamForm
-    permissions = (IsAuthenticated, IsPeriodAdminGetParam)
+    permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
 
     def get_queryset(self):
-        qry = self.resource.model.objects.filter(period=self.GETPARAMS['period'])
+        period_id = self.kwargs['period_id']
+        qry = self.resource.model.objects.filter(period=period_id)
         qry = qry.select_related('user', 'user__devilryuserprofile')
         qry = qry.order_by('user__devilryuserprofile__full_name')
         return qry
 
+    def get(self, request, period_id):
+        return super(ListOrCreateRelatedUserRestMixin, self).get(request)
+
+    def post(self, request, period_id):
+        return super(ListOrCreateRelatedUserRestMixin, self).post(request)
+
+
 class InstanceRelatedUserRestBaseView(InstanceModelView):
-    permissions = (IsAuthenticated, IsPeriodAdmin)
+    permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
+
+    def put(self, request, period_id, id):
+        return super(ListOrCreateRelatedUserRestMixin, self).post(request, id)
+
+    def delete(self, request, period_id, id):
+        return super(ListOrCreateRelatedUserRestMixin, self).post(request, id)
 
 
 #############################
@@ -63,10 +73,12 @@ class InstanceRelatedUserRestBaseView(InstanceModelView):
 class RelatedExaminerResource(RelatedUserResource):
     model = RelatedExaminer
 
+
 class ListOrCreateRelatedExaminerRest(ListOrCreateRelatedUserRestMixin,
                                       ListOrCreateModelView,
                                       GetParamFormMixin):
     resource = RelatedExaminerResource
+
 
 class InstanceRelatedExaminerRest(InstanceRelatedUserRestBaseView):
     resource = RelatedExaminerResource

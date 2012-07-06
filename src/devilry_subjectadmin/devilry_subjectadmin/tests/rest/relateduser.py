@@ -37,7 +37,7 @@ class TestListOrCreateRelatedUserMixin(object):
         user.devilryuserprofile.save()
         return user
 
-    def create_relateduser(self, index, tags=''):
+    def create_relateduser(self, period, index, tags=''):
         """
         Create a related user of the type that we are testing.
         """
@@ -45,14 +45,15 @@ class TestListOrCreateRelatedUserMixin(object):
 
     def _create_relatedusers(self, count):
         for index in xrange(count):
-            self.create_relateduser(index)
+            self.create_relateduser(self.testhelper.sub_p1, index)
 
     def test_list(self):
         self._create_relatedusers(2)
-        self.create_relateduser(index=5, tags='group1,group2')
+        self.create_relateduser(self.testhelper.sub_p1, index=5, tags='group1,group2')
+        self.create_relateduser(self.testhelper.sub_p2, index=20, tags='') # Not on p1, so we shold not get this in the listing!
         content, response = self._listas(self.testhelper.p1admin, period=self.testhelper.sub_p1.id)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(content), 3)
+        self.assertEquals(len(content), 3) # Since this is 3, we did not get the user registered on p2.
         first, second, last = content
         self.assertEquals(first['user']['username'], 'reluser0')
         self.assertEquals(first['user']['full_name'] , 'User 0')
@@ -122,25 +123,25 @@ class TestListOrCreateRelatedExaminerRest(TestListOrCreateRelatedUserMixin, Test
     modelcls = RelatedExaminer
 
     def get_url(self):
-        return '/devilry_subjectadmin/rest/relatedexaminer/'
+        return '/devilry_subjectadmin/rest/relatedexaminer/{0}/'.format(self.testhelper.sub_p1.id)
 
-    def create_relateduser(self, index, tags=''):
+    def create_relateduser(self, period, index, tags=''):
         user = self._create_user(index)
-        self.testhelper.sub_p1.relatedexaminer_set.create(user=user,
-                                                          tags=tags)
+        period.relatedexaminer_set.create(user=user,
+                                                 tags=tags)
 
 
 class TestListOrCreateRelatedStudentRest(TestListOrCreateRelatedUserMixin, TestCase):
     modelcls = RelatedStudent
 
     def get_url(self):
-        return '/devilry_subjectadmin/rest/relatedstudent/'
+        return '/devilry_subjectadmin/rest/relatedstudent/{0}/'.format(self.testhelper.sub_p1.id)
 
-    def create_relateduser(self, index, tags=''):
+    def create_relateduser(self, period, index, tags=''):
         user = self._create_user(index)
-        self.testhelper.sub_p1.relatedstudent_set.create(user=user,
-                                                         tags=tags,
-                                                         candidate_id='cid{0}'.format(index))
+        period.relatedstudent_set.create(user=user,
+                                         tags=tags,
+                                         candidate_id='cid{0}'.format(index))
 
     def test_list(self):
         content = super(TestListOrCreateRelatedStudentRest, self).test_list()
@@ -156,3 +157,21 @@ class TestListOrCreateRelatedStudentRest(TestListOrCreateRelatedUserMixin, TestC
         content, created = super(TestListOrCreateRelatedStudentRest, self).test_create()
         self.assertEquals(content['candidate_id'], 'cand0')
         self.assertEquals(created.candidate_id, 'cand0')
+
+
+
+#class TestInstanceRelatedUserMixin(object):
+    #def setUp(self):
+        #self.client = RestClient()
+        #self.testhelper = TestHelper()
+        #self.testhelper.add(nodes='uni',
+                            #subjects=['sub'],
+                            #periods=['p1:admin(p1admin)', 'p2:admin(p2admin)'])
+        #self.testhelper.create_superuser("superuser")
+        #self.testhelper.create_user('testuser')
+
+        #self.testhelper.sub_p1.relatedexaminer_set.create(user=self,
+                                                          #tags=tags)
+
+    #def get_url(self, id):
+        #return '/devilry_subjectadmin/rest/relatedstudent/{0}'.format(id)
