@@ -160,18 +160,55 @@ class TestListOrCreateRelatedStudentRest(TestListOrCreateRelatedUserMixin, TestC
 
 
 
-#class TestInstanceRelatedUserMixin(object):
-    #def setUp(self):
-        #self.client = RestClient()
-        #self.testhelper = TestHelper()
-        #self.testhelper.add(nodes='uni',
-                            #subjects=['sub'],
-                            #periods=['p1:admin(p1admin)', 'p2:admin(p2admin)'])
-        #self.testhelper.create_superuser("superuser")
-        #self.testhelper.create_user('testuser')
+class TestInstanceRelatedUserMixin(object):
+    def setUp(self):
+        self.client = RestClient()
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:admin(p1admin)', 'p2:admin(p2admin)'])
+        self.testhelper.create_superuser("superuser")
+        self.testreluser = self.create_reluser_on_p1('testuser', tags='group1,group2')
 
-        #self.testhelper.sub_p1.relatedexaminer_set.create(user=self,
-                                                          #tags=tags)
+    def create_reluser_on_p1(self, username, tags):
+        raise NotImplementedError()
+    def get_url(self, periodid, reluserid):
+        raise NotImplementedError()
 
-    #def get_url(self, id):
-        #return '/devilry_subjectadmin/rest/relatedstudent/{0}'.format(id)
+    def _getas(self, username, periodid, id, **data):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self.get_url(periodid, id), **data)
+
+    def test_get_404(self):
+        content, response = self._getas('p1admin', self.testhelper.sub_p1.id, 40000000)
+        self.assertEquals(response.status_code, 404)
+
+    def test_get_unauthorized(self):
+        content, response = self._getas('p2admin', self.testhelper.sub_p1.id, self.testreluser.id)
+        self.assertEquals(response.status_code, 403)
+
+    def test_get_superuser(self):
+        content, response = self._getas('superuser', self.testhelper.sub_p1.id, self.testreluser.id)
+        self.assertEquals(response.status_code, 200)
+
+
+class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
+    def get_url(self, periodid, reluserid):
+        return '/devilry_subjectadmin/rest/relatedstudent/{0}/{1}/'.format(periodid, reluserid)
+
+    def create_reluser_on_p1(self, username, tags):
+        user = self.testhelper.create_user(username)
+        return self.testhelper.sub_p1.relatedstudent_set.create(user=user,
+                                                                tags=tags)
+    def test_get(self):
+        content, response = self._getas('p1admin', self.testhelper.sub_p1.id, self.testreluser.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content,
+                          {u'id': 1,
+                           u'tags': u'group1,group2',
+                           u'period': 1,
+                           u'candidate_id': None,
+                           u'user': {u'username': u'testuser',
+                                     u'email': u'testuser@example.com',
+                                     u'full_name': None,
+                                     u'id': 4}})
