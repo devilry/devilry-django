@@ -200,6 +200,7 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
         user = self.testhelper.create_user(username)
         return self.testhelper.sub_p1.relatedstudent_set.create(user=user,
                                                                 tags=tags)
+
     def test_get(self):
         content, response = self._getas('p1admin', self.testhelper.sub_p1.id, self.testreluser.id)
         self.assertEquals(response.status_code, 200)
@@ -208,6 +209,27 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
                            u'tags': u'group1,group2',
                            u'period': 1,
                            u'candidate_id': None,
+                           u'user': {u'username': u'testuser',
+                                     u'email': u'testuser@example.com',
+                                     u'full_name': None,
+                                     u'id': 4}})
+
+class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
+    def get_url(self, periodid, reluserid):
+        return '/devilry_subjectadmin/rest/relatedexaminer/{0}/{1}/'.format(periodid, reluserid)
+
+    def create_reluser_on_p1(self, username, tags):
+        user = self.testhelper.create_user(username)
+        return self.testhelper.sub_p1.relatedexaminer_set.create(user=user,
+                                                                tags=tags)
+
+    def test_get(self):
+        content, response = self._getas('p1admin', self.testhelper.sub_p1.id, self.testreluser.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content,
+                          {u'id': 1,
+                           u'tags': u'group1,group2',
+                           u'period': 1,
                            u'user': {u'username': u'testuser',
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
