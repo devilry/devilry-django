@@ -9,6 +9,8 @@ class RestClient(Client):
     """
 
     def _load_json(self, content):
+        if content.strip() == '':
+            return None
         try:
             return json.loads(content)
         except ValueError, e:
