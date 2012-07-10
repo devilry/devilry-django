@@ -40,7 +40,7 @@ class RelatedUserResource(ModelResource):
             return instance.period_id
 
 
-class ListOrCreateRelatedUserRestMixin(object):
+class ListOrCreateRelatedUserRestMixin(SelfdocumentingMixin):
     getparam_form = ListGetparamForm
     permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
 
@@ -52,10 +52,31 @@ class ListOrCreateRelatedUserRestMixin(object):
         return qry
 
     def get(self, request, period_id):
+        """
+        Get a list of related users. Each entry in the list is a dict/object
+        with the following attributes:
+        {responsetable}
+        """
         return super(ListOrCreateRelatedUserRestMixin, self).get(request)
 
     def post(self, request, period_id):
+        """
+        Create a {modelname}.
+
+        # Parameters
+        {parameterstable}
+
+        # Returns
+        {responsetable}
+        """
         return super(ListOrCreateRelatedUserRestMixin, self).post(request)
+
+    def postprocess_docs(self, docs):
+        responsetable = self.htmlformat_response_from_fields()
+        parameterstable = self.htmlformat_parameters_from_form()
+        return docs.format(modelname=self.resource.model.__name__,
+                           parameterstable=parameterstable,
+                           responsetable=responsetable)
 
 
 class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
