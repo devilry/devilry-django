@@ -334,7 +334,20 @@ class SelfdocumentingMixin(object):
             htmlmethod = '{methodname}_htmldocs'.format(methodname=methodname)
             if not hasattr(self, htmlmethod):
                 continue
-            htmldocs = getattr(self, htmlmethod)()
+            try:
+                htmldocs = getattr(self, htmlmethod)()
+            except Exception, e:
+                from traceback import format_tb
+                import sys
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                traceback = format_tb(exc_traceback)
+                errormsg = ''.join(['Traceback (most recent call last):\n'] + traceback)
+                htmldocs = ('<h1 style="color:#a00">ERROR: Failed to parse docs for {methodname}</h1>'
+                            '<p>This is shown here instead of throwing an exception because '
+                            'the framework swallows exceptions. Error traceback: '
+                            '<pre style="color:#a00">{error}</pre>'
+                            '</p>').format(methodname=methodname.upper(),
+                                           error=errormsg)
             if htmldocs:
                 docs.append(self._postprocess_docs(htmldocs, methodname))
         return '\n\n'.join(docs)
