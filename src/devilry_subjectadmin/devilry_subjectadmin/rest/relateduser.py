@@ -37,15 +37,17 @@ class RelatedUserResource(ModelResource):
 
 
 class ListRelatedUsersRestMixin(SelfdocumentingMixin):
+    def get_period_id(self): # Overridden in ListRelatedUsersOnAssignmentMixin
+        return self.kwargs['period_id']
 
     def get_queryset(self):
-        period_id = self.kwargs['period_id']
+        period_id = self.get_period_id()
         qry = self.resource.model.objects.filter(period=period_id)
         qry = qry.select_related('user', 'user__devilryuserprofile')
         qry = qry.order_by('user__devilryuserprofile__full_name')
         return qry
 
-    def get(self, request, period_id):
+    def get(self, request, **kwargs): # NOTE: We take **kwargs because this method is called with period_id or assignment_id(subclass), however it only uses ``request`` (the kwarg is used by permission handlers)
         """
         Get a list of related users. Each entry in the list is a dict/object
         with the following attributes:
