@@ -11,13 +11,9 @@ from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
 
 from .auth import IsPeriodAdmin
-from .mixins import GetParamFormMixin
 from .mixins import SelfdocumentingMixin
 
 
-
-class ListGetparamForm(forms.Form):
-    period = forms.IntegerField(required=True)
 
 
 class IsPeriodAdminPeriodIdKwarg(IsPeriodAdmin):
@@ -40,9 +36,7 @@ class RelatedUserResource(ModelResource):
             return instance.period_id
 
 
-class ListOrCreateRelatedUserRestMixin(SelfdocumentingMixin):
-    getparam_form = ListGetparamForm
-    permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
+class ListRelatedUsersRestMixin(SelfdocumentingMixin):
 
     def get_queryset(self):
         period_id = self.kwargs['period_id']
@@ -57,7 +51,15 @@ class ListOrCreateRelatedUserRestMixin(SelfdocumentingMixin):
         with the following attributes:
         {responsetable}
         """
-        return super(ListOrCreateRelatedUserRestMixin, self).get(request)
+        return super(ListRelatedUsersRestMixin, self).get(request)
+
+    def postprocess_get_docs(self, docs):
+        responsetable = self.htmlformat_response_from_fields()
+        return docs.format(modelname=self.resource.model.__name__,
+                           responsetable=responsetable)
+
+
+class CreateRelatedUserRestMixin(SelfdocumentingMixin):
 
     def post(self, request, period_id):
         """
@@ -69,9 +71,9 @@ class ListOrCreateRelatedUserRestMixin(SelfdocumentingMixin):
         # Returns
         {responsetable}
         """
-        return super(ListOrCreateRelatedUserRestMixin, self).post(request)
+        return super(CreateRelatedUserRestMixin, self).post(request)
 
-    def postprocess_docs(self, docs):
+    def postprocess_post_docs(self, docs):
         responsetable = self.htmlformat_response_from_fields()
         parameterstable = self.htmlformat_parameters_from_form()
         return docs.format(modelname=self.resource.model.__name__,
@@ -119,10 +121,10 @@ class RelatedExaminerResource(RelatedUserResource):
     model = RelatedExaminer
 
 
-class ListOrCreateRelatedExaminerRest(ListOrCreateRelatedUserRestMixin,
-                                      ListOrCreateModelView,
-                                      GetParamFormMixin):
+class ListOrCreateRelatedExaminerRest(CreateRelatedUserRestMixin, ListRelatedUsersRestMixin,
+                                      ListOrCreateModelView):
     resource = RelatedExaminerResource
+    permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
 
 
 class InstanceRelatedExaminerRest(InstanceRelatedUserRestBaseView):
@@ -138,10 +140,11 @@ class RelatedStudentResource(RelatedUserResource):
     model = RelatedStudent
     fields = RelatedUserResource.fields + ('candidate_id',)
 
-class ListOrCreateRelatedStudentRest(ListOrCreateRelatedUserRestMixin,
-                                     ListOrCreateModelView,
-                                     GetParamFormMixin):
+class ListOrCreateRelatedStudentRest(CreateRelatedUserRestMixin, ListRelatedUsersRestMixin,
+                                     ListOrCreateModelView):
     resource = RelatedStudentResource
+    permissions = (IsAuthenticated, IsPeriodAdminPeriodIdKwarg)
+
 
 class InstanceRelatedStudentRest(InstanceRelatedUserRestBaseView):
     """
