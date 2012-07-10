@@ -14,6 +14,8 @@ from .relateduser import ListOrCreateRelatedExaminerRest
 from .relateduser import InstanceRelatedExaminerRest
 from .relateduser import ListOrCreateRelatedStudentRest
 from .relateduser import InstanceRelatedStudentRest
+from .relateduser_assignment_ro import ListRelatedStudentsOnAssignmentRest
+from .relateduser_assignment_ro import ListRelatedExaminersOnAssignmentRest
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
@@ -29,4 +31,6 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^relatedstudent/(?P<period_id>\d+)/(?P<id>\d+)/$', InstanceRelatedStudentRest.as_view()),
                        url(r'^assignment/$', ListOrCreateAssignmentRest.as_view()),
                        url(r'^assignment/(?P<id>[^/]+)$', InstanceAssignmentRest.as_view()),
+                       url(r'^relatedstudent_assignment_ro/(?P<assignment_id>\d+)/$', ListRelatedStudentsOnAssignmentRest.as_view()),
+                       url(r'^relatedexaminer_assignment_ro/(?P<assignment_id>\d+)/$', ListRelatedExaminersOnAssignmentRest.as_view()),
                       )
