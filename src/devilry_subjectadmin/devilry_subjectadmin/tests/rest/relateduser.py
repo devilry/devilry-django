@@ -174,6 +174,10 @@ class TestInstanceRelatedUserMixin(object):
         raise NotImplementedError()
     def get_url(self, periodid, reluserid):
         raise NotImplementedError()
+    def get_valid_putdata(self):
+        return {'period': self.testhelper.sub_p1.id,
+                'tags': 'group10,group20',
+                'user': self.testhelper.testuser.id}
 
     def _getas(self, username, periodid, id, **data):
         self.client.login(username=username, password='test')
@@ -190,6 +194,31 @@ class TestInstanceRelatedUserMixin(object):
     def test_get_superuser(self):
         content, response = self._getas('superuser', self.testhelper.sub_p1.id, self.testreluser.id)
         self.assertEquals(response.status_code, 200)
+
+    def _putas(self, username, periodid, id, data):
+        self.client.login(username=username, password='test')
+        return self.client.rest_put(self.get_url(periodid, id), data)
+
+    def test_put_unauthorized(self):
+        content, response = self._putas('p2admin', self.testhelper.sub_p1.id,
+                                        self.testreluser.id, self.get_valid_putdata())
+        self.assertEquals(response.status_code, 403)
+
+    def test_put_superuser(self):
+        content, response = self._putas('superuser', self.testhelper.sub_p1.id,
+                                        self.testreluser.id, self.get_valid_putdata())
+        self.assertEquals(response.status_code, 200)
+
+    def test_put(self):
+        content, response = self._putas('p1admin', self.testhelper.sub_p1.id,
+                                        self.testreluser.id, self.get_valid_putdata())
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['period'], self.testhelper.sub_p1.id)
+        self.assertEquals(content['tags'], 'group10,group20')
+        self.assertEquals(set(content['user'].keys()), set(['email', 'full_name', 'id', 'username']))
+        self.assertEquals(content['user']['id'], self.testreluser.user.id)
+        self.assertEquals(content['user']['username'], 'testuser')
+        return content
 
 
 class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
@@ -214,6 +243,13 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
                                      u'full_name': None,
                                      u'id': 4}})
 
+    def test_put(self):
+        content = super(TestInstanceRelatedStudent, self).test_put()
+        self.assertEquals(set(content.keys()),
+                          set(['candidate_id', 'id', 'period', 'tags', 'user']))
+
+
+
 class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
     def get_url(self, periodid, reluserid):
         return '/devilry_subjectadmin/rest/relatedexaminer/{0}/{1}/'.format(periodid, reluserid)
@@ -234,3 +270,8 @@ class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
                                      u'id': 4}})
+
+    def test_put(self):
+        content = super(TestInstanceRelatedStudent, self).test_put()
+        self.assertEquals(set(content.keys()),
+                          set(['id', 'period', 'tags', 'user']))
