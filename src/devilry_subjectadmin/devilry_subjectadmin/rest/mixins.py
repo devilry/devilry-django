@@ -296,9 +296,13 @@ class SelfdocumentingMixin(object):
         return self.convert_docs_to_html(self.get_unformatted_docs_for_class())
 
     def method_htmldocs(self, methodname):
-        htmldocs = self.convert_docs_to_html(self.get_unformatted_docs_for_method(methodname))
-        return '<h1>{methodname}</h1>\n{htmldocs}'.format(methodname=methodname.upper(),
-                                                          htmldocs=htmldocs)
+        unformatted_docs = self.get_unformatted_docs_for_method(methodname)
+        if unformatted_docs:
+            htmldocs = self.convert_docs_to_html(unformatted_docs)
+            return '<h1>{methodname}</h1>\n{htmldocs}'.format(methodname=methodname.upper(),
+                                                              htmldocs=htmldocs)
+        else:
+            return None
 
     def get_htmldocs(self):
         return self.method_htmldocs('get')
@@ -321,6 +325,20 @@ class SelfdocumentingMixin(object):
             return self.postprocess_docs(htmldocs)
         return htmldocs
 
+    def _htmlformat_traceback(self, title):
+        from traceback import format_tb
+        import sys
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback = format_tb(exc_traceback)
+        errortraceback = ''.join(['Traceback (most recent call last):\n'] + traceback + ['{0}: {1}'.format(exc_type.__name__, exc_value)])
+        htmlmsg = ('<h1 style="color:#a00">ERROR: {title}</h1>'
+                   '<p>This is shown here instead of throwing an exception because '
+                   'the framework swallows exceptions. Error traceback: '
+                   '<pre style="color:#a00">{traceback}</pre>'
+                   '</p>').format(title=title,
+                                  traceback=errortraceback)
+        return htmlmsg
+
     def all_htmldocs(self):
         """
         Get the HTML-formatted docs for this view.
@@ -328,7 +346,10 @@ class SelfdocumentingMixin(object):
         classhtmldocs = self.class_htmldocs()
         docs = []
         if classhtmldocs:
-            docs.append(self._postprocess_docs(classhtmldocs))
+            try:
+                docs.append(self._postprocess_docs(classhtmldocs))
+            except Exception, e:
+                docs.append(self._htmlformat_traceback('Failed to parse class docs (global API docs)'))
         for methodname in self.allowed_methods:
             methodname = methodname.lower()
             htmlmethod = '{methodname}_htmldocs'.format(methodname=methodname)
@@ -336,20 +357,10 @@ class SelfdocumentingMixin(object):
                 continue
             try:
                 htmldocs = getattr(self, htmlmethod)()
+                if htmldocs:
+                    docs.append(self._postprocess_docs(htmldocs, methodname))
             except Exception, e:
-                from traceback import format_tb
-                import sys
-                exc_type, exc_value, exc_traceback = sys.exc_info()
-                traceback = format_tb(exc_traceback)
-                errormsg = ''.join(['Traceback (most recent call last):\n'] + traceback)
-                htmldocs = ('<h1 style="color:#a00">ERROR: Failed to parse docs for {methodname}</h1>'
-                            '<p>This is shown here instead of throwing an exception because '
-                            'the framework swallows exceptions. Error traceback: '
-                            '<pre style="color:#a00">{error}</pre>'
-                            '</p>').format(methodname=methodname.upper(),
-                                           error=errormsg)
-            if htmldocs:
-                docs.append(self._postprocess_docs(htmldocs, methodname))
+                docs.append(self._htmlformat_traceback('Failed to parse docs for {0}'.format(methodname.upper())))
         return '\n\n'.join(docs)
 
     def get_description(self, html=False):
