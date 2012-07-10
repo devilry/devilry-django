@@ -25,10 +25,20 @@ class ListRelatedUsersOnAssignmentMixin(ListRelatedUsersRestMixin):
 
 
 class ListRelatedStudentsOnAssignmentRest(ListRelatedUsersOnAssignmentMixin, ListModelView):
+    """
+    Read-only listing of related students on the period containing the given assignment
+    (The ID of the assignment is the last segment of the URL). Requires admin
+    permissions on the assignment.
+    """
     resource = RelatedStudentResource
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
 
 
 class ListRelatedExaminersOnAssignmentRest(ListRelatedUsersOnAssignmentMixin, ListModelView):
+    """
+    Read-only listing of related examiners on the period containing the given assignment
+    (The ID of the assignment is the last segment of the URL). Requires admin
+    permissions on the assignment.
+    """
     resource = RelatedExaminerResource
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
