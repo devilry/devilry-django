@@ -220,8 +220,36 @@ class TestInstanceRelatedUserMixin(object):
         self.assertEquals(content['user']['username'], 'testuser')
         return content
 
+    def _deleteas(self, username, periodid, id):
+        self.client.login(username=username, password='test')
+        return self.client.rest_delete(self.get_url(periodid, id))
+
+    def test_delete(self):
+        reluserid = self.testreluser.id
+        self.assertEquals(self.modelcls.objects.filter(id=reluserid).count(), 1)
+        content, response = self._deleteas('p1admin',
+                                           self.testhelper.sub_p1.id,
+                                           reluserid)
+        self.assertEquals(response.status_code, 204)
+        self.assertEquals(self.modelcls.objects.filter(id=reluserid).count(), 0)
+
+    def test_delete_superuser(self):
+        content, response = self._deleteas('superuser',
+                                           self.testhelper.sub_p1.id,
+                                           self.testreluser.id)
+        self.assertEquals(response.status_code, 204)
+
+    def test_delete_unauthorized(self):
+        content, response = self._deleteas('p2admin',
+                                           self.testhelper.sub_p1.id,
+                                           self.testreluser.id)
+        self.assertEquals(response.status_code, 403)
+
+
 
 class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
+    modelcls = RelatedStudent
+
     def get_url(self, periodid, reluserid):
         return '/devilry_subjectadmin/rest/relatedstudent/{0}/{1}/'.format(periodid, reluserid)
 
@@ -251,6 +279,8 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
 
 
 class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
+    modelcls = RelatedExaminer
+
     def get_url(self, periodid, reluserid):
         return '/devilry_subjectadmin/rest/relatedexaminer/{0}/{1}/'.format(periodid, reluserid)
 
@@ -272,6 +302,6 @@ class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
                                      u'id': 4}})
 
     def test_put(self):
-        content = super(TestInstanceRelatedStudent, self).test_put()
+        content = super(TestInstanceRelatedExaminer, self).test_put()
         self.assertEquals(set(content.keys()),
                           set(['id', 'period', 'tags', 'user']))

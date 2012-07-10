@@ -98,9 +98,8 @@ class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
         """
         Delete the {modelname}.
 
-        # Returns
-        Map/dict with a single attribute:
-        {responsetable}
+        # Response
+        Status 204, with empty body on success.
         """
         return super(InstanceRelatedUserRestBaseView, self).delete(request, id)
 
