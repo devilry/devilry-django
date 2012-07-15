@@ -3,7 +3,8 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
     paths: {
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
-        'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras'
+        'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
+        'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch'
     },
 
     requires: [
