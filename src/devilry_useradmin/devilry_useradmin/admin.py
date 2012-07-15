@@ -26,10 +26,7 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 
 def _get_setting(attrname, default=None):
-    if hasattr(settings, attrname):
-        return getattr(settings, attrname)
-    else:
-        return default
+    return getattr(settings, attrname, default)
 
 
 def _get_permissions_fields():
@@ -41,8 +38,8 @@ def _get_permissions_fields():
 
 class InlineDevilryUserProfile(admin.StackedInline):
     model = DevilryUserProfile
-    readonly_fields = _get_setting('DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS',
-                                   default=('languagecode',))
+    readonly_fields = tuple(_get_setting('DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS',
+                                         default=['languagecode']))
     max_num = 1
     can_delete = False
 
@@ -120,11 +117,12 @@ class HasEmailFilter(SimpleListFilter):
 
 
 class DevilryUserAdmin(UserAdmin):
+    add_form_template = 'devilry_useradmin/user_add_form.django.html'
 
     # Customize the edit/add forms
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
-    readonly_fields = ('last_login', 'date_joined') + settings.DEVILRY_USERADMIN_USER_READONLY_FIELDS
+    readonly_fields = ('last_login', 'date_joined') + tuple(_get_setting('DEVILRY_USERADMIN_USER_READONLY_FIELDS', default=[]))
     fieldsets = (
         (None, {'fields': ('username', 'password', 'email')}),
         #(_('Not used by devilry'), {'fields': ('first_name', 'last_name')}),
@@ -134,7 +132,7 @@ class DevilryUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email')}
+            'fields': ('username',)}
         ),
     )
 
@@ -157,12 +155,15 @@ class DevilryUserAdmin(UserAdmin):
     @sensitive_post_parameters()
     @csrf_protect_m
     @transaction.commit_on_success
-    def add_view(self, *args, **kwargs):
+    def add_view(self, request, form_url='', extra_context=None):
         """
         Do not show InlineDevilryUserProfile on the add form.
         """
         self.inlines = []
-        return super(DevilryUserAdmin, self).add_view(*args, **kwargs)
+        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE', '')}
+        if extra_context:
+            extra_extra_context.update(extra_context)
+        return super(DevilryUserAdmin, self).add_view(request, form_url, extra_extra_context)
 
     def _parse_change_form_for_dangerous_attributes(self, request, object_id):
         obj = self.get_object(request, unquote(object_id))
@@ -175,13 +176,13 @@ class DevilryUserAdmin(UserAdmin):
         if form.is_valid():
             return obj, saved_data, form.cleaned_data
         else:
-            raise ValidationError()
+            raise ValidationError('Validation failed')
 
     def _check_for_changes_to_dangerous_attributes(self, request, object_id):
         obj, saved_data, cleaned_data = self._parse_change_form_for_dangerous_attributes(request, object_id)
         changed_dangerous_attributes = []
         for attrname in ('is_staff', 'is_superuser'):
-            if cleaned_data[attrname] != saved_data[attrname] and cleaned_data[attrname] == True:
+            if cleaned_data.get(attrname) != saved_data[attrname] and cleaned_data.get(attrname) == True:
                 changed_dangerous_attributes.append(attrname)
         return obj, changed_dangerous_attributes
 
@@ -204,7 +205,7 @@ class DevilryUserAdmin(UserAdmin):
     @sensitive_post_parameters()
     @csrf_protect_m
     @transaction.commit_on_success
-    def change_view(self, request, object_id, *args, **kwargs):
+    def change_view(self, request, object_id, form_url='', extra_context=None):
         """
         Add InlineDevilryUserProfile to change form.
         """
@@ -226,9 +227,10 @@ class DevilryUserAdmin(UserAdmin):
                         return self._show_confirm_view(request, obj, changed_dangerous_attributes)
                 except ValidationError:
                     pass # Ignore errors, since they are handled in super.change_view()
-        return super(UserAdmin, self).change_view(request, object_id, *args, **kwargs)
-
-
+        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE', '')}
+        if extra_context:
+            extra_extra_context.update(extra_context)
+        return super(UserAdmin, self).change_view(request, object_id, form_url, extra_extra_context)
 
 
 admin.site.unregister(User)
