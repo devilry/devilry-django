@@ -236,6 +236,8 @@ class Command(BaseCommand):
 
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
+        self.testhelper.grandma.is_staff = True
+        self.testhelper.grandma.save()
         logging.info('Creating users')
         self.create_users(bad_students)
         self.create_users(medium_students)
