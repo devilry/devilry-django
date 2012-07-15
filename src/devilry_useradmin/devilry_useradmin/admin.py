@@ -12,6 +12,8 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import force_unicode
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.admin import SimpleListFilter
+from django.db.models import Q
 
 from devilry.apps.core.models import DevilryUserProfile
 
@@ -45,6 +47,78 @@ class InlineDevilryUserProfile(admin.StackedInline):
     can_delete = False
 
 
+
+class HasFullNameFilter(SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('has full name')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'has_full_name'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each tuple is the coded
+        value for the option that will appear in the URL query. The second
+        element is the human-readable name for the option that will appear in
+        the right sidebar.
+        """
+        return (
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value provided in the query
+        string and retrievable via `self.value()`.
+        """
+        # Compare the requested value (either '80s' or 'other')
+        # to decide how to filter the queryset.
+        if self.value() == 'yes':
+            return queryset.filter(Q(devilryuserprofile__full_name__isnull=False) &
+                                   ~Q(devilryuserprofile__full_name__exact=''))
+        if self.value() == 'no':
+            return queryset.filter(Q(devilryuserprofile__full_name__isnull=True) |
+                                   Q(devilryuserprofile__full_name__exact=''))
+
+
+class HasEmailFilter(SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('has email address')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'has_email'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each tuple is the coded
+        value for the option that will appear in the URL query. The second
+        element is the human-readable name for the option that will appear in
+        the right sidebar.
+        """
+        return (
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value provided in the query
+        string and retrievable via `self.value()`.
+        """
+        # Compare the requested value (either '80s' or 'other')
+        # to decide how to filter the queryset.
+        if self.value() == 'yes':
+            return queryset.filter(Q(email__isnull=False) &
+                                   ~Q(email=''))
+        if self.value() == 'no':
+            return queryset.filter(Q(email__isnull=True) |
+                                   Q(email=''))
+
+
+
 class DevilryUserAdmin(UserAdmin):
 
     # Customize the edit/add forms
@@ -65,11 +139,13 @@ class DevilryUserAdmin(UserAdmin):
     )
 
     # Customize the listing
-    list_display = ('username', 'full_name', 'email', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'devilryuserprofile__languagecode')
+    list_display = ('username', 'full_name', 'email', 'is_staff', 'is_superuser', 'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active',
+                   'devilryuserprofile__languagecode', HasFullNameFilter,
+                   HasEmailFilter)
     search_fields = ('username', 'devilryuserprofile__full_name', 'email')
     ordering = ('username',)
-    filter_horizontal = ('user_permissions',)
+    filter_horizontal = []
 
     def full_name(self, user):
         return user.devilryuserprofile.full_name
