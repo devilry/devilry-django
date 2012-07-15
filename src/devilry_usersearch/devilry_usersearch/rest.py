@@ -23,11 +23,14 @@ class IsAnyAdmin(BasePermission):
                                 {'detail': 'Only administrators have permission to query the user database.'})
 
 class UserResource(ModelResource):
-    fields = ('id', 'username', 'email', 'full_name')
+    fields = ('id', 'username', 'email', 'full_name', 'languagecode')
     model = User
 
     def full_name(self, instance):
         return instance.devilryuserprofile.full_name
+
+    def languagecode(self, instance):
+        return instance.devilryuserprofile.languagecode
 
 
 class SearchForUsers(ListModelView):
@@ -49,6 +52,7 @@ class SearchForUsers(ListModelView):
     ## Response
     A list of 0 to 10 users with the following attributes for each user:
 
+    - ``id`` (internal Devilry ID)
     - ``username``
     - ``full_name``
     - ``email``

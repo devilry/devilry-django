@@ -52,6 +52,7 @@ class TestSearchForUsers(TestCase):
                           {'username': 'thor',
                            'id': User.objects.get(username='thor').id,
                            'full_name': 'God of thunder and Battle',
+                           'languagecode': '',
                            'email': 'god.of.thunder.and.battle@thor.com'})
 
     def test_search_nodeadmin(self):
