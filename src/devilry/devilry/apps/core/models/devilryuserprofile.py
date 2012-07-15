@@ -3,6 +3,31 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
 
+def user_is_admin(userobj):
+    """
+    Check if the given user is admin on any node, subject, period or
+    assignment.
+    """
+    from .node import Node
+    from .subject import Subject
+    from .period import Period
+    from .assignment import Assignment
+    for cls in (Node, Subject, Period, Assignment):
+        if cls.where_is_admin(userobj).count() > 0:
+            return True
+    return False
+
+def user_is_admin_or_superadmin(userobj):
+    """
+    Return ``True`` if ``userobj.is_superuser``, and fall back to calling
+    :func:`.user_is_admin` if not.
+    """
+    if userobj.is_superuser:
+        return True
+    else:
+        return user_is_admin(userobj)
+
+
 class DevilryUserProfile(models.Model):
     """ User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
 
