@@ -3,8 +3,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin
-from django.core.exceptions import PermissionDenied
-from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
@@ -18,7 +16,6 @@ from .forms import CustomUserChangeForm
 
 
 csrf_protect_m = method_decorator(csrf_protect)
-
 
 
 def _get_setting(attrname, default=None):
@@ -76,6 +73,9 @@ class DevilryUserAdmin(UserAdmin):
         queryset = super(UserAdmin, self).queryset(request)
         return queryset.select_related('devilryuserprofile')
 
+    @sensitive_post_parameters()
+    @csrf_protect_m
+    @transaction.commit_on_success
     def add_view(self, *args, **kwargs):
         """
         Do not show InlineDevilryUserProfile on the add form.
@@ -83,6 +83,9 @@ class DevilryUserAdmin(UserAdmin):
         self.inlines = []
         return super(DevilryUserAdmin, self).add_view(*args, **kwargs)
 
+    @sensitive_post_parameters()
+    @csrf_protect_m
+    @transaction.commit_on_success
     def change_view(self, *args, **kwargs):
         """
         Add InlineDevilryUserProfile to change form.
