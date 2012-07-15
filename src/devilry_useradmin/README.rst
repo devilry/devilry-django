@@ -53,6 +53,7 @@ Settings that tune the user/group editor:
         to avoid messing up the layout.
 
         Example::
+
             DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
             
 
