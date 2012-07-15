@@ -28,6 +28,12 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
      */
     buttonText: pgettext('uibutton', 'Edit'),
 
+    /**
+     * @cfg {object} buttonListeners
+     * Listeners for the button.
+     */
+    buttonListeners: {},
+
     initComponent: function() {
         var cssclasses = 'editablesidebarbox';
         if(this.cls) {
@@ -48,6 +54,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 scale: 'medium',
                 margin: {left: 15},
                 width: 70,
+                listeners: this.buttonListeners,
                 text: this.buttonText
             }]
         });
