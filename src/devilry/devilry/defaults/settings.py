@@ -25,6 +25,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.contenttypes',
                   'django.contrib.staticfiles',
                   'django.contrib.sessions',
+                  'django.contrib.messages',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
@@ -54,6 +55,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.i18n",
                                "django.core.context_processors.media",
                                "django.core.context_processors.debug",
+                               'django.contrib.messages.context_processors.messages',
                                'devilry.apps.theme.templatecontext.template_variables',
                                'extjs4.context_processors.extjs4')
 
@@ -61,4 +63,5 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'django.contrib.sessions.middleware.SessionMiddleware',
                       'django.contrib.auth.middleware.AuthenticationMiddleware',
-                      'django.middleware.transaction.TransactionMiddleware']
+                      'django.middleware.transaction.TransactionMiddleware',
+                      'django.contrib.messages.middleware.MessageMiddleware']
