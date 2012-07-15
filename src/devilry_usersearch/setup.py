@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-setup(name = 'devilry_extjsextras',
+setup(name = 'devilry_usersearch',
       description = 'General purpose REST APIs for user searching (typically for autocomplete).',
       version = '1.0',
       license='BSD',
