@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.ActionList',
+        'devilry_subjectadmin.view.AdminsBox',
         'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
