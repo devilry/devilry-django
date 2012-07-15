@@ -26,9 +26,11 @@ INSTALLED_APPS += [
                    'devilry_subjectadmin',
                    'devilry_extjsextras',
                    'devilry_usersearch',
+                   'devilry_useradmin',
                    'seleniumhelpers',
                    'extjs4',
                    'djangosenchatools',
+                   'django.contrib.admin',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
@@ -66,6 +68,9 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 ## - http://django_seleniumhelpers.readthedocs.org/
 #SKIP_SELENIUMTESTS = True
 SELENIUM_BROWSER = 'Firefox' # Default selenium browser
+
+
+DEVILRY_USERADMIN_USER_READONLY_FIELDS = ('first_name',)
 
 
 ##
