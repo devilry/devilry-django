@@ -10,7 +10,8 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.contrib.admin.util import unquote
 from django.core.exceptions import ValidationError
 from django.utils.encoding import force_unicode
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from devilry.apps.core.models import DevilryUserProfile
 
@@ -133,6 +134,11 @@ class DevilryUserAdmin(UserAdmin):
         """
         self.inlines = [InlineDevilryUserProfile]
         if request.method == 'POST':
+            if request.POST.get('dangerous_changes_cancel'):
+                del request.session['before_confirm_request_data']
+                messages.add_message(request, messages.INFO, _('Save cancelled by user. Nothing was saved.'))
+                urlname = '{site_name}:auth_user_change'.format(site_name=self.admin_site.name)
+                return redirect(urlname, object_id)
             if request.POST.get('dangerous_changes_confirmed'):
                 request.POST = request.session['before_confirm_request_data']
                 del request.session['before_confirm_request_data']

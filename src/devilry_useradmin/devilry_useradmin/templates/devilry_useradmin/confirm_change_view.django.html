@@ -18,8 +18,8 @@
 <ul>{{ warningmessages|unordered_list }}</ul>
 <form action="" method="post">{% csrf_token %}
     <div>
-        <input type="hidden" name="dangerous_changes_confirmed" value="yes" />
-        <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+        <input type="submit" name="dangerous_changes_confirmed" value="{% trans "Yes, I'm sure" %}" class="default" />
+        <input type="submit" name="dangerous_changes_cancel" value="{% trans "No, I do not want to save the changes" %}" />
     </div>
 </form>
 {% endblock %}
