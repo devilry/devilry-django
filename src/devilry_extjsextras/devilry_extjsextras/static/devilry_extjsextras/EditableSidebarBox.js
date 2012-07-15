@@ -47,7 +47,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 xtype: 'button',
                 scale: 'medium',
                 margin: {left: 15},
-                width: 60,
+                width: 70,
                 text: this.buttonText
             }]
         });
