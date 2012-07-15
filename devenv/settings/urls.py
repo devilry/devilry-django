@@ -17,6 +17,7 @@ urlpatterns = patterns('',
                        # Custom urls for this project
                        (r'^$', RedirectToFrontpage.as_view()),
                        (r'^devilry_subjectadmin/', include('devilry_subjectadmin.urls')),
+                       (r'^devilry_usersearch/', include('devilry_usersearch.urls')),
 
                        # Add the default Devilry urls
                        *devilry_urls
