@@ -1,7 +1,7 @@
 Ext.define('devilry_usersearch.ManageUsersPanel' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.manageuserspanel',
-    cls: 'devilry_usersearch_manageuserspanel',
+    //cls: 'devilry_usersearch_manageuserspanel',
     requires: [
         'devilry_usersearch.AutocompleteUserWidget'
     ],
@@ -30,6 +30,9 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
      */
 
     constructor: function(config) {
+        config.cls = config.cls || this.cls || '';
+        config.cls += ' devilry_usersearch_manageuserspanel';
+        console.log(config.cls);
         this.addEvents({
             /**
              * @event

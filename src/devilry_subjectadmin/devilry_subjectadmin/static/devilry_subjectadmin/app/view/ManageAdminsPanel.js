@@ -1,6 +1,7 @@
 Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
     extend: 'devilry_usersearch.ManageUsersPanel',
     alias: 'widget.manageadminspanel',
+    cls: 'devilry_subjectadmin_manageadminspanel',
     requires: [
         'devilry_usersearch.ManageUsersGridModel'
     ],
