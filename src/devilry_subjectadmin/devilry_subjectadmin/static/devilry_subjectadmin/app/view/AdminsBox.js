@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.AdminsBox', {
     extend: 'Ext.Container',
     alias: 'widget.adminsbox',
-    cls: 'devilry_adminsbox bootstrap',
+    cls: 'devilry_subjectadmin_adminsbox bootstrap',
     requires: [
         'Ext.window.Window',
         'devilry_subjectadmin.utils.UrlLookup',
