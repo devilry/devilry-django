@@ -3,33 +3,39 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
     alias: 'widget.manageuserspanel',
     cls: 'devilry_usersearch_manageuserspanel',
     requires: [
-        'devilry_extjsextras.AlertMessageList',
-        //'devilry_usersearch.AutocompleteUserWidget'
+        'devilry_usersearch.AutocompleteUserWidget'
     ],
 
-    /**
-     * @cfg {String} store (required)
-     * The store to autocomplete users from.
-     */
-
     initComponent: function() {
-        var deleteLabel = gettext('Loading ...');
-        var renameLabel = gettext('Loading ...');
-
+        this.store = Ext.create('devilry_usersearch.UserSearchStore');
 
         Ext.apply(this, {
             frame: false,
             border: 0,
-            bodyPadding: 40,
-            autoScroll: true,
-
+            layout: 'border',
             items: [{
-                xtype: 'alertmessagelist'
+                xtype: 'container',
+                region: 'center',
+                html: 'list of users'
             }, {
-                xtype: 'box',
-                html: 'helloworld'
+                xtype: 'container',
+                layout: 'fit',
+                region: 'south',
+                height: 36,
+                padding: 4,
+                items: {
+                    xtype: 'autocompleteuserwidget',
+                    listeners: {
+                        scope: this,
+                        userSelected: this._onSelectUser
+                    }
+                }
             }]
         });
         this.callParent(arguments);
+    },
+
+    _onSelectUser: function(combo, userRecord) {
+        console.log(userRecord);
     }
 });
