@@ -8,8 +8,8 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     requires: [
         'Ext.window.Window',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.EditableSidebarBox',
-        'devilry_usersearch.ManageUsersPanel'
+        'devilry_subjectadmin.view.ManageAdminsPanel',
+        'devilry_extjsextras.EditableSidebarBox'
     ],
 
     adminsTpl: [
@@ -83,6 +83,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
      */
     setBasenodeRecord: function(basenodeRecord, path) {
         this.setLoading(false);
+        this.basenodeRecord = basenodeRecord;
         this.removeAll();
         this.add([{
             xtype: 'editablesidebarbox',
@@ -121,7 +122,8 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             modal: true,
             title: gettext('Edit administrators'),
             items: {
-                xtype: 'manageuserspanel'
+                xtype: 'manageadminspanel',
+                basenodeRecord: this.basenodeRecord
             }
         }).show();
     }

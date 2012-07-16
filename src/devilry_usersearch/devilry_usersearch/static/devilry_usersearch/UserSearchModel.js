@@ -1,4 +1,4 @@
-/** Assignment model. */
+/** User search model. */
 Ext.define('devilry_usersearch.UserSearchModel', {
     extend: 'Ext.data.Model',
 
