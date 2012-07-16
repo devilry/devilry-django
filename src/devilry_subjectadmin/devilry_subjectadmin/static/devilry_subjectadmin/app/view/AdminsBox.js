@@ -2,12 +2,15 @@
  * Defines a box of admins and inherited admins on a basenode.
  * */
 Ext.define('devilry_subjectadmin.view.AdminsBox', {
-    extend: 'Ext.Panel',
+    extend: 'Ext.Container',
     alias: 'widget.adminsbox',
-    bodyCls: 'devilry_adminsbox bootstrap',
-    title: gettext('Administrators'),
-    ui: 'lookslike-parawitheader-panel',
-    requires: ['devilry_subjectadmin.utils.UrlLookup'],
+    cls: 'devilry_adminsbox bootstrap',
+    requires: [
+        'Ext.window.Window',
+        'devilry_subjectadmin.utils.UrlLookup',
+        'devilry_extjsextras.EditableSidebarBox',
+        'devilry_usersearch.ManageUsersPanel'
+    ],
 
     adminsTpl: [
         '{path}: ',
@@ -32,7 +35,6 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         '</tpl>'
     ],
     inheritedAdminsTpl: [
-        gettext('Inherited:'),
         '<tpl if="inherited_admins.length &gt; 0">',
             '<ul class="devilry_inherited_administratorlist">',
                 '<tpl for="inherited_admins">',
@@ -83,18 +85,44 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         this.setLoading(false);
         this.removeAll();
         this.add([{
-            xtype: 'box',
-            tpl: this.adminsTpl,
+            xtype: 'editablesidebarbox',
+            title: gettext('Administrators'),
+            bodyTpl: this.adminsTpl,
             data: {
                 path: path,
                 admins: basenodeRecord.get('admins')
+            },
+            buttonListeners: {
+                scope: this,
+                click: this._onEdit
             }
         }, {
-            xtype: 'box',
-            tpl: this.inheritedAdminsTpl,
-            data: {
-                inherited_admins: this._get_inherited_with_urls(basenodeRecord)
-            }
+            xtype: 'panel',
+            margin: {top: 10},
+            ui: 'lookslike-parawitheader-panel',
+            title: gettext('Inherited administrators'),
+            items: [{
+                xtype: 'box',
+                tpl: this.inheritedAdminsTpl,
+                data: {
+                    inherited_admins: this._get_inherited_with_urls(basenodeRecord)
+                }
+            }]
         }]);
+    },
+
+    _onEdit: function() {
+        Ext.widget('window', {
+            layout: 'fit',
+            closable: true,
+            width: 700,
+            height: 500,
+            maximizable: true,
+            modal: true,
+            title: gettext('Edit administrators'),
+            items: {
+                xtype: 'manageuserspanel'
+            }
+        }).show();
     }
 });
