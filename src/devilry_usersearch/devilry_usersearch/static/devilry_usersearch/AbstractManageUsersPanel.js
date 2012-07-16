@@ -7,7 +7,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     ],
 
     gridCellTpl: [
-        '<div class="gridcell">',
+        '<div class="gridcellbody gridcellbody_{username}">',
         '   <div class="full_name"><strong>{full_name}</strong></div>',
         '   <tpl if="!full_name">',
         '       <strong class="username">{username}</strong>',
