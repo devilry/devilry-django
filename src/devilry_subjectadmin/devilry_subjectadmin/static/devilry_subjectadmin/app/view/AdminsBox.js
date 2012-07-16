@@ -84,14 +84,26 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     setBasenodeRecord: function(basenodeRecord, path) {
         this.setLoading(false);
         this.basenodeRecord = basenodeRecord;
+        this.path = path;
+        this._updateView();
+    },
+
+    _updateView: function() {
         this.removeAll();
+        var sorted_admins = Ext.clone(this.basenodeRecord.get('admins'));
+        var sorted_admins = sorted_admins.sort(function(a, b) {
+            var aKey = a.full_name || a.username;
+            var bKey = b.full_name || b.username;
+            return aKey.localeCompare(bKey);
+        });
+        
         this.add([{
             xtype: 'editablesidebarbox',
             title: gettext('Administrators'),
             bodyTpl: this.adminsTpl,
             data: {
-                path: path,
-                admins: basenodeRecord.get('admins')
+                path: this.path,
+                admins: sorted_admins
             },
             buttonListeners: {
                 scope: this,
@@ -106,7 +118,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                 xtype: 'box',
                 tpl: this.inheritedAdminsTpl,
                 data: {
-                    inherited_admins: this._get_inherited_with_urls(basenodeRecord)
+                    inherited_admins: this._get_inherited_with_urls(this.basenodeRecord)
                 }
             }]
         }]);
@@ -123,7 +135,16 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             title: gettext('Edit administrators'),
             items: {
                 xtype: 'manageadminspanel',
-                basenodeRecord: this.basenodeRecord
+                basenodeRecord: this.basenodeRecord,
+                listeners: {
+                    scope: this,
+                    usersAdded: function(userRecords) {
+                        this._updateView();
+                    },
+                    usersRemoved: function(userRecords) {
+                        this._updateView();
+                    }
+                }
             }
         }).show();
     }

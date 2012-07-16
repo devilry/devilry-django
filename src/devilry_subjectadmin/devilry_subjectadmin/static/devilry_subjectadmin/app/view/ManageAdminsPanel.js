@@ -27,7 +27,13 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
         Ext.each(this.basenodeRecord.get('admins'), function(admin) {
             this.store.add(admin);
         }, this);
-        this.store.sort('full_name', 'ASC');
+        this.store.sort([{
+            sorterFn: function(a, b) {
+                var aKey = a.get('full_name') || a.get('username');
+                var bKey = b.get('full_name') || b.get('username');
+                return aKey.localeCompare(bKey);
+            }
+        }]);
     },
 
     _mask: function(message) {

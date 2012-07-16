@@ -9,8 +9,14 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
     gridCellTpl: [
         '<div class="gridcell">',
         '   <div class="full_name"><strong>{full_name}</strong></div>',
+        '   <tpl if="!full_name">',
+        '       <strong class="username">{username}</strong>',
+        '       <small>(', gettext('Full name missing') ,')</small>',
+        '   </tpl>',
         '   <div class="username_and_email">',
-        '       <small class="username">{username}</small>',
+        '       <tpl if="full_name">',
+        '           <small class="username">{username}</small>',
+        '       </tpl>',
         '       <tpl if="email">',
         '          <small class="email">&lt;{email}&gt;</small>',
         '       </tpl>',
@@ -23,6 +29,29 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
      * The store where users are added/deleted by this panel.
      */
 
+    constructor: function(config) {
+        this.addEvents({
+            /**
+             * @event
+             * Fired when one or more users are added.
+             * @param {object} userRecords Array of user records that was added.
+             * */
+            "usersAdded" : true,
+
+            /**
+             * @event
+             * Fired when one or more users are removed.
+             * @param {object} userRecords Array of user records that was removed.
+             * */
+            "usersRemoved" : true
+        });
+
+        // Copy configured listeners into *this* object so that the base class's
+        // constructor will add them.
+        this.listeners = config.listeners;
+
+        this.callParent(arguments);
+    },
 
     initComponent: function() {
         var me = this;
@@ -103,6 +132,7 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
 
     onUserAdded: function(userRecord) {
         this._hightlightUser(userRecord);
+        this.fireEvent('usersAdded', [userRecord]);
     },
 
     /** Implement in subclasses */
