@@ -34,14 +34,14 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
             /**
              * @event
              * Fired when one or more users are added.
-             * @param {object} userRecords Array of user records that was added.
+             * @param {[object]} userRecords Array of user records that was added.
              * */
             "usersAdded" : true,
 
             /**
              * @event
              * Fired when one or more users are removed.
-             * @param {object} userRecords Array of user records that was removed.
+             * @param {[object]} userRecords Array of user records that was removed.
              * */
             "usersRemoved" : true
         });
@@ -83,10 +83,30 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
                     xtype: 'autocompleteuserwidget',
                     listeners: {
                         scope: this,
-                        userSelected: this._onSelectUser
+                        userSelected: this._onAddUser
                     }
                 }
-            }]
+            }],
+
+
+            tbar: [{
+                xtype: 'button',
+                text: gettext('Select all'),
+                listeners: {
+                    scope: this,
+                    click: this._onSelectAll
+                }
+            }, {
+                xtype: 'button',
+                text: gettext('Remove'),
+                listeners: {
+                    scope: this,
+                    click: this._onRemoveUsers
+                }
+            }, '->', {
+                xtype: 'textfield',
+                emptyText: gettext('Search ...')
+            }],
         });
         this.callParent(arguments);
     },
@@ -97,7 +117,7 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
         field.focus();
     },
 
-    _onSelectUser: function(combo, userRecord) {
+    _onAddUser: function(combo, userRecord) {
         var username = userRecord.get('username');
         if(this.store.findExact('username', username) == -1) {
             this.addUser(userRecord);
@@ -118,6 +138,32 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
         }
     },
 
+    _getSelectedUsers: function() {
+        return this.down('grid').getSelectionModel().getSelection();
+    },
+
+    _onRemoveUsers: function() {
+        var selectedUsers = this._getSelectedUsers();
+        var confirmMessage = gettext('Do you really want to remove the {numselected} selected users from the list?');
+        Ext.MessageBox.show({
+            title: gettext('Confirm remove'),
+            msg: Ext.create('Ext.XTemplate', confirmMessage).apply({
+                numselected: selectedUsers.length
+            }),
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.removeUsers(selectedUsers);
+                }
+            },
+            scope: this
+        });
+    },
+    _onSelectAll: function() {
+        this.down('grid').getSelectionModel().selectAll();
+    },
+
     /**
      * May want to override this in subclasses.
      * */
@@ -135,8 +181,18 @@ Ext.define('devilry_usersearch.ManageUsersPanel' ,{
         this.fireEvent('usersAdded', [userRecord]);
     },
 
+    onUsersRemoved: function(userRecords) {
+        this.fireEvent('usersRemoved', [userRecords]);
+    },
+
+
     /** Implement in subclasses */
     addUser: function(userRecord) {
         throw "addUser not implemented";
+    },
+
+    /** Implement in subclasses */
+    removeUsers: function(userRecord) {
+        throw "removeUsers not implemented";
     }
 });

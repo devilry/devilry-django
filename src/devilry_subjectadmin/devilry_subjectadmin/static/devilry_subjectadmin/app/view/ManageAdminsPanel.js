@@ -43,6 +43,11 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
         this.setLoading(false);
     },
 
+    _onProxyError: function(proxy, response, operation) {
+        this._unmask();
+        console.error('Save failed', response, operation);
+    },
+
     addUser: function(userRecord) {
         this.basenodeRecord.get('admins').push({
             id: userRecord.get('id')
@@ -52,20 +57,39 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
         this.basenodeRecord.save({
             scope: this,
             success: function() {
-                this._onSaveSuccess(userRecord);
+                this._unmask();
+                this._resetStore();
+                this.onUserAdded(userRecord);
             }
         });
-        this._resetStore();
     },
 
-    _onSaveSuccess: function(userRecord) {
-        this._unmask();
-        this._resetStore();
-        this.onUserAdded(userRecord);
+    /* Get the remaining records after removing the given userRecords */
+    _getRemainingAfterRemove: function(userRecords) {
+        var deleteIds = [];
+        Ext.each(userRecords, function(userRecord) {
+            deleteIds.push(userRecord.get('id'));
+        });
+        var remainingAdmins = [];
+        Ext.each(this.basenodeRecord.get('admins'), function(admin) {
+            if(deleteIds.indexOf(admin.id) == -1) {
+                remainingAdmins.push(admin);
+            }
+        });
+        return remainingAdmins;
     },
 
-    _onProxyError: function(proxy, response, operation) {
-        this._unmask();
-        console.error('Save failed', response, operation);
-    },
+    removeUsers: function(userRecords) {
+        var remainingAdmins = this._getRemainingAfterRemove(userRecords);
+        this.basenodeRecord.set('admins', remainingAdmins);
+        this._mask('Saving ...');
+        this.basenodeRecord.save({
+            scope: this,
+            success: function() {
+                this._unmask();
+                this._resetStore();
+                this.onUsersRemoved(userRecords);
+            }
+        });
+    }
 });
