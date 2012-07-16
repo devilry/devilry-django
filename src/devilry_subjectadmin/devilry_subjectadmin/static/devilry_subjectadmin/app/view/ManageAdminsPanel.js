@@ -1,5 +1,5 @@
 Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
-    extend: 'devilry_usersearch.ManageUsersPanel',
+    extend: 'devilry_usersearch.AbstractManageUsersPanel',
     alias: 'widget.manageadminspanel',
     cls: 'devilry_subjectadmin_manageadminspanel',
     requires: [
