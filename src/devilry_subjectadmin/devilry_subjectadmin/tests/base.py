@@ -262,3 +262,13 @@ class EditAdministratorsTestMixin(object):
         self.assertUserNotInEditTable('usertwo')
         self.assertUserNotInEditTable('userthree')
         self.assertEquals(basenode.admins.all().count(), 0)
+
+    def test_remove_disabled_enabled(self):
+        basenode = self.getBasenode()
+        basenode.admins.add(self.testhelper.create_user('userone'))
+        self.browseToTestBasenode()
+        self._open_edit_administrators_window()
+
+        self.assertFalse(self._get_remove_button().is_enabled())
+        self._select_user('userone')
+        self.assertTrue(self._get_remove_button().is_enabled())

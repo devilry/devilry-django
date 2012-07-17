@@ -75,6 +75,10 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                         return me.rendererGridCell(userRecord);
                     }
                 }],
+                listeners: {
+                    scope: this,
+                    selectionchange: this._onGridSelectionChange
+                }
             }, {
                 xtype: 'container',
                 layout: 'fit',
@@ -105,6 +109,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                 text: gettext('Remove'),
                 itemId: 'removeButton',
                 cls: 'removeButton',
+                disabled: true,
                 listeners: {
                     scope: this,
                     click: this._onRemoveUsers
@@ -168,6 +173,14 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     },
     _onSelectAll: function() {
         this.down('grid').getSelectionModel().selectAll();
+    },
+
+    _onGridSelectionChange: function(selectionmodel) {
+        if(selectionmodel.getSelection().length == 0) {
+            this.down('#removeButton').disable();
+        } else {
+            this.down('#removeButton').enable();
+        }
     },
 
     /**
