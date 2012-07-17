@@ -157,7 +157,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.periodRecord);
         this._setMenuLabels();
-        this.getAdminsbox().setBasenodeRecord(this.periodRecord, this._getPath());
+        this.getAdminsbox().setBasenodeRecord(this.periodRecord);
         this.getBasenodehierlocation().setLocation(this.periodRecord);
     },
     _onLoadPeriodFailure: function(operation) {

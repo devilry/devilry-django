@@ -114,7 +114,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         this.application.setTitle(this.subjectRecord.get('short_name'));
         this.getActions().setTitle(record.get('long_name'));
         this.setBreadcrumb(this.subjectRecord);
-        this.getAdminsbox().setBasenodeRecord(this.subjectRecord, this.subjectRecord.get('short_name'));
+        this.getAdminsbox().setBasenodeRecord(this.subjectRecord);
         this.getBasenodehierlocation().setLocation(this.subjectRecord);
         this._setDangerousActionsLabels();
     },

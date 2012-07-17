@@ -13,7 +13,6 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     ],
 
     adminsTpl: [
-        '{path}: ',
         '<tpl if="admins.length &gt; 0">',
             '<ul class="devilry_subjectadmin_administratorlist">',
                 '<tpl for="admins">',
@@ -77,14 +76,10 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     /**
      * @param {Object} basenodeRecord (required)
      * A basenode record with ``admins`` and ``inherited_admins`` fields.
-     *
-     * @param {string} path (required)
-     * The unique path to the basenode.
      */
-    setBasenodeRecord: function(basenodeRecord, path) {
+    setBasenodeRecord: function(basenodeRecord) {
         this.setLoading(false);
         this.basenodeRecord = basenodeRecord;
-        this.path = path;
         this._updateView();
     },
 
@@ -102,7 +97,6 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             title: gettext('Administrators'),
             bodyTpl: this.adminsTpl,
             data: {
-                path: this.path,
                 admins: sorted_admins
             },
             buttonListeners: {
