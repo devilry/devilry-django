@@ -7,7 +7,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
     cls: 'tagsingroupgrid',
     hideHeaders: true,
     requires: [
-        'Ext.XTemplate'
+        'Ext.XTemplate',
+        'devilry_theme.Icons'
     ],
 
     initComponent: function() {
@@ -16,12 +17,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
             title: gettext('Tags'),
             tools: [{
                 xtype: 'splitbutton',
-                iconCls: 'icon-add-16',
+                icon: devilry_theme.Icons.ADD_SMALL,
                 itemId: 'addTag',
                 menu: [{
                     text: gettext('Remove all'),
                     itemId: 'removeAllTags',
-                    iconCls: 'icon-delete-16'
+                    icon: devilry_theme.Icons.DELETE_SMALL
                 }]
             }],
             columns: [{
@@ -32,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
-                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
+                    icon: devilry_theme.Icons.DELETE_SMALL,
                     tooltip: gettext('Remove tag'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);

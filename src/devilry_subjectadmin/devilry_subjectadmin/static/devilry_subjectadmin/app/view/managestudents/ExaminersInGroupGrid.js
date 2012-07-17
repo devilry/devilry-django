@@ -7,7 +7,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     cls: 'examinersingroupgrid',
     hideHeaders: true,
     requires: [
-        'Ext.XTemplate'
+        'Ext.XTemplate',
+        'devilry_theme.Icons'
     ],
 
     rowTpl: [
@@ -25,12 +26,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
             title: gettext('Examiners'),
             tools: [{
                 xtype: 'splitbutton',
-                iconCls: 'icon-add-16',
+                icon: devilry_theme.Icons.ADD_SMALL,
                 itemId: 'addExaminer',
                 menu: [{
                     text: gettext('Remove all'),
                     itemId: 'removeAllExaminers',
-                    iconCls: 'icon-delete-16'
+                    icon: devilry_theme.Icons.DELETE_SMALL
                 }]
             }],
             columns: [{
@@ -44,7 +45,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
-                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
+                    icon: devilry_theme.Icons.DELETE_SMALL,
                     tooltip: gettext('Remove examiner'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);

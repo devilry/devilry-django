@@ -7,7 +7,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
     cls: 'studentsingroupgrid',
     hideHeaders: true,
     requires: [
-        'Ext.XTemplate'
+        'Ext.XTemplate',
+        'devilry_theme.Icons'
     ],
 
     rowTpl: [
@@ -34,7 +35,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
-                    icon: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras/resources/icons/16x16/delete.png',
+                    icon: devilry_theme.Icons.DELETE_SMALL,
                     tooltip: gettext('Remove student from project group'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
