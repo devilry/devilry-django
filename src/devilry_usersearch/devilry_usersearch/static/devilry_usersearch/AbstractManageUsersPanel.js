@@ -216,16 +216,27 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         }
     },
 
-    /**
-     * May want to override this in subclasses if userRecord is not on the
-     * format expected by the template.
-     * */
-    renderPrettyformattedUserGridCell: function(unused, unused2, userRecord) {
-        return this.prettyFormatUserTplCompiled.apply(userRecord.data);
+    /** Use this in subclasses if you have custom columns, but want to be able
+     * to re-use the cell renderer for userinfo. */
+    renderPrettyformattedUserGridCell: function(unused, unused2, record) {
+        return this.prettyFormatUserTplCompiled.apply(this.getUserDataFromRecord(record));
     },
 
-    _hightlightUser: function(userRecord) {
-        var index = this.store.findExact('username', userRecord.get('username'));
+    /**
+     * May want to override this in subclasses if the store records are not
+     * devilry_usersearch.ManageUsersGridModel objects.
+     *
+     * @return Object with username, full_name and email attributes.
+     * */
+    getUserDataFromRecord: function(record) {
+        return record.data;
+    },
+
+    _hightlightUser: function(recordToHighlight) {
+        var usernameToHightlight = this.getUserDataFromRecord(recordToHighlight).username;
+        var index = this.store.findBy(function(storeRecord) {
+            return this.getUserDataFromRecord(storeRecord).username === usernameToHightlight;
+        }, this);
         this.down('grid').getSelectionModel().select(index);
     },
 
@@ -239,7 +250,6 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     onUsersRemoved: function(userRecords) {
         this.fireEvent('usersRemoved', [userRecords]);
     },
-
 
     /** Implement in subclasses */
     addUser: function(userRecord) {
@@ -263,9 +273,10 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
      * model do not have the username, full_name and email fields. */
     search: function(query) {
         this.store.filterBy(function(record) {
-            var username = record.get('username');
-            var full_name = record.get('full_name');
-            var email = record.get('email');
+            var data = this.getUserDataFromRecord(record);
+            var username = data.username;
+            var full_name = data.full_name;
+            var email = data.email;
             return this._queryMatches(username, query) ||
                 this._queryMatches(full_name, query) ||
                 this._queryMatches(email, query);
