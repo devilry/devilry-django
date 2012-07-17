@@ -125,31 +125,23 @@ class EditAdministratorsTestMixin(object):
 
     def assertUserInEditTable(self, username):
         cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
-        try:
-            self.waitForCssSelector(cssquery)
-        except TimeoutException, e:
-            self.fail('User "{username}" not in grid table'.format(username=username))
+        self.waitForCssSelector(cssquery,
+                                msg='User "{username}" not in grid table'.format(username=username))
 
     def assertUserInAdminsList(self, username):
         cssquery = '.devilry_subjectadmin_administratorlist .administratorlistitem_{username}'.format(username=username)
-        try:
-            self.waitForCssSelector(cssquery)
-        except TimeoutException, e:
-            self.fail('User "{username}" not in administrator list'.format(username=username))
+        self.waitForCssSelector(cssquery,
+                               msg='User "{username}" not in administrator list'.format(username=username))
 
     def assertUserNotInEditTable(self, username):
         cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
-        try:
-            self.waitFor(self.selenium, lambda s: len(self.selenium.find_elements_by_css_selector(cssquery)) == 0)
-        except TimeoutException, e:
-            self.fail('User "{username}" not in grid table'.format(username=username))
+        self.waitForCssSelectorNotFound(cssquery,
+                                        msg='User "{username}" not in grid table'.format(username=username))
 
     def assertUserNotInAdminsList(self, username):
         cssquery = '.devilry_subjectadmin_administratorlist .administratorlistitem_{username}'.format(username=username)
-        try:
-            self.waitFor(self.selenium, lambda s: len(self.selenium.find_elements_by_css_selector(cssquery)) == 0)
-        except TimeoutException, e:
-            self.fail('User "{username}" not in administrator list'.format(username=username))
+        self.waitForCssSelectorNotFound(cssquery,
+                                        msg='User "{username}" not in administrator list'.format(username=username))
 
     def test_add_administrators(self):
         self.browseToTestBasenode()
@@ -286,4 +278,5 @@ class EditAdministratorsTestMixin(object):
         searchfield = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .searchfield input[type=text]')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 2)
         searchfield.send_keys('one')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 1)
+        self.waitFor(self.selenium,
+                     lambda s: len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')) == 1)
