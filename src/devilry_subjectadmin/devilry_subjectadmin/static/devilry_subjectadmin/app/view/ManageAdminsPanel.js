@@ -3,7 +3,9 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
     alias: 'widget.manageadminspanel',
     cls: 'devilry_subjectadmin_manageadminspanel',
     requires: [
-        'devilry_usersearch.ManageUsersGridModel'
+        'devilry_usersearch.ManageUsersGridModel',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_extjsextras.HtmlErrorDialog'
     ],
 
     /**
@@ -46,7 +48,12 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
-        console.error('Save failed', response, operation);
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        error.addErrors(response, operation);
+        var errormessage = error.asHtmlList();
+        Ext.widget('htmlerrordialog', {
+            bodyHtml: errormessage
+        }).show();
     },
 
     addUser: function(userRecord) {
