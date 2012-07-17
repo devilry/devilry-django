@@ -96,6 +96,13 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
 
             tbar: [{
+                xtype: 'textfield',
+                emptyText: gettext('Search ...'),
+                listeners: {
+                    scope: this,
+                    change: this._onSearchChange
+                }
+            }, '->', {
                 xtype: 'button',
                 itemId: 'selectAllButton',
                 cls: 'selectAllButton',
@@ -114,9 +121,6 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                     scope: this,
                     click: this._onRemoveUsers
                 }
-            }, '->', {
-                xtype: 'textfield',
-                emptyText: gettext('Search ...')
             }],
         });
         this.callParent(arguments);
@@ -183,6 +187,14 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         }
     },
 
+    _onSearchChange: function(searchfield, newValue, oldValue) {
+        if(newValue === '') {
+            this.clearSearchFilter();
+        } else {
+            this.search(newValue);
+        }
+    },
+
     /**
      * May want to override this in subclasses.
      * */
@@ -213,5 +225,30 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     /** Implement in subclasses */
     removeUsers: function(userRecord) {
         throw "removeUsers not implemented";
+    },
+
+    _queryMatches: function(fieldvalue, query) {
+        if(fieldvalue) {
+            return fieldvalue.toLocaleLowerCase().indexOf(query) > -1;
+        } else {
+            return false;
+        }
+    },
+
+    /** May need to be overridden in subclass if filters are not local, or
+     * model do not have the username, full_name and email fields. */
+    search: function(query) {
+        this.store.filterBy(function(record) {
+            var username = record.get('username');
+            var full_name = record.get('full_name');
+            var email = record.get('email');
+            return this._queryMatches(username, query) ||
+                this._queryMatches(full_name, query) ||
+                this._queryMatches(email, query);
+        }, this);
+    },
+
+    clearSearchFilter: function() {
+        this.store.clearFilter();
     }
 });
