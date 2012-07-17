@@ -4,11 +4,13 @@ from devilry.apps.core.models import Period
 from .base import SubjectAdminSeleniumTestCase
 from .base import RenameBasenodeTestMixin
 from .base import DeleteBasenodeTestMixin
+from .base import EditAdministratorsTestMixin
 
 
 class PeriodTestCommonMixin(object):
     def browseToPeriod(self, id):
         self.browseTo('/period/{id}/'.format(id=id))
+
 
 class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
                          RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
@@ -112,3 +114,20 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
         self.click_delete_button()
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+
+
+class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
+                                   EditAdministratorsTestMixin):
+
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['sub'],
+                            periods=['p1'])
+        self.login('uniadmin')
+
+    def getBasenode(self):
+        return self.testhelper.sub_p1
+
+    def browseToTestBasenode(self):
+        self.browseToPeriod(self.getBasenode().id)
