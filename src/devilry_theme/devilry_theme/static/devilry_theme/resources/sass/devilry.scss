@@ -1,7 +1,10 @@
 // Extjs theme for devilry with overrides from Bootstrap (https://github.com/hecbuma/compass-bootstrap/)
 
+
 // Bootstrap variables
 @import "variables";
+
+@import "devilry_mixins";
 
 // Override extjs variables and import ExtJS
 $color: $grayDark;
@@ -23,6 +26,7 @@ $font-size: $baseFontSize;
 @import "doesnotexist";
 @import "forms-port";
 @import "grid";
+@import "boundlist";
 @import "inset-header-panel";
 @import "inset-header-strong-panel";
 @import "inset-header-danger-panel";

@@ -1,44 +1,7 @@
-.x-grid-row {
-    .x-grid-cell-inner {
-        strong {
-            font-size: $baseFontSize + 2;
-            line-height: $baseLineHeight + 3px;
-        }
-        small {
-            font-size: $baseFontSize - 2;
-            color: $gray;
-        }
-        .success, small.success {
-            color: $green;
-        }
-        .danger, small.danger {
-            color: $orangeDark;
-        }
-
-        .countbox {
-            background-color: $gray;
-            color: $white;
-            padding: 2px 4px;
-            margin: 2px 0;
-            display: inline-block;
-            font-size: $baseFontSize - 2;
-            @include border-radius(3px 3px 3px 3px);
-        }
-    }
+.x-grid-row .x-grid-cell-inner {
+    @include selectableRowStyles();
 }
 
-.x-grid-row-selected {
-    .x-grid-cell-inner {
-        color: #fff;
-        small {
-            color: #eee;
-        }
-
-        .success, small.success {
-            color: #fff;
-        }
-        .danger, small.danger {
-            color: #fff;
-        }
-    }
+.x-grid-row-selected .x-grid-cell-inner {
+    @include selectableRowStylesSelected();
 }
