@@ -106,15 +106,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this._loadAssignments(this.period_id);
     },
 
-    _setBreadcrumbs: function(breadcrumbsExtra, current) {
-        var breadcrumbsBase = [{
-            text: gettext("All subjects"),
-            url: '/'
-        }];
-        var breadcrumbs = breadcrumbsBase.concat(breadcrumbsExtra);
-        this.application.breadcrumbs.set(breadcrumbs, current);
-    },
-
     _setMenuLabels: function() {
         var periodpath = this._getPath();
         var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
