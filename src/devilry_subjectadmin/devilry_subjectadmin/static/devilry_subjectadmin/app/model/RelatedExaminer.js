@@ -3,23 +3,19 @@ Ext.define('devilry_subjectadmin.model.RelatedExaminer', {
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
-        {name: 'user_id',  type: 'int'},
-        {name: 'user__username',  type: 'string'},
-        {name: 'user__email',  type: 'string'},
-        {name: 'user__devilryuserprofile__full_name',  type: 'string'},
-        {name: 'tags', type: 'string'}
+        {name: 'period',  type: 'int'},
+        {name: 'user',  type: 'auto'}
     ],
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/rest/relatedexaminer/',
+        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/relatedexaminer/{0}/',
+        url: null, // We use baseurl to dynamically set the url from urlpatt
         extraParams: {
-            _devilry_accept: 'application/json'
+            format: 'json'
         },
         reader: {
-            type: 'json',
-            //root: 'items',
-            //record: 'item'
+            type: 'json'
         }
     }
 });
