@@ -93,6 +93,8 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
             tbar: [{
                 xtype: 'button',
+                itemId: 'selectAllButton',
+                cls: 'selectAllButton',
                 text: gettext('Select all'),
                 listeners: {
                     scope: this,
@@ -101,6 +103,8 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
             }, {
                 xtype: 'button',
                 text: gettext('Remove'),
+                itemId: 'removeButton',
+                cls: 'removeButton',
                 listeners: {
                     scope: this,
                     click: this._onRemoveUsers
