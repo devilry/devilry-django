@@ -38,10 +38,16 @@ Ext.define('devilry_usersearch.AutocompleteUserWidget' ,{
             listConfig: {
                 loadingText: gettext('Searching...'),
                 emptyText: gettext('No matching users found.'),
+                cls: 'autocompleteuserwidget_matchlist',
 
                 // Custom rendering template for each item
                 getInnerTpl: function() {
-                    return '<h3>{full_name}</h3>{username}<tpl if="email">&lt;{email}&gt;</tpl>';
+                    return [
+                        '<div class="matchlistitem matchlistitem_{username}">',
+                            '<h3>{full_name}</h3>',
+                            '{username} <tpl if="email">&lt;{email}&gt;</tpl>',
+                        '</div>'
+                    ].join('');
                 }
             }
         });
