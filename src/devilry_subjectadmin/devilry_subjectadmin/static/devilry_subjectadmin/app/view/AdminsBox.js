@@ -36,9 +36,9 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     ],
     inheritedAdminsTpl: [
         '<tpl if="inherited_admins.length &gt; 0">',
-            '<ul class="devilry_inherited_administratorlist">',
+            '<ul class="devilry_subjectadmin_inherited_administratorlist">',
                 '<tpl for="inherited_admins">',
-                    '<li>',
+                    '<li class="inherited_administratorlistitem inherited_administratorlistitem_{user.username}">',
                         '<a href="mailto:{user.email}">',
                             '<tpl if="user.full_name != null">',
                                 '{user.full_name}',
