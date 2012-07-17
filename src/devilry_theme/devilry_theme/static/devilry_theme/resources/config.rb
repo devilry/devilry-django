@@ -1,5 +1,6 @@
 # $ext_path: This should be the path of the Ext JS SDK relative to this file
-$ext_path = "../../../../extjshelpers/static/extjshelpers/extjs"
+#$ext_path = "../../../../extjshelpers/static/extjshelpers/extjs"
+$ext_path = "../../../../../../devenv/parts/omelette/extjs4/static/extjs4/"
 
 this_dir = File.dirname(__FILE__)
 
