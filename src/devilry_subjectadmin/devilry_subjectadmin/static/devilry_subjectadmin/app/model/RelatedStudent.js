@@ -3,24 +3,20 @@ Ext.define('devilry_subjectadmin.model.RelatedStudent', {
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
+        {name: 'period',  type: 'int'},
         {name: 'candidate_id',  type: 'string'},
-        {name: 'user_id',  type: 'int'},
-        {name: 'user__username',  type: 'string'},
-        {name: 'user__email',  type: 'string'},
-        {name: 'user__devilryuserprofile__full_name',  type: 'string'},
-        {name: 'tags', type: 'string'}
+        {name: 'user',  type: 'auto'}
     ],
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/subjectadmin/rest/relatedstudent/',
+        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/relatedstudent/{0}/',
+        url: null, // We use baseurl to dynamically set the url from urlpatt
         extraParams: {
-            _devilry_accept: 'application/json'
+            format: 'json'
         },
         reader: {
-            type: 'json',
-            //root: 'items',
-            //record: 'item'
+            type: 'json'
         }
     }
 });

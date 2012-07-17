@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         'period.ListOfAssignments'
     ],
 
-    stores: ['Assignments'],
+    stores: ['Assignments', 'RelatedExaminers', 'RelatedStudents'],
     models: ['Period'],
 
     requires: [
@@ -45,15 +45,18 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     }, {
         ref: 'overviewofrelatedusers',
         selector: 'periodoverview overviewofrelatedusers'
+    }, {
+        ref: 'relatedstudentslist',
+        selector: 'periodoverview overviewofrelatedusers #students'
+    }, {
+        ref: 'relatedexaminerslist',
+        selector: 'periodoverview overviewofrelatedusers #examiners'
     }],
 
     init: function() {
         this.control({
             'viewport periodoverview': {
                 render: this._onPeriodViewRender
-            },
-            'viewport periodoverview overviewofrelatedusers': {
-                render: this._onOverviewOfRelatedUsersRender
             },
             'viewport periodoverview #deleteButton': {
                 click: this._onDelete
@@ -64,8 +67,34 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         });
     },
 
-    _onOverviewOfRelatedUsersRender: function() {
-        //this.getOverviewofrelatedusers();
+    _loadRelatedUsers: function(period_id) {
+        this.getRelatedExaminersStore().loadInPeriod(period_id, {
+            scope: this,
+            callback: this._onLoadRelatedExaminers
+        });
+        this.getRelatedStudentsStore().loadInPeriod(period_id, {
+            scope: this,
+            callback: this._onLoadRelatedStudents
+        });
+    },
+
+    _onLoadRelatedExaminers: function(records, operation) {
+        if(operation.success) {
+            this.getRelatedexaminerslist().setUserRecords(records);
+        } else {
+            this.onLoadFailure(operation);
+            //this.getRelatedstudentslist().setFailedToLoad();
+            this.getRelatedexaminerslist().setFailedToLoad();
+        }
+    },
+
+    _onLoadRelatedStudents: function(records, operation) {
+        if(operation.success) {
+            this.getRelatedstudentslist().setUserRecords(records);
+        } else {
+            this.onLoadFailure(operation);
+            this.getRelatedstudentslist().setFailedToLoad();
+        }
     },
 
     _getPath: function() {
@@ -76,6 +105,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setLoadingBreadcrumb();
         this.period_id = this.getPeriodOverview().period_id;
         this._loadPeriod(this.period_id);
+        this._loadRelatedUsers(this.period_id);
         this._loadAssignments(this.period_id);
     },
 
