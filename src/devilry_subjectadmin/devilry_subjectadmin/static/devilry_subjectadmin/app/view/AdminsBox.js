@@ -15,9 +15,9 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     adminsTpl: [
         '{path}: ',
         '<tpl if="admins.length &gt; 0">',
-            '<ul class="devilry_administratorlist">',
+            '<ul class="devilry_subjectadmin_administratorlist">',
                 '<tpl for="admins">',
-                    '<li>',
+                    '<li class="administratorlistitem administratorlistitem_{username}">',
                         '<a href="mailto:{email}">',
                             '<tpl if="full_name != null">',
                                 '{full_name}',
