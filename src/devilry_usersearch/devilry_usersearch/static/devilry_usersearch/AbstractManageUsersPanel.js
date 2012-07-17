@@ -210,11 +210,31 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
     _onSearchChange: function(searchfield, newValue, oldValue) {
         if(newValue === '') {
-            this.clearSearchFilter();
+            this._clearSearchFilter();
         } else {
-            this.search(newValue);
+            this._search(newValue);
         }
     },
+
+    _hightlightUser: function(recordToHighlight) {
+        var usernameToHightlight = this.getUserDataFromRecord(recordToHighlight).username;
+        var index = this.store.findBy(function(storeRecord) {
+            return this.getUserDataFromRecord(storeRecord).username === usernameToHightlight;
+        }, this);
+        this.down('grid').getSelectionModel().select(index);
+    },
+
+    _search: function(query) {
+        this.store.filterBy(function(record) {
+            return this.searchMatchesRecord(query, record);
+        }, this);
+    },
+
+    _clearSearchFilter: function() {
+        this.store.clearFilter();
+    },
+
+
 
     /** Use this in subclasses if you have custom columns, but want to be able
      * to re-use the cell renderer for userinfo. */
@@ -230,14 +250,6 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
      * */
     getUserDataFromRecord: function(record) {
         return record.data;
-    },
-
-    _hightlightUser: function(recordToHighlight) {
-        var usernameToHightlight = this.getUserDataFromRecord(recordToHighlight).username;
-        var index = this.store.findBy(function(storeRecord) {
-            return this.getUserDataFromRecord(storeRecord).username === usernameToHightlight;
-        }, this);
-        this.down('grid').getSelectionModel().select(index);
     },
 
     /** Called by subclasses when #addUser is successful. */
@@ -261,7 +273,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         throw "removeUsers not implemented";
     },
 
-    _queryMatches: function(fieldvalue, query) {
+    caseIgnoreContains: function(fieldvalue, query) {
         if(fieldvalue) {
             return fieldvalue.toLocaleLowerCase().indexOf(query) > -1;
         } else {
@@ -269,21 +281,15 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         }
     },
 
-    /** May need to be overridden in subclass if filters are not local, or
-     * model do not have the username, full_name and email fields. */
-    search: function(query) {
-        this.store.filterBy(function(record) {
-            var data = this.getUserDataFromRecord(record);
-            var username = data.username;
-            var full_name = data.full_name;
-            var email = data.email;
-            return this._queryMatches(username, query) ||
-                this._queryMatches(full_name, query) ||
-                this._queryMatches(email, query);
-        }, this);
-    },
-
-    clearSearchFilter: function() {
-        this.store.clearFilter();
+    /** Override this to replace, or extend the search. */
+    searchMatchesRecord: function(query, record) {
+        var data = this.getUserDataFromRecord(record);
+        var username = data.username;
+        var full_name = data.full_name;
+        var email = data.email;
+        return this.caseIgnoreContains(username, query) ||
+            this.caseIgnoreContains(full_name, query) ||
+            this.caseIgnoreContains(email, query);
     }
+
 });
