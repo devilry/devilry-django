@@ -114,7 +114,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         }, {
             xtype: 'formhelp',
             margin: {top: 5},
-            help: gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.')
+            html: gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.')
 
         // Publishing time
         }, {

@@ -51,7 +51,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         fieldsetbutton.click()
 
         self.assertTrue('Anonymous?' in self.selenium.page_source)
-        self.assertTrue('If an assignment is anonymous, examiners see a candidate-id instead of a username' in self.selenium.page_source)
+        self.assertTrue('If an assignment is anonymous, examiners see' in self.selenium.page_source)
         self.assertTrue('Publishing time' in self.selenium.page_source)
         self.assertTrue('Add all students to this assignment?' in self.selenium.page_source)
         self.assertTrue('Automatically setup examiners?' in self.selenium.page_source)
