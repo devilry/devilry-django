@@ -3,11 +3,12 @@
 
     $ui-base-color: $panel-base-color,
     $ui-border-width: 3px,
-    $ui-border-color: #FFCCCC,
+    //$ui-border-color: #FFCCCC,
+    $ui-border-color: #ddd,
     $ui-border-radius: 6px,
 
     $ui-header-color: #991A00,
-    $ui-header-font-size: $baseFontSize + 8px,
+    $ui-header-font-size: $baseFontSize + 4px,
     $ui-header-font-weight: normal,
     $ui-header-border-color: #fff,
     $ui-header-background-color: null,
@@ -23,6 +24,7 @@
     overflow: visible !important;
     .x-panel-header-inset-header-danger-panel {
         overflow: visible !important;
+        padding: 0;
         .x-panel-header-body-inset-header-danger-panel-horizontal {
             overflow: visible !important;
             .x-box-inner {
@@ -35,7 +37,7 @@
                     span.x-panel-header-text-inset-header-danger-panel {
                         padding: 0 15px 0 15px;
                         position: absolute;
-                        top: -27px;
+                        top: -21px;
                         left: 0;
                         background-color: #fff;
                     }
