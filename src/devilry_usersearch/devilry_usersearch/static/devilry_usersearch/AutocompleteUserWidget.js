@@ -45,7 +45,10 @@ Ext.define('devilry_usersearch.AutocompleteUserWidget' ,{
                     return [
                         '<div class="matchlistitem matchlistitem_{username}">',
                             '<h3>{full_name}</h3>',
-                            '{username} <tpl if="email">&lt;{email}&gt;</tpl>',
+                            '<small class="username">{username}</small>',
+                            '<tpl if="email">',
+                                ' <small class="email">&lt;{email}&gt;</small>',
+                            '</tpl>',
                         '</div>'
                     ].join('');
                 }
