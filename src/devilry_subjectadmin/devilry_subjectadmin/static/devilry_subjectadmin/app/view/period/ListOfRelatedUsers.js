@@ -4,7 +4,10 @@
 Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.listofrelatedusers',
-    cls: '',
+    requires: [
+        'devilry_extjsextras.AlertMessageList',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
+    ],
 
     listTemplate: [
         '<div class="bootstrap">',
@@ -24,9 +27,6 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
             '</tpl>',
             '<tpl if="loading">',
                 gettext('Loading ...'),
-            '</tpl>',
-            '<tpl if="failedToLoad">',
-                gettext('Failed to load. See error message at the top of the page.'),
             '</tpl>',
         '</div>'
     ],
@@ -58,14 +58,16 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
                 title: this.title,
                 region: 'center',
                 autoScroll: true,
-                items: {
+                items: [{
+                    xtype: 'alertmessagelist'
+                }, {
                     xtype: 'box',
                     itemId: 'userslist',
                     tpl: this.listTemplate,
                     data: {
                         loading: true
                     }
-                },
+                }],
                 dockedItems: [{
                     xtype: 'toolbar',
                     dock: 'bottom',
@@ -96,9 +98,10 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
         });
     },
 
-    setFailedToLoad: function() {
-        this.down('#userslist').update({
-            failedToLoad: true
-        });
+    setFailedToLoad: function(operation) {
+        this.down('#userslist').update({});
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        error.addErrors(null, operation);
+        this.down('alertmessagelist').addMany(error.errormessages, 'error');
     }
 });

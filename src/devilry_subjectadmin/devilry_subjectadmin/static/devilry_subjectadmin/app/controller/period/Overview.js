@@ -82,9 +82,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         if(operation.success) {
             this.getRelatedexaminerslist().setUserRecords(records);
         } else {
-            this.onLoadFailure(operation);
-            //this.getRelatedstudentslist().setFailedToLoad();
-            this.getRelatedexaminerslist().setFailedToLoad();
+            this.getRelatedexaminerslist().setFailedToLoad(operation);
         }
     },
 
@@ -92,8 +90,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         if(operation.success) {
             this.getRelatedstudentslist().setUserRecords(records);
         } else {
-            this.onLoadFailure(operation);
-            this.getRelatedstudentslist().setFailedToLoad();
+            this.getRelatedstudentslist().setFailedToLoad(operation);
         }
     },
 
