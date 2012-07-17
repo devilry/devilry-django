@@ -64,10 +64,8 @@ Ext.define('devilry_subjectadmin.view.period.ManageRelatedUsersPanel' ,{
         this.setLoading(false);
     },
 
-    renderPrettyformattedUserGridCell: function(unused, unused2, record) {
-        console.log(record.data);
-        var user = record.get('user');
-        return this.prettyFormatUserTplCompiled.apply(user);
+    getUserDataFromRecord: function(record) {
+        return record.get('user');
     },
 
     _renderTagsCell: function(unused, unused2, record) {
