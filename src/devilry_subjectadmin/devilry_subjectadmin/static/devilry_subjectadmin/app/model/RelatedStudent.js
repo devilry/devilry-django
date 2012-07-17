@@ -1,9 +1,10 @@
 Ext.define('devilry_subjectadmin.model.RelatedStudent', {
-    extend: 'Ext.data.Model',
+    extend: 'devilry_subjectadmin.model.RelatedUserBase',
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'period',  type: 'int'},
+        {name: 'tags',  type: 'string'},
         {name: 'candidate_id',  type: 'string'},
         {name: 'user',  type: 'auto'}
     ],
