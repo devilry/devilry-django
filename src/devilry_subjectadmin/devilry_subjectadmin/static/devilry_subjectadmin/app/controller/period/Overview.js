@@ -80,7 +80,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
 
     _onLoadRelatedExaminers: function(records, operation) {
         if(operation.success) {
-            this.getRelatedexaminerslist().setUserRecords(records);
+            this.getRelatedexaminerslist().setLoadedStore(this.getRelatedExaminersStore());
         } else {
             this.getRelatedexaminerslist().setFailedToLoad(operation);
         }
@@ -88,7 +88,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
 
     _onLoadRelatedStudents: function(records, operation) {
         if(operation.success) {
-            this.getRelatedstudentslist().setUserRecords(records);
+            this.getRelatedstudentslist().setLoadedStore(this.getRelatedStudentsStore());
         } else {
             this.getRelatedstudentslist().setFailedToLoad(operation);
         }

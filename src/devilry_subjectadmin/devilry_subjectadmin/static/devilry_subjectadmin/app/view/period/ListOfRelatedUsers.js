@@ -6,7 +6,9 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
     alias: 'widget.listofrelatedusers',
     requires: [
         'devilry_extjsextras.AlertMessageList',
-        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_subjectadmin.view.period.ManageRelatedUsersPanel',
+        'devilry_subjectadmin.view.period.ManageRelatedStudentsPanel'
     ],
 
     listTemplate: [
@@ -46,6 +48,12 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
      * The text of the "manage" button
      */
 
+    /**
+     * @cfg {String} managepanelxtype
+     * The xtype of the manage panel.
+     */
+    managepanelxtype: 'managerelateduserspanel',
+
     initComponent: function() {
         var cls = Ext.String.format('devilry_subjectadmin_listofrelatedusers devilry_subjectadmin_listofrelated_{0}', this.css_suffix);
         Ext.apply(this, {
@@ -77,7 +85,11 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
                         itemId: 'manageButton',
                         scale: 'medium',
                         disabled: true,
-                        text: this.buttonText
+                        text: this.buttonText,
+                        listeners: {
+                            scope: this,
+                            click: this._onManage
+                        }
                     }]
                 }]
             }]
@@ -93,11 +105,12 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
         return data;
     },
 
-    setUserRecords: function(records) {
+    setLoadedStore: function(store) {
         this.down('#userslist').update({
-            users: records
+            users: store.data.items
         });
-        this.down('button').enable();
+        this.down('#manageButton').enable();
+        this.store = store;
     },
 
     setFailedToLoad: function(operation) {
@@ -105,5 +118,30 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
         error.addErrors(null, operation);
         this.down('alertmessagelist').addMany(error.errormessages, 'error');
+    },
+
+    _onManage: function() {
+        Ext.widget('window', {
+            layout: 'fit',
+            closable: true,
+            width: 700,
+            height: 500,
+            maximizable: true,
+            modal: true,
+            title: this.buttonText,
+            items: {
+                xtype: this.managepanelxtype,
+                store: this.store,
+                listeners: {
+                    scope: this,
+                    usersAdded: function(userRecords) {
+                        //this._updateView();
+                    },
+                    usersRemoved: function(userRecords) {
+                        //this._updateView();
+                    }
+                }
+            }
+        }).show();
     }
 });

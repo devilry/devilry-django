@@ -17,9 +17,12 @@ Ext.define('devilry_subjectadmin.view.period.OverviewOfRelatedUsers', {
             items: [{
                 columnWidth: 0.4,
                 xtype: 'box',
-                tpl: '{msg}',
+                tpl: '<p>{general}</p><p>{tagging}</p>',
+                cls: 'bootstrap',
+                padding: {right: 20, top: 5},
                 data: {
-                    msg: 'Help coming here'
+                    general: gettext('These users are available when creating/managing assignments.'),
+                    tagging: gettext('Students and examiners can be tagged, and students can easily be assigned to an examiner on assignments as long as they have at least one tag in common.')
                 }
             }, {
                 xtype: 'listofrelatedusers',
@@ -27,7 +30,8 @@ Ext.define('devilry_subjectadmin.view.period.OverviewOfRelatedUsers', {
                 itemId: 'students',
                 title: gettext('Students'),
                 buttonText: gettext('Manage students'),
-                css_suffix: 'students'
+                css_suffix: 'students',
+                managepanelxtype: 'managerelatedstudentspanel'
             }, {
                 xtype: 'listofrelatedusers',
                 columnWidth: .3,
