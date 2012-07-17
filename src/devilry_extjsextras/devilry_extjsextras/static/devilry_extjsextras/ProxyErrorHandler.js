@@ -26,6 +26,10 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
         }
     },
 
+    _formatTpl: function(tpl, data) {
+        return Ext.create('Ext.XTemplate', tpl).apply(data);
+    },
+
     /** Formats the error object returned by ``Ext.data.Operation.getError(). as
      * a string that can be displayed to users.
      * 
@@ -37,10 +41,18 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
             return null;
         }
         var message;
+        var url = operation.request.url;
         if(error.status === 0) {
-            message = 'Could not connect to server.';
+            message = this._formatTpl(gettext('Could not connect to server at URL "{url}".'), {
+                url: url
+            });
         } else {
-            message = Ext.String.format('{0}: {1}', error.status, error.statusText);
+            message = this._formatTpl('The server responded with error message "{status}: {statusText}" when we did a {method}-request to URL "{url}".', {
+                status: error.status,
+                statusText: error.statusText,
+                method: operation.request.method,
+                url: operation.request.url
+            });
         }
         return message;
     },
