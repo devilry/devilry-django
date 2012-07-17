@@ -2,6 +2,8 @@ import re
 from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
 from django.conf import settings
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 
 
 @override_settings(EXTJS4_DEBUG=False)
@@ -88,3 +90,175 @@ class DeleteBasenodeTestMixin(object):
         inputfield.send_keys('DELETE')
         self.waitForEnabled(deletebutton)
         deletebutton.click()
+
+
+class EditAdministratorsTestMixin(object):
+    """
+    Test the Edit/manage administrators window.
+
+    Requires ``self.testhelper = TestHelper()`` in ``setUp()`` of supclass, and
+    the subclass must implement browseToTestBasenode().
+    """
+    def browseToTestBasenode(self):
+        """
+        Browse to the basenode that is returned by :meth:`.getBasenode`.
+        """
+        raise NotImplementedError()
+
+    def getBasenode(self):
+        """
+        Get the basenode that is used to test edit admins.
+        """
+        raise NotImplementedError()
+
+    def _open_edit_administrators_window(self):
+        self.waitForCssSelector('.devilry_subjectadmin_adminsbox button')
+        self.selenium.find_element_by_css_selector('.devilry_subjectadmin_adminsbox button').click()
+        self.waitForCssSelector('.devilry_subjectadmin_manageadminspanel')
+
+    def _add_user_via_ui(self, username, query=None):
+        query = query or username
+        textfield = self.selenium.find_element_by_css_selector('.devilry_usersearch_autocompleteuserwidget input[type=text]')
+        textfield.send_keys(query)
+        self.waitForCssSelector('.autocompleteuserwidget_matchlist .matchlistitem_{username}'.format(username=username))
+        textfield.send_keys(Keys.RETURN)
+
+    def assertUserInEditTable(self, username):
+        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        try:
+            self.waitForCssSelector(cssquery)
+        except TimeoutException, e:
+            self.fail('User "{username}" not in grid table'.format(username=username))
+
+    def assertUserInAdminsList(self, username):
+        cssquery = '.devilry_subjectadmin_administratorlist .administratorlistitem_{username}'.format(username=username)
+        try:
+            self.waitForCssSelector(cssquery)
+        except TimeoutException, e:
+            self.fail('User "{username}" not in administrator list'.format(username=username))
+
+    def assertUserNotInEditTable(self, username):
+        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        try:
+            self.waitFor(self.selenium, lambda s: len(self.selenium.find_elements_by_css_selector(cssquery)) == 0)
+        except TimeoutException, e:
+            self.fail('User "{username}" not in grid table'.format(username=username))
+
+    def assertUserNotInAdminsList(self, username):
+        cssquery = '.devilry_subjectadmin_administratorlist .administratorlistitem_{username}'.format(username=username)
+        try:
+            self.waitFor(self.selenium, lambda s: len(self.selenium.find_elements_by_css_selector(cssquery)) == 0)
+        except TimeoutException, e:
+            self.fail('User "{username}" not in administrator list'.format(username=username))
+
+    def test_add_administrators(self):
+        self.browseToTestBasenode()
+        basenode = self.getBasenode()
+        self.assertEquals(basenode.admins.all().count(), 0)
+        self._open_edit_administrators_window()
+
+        self.testhelper.create_user('userone')
+        self._add_user_via_ui('userone')
+        self.assertUserInEditTable('userone')
+        self.assertUserInAdminsList('userone')
+        self.assertIn(self.testhelper.userone, basenode.admins.all())
+
+        self.testhelper.create_user('usertwo')
+        self._add_user_via_ui('usertwo')
+        self.assertUserInEditTable('usertwo')
+        self.assertUserInAdminsList('usertwo')
+        self.assertIn(self.testhelper.usertwo, basenode.admins.all())
+
+        self.assertEquals(basenode.admins.all().count(), 2)
+
+    def test_add_administrator_by_email(self):
+        self.browseToTestBasenode()
+        basenode = self.getBasenode()
+        self.assertEquals(basenode.admins.all().count(), 0)
+        self._open_edit_administrators_window()
+
+        self.testhelper.create_user('testuser1')
+        self.testhelper.create_user('testuser2')
+        user = self.testhelper.create_user('testuser3')
+        user.email = 'superman@example.com'
+        user.save()
+        self._add_user_via_ui('testuser3', query='man@exa')
+        self.assertUserInEditTable('testuser3')
+        self.assertUserInAdminsList('testuser3')
+        self.assertIn(self.testhelper.testuser3, basenode.admins.all())
+
+    def test_add_administrator_by_fullname(self):
+        self.browseToTestBasenode()
+        basenode = self.getBasenode()
+        self.assertEquals(basenode.admins.all().count(), 0)
+        self._open_edit_administrators_window()
+
+        self.testhelper.create_user('testuser1')
+        self.testhelper.create_user('testuser2')
+        user = self.testhelper.create_user('testuser3')
+        user.devilryuserprofile.full_name = 'Superman'
+        user.devilryuserprofile.save()
+        self._add_user_via_ui('testuser3', query='uperma')
+        self.assertUserInEditTable('testuser3')
+        self.assertUserInAdminsList('testuser3')
+        self.assertIn(self.testhelper.testuser3, basenode.admins.all())
+
+    def _get_remove_button(self):
+        return self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .removeButton button')
+
+    def _click_selectall_button(self):
+        self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .selectAllButton button').click()
+
+    def _get_gridcell(self, username):
+        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        self.waitForCssSelector(cssquery, timeout=5)
+        return self.selenium.find_element_by_css_selector(cssquery)
+
+    def _select_user(self, username):
+        gridcell = self._get_gridcell(username)
+        gridcell.click()
+
+    def _remove_using_ui(self):
+        self._get_remove_button().click()
+        self.waitForCssSelector('.x-message-box')
+        def click_yes_button():
+            for button in self.selenium.find_elements_by_css_selector('.x-message-box button'):
+                if button.text.strip() == 'Yes':
+                    button.click()
+                    return
+            self.fail('Could not find the "Yes" button')
+        click_yes_button()
+
+    def test_remove_administrator(self):
+        basenode = self.getBasenode()
+        basenode.admins.add(self.testhelper.create_user('userone'))
+        self.browseToTestBasenode()
+        self._open_edit_administrators_window()
+
+        self.assertIn(self.testhelper.userone, basenode.admins.all())
+        self.assertUserInEditTable('userone')
+        self.assertUserInAdminsList('userone')
+        self._select_user('userone')
+        self._remove_using_ui()
+        self.assertUserNotInEditTable('userone')
+        self.assertUserNotInAdminsList('userone')
+        self.assertNotIn(self.testhelper.userone, basenode.admins.all())
+
+    def test_remove_many_administrators(self):
+        basenode = self.getBasenode()
+        basenode.admins.add(self.testhelper.create_user('userone'))
+        basenode.admins.add(self.testhelper.create_user('usertwo'))
+        basenode.admins.add(self.testhelper.create_user('userthree'))
+        self.browseToTestBasenode()
+        self._open_edit_administrators_window()
+
+        self.assertEquals(basenode.admins.all().count(), 3)
+        self.assertUserInEditTable('userone')
+        self.assertUserInEditTable('usertwo')
+        self.assertUserInEditTable('userthree')
+        self._click_selectall_button()
+        self._remove_using_ui()
+        self.assertUserNotInEditTable('userone')
+        self.assertUserNotInEditTable('usertwo')
+        self.assertUserNotInEditTable('userthree')
+        self.assertEquals(basenode.admins.all().count(), 0)

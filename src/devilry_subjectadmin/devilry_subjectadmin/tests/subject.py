@@ -4,6 +4,7 @@ from devilry.apps.core.models import Subject
 from .base import SubjectAdminSeleniumTestCase
 from .base import RenameBasenodeTestMixin
 from .base import DeleteBasenodeTestMixin
+from .base import EditAdministratorsTestMixin
 
 
 class TestSubjectListAll(SubjectAdminSeleniumTestCase):
@@ -39,9 +40,14 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('li.devilry_subject')), 1)
 
 
+class SubjectTestCommonMixin(object):
+    def browseToSubject(self, id):
+        self.browseTo('/subject/{id}/'.format(id=id))
 
 
-class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
+
+class TestSubjectOverview(SubjectAdminSeleniumTestCase, SubjectTestCommonMixin,
+                          RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
     renamebutton_id = 'subjectRenameButton'
     deletebutton_id = 'subjectDeleteButton'
 
@@ -60,25 +66,22 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
     def _get_period_url(self, period):
         return '#/period/{0}/'.format(period.id)
 
-    def _browseToSubject(self, id):
-        self.browseTo('/subject/{id}/'.format(id=id))
-
     def test_doesnotexists(self):
         self.login('duck1010adm1')
-        self._browseToSubject(100000)
+        self.browseToSubject(100000)
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
 
     def test_doesnotexists_superadmin(self):
         self.testhelper.create_superuser('grandma')
         self.login('grandma')
-        self._browseToSubject(100000)
+        self.browseToSubject(100000)
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
     def test_list_of_periods(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.waitForText('DUCK 1010 - Programming')
         self.waitForCssSelector('li.devilry_period')
@@ -95,7 +98,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
 
     def test_dangerous_panel(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.waitForText('Delete duck1010')
         self.waitForText('Rename duck1010')
@@ -104,13 +107,13 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
 
     def test_rename(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.rename_test_helper(self.testhelper.duck1010)
 
     def test_rename_failure(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.rename_test_failure_helper()
 
@@ -118,7 +121,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.testhelper.add(nodes='uni',
                             subjects=['willbedeleted'])
         self.login('uniadmin')
-        self._browseToSubject(self.testhelper.willbedeleted.id)
+        self.browseToSubject(self.testhelper.willbedeleted.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         subjecturl = self.selenium.current_url
         self.perform_delete()
@@ -129,21 +132,21 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.testhelper.add(nodes='uni',
                             subjects=['willbedeleted:admin(willbedeletedadm)'])
         self.login('willbedeletedadm')
-        self._browseToSubject(self.testhelper.willbedeleted.id)
+        self.browseToSubject(self.testhelper.willbedeleted.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.click_delete_button()
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
     def test_delete_not_empty(self):
         self.login('uniadmin')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.click_delete_button()
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
     def test_title(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
         self.assertEquals(self.selenium.title, 'duck1010 - Devilry')
 
@@ -151,9 +154,9 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.testhelper.duck1010adm3.devilryuserprofile.full_name = 'Duck1010 admin three'
         self.testhelper.duck1010adm3.devilryuserprofile.save()
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
-        self.waitForCssSelector('.devilry_administratorlist')
-        adminlist = self.selenium.find_element_by_css_selector('.devilry_administratorlist')
+        self.browseToSubject(self.testhelper.duck1010.id)
+        self.waitForCssSelector('.devilry_subjectadmin_administratorlist')
+        adminlist = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 3)
         self.assertTrue('>duck1010adm1<' in self.selenium.page_source)
         self.assertTrue('>duck1010adm2<' in self.selenium.page_source)
@@ -164,16 +167,35 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin,
         self.testhelper.uniadmin.devilryuserprofile.full_name = 'Uni admin'
         self.testhelper.uniadmin.devilryuserprofile.save()
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
-        self.waitForCssSelector('.devilry_inherited_administratorlist')
-        adminlist = self.selenium.find_element_by_css_selector('.devilry_inherited_administratorlist')
+        self.browseToSubject(self.testhelper.duck1010.id)
+        self.waitForCssSelector('.devilry_subjectadmin_inherited_administratorlist')
+        adminlist = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_inherited_administratorlist')
         self.assertEquals(len(adminlist.find_elements_by_css_selector('li')), 2)
         self.assertTrue('>anotheruniadmin<' in self.selenium.page_source)
         self.assertFalse('>uniadmin<' in self.selenium.page_source)
+        self.waitForCssSelector('.devilry_subjectadmin_inherited_administratorlist .inherited_administratorlistitem_uniadmin')
         self.assertTrue('Uni admin' in self.selenium.page_source)
 
     def test_breadcrumb(self):
         self.login('duck1010adm1')
-        self._browseToSubject(self.testhelper.duck1010.id)
+        self.browseToSubject(self.testhelper.duck1010.id)
         breadcrumbtext = self.get_breadcrumbstring('duck1010')
         self.assertEquals(breadcrumbtext, ['All subjects', 'duck1010'])
+
+
+
+class TestSubjectEditAdministrators(SubjectAdminSeleniumTestCase,
+                                    EditAdministratorsTestMixin,
+                                    SubjectTestCommonMixin):
+
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['duck1100'])
+        self.login('uniadmin')
+
+    def getBasenode(self):
+        return self.testhelper.duck1100
+
+    def browseToTestBasenode(self):
+        self.browseToSubject(self.testhelper.duck1100.id)
