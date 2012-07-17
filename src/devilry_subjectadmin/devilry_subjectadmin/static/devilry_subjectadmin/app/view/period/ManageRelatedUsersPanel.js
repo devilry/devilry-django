@@ -91,5 +91,10 @@ Ext.define('devilry_subjectadmin.view.period.ManageRelatedUsersPanel' ,{
     removeUsers: function(userRecords) {
         //this._mask(gettext('Saving ...');
         console.log('Remove', userRecords);
+    },
+
+    searchMatchesRecord: function(query, record) {
+        var match = this.callParent(arguments);
+        return match || this.caseIgnoreContains(record.get('tags'), query);
     }
 });
