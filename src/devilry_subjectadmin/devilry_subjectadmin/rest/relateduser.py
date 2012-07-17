@@ -77,7 +77,7 @@ class CreateRelatedUserRestMixin(SelfdocumentingMixin):
 
     def postprocess_post_docs(self, docs):
         responsetable = self.htmlformat_response_from_fields()
-        parameterstable = self.htmlformat_parameters_from_form()
+        parameterstable = self.htmlformat_parameters_from_form(override_helptext={'user': 'The ID of the related user.'})
         return docs.format(modelname=self.resource.model.__name__,
                            parameterstable=parameterstable,
                            responsetable=responsetable)
