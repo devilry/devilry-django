@@ -96,15 +96,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
 
             tbar: [{
-                xtype: 'textfield',
-                emptyText: gettext('Search ...'),
-                listeners: {
-                    scope: this,
-                    change: this._onSearchChange
-                }
-            }, '->', {
                 xtype: 'button',
-                itemId: 'selectAllButton',
                 cls: 'selectAllButton',
                 text: gettext('Select all'),
                 listeners: {
@@ -120,6 +112,14 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                 listeners: {
                     scope: this,
                     click: this._onRemoveUsers
+                }
+            }, '->', {
+                xtype: 'textfield',
+                cls: 'searchfield',
+                emptyText: gettext('Search ...'),
+                listeners: {
+                    scope: this,
+                    change: this._onSearchChange
                 }
             }],
         });

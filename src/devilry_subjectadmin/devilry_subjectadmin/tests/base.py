@@ -209,8 +209,11 @@ class EditAdministratorsTestMixin(object):
     def _click_selectall_button(self):
         self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .selectAllButton button').click()
 
+    def _get_gridcell_cssquery(self, username):
+        return '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+
     def _get_gridcell(self, username):
-        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        cssquery = self._get_gridcell_cssquery(username)
         self.waitForCssSelector(cssquery, timeout=5)
         return self.selenium.find_element_by_css_selector(cssquery)
 
@@ -272,3 +275,15 @@ class EditAdministratorsTestMixin(object):
         self.assertFalse(self._get_remove_button().is_enabled())
         self._select_user('userone')
         self.assertTrue(self._get_remove_button().is_enabled())
+
+    def test_search(self):
+        basenode = self.getBasenode()
+        basenode.admins.add(self.testhelper.create_user('userone'))
+        basenode.admins.add(self.testhelper.create_user('usertwo'))
+        self.browseToTestBasenode()
+        self._open_edit_administrators_window()
+
+        searchfield = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .searchfield input[type=text]')
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody')), 2)
+        searchfield.send_keys('one')
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody')), 1)
