@@ -76,6 +76,7 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
                         xtype: 'button',
                         itemId: 'manageButton',
                         scale: 'medium',
+                        disabled: true,
                         text: this.buttonText
                     }]
                 }]
@@ -96,6 +97,7 @@ Ext.define('devilry_subjectadmin.view.period.ListOfRelatedUsers' ,{
         this.down('#userslist').update({
             users: records
         });
+        this.down('button').enable();
     },
 
     setFailedToLoad: function(operation) {
