@@ -14,7 +14,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     requires: [
-        'Ext.util.KeyMap'
+        'Ext.util.KeyMap',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_extjsextras.HtmlErrorDialog'
     ],
 
     views: [
@@ -85,7 +87,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     init: function() {
         this.control({
             'viewport managestudentsoverview': {
-                render: this._onRender
+                render: this._onRenderOverview
             },
             'viewport managestudentsoverview listofgroups': {
                 selectionchange: this._onGroupSelectionChange,
@@ -106,8 +108,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         });
     },
 
-    _onRender: function() {
+    _onRenderOverview: function() {
         this.assignment_id = this.getOverview().assignment_id;
+        Ext.defer(function() { // Hack to work around the problem of the entire panel not completely loaded, which makes the loadmask render wrong
+            if(this.assignmentRecord == undefined) {
+                this.getOverview().setLoading(gettext('Loading assignment ...'));
+            }
+        }, 100, this);
         this.loadAssignment(this.assignment_id);
     },
 
@@ -204,19 +211,24 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
-    setupProxies: function(periodid, assignmentid) {
-        this.getGroupsStore().loadGroupsInAssignment(assignmentid);
-        this.getRelatedStudentsStore().proxy.extraParams.periodid = periodid;
-        this.getRelatedExaminersStore().proxy.extraParams.periodid = periodid;
+    _handleLoadError: function(operation, title) {
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        error.addErrors(null, operation);
+        var errormessage = error.asHtmlList();
+        Ext.widget('htmlerrordialog', {
+            title: title,
+            bodyHtml: errormessage
+        }).show();
     },
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        //console.log('Assignment:', record.data);
-        this._loadUserStores();
+        this.getOverview().setLoading(false);
+        this._loadGroupsStore();
     },
     onLoadAssignmentFailure: function(operation) {
-        console.log('ASSIGNMENT LOAD FAILED', operation);
+        this.getOverview().setLoading(false);
+        this._handleLoadError(operation, gettext('Failed to load assignment'));
     },
 
     /**
@@ -224,51 +236,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      *
      * Load RelatedStudents and Groups stores.
      * */
-    _loadUserStores: function() {
-        this.setupProxies(
-            this.assignmentRecord.get('parentnode'),
-            this.assignmentRecord.get('id')
-        );
-        this.getOverview().setLoading(true);
-        this._tmp_loadedStores = {
-            total: 0,
-            successful: 0,
-            failed: 0
-        }
-        var loadConfig = {
+    _loadGroupsStore: function() {
+        this.getOverview().setLoading(gettext('Loading groups ...'));
+        this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
             scope: this,
-            callback: this._onUserStoreLoaded
-        };
-        this.getGroupsStore().load(loadConfig);
-        this.getRelatedStudentsStore().load(loadConfig);
-        this.getRelatedExaminersStore().load(loadConfig);
+            callback: this._onLoadGroupsStore
+        });
     },
 
-    /**
-     * @private
-     *
-     * Called for each of the user stores, and calls _onAllUserStoresLoaded
-     * when all of them are finished loading.
-     */
-    _onUserStoreLoaded: function(records, operation) {
-        this._tmp_loadedStores.total ++;
+    _onLoadGroupsStore: function(records, operation) {
+        this.getOverview().setLoading(false);
         if(operation.success) {
-            this._tmp_loadedStores.successful ++;
+            this._onLoadGroupsStoreSuccess();
         } else {
-            this._tmp_loadedStores.failed ++;
+            this._handleLoadError(operation, gettext('Failed to load groups'));
         }
-        var all_loaded = this._tmp_loadedStores.total == 3; // Groups, RelatedStudents, RelatedExaminers
-        if(all_loaded && this._tmp_loadedStores.failed == 0) { 
-            this._onAllUserStoresLoaded();
-        } else {
-            this.getOverview().setLoading(false);
-            var errormsg = gettext('Failed to load parts of the page. Please try to reload the page.');
-            Ext.Msg.show({
-                title: 'Error',
-                msg: errormsg,
-                icon: Ext.Msg.ERROR
-            });
-        }
+    },
+
+    _onLoadGroupsStoreSuccess: function() {
+        this.getOverview().setLoading(false);
+        this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
+        this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
+        this._handleNoGroupsSelected();
     },
 
     /**
@@ -291,13 +280,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             }, this);
         }, this);
         return map;
-    },
-
-    _onAllUserStoresLoaded: function() {
-        this.getOverview().setLoading(false);
-        this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
-        this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
-        this._handleNoGroupsSelected();
     },
 
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
