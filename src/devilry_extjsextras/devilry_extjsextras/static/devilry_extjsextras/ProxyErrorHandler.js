@@ -7,7 +7,6 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
         this.fielderrors = {};
     },
 
-
     /** Check if the list of errormessages and fielderrors are empty, and
      * return ``true`` if one of them contains at least one error message. */
     hasErrors: function() {
@@ -44,5 +43,34 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
             message = Ext.String.format('{0}: {1}', error.status, error.statusText);
         }
         return message;
+    },
+
+    /**
+     * Copy errormessages and fielderrors into a single array, and return the array.
+     * Each item in the array is a string. Fielderrors are formatted as
+     * ``"{fieldname}: {message}"``.
+     */
+    asArrayOfStrings: function() {
+        var messages = Ext.clone(this.errormessages);
+        Ext.Object.each(this.fielderrors, function(message, fieldname) {
+            messages.push(Ext.String.format('{0}: {1}', fieldname, message));
+        }, this);
+        return messages;
+    },
+
+    /**
+     * Uses #asArrayOfStrings to flatten the error messages, then put these
+     * messages in a HTML unordered list.
+     * */
+    asHtmlList: function() {
+        return Ext.create('Ext.XTemplate',
+            '<ul>',
+            '<tpl for="messages">',
+                '<li>{.}</li>',
+            '</tpl>',
+            '</ul>'
+        ).apply({
+            messages: this.asArrayOfStrings()
+        });
     }
 });
