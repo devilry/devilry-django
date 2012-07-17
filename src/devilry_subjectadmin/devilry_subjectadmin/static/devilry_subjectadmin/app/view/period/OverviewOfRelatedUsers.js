@@ -1,7 +1,7 @@
 /**
  * Overview of relatated users on a period.
  */
-Ext.define('devilry_subjectadmin.view.period.OverviewOfRelatedUsers' ,{
+Ext.define('devilry_subjectadmin.view.period.OverviewOfRelatedUsers', {
     extend: 'Ext.container.Container',
     alias: 'widget.overviewofrelatedusers',
     cls: 'devilry_subjectadmin_overviewofrelatedusers',
