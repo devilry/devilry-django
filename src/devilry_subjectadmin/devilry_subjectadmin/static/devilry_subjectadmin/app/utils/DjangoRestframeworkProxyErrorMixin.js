@@ -12,5 +12,5 @@ Ext.define('devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin', {
             errorhandler.fielderrors, alertmessagelist);
         devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(formpanel,
             errorhandler.fielderrors);
-    },
+    }
 });
