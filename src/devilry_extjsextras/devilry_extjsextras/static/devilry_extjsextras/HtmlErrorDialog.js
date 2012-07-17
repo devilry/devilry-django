@@ -31,18 +31,10 @@ Ext.define('devilry_extjsextras.HtmlErrorDialog', {
      */
     title: gettext('Error'),
 
-    /**
-     * @cfg {Object} bodyConfig
-     * Config arguments for the body of the window. The xtype defaults to
-     * ``"box"``, but you can override it in ``bodyConfig``.
-     */
-
     initComponent: function() {
-        var bodyConfig = {
-        };
-        Ext.apply(bodyConfig, this.bodyConfig);
         Ext.apply(this, {
             layout: 'fit',
+            autoScroll: true,
             items: {
                 xtype: 'box',
                 tpl: this.bodyTpl,
@@ -56,6 +48,11 @@ Ext.define('devilry_extjsextras.HtmlErrorDialog', {
                     scope: this,
                     click: function() {
                         this.close();
+                    },
+                    render: function(button) {
+                        Ext.defer(function() {
+                            button.focus();
+                        }, 150);
                     }
                 }
             }]
