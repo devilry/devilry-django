@@ -4,12 +4,14 @@
 Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     requires: ['devilry_subjectadmin.utils.UrlLookup'],
 
-    setBreadcrumb: function(basenodeRecord) {
-        var breadcrumb = [{
+    _getBreadcrumbPrefix: function() {
+        return [{
             text: gettext("All subjects"),
             url: '#/'
         }];
+    },
 
+    _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord) {
         Ext.each(basenodeRecord.get('breadcrumb'), function(item) {
             var ignore = item.type === 'Node';
             if(!ignore) {
@@ -20,8 +22,24 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
                 });
             }
         });
+    },
 
+    setBreadcrumb: function(basenodeRecord) {
+        var breadcrumb = this._getBreadcrumbPrefix();
+        this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord);
         this.application.breadcrumbs.set(breadcrumb, basenodeRecord.get('short_name'));
+    },
+
+    /** For children of basenodes */
+    setSubviewBreadcrumb: function(basenodeRecord, basenodeType, extra, current) {
+        var breadcrumb = this._getBreadcrumbPrefix();
+        this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord);
+        breadcrumb.push({
+            text: basenodeRecord.get('short_name'),
+            url: devilry_subjectadmin.utils.UrlLookup.overviewByType(basenodeType, basenodeRecord.get('id'))
+        });
+        breadcrumb = breadcrumb.concat(extra);
+        this.application.breadcrumbs.set(breadcrumb, current);
     },
 
     setLoadingBreadcrumb: function() {

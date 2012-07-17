@@ -22,7 +22,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     },
 
     overviewByType: function(type, id) {
-        if(type === 'Period') {
+        if(type === 'Assignment') {
+            return this.assignmentOverview(id);
+        } else if(type === 'Period') {
             return this.periodOverview(id);
         } else if(type === 'Subject') {
             return this.subjectOverview(id);
