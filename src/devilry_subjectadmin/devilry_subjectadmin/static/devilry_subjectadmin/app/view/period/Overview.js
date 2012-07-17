@@ -11,6 +11,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.AdminsBox',
+        'devilry_subjectadmin.view.period.OverviewOfRelatedUsers',
         'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
@@ -22,7 +23,6 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     initComponent: function() {
         var deleteLabel = gettext('Loading ...');
         var renameLabel = gettext('Loading ...');
-
 
         Ext.apply(this, {
             frame: false,
@@ -49,8 +49,18 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         }
                     }, {
                         xtype: 'panel',
+                        itemId: 'relatedusers',
                         margin: {top: 40},
+                        ui: 'inset-header-panel',
+                        title: gettext('Students and examiners on this period'),
+                        layout: 'fit',
+                        items: {
+                            xtype: 'overviewofrelatedusers'
+                        }
+                    }, {
+                        xtype: 'panel',
                         itemId: 'dangerousactions',
+                        margin: {top: 40},
                         ui: 'inset-header-danger-panel',
                         title: gettext('Dangerous actions'),
                         layout: 'anchor',

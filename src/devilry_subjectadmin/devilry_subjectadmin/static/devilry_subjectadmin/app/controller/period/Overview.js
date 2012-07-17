@@ -42,12 +42,18 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
     }, {
         ref: 'basenodehierlocation',
         selector: 'periodoverview basenodehierlocation'
+    }, {
+        ref: 'overviewofrelatedusers',
+        selector: 'periodoverview overviewofrelatedusers'
     }],
 
     init: function() {
         this.control({
             'viewport periodoverview': {
                 render: this._onPeriodViewRender
+            },
+            'viewport periodoverview overviewofrelatedusers': {
+                render: this._onOverviewOfRelatedUsersRender
             },
             'viewport periodoverview #deleteButton': {
                 click: this._onDelete
@@ -58,8 +64,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         });
     },
 
-    _onNotImplemented: function() {
-        Ext.MessageBox.alert('Unavailable', 'Not implemented yet');
+    _onOverviewOfRelatedUsersRender: function() {
+        //this.getOverviewofrelatedusers();
     },
 
     _getPath: function() {
