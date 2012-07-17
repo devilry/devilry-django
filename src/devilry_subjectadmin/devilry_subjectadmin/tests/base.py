@@ -124,7 +124,7 @@ class EditAdministratorsTestMixin(object):
         textfield.send_keys(Keys.RETURN)
 
     def assertUserInEditTable(self, username):
-        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
         try:
             self.waitForCssSelector(cssquery)
         except TimeoutException, e:
@@ -138,7 +138,7 @@ class EditAdministratorsTestMixin(object):
             self.fail('User "{username}" not in administrator list'.format(username=username))
 
     def assertUserNotInEditTable(self, username):
-        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
         try:
             self.waitFor(self.selenium, lambda s: len(self.selenium.find_elements_by_css_selector(cssquery)) == 0)
         except TimeoutException, e:
@@ -210,7 +210,7 @@ class EditAdministratorsTestMixin(object):
         self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .selectAllButton button').click()
 
     def _get_gridcell_cssquery(self, username):
-        return '.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody_{username}'.format(username=username)
+        return '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
 
     def _get_gridcell(self, username):
         cssquery = self._get_gridcell_cssquery(username)
@@ -284,6 +284,6 @@ class EditAdministratorsTestMixin(object):
         self._open_edit_administrators_window()
 
         searchfield = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .searchfield input[type=text]')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody')), 2)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 2)
         searchfield.send_keys('one')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .gridcellbody')), 1)
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 1)

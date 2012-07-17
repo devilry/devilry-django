@@ -6,8 +6,17 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         'devilry_usersearch.AutocompleteUserWidget'
     ],
 
-    gridCellTpl: [
-        '<div class="gridcellbody gridcellbody_{username}">',
+    /**
+     * @cfg prettyFormatUserTpl
+     * The template used to render the grid cell by default.
+     * Takes the following variables:
+     *
+     *  - username
+     *  - full_name
+     *  - email
+     */
+    prettyFormatUserTpl: [
+        '<div class="prettyformattedusercell prettyformattedusercell_{username}">',
         '   <div class="full_name"><strong>{full_name}</strong></div>',
         '   <tpl if="!full_name">',
         '       <strong class="username">{username}</strong>',
@@ -28,6 +37,17 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
      * @cfg {Ext.data.Store} store
      * The store where users are added/deleted by this panel.
      */
+
+    /**
+     * @cfg [{Object}] columns
+     * Grid columns. Defaults to a single column using the #prettyFormatUserTpl.
+     */
+
+    /**
+     * @cfg {bool} hideHeaders
+     * Hide grid headers?
+     */
+    hideHeaders: true,
 
     constructor: function(config) {
         config.cls = config.cls || this.cls || '';
@@ -57,7 +77,13 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
     initComponent: function() {
         var me = this;
-        this.gridCellTplCompiled = Ext.create('Ext.XTemplate', this.gridCellTpl);
+        this.prettyFormatUserTplCompiled = Ext.create('Ext.XTemplate', this.prettyFormatUserTpl);
+
+        var defaultColumns = [{
+            header: 'Userinfo',  dataIndex: 'id', flex: 1,
+            renderer: Ext.bind(this.renderPrettyformattedUserGridCell, this)
+        }];
+        var columns = this.columns || defaultColumns;
 
         Ext.apply(this, {
             frame: false,
@@ -66,15 +92,10 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
             items: [{
                 xtype: 'grid',
                 region: 'center',
-                hideHeaders: true,
+                hideHeaders: this.hideHeaders,
                 multiSelect: true,
                 store: this.store,
-                columns: [{
-                    header: 'Col1',  dataIndex: 'id', flex: 1,
-                    renderer: function(unused, unused2, userRecord) {
-                        return me.rendererGridCell(userRecord);
-                    }
-                }],
+                columns: columns,
                 listeners: {
                     scope: this,
                     selectionchange: this._onGridSelectionChange
@@ -196,10 +217,11 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     },
 
     /**
-     * May want to override this in subclasses.
+     * May want to override this in subclasses if userRecord is not on the
+     * format expected by the template.
      * */
-    rendererGridCell: function(userRecord) {
-        return this.gridCellTplCompiled.apply(userRecord.data);
+    renderPrettyformattedUserGridCell: function(unused, unused2, userRecord) {
+        return this.prettyFormatUserTplCompiled.apply(userRecord.data);
     },
 
     _hightlightUser: function(userRecord) {
@@ -207,11 +229,13 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         this.down('grid').getSelectionModel().select(index);
     },
 
+    /** Called by subclasses when #addUser is successful. */
     onUserAdded: function(userRecord) {
         this._hightlightUser(userRecord);
         this.fireEvent('usersAdded', [userRecord]);
     },
 
+    /** Called by subclasses when #removeUsers is successful. */
     onUsersRemoved: function(userRecords) {
         this.fireEvent('usersRemoved', [userRecords]);
     },
