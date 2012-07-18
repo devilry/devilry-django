@@ -1,8 +1,6 @@
 from django.conf.urls.defaults import patterns, url
 
-from .group import RestGroupRoot
-#from .relateduser import RestRelatedStudent
-#from .relateduser import RestRelatedExaminer
+from .group import ListOrCreateGroupRest
 from .createnewassignment import RestCreateNewAssignment
 from .subject import ListOrCreateSubjectRest
 from .subject import InstanceSubjectRest
@@ -19,7 +17,7 @@ from .relateduser_assignment_ro import ListRelatedExaminersOnAssignmentRest
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
-                       url(r'^group/(?P<id>[^/]+)/$', RestGroupRoot.as_view()),
+                       url(r'^group/(?P<id>[^/]+)/$', ListOrCreateGroupRest.as_view()),
                        url(r'^createnewassignment/$', RestCreateNewAssignment.as_view()),
                        url(r'^subject/$', ListOrCreateSubjectRest.as_view()),
                        url(r'^subject/(?P<id>[^/]+)$', InstanceSubjectRest.as_view()),

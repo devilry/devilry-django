@@ -193,7 +193,7 @@ class GroupDao(object):
                                                 'deadline', 'deadline')
 
 
-    def create_noauth(self, assignmentid, name=None, is_open=None,
+    def create(self, assignmentid, name=None, is_open=None,
                       students=[], examiners=[], tags=[], deadlines=[]):
         group = AssignmentGroup(parentnode_id=assignmentid)
         self._setattr_if_not_none(group, 'name', name)
@@ -208,10 +208,6 @@ class GroupDao(object):
         for deadlinedict in deadlines:
             self._create_deadline_from_deadlinedict(group, deadlinedict)
         return group
-
-    def create(self, assignmentid, *args, **kwargs):
-        return self.create_noauth(assignmentid, *args, **kwargs)
-
 
 
 
@@ -245,7 +241,7 @@ class RestGroupRootForm(forms.Form):
     examiners = ExaminersField(required=False)
 
 
-class RestGroupRoot(View):
+class ListOrCreateGroupRest(View):
     resource = FormResource
     form = RestGroupRootForm
     permissions = (IsAuthenticated, IsAssignmentAdmin)
@@ -258,6 +254,7 @@ class RestGroupRoot(View):
     def post(self, request, id):
         group = self.dao.create(id, **self.CONTENT)
         return Response(201, dict(id=group.id))
+
 
 #class RestGroup(View):
     #permissions = (IsAuthenticated, IsAssignmentAdmin)

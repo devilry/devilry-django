@@ -116,7 +116,7 @@ class TestGroupDao(TestCase):
     def test_create_noauth_minimal(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create_noauth(assignment1.id)
+        group = GroupDao().create(assignment1.id)
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         self.assertEquals(group_db.name, None)
         self.assertEquals(group_db.is_open, True)
@@ -124,7 +124,7 @@ class TestGroupDao(TestCase):
     def test_create_noauth_simpleattrs(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create_noauth(assignment1.id, name='Somename', is_open=False)
+        group = GroupDao().create(assignment1.id, name='Somename', is_open=False)
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         self.assertEquals(group_db.name, 'Somename')
         self.assertEquals(group_db.is_open, False)
@@ -166,7 +166,7 @@ class TestGroupDao(TestCase):
         assignment1 = testhelper.duck1010_firstsem_a1
         tstuser = testhelper.create_user('tstuser')
         tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create_noauth(assignment1.id, students=[{'student__username': 'tstuser'},
+        group = GroupDao().create(assignment1.id, students=[{'student__username': 'tstuser'},
                                                                 {'student__username': 'tstuser2'}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         usernames = [candidate.student.username for candidate in group.candidates.all()]
@@ -196,7 +196,7 @@ class TestGroupDao(TestCase):
         assignment1 = testhelper.duck1010_firstsem_a1
         tstuser = testhelper.create_user('tstuser')
         tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create_noauth(assignment1.id, examiners=[{'user__username': 'tstuser'},
+        group = GroupDao().create(assignment1.id, examiners=[{'user__username': 'tstuser'},
                                                                 {'user__username': 'tstuser2'}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         usernames = [examiner.user.username for examiner in group.examiners.all()]
@@ -223,7 +223,7 @@ class TestGroupDao(TestCase):
     def test_create_noauth_tags(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create_noauth(assignment1.id, tags=[{'tag': 'tag1'},
+        group = GroupDao().create(assignment1.id, tags=[{'tag': 'tag1'},
                                                             {'tag': 'tag2'}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         tags = [tag.tag for tag in group.tags.all()]
@@ -251,7 +251,7 @@ class TestGroupDao(TestCase):
     def test_create_noauth_deadlines(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create_noauth(assignment1.id, deadlines=[{'deadline': datetime(2010, 1, 2, 3, 4, 5)},
+        group = GroupDao().create(assignment1.id, deadlines=[{'deadline': datetime(2010, 1, 2, 3, 4, 5)},
                                                                     {'deadline': datetime(2010, 2, 3, 4, 5, 6)}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         deadlines = [deadline.deadline for deadline in group.deadlines.all()]
@@ -269,7 +269,7 @@ class TestGroupDao(TestCase):
 
 
 
-class TestRestGroupIntegration(TestCase):
+class TestListOrCreateGroupRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
