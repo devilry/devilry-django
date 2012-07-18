@@ -13,7 +13,13 @@ Ext.define('devilry_theme.Icons', {
          * @property ADD_SMALL
          * 16x16 add icon.
          */
-        'add'
+        'add',
+
+        /**
+         * @property HELP_SMALL
+         * 16x16 help icon.
+         */
+        'help'
     ],
 
     constructor: function(config) {
