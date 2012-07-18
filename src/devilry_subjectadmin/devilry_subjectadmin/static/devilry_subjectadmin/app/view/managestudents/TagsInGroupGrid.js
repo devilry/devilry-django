@@ -24,6 +24,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
                     itemId: 'removeAllTags',
                     icon: devilry_theme.Icons.DELETE_SMALL
                 }]
+            }, {
+                xtype: 'button',
+                margin: {left: 3},
+                icon: devilry_theme.Icons.HELP_SMALL,
             }],
             columns: [{
                 header: 'Tag',
