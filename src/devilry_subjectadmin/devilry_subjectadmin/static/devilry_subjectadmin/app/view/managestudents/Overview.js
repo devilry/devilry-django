@@ -28,8 +28,39 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 },
                 items: [{
                     xtype: 'button',
-                    itemId: 'selectall',
-                    text: gettext('Select all')
+                    itemId: 'selectButton',
+                    text: gettext('Select'),
+                    menu: [{
+                        itemId: 'selectall',
+                        text: gettext('Select all')
+                    }, {
+                        text: pgettext('group', 'Status'),
+                        menu: [{
+                            text: pgettext('group', 'Open')
+                        }, {
+                            text: pgettext('group', 'Closed')
+                        }]
+                    }, {
+                        text: pgettext('group', 'Grade'),
+                        menu: [{
+                            text: pgettext('group', 'Failed')
+                        }, {
+                            text: pgettext('group', 'Passed')
+                        }, '-', {
+                            text: 'List of all current grades here unless there are more than XXX (20?)'
+                        }]
+                    }, {
+                        text: gettext('Number of deliveries'),
+                        menu: [{
+                            text: gettext('No deliveries')
+                        }, {
+                            text: gettext('Has deliveries')
+                        }, '-', {
+                            text: 'List all numbers of deliveries.'
+                        }]
+                    }, {
+                        text: gettext('Select using search ...')
+                    }]
                 }, {
                     xtype: 'combobox',
                     itemId: 'sortby',

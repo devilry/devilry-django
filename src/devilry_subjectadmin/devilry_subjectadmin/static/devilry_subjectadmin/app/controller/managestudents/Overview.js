@@ -94,7 +94,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 selectionchange: this._onGroupSelectionChange,
                 render: this._onRenderListOfGroups
             },
-            'viewport managestudentsoverview #selectall': {
+            'viewport managestudentsoverview #selectButton #selectall': {
                 click: this._onSelectAll
             },
             'viewport managestudentsoverview #sortby': {
