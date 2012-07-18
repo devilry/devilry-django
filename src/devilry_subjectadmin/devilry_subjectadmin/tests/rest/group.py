@@ -12,10 +12,11 @@ from devilry.utils.rest_testclient import RestClient
 
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
 from devilry_subjectadmin.rest.group import GroupDao
+from devilry_subjectadmin.rest.group import GroupListingAggregator
 
 
 
-class TestGroupDao(TestCase):
+class TestGroupListingAggator(TestCase):
     def create_testassignments(self):
         testhelper = TestHelper()
         testhelper.add(nodes='uni',
@@ -42,7 +43,7 @@ class TestGroupDao(TestCase):
     def test_read(self):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupDao().list(assignment1.id)
+        groups = GroupListingAggregator().list(assignment1.id)
         # We only check a few values here. The most important thing is that the
         # database queries are sane, since the other stuff is tested in
         # smaller units
@@ -63,7 +64,7 @@ class TestGroupDao(TestCase):
         examiners = [{'assignmentgroup_id': 1, 'user__username': 'exam'}]
         tags = [{'assignment_group_id': 1, 'tag': 'important'}]
         deadlines = [{'assignment_group_id': 1, 'deadline': 'now'}]
-        groups = GroupDao()._merge(groups, candidates, examiners, tags, deadlines)
+        groups = GroupListingAggregator()._merge(groups, candidates, examiners, tags, deadlines)
         self.assertEquals(groups,
                           [{'id': 1,
                             'name': 'Group1',
@@ -78,7 +79,7 @@ class TestGroupDao(TestCase):
     def test_get_groups(self):
         testhelper = self.create_testdata()
         assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupDao()._get_groups(assignment1.id)
+        groups = GroupListingAggregator()._get_groups(assignment1.id)
         self.assertEquals(len(groups), 3)
         first = groups[0]
         fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
@@ -90,12 +91,12 @@ class TestGroupDao(TestCase):
         testhelper.add_to_path('uni;duck1010.firstsem.a1.g0.d2')
         testhelper.add_delivery(testhelper.duck1010_firstsem_a1_g0)
         assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupDao()._get_groups(assignment1.id)
+        groups = GroupListingAggregator()._get_groups(assignment1.id)
         self.assertEquals(groups[0]['num_deliveries'], 2)
         self.assertEquals(groups[1]['num_deliveries'], 1)
 
     def test_prepare_group(self):
-        self.assertEquals(GroupDao()._prepare_group({}),
+        self.assertEquals(GroupListingAggregator()._prepare_group({}),
                           {'tags': [],
                            'students': [],
                            'examiners': [],
@@ -111,14 +112,16 @@ class TestGroupDao(TestCase):
         expected = {1: {'people': [{'name':'test'}, {'name':'test2'}]},
                     2: {'people': []},
                     3: {'people': [{'name':'test3'}]}}
-        GroupDao()._merge_with_groupsdict(groupsdict, people, 'people')
+        GroupListingAggregator()._merge_with_groupsdict(groupsdict, people, 'people')
         self.assertEquals(groupsdict, expected)
 
 
+
+class TestCreateStuff(TestCase):
     def test_create_noauth_minimal(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(assignment1.id)
+        group = GroupListingAggregator().create(assignment1.id)
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         self.assertEquals(group_db.name, None)
         self.assertEquals(group_db.is_open, True)
@@ -126,17 +129,17 @@ class TestGroupDao(TestCase):
     def test_create_noauth_simpleattrs(self):
         testhelper = self.create_testassignments()
         assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(assignment1.id, name='Somename', is_open=False)
+        group = GroupListingAggregator().create(assignment1.id, name='Somename', is_open=False)
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         self.assertEquals(group_db.name, 'Somename')
         self.assertEquals(group_db.is_open, False)
 
     def test_get_user(self):
         with self.assertRaises(ValueError):
-            GroupDao()._get_user('tstuser')
+            GroupListingAggregator()._get_user('tstuser')
         testhelper = TestHelper()
         tstuser = testhelper.create_user('tstuser')
-        GroupDao()._get_user('tstuser')
+        GroupListingAggregator()._get_user('tstuser')
 
 
 
