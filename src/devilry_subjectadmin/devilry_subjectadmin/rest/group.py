@@ -8,6 +8,9 @@ from djangorestframework.response import Response
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
 from django import forms
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.utils.translation import ugettext as _
 
 from devilry.apps.core.models import (AssignmentGroup,
                                       AssignmentGroupTag,
@@ -71,7 +74,7 @@ class GroupSerializer(object):
         return map(self._serialize_candidate, self.group.candidates.all())
 
 
-class GroupCreator(object):
+class GroupManager(object):
     def __init__(self, assignment_id):
         self.assignment_id = assignment_id
         self.group = self.get_group()
@@ -85,9 +88,48 @@ class GroupCreator(object):
         self.group.is_open = is_open
         self.group.save()
 
-    def update_examiners(self, examiners):
-        existing_examiners = self.serializer.serialize_examiners()
-        #for existing_examiner in self.group.examiners.all():
+    def _get_user(self, user_id):
+        try:
+            return User.objects.get(id=user_id)
+        except ObjectDoesNotExist, e:
+            raise ValidationError('User with ID={0} does not exist'.format(user_id))
+
+    def _create_examiner(self, user_id):
+        user = self._get_user(user_id)
+        try:
+            self.group.examiners.create(user=user)
+        except IntegrityError, e:
+            raise ValidationError(_('The same user can not be examiner multiple times on the same group.'))
+
+    def update_examiners(self, examinerdicts):
+        """
+        Update examiners from examinerdicts. Only cares about the following dict keys:
+
+            id
+                If this is ``None``, we create a new examiner.
+            user (a dict)
+                If ``id==None``, we use ``user['id']`` to find the user.
+
+        Any examiner not identified by their ``id`` in ``examinerdicts`` is DELETED.
+        """
+        to_delete = {}
+        for examiner in self.group.examiners.all():
+            to_delete[examiner.id] = examiner
+        for examinerdict in examinerdicts:
+            examiner_id = examinerdict['id']
+            isnew = examiner_id == None
+            if isnew:
+                user_id = examinerdict['user']['id']
+                self._create_examiner(user_id)
+            else:
+                # Can not change existing examiners, only delete them
+                del to_delete[examiner_id] # Remove existing from to_delete (thus, to_delete will be correct after the loop)
+        for examiner in to_delete.itervalues():
+            examiner.delete()
+
+    def get_group_from_db(self):
+        return AssignmentGroup.objects.get(id=self.group.id)
+
 
     #def _setattr_if_not_none(self, obj, attrname, value):
         #if value != None:

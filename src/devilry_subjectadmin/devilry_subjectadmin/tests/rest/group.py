@@ -1,6 +1,7 @@
 from dingus import Dingus
 from datetime import datetime
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
@@ -11,7 +12,7 @@ from devilry.apps.core.models import Deadline
 from devilry.utils.rest_testclient import RestClient
 
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
-from devilry_subjectadmin.rest.group import GroupCreator
+from devilry_subjectadmin.rest.group import GroupManager
 
 
 class TestListGroupRest(TestCase):
@@ -122,7 +123,7 @@ class TestListGroupRest(TestCase):
         self._test_list_as('superuser')
 
 
-class TestGroupCreator(TestCase):
+class TestGroupManager(TestCase):
     def setUp(self):
         self.client = RestClient()
         self.testhelper = TestHelper()
@@ -131,16 +132,72 @@ class TestGroupCreator(TestCase):
                        periods=['p1'],
                        assignments=['a1'])
         self.a1id = self.testhelper.sub_p1_a1.id
+        self.testhelper.create_user('user1')
+        self.testhelper.create_user('user2')
+        self.testhelper.create_user('user3')
 
     def test_update_group(self):
         self.assertEquals(AssignmentGroup.objects.all().count(), 0)
-        creator = GroupCreator(self.a1id)
-        self.assertEquals(creator.group.id, None)
-        creator.update_group(name='Nametest', is_open=False)
-        self.assertIsNotNone(creator.group.id)
-        self.assertEquals(creator.group.name, 'Nametest')
-        self.assertEquals(creator.group.is_open, False)
+        manager = GroupManager(self.a1id)
+        self.assertEquals(manager.group.id, None)
+        manager.update_group(name='Nametest', is_open=False)
+        self.assertIsNotNone(manager.group.id)
+        self.assertEquals(manager.group.name, 'Nametest')
+        self.assertEquals(manager.group.is_open, False)
         self.assertEquals(AssignmentGroup.objects.all().count(), 1)
+
+    def _create_examinerdict(self, id=None, username=None):
+        dct = {'id': id}
+        if username:
+            dct['user'] = {'id': getattr(self.testhelper, username).id}
+        return dct
+
+    def test_update_examiners_create(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.update_examiners([self._create_examinerdict(username='user1')])
+        examiners = manager.get_group_from_db().examiners.all()
+        self.assertEquals(len(examiners), 1)
+        created = examiners[0]
+        self.assertEquals(created.user.id, self.testhelper.user1.id)
+
+        manager.update_examiners([self._create_examinerdict(id=created.id),
+                                  self._create_examinerdict(username='user2')])
+        examiners = manager.get_group_from_db().examiners.all()
+        self.assertEquals(len(examiners), 2)
+        ids = [examiner.id for examiner in examiners]
+        self.assertEquals(set(ids),
+                          set([self.testhelper.user1.id, self.testhelper.user2.id]))
+
+    def test_update_examiners_update_existing(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.examiners.create(user=self.testhelper.user1)
+        with self.assertRaises(ValidationError):
+            manager.update_examiners([self._create_examinerdict(username='user1')])
+
+    def test_update_examiners_delete(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.examiners.create(user=self.testhelper.user1)
+        manager.group.examiners.create(user=self.testhelper.user2)
+        manager.update_examiners([])
+        examiners = manager.get_group_from_db().examiners.all()
+        self.assertEquals(len(examiners), 0)
+
+    def test_update_examiners_complex(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.examiners.create(user=self.testhelper.user1)
+        manager.group.examiners.create(user=self.testhelper.user2)
+        manager.update_examiners([self._create_examinerdict(id=self.testhelper.user1.id), # keep user1
+                                  # ... delete user2
+                                  self._create_examinerdict(username='user3')]) # create user3
+        examiners = manager.get_group_from_db().examiners.all()
+        self.assertEquals(len(examiners), 2)
+        ids = [examiner.id for examiner in examiners]
+        self.assertEquals(set(ids),
+                          set([self.testhelper.user1.id, self.testhelper.user3.id]))
 
 
 
