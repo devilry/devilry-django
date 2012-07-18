@@ -122,7 +122,7 @@ class TestListGroupRest(TestCase):
         self._test_list_as('superuser')
 
 
-class TestCreateStuff(TestCase):
+class TestGroupCreator(TestCase):
     def setUp(self):
         self.client = RestClient()
         self.testhelper = TestHelper()
@@ -130,9 +130,17 @@ class TestCreateStuff(TestCase):
                        subjects=['sub'],
                        periods=['p1'],
                        assignments=['a1'])
+        self.a1id = self.testhelper.sub_p1_a1.id
 
-    #def test_set_
-
+    def test_update_group(self):
+        self.assertEquals(AssignmentGroup.objects.all().count(), 0)
+        creator = GroupCreator(self.a1id)
+        self.assertEquals(creator.group.id, None)
+        creator.update_group(name='Nametest', is_open=False)
+        self.assertIsNotNone(creator.group.id)
+        self.assertEquals(creator.group.name, 'Nametest')
+        self.assertEquals(creator.group.is_open, False)
+        self.assertEquals(AssignmentGroup.objects.all().count(), 1)
 
 
 

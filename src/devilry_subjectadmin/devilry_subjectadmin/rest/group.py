@@ -25,6 +25,9 @@ class IsAssignmentAdminAssignmentIdKwarg(IsAssignmentAdmin):
 
 
 class GroupSerializer(object):
+    """
+    Serialize AssignmentGroup objects and related data.
+    """
     def __init__(self, group):
         self.group = group
 
@@ -72,16 +75,18 @@ class GroupCreator(object):
     def __init__(self, assignment_id):
         self.assignment_id = assignment_id
         self.group = self.get_group()
+        self.serializer = GroupSerializer(self.group)
 
     def get_group(self):
-        return AssignmentGroup()
+        return AssignmentGroup(parentnode_id=self.assignment_id)
 
     def update_group(self, name, is_open):
         self.group.name = name
         self.group.is_open = is_open
         self.group.save()
 
-    #def update_examiners(self, examiners):
+    def update_examiners(self, examiners):
+        existing_examiners = self.serializer.serialize_examiners()
         #for existing_examiner in self.group.examiners.all():
 
     #def _setattr_if_not_none(self, obj, attrname, value):
