@@ -63,6 +63,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
+        this._refreshBody();
+    },
+
+    _refreshBody: function() {
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
@@ -70,7 +74,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             studentsStore: this._createStudentsStore(),
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
-            groupRecord: groupRecord
+            groupRecord: this.groupRecord
         });
     },
 
@@ -130,7 +134,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         alert('Not implemented.');
     },
     _onRemoveTag: function(tagRecord) {
-        //console.log('Remove tag:', tagRecord.data);
-        alert('Not implemented.');
+        console.log('Remove tag:', tagRecord.data);
+        var tags = this.groupRecord.get('tags');
+        Ext.Array.each(tags, function(tagObj, index) {
+            if(tagObj.tag == tagRecord.get('tag')) {
+                Ext.Array.erase(tags, index, 1);
+                return false; // break
+            }
+        }, this);
+        console.log(this.groupRecord.get('tags'));
+        this.groupRecord.save();
     },
 });
