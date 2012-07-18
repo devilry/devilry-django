@@ -201,7 +201,7 @@ class TestGroupManager(TestCase):
 
 
 
-class TestListOrCreateGroupRest(TestCase):
+class TestCreateGroupRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -210,44 +210,65 @@ class TestListOrCreateGroupRest(TestCase):
                             assignments=['a1:admin(a1admin)'])
         self.client = RestClient()
         self.testhelper.create_user('student0')
-        self.a1url = '/devilry_subjectadmin/rest/group/{0}/'.format(self.testhelper.sub_p1_a1.id)
+        self.a1id = self.testhelper.sub_p1_a1.id
 
-    def test_list(self):
-        self.client.login(username='a1admin', password='test')
-        for studentNum in xrange(3):
-            path = 'uni;sub.p1.a1.g{studentNum}:candidate(stud{studentNum})'.format(studentNum=studentNum)
-            self.testhelper.add_to_path(path)
-        content, response = self.client.rest_get(self.a1url)
-        self.assertEquals(len(content), 3)
-        self.assertEquals(set(content[0].keys()),
-                          set([u'name', u'tags', u'students',
-                               u'feedback__is_passing_grade', u'deadlines',
-                               u'id', u'feedback__points', u'feedback__grade',
-                               u'is_open', u'num_deliveries',
-                               u'feedback__save_timestamp', u'examiners']))
+    def _geturl(self, assignment_id):
+        return '/devilry_subjectadmin/rest/group/{0}/'.format(assignment_id)
 
-    def test_create(self):
-        self.client.login(username='a1admin', password='test')
-        data = dict(
-                    students=[dict(candidate_id=u'candid334',
-                                   student__username=u'student0',
-                                   student__email=u'myemail2',
-                                   student__devilryuserprofile__full_name=u'Somename2')],
-                    tags=[dict(tag='group1')],
-                    deadlines=[dict(deadline=u'2011-01-02 03:04:05')]
-                   )
-        content, response = self.client.rest_post(self.a1url, data)
+    def _postas(self, username, assignment_id, data={}):
+        self.client.login(username=username, password='test')
+        return self.client.rest_post(self._geturl(assignment_id), data)
+
+    def test_create_minimal(self):
+        data = {'name': 'g1',
+                'is_open': False}
+        content, response = self._postas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 201)
-        self.assertEquals(content.keys(), ['id'])
+        self.assertEquals(set(content.keys()),
+                          set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                               'feedback', 'deadlines', 'candidates',
+                               'examiners', 'num_deliveries']))
+        self.assertEquals(content['name'], 'g1')
+        self.assertEquals(content['is_open'], False)
+        self.assertEquals(content['parentnode'], self.a1id)
+        self.assertEquals(content['num_deliveries'], 0)
+        self.assertEquals(content['feedback'], None)
+        self.assertEquals(content['deadlines'], [])
+        self.assertEquals(content['candidates'], [])
+        self.assertEquals(content['examiners'], [])
+
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)
 
-    def test_noperm(self):
-        self.client.login(username='student0', password='test')
-        content, response = self.client.rest_post(self.a1url, {})
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(content, {u'detail': u'Permission denied'})
+    def test_create(self):
+        data = {'name': 'g1',
+                'is_open': False}
+        content, response = self._postas('a1admin', self.a1id, data)
+        self.assertEquals(response.status_code, 201)
+
+        from pprint import pprint
+        pprint(content)
+
+        self.assertEquals(content['name'], 'g1')
+        self.assertEquals(content['is_open'], False)
+        self.assertEquals(content['parentnode'], self.a1id)
+        self.assertEquals(content['num_deliveries'], 0)
+        self.assertEquals(content['feedback'], None)
+        self.assertEquals(content['deadlines'], [])
+        self.assertEquals(content['candidates'], [])
+        self.assertEquals(content['examiners'], [])
+
+        groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
+        self.assertEquals(len(groups), 1)
+        self.assertEquals(content['id'], groups[0].id)
+
+
+    #def test_noperm(self):
+        #self.client.login(username='student0', password='test')
+        #content, response = self.client.rest_post(self.a1url, {})
+        #self.assertEquals(response.status_code, 403)
+        #self.assertEquals(content, {u'detail': u'Permission denied'})
 
 
 class TestInstanceGroupRest(TestCase):

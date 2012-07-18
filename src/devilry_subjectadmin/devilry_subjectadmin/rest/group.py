@@ -12,11 +12,9 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 
-from devilry.apps.core.models import (AssignmentGroup,
-                                      AssignmentGroupTag,
-                                      Candidate,
-                                      Examiner,
-                                      Deadline)
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Delivery
+
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .mixins import SelfdocumentingMixin
@@ -249,9 +247,17 @@ class ListOrCreateGroupResource(ModelResource):
     fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
               'parentnode', 'feedback', 'deadlines', 'examiners', 'candidates')
 
+    def serialize_model(self, instance):
+        data = super(ListOrCreateGroupResource, self).serialize_model(instance)
+        if not 'num_deliveries' in data:
+            # This is used when working directly with the instance. The listing
+            # (query) annotates this field instead of querying for each object
+            data['num_deliveries'] = Delivery.objects.filter(deadline__assignment_group=instance).count()
+        return data
+
     def parentnode(self, instance):
         if isinstance(instance, self.model):
-            return instance.parentnode_id
+            return int(instance.parentnode_id)
 
     def feedback(self, instance):
         if isinstance(instance, self.model):
@@ -363,8 +369,12 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
         return docs.format(responsetable=responsetable)
 
     def post(self, request, assignment_id):
-        group = self.dao.create(assignment_id, **self.CONTENT)
-        return Response(201, dict(id=group.id))
+        manager = GroupManager(assignment_id)
+        data = self.CONTENT
+        print 'POST CONTENT:', data
+        manager.update_group(name=data['name'],
+                             is_open=data['is_open'])
+        return Response(201, manager.group)
 
 
 
