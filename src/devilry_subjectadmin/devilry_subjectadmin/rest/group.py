@@ -14,8 +14,9 @@ from devilry.apps.core.models import (AssignmentGroup,
                                       Candidate,
                                       Examiner,
                                       Deadline)
-from auth import IsAssignmentAdmin
-from fields import ListOfDictField
+from .auth import IsAssignmentAdmin
+from .fields import ListOfDictField
+from .mixins import SelfdocumentingMixin
 
 
 class IsAssignmentAdminAssignmentIdKwarg(IsAssignmentAdmin):
@@ -150,11 +151,14 @@ class ListOrCreateGroupResource(ModelResource):
     def feedback(self, instance):
         if isinstance(instance, self.model):
             feedback = instance.feedback
-            return {'id': feedback.id,
-                    'grade': feedback.grade,
-                    'points': feedback.points,
-                    'is_passing_grade': feedback.is_passing_grade,
-                    'save_timestamp': feedback.save_timestamp}
+            if feedback:
+                return {'id': feedback.id,
+                        'grade': feedback.grade,
+                        'points': feedback.points,
+                        'is_passing_grade': feedback.is_passing_grade,
+                        'save_timestamp': feedback.save_timestamp}
+            else:
+                return None
 
     def deadlines(self, instance):
         if isinstance(instance, self.model):
@@ -186,8 +190,45 @@ class ListOrCreateGroupResource(ModelResource):
 
 
 
+feedback_docs = """The active feedback. NULL/None or a dict/object with the following attributes:
 
-class ListOrCreateGroupRest(ListOrCreateModelView):
+- ``grade`` (string): The grade.
+- ``points`` (int): Number of points
+- ``save_timestamp`` (iso datetime): When the feedback was created.
+- ``is_passing_grade`` (boolean): Is this a passing grade?
+- ``parentnode`` (int): The assignment ID.
+"""
+
+candidates_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the candidate object in the database.
+- ``candidate_id`` (string): The candidate ID used on anonymous assignments.
+- ``user``: Object/map with the following attributes:
+    - ``username``: (string)
+    - ``email``: string
+    - ``full_name``: string
+"""
+examiners_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the examiner object in the database.
+- ``user``: Object/map with the following attributes:
+    - ``username``: (string)
+    - ``email``: string
+    - ``full_name``: string
+"""
+tags_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the tag object in the database.
+- ``tag``: string
+"""
+deadlines_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the deadline object in the database.
+- ``deadline`` (ISO datetime): The datetime when the delivery whas made.
+"""
+
+
+class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
     resource = ListOrCreateGroupResource
     form = PostForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
@@ -202,42 +243,43 @@ class ListOrCreateGroupRest(ListOrCreateModelView):
                                    'examiners__user__devilryuserprofile',
                                    'candidates', 'candidates__student',
                                    'candidates__student__devilryuserprofile')
+        qry = qry.order_by('id')
         return qry
 
     def get(self, request, assignment_id):
         """
-        Returns a list of one dict for each group in the assignment with the
-        given ``assignment_id``. The dict has the following keys:
+        Returns a list with one object/map for each group in the assignment
+        with the ``assignment_id`` specified in the URL. The dict has the
+        following attributes:
 
-        - id --- int
-        - etag --- string
-        - name --- string
-        - is_open --- boolean
-        - num_deliveries --- Number of deliveries
-        - feedback --- active feedback
-            - grade --- string
-            - points --- int
-            - save_timestamp --- datetime
-            - is_passing_grade --- boolean
-        - students --- list of dicts with the following keys:
-            - id
-            - candidate_id --- string
-            - username --- string
-            - email --- string
-            - devilryuserprofile__full_name --- string
-        - examiners --- list of dicts with the following keys:
-            - id
-            - username --- string
-            - devilryuserprofile__full_name --- string
-            - email --- string
-        - tags --- list of dicts with the following keys:
-            - id
-            - tag --- string
-        - deadlines --- list of dicts with the following keys:
-            - id
-            - deadline --- datetime
+        {responsetable}
         """
         return super(ListOrCreateGroupRest, self).get(request)
+
+    def postprocess_get_docs(self, docs):
+        help = {'id': {'help': 'ID the the group',
+                       'meta': 'string'},
+                'etag': {'help': 'ETAG changes each time the group is saved',
+                         'meta': 'string'},
+                'name': {'help': 'Name of the group',
+                         'meta': 'string'},
+                'is_open': {'help': 'Is the group open? (boolean)',
+                            'meta': 'boolean'},
+                'num_deliveries': {'help': 'Number of deliveries',
+                            'meta': 'int'},
+                'feedback': {'help': feedback_docs,
+                            'meta': 'object or null'},
+                'candidates': {'help': candidates_docs,
+                            'meta': 'list'},
+                'examiners': {'help': examiners_docs,
+                            'meta': 'list'},
+                'tags': {'help': tags_docs,
+                            'meta': 'list'},
+                'deadlines': {'help': deadlines_docs,
+                            'meta': 'list'},
+               }
+        responsetable = self.html_create_attrtable(help)
+        return docs.format(responsetable=responsetable)
 
     #def post(self, request, assignment_id):
         #group = self.dao.create(assignment_id, **self.CONTENT)

@@ -42,9 +42,10 @@ class TestListGroupRest(TestCase):
             group.tags.create(tag="stuff")
             group.tags.create(tag="lownumber")
             delivery = self.testhelper.add_delivery(group)
-            self.testhelper.add_feedback(delivery,
-                                         verdict=dict(grade='A', points=100,
-                                                      is_passing_grade=True))
+            if num != 2:
+                self.testhelper.add_feedback(delivery,
+                                             verdict=dict(grade='A', points=100,
+                                                          is_passing_grade=True))
 
     def test_list_permissiondenied(self):
         self.testhelper.create_user('nobody')
@@ -83,6 +84,9 @@ class TestListGroupRest(TestCase):
         self.assertEquals(feedback['is_passing_grade'], True)
         self.assertEquals(feedback['points'], 100)
 
+        # NULL feedback
+        self.assertEquals(content[2]['feedback'], None)
+
         # Canididates
         def get_usernames(users):
             return [user['user']['username'] for user in users]
@@ -108,6 +112,7 @@ class TestListGroupRest(TestCase):
         deadline = content[0]['deadlines'][0]
         self.assertEquals(set(deadline.keys()),
                           set(['id', 'deadline']))
+
 
     def test_list(self):
         self._test_list_as('a1admin')
