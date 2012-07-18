@@ -212,6 +212,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
+    _selectUrlIds: function() {
+        var selected_group_ids = this.getOverview().selected_group_ids;
+        if(!selected_group_ids) {
+            this._handleNoGroupsSelected();
+            return;
+        }
+        var selectionModel = this.getListOfGroups().getSelectionModel();
+        var groupsStore = this.getGroupsStore();
+        var selectedGroups = [];
+        Ext.Array.each(selected_group_ids.split(','), function(strid) {
+            var id = parseInt(strid);
+            var index = groupsStore.findExact('id', id);
+            if(index != -1) {
+                var record = groupsStore.getAt(index);
+                selectedGroups.push(record);
+            }
+        }, this);
+        selectionModel.select(selectedGroups);
+    },
+
     _handleLoadError: function(operation, title) {
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
         error.addErrors(null, operation);
@@ -259,7 +279,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], gettext('Manage students'));
-        this._handleNoGroupsSelected();
+        this._selectUrlIds();
     },
 
     /**
@@ -284,13 +304,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         return map;
     },
 
+    _setSelectionUrl: function(selectedGroupRecords) {
+        var ids = [];
+        Ext.Array.each(selectedGroupRecords, function(record) {
+            ids.push(record.get('id'));
+        }, this);
+        var hashpatt = '/assignment/{0}/@@manage-students/{1}';
+        var hash = Ext.String.format(hashpatt, this.assignmentRecord.get('id'), ids.join(','));
+        this.application.route.setHashWithoutEvent(hash);
+    },
+
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
         if(selectedGroupRecords.length === 1) {
             this._handleSingleGroupSelected(selectedGroupRecords[0]);
+            this._setSelectionUrl(selectedGroupRecords);
         } else if(selectedGroupRecords.length > 1) {
             this._handleMultipleGroupsSelected(selectedGroupRecords);
+            this._setSelectionUrl(selectedGroupRecords);
         } else {
             this._handleNoGroupsSelected();
+            this._setSelectionUrl([]);
         }
     },
 
