@@ -47,7 +47,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                         }, {
                             text: pgettext('group', 'Passed')
                         }, '-', {
-                            text: 'List of all current grades here unless there are more than XXX (20?)'
+                            text: 'TODO: Will list of all current grades here unless there are more than XXX (20?)'
                         }]
                     }, {
                         text: gettext('Number of deliveries'),
@@ -56,10 +56,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                         }, {
                             text: gettext('Has deliveries')
                         }, '-', {
-                            text: 'List all numbers of deliveries.'
+                            text: 'TOOD: Will list all numbers of deliveries.'
                         }]
                     }, {
+                        text: gettext('With examiner'),
+                        menu: [{
+                            text: 'TODO: Will list all related examiners'
+                        }]
+                    }, '-', {
                         text: gettext('Select using search ...')
+                    }, {
+                        text: gettext('Select using advanced search ...') // Select with a query (E.g: username:thor OR username:examiner AND status:open)
                     }]
                 }, {
                     xtype: 'combobox',
