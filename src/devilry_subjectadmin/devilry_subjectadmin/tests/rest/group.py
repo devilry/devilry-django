@@ -60,7 +60,7 @@ class TestGroupDao(TestCase):
     def test_merge(self):
         groups = [{'id': 1, 'name': 'Group1'}]
         candidates = [{'assignment_group_id': 1, 'username': 'stud'}]
-        examiners = [{'assignmentgroup_id': 1, 'username': 'exam'}]
+        examiners = [{'assignmentgroup_id': 1, 'user__username': 'exam'}]
         tags = [{'assignment_group_id': 1, 'tag': 'important'}]
         deadlines = [{'assignment_group_id': 1, 'deadline': 'now'}]
         groups = GroupDao()._merge(groups, candidates, examiners, tags, deadlines)
@@ -68,7 +68,9 @@ class TestGroupDao(TestCase):
                           [{'id': 1,
                             'name': 'Group1',
                             'students': [{'username': 'stud'}],
-                            'examiners': [{'username': 'exam'}],
+                            'examiners': [{'username': 'exam', 'email': None,
+                                           'full_name': None, 'id': None,
+                                           'user_id': None}],
                             'tags': [{'tag': 'important'}],
                             'deadlines': [{'deadline': 'now'}]
                            }])
@@ -180,7 +182,7 @@ class TestGroupDao(TestCase):
         group = AssignmentGroup(parentnode=assignment1)
         group.save()
         tstuser = testhelper.create_user('tstuser')
-        examiner = GroupDao()._create_examiner_from_examinerdict(group, dict(user__username='tstuser'))
+        examiner = GroupDao()._create_examiner_from_examinerdict(group, dict(username='tstuser'))
         self.assertEquals(examiner.user.username, 'tstuser')
         examiner_db = Examiner.objects.get(id=examiner.id) # Raises exception if not found
         self.assertEquals(examiner_db.user.username, 'tstuser')
@@ -196,8 +198,8 @@ class TestGroupDao(TestCase):
         assignment1 = testhelper.duck1010_firstsem_a1
         tstuser = testhelper.create_user('tstuser')
         tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create(assignment1.id, examiners=[{'user__username': 'tstuser'},
-                                                                {'user__username': 'tstuser2'}])
+        group = GroupDao().create(assignment1.id, examiners=[{'username': 'tstuser'},
+                                                                {'username': 'tstuser2'}])
         group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
         usernames = [examiner.user.username for examiner in group.examiners.all()]
         self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
@@ -316,3 +318,32 @@ class TestListOrCreateGroupRest(TestCase):
         content, response = self.client.rest_post(self.a1url, {})
         self.assertEquals(response.status_code, 403)
         self.assertEquals(content, {u'detail': u'Permission denied'})
+
+
+class TestInstanceGroupRest(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1'],
+                            assignments=['a1:admin(a1admin)'])
+        self.client = RestClient()
+        self.testhelper.create_user('student0')
+
+    def _geturl(self, group_id, assignment_id=None):
+        assignment_id = assignment_id or self.testhelper.sub_p1_a1.id
+        return '/devilry_subjectadmin/rest/group/{0}/{1}'.format(assignment_id, group_id)
+
+    def _putas(self, username, group_id, assignment_id=None, data={}):
+        self.client.login(username=username, password='test')
+        return self.client.rest_put(self._geturl(assignment_id, group_id), data)
+
+    def _add_group(self, name, candidates, examiners):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate({candidates}):examiner({examiners})'.format(**vars()))
+        return getattr(self.testhelper, 'sub_p1_a1_' + name)
+
+    def test_put(self):
+        g1 = self._add_group('g1', 'student0', 'examiner0')
+        content, response = self._putas('a1admin', g1.id)
+        print response
+        #print content

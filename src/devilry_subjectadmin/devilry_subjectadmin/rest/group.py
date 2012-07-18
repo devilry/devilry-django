@@ -16,6 +16,10 @@ from auth import IsAssignmentAdmin
 from fields import ListOfDictField
 
 
+class IsAssignmentAdminAssignmentIdKwarg(IsAssignmentAdmin):
+    ID_KWARG = 'assignment_id'
+
+
 class GroupDao(object):
     """
     Makes it convenient to work with everything related to an AssignmentGroup:
@@ -36,14 +40,14 @@ class GroupDao(object):
         - Email
     """
 
-    def _get_groups(self, assignmentid):
+    def _get_groups(self, assignment_id):
         """
         Get a list of group dictionaries.
         """
         fields = ('id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
                   'feedback__is_passing_grade', 'feedback__save_timestamp',
                   'num_deliveries')
-        qry = AssignmentGroup.objects.filter(parentnode=assignmentid)
+        qry = AssignmentGroup.objects.filter(parentnode=assignment_id)
         qry = qry.select_related('feedback')
         qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
         return qry.values(*fields)
@@ -62,44 +66,55 @@ class GroupDao(object):
             groupsdict[group['id']] = self._prepare_group(group)
         return groupsdict
 
-    def _merge_with_groupsdict(self, groupsdict, listofdicts, targetkey, assignmentgroup_key='assignment_group_id'):
+    def _merge_with_groupsdict(self, groupsdict, listofdicts, targetkey,
+                               assignmentgroup_key='assignment_group_id'):
         for dct in listofdicts:
             group = groupsdict[dct[assignmentgroup_key]]
             del dct[assignmentgroup_key]
             group[targetkey].append(dct)
 
-    def _get_candidates(self, assignmentid):
+    def _merge_examiners_with_groupsdict(self, groupsdict, examiners):
+        for examinerdct in examiners:
+            group = groupsdict[examinerdct['assignmentgroup_id']]
+            group['examiners'].append({'id': examinerdct.get('id'),
+                                       'user_id': examinerdct.get('user__id'),
+                                       'username': examinerdct.get('user__username'),
+                                       'full_name': examinerdct.get('user__devilryuserprofile__full_name'),
+                                       'email': examinerdct.get('user__email')})
+
+    def _get_candidates(self, assignment_id):
         fields = ('assignment_group_id', 'candidate_id',
                   'student__username', 'student__email',
                   'student__devilryuserprofile__full_name')
-        return Candidate.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+        return Candidate.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
 
-    def _get_examiners(self, assignmentid):
-        fields = ('assignmentgroup_id',
-                  'user__username', 'user__email',
+    def _get_examiners(self, assignment_id):
+        fields = ('assignmentgroup_id', 'id',
+                  'user__id', 'user__username', 'user__email',
                   'user__devilryuserprofile__full_name')
-        return Examiner.objects.filter(assignmentgroup__parentnode=assignmentid).values(*fields)
+        return Examiner.objects.filter(assignmentgroup__parentnode=assignment_id).values(*fields)
 
-    def _get_tags(self, assignmentid):
+    def _get_tags(self, assignment_id):
         fields = ('assignment_group_id', 'tag')
-        return AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+        return AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
 
-    def _get_deadlines(self, assignmentid):
+    def _get_deadlines(self, assignment_id):
         fields = ('assignment_group_id', 'deadline')
-        return Deadline.objects.filter(assignment_group__parentnode=assignmentid).values(*fields)
+        return Deadline.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
 
     def _merge(self, groups, candidates, examiners, tags, deadlines):
         groupsdict = self._convert_groupslist_to_groupsdict(groups)
         self._merge_with_groupsdict(groupsdict, candidates, 'students')
-        self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
+        #self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
         self._merge_with_groupsdict(groupsdict, tags, 'tags')
         self._merge_with_groupsdict(groupsdict, deadlines, 'deadlines')
+        self._merge_examiners_with_groupsdict(groupsdict, examiners)
         return groupsdict.values()
 
-    def list(self, assignmentid):
+    def list(self, assignment_id):
         """
         Returns a list of one dict for each group in the assignment with the
-        given ``assignmentid``. The dict has the following keys:
+        given ``assignment_id``. The dict has the following keys:
 
         - name --- string
         - is_open --- boolean
@@ -121,11 +136,11 @@ class GroupDao(object):
         - deadlines --- list of dicts with the following keys:
             - deadline --- datetime
         """
-        groups = self._get_groups(assignmentid)
-        candidates = self._get_candidates(assignmentid)
-        examiners = self._get_examiners(assignmentid)
-        tags = self._get_tags(assignmentid)
-        deadlines = self._get_deadlines(assignmentid)
+        groups = self._get_groups(assignment_id)
+        candidates = self._get_candidates(assignment_id)
+        examiners = self._get_examiners(assignment_id)
+        tags = self._get_tags(assignment_id)
+        deadlines = self._get_deadlines(assignment_id)
         groups = self._merge(groups, candidates, examiners, tags, deadlines)
         return groups
 
@@ -157,21 +172,21 @@ class GroupDao(object):
             candidate.save()
             return candidate
 
-    def _create_from_singlekey_dict(self, modelcls, group, examinerdict, key,
+    def _create_from_singlekey_dict(self, modelcls, group, singlekeydict, key,
                                     objectattr, getvalue=lambda v: v,
-                                   assignmentgroupattr='assignment_group'):
+                                    assignmentgroupattr='assignment_group'):
         typename = modelcls.__class__.__name__
-        if not isinstance(examinerdict, dict):
+        if not isinstance(singlekeydict, dict):
             raise ValueError('Each entry in the {typename} list must be a dict. '
                              'Given type: {giventypename}.'.format(typename=typename,
-                                                                   giventypename=type(examinerdict)))
+                                                                   giventypename=type(singlekeydict)))
         try:
-            value = examinerdict[key]
+            value = singlekeydict[key]
         except KeyError, e:
             raise ValueError('A {typename} dict must contain {key}. '
                              'Keys in the given dict: {keys}.'.format(typename=typename,
                                                                       key=key,
-                                                                      keys=','.join(examinerdict.keys())))
+                                                                      keys=','.join(singlekeydict.keys())))
         else:
             obj = modelcls()
             setattr(obj, assignmentgroupattr, group)
@@ -180,10 +195,10 @@ class GroupDao(object):
             return obj
 
     def _create_examiner_from_examinerdict(self, group, examinerdict):
-        return self._create_from_singlekey_dict(Examiner, group, examinerdict,
-                                                'user__username', 'user',
-                                                assignmentgroupattr='assignmentgroup',
-                                                getvalue=self._get_user)
+        user = User.objects.get(id=examinerdict.get('user_id'))
+        examiner = Examiner(user=user, assignmentgroup=group)
+        examiner.save()
+        return examiner
 
     def _create_tag_from_tagdict(self, group, tagdict):
         return self._create_from_singlekey_dict(AssignmentGroupTag, group, tagdict, 'tag', 'tag')
@@ -193,9 +208,9 @@ class GroupDao(object):
                                                 'deadline', 'deadline')
 
 
-    def create(self, assignmentid, name=None, is_open=None,
+    def create(self, assignment_id, name=None, is_open=None,
                       students=[], examiners=[], tags=[], deadlines=[]):
-        group = AssignmentGroup(parentnode_id=assignmentid)
+        group = AssignmentGroup(parentnode_id=assignment_id)
         self._setattr_if_not_none(group, 'name', name)
         self._setattr_if_not_none(group, 'is_open', is_open)
         group.save()
@@ -228,11 +243,13 @@ class DeadlinesField(ListOfDictField):
 
 class ExaminersField(ListOfDictField):
     class Form(forms.Form):
-        user__username = forms.CharField()
-        user__email = forms.CharField()
-        user__devilryuserprofile__full_name = forms.CharField()
+        id = forms.IntegerField()
+        user_id = forms.IntegerField()
+        username = forms.CharField()
+        email = forms.CharField()
+        devilryuserprofile__full_name = forms.CharField()
 
-class RestGroupRootForm(forms.Form):
+class PostForm(forms.Form):
     name = forms.CharField(required=False)
     is_open = forms.BooleanField(required=False)
     tags = TagsField(required=False)
@@ -243,23 +260,29 @@ class RestGroupRootForm(forms.Form):
 
 class ListOrCreateGroupRest(View):
     resource = FormResource
-    form = RestGroupRootForm
-    permissions = (IsAuthenticated, IsAssignmentAdmin)
+    form = PostForm
+    permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
     def __init__(self):
         self.dao = GroupDao()
 
-    def get(self, request, id):
-        return self.dao.list(id)
+    def get(self, request, assignment_id):
+        return self.dao.list(assignment_id)
 
-    def post(self, request, id):
-        group = self.dao.create(id, **self.CONTENT)
+    def post(self, request, assignment_id):
+        group = self.dao.create(assignment_id, **self.CONTENT)
         return Response(201, dict(id=group.id))
 
 
-#class RestGroup(View):
-    #permissions = (IsAuthenticated, IsAssignmentAdmin)
-    #def __init__(self, daocls=GroupDao):
-        #self.dao = daocls()
 
-    #def put(self, request, assignmentid):
-        #return self.dao.list(assignmentid)
+class InstanceGroupRest(View):
+    resource = FormResource
+    form = PostForm
+    permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
+    def __init__(self, daocls=GroupDao):
+        self.dao = daocls()
+
+    #def get(self):
+
+    def put(self, request, assignment_id, group_id):
+        group = self.dao.update(**self.CONTENT)
+        return group.id
