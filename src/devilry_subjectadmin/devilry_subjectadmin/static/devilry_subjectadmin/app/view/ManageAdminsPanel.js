@@ -61,7 +61,7 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
             id: userRecord.get('id')
         });
         
-        this._mask('Saving ...');
+        this._mask(gettext('Saving ...'));
         this.basenodeRecord.save({
             scope: this,
             success: function() {
@@ -90,7 +90,7 @@ Ext.define('devilry_subjectadmin.view.ManageAdminsPanel' ,{
     removeUsers: function(userRecords) {
         var remainingAdmins = this._getRemainingAfterRemove(userRecords);
         this.basenodeRecord.set('admins', remainingAdmins);
-        this._mask('Saving ...');
+        this._mask(gettext('Saving ...'));
         this.basenodeRecord.save({
             scope: this,
             success: function() {
