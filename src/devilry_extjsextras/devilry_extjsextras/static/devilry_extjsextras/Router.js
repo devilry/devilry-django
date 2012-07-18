@@ -12,6 +12,7 @@ Ext.define('devilry_extjsextras.Router', {
         this.handler = handler;
         this.routes = [];
         this.started = false;
+        this.suspendedEvents = false;
         this.callParent();
     },
 
@@ -39,6 +40,10 @@ Ext.define('devilry_extjsextras.Router', {
     },
 
     _trigger: function(token) {
+        if(this.suspendedEvents) {
+            this.suspendedEvents = false;
+            return;
+        }
         if(token == null) {
             token = '';
         }
@@ -103,5 +108,13 @@ Ext.define('devilry_extjsextras.Router', {
 
     navigate: function(token) {
         Ext.util.History.add(token);
+    },
+
+    setHashWithoutEvent: function(token) {
+        if(token == Ext.util.History.getToken()) {
+            return;
+        }
+        this.suspendedEvents = true;
+        this.navigate(token);
     }
 });
