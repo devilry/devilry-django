@@ -64,62 +64,6 @@ class TestGroupListingAggator(TestCase):
         self.assertEquals(AssignmentGroup.objects.get(id=groups[0]['id']).parentnode_id,
                           assignment1.id)
 
-    def test_merge(self):
-        groups = [{'id': 1, 'name': 'Group1'}]
-        candidates = [{'assignment_group_id': 1, 'username': 'stud'}]
-        examiners = [{'assignmentgroup_id': 1, 'user__username': 'exam'}]
-        tags = [{'assignment_group_id': 1, 'tag': 'important'}]
-        deadlines = [{'assignment_group_id': 1, 'deadline': 'now'}]
-        groups = GroupListingAggregator()._merge(groups, candidates, examiners, tags, deadlines)
-        self.assertEquals(groups,
-                          [{'id': 1,
-                            'name': 'Group1',
-                            'students': [{'username': 'stud'}],
-                            'examiners': [{'username': 'exam', 'email': None,
-                                           'full_name': None, 'id': None,
-                                           'user_id': None}],
-                            'tags': [{'tag': 'important'}],
-                            'deadlines': [{'deadline': 'now'}]
-                           }])
-
-    def test_get_groups(self):
-        testhelper = self.create_testdata()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupListingAggregator()._get_groups(assignment1.id)
-        self.assertEquals(len(groups), 3)
-        first = groups[0]
-        fields = set(['id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
-                      'feedback__is_passing_grade', 'feedback__save_timestamp', 'num_deliveries'])
-        self.assertEquals(set(first.keys()), fields)
-
-    def test_num_deliveries(self):
-        testhelper = self.create_testdata()
-        testhelper.add_to_path('uni;duck1010.firstsem.a1.g0.d2')
-        testhelper.add_delivery(testhelper.duck1010_firstsem_a1_g0)
-        assignment1 = testhelper.duck1010_firstsem_a1
-        groups = GroupListingAggregator()._get_groups(assignment1.id)
-        self.assertEquals(groups[0]['num_deliveries'], 2)
-        self.assertEquals(groups[1]['num_deliveries'], 1)
-
-    def test_prepare_group(self):
-        self.assertEquals(GroupListingAggregator()._prepare_group({}),
-                          {'tags': [],
-                           'students': [],
-                           'examiners': [],
-                           'deadlines': []})
-
-    def test_merge_with_groupsdict(self):
-        people =[{'assignment_group_id': 1, 'name': 'test'},
-                 {'assignment_group_id': 1, 'name': 'test2'},
-                 {'assignment_group_id': 3, 'name': 'test3'}]
-        groupsdict = {1: {'people': []},
-                      2: {'people': []},
-                      3: {'people': []}}
-        expected = {1: {'people': [{'name':'test'}, {'name':'test2'}]},
-                    2: {'people': []},
-                    3: {'people': [{'name':'test3'}]}}
-        GroupListingAggregator()._merge_with_groupsdict(groupsdict, people, 'people')
-        self.assertEquals(groupsdict, expected)
 
 
 

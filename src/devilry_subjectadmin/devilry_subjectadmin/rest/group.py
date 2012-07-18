@@ -104,139 +104,6 @@ class GroupDao(object):
 
 
 
-class GroupListingAggregator(object):
-    """
-    Aggregates AssignmentGroup and related data:
-
-    - name
-    - Active feedback
-    - tags
-    - deadlines
-    - Candidates (students)
-        - Candidate ID
-        - Username
-        - Full name
-        - Email
-    - Examiners
-        - Username
-        - Full name
-        - Email
-    """
-
-    def _get_groups(self, assignment_id):
-        """
-        Get a list of group dictionaries.
-        """
-        fields = ('id', 'name', 'is_open', 'feedback__grade', 'feedback__points',
-                  'feedback__is_passing_grade', 'feedback__save_timestamp',
-                  'num_deliveries')
-        qry = AssignmentGroup.objects.filter(parentnode=assignment_id)
-        qry = qry.select_related('feedback')
-        qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
-        return qry.values(*fields)
-
-    def _prepare_group(self, group):
-        """ Add the separate-query-aggreagated fields to the group dict. """
-        group['tags'] = []
-        group['students'] = []
-        group['examiners'] = []
-        group['deadlines'] = []
-        return group
-
-    def _convert_groupslist_to_groupsdict(self, groups):
-        groupsdict = {}
-        for group in groups:
-            groupsdict[group['id']] = self._prepare_group(group)
-        return groupsdict
-
-    def _merge_with_groupsdict(self, groupsdict, listofdicts, targetkey,
-                               assignmentgroup_key='assignment_group_id'):
-        for dct in listofdicts:
-            group = groupsdict[dct[assignmentgroup_key]]
-            del dct[assignmentgroup_key]
-            group[targetkey].append(dct)
-
-    def _merge_examiners_with_groupsdict(self, groupsdict, examiners):
-        for examinerdct in examiners:
-            group = groupsdict[examinerdct['assignmentgroup_id']]
-            group['examiners'].append({'id': examinerdct.get('id'),
-                                       'user_id': examinerdct.get('user__id'),
-                                       'username': examinerdct.get('user__username'),
-                                       'full_name': examinerdct.get('user__devilryuserprofile__full_name'),
-                                       'email': examinerdct.get('user__email')})
-
-    def _get_candidates(self, assignment_id):
-        fields = ('assignment_group_id', 'candidate_id',
-                  'student__username', 'student__email',
-                  'student__devilryuserprofile__full_name')
-        return Candidate.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
-
-    def _get_examiners(self, assignment_id):
-        fields = ('assignmentgroup_id', 'id',
-                  'user__id', 'user__username', 'user__email',
-                  'user__devilryuserprofile__full_name')
-        return Examiner.objects.filter(assignmentgroup__parentnode=assignment_id).values(*fields)
-
-    def _get_tags(self, assignment_id):
-        fields = ('assignment_group_id', 'tag')
-        return AssignmentGroupTag.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
-
-    def _get_deadlines(self, assignment_id):
-        fields = ('assignment_group_id', 'deadline')
-        return Deadline.objects.filter(assignment_group__parentnode=assignment_id).values(*fields)
-
-    def _merge(self, groups, candidates, examiners, tags, deadlines):
-        groupsdict = self._convert_groupslist_to_groupsdict(groups)
-        self._merge_with_groupsdict(groupsdict, candidates, 'students')
-        #self._merge_with_groupsdict(groupsdict, examiners, 'examiners', assignmentgroup_key='assignmentgroup_id')
-        self._merge_with_groupsdict(groupsdict, tags, 'tags')
-        self._merge_with_groupsdict(groupsdict, deadlines, 'deadlines')
-        self._merge_examiners_with_groupsdict(groupsdict, examiners)
-        return groupsdict.values()
-
-    def list(self, assignment_id):
-        """
-        Returns a list of one dict for each group in the assignment with the
-        given ``assignment_id``. The dict has the following keys:
-
-        - name --- string
-        - is_open --- boolean
-        - feedback__grade --- string
-        - feedback__points --- int
-        - feedback__save_timestamp --- datetime
-        - feedback__is_passing_grade --- boolean
-        - students --- list of dicts with the following keys:
-            - candidate_id --- string
-            - student__username --- string
-            - student__email --- string
-            - student__devilryuserprofile__full_name --- string
-        - examiners --- list of dicts with the following keys:
-            - user__username --- string
-            - user__devilryuserprofile__full_name --- string
-            - user__email --- string
-        - tags --- list of dicts with the following keys:
-            - tag --- string
-        - deadlines --- list of dicts with the following keys:
-            - deadline --- datetime
-        """
-        groups = self._get_groups(assignment_id)
-        candidates = self._get_candidates(assignment_id)
-        examiners = self._get_examiners(assignment_id)
-        tags = self._get_tags(assignment_id)
-        deadlines = self._get_deadlines(assignment_id)
-        groups = self._merge(groups, candidates, examiners, tags, deadlines)
-        return groups
-
-
-    def tull(self, assignment_id):
-        qry = AssignmentGroup.objects.filter(parentnode=assignment_id)
-        qry = qry.select_related('feedback')
-        qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
-        qry = qry.prefetch_related('deadlines')
-        return qry
-
-
-
 
 class TagsField(ListOfDictField):
     class Form(forms.Form):
@@ -271,7 +138,7 @@ class PostForm(forms.Form):
 
 
 
-class SubjectListOrCreateGroupResource(ModelResource):
+class ListOrCreateGroupResource(ModelResource):
     model = AssignmentGroup
     fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
               'parentnode', 'feedback', 'deadlines', 'examiners', 'candidates')
@@ -321,8 +188,8 @@ class SubjectListOrCreateGroupResource(ModelResource):
 
 
 class ListOrCreateGroupRest(ListOrCreateModelView):
-    resource = SubjectListOrCreateGroupResource
-    #form = PostForm
+    resource = ListOrCreateGroupResource
+    form = PostForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
 
     def get_queryset(self):
