@@ -23,85 +23,144 @@ class IsAssignmentAdminAssignmentIdKwarg(IsAssignmentAdmin):
     ID_KWARG = 'assignment_id'
 
 
-class GroupDao(object):
-    def _setattr_if_not_none(self, obj, attrname, value):
-        if value != None:
-            setattr(obj, attrname, value)
 
-    def _get_user(self, username):
-        try:
-            return User.objects.get(username=username)
-        except ObjectDoesNotExist, e:
-            raise ValueError('User does not exist: {0}'.format(username))
+class GroupSerializer(object):
+    def __init__(self, group):
+        self.group = group
 
-    def _create_candidate_from_studentdict(self, group, studentdict):
-        if not isinstance(studentdict, dict):
-            raise ValueError('Each entry in the students list must be a dict. '
-                             'Given type: {0}.'.format(type(studentdict)))
-        try:
-            username = studentdict['student__username']
-        except KeyError, e:
-            raise ValueError('A student dict must contain student__username. '
-                             'Keys in the given dict: {0}.'.format(','.join(studentdict.keys())))
+    def _serialize_deadline(self, deadline):
+        return {'id': deadline.id,
+                'deadline': deadline.deadline}
+
+    def serialize_deadlines(self):
+        return map(self._serialize_deadline, self.group.deadlines.all())
+
+    def serialize_feedback(self):
+        feedback = self.group.feedback
+        if feedback:
+            return {'id': feedback.id,
+                    'grade': feedback.grade,
+                    'points': feedback.points,
+                    'is_passing_grade': feedback.is_passing_grade,
+                    'save_timestamp': feedback.save_timestamp}
         else:
-            candidate_id = studentdict.get('candidate_id')
-            candidate = Candidate(assignment_group=group,
-                                  student=self._get_user(username),
-                                  candidate_id=candidate_id)
-            candidate.save()
-            return candidate
+            return None
 
-    def _create_from_singlekey_dict(self, modelcls, group, singlekeydict, key,
-                                    objectattr, getvalue=lambda v: v,
-                                    assignmentgroupattr='assignment_group'):
-        typename = modelcls.__class__.__name__
-        if not isinstance(singlekeydict, dict):
-            raise ValueError('Each entry in the {typename} list must be a dict. '
-                             'Given type: {giventypename}.'.format(typename=typename,
-                                                                   giventypename=type(singlekeydict)))
-        try:
-            value = singlekeydict[key]
-        except KeyError, e:
-            raise ValueError('A {typename} dict must contain {key}. '
-                             'Keys in the given dict: {keys}.'.format(typename=typename,
-                                                                      key=key,
-                                                                      keys=','.join(singlekeydict.keys())))
-        else:
-            obj = modelcls()
-            setattr(obj, assignmentgroupattr, group)
-            setattr(obj, objectattr, getvalue(value))
-            obj.save()
-            return obj
+    def _serialize_user(self, user):
+        return {'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'full_name': user.devilryuserprofile.full_name}
 
-    def _create_examiner_from_examinerdict(self, group, examinerdict):
-        user = User.objects.get(id=examinerdict.get('user_id'))
-        examiner = Examiner(user=user, assignmentgroup=group)
-        examiner.save()
-        return examiner
+    def _serialize_examiner(self, examiner):
+        return {'id': examiner.id,
+                'user': self._serialize_user(examiner.user)}
 
-    def _create_tag_from_tagdict(self, group, tagdict):
-        return self._create_from_singlekey_dict(AssignmentGroupTag, group, tagdict, 'tag', 'tag')
+    def serialize_examiners(self):
+        return map(self._serialize_examiner, self.group.examiners.all())
 
-    def _create_deadline_from_deadlinedict(self, group, deadlinedict):
-        return self._create_from_singlekey_dict(Deadline, group, deadlinedict,
-                                                'deadline', 'deadline')
+    def _serialize_candidate(self, candidate):
+        return {'id': candidate.id,
+                'candidate_id': candidate.candidate_id,
+                'user': self._serialize_user(candidate.student)}
+
+    def serialize_candidates(self):
+        return map(self._serialize_candidate, self.group.candidates.all())
 
 
-    def create(self, assignment_id, name=None, is_open=None,
-                      students=[], examiners=[], tags=[], deadlines=[]):
-        group = AssignmentGroup(parentnode_id=assignment_id)
-        self._setattr_if_not_none(group, 'name', name)
-        self._setattr_if_not_none(group, 'is_open', is_open)
-        group.save()
-        for studentdict in students:
-            self._create_candidate_from_studentdict(group, studentdict)
-        for examinerdict in examiners:
-            self._create_examiner_from_examinerdict(group, examinerdict)
-        for tagdict in tags:
-            self._create_tag_from_tagdict(group, tagdict)
-        for deadlinedict in deadlines:
-            self._create_deadline_from_deadlinedict(group, deadlinedict)
-        return group
+class GroupCreator(object):
+    def __init__(self, assignment_id):
+        self.assignment_id = assignment_id
+        self.group = self.get_group()
+
+    def get_group(self):
+        return AssignmentGroup()
+
+    def update_group(self, name, is_open):
+        self.group.name = name
+        self.group.is_open = is_open
+        self.group.save()
+
+    #def update_examiners(self, examiners):
+        #for existing_examiner in self.group.examiners.all():
+
+    #def _setattr_if_not_none(self, obj, attrname, value):
+        #if value != None:
+            #setattr(obj, attrname, value)
+
+    #def _get_user(self, username):
+        #try:
+            #return User.objects.get(username=username)
+        #except ObjectDoesNotExist, e:
+            #raise ValueError('User does not exist: {0}'.format(username))
+
+    #def _create_candidate_from_studentdict(self, group, studentdict):
+        #if not isinstance(studentdict, dict):
+            #raise ValueError('Each entry in the students list must be a dict. '
+                             #'Given type: {0}.'.format(type(studentdict)))
+        #try:
+            #username = studentdict['student__username']
+        #except KeyError, e:
+            #raise ValueError('A student dict must contain student__username. '
+                             #'Keys in the given dict: {0}.'.format(','.join(studentdict.keys())))
+        #else:
+            #candidate_id = studentdict.get('candidate_id')
+            #candidate = Candidate(assignment_group=group,
+                                  #student=self._get_user(username),
+                                  #candidate_id=candidate_id)
+            #candidate.save()
+            #return candidate
+
+    #def _create_from_singlekey_dict(self, modelcls, group, singlekeydict, key,
+                                    #objectattr, getvalue=lambda v: v,
+                                    #assignmentgroupattr='assignment_group'):
+        #typename = modelcls.__class__.__name__
+        #if not isinstance(singlekeydict, dict):
+            #raise ValueError('Each entry in the {typename} list must be a dict. '
+                             #'Given type: {giventypename}.'.format(typename=typename,
+                                                                   #giventypename=type(singlekeydict)))
+        #try:
+            #value = singlekeydict[key]
+        #except KeyError, e:
+            #raise ValueError('A {typename} dict must contain {key}. '
+                             #'Keys in the given dict: {keys}.'.format(typename=typename,
+                                                                      #key=key,
+                                                                      #keys=','.join(singlekeydict.keys())))
+        #else:
+            #obj = modelcls()
+            #setattr(obj, assignmentgroupattr, group)
+            #setattr(obj, objectattr, getvalue(value))
+            #obj.save()
+            #return obj
+
+    #def _create_examiner_from_examinerdict(self, group, examinerdict):
+        #user = User.objects.get(id=examinerdict.get('user_id'))
+        #examiner = Examiner(user=user, assignmentgroup=group)
+        #examiner.save()
+        #return examiner
+
+    #def _create_tag_from_tagdict(self, group, tagdict):
+        #return self._create_from_singlekey_dict(AssignmentGroupTag, group, tagdict, 'tag', 'tag')
+
+    #def _create_deadline_from_deadlinedict(self, group, deadlinedict):
+        #return self._create_from_singlekey_dict(Deadline, group, deadlinedict,
+                                                #'deadline', 'deadline')
+
+
+    #def create(self, assignment_id, name, is_open,
+               #students=[], examiners=[], tags=[], deadlines=[]):
+        #group = AssignmentGroup(parentnode_id=assignment_id,
+                                #name=name, is_open=is_open)
+        #group.save()
+        ##for studentdict in students:
+            ##self._create_candidate_from_studentdict(group, studentdict)
+        ##for examinerdict in examiners:
+            ##self._create_examiner_from_examinerdict(group, examinerdict)
+        ##for tagdict in tags:
+            ##self._create_tag_from_tagdict(group, tagdict)
+        ##for deadlinedict in deadlines:
+            ##self._create_deadline_from_deadlinedict(group, deadlinedict)
+        #return group
 
 
 
@@ -132,11 +191,10 @@ class ExaminersField(ListOfDictField):
 class PostForm(forms.Form):
     name = forms.CharField(required=False)
     is_open = forms.BooleanField(required=False)
-    tags = TagsField(required=False)
-    students = StudentsField(required=False)
-    deadlines = DeadlinesField(required=False)
-    examiners = ExaminersField(required=False)
-
+    #tags = TagsField(required=False)
+    #students = StudentsField(required=False)
+    #deadlines = DeadlinesField(required=False)
+    #examiners = ExaminersField(required=False)
 
 
 class ListOrCreateGroupResource(ModelResource):
@@ -150,43 +208,19 @@ class ListOrCreateGroupResource(ModelResource):
 
     def feedback(self, instance):
         if isinstance(instance, self.model):
-            feedback = instance.feedback
-            if feedback:
-                return {'id': feedback.id,
-                        'grade': feedback.grade,
-                        'points': feedback.points,
-                        'is_passing_grade': feedback.is_passing_grade,
-                        'save_timestamp': feedback.save_timestamp}
-            else:
-                return None
+            return GroupSerializer(instance).serialize_feedback()
 
     def deadlines(self, instance):
         if isinstance(instance, self.model):
-            def to_dict(deadline):
-                return {'id': deadline.id,
-                        'deadline': deadline.deadline}
-            return map(to_dict, instance.deadlines.all())
-
-    def _create_userdict(self, user):
-        return {'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'full_name': user.devilryuserprofile.full_name}
+            return GroupSerializer(instance).serialize_deadlines()
 
     def examiners(self, instance):
         if isinstance(instance, self.model):
-            def to_dict(examiner):
-                return {'id': examiner.id,
-                        'user': self._create_userdict(examiner.user)}
-            return map(to_dict, instance.examiners.all())
+            return GroupSerializer(instance).serialize_examiners()
 
     def candidates(self, instance):
         if isinstance(instance, self.model):
-            def to_dict(candidate):
-                return {'id': candidate.id,
-                        'candidate_id': candidate.candidate_id,
-                        'user': self._create_userdict(candidate.student)}
-            return map(to_dict, instance.candidates.all())
+            return GroupSerializer(instance).serialize_candidates()
 
 
 
@@ -281,9 +315,9 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
         responsetable = self.html_create_attrtable(help)
         return docs.format(responsetable=responsetable)
 
-    #def post(self, request, assignment_id):
-        #group = self.dao.create(assignment_id, **self.CONTENT)
-        #return Response(201, dict(id=group.id))
+    def post(self, request, assignment_id):
+        group = self.dao.create(assignment_id, **self.CONTENT)
+        return Response(201, dict(id=group.id))
 
 
 
@@ -292,11 +326,8 @@ class InstanceGroupRest(View):
     resource = FormResource
     form = PostForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
-    def __init__(self, daocls=GroupDao):
-        self.dao = daocls()
-
-    #def get(self):
 
     def put(self, request, assignment_id, group_id):
-        group = self.dao.update(**self.CONTENT)
-        return group.id
+        #group = self.dao.update(**self.CONTENT)
+        #return group.id
+        pass

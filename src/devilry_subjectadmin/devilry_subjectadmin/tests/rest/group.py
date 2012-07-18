@@ -11,7 +11,7 @@ from devilry.apps.core.models import Deadline
 from devilry.utils.rest_testclient import RestClient
 
 from devilry_subjectadmin.rest.errors import PermissionDeniedError
-from devilry_subjectadmin.rest.group import GroupDao
+from devilry_subjectadmin.rest.group import GroupCreator
 
 
 class TestListGroupRest(TestCase):
@@ -123,157 +123,15 @@ class TestListGroupRest(TestCase):
 
 
 class TestCreateStuff(TestCase):
-    def test_create_noauth_minimal(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupListingAggregator().create(assignment1.id)
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        self.assertEquals(group_db.name, None)
-        self.assertEquals(group_db.is_open, True)
+    def setUp(self):
+        self.client = RestClient()
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                       subjects=['sub'],
+                       periods=['p1'],
+                       assignments=['a1'])
 
-    def test_create_noauth_simpleattrs(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupListingAggregator().create(assignment1.id, name='Somename', is_open=False)
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        self.assertEquals(group_db.name, 'Somename')
-        self.assertEquals(group_db.is_open, False)
-
-    def test_get_user(self):
-        with self.assertRaises(ValueError):
-            GroupListingAggregator()._get_user('tstuser')
-        testhelper = TestHelper()
-        tstuser = testhelper.create_user('tstuser')
-        GroupListingAggregator()._get_user('tstuser')
-
-
-    def test_create_candidate_from_studentdict(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = AssignmentGroup(parentnode=assignment1)
-        group.save()
-        tstuser = testhelper.create_user('tstuser')
-        candidate = GroupDao()._create_candidate_from_studentdict(group, dict(student__username='tstuser'))
-        self.assertEquals(candidate.student.username, 'tstuser')
-        self.assertEquals(candidate.candidate_id, None)
-        candidate = GroupDao()._create_candidate_from_studentdict(group,
-                                                                  dict(student__username='tstuser',
-                                                                       candidate_id='XY'))
-        self.assertEquals(candidate.student.username, 'tstuser')
-        self.assertEquals(candidate.candidate_id, 'XY')
-        candidate_db = Candidate.objects.get(id=candidate.id) # Raises exception if not found
-        self.assertEquals(candidate_db.student.username, 'tstuser')
-
-    def test_create_candidate_from_studentdict_errors(self):
-        with self.assertRaises(ValueError):
-            GroupDao()._create_candidate_from_studentdict(None, []) # not a dict
-        with self.assertRaises(ValueError):
-            GroupDao()._create_candidate_from_studentdict(None, {}) # username not in dict
-
-    def test_create_noauth_students(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        tstuser = testhelper.create_user('tstuser')
-        tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create(assignment1.id, students=[{'student__username': 'tstuser'},
-                                                                {'student__username': 'tstuser2'}])
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        usernames = [candidate.student.username for candidate in group.candidates.all()]
-        self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
-
-
-
-    def test_create_examiner_from_examinerdict(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = AssignmentGroup(parentnode=assignment1)
-        group.save()
-        tstuser = testhelper.create_user('tstuser')
-        examiner = GroupDao()._create_examiner_from_examinerdict(group, dict(username='tstuser'))
-        self.assertEquals(examiner.user.username, 'tstuser')
-        examiner_db = Examiner.objects.get(id=examiner.id) # Raises exception if not found
-        self.assertEquals(examiner_db.user.username, 'tstuser')
-
-    def test_create_examiner_from_examinerdict_errors(self):
-        with self.assertRaises(ValueError):
-            GroupDao()._create_examiner_from_examinerdict(None, []) # not a dict
-        with self.assertRaises(ValueError):
-            GroupDao()._create_examiner_from_examinerdict(None, {}) # username not in dict
-
-    def test_create_noauth_examiners(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        tstuser = testhelper.create_user('tstuser')
-        tstuser = testhelper.create_user('tstuser2')
-        group = GroupDao().create(assignment1.id, examiners=[{'username': 'tstuser'},
-                                                                {'username': 'tstuser2'}])
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        usernames = [examiner.user.username for examiner in group.examiners.all()]
-        self.assertEquals(set(usernames), set(['tstuser', 'tstuser2']))
-
-
-
-    def test_create_tag_from_tagdict(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = AssignmentGroup(parentnode=assignment1)
-        group.save()
-        tag = GroupDao()._create_tag_from_tagdict(group, dict(tag='mytag'))
-        self.assertEquals(tag.tag, 'mytag')
-        tag_db = AssignmentGroupTag.objects.get(id=tag.id) # Raises exception if not found
-        self.assertEquals(tag_db.tag, 'mytag')
-
-    def test_create_tag_from_tagdict_errors(self):
-        with self.assertRaises(ValueError):
-            GroupDao()._create_tag_from_tagdict(None, []) # not a dict
-        with self.assertRaises(ValueError):
-            GroupDao()._create_tag_from_tagdict(None, {}) # username not in dict
-
-    def test_create_noauth_tags(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(assignment1.id, tags=[{'tag': 'tag1'},
-                                                            {'tag': 'tag2'}])
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        tags = [tag.tag for tag in group.tags.all()]
-        self.assertEquals(set(tags), set(['tag1', 'tag2']))
-
-
-
-    def test_create_deadline_from_deadlinedict(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = AssignmentGroup(parentnode=assignment1)
-        group.save()
-        deadline = GroupDao()._create_deadline_from_deadlinedict(group,
-                                                                 dict(deadline=datetime(2010, 1, 2, 3, 4, 5)))
-        self.assertEquals(deadline.deadline, datetime(2010, 1, 2, 3, 4, 5))
-        deadline_db = Deadline.objects.get(id=deadline.id) # Raises exception if not found
-        self.assertEquals(deadline_db.deadline, datetime(2010, 1, 2, 3, 4, 5))
-
-    def test_create_deadline_from_deadlinedict_errors(self):
-        with self.assertRaises(ValueError):
-            GroupDao()._create_deadline_from_deadlinedict(None, []) # not a dict
-        with self.assertRaises(ValueError):
-            GroupDao()._create_deadline_from_deadlinedict(None, {}) # username not in dict
-
-    def test_create_noauth_deadlines(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(assignment1.id, deadlines=[{'deadline': datetime(2010, 1, 2, 3, 4, 5)},
-                                                                    {'deadline': datetime(2010, 2, 3, 4, 5, 6)}])
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        deadlines = [deadline.deadline for deadline in group.deadlines.all()]
-        self.assertEquals(set(deadlines),
-                          set([datetime(2010, 1, 2, 3, 4, 5), datetime(2010, 2, 3, 4, 5, 6)]))
-
-    def test_create(self):
-        testhelper = self.create_testassignments()
-        assignment1 = testhelper.duck1010_firstsem_a1
-        group = GroupDao().create(assignment1.id, name='Superprojectgroup')
-        group_db = AssignmentGroup.objects.get(id=group.id) # Raises exception if not found
-        self.assertEquals(group_db.name, 'Superprojectgroup')
-        self.assertEquals(group_db.is_open, True)
+    #def test_set_
 
 
 
