@@ -5,6 +5,8 @@ from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import Response
+from djangorestframework.resources import ModelResource
+from djangorestframework.views import ListOrCreateModelView
 from django import forms
 
 from devilry.apps.core.models import (AssignmentGroup,
@@ -101,13 +103,13 @@ class GroupDao(object):
         return group
 
 
+
 class GroupListingAggregator(object):
     """
-    Makes it convenient to work with everything related to an AssignmentGroup:
+    Aggregates AssignmentGroup and related data:
 
     - name
-    - is_open
-    - feedback
+    - Active feedback
     - tags
     - deadlines
     - Candidates (students)
@@ -226,6 +228,14 @@ class GroupListingAggregator(object):
         return groups
 
 
+    def tull(self, assignment_id):
+        qry = AssignmentGroup.objects.filter(parentnode=assignment_id)
+        qry = qry.select_related('feedback')
+        qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
+        qry = qry.prefetch_related('deadlines')
+        return qry
+
+
 
 
 class TagsField(ListOfDictField):
@@ -260,19 +270,112 @@ class PostForm(forms.Form):
     examiners = ExaminersField(required=False)
 
 
-class ListOrCreateGroupRest(View):
-    resource = FormResource
-    form = PostForm
+
+class SubjectListOrCreateGroupResource(ModelResource):
+    model = AssignmentGroup
+    fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
+              'parentnode', 'feedback', 'deadlines', 'examiners', 'candidates')
+
+    def parentnode(self, instance):
+        if isinstance(instance, self.model):
+            return instance.parentnode_id
+
+    def feedback(self, instance):
+        if isinstance(instance, self.model):
+            feedback = instance.feedback
+            return {'id': feedback.id,
+                    'grade': feedback.grade,
+                    'points': feedback.points,
+                    'is_passing_grade': feedback.is_passing_grade,
+                    'save_timestamp': feedback.save_timestamp}
+
+    def deadlines(self, instance):
+        if isinstance(instance, self.model):
+            def to_dict(deadline):
+                return {'id': deadline.id,
+                        'deadline': deadline.deadline}
+            return map(to_dict, instance.deadlines.all())
+
+    def _create_userdict(self, user):
+        return {'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'full_name': user.devilryuserprofile.full_name}
+
+    def examiners(self, instance):
+        if isinstance(instance, self.model):
+            def to_dict(examiner):
+                return {'id': examiner.id,
+                        'user': self._create_userdict(examiner.user)}
+            return map(to_dict, instance.examiners.all())
+
+    def candidates(self, instance):
+        if isinstance(instance, self.model):
+            def to_dict(candidate):
+                return {'id': candidate.id,
+                        'candidate_id': candidate.candidate_id,
+                        'user': self._create_userdict(candidate.student)}
+            return map(to_dict, instance.candidates.all())
+
+
+
+
+class ListOrCreateGroupRest(ListOrCreateModelView):
+    resource = SubjectListOrCreateGroupResource
+    #form = PostForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
-    def __init__(self):
-        self.dao = GroupDao()
+
+    def get_queryset(self):
+        assignment_id = self.kwargs['assignment_id']
+        qry = self.resource.model.objects.filter(parentnode=assignment_id)
+        qry = qry.select_related('feedback')
+        qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
+        qry = qry.prefetch_related('deadlines',
+                                   'examiners', 'examiners__user',
+                                   'examiners__user__devilryuserprofile',
+                                   'candidates', 'candidates__student',
+                                   'candidates__student__devilryuserprofile')
+        return qry
 
     def get(self, request, assignment_id):
-        return self.dao.list(assignment_id)
+        """
+        Returns a list of one dict for each group in the assignment with the
+        given ``assignment_id``. The dict has the following keys:
 
-    def post(self, request, assignment_id):
-        group = self.dao.create(assignment_id, **self.CONTENT)
-        return Response(201, dict(id=group.id))
+        - id --- int
+        - etag --- string
+        - name --- string
+        - is_open --- boolean
+        - num_deliveries --- Number of deliveries
+        - feedback --- active feedback
+            - grade --- string
+            - points --- int
+            - save_timestamp --- datetime
+            - is_passing_grade --- boolean
+        - students --- list of dicts with the following keys:
+            - id
+            - candidate_id --- string
+            - username --- string
+            - email --- string
+            - devilryuserprofile__full_name --- string
+        - examiners --- list of dicts with the following keys:
+            - id
+            - username --- string
+            - devilryuserprofile__full_name --- string
+            - email --- string
+        - tags --- list of dicts with the following keys:
+            - id
+            - tag --- string
+        - deadlines --- list of dicts with the following keys:
+            - id
+            - deadline --- datetime
+        """
+        return super(ListOrCreateGroupRest, self).get(request)
+
+    #def post(self, request, assignment_id):
+        #group = self.dao.create(assignment_id, **self.CONTENT)
+        #return Response(201, dict(id=group.id))
+
 
 
 

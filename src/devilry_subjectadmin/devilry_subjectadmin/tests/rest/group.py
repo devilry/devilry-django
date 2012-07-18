@@ -26,6 +26,12 @@ class TestGroupListingAggator(TestCase):
         testhelper.create_superuser("superuser")
         return testhelper
 
+    def test_tull(self):
+        testhelper = self.create_testdata()
+        assignment1 = testhelper.duck1010_firstsem_a1
+        for assignment in GroupListingAggregator().tull(assignment1.id):
+            print assignment.deadlines.all()
+
     def create_testdata(self):
         testhelper = self.create_testassignments()
 
@@ -140,7 +146,6 @@ class TestCreateStuff(TestCase):
         testhelper = TestHelper()
         tstuser = testhelper.create_user('tstuser')
         GroupListingAggregator()._get_user('tstuser')
-
 
 
     def test_create_candidate_from_studentdict(self):
