@@ -44,6 +44,12 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
      */
 
     /**
+     * @cfg {boolean} confirmBeforeRemove
+     * Show confirm dialog on remove? Defaults to ``true``.
+     */
+    confirmBeforeRemove: true,
+
+    /**
      * @cfg {bool} hideHeaders
      * Hide grid headers?
      */
@@ -101,12 +107,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                 }
             }],
 
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: this.getBbarItems()
-            }],
+            fbar: this.getBbarItems(),
 
             tbar: [{
                 xtype: 'button',
@@ -172,6 +173,14 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
     _onRemoveUsers: function() {
         var selectedUsers = this._getSelectedUsers();
+        if(this.confirmBeforeRemove) {
+            this._confirmRemove(selectedUsers);
+        } else {
+            this.removeUsers(selectedUsers);
+        }
+    },
+
+    _confirmRemove: function(selectedUsers) {
         var confirmMessage = gettext('Do you really want to remove the {numselected} selected users from the list?');
         Ext.MessageBox.show({
             title: gettext('Confirm remove'),
@@ -188,6 +197,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
             scope: this
         });
     },
+
     _onSelectAll: function() {
         this.down('grid').getSelectionModel().selectAll();
     },
