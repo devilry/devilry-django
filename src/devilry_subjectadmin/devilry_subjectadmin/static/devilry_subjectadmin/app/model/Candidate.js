@@ -4,11 +4,10 @@
  */
 Ext.define('devilry_subjectadmin.model.Candidate', {
     extend: 'Ext.data.Model',
-    idProperty: 'student__username',
+    idProperty: 'id',
     fields: [
-        {name: 'student__username',  type: 'string'},
-        {name: 'candidate_id',  type: 'string'},
-        {name: 'student__devilryuserprofile__full_name',  type: 'string'},
-        {name: 'student__email',  type: 'string'}
+        {name: 'id',  type: 'int'},
+        {name: 'user',  type: 'auto'},
+        {name: 'candidate_id',  type: 'string'}
     ]
 });

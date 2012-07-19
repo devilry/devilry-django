@@ -4,10 +4,9 @@
  */
 Ext.define('devilry_subjectadmin.model.Examiner', {
     extend: 'Ext.data.Model',
-    idProperty: 'user__username',
+    idProperty: 'id',
     fields: [
-        {name: 'user__username',  type: 'string'},
-        {name: 'user__devilryuserprofile__full_name',  type: 'string'},
-        {name: 'user__email',  type: 'string'}
+        {name: 'id',  type: 'int'},
+        {name: 'user',  type: 'auto'}
     ]
 });

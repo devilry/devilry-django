@@ -91,7 +91,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _createStudentsStore: function() {
         var store = Ext.create('Ext.data.Store', {
             model: this.getCandidateModel(),
-            data: this.groupRecord.get('students')
+            data: this.groupRecord.get('candidates')
         });
         return store;
     },

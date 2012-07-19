@@ -12,11 +12,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     ],
 
     rowTpl: [
-        '<tpl if="user__devilryuserprofile__full_name">',
-            '{user__devilryuserprofile__full_name} <small>({user__username})</small>',
+        '<tpl if="user.full_name">',
+            '{user.full_name} <small>({user.username})</small>',
         '</tpl>',
-        '<tpl if="!user__devilryuserprofile__full_name">',
-            '{user__username}',
+        '<tpl if="!user.full_name">',
+            '{user.username}',
         '</tpl>'
     ],
 
@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
             columns: [{
                 header: 'Name',
                 flex: 1,
-                dataIndex: 'user__devilryuserprofile__full_name',
+                dataIndex: 'id',
                 renderer: function(unused1, unused2, examinerRecord) {
                     return Ext.create('Ext.XTemplate', this.rowTpl).apply(examinerRecord.data);
                 }

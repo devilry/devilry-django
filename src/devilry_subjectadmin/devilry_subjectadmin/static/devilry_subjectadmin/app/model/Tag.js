@@ -4,8 +4,9 @@
  */
 Ext.define('devilry_subjectadmin.model.Tag', {
     extend: 'Ext.data.Model',
-    idProperty: 'tag',
+    idProperty: 'id',
     fields: [
+        {name: 'id',  type: 'int'},
         {name: 'tag',  type: 'string'}
     ]
 });

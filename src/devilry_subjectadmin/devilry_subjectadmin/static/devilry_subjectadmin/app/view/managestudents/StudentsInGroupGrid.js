@@ -12,11 +12,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
     ],
 
     rowTpl: [
-        '<tpl if="student__devilryuserprofile__full_name">',
-            '{student__devilryuserprofile__full_name} <small>({student__username})</small>',
+        '<tpl if="user.full_name">',
+            '{user.full_name} <small>({user.username})</small>',
         '</tpl>',
-        '<tpl if="!student__devilryuserprofile__full_name">',
-            '{student__username}',
+        '<tpl if="!user.full_name">',
+            '{user.username}',
         '</tpl>'
     ],
 
@@ -27,7 +27,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
             columns: [{
                 header: 'Name',
                 flex: 1,
-                dataIndex: 'student__devilryuserprofile__full_name',
+                dataIndex: 'id',
                 renderer: function(unused1, unused2, studentRecord) {
                     return Ext.create('Ext.XTemplate', this.rowTpl).apply(studentRecord.data);
                 }
