@@ -53,12 +53,12 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     }, {
                         xtype: 'panel',
                         ui: 'transparentpanel-overflowvisible',
-                        margin: {top: 40},
+                        margin: '40 0 0 0',
                         layout: 'column',
                         items: [{
                             xtype: 'panel',
                             ui: 'inset-header-panel',
-                            margin: {right: 20},
+                            margin: '0 20 0 0',
                             columnWidth: .5,
                             title: gettext('Upcoming deadlines'),
                             html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
@@ -67,23 +67,23 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             ui: 'inset-header-panel',
                             title: gettext('Waiting for feedback'),
                             columnWidth: .5,
-                            margin: {left: 20},
+                            margin: '0 0 0 20',
                             html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                         }]
                     }, {
                         xtype: 'panel',
-                        margin: {top: 40},
+                        margin: '40 0 0 0',
                         itemId: 'dangerousactions',
                         ui: 'inset-header-danger-panel',
                         title: gettext('Dangerous actions'),
                         layout: 'anchor',
                         defaults: {
                             anchor: '100%',
-                            margin: {top: 10}
+                            margin: '10 0 0 0'
                         },
                         items: [{
                             xtype: 'singleactionbox',
-                            margin: {top: 0},
+                            margin: 0,
                             itemId: 'renameButton',
                             id: 'assignmentRenameButton',
                             titleText: gettext('Loading ...'),
@@ -102,14 +102,14 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     xtype: 'container',
                     border: false,
                     columnWidth: .35,
-                    margin: {left: 40},
+                    margin: '0 0 0 40',
                     defaults: {
-                        margin: {top: 20},
+                        margin: '20 0 0 0',
                     },
                     items: [{
                         xtype: 'editablesidebarbox',
                         itemId: 'gradeeditor',
-                        margin: {top: 0},
+                        margin: 0,
                         title: gettext('Grade editor')
                     }, {
                         xtype: 'editpublishingtime-widget',
