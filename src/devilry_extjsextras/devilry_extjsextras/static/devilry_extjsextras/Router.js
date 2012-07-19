@@ -68,15 +68,6 @@ Ext.define('devilry_extjsextras.Router', {
     },
 
     _initHistory: function() {
-        Ext.getBody().createChild({
-            tag: 'form',
-            id: 'history-form' ,
-            cls: Ext.baseCSSPrefix + 'hide-display',
-            html: [
-                '<input type="hidden" id="', Ext.util.History.fieldId, '" />',
-                '<iframe id="', Ext.util.History.iframeId, '"></iframe>'
-            ].join('')
-		});
 		Ext.util.History.init(this._onHistoryReady, this);
     },
 
