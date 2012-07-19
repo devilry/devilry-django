@@ -209,6 +209,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
+    _selectGroupRecords: function(groupRecords, deselect) {
+        var selectionModel = this.getListOfGroups().getSelectionModel();
+        if(deselect) {
+            selectionModel.deselectAll();
+        }
+        selectionModel.select(groupRecords);
+    },
+
     _selectUrlIds: function() {
         var selected_group_ids = this.getOverview().selected_group_ids;
         if(!selected_group_ids) {
@@ -226,7 +234,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 selectedGroups.push(record);
             }
         }, this);
-        selectionModel.select(selectedGroups);
+        this._selectGroupRecords(selectedGroups);
     },
 
     _handleLoadError: function(operation, title) {
@@ -386,7 +394,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     /** Used by related controllers (SingleGroupSelectedView) to notify this
      * controller when a single group is changed, and needs to be saved. */
-    notifySingleGroupChange: function(groupRecord) {
-        this.getGroupsStore().sync();
+    notifySingleGroupChange: function(groupRecord, onSuccess) {
+        this.getGroupsStore().sync({
+            scope: this,
+            success: this._onSyncSuccess,
+            failure: this._onSyncFailure
+        });
+    },
+
+    _onSyncSuccess: function(batch, options) {
+        console.log('sync success', batch);
+        var affectedRecords = [];
+        var operations = batch.operations;
+        Ext.Array.each(operations, function(operation) {
+            if(operation.action == 'update' || operation.action == 'create') {
+                Ext.Array.each(operation.records, function(record) {
+                    affectedRecords.push(record);
+                }, this);
+            }
+        }, this);
+        this._selectGroupRecords(affectedRecords, true);
+    },
+
+    _onSyncFailure: function(batch, options) {
+        console.log('failure', batch, options);
     }
 });
