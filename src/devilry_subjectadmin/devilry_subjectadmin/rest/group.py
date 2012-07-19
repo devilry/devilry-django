@@ -23,6 +23,59 @@ from .fields import DictField
 from .mixins import SelfdocumentingMixin
 
 
+
+
+feedback_docs = """The active feedback. NULL/None or a dict/object with the following attributes:
+
+- ``grade`` (string): The grade.
+- ``points`` (int): Number of points
+- ``save_timestamp`` (iso datetime): When the feedback was created.
+- ``is_passing_grade`` (boolean): Is this a passing grade?
+- ``parentnode`` (int): The assignment ID.
+"""
+
+candidates_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the candidate object in the database.
+- ``candidate_id`` (string): The candidate ID used on anonymous assignments.
+- ``user``: Object/map with the following attributes:
+    - ``username``: (string)
+    - ``email``: string
+    - ``full_name``: string
+"""
+
+examiners_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the examiner object in the database.
+- ``user``: Object/map with the following attributes:
+    - ``username``: (string)
+    - ``email``: string
+    - ``full_name``: string
+"""
+
+tags_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the tag object in the database.
+- ``tag``: string
+"""
+
+deadlines_docs = """List of objects/maps with the following attributes:
+
+- ``id``: ID of the deadline object in the database.
+- ``deadline`` (ISO datetime): The datetime when the delivery whas made.
+"""
+
+
+form_examiners_help = """
+
+"""
+
+form_candidates_help = """
+"""
+
+
+
+
 class IsAssignmentAdminAssignmentIdKwarg(IsAssignmentAdmin):
     ID_KWARG = 'assignment_id'
 
@@ -207,10 +260,14 @@ class ExaminersField(ListOfDictField):
         user = UserField(required=False)
 
 class GroupForm(forms.Form):
-    name = forms.CharField(required=True)
-    is_open = forms.BooleanField(required=False)
-    candidates = CandidatesField(required=False)
-    examiners = ExaminersField(required=False)
+    name = forms.CharField(required=True,
+                           help_text='The name of the group (string)')
+    is_open = forms.BooleanField(required=False,
+                                 help_text='Is open? (boolean)')
+    candidates = CandidatesField(required=False,
+                                 help_text=form_candidates_help)
+    examiners = ExaminersField(required=False,
+                               help_text=form_examiners_help)
 
 
 class GroupResource(ModelResource):
@@ -248,70 +305,31 @@ class GroupResource(ModelResource):
 
 
 
-feedback_docs = """The active feedback. NULL/None or a dict/object with the following attributes:
-
-- ``grade`` (string): The grade.
-- ``points`` (int): Number of points
-- ``save_timestamp`` (iso datetime): When the feedback was created.
-- ``is_passing_grade`` (boolean): Is this a passing grade?
-- ``parentnode`` (int): The assignment ID.
-"""
-
-candidates_docs = """List of objects/maps with the following attributes:
-
-- ``id``: ID of the candidate object in the database.
-- ``candidate_id`` (string): The candidate ID used on anonymous assignments.
-- ``user``: Object/map with the following attributes:
-    - ``username``: (string)
-    - ``email``: string
-    - ``full_name``: string
-"""
-examiners_docs = """List of objects/maps with the following attributes:
-
-- ``id``: ID of the examiner object in the database.
-- ``user``: Object/map with the following attributes:
-    - ``username``: (string)
-    - ``email``: string
-    - ``full_name``: string
-"""
-tags_docs = """List of objects/maps with the following attributes:
-
-- ``id``: ID of the tag object in the database.
-- ``tag``: string
-"""
-deadlines_docs = """List of objects/maps with the following attributes:
-
-- ``id``: ID of the deadline object in the database.
-- ``deadline`` (ISO datetime): The datetime when the delivery whas made.
-"""
-
-instanceattributes_help = {'id': {'help': 'ID the the group',
-                                  'meta': 'string'},
-                           'etag': {'help': 'ETAG changes each time the group is saved',
-                                    'meta': 'string'},
-                           'name': {'help': 'Name of the group',
-                                    'meta': 'string'},
-                           'is_open': {'help': 'Is the group open? (boolean)',
-                                       'meta': 'boolean'},
-                           'num_deliveries': {'help': 'Number of deliveries',
-                                              'meta': 'int'},
-                           'feedback': {'help': feedback_docs,
-                                        'meta': 'object or null'},
-                           'candidates': {'help': candidates_docs,
-                                          'meta': 'list'},
-                           'examiners': {'help': examiners_docs,
-                                         'meta': 'list'},
-                           'tags': {'help': tags_docs,
-                                    'meta': 'list'},
-                           'deadlines': {'help': deadlines_docs,
-                                         'meta': 'list'},
-                          }
-
-
 
 class SelfdocumentingGroupApiMixin(SelfdocumentingMixin):
     def postprocess_docs(self, docs):
-        responsetable = self.html_create_attrtable(instanceattributes_help)
+        response = {'id': {'help': 'ID the the group',
+                           'meta': 'string'},
+                    'etag': {'help': 'ETAG changes each time the group is saved',
+                             'meta': 'string'},
+                    'name': {'help': 'Name of the group',
+                             'meta': 'string'},
+                    'is_open': {'help': 'Is the group open? (boolean)',
+                                'meta': 'boolean'},
+                    'num_deliveries': {'help': 'Number of deliveries',
+                                       'meta': 'int'},
+                    'feedback': {'help': feedback_docs,
+                                 'meta': 'object or null'},
+                    'candidates': {'help': candidates_docs,
+                                   'meta': 'list'},
+                    'examiners': {'help': examiners_docs,
+                                  'meta': 'list'},
+                    'tags': {'help': tags_docs,
+                             'meta': 'list'},
+                    'deadlines': {'help': deadlines_docs,
+                                  'meta': 'list'},
+                   }
+        responsetable = self.html_create_attrtable(response)
         parameterstable = self.htmlformat_parameters_from_form()
         return docs.format(responsetable=responsetable,
                            parameterstable=parameterstable)
