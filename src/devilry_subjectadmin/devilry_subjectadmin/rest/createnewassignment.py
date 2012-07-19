@@ -16,6 +16,7 @@ from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
 from. errors import PermissionDeniedError
 from .mixins import SelfdocumentingMixin
+from .log import logger
 
 
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
@@ -169,6 +170,7 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
+                logger.info('User=%s created Assignment with id=%s', self.user, assignment.id)
                 return Response(status=201, content=dict(id=assignment.id,
                                                          period_id=assignment.parentnode_id,
                                                          short_name=assignment.short_name,
