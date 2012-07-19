@@ -12,7 +12,7 @@ class ListOfDictField(forms.Field):
         if value == None:
             return []
         if not isinstance(value, (list, tuple)):
-            raise ValidationError('Must be a list or tuple')
+            raise ValidationError('Must be a list or tuple, got {0}'.format(type(value).__name__))
         cleaned = []
         for index, dct in enumerate(value):
             if not isinstance(dct, dict):
