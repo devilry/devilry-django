@@ -130,6 +130,13 @@ class GroupManagerTestMixin(object):
             dct['user'] = {'id': getattr(self.testhelper, username).id}
         return dct
 
+    def create_candidatedict(self, id=None, username=None, candidate_id=None):
+        dct = {'id': id}
+        dct['candidate_id'] = candidate_id
+        if username:
+            dct['user'] = {'id': getattr(self.testhelper, username).id}
+        return dct
+
 class TestGroupManager(TestCase, GroupManagerTestMixin):
     def setUp(self):
         self.client = RestClient()
@@ -153,6 +160,10 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(manager.group.is_open, False)
         self.assertEquals(AssignmentGroup.objects.all().count(), 1)
 
+    #
+    # Examiners
+    #
+
     def test_update_examiners_create(self):
         manager = GroupManager(self.a1id)
         manager.group.save()
@@ -170,7 +181,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(set(ids),
                           set([self.testhelper.user1.id, self.testhelper.user2.id]))
 
-    def test_update_examiners_update_existing(self):
+    def test_update_examiners_create_duplicate(self):
         manager = GroupManager(self.a1id)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
@@ -197,6 +208,67 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         examiners = manager.get_group_from_db().examiners.all()
         self.assertEquals(len(examiners), 2)
         ids = [examiner.id for examiner in examiners]
+        self.assertEquals(set(ids),
+                          set([self.testhelper.user1.id, self.testhelper.user3.id]))
+
+
+    #
+    # Candidates
+    #
+
+    def test_update_candidates_create(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.update_candidates([self.create_candidatedict(username='user1')])
+        candidates = manager.get_group_from_db().candidates.all()
+        self.assertEquals(len(candidates), 1)
+        created = candidates[0]
+        self.assertEquals(created.student.id, self.testhelper.user1.id)
+        self.assertEquals(created.candidate_id, None)
+
+        manager.update_candidates([self.create_candidatedict(id=created.id),
+                                   self.create_candidatedict(username='user2')])
+        candidates = manager.get_group_from_db().candidates.all()
+        self.assertEquals(len(candidates), 2)
+        ids = [candidate.id for candidate in candidates]
+        self.assertEquals(set(ids),
+                          set([self.testhelper.user1.id, self.testhelper.user2.id]))
+
+    def test_update_candidates_create_candidate_id(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.update_candidates([self.create_candidatedict(username='user1',
+                                                             candidate_id='secret')])
+        candidates = manager.get_group_from_db().candidates.all()
+        created = candidates[0]
+        self.assertEquals(created.candidate_id, 'secret')
+
+    def test_update_candidates_create_duplicate_allowed(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.candidates.create(student=self.testhelper.user1)
+        manager.update_candidates([self.create_candidatedict(username='user1')]) # Does not raise exception
+
+    def test_update_candidates_delete(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.candidates.create(student=self.testhelper.user1)
+        manager.group.candidates.create(student=self.testhelper.user2)
+        manager.update_candidates([])
+        candidates = manager.get_group_from_db().candidates.all()
+        self.assertEquals(len(candidates), 0)
+
+    def test_update_candidates_complex(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.group.candidates.create(student=self.testhelper.user1)
+        manager.group.candidates.create(student=self.testhelper.user2)
+        manager.update_candidates([self.create_candidatedict(id=self.testhelper.user1.id), # keep user1
+                                  # ... delete user2
+                                  self.create_candidatedict(username='user3')]) # create user3
+        candidates = manager.get_group_from_db().candidates.all()
+        self.assertEquals(len(candidates), 2)
+        ids = [candidate.id for candidate in candidates]
         self.assertEquals(set(ids),
                           set([self.testhelper.user1.id, self.testhelper.user3.id]))
 

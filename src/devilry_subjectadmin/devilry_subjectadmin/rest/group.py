@@ -126,6 +126,46 @@ class GroupManager(object):
         for examiner in to_delete.itervalues():
             examiner.delete()
 
+    def _create_candidate(self, user_id, candidate_id):
+        user = self._get_user(user_id)
+        self.group.candidates.create(student=user,
+                                     candidate_id=candidate_id)
+
+    def _update_candate(self, existing_candidate, candidate_id):
+        has_changes = existing_candidate.candidate_id != candidate_id
+        if has_changes:
+            existing_candidate.candidate_id = candidate_id
+            existing_candidate.save()
+
+    def update_candidates(self, candidatedicts):
+        """
+        Update candidates from candidatedicts. Only cares about the following dict keys:
+
+            id
+                If this is ``None``, we create a new candidate.
+            user (a dict)
+                If ``id==None``, we use ``user['id']`` to find the user.
+
+        Any candidate not identified by their ``id`` in ``candidatedicts`` is DELETED.
+        """
+        existing_by_id = {}
+        for candidate in self.group.candidates.all():
+            existing_by_id[candidate.id] = candidate
+        for candidatedict in candidatedicts:
+            candidate_id = candidatedict['id']
+            isnew = candidate_id == None
+            if isnew:
+                user_id = candidatedict['user']['id']
+                candidate_id = candidatedict['candidate_id']
+                self._create_candidate(user_id=user_id, candidate_id=candidate_id)
+            else:
+                existing_candidate = existing_by_id[candidate_id]
+                self._update_candate(existing_candidate, candidatedict['candidate_id'])
+                del existing_by_id[candidate_id] # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
+        to_delete = existing_by_id
+        for candidate in to_delete.itervalues():
+            candidate.delete() # TODO: Split candidates instead of DELETE
+
     def get_group_from_db(self):
         return AssignmentGroup.objects.get(id=self.group.id)
 
@@ -209,23 +249,6 @@ class GroupManager(object):
         #return group
 
 
-
-
-class TagsField(ListOfDictField):
-    class Form(forms.Form):
-        tag = forms.CharField()
-
-class StudentsField(ListOfDictField):
-    class Form(forms.Form):
-        candidate_id = forms.CharField()
-        student__username = forms.CharField()
-        student__email = forms.CharField()
-        student__devilryuserprofile__full_name = forms.CharField()
-
-class DeadlinesField(ListOfDictField):
-    class Form(forms.Form):
-        deadline = forms.DateTimeField()
-
 class UserField(DictField):
     class Form(forms.Form):
         id = forms.IntegerField(required=True)
@@ -234,6 +257,20 @@ class UserField(DictField):
         username = forms.CharField(required=False)
         email = forms.CharField(required=False)
         full_name = forms.CharField(required=False)
+
+class TagsField(ListOfDictField):
+    class Form(forms.Form):
+        tag = forms.CharField()
+
+class CandidatesField(ListOfDictField):
+    class Form(forms.Form):
+        id = forms.IntegerField(required=True)
+        candidate_id = forms.CharField(required=False)
+        user = UserField(required=False)
+
+class DeadlinesField(ListOfDictField):
+    class Form(forms.Form):
+        deadline = forms.DateTimeField()
 
 class ExaminersField(ListOfDictField):
     class Form(forms.Form):
@@ -244,7 +281,7 @@ class PostForm(forms.Form):
     name = forms.CharField(required=True)
     is_open = forms.BooleanField(required=False)
     #tags = TagsField(required=False)
-    #students = StudentsField(required=False)
+    candidates = CandidatesField(required=False)
     #deadlines = DeadlinesField(required=False)
     examiners = ExaminersField(required=False)
 
@@ -383,6 +420,7 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
         manager.update_group(name=data['name'],
                              is_open=data['is_open'])
         manager.update_examiners(data['examiners'])
+        #manager.update_candidates(data['candidates'])
         return Response(201, manager.group)
 
 
