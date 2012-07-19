@@ -2,8 +2,7 @@ from django.db import transaction
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource
+from djangorestframework.views import ModelView
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import Response
 from djangorestframework.resources import ModelResource
@@ -17,6 +16,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Delivery
 
 from .errors import ValidationErrorResponse
+from .errors import NotFoundError
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .fields import DictField
@@ -206,7 +206,7 @@ class ExaminersField(ListOfDictField):
         id = forms.IntegerField(required=False)
         user = UserField(required=False)
 
-class PostForm(forms.Form):
+class GroupForm(forms.Form):
     name = forms.CharField(required=True)
     is_open = forms.BooleanField(required=False)
     #tags = TagsField(required=False)
@@ -215,13 +215,13 @@ class PostForm(forms.Form):
     examiners = ExaminersField(required=False)
 
 
-class ListOrCreateGroupResource(ModelResource):
+class GroupResource(ModelResource):
     model = AssignmentGroup
     fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
               'parentnode', 'feedback', 'deadlines', 'examiners', 'candidates')
 
     def serialize_model(self, instance):
-        data = super(ListOrCreateGroupResource, self).serialize_model(instance)
+        data = super(GroupResource, self).serialize_model(instance)
         if not 'num_deliveries' in data:
             # This is used when working directly with the instance. The listing
             # (query) annotates this field instead of querying for each object
@@ -289,8 +289,8 @@ deadlines_docs = """List of objects/maps with the following attributes:
 
 
 class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
-    resource = ListOrCreateGroupResource
-    form = PostForm
+    resource = GroupResource
+    form = GroupForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
 
     def get_queryset(self):
@@ -362,14 +362,20 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
 
 
 
-class InstanceGroupRest(View):
-    resource = FormResource
-    form = PostForm
+class InstanceGroupRest(ModelView):
+    resource = GroupResource
+    form = GroupForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
+
+    def _not_found_response(self, assignment_id, group_id):
+            raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
 
     def put(self, request, assignment_id, group_id):
         data = self.CONTENT
-        manager = GroupManager(assignment_id, group_id)
+        try:
+            manager = GroupManager(assignment_id, group_id)
+        except AssignmentGroup.DoesNotExist:
+            self._not_found_response(assignment_id, group_id)
         with transaction.commit_on_success():
             try:
                 manager.update_group(name=data['name'],
@@ -379,4 +385,4 @@ class InstanceGroupRest(View):
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
-                return Response(201, manager.group)
+                return Response(200, manager.group)
