@@ -118,9 +118,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                     emptyText: gettext('Search for students ...')
                 }]
             }],
+
             items: [{
                 xtype: 'listofgroups',
-                margin: {top:10, right: 0, bottom: 10, left: 20},
+                margin: '10 0 10 40',
                 region: 'west',
                 //border: false,
                 resizable: true,
@@ -128,7 +129,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
             }, {
                 xtype: 'panel',
                 region: 'center',
-                margin: {top:10, right: 20, bottom: 10, left: 20},
+                margin: '10 40 10 20',
                 border: false,
                 itemId: 'body'
             }]
