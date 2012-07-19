@@ -1,7 +1,6 @@
 """
 Manage related users.
 """
-from django import forms
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
 from djangorestframework.views import InstanceModelView
@@ -12,6 +11,7 @@ from devilry.apps.core.models import RelatedStudent
 
 from .auth import IsPeriodAdmin
 from .mixins import SelfdocumentingMixin
+from .log import logger
 
 
 
@@ -73,7 +73,12 @@ class CreateRelatedUserRestMixin(SelfdocumentingMixin):
         # Returns
         {responsetable}
         """
-        return super(CreateRelatedUserRestMixin, self).post(request)
+        result = super(CreateRelatedUserRestMixin, self).post(request)
+        created = result.cleaned_content
+        logger.info('User=%s created %s with id=%s (user_id=%s, tags=%s)', self.user,
+                    self.resource.model.__name__, created.id, created.user_id,
+                    created.tags)
+        return result
 
     def postprocess_post_docs(self, docs):
         responsetable = self.htmlformat_response_from_fields()
@@ -96,7 +101,10 @@ class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
         # Returns
         {responsetable}
         """
-        return super(InstanceRelatedUserRestBaseView, self).put(request, id)
+        result = super(InstanceRelatedUserRestBaseView, self).put(request, id)
+        logger.info('User=%s updated %s with id=%s (user_id=%s, tags=%s)', self.user,
+                    self.resource.model.__name__, id, result.user_id, result.tags)
+        return result
 
     def delete(self, request, period_id, id):
         """
@@ -105,7 +113,11 @@ class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
         # Response
         Status 204, with empty body on success.
         """
-        return super(InstanceRelatedUserRestBaseView, self).delete(request, id)
+        userid = self.get_instance().user_id
+        result = super(InstanceRelatedUserRestBaseView, self).delete(request, id)
+        logger.info('User=%s deleted %s with id=%s (user_id=%s)', self.user,
+                    self.resource.model.__name__, id, userid)
+        return result
 
     def postprocess_docs(self, docs):
         responsetable = self.htmlformat_response_from_fields()
