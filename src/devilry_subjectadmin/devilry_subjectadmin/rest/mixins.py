@@ -1,4 +1,3 @@
-from logging import getLogger
 from djangorestframework.compat import apply_markdown
 from djangorestframework.views import _remove_leading_indent
 from djangorestframework.mixins import ListModelMixin
@@ -8,9 +7,7 @@ from cStringIO import StringIO
 
 from .errors import PermissionDeniedError
 from .auth import nodeadmin_required
-
-logger = getLogger(__name__)
-
+from .log import logger
 
 
 class BaseNodeInstanceRestMixin(object):
@@ -20,10 +17,10 @@ class BaseNodeInstanceRestMixin(object):
     """
 
     def put(self, request, id=None):
-        subject = super(BaseNodeInstanceRestMixin, self).put(request, id=id)
+        basenode = super(BaseNodeInstanceRestMixin, self).put(request, id=id)
         modelname = self.resource.model.__name__
-        logger.info('User=%s updated %s id=%s (%s)', self.user, modelname, id, subject)
-        return subject
+        logger.info('User=%s updated %s id=%s (%s)', self.user, modelname, id, basenode)
+        return basenode
 
     def get_queryset(self):
         qry = self.resource.model.where_is_admin_or_superadmin(self.user)
