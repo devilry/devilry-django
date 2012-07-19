@@ -123,7 +123,14 @@ class TestListGroupRest(TestCase):
         self._test_list_as('superuser')
 
 
-class TestGroupManager(TestCase):
+class GroupManagerTestMixin(object):
+    def create_examinerdict(self, id=None, username=None):
+        dct = {'id': id}
+        if username:
+            dct['user'] = {'id': getattr(self.testhelper, username).id}
+        return dct
+
+class TestGroupManager(TestCase, GroupManagerTestMixin):
     def setUp(self):
         self.client = RestClient()
         self.testhelper = TestHelper()
@@ -146,23 +153,17 @@ class TestGroupManager(TestCase):
         self.assertEquals(manager.group.is_open, False)
         self.assertEquals(AssignmentGroup.objects.all().count(), 1)
 
-    def _create_examinerdict(self, id=None, username=None):
-        dct = {'id': id}
-        if username:
-            dct['user'] = {'id': getattr(self.testhelper, username).id}
-        return dct
-
     def test_update_examiners_create(self):
         manager = GroupManager(self.a1id)
         manager.group.save()
-        manager.update_examiners([self._create_examinerdict(username='user1')])
+        manager.update_examiners([self.create_examinerdict(username='user1')])
         examiners = manager.get_group_from_db().examiners.all()
         self.assertEquals(len(examiners), 1)
         created = examiners[0]
         self.assertEquals(created.user.id, self.testhelper.user1.id)
 
-        manager.update_examiners([self._create_examinerdict(id=created.id),
-                                  self._create_examinerdict(username='user2')])
+        manager.update_examiners([self.create_examinerdict(id=created.id),
+                                  self.create_examinerdict(username='user2')])
         examiners = manager.get_group_from_db().examiners.all()
         self.assertEquals(len(examiners), 2)
         ids = [examiner.id for examiner in examiners]
@@ -174,7 +175,7 @@ class TestGroupManager(TestCase):
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         with self.assertRaises(ValidationError):
-            manager.update_examiners([self._create_examinerdict(username='user1')])
+            manager.update_examiners([self.create_examinerdict(username='user1')])
 
     def test_update_examiners_delete(self):
         manager = GroupManager(self.a1id)
@@ -190,9 +191,9 @@ class TestGroupManager(TestCase):
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         manager.group.examiners.create(user=self.testhelper.user2)
-        manager.update_examiners([self._create_examinerdict(id=self.testhelper.user1.id), # keep user1
+        manager.update_examiners([self.create_examinerdict(id=self.testhelper.user1.id), # keep user1
                                   # ... delete user2
-                                  self._create_examinerdict(username='user3')]) # create user3
+                                  self.create_examinerdict(username='user3')]) # create user3
         examiners = manager.get_group_from_db().examiners.all()
         self.assertEquals(len(examiners), 2)
         ids = [examiner.id for examiner in examiners]
@@ -201,7 +202,7 @@ class TestGroupManager(TestCase):
 
 
 
-class TestCreateGroupRest(TestCase):
+class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -209,7 +210,11 @@ class TestCreateGroupRest(TestCase):
                             periods=['p1'],
                             assignments=['a1:admin(a1admin)'])
         self.client = RestClient()
-        self.testhelper.create_user('student0')
+        self.testhelper.create_user('student1')
+        self.testhelper.create_user('student2')
+        self.testhelper.create_user('student3')
+        self.testhelper.create_user('examiner1')
+        self.testhelper.create_user('examiner2')
         self.a1id = self.testhelper.sub_p1_a1.id
 
     def _geturl(self, assignment_id):
@@ -243,22 +248,39 @@ class TestCreateGroupRest(TestCase):
 
     def test_create(self):
         data = {'name': 'g1',
-                'is_open': False}
+                'is_open': False,
+                'examiners': [self.create_examinerdict(username='examiner1')]}
         content, response = self._postas('a1admin', self.a1id, data)
-        self.assertEquals(response.status_code, 201)
-
         from pprint import pprint
         pprint(content)
+        self.assertEquals(response.status_code, 201)
+
 
         self.assertEquals(content['name'], 'g1')
         self.assertEquals(content['is_open'], False)
         self.assertEquals(content['parentnode'], self.a1id)
         self.assertEquals(content['num_deliveries'], 0)
-        self.assertEquals(content['feedback'], None)
-        self.assertEquals(content['deadlines'], [])
-        self.assertEquals(content['candidates'], [])
-        self.assertEquals(content['examiners'], [])
 
+        # Feedback
+        self.assertEquals(content['feedback'], None)
+
+        # Deadlines
+        self.assertEquals(content['deadlines'], [])
+
+        # Examiners
+        self.assertEquals(len(content['examiners']), 1)
+        examiner = content['examiners'][0]
+        self.assertEquals(set(examiner.keys()),
+                          set(['id', 'user']))
+        self.assertEquals(set(examiner['user'].keys()),
+                          set(['email', 'full_name', 'id', 'username']))
+        self.assertEquals(examiner['user']['id'], self.testhelper.examiner1.id)
+        self.assertEquals(examiner['user']['username'], 'examiner1')
+
+        # Candidates
+        self.assertEquals(content['candidates'], [])
+
+        # It was actually created?
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)

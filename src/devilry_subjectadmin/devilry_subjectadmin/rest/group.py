@@ -17,6 +17,7 @@ from devilry.apps.core.models import Delivery
 
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
+from .fields import DictField
 from .mixins import SelfdocumentingMixin
 
 
@@ -225,21 +226,27 @@ class DeadlinesField(ListOfDictField):
     class Form(forms.Form):
         deadline = forms.DateTimeField()
 
+class UserField(DictField):
+    class Form(forms.Form):
+        id = forms.IntegerField(required=True)
+
+        # These are ignored, however to work with the listing, we allow them in post/put data
+        username = forms.CharField(required=False)
+        email = forms.CharField(required=False)
+        full_name = forms.CharField(required=False)
+
 class ExaminersField(ListOfDictField):
     class Form(forms.Form):
-        id = forms.IntegerField()
-        user_id = forms.IntegerField()
-        username = forms.CharField()
-        email = forms.CharField()
-        devilryuserprofile__full_name = forms.CharField()
+        id = forms.IntegerField(required=False)
+        user = UserField(required=False)
 
 class PostForm(forms.Form):
-    name = forms.CharField(required=False)
+    name = forms.CharField(required=True)
     is_open = forms.BooleanField(required=False)
     #tags = TagsField(required=False)
     #students = StudentsField(required=False)
     #deadlines = DeadlinesField(required=False)
-    #examiners = ExaminersField(required=False)
+    examiners = ExaminersField(required=False)
 
 
 class ListOrCreateGroupResource(ModelResource):
@@ -372,8 +379,10 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
         manager = GroupManager(assignment_id)
         data = self.CONTENT
         print 'POST CONTENT:', data
+        # TODO: Transaction!
         manager.update_group(name=data['name'],
                              is_open=data['is_open'])
+        manager.update_examiners(data['examiners'])
         return Response(201, manager.group)
 
 
