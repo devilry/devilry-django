@@ -9,14 +9,11 @@ Ext.define('devilry_subjectadmin.model.Group', {
         {name: 'num_deliveries', type: 'int'},
         {name: 'name',  type: 'string'},
         {name: 'is_open',  type: 'boolean'},
-        {name: 'feedback__grade',  type: 'string'},
-        {name: 'feedback__points',  type: 'string'},
-        {name: 'feedback__save_timestamp',  type: 'date'},
-        {name: 'feedback__is_passing_grade',  type: 'boolean'},
-        {name: 'students', type: 'auto'},
-        {name: 'examiners', type: 'auto'},
-        {name: 'deadlines', type: 'auto'},
         {name: 'tags', type: 'auto'},
+        {name: 'feedback',  type: 'auto'},
+        {name: 'candidates', type: 'auto'},
+        {name: 'examiners', type: 'auto'},
+        {name: 'deadlines', type: 'auto'}
     ],
 
     proxy: {
@@ -27,9 +24,7 @@ Ext.define('devilry_subjectadmin.model.Group', {
             format: 'json'
         },
         reader: {
-            type: 'json',
-            //root: 'items',
-            //record: 'item'
+            type: 'json'
         }
     }
 });

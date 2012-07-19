@@ -163,19 +163,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         }));
     },
 
-    _cmp: function(x, y) {
-        return x > y? 1 : x < y ? -1 : 0;
-    },
-
     _sortByUsername: function(a, b) {
-        this._sortByListProperty('students', 'student__username', a, b);
+        return this._sortByUserlisProperty('candidates', 'username', a, b);
     },
 
     _sortByFullname: function(a, b) {
-        this._sortByListProperty('students', 'student__devilryuserprofile__full_name', a, b);
+        return this._sortByUserlisProperty('candidates', 'full_name', a, b);
     },
 
-    _sortByListProperty: function(listproperty, attribute, a, b) {
+    _sortByUserlisProperty: function(listproperty, attribute, a, b) {
         var listA = a.get(listproperty);
         var listB = b.get(listproperty);
         if(listA.length == 0) {
@@ -184,7 +180,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         if(listB.length == 0) {
             return 1;
         }
-        return this._cmp(listA[0][attribute], listB[0][attribute]);
+        var a = listA[0].user[attribute]
+        var b = listB[0].user[attribute];
+        return a.localeCompare(b);
     },
 
     _getLastname: function(fullname) {
@@ -193,19 +191,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _sortByLastname: function(a, b) {
-        var listA = a.get('students');
-        var listB = b.get('students');
+        var listA = a.get('candidates');
+        var listB = b.get('candidates');
         if(listA.length == 0) {
             return -1;
         }
         if(listB.length == 0) {
             return 1;
         }
-        var attribute = 'student__devilryuserprofile__full_name';
-        return this._cmp(
-            this._getLastname(listA[0][attribute]),
-            this._getLastname(listB[0][attribute])
-        );
+        var attribute = 'full_name';
+        var a = this._getLastname(listA[0].user[attribute]);
+        var b = this._getLastname(listB[0].user[attribute]);
+        return a.localeCompare(b);
     },
 
     _onSelectAll: function() {

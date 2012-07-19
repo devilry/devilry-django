@@ -96,37 +96,37 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
      *
      * Prioritized in this order:
      *
-     * 1. If no students, use the ID
+     * 1. If no candidates, use the ID
      * 2. Name of first student.
      * 3. Username of first student.
      *
      * This view is optimized for single student assignments.
      * */
     getNameDivContent: function(record) {
-        var students = record.get('students');
-        if(students.length == 0) {
+        var candidates = record.get('candidates');
+        if(candidates.length == 0) {
             return record.get('id');
         }
-        var firstStudent = students[0];
-        if(firstStudent.student__devilryuserprofile__full_name) {
-            return firstStudent.student__devilryuserprofile__full_name;
+        var firstCandidate = candidates[0];
+        if(firstCandidate.user.full_name) {
+            return firstCandidate.user.full_name;
         }
-        return firstStudent.student__username;
+        return firstCandidate.user.username;
     },
 
     /**
      * Get the text for the username DIV.
      *
      * Prioritized in this order:
-     * 1. If no students, translate "Group have no students"
+     * 1. If no candidates, translate "Group have no candidates"
      * 2. Username of first student.
      * */
     getUsernameDivContent: function(record) {
-        var students = record.get('students');
-        if(students.length == 0) {
-            return gettext('Group have no students');
+        var candidates = record.get('candidates');
+        if(candidates.length == 0) {
+            return gettext('Group have no candidates');
         }
-        var firstStudent = students[0];
-        return firstStudent.student__username;
+        var firstCandidate = candidates[0];
+        return firstCandidate.user.username;
     }
 });
