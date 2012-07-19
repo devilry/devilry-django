@@ -130,6 +130,9 @@ class GroupManagerTestMixin(object):
             dct['user'] = {'id': getattr(self.testhelper, username).id}
         return dct
 
+    def create_tagdict(self, tag):
+        return {'tag': tag}
+
 
 
 class TestGroupManager(TestCase, GroupManagerTestMixin):
@@ -275,6 +278,26 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         ids = [candidate.id for candidate in candidates]
         self.assertEquals(set(ids),
                           set([self.testhelper.user1.id, self.testhelper.user3.id]))
+
+    #
+    # Tags
+    #
+
+    def test_update_tags(self):
+        manager = GroupManager(self.a1id)
+        manager.group.save()
+        manager.update_tags([self.create_tagdict('mytag')])
+        tags = manager.get_group_from_db().tags.all()
+        self.assertEquals(len(tags), 1)
+        created = tags[0]
+        self.assertEquals(created.tag, 'mytag')
+
+        manager.update_tags([self.create_tagdict('tag1'),
+                             self.create_tagdict('tag2')])
+        tagsObjs = manager.get_group_from_db().tags.all()
+        self.assertEquals(len(tagsObjs), 2)
+        tags = [tagObj.tag for tagObj in tagsObjs]
+        self.assertEquals(set(tags), set(['tag1', 'tag2']))
 
 
 

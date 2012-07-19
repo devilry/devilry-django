@@ -13,6 +13,7 @@ from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Delivery
 
 from .errors import ValidationErrorResponse
@@ -135,6 +136,13 @@ class GroupSerializer(object):
     def serialize_deadlines(self):
         return map(self._serialize_deadline, self.group.deadlines.all())
 
+    def _serialize_tag(self, tag):
+        return {'id': tag.id,
+                'tag': tag.tag}
+
+    def serialize_tags(self):
+        return map(self._serialize_tag, self.group.tags.all())
+
     def serialize_feedback(self):
         feedback = self.group.feedback
         if feedback:
@@ -185,6 +193,14 @@ class GroupManager(object):
         self.group.name = name
         self.group.is_open = is_open
         self.group.save()
+
+    def _create_tag(self, tag):
+        self.group.tags.create(tag=tag)
+
+    def update_tags(self, tagdicts):
+        AssignmentGroupTag.objects.filter(assignment_group=self.group).delete()
+        for tagdict in tagdicts:
+            self._create_tag(tag=tagdict['tag'])
 
     def _get_user(self, user_id):
         try:
@@ -313,7 +329,8 @@ class GroupForm(forms.Form):
 class GroupResource(ModelResource):
     model = AssignmentGroup
     fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
-              'parentnode', 'feedback', 'deadlines', 'examiners', 'candidates')
+              'parentnode', 'feedback',
+              'deadlines', 'examiners', 'candidates', 'tags')
 
     def serialize_model(self, instance):
         data = super(GroupResource, self).serialize_model(instance)
@@ -334,6 +351,10 @@ class GroupResource(ModelResource):
     def deadlines(self, instance):
         if isinstance(instance, self.model):
             return GroupSerializer(instance).serialize_deadlines()
+
+    def tags(self, instance):
+        if isinstance(instance, self.model):
+            return GroupSerializer(instance).serialize_tags()
 
     def examiners(self, instance):
         if isinstance(instance, self.model):
