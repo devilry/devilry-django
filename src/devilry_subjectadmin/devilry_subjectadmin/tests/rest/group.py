@@ -358,11 +358,13 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(content['id'], groups[0].id)
 
 
-    #def test_noperm(self):
-        #self.client.login(username='student0', password='test')
-        #content, response = self.client.rest_post(self.a1url, {})
-        #self.assertEquals(response.status_code, 403)
-        #self.assertEquals(content, {u'detail': u'Permission denied'})
+    def test_noperm(self):
+        self.testhelper.create_user('nobody')
+        data = {'name': 'g1',
+                'is_open': False}
+        content, response = self._postas('nobody', self.a1id, data)
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(content, {u'detail': u'Permission denied'})
 
 
 class TestInstanceGroupRest(TestCase):
