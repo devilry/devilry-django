@@ -187,9 +187,9 @@ class UserField(DictField):
         email = forms.CharField(required=False)
         full_name = forms.CharField(required=False)
 
-class TagsField(ListOfDictField):
-    class Form(forms.Form):
-        tag = forms.CharField()
+#class TagsField(ListOfDictField):
+    #class Form(forms.Form):
+        #tag = forms.CharField()
 
 class CandidatesField(ListOfDictField):
     class Form(forms.Form):
@@ -197,9 +197,9 @@ class CandidatesField(ListOfDictField):
         candidate_id = forms.CharField(required=False)
         user = UserField(required=False)
 
-class DeadlinesField(ListOfDictField):
-    class Form(forms.Form):
-        deadline = forms.DateTimeField()
+#class DeadlinesField(ListOfDictField):
+    #class Form(forms.Form):
+        #deadline = forms.DateTimeField()
 
 class ExaminersField(ListOfDictField):
     class Form(forms.Form):
@@ -209,9 +209,7 @@ class ExaminersField(ListOfDictField):
 class GroupForm(forms.Form):
     name = forms.CharField(required=True)
     is_open = forms.BooleanField(required=False)
-    #tags = TagsField(required=False)
     candidates = CandidatesField(required=False)
-    #deadlines = DeadlinesField(required=False)
     examiners = ExaminersField(required=False)
 
 
@@ -287,8 +285,39 @@ deadlines_docs = """List of objects/maps with the following attributes:
 - ``deadline`` (ISO datetime): The datetime when the delivery whas made.
 """
 
+instanceattributes_help = {'id': {'help': 'ID the the group',
+                                  'meta': 'string'},
+                           'etag': {'help': 'ETAG changes each time the group is saved',
+                                    'meta': 'string'},
+                           'name': {'help': 'Name of the group',
+                                    'meta': 'string'},
+                           'is_open': {'help': 'Is the group open? (boolean)',
+                                       'meta': 'boolean'},
+                           'num_deliveries': {'help': 'Number of deliveries',
+                                              'meta': 'int'},
+                           'feedback': {'help': feedback_docs,
+                                        'meta': 'object or null'},
+                           'candidates': {'help': candidates_docs,
+                                          'meta': 'list'},
+                           'examiners': {'help': examiners_docs,
+                                         'meta': 'list'},
+                           'tags': {'help': tags_docs,
+                                    'meta': 'list'},
+                           'deadlines': {'help': deadlines_docs,
+                                         'meta': 'list'},
+                          }
 
-class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
+
+
+class SelfdocumentingGroupApiMixin(SelfdocumentingMixin):
+    def postprocess_docs(self, docs):
+        responsetable = self.html_create_attrtable(instanceattributes_help)
+        parameterstable = self.htmlformat_parameters_from_form()
+        return docs.format(responsetable=responsetable,
+                           parameterstable=parameterstable)
+
+
+class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView):
     resource = GroupResource
     form = GroupForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
@@ -309,44 +338,23 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
     def get(self, request, assignment_id):
         """
         Returns a list with one object/map for each group in the assignment
-        with the ``assignment_id`` specified in the URL. The dict has the
+        with the ``assignment_id`` specified in the URL. The object has the
         following attributes:
 
         {responsetable}
         """
         return super(ListOrCreateGroupRest, self).get(request)
 
-    def postprocess_get_docs(self, docs):
-        help = {'id': {'help': 'ID the the group',
-                       'meta': 'string'},
-                'etag': {'help': 'ETAG changes each time the group is saved',
-                         'meta': 'string'},
-                'name': {'help': 'Name of the group',
-                         'meta': 'string'},
-                'is_open': {'help': 'Is the group open? (boolean)',
-                            'meta': 'boolean'},
-                'num_deliveries': {'help': 'Number of deliveries',
-                            'meta': 'int'},
-                'feedback': {'help': feedback_docs,
-                            'meta': 'object or null'},
-                'candidates': {'help': candidates_docs,
-                            'meta': 'list'},
-                'examiners': {'help': examiners_docs,
-                            'meta': 'list'},
-                'tags': {'help': tags_docs,
-                            'meta': 'list'},
-                'deadlines': {'help': deadlines_docs,
-                            'meta': 'list'},
-               }
-        responsetable = self.html_create_attrtable(help)
-        return docs.format(responsetable=responsetable)
-
     def post(self, request, assignment_id):
+        """
+        # Parameters
+        {parameterstable}
+
+        # Returns
+        An object/map with the following attributes:
+        {responsetable}
+        """
         data = self.CONTENT
-        #print 'POST CONTENT:'
-        #from pprint import pprint
-        #pprint(data)
-        #print
         manager = GroupManager(assignment_id)
         with transaction.commit_on_success():
             try:
@@ -361,8 +369,7 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
 
 
 
-
-class InstanceGroupRest(InstanceModelView):
+class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
     resource = GroupResource
     form = GroupForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
@@ -371,9 +378,26 @@ class InstanceGroupRest(InstanceModelView):
             raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
 
     def get(self, request, assignment_id, group_id):
+        """
+        Returns aggregated data for the requested AssignmentGroup and related data:
+
+        {responsetable}
+        """
         return super(InstanceGroupRest, self).get(request, id=group_id)
 
+    def postprocess_get_docs(self, docs):
+        responsetable = self.html_create_attrtable(instanceattributes_help)
+        return docs.format(responsetable=responsetable)
+
     def put(self, request, assignment_id, group_id):
+        """
+        # Parameters
+        {parameterstable}
+
+        # Returns
+        An object/map with the following attributes:
+        {responsetable}
+        """
         data = self.CONTENT
         try:
             manager = GroupManager(assignment_id, group_id)
