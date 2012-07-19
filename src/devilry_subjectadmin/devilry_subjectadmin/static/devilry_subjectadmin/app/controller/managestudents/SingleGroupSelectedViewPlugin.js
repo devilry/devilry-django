@@ -134,7 +134,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         alert('Not implemented.');
     },
     _onRemoveTag: function(tagRecord) {
-        console.log('Remove tag:', tagRecord.data);
         var tags = Ext.clone(this.groupRecord.get('tags'));
         Ext.Array.each(tags, function(tagObj, index) {
             if(tagObj.tag == tagRecord.get('tag')) {

@@ -392,9 +392,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getBody().add(component);
     },
 
+    _maskListOfGroups: function(message) {
+        message = message || gettext('Saving ...');
+        this.getListOfGroups().setLoading(message);
+    },
+
+    _unmaskListOfGroups: function() {
+        this.getListOfGroups().setLoading(false);
+    },
+
     /** Used by related controllers (SingleGroupSelectedView) to notify this
      * controller when a single group is changed, and needs to be saved. */
     notifySingleGroupChange: function(groupRecord, onSuccess) {
+        console.log('sync started');
+        this._maskListOfGroups();
         this.getGroupsStore().sync({
             scope: this,
             success: this._onSyncSuccess,
@@ -403,6 +414,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _onSyncSuccess: function(batch, options) {
+        this._unmaskListOfGroups();
         console.log('sync success', batch);
         var affectedRecords = [];
         var operations = batch.operations;
@@ -417,6 +429,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _onSyncFailure: function(batch, options) {
+        this._unmaskListOfGroups();
         console.log('failure', batch, options);
     }
 });
