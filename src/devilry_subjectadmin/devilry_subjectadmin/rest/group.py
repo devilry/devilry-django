@@ -82,6 +82,9 @@ class GroupManager(object):
     def get_group(self):
         return AssignmentGroup(parentnode_id=self.assignment_id)
 
+    def get_group_from_db(self):
+        return AssignmentGroup.objects.get(id=self.group.id)
+
     def update_group(self, name, is_open):
         self.group.name = name
         self.group.is_open = is_open
@@ -169,8 +172,7 @@ class GroupManager(object):
         for candidate in to_delete.itervalues():
             candidate.delete() # TODO: Split candidates instead of DELETE
 
-    def get_group_from_db(self):
-        return AssignmentGroup.objects.get(id=self.group.id)
+
 
 
 class UserField(DictField):
