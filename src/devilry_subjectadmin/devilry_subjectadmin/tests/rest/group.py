@@ -59,7 +59,7 @@ class TestListGroupRest(TestCase):
         self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
                           set(['name', 'feedback', 'deadlines', 'id', 'etag',
-                               'is_open', 'parentnode', 'candidates',
+                               'is_open', 'parentnode', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
 
         # Properties directly from group
@@ -106,6 +106,12 @@ class TestListGroupRest(TestCase):
         deadline = content[0]['deadlines'][0]
         self.assertEquals(set(deadline.keys()),
                           set(['id', 'deadline']))
+
+        # Tags
+        self.assertEquals(len(content[0]['tags']), 2)
+        tag = content[0]['tags'][0]
+        self.assertEquals(set(tag.keys()),
+                          set(['id', 'tag']))
 
 
     def test_list(self):
@@ -327,7 +333,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(response.status_code, 201)
         self.assertEquals(set(content.keys()),
                           set(['name', 'id', 'etag', 'is_open', 'parentnode',
-                               'feedback', 'deadlines', 'candidates',
+                               'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
         self.assertEquals(content['name'], 'g1')
         self.assertEquals(content['is_open'], False)
@@ -337,6 +343,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(content['deadlines'], [])
         self.assertEquals(content['candidates'], [])
         self.assertEquals(content['examiners'], [])
+        self.assertEquals(content['tags'], [])
 
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
@@ -347,7 +354,8 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         data = {'name': 'g1',
                 'is_open': False,
                 'examiners': [self.create_examinerdict(username='examiner1')],
-                'candidates': [self.create_candidatedict(username='candidate1')]}
+                'candidates': [self.create_candidatedict(username='candidate1')],
+                'tags': [self.create_tagdict('mytag')]}
         content, response = self._postas('a1admin', self.a1id, data)
         #from pprint import pprint
         #print 'Response content:'
@@ -365,6 +373,12 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
 
         # Deadlines
         self.assertEquals(content['deadlines'], [])
+
+        # Tags
+        self.assertEquals(len(content['tags']), 1)
+        tag = content['tags'][0]
+        self.assertEquals(tag['tag'], 'mytag')
+        self.assertEquals(set(tag.keys()), set(['id', 'tag']))
 
         # Examiners
         self.assertEquals(len(content['examiners']), 1)
@@ -437,7 +451,7 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
                           set(['name', 'id', 'etag', 'is_open', 'parentnode',
-                               'feedback', 'deadlines', 'candidates',
+                               'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
         self.assertEquals(content['name'], 'changed')
         self.assertEquals(content['is_open'], False)
@@ -447,6 +461,7 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(content['deadlines'], [])
         self.assertEquals(content['candidates'], [])
         self.assertEquals(content['examiners'], [])
+        self.assertEquals(content['tags'], [])
 
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
@@ -457,7 +472,8 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         data = {'name': 'changed',
                 'is_open': False,
                 'examiners': [self.create_examinerdict(username='examiner1')],
-                'candidates': [self.create_candidatedict(username='candidate1')]}
+                'candidates': [self.create_candidatedict(username='candidate1')],
+                'tags': [self.create_tagdict('mytag')]}
         content, response = self._putas(username, self.a1id, group.id, data)
         #from pprint import pprint
         #print 'Response content:'
@@ -474,6 +490,12 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
 
         # Deadlines
         self.assertEquals(content['deadlines'], [])
+
+        # Tags
+        self.assertEquals(len(content['tags']), 1)
+        tag = content['tags'][0]
+        self.assertEquals(tag['tag'], 'mytag')
+        self.assertEquals(set(tag.keys()), set(['id', 'tag']))
 
         # Examiners
         self.assertEquals(len(content['examiners']), 1)
@@ -541,7 +563,7 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
                           set(['name', 'id', 'etag', 'is_open', 'parentnode',
-                               'feedback', 'deadlines', 'candidates',
+                               'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
         self.assertEquals(content['name'], 'g1')
         self.assertEquals(content['is_open'], True)

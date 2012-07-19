@@ -69,7 +69,7 @@ deadlines_docs = """List of objects/maps with the following attributes:
 
 
 form_examiners_help = r"""List of examiners (objects/maps) to apply to the
-assignment. For new groups, this is simply a list of examiners to create. For
+group. For new groups, this is simply a list of examiners to create. For
 existing groups, this list is synced with the saved examiners. Each object in
 the list has the following attributes:
 
@@ -92,7 +92,7 @@ To sum it up in practical terms:
 """
 
 form_candidates_help = r"""List of candidates (objects/maps) to apply to the
-assignment. For new groups, this is simply a list of candidates to create. For
+group. For new groups, this is simply a list of candidates to create. For
 existing groups, this list is synced with the saved candidates. Each object in
 the list has the following attributes:
 
@@ -112,6 +112,16 @@ To sum it up in practical terms:
   is not included.
 - _Update candidate_: Only the ``candidate_id`` can be changed. A minimal
   example: ``{'id': 1, 'candidate_id': 'secret'}``
+"""
+
+form_tags_help = r"""List of tags (maps/objects) to set on the group. Each
+object in the list ha the following attributes:
+
+- ``id``: Ignored (but allowed since list/get has it).
+- ``tag`` (string): The tag.
+
+Each time group is saved, all tags are deleted, and the tags in this attribute
+is added.
 """
 
 
@@ -296,9 +306,10 @@ class UserField(DictField):
         email = forms.CharField(required=False)
         full_name = forms.CharField(required=False)
 
-#class TagsField(ListOfDictField):
-    #class Form(forms.Form):
-        #tag = forms.CharField()
+class TagsField(ListOfDictField):
+    class Form(forms.Form):
+        id = forms.IntegerField(required=False)
+        tag = forms.CharField()
 
 class CandidatesField(ListOfDictField):
     class Form(forms.Form):
@@ -324,6 +335,8 @@ class GroupForm(forms.Form):
                                  help_text=form_candidates_help)
     examiners = ExaminersField(required=False,
                                help_text=form_examiners_help)
+    tags = TagsField(required=False,
+                     help_text=form_tags_help)
 
 
 class GroupResource(ModelResource):
@@ -441,6 +454,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                                      is_open=data['is_open'])
                 manager.update_examiners(data['examiners'])
                 manager.update_candidates(data['candidates'])
+                manager.update_tags(data['tags'])
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
@@ -485,6 +499,7 @@ class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
                                      is_open=data['is_open'])
                 manager.update_examiners(data['examiners'])
                 manager.update_candidates(data['candidates'])
+                manager.update_tags(data['tags'])
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
