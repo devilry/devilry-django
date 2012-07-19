@@ -382,5 +382,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     setBody: function(component) {
         this.getBody().removeAll();
         this.getBody().add(component);
+    },
+
+    /** Used by related controllers (SingleGroupSelectedView) to notify this
+     * controller when a single group is changed, and needs to be saved. */
+    notifySingleGroupChange: function(groupRecord) {
+        this.getGroupsStore().sync();
     }
 });

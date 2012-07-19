@@ -38,15 +38,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
             '<dt>', pgettext('group', 'Grade') ,':</dt> ',
             '<dd>',
                 '<tpl if="hasFeedback">',
-                    '{feedback__grade} ',
-                    '<tpl if="feedback__is_passing_grade"><span class="label label-success">',
+                    '{feedback.grade} ',
+                    '<tpl if="feedback.is_passing_grade"><span class="label label-success">',
                         pgettext('group', 'Passed'),
                     '</span></tpl>',
-                    '<tpl if="!feedback__is_passing_grade"><span class="label label-warning">',
+                    '<tpl if="!feedback.is_passing_grade"><span class="label label-warning">',
                         pgettext('group', 'Failed'),
                     '</span></tpl>',
                     ' <span class="label">',
-                        pgettext('group', 'Points'), ': {feedback__points}',
+                        pgettext('group', 'Points'), ': {feedback.points}',
                     '</span>',
                 '</tpl>',
                 '<tpl if="!hasFeedback"><span class="label label-info">',
@@ -120,7 +120,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     _getMetaInfo: function() {
         var tpl = Ext.create('Ext.XTemplate', this.metaInfoTpl);
         var data = Ext.apply({
-            hasFeedback: this.groupRecord.get('feedback__save_timestamp') != null,
+            hasFeedback: this.groupRecord.get('feedback') != null,
             passing_grade_i18n: pgettext('group', 'Passed'),
             not_passing_grade_i18n: pgettext('group', 'Failed'),
             points_i18n: pgettext('group', 'Points')

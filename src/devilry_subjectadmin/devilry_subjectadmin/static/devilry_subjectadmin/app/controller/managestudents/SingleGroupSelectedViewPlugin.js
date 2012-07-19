@@ -135,14 +135,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
     _onRemoveTag: function(tagRecord) {
         console.log('Remove tag:', tagRecord.data);
-        var tags = this.groupRecord.get('tags');
+        var tags = Ext.clone(this.groupRecord.get('tags'));
         Ext.Array.each(tags, function(tagObj, index) {
             if(tagObj.tag == tagRecord.get('tag')) {
                 Ext.Array.erase(tags, index, 1);
                 return false; // break
             }
         }, this);
-        console.log(this.groupRecord.get('tags'));
-        this.groupRecord.save();
+        this.groupRecord.set('tags', tags);
+        //this.groupRecord.save();
+        this.manageStudentsController.notifySingleGroupChange(this.groupRecord);
     },
 });
