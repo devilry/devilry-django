@@ -2,11 +2,11 @@ from django.db import transaction
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from djangorestframework.views import ModelView
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import Response
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
+from djangorestframework.views import InstanceModelView
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -362,13 +362,16 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
 
 
 
-class InstanceGroupRest(ModelView):
+class InstanceGroupRest(InstanceModelView):
     resource = GroupResource
     form = GroupForm
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
 
     def _not_found_response(self, assignment_id, group_id):
             raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
+
+    def get(self, request, assignment_id, group_id):
+        return super(InstanceGroupRest, self).get(request, id=group_id)
 
     def put(self, request, assignment_id, group_id):
         data = self.CONTENT

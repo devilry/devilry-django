@@ -390,6 +390,7 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.testhelper.create_superuser('grandma')
         self.testhelper.create_user('candidate1')
         self.testhelper.create_user('examiner1')
+        self.testhelper.create_superuser('superuser')
         self.a1id = self.testhelper.sub_p1_a1.id
 
     def _geturl(self, assignment_id, group_id):
@@ -428,13 +429,13 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)
 
-    def test_put(self):
+    def _test_put_as(self, username):
         group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
         data = {'name': 'changed',
                 'is_open': False,
                 'examiners': [self.create_examinerdict(username='examiner1')],
                 'candidates': [self.create_candidatedict(username='candidate1')]}
-        content, response = self._putas('a1admin', self.a1id, group.id, data)
+        content, response = self._putas(username, self.a1id, group.id, data)
         #from pprint import pprint
         #print 'Response content:'
         #pprint(content)
@@ -476,8 +477,86 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         group = self.testhelper.sub_p1_a1.assignmentgroups.get(id=group.id)
         self.assertEquals(group.name, 'changed')
 
+    def test_put_as_superuser(self):
+        self._test_put_as('superuser')
+
+    def test_put_as_assignmentadmin(self):
+        self._test_put_as('a1admin')
+
     def test_put_doesnotexist(self):
         data = {'name': 'changed',
                 'is_open': False}
         content, response = self._putas('grandma', 10000, 100000, data)
         self.assertEquals(response.status_code, 404)
+
+    def test_put_denied(self):
+        self.testhelper.create_user('nobody')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        group = self.testhelper.sub_p1_a1_g1
+        data = {'name': 'changed',
+                'is_open': False}
+        content, response = self._putas('nobody', self.a1id, group.id, data)
+        self.assertEquals(response.status_code, 403)
+
+
+
+    #
+    # GET
+    #
+    def _getas(self, username, assignment_id, group_id):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self._geturl(assignment_id, group_id))
+
+    def _test_get_as(self, username):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(candidate1):examiner(examiner1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2')
+        group = self.testhelper.sub_p1_a1_g1
+        content, response = self._getas(username, self.a1id, group.id)
+        #from pprint import pprint
+        #print 'Response content:'
+        #pprint(content)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(set(content.keys()),
+                          set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                               'feedback', 'deadlines', 'candidates',
+                               'examiners', 'num_deliveries']))
+        self.assertEquals(content['name'], 'g1')
+        self.assertEquals(content['is_open'], True)
+        self.assertEquals(content['parentnode'], self.a1id)
+        self.assertEquals(content['num_deliveries'], 0)
+        self.assertEquals(content['feedback'], None)
+
+        # Deadlines
+        self.assertEquals(len(content['deadlines']), 2)
+        self.assertEquals(set(content['deadlines'][0].keys()),
+                          set(['id', 'deadline']))
+
+        # Candidates
+        self.assertEquals(len(content['candidates']), 1)
+        candidate = content['candidates'][0]
+        self.assertEquals(candidate['candidate_id'], None)
+        self.assertEquals(candidate['user'], {'id': self.testhelper.candidate1.id,
+                                              'username': 'candidate1',
+                                              'email': 'candidate1@example.com',
+                                              'full_name': None})
+
+        # Examiners
+        self.assertEquals(len(content['examiners']), 1)
+        examiner = content['examiners'][0]
+        self.assertEquals(examiner['user'], {'id': self.testhelper.examiner1.id,
+                                              'username': 'examiner1',
+                                              'email': 'examiner1@example.com',
+                                              'full_name': None})
+
+    def test_get_as_assignmentadmin(self):
+        self._test_get_as('a1admin')
+
+    def test_get_as_superuser(self):
+        self._test_get_as('superuser')
+
+    def test_get_denied(self):
+        self.testhelper.create_user('nobody')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        group = self.testhelper.sub_p1_a1_g1
+        content, response = self._getas('nobody', self.a1id, group.id)
+        self.assertEquals(response.status_code, 403)
