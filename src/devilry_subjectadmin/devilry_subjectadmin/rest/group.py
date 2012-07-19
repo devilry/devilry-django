@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
@@ -15,6 +16,7 @@ from django.utils.translation import ugettext as _
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Delivery
 
+from .errors import ValidationErrorResponse
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .fields import DictField
@@ -339,18 +341,22 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
         return docs.format(responsetable=responsetable)
 
     def post(self, request, assignment_id):
-        manager = GroupManager(assignment_id)
         data = self.CONTENT
-        print 'POST CONTENT:'
-        from pprint import pprint
-        pprint(data)
-        print
-        # TODO: Transaction!
-        manager.update_group(name=data['name'],
-                             is_open=data['is_open'])
-        manager.update_examiners(data['examiners'])
-        manager.update_candidates(data['candidates'])
-        return Response(201, manager.group)
+        #print 'POST CONTENT:'
+        #from pprint import pprint
+        #pprint(data)
+        #print
+        manager = GroupManager(assignment_id)
+        with transaction.commit_on_success():
+            try:
+                manager.update_group(name=data['name'],
+                                     is_open=data['is_open'])
+                manager.update_examiners(data['examiners'])
+                manager.update_candidates(data['candidates'])
+            except ValidationError, e:
+                raise ValidationErrorResponse(e)
+            else:
+                return Response(201, manager.group)
 
 
 

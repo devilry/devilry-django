@@ -322,9 +322,9 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
                 'examiners': [self.create_examinerdict(username='examiner1')],
                 'candidates': [self.create_candidatedict(username='candidate1')]}
         content, response = self._postas('a1admin', self.a1id, data)
-        from pprint import pprint
-        print 'Response content:'
-        pprint(content)
+        #from pprint import pprint
+        #print 'Response content:'
+        #pprint(content)
         self.assertEquals(response.status_code, 201)
 
 
