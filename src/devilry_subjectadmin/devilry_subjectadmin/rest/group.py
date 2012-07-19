@@ -143,10 +143,13 @@ class GroupManager(object):
 
             id
                 If this is ``None``, we create a new candidate.
+            candidate_id
+                Always updated, and always set when creating. May be ``None``.
             user (a dict)
                 If ``id==None``, we use ``user['id']`` to find the user.
 
-        Any candidate not identified by their ``id`` in ``candidatedicts`` is DELETED.
+        Any existing candidate not identified by their ``id`` in
+        ``candidatedicts`` is DELETED.
         """
         existing_by_id = {}
         for candidate in self.group.candidates.all():
@@ -264,7 +267,7 @@ class TagsField(ListOfDictField):
 
 class CandidatesField(ListOfDictField):
     class Form(forms.Form):
-        id = forms.IntegerField(required=True)
+        id = forms.IntegerField(required=False)
         candidate_id = forms.CharField(required=False)
         user = UserField(required=False)
 
@@ -415,12 +418,15 @@ class ListOrCreateGroupRest(SelfdocumentingMixin, ListOrCreateModelView):
     def post(self, request, assignment_id):
         manager = GroupManager(assignment_id)
         data = self.CONTENT
-        print 'POST CONTENT:', data
+        print 'POST CONTENT:'
+        from pprint import pprint
+        pprint(data)
+        print
         # TODO: Transaction!
         manager.update_group(name=data['name'],
                              is_open=data['is_open'])
         manager.update_examiners(data['examiners'])
-        #manager.update_candidates(data['candidates'])
+        manager.update_candidates(data['candidates'])
         return Response(201, manager.group)
 
 

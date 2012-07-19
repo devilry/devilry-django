@@ -282,11 +282,8 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
                             periods=['p1'],
                             assignments=['a1:admin(a1admin)'])
         self.client = RestClient()
-        self.testhelper.create_user('student1')
-        self.testhelper.create_user('student2')
-        self.testhelper.create_user('student3')
+        self.testhelper.create_user('candidate1')
         self.testhelper.create_user('examiner1')
-        self.testhelper.create_user('examiner2')
         self.a1id = self.testhelper.sub_p1_a1.id
 
     def _geturl(self, assignment_id):
@@ -318,12 +315,15 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)
 
+
     def test_create(self):
         data = {'name': 'g1',
                 'is_open': False,
-                'examiners': [self.create_examinerdict(username='examiner1')]}
+                'examiners': [self.create_examinerdict(username='examiner1')],
+                'candidates': [self.create_candidatedict(username='candidate1')]}
         content, response = self._postas('a1admin', self.a1id, data)
         from pprint import pprint
+        print 'Response content:'
         pprint(content)
         self.assertEquals(response.status_code, 201)
 
@@ -350,7 +350,15 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(examiner['user']['username'], 'examiner1')
 
         # Candidates
-        self.assertEquals(content['candidates'], [])
+        self.assertEquals(len(content['candidates']), 1)
+        candidate = content['candidates'][0]
+        self.assertEquals(set(candidate.keys()),
+                          set(['id', 'user', 'candidate_id']))
+        self.assertEquals(set(candidate['user'].keys()),
+                          set(['email', 'full_name', 'id', 'username']))
+        self.assertEquals(candidate['user']['id'], self.testhelper.candidate1.id)
+        self.assertEquals(candidate['candidate_id'], '')
+        self.assertEquals(candidate['user']['username'], 'candidate1')
 
         # It was actually created?
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
