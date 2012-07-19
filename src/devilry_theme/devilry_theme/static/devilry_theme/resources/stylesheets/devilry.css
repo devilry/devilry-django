@@ -13656,7 +13656,7 @@ select:focus {
 .x-panel-inset-header-panel .x-panel-header-inset-header-panel .x-panel-header-body-inset-header-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-panel {
   padding: 0 15px 0 15px;
   position: absolute;
-  top: -21px;
+  top: -17px;
   left: 0;
   background-color: #fff;
 }
@@ -14539,7 +14539,7 @@ select:focus {
 .x-panel-inset-header-strong-panel .x-panel-header-inset-header-strong-panel .x-panel-header-body-inset-header-strong-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-strong-panel {
   padding: 0 15px 0 15px;
   position: absolute;
-  top: -27px;
+  top: -20px;
   left: 0;
   background-color: #fff;
 }
@@ -15423,7 +15423,7 @@ select:focus {
 .x-panel-inset-header-danger-panel .x-panel-header-inset-header-danger-panel .x-panel-header-body-inset-header-danger-panel-horizontal .x-box-inner .x-panel-header-text-container span.x-panel-header-text-inset-header-danger-panel {
   padding: 0 15px 0 15px;
   position: absolute;
-  top: -21px;
+  top: -17px;
   left: 0;
   background-color: #fff;
 }
