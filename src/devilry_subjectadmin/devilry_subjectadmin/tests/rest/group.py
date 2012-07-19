@@ -415,6 +415,14 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(response.status_code, 403)
         self.assertEquals(content, {u'detail': u'Permission denied'})
 
+    def test_create_ro_fields(self):
+        data = {'name': 'g1',
+                'is_open': False,
+                'feedback': 'should be ignored',
+                'deadlines': 'should be ignored'}
+        content, response = self._postas('a1admin', self.a1id, data)
+        self.assertEquals(response.status_code, 201)
+
 
 class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
     def setUp(self):
@@ -542,6 +550,18 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
                 'is_open': False}
         content, response = self._putas('nobody', self.a1id, group.id, data)
         self.assertEquals(response.status_code, 403)
+
+    def test_put_ro_fields(self):
+        group = self._add_group('g1', candidates='candidate1', examiners='examiner1')
+        self.assertEquals(group.name, 'g1')
+        self.assertEquals(group.is_open, True)
+        data = {'name': 'changed',
+                'is_open': False,
+                'feedback': 'should be ignored',
+                'deadlines': 'should be ignored'}
+        content, response = self._putas('a1admin', self.a1id, group.id, data)
+        self.assertEquals(response.status_code, 200)
+
 
 
 

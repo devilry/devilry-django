@@ -377,6 +377,13 @@ class GroupResource(ModelResource):
         if isinstance(instance, self.model):
             return GroupSerializer(instance).serialize_candidates()
 
+    def validate_request(self, data, files=None):
+        if 'feedback' in data:
+            del data['feedback']
+        if 'deadlines' in data:
+            del data['deadlines']
+        return super(GroupResource, self).validate_request(data, files)
+
 
 
 
