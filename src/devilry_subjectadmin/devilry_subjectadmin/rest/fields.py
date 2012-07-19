@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 
 class ListOfDictField(forms.Field):
+
     def validate_to_python(self, value):
         """
         Validate and clean data.
@@ -15,12 +16,13 @@ class ListOfDictField(forms.Field):
         cleaned = []
         for index, dct in enumerate(value):
             if not isinstance(dct, dict):
-                raise ValidationError('Item {0}: Must be a list of dicts'.format(index))
+                raise ValidationError('Item {0}: Must be a list of dicts, got {1}'.format(index, type(value)))
             form = self.Form(dct)
             if form.is_valid():
                 cleaned.append(form.cleaned_data)
             else:
-                raise ValidationError('Item {0}: Invalid format'.format(index))
+                errors = form.errors.as_text()
+                raise ValidationError('Item {0}: Invalid format:\n{1}'.format(index, errors))
         return cleaned
 
     def clean(self, value):
