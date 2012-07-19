@@ -19,3 +19,17 @@ to ``urlpatterns`` in ``urls.py``. You must also install the dependencies:
     - ``devilry_usersearch``
 
 See their docs for more info.
+
+
+Logging
+=======
+
+All changes are logged to the ``devilry_subjectadmin`` logger. Normal changes
+are logged as ``INFO``. If you want to keep these logs, add something like this
+to your ``LOGGING['loggers']`` in ``settings.py``::
+
+    'devilry_subjectadmin': {
+        'handlers': ['myHandler'],
+        'level': 'INFO',
+        'propagate': False
+    }
