@@ -35,3 +35,32 @@ class ListOfDictField(forms.Field):
         value = self.validate_to_python(value)
         self.run_validators(value)
         return value
+
+class DictField(forms.Field):
+
+    def validate_to_python(self, value):
+        """
+        Validate and clean data.
+        """
+        super(DictField, self).validate(value)
+        if value == None:
+            return {}
+        if not isinstance(value, dict):
+            raise ValidationError('Must be a dict, got {0}'.format(type(value).__name__))
+        form = self.Form(value)
+        if form.is_valid():
+            return form.cleaned_data
+        else:
+            errors = form.errors.as_text()
+            raise ValidationError(errors)
+
+    def clean(self, value):
+        """
+        Validates the given value and returns its "cleaned" value as an
+        appropriate Python object.
+
+        Raises ValidationError for any errors.
+        """
+        value = self.validate_to_python(value)
+        self.run_validators(value)
+        return value
