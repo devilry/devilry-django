@@ -76,13 +76,14 @@ class GroupSerializer(object):
 
 
 class GroupManager(object):
-    def __init__(self, assignment_id):
+    def __init__(self, assignment_id, group_id=None):
         self.assignment_id = assignment_id
-        self.group = self.get_group()
+        if group_id:
+            self.group = AssignmentGroup.objects.get(parentnode_id=assignment_id,
+                                                     id=group_id)
+        else:
+            self.group = AssignmentGroup(parentnode_id=assignment_id)
         self.serializer = GroupSerializer(self.group)
-
-    def get_group(self):
-        return AssignmentGroup(parentnode_id=self.assignment_id)
 
     def get_group_from_db(self):
         return AssignmentGroup.objects.get(id=self.group.id)
@@ -367,6 +368,15 @@ class InstanceGroupRest(View):
     permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
 
     def put(self, request, assignment_id, group_id):
-        #group = self.dao.update(**self.CONTENT)
-        #return group.id
-        pass
+        data = self.CONTENT
+        manager = GroupManager(assignment_id, group_id)
+        with transaction.commit_on_success():
+            try:
+                manager.update_group(name=data['name'],
+                                     is_open=data['is_open'])
+                manager.update_examiners(data['examiners'])
+                manager.update_candidates(data['candidates'])
+            except ValidationError, e:
+                raise ValidationErrorResponse(e)
+            else:
+                return Response(201, manager.group)

@@ -1,17 +1,10 @@
-from dingus import Dingus
-from datetime import datetime
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.core.models import Candidate
-from devilry.apps.core.models import Examiner
-from devilry.apps.core.models import AssignmentGroupTag
-from devilry.apps.core.models import Deadline
 from devilry.utils.rest_testclient import RestClient
 
-from devilry_subjectadmin.rest.errors import PermissionDeniedError
 from devilry_subjectadmin.rest.group import GroupManager
 
 
@@ -137,6 +130,8 @@ class GroupManagerTestMixin(object):
             dct['user'] = {'id': getattr(self.testhelper, username).id}
         return dct
 
+
+
 class TestGroupManager(TestCase, GroupManagerTestMixin):
     def setUp(self):
         self.client = RestClient()
@@ -159,6 +154,15 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(manager.group.name, 'Nametest')
         self.assertEquals(manager.group.is_open, False)
         self.assertEquals(AssignmentGroup.objects.all().count(), 1)
+
+    def test_existinggroup(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        manager = GroupManager(self.a1id, self.testhelper.sub_p1_a1_g1.id)
+        self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
+        with self.assertRaises(AssignmentGroup.DoesNotExist):
+            GroupManager(self.a1id, 10000000)
+        with self.assertRaises(AssignmentGroup.DoesNotExist):
+            GroupManager(10000000, self.testhelper.sub_p1_a1_g1.id)
 
     #
     # Examiners
@@ -400,5 +404,5 @@ class TestInstanceGroupRest(TestCase):
     def test_put(self):
         g1 = self._add_group('g1', 'student0', 'examiner0')
         content, response = self._putas('a1admin', g1.id)
-        print response
+        #print response
         #print content
