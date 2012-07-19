@@ -317,6 +317,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.client = RestClient()
         self.testhelper.create_user('candidate1')
         self.testhelper.create_user('examiner1')
+        self.testhelper.create_superuser('grandma')
         self.a1id = self.testhelper.sub_p1_a1.id
 
     def _geturl(self, assignment_id):
@@ -350,13 +351,13 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(content['id'], groups[0].id)
 
 
-    def test_create(self):
+    def _test_create_as(self, username):
         data = {'name': 'g1',
                 'is_open': False,
                 'examiners': [self.create_examinerdict(username='examiner1')],
                 'candidates': [self.create_candidatedict(username='candidate1')],
                 'tags': [self.create_tagdict('mytag')]}
-        content, response = self._postas('a1admin', self.a1id, data)
+        content, response = self._postas(username, self.a1id, data)
         #from pprint import pprint
         #print 'Response content:'
         #pprint(content)
@@ -406,6 +407,11 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(groups), 1)
         self.assertEquals(content['id'], groups[0].id)
 
+    def test_create_as_assignmentadmin(self):
+        self._test_create_as('a1admin')
+
+    def test_create_as_superuser(self):
+        self._test_create_as('grandma')
 
     def test_noperm(self):
         self.testhelper.create_user('nobody')
