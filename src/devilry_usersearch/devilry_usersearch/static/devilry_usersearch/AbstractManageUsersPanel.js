@@ -88,10 +88,9 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         Ext.apply(this, {
             frame: false,
             border: 0,
-            layout: 'border',
+            layout: 'fit',
             items: [{
                 xtype: 'grid',
-                region: 'center',
                 hideHeaders: this.hideHeaders,
                 multiSelect: true,
                 store: this.store,
@@ -100,19 +99,19 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                     scope: this,
                     selectionchange: this._onGridSelectionChange
                 }
-            }, {
-                xtype: 'container',
-                layout: 'fit',
-                region: 'south',
-                height: 36,
-                padding: 4,
-                items: {
+            }],
+
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: [{
                     xtype: 'autocompleteuserwidget',
+                    flex: 1,
                     listeners: {
                         scope: this,
                         userSelected: this._onAddUser
                     }
-                }
+                }]
             }],
 
 
