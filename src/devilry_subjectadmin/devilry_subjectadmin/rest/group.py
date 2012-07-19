@@ -21,6 +21,7 @@ from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .fields import DictField
 from .mixins import SelfdocumentingMixin
+from .log import logger
 
 
 
@@ -422,6 +423,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
+                logger.info('User=%s created AssignmentGroup id=%s', self.user, manager.group.id)
                 return Response(201, manager.group)
 
 
@@ -465,4 +467,5 @@ class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
             except ValidationError, e:
                 raise ValidationErrorResponse(e)
             else:
+                logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
                 return Response(200, manager.group)
