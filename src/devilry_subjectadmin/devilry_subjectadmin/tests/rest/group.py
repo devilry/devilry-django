@@ -424,7 +424,9 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
     def test_create_ro_fields(self):
         data = {'name': 'g1',
                 'is_open': False,
+                'id': 'should be ignored',
                 'feedback': 'should be ignored',
+                'num_deliveries': 'should be ignored',
                 'deadlines': 'should be ignored'}
         content, response = self._postas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 201)
@@ -564,6 +566,8 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         data = {'name': 'changed',
                 'is_open': False,
                 'feedback': 'should be ignored',
+                'id': 'should be ignored',
+                'num_deliveries': 'should be ignored',
                 'deadlines': 'should be ignored'}
         content, response = self._putas('a1admin', self.a1id, group.id, data)
         self.assertEquals(response.status_code, 200)
