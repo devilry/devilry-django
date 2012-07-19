@@ -26,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
                 }]
             }, {
                 xtype: 'button',
-                margin: {left: 3},
+                margin: '0 0 0 3',
                 icon: devilry_theme.Icons.HELP_SMALL,
             }],
             columns: [{

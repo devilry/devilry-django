@@ -20,17 +20,17 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         labelStyle: 'font-weight: bold'
     },
     defaults: {
-        margin: {top: 20}
+        margin: '20 0 0 0'
     },
 
     items: [{
-        margin: {top: 0, bottom: 20},
+        margin: '0 0 20 0',
         xtype: 'box',
         cls: 'metainfo bootstrap',
         itemId: 'metainfo',
         html: ''
     }, {
-        margin: {top: 20, bottom: 20},
+        margin: '20 0 20 0',
         xtype: 'alertmessagelist'
 
     // Long name
@@ -43,7 +43,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         width: 400
     }, {
         xtype: 'formhelp',
-        margin: {top: 5},
+        margin: '5 0 0 0',
         html: gettext('Choose a descriptive name for your assignment.')
 
     // Short name
@@ -55,7 +55,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         emptyText: pgettext('createnewassignment', 'Example: oblig-1'),
     }, {
         xtype: 'formhelp',
-        margin: {top: 5},
+        margin: '5 0 0 0',
         html: gettext("Choose a short name with at most 20 letters for your assignment. Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space.")
 
     // How do students add deliveries
@@ -78,7 +78,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         }]
     }, {
         xtype: 'formhelp',
-        margin: {top: 5},
+        margin: '5 0 0 0',
         html: gettext('If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.')
 
     // First deadline
@@ -91,7 +91,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
     }, {
         xtype: 'formhelp',
         itemId: 'first_deadline-help',
-        margin: {top: 5},
+        margin: '5 0 0 0',
         html: gettext('The default deadline added to each student when adding new students to the assignment.')
 
     }, {
@@ -102,18 +102,18 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         collapsed: true,
         padding: 10,
         defaults: {
-            margin: {top: 20}
+            margin: '20 0 0 0'
         },
         items: [{
         // Anonymous?
             xtype: 'checkboxfield',
-            margin: {top: 0},
+            margin: '0 0 0 0',
             name: 'anonymous',
             labelAlign: 'left',
             boxLabel: gettext('Anonymous?')
         }, {
             xtype: 'formhelp',
-            margin: {top: 5},
+            margin: '5 0 0 0',
             html: gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.')
 
         // Publishing time
@@ -125,26 +125,26 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             value: new Date()
         }, {
             xtype: 'formhelp',
-            margin: {top: 5},
+            margin: '5 0 0 0',
             html: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.')
 
         // Add all related students
         }, {
             xtype: 'checkboxfield',
             name:'add_all_relatedstudents',
-            margin: {top: 20},
+            margin: '20 0 0 0',
             boxLabel: gettext('Add all students to this assignment?'),
             checked: true,
             labelAlign: 'left'
         }, {
             xtype: 'formhelp',
-            margin: {bottom: 10},
+            margin: '0 0 10 0',
             html: gettext('If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.')
 
         // Autosetup examiners
         }, {
             xtype: 'checkboxfield',
-            margin: {top: 20},
+            margin: '20 0 0 0',
             name: 'autosetup_examiners',
             checked: true,
             labelAlign: 'left',
@@ -152,7 +152,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         }, {
             xtype: 'formhelp',
             itemId: 'autosetup_examiners-help',
-            margin: {top: 5},
+            margin: '5 0 0 0',
             html: gettext('Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period.')
         }]
     }],
@@ -162,7 +162,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         dock: 'bottom',
         ui: 'footer',
         padding: 0,
-        margin: {top: 15},
+        margin: '15 0 0 0',
         items: [{
             xtype: 'createbutton',
             formBind: true, //only enabled once the form is valid

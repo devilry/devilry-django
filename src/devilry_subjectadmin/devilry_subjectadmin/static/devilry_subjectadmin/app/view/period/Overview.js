@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     }, {
                         xtype: 'panel',
                         itemId: 'relatedusers',
-                        margin: {top: 40},
+                        margin: '40 0 0 0',
                         ui: 'inset-header-panel',
                         title: gettext('Students and examiners on this period'),
                         layout: 'fit',
@@ -60,17 +60,17 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     }, {
                         xtype: 'panel',
                         itemId: 'dangerousactions',
-                        margin: {top: 40},
+                        margin: '40 0 0 0',
                         ui: 'inset-header-danger-panel',
                         title: gettext('Dangerous actions'),
                         layout: 'anchor',
                         defaults: {
                             anchor: '100%',
-                            margin: {top: 10}
+                            margin: '10 0 0 0'
                         },
                         items: [{
                             xtype: 'singleactionbox',
-                            margin: {top: 0},
+                            margin: '0 0 0 0',
                             itemId: 'renameButton',
                             id: 'periodRenameButton',
                             titleText: gettext('Loading ...'),
@@ -89,13 +89,13 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     xtype: 'container',
                     border: false,
                     columnWidth: .35,
-                    margin: {left: 40},
+                    margin: '0 0 0 40',
                     defaults: {
-                        margin: {top: 20},
+                        margin: '20 0 0 0',
                     },
                     items: [{
                         xtype: 'adminsbox',
-                        margin: {top: 0}
+                        margin: '0 0 0 0'
                     }, {
                         xtype: 'basenodehierlocation'
                     }]

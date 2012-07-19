@@ -23,7 +23,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     }, {
         xtype: 'container',
         columnWidth: .35,
-        margin: {left: 40},
+        margin: '0 0 0 40',
         border: false,
         items: [{
             xtype: 'panel',

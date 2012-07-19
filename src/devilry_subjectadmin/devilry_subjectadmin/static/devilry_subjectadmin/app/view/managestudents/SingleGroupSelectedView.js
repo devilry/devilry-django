@@ -98,11 +98,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     columnWidth: .37,
                     padding: {left: 20},
                     defaults: {
-                        margin: {top: 20}
+                        margin: '20 0 0 0'
                     },
                     items: [{
                         xtype: 'studentsingroupgrid',
-                        margin: {top: 0},
+                        margin: '0 0 0 0',
                         store: this.studentsStore
                     }, {
                         xtype: 'examinersingroupgrid',

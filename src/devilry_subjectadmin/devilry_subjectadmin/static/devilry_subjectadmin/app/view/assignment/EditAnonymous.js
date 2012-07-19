@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
                     data: {
                         help: gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.')
                     },
-                    margin: {bottom: 10}
+                    margin: '0 0 10 0'
                 }, {
                     xtype: 'checkbox',
                     boxLabel: gettext('Anonymous'),

@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTime', {
                     data: {
                         help: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment as well before they can add any deliveries. ')
                     },
-                    margin: {bottom: 10}
+                    margin: '0 0 10 0'
                 }, {
                     xtype: 'devilry_extjsextras-datetimefield',
                     name: 'publishing_time'

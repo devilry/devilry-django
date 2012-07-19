@@ -105,7 +105,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             }
         }, {
             xtype: 'panel',
-            margin: {top: 10},
+            margin: '10 0 0 0',
             ui: 'lookslike-parawitheader-panel',
             title: gettext('Inherited administrators'),
             items: [{

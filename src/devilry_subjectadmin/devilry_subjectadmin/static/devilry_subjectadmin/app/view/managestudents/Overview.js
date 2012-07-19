@@ -113,7 +113,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 }, {
                     xtype: 'textfield',
                     itemId: 'search',
-                    margin: {left: 10},
+                    margin: '0 0 0 10',
                     width: 200,
                     emptyText: gettext('Search for students ...')
                 }]
