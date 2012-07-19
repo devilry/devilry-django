@@ -104,16 +104,9 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
-                items: [{
-                    xtype: 'autocompleteuserwidget',
-                    flex: 1,
-                    listeners: {
-                        scope: this,
-                        userSelected: this._onAddUser
-                    }
-                }]
+                ui: 'footer',
+                items: this.getBbarItems()
             }],
-
 
             tbar: [{
                 xtype: 'button',
@@ -289,6 +282,18 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         return this.caseIgnoreContains(username, query) ||
             this.caseIgnoreContains(full_name, query) ||
             this.caseIgnoreContains(email, query);
-    }
+    },
 
+
+    /** Override this to replace the button toolbar. */
+    getBbarItems: function() {
+        return [{
+            xtype: 'autocompleteuserwidget',
+            flex: 1,
+            listeners: {
+                scope: this,
+                userSelected: this._onAddUser
+            }
+        }]
+    }
 });
