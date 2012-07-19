@@ -66,11 +66,50 @@ deadlines_docs = """List of objects/maps with the following attributes:
 """
 
 
-form_examiners_help = """
+form_examiners_help = r"""List of examiners (objects/maps) to apply to the
+assignment. For new groups, this is simply a list of examiners to create. For
+existing groups, this list is synced with the saved examiners. Each object in
+the list has the following attributes:
 
+- ``id``: If this is ``None/null``, we create a new examiner.
+- ``user``: An object/map. If ``id`` is ``None/null``, we create a new examiner
+  linked to the user identified by ``user['id']``.  The user object may also
+  have other attributes, which will simply be ignored.
+ 
+Any existing examiner not identified by their ``id`` in the list of examiners
+is **REMOVED** from the group.
+
+To sum it up in practical terms:
+
+- _Add examiner_: Add something like this to the list: ``{'user': {'id': 10}}``
+- _Remove examiner_: Update the group with an examiners-list where the examiner
+  is not included.
+- _Update examiner_: Not possible. Makes no sense since the only changable
+  attribute of examiner is the user, and you should add an examiner instead of
+  changing the user-link of an existing user.
 """
 
-form_candidates_help = """
+form_candidates_help = r"""List of candidates (objects/maps) to apply to the
+assignment. For new groups, this is simply a list of candidates to create. For
+existing groups, this list is synced with the saved candidates. Each object in
+the list has the following attributes:
+
+- ``id``: If this is ``None/null``, we create a new candidate.
+- ``candidate_id``: Defaults to empty string if not supplied.
+- ``user``: An object/map. If ``id`` is ``None/null``, we create a new
+  candidate linked to the user identified by ``user['id']``. The user object
+  may also have other attributes, which will simply be ignored.
+ 
+Any existing candidate not identified by their ``id`` in the list of candidates
+is **REMOVED** from the group.
+
+To sum it up in practical terms:
+
+- _Add candidate_: Add something like this to the list: ``{'user': {'id': 10}}``
+- _Remove candidate_: Update the group with an candidates-list where the candidate
+  is not included.
+- _Update candidate_: Only the ``candidate_id`` can be changed. A minimal
+  example: ``{'id': 1, 'candidate_id': 'secret'}``
 """
 
 
@@ -403,16 +442,12 @@ class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
         """
         return super(InstanceGroupRest, self).get(request, id=group_id)
 
-    def postprocess_get_docs(self, docs):
-        responsetable = self.html_create_attrtable(instanceattributes_help)
-        return docs.format(responsetable=responsetable)
-
     def put(self, request, assignment_id, group_id):
         """
         # Parameters
         {parameterstable}
 
-        # Returns
+        # Returns (the same as GET)
         An object/map with the following attributes:
         {responsetable}
         """
