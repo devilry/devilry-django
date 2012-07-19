@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 xtype: 'toolbar',
                 itemId: 'primaryToolbar',
                 dock: 'top',
-                padding: {top: 2, right: 40, bottom: 2, left: 40},
+                padding: '2 40 2 40',
                 defaults: {
                     scale: 'medium',
                 },

@@ -19,7 +19,7 @@ Ext.define('devilry_subjectadmin.view.period.OverviewOfRelatedUsers', {
                 xtype: 'box',
                 tpl: '<p>{general}</p><p>{tagging}</p>',
                 cls: 'bootstrap',
-                padding: {right: 20, top: 5},
+                padding: '5 20 0 0',
                 data: {
                     general: gettext('These users are available when creating/managing assignments.'),
                     tagging: gettext('Students and examiners can be tagged, and students can easily be assigned to an examiner on assignments as long as they have at least one tag in common.')

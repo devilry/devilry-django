@@ -96,7 +96,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 }, {
                     xtype: 'container',
                     columnWidth: .37,
-                    padding: {left: 20},
+                    padding: '0 0 0 20',
                     defaults: {
                         margin: '20 0 0 0'
                     },
