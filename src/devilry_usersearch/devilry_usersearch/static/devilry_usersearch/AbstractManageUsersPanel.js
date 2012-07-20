@@ -142,7 +142,6 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
     _clearAndfocusAddUserField: function() {
         var field = this.down('autocompleteuserwidget');
-        console.log('clearandfocus');
         field.clearValue();
         field.focus();
     },
@@ -270,19 +269,23 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         return record.data;
     },
 
-    /** Called by subclasses when #addUser is successful. */
-    onUserAdded: function(userRecord) {
-        this._hightlightUser(userRecord);
+    _onSaveComplete: function() {
         Ext.defer(function() {
             this.removeSaveMask();
             this._clearAndfocusAddUserField();
         }, 200, this);
+    },
+
+    /** Called by subclasses when #addUser is successful. */
+    onUserAdded: function(userRecord) {
+        this._hightlightUser(userRecord);
+        this._onSaveComplete();
         this.fireEvent('usersAdded', [userRecord]);
     },
 
     /** Called by subclasses when #removeUsers is successful. */
     onUsersRemoved: function(userRecords) {
-        this.removeSaveMask();
+        this._onSaveComplete();
         this.fireEvent('usersRemoved', [userRecords]);
     },
 
