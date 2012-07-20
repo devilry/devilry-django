@@ -45,10 +45,10 @@ Ext.define('devilry_subjectadmin.utils.Array', {
             var destItem = config.destinationArray[destIndex];
             var match = this._findMatchingItem(destItem, config.sourceArray, config.isEqual);
             if(match) {
-                Ext.callback(config.onMatch, config.scope, [destItem, match.sourceItem]);
+                Ext.callback(config.onMatch, config.scope, [destItem, destIndex, match.sourceItem]);
                 matchedSourceItems[match.sourceIndex] = true;
             } else {
-                Ext.callback(config.onNoMatch, config.scope, [destIndex, destItem]);
+                Ext.callback(config.onNoMatch, config.scope, [destItem, destIndex]);
             }
         }
         for(var sourceIndex=0; sourceIndex<config.sourceArray.length; sourceIndex++)  {

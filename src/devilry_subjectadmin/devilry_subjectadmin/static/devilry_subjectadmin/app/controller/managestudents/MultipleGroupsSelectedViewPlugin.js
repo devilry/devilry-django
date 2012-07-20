@@ -20,6 +20,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     refs: [{
         ref: 'setExaminersPanel',
         selector: '#setExaminersWindow chooseexaminerspanel'
+    }, {
+        ref: 'addExaminersPanel',
+        selector: '#addExaminersWindow chooseexaminerspanel'
     }],
 
     init: function() {
@@ -37,6 +40,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             '#setExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerSetAdd,
                 removeUsers: this._onExaminerSetRemove
+            },
+            'viewport multiplegroupsview #addExaminersButton': {
+                click: this._onAddExaminers
+            },
+            '#addExaminersWindow chooseexaminerspanel': {
+                addUser: this._onExaminerAddPanelAdd
             }
         });
     },
@@ -71,21 +80,33 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }).show();
     },
 
-    _syncExaminers: function(userStore) {
+    _onAddExaminers: function() {
+        Ext.widget('chooseexaminerswindow', {
+            title: gettext('Add examiners'),
+            itemId: 'addExaminersWindow',
+            sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+        }).show();
+    },
+
+    _syncExaminers: function(userStore, doNotDeleteUsers) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
             var examiners = [];
+            var currentExaminers = groupRecord.get('examiners');
             devilry_subjectadmin.utils.Array.mergeIntoArray({
-                destinationArray: groupRecord.get('examiners'),
+                destinationArray: currentExaminers,
                 sourceArray: userStore.data.items,
                 isEqual: function(examiner, userRecord) {
                     return examiner.user.id == userRecord.get('id');
                 },
-                onMatch: function(examiner, userRecord) {
+                onMatch: function(examiner) {
                     examiners.push(examiner);
                 },
-                //onNoMatch: function(destIndex) {
-                //},
+                onNoMatch: function(examiner) {
+                    if(doNotDeleteUsers) {
+                        examiners.push(examiner);
+                    }
+                },
                 onAdd: function(userRecord) {
                     examiners.push({
                         user: {id: userRecord.get('id')}
@@ -114,6 +135,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             scope: this,
             success: function() {
                 this.getSetExaminersPanel().afterItemsRemovedSuccessfully(removedUserRecords);
+            }
+        });
+    },
+
+    _onExaminerAddPanelAdd: function(addedUserRecord) {
+        var userStore = this.getAddExaminersPanel().store;
+        this._syncExaminers(userStore, true);
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+                this.getAddExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
             }
         });
     }
