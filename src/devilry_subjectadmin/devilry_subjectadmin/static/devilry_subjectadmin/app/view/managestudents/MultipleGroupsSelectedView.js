@@ -31,8 +31,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 cls: 'bootstrap',
                 html: '<strong>NOTE:</strong> This view is incomplete. Please see <a href="http://heim.ifi.uio.no/espeak/devilry-figures/managestudents-multiselect.png" target="_blank">this image mockup</a> of the planned interface.'
             }, {
-                xtype: 'selectedgroupssummarygrid'
-            }, {
                 xtype: 'splitbutton',
                 margin: buttonmargin,
                 scale: 'medium',
@@ -68,6 +66,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 xtype: 'formhelp',
                 margin: helpmargin,
                 html: gettext('Remove/clear all examiners from the selected groups.')
+            }, {
+                margin: '20 0 0 0',
+                title: gettext('Selected groups'),
+                xtype: 'selectedgroupssummarygrid'
             }]
         });
         this.callParent(arguments);

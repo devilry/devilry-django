@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     multiSelect: true,
 
     groupInfoColTemplateString: [
-        '<div class="col1Wrapper">',
+        '<div class="groupInfoWrapper">',
         '   <div class="name"><strong>{displayName}</strong></div>',
         '   <div class="username"><small>{displayUsername}</small></div>',
         '   <tpl if="hasFeedback">',
@@ -26,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         '</div>'
     ],
     metadataColTemplateString: [
-        '<div class="col2Wrapper smallerfont">',
+        '<div class="metadataWrapper">',
         '   <tpl if="is_open">',
         '       <div class="open"><small class="success">{openText}</small></div>',
         '   </tpl>',
@@ -39,6 +39,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         '           <tpl if="num_deliveries &gt; 1">{num_deliveries} {deliveriesText}</tpl>',
         '       <div>',
         '   </tpl>',
+        '</div>'
+    ],
+    examinersListTemplateString: [
+        '<div class="examinersWrapper">',
+            '<ul class="examiner">',
+            '<tpl for="examiners">',
+                '<li class="examiner">',
+                    '<tpl if="user.full_name">',
+                        '{user.full_name}',
+                    '<tpl else>',
+                        '{user.username}',
+                    '</tpl>',
+                '</li>',
+            '</tpl>',
+            '</ul>',
         '</div>'
     ],
 
@@ -65,21 +80,41 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         this.deliveriesText = gettext('Deliveries');
         this.deliveryText = gettext('Delivery');
 
-        this.groupInfoColTemplate = Ext.create('Ext.XTemplate', this.groupInfoColTemplateString);
-        this.metadataColTemplate = Ext.create('Ext.XTemplate', this.metadataColTemplateString);
     },
 
     getGroupInfoColConfig: function() {
+        this.groupInfoColTemplate = Ext.create('Ext.XTemplate', this.groupInfoColTemplateString);
         return {
-            header: gettext('Group info'),  dataIndex: 'id', flex: 1,
-            renderer: this.renderGroupMembersCol
+            header: gettext('Group info'),
+            dataIndex: 'id',
+            flex: 2,
+            menuDisabled: true,
+            renderer: this.renderGroupMembersCol,
+            sortable: false
         };
     },
 
     getMetadataColConfig: function() {
+        this.metadataColTemplate = Ext.create('Ext.XTemplate', this.metadataColTemplateString);
         return {
-            header: gettext('Metadata'),  dataIndex: 'id', width: 115,
-            renderer: this.renderMetadataCol
+            header: gettext('Metadata'),
+            dataIndex: 'id',
+            width: 115,
+            menuDisabled: true,
+            renderer: this.renderMetadataCol,
+            sortable: false
+        };
+    },
+
+    getExaminersColConfig: function() {
+        this.examinersListTemplate = Ext.create('Ext.XTemplate', this.examinersListTemplateString);
+        return {
+            header: gettext('Examiners'),
+            dataIndex: 'id',
+            flex: 1,
+            menuDisabled: true,
+            renderer: this.renderExaminersCol,
+            sortable: false
         };
     },
 
@@ -103,6 +138,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             closedText: this.closedText,
             deliveriesText: this.deliveriesText,
             deliveryText: this.deliveryText
+        });
+    },
+
+    renderExaminersCol: function(unused, unused2, record) {
+        return this.examinersListTemplate.apply({
+            examiners: record.get('examiners')
         });
     },
 

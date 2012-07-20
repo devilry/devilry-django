@@ -6,8 +6,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsSummaryGrid',
     alias: 'widget.selectedgroupssummarygrid',
     cls: 'devilry_subjectadmin_selectedgroupssummarygrid',
     store: 'SelectedGroups',
+    disableSelection: true,
 
     getColumns: function() {
-        return [this.getGroupInfoColConfig(), this.getMetadataColConfig()];
+        return [
+            this.getGroupInfoColConfig(),
+            this.getMetadataColConfig(),
+            this.getExaminersColConfig(),
+        ];
     }
 });
