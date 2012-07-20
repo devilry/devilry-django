@@ -131,6 +131,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 region: 'center',
                 margin: '10 40 10 20',
                 border: false,
+                autoScroll: true,
                 itemId: 'body'
             }]
         });
