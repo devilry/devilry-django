@@ -58,6 +58,19 @@ class ListRelatedUsersRestMixin(SelfdocumentingMixin):
 
     def get(self, request, **kwargs): # NOTE: We take **kwargs because this method is called with period_id or assignment_id(subclass), however it only uses ``request`` (the kwarg is used by permission handlers)
         """
+        Without the ``query`` parameter, list all users.
+
+        ## Parameters
+        Use the ``query`` parameter in the querystring to search for users by:
+
+        - Full name
+        - Username
+        - Email
+        - Tags
+
+        Uses case-ignore-contains search.
+
+        # Returns
         Get a list of related users. Each entry in the list is a dict/object
         with the following attributes:
         {responsetable}
