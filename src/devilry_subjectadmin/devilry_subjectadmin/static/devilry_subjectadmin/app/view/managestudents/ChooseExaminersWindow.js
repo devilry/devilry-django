@@ -14,12 +14,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersWindow', {
     maximizable: true,
     modal: true,
 
+    /**
+     * @cfg {Object} panelConfig
+     * Config parameters for the panel.
+     */
+
     initComponent: function() {
+        var panelConfig = {xtype: 'chooseexaminerspanel'};
+        Ext.apply(panelConfig, this.panelConfig);
         Ext.apply(this, {
-            items: {
-                xtype: 'chooseexaminerspanel',
-                sourceStore: this.sourceStore
-            }
+            items: [panelConfig]
         });
         this.callParent(arguments);
     }

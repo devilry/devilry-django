@@ -76,7 +76,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         Ext.widget('chooseexaminerswindow', {
             title: gettext('Set examiners'),
             itemId: 'setExaminersWindow',
-            sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            panelConfig: {
+                includeRemove: true,
+                sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            }
         }).show();
     },
 
@@ -84,7 +87,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         Ext.widget('chooseexaminerswindow', {
             title: gettext('Add examiners'),
             itemId: 'addExaminersWindow',
-            sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            panelConfig: {
+                sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            }
         }).show();
     },
 

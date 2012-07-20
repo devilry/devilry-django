@@ -25,10 +25,16 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
      */
     hideHeaders: true,
 
-    
+
+    /**
+     * @cfg {boolean} includeRemove
+     * Include remove and selectall buttons.
+     */
+
     /**
      * @cfg {Function} [filterFunction]
      * Callback used by the filter field. Return ``true`` on match.
+     * If this is not included, no filter field is shown.
      */
 
 
@@ -77,9 +83,12 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
                     scope: this,
                     selectionchange: this._onGridSelectionChange
                 }
-            }],
+            }]
+        });
 
-            tbar: [{
+        var tbar = [];
+        if(this.includeRemove) {
+            tbar.push({
                 xtype: 'button',
                 cls: 'selectAllButton',
                 text: gettext('Select all'),
@@ -87,7 +96,8 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
                     scope: this,
                     click: this._onSelectAll
                 }
-            }, {
+            });
+            tbar.push({
                 xtype: 'button',
                 text: gettext('Remove'),
                 itemId: 'removeButton',
@@ -97,7 +107,10 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
                     scope: this,
                     click: this._onRemoveItemsClicked
                 }
-            }, '->', {
+            });
+        }
+        if(this.filterFunction) {
+            tbar.push({
                 xtype: 'textfield',
                 cls: 'filterfield',
                 emptyText: gettext('Filter ...'),
@@ -105,8 +118,12 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
                     scope: this,
                     change: this._onFilterChange
                 }
-            }]
-        });
+            });
+        }
+        if(tbar.length > 0) {
+            this.tbar = tbar;
+        }
+
         this.callParent(arguments);
     },
 
@@ -194,10 +211,12 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
     },
 
     _onGridSelectionChange: function(selectionmodel) {
-        if(selectionmodel.getSelection().length == 0) {
-            this.down('#removeButton').disable();
-        } else {
-            this.down('#removeButton').enable();
+        if(this.includeRemove) {
+            if(selectionmodel.getSelection().length == 0) {
+                this.down('#removeButton').disable();
+            } else {
+                this.down('#removeButton').enable();
+            }
         }
     },
 
