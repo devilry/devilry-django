@@ -31,10 +31,10 @@ Ext.define('devilry_subjectadmin.model.Group', {
     _debugFormatArray: function(array, tpl) {
         var itemtpl = Ext.create('Ext.XTemplate', tpl);
         var items = [];
-        Ext.Array.each(array, function(item) {
-            items.push(itemtpl.apply(item));
+        Ext.Array.each(array, function(item, index) {
+            items.push('\n    ' + index + ': {' + itemtpl.apply(item) + '}');
         }, this);
-        return '{' + items.join(', ') + '}';
+        return items.join(', ');
     },
 
     debugFormat: function() {
