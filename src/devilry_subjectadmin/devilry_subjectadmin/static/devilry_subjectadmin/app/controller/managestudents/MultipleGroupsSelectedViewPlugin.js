@@ -7,12 +7,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     extend: 'Ext.app.Controller',
 
     views: [
-        'managestudents.MultipleGroupsSelectedView'
+        'managestudents.MultipleGroupsSelectedView',
+        'managestudents.ChooseExaminersWindow'
     ],
 
     requires: [
-        'devilry_extjsextras.AlertMessage'
+        'devilry_extjsextras.AlertMessage',
+        'Ext.window.Window'
     ],
+
+    refs: [{
+        ref: 'setExaminersWindow',
+        selector: '#setExaminersWindow'
+    }, {
+        ref: 'setExaminersPanel',
+        selector: '#setExaminersWindow chooseexaminerspanel'
+    }],
 
     init: function() {
         this.application.addListener({
@@ -22,6 +32,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.control({
             'viewport multiplegroupsview': {
                 render: this._onRender
+            },
+            'viewport multiplegroupsview #setExaminersButton': {
+                click: this._onSetExaminers
+            },
+            '#setExaminersWindow #saveButton': {
+                click: this._onSaveSetExaminers
             }
         });
     },
@@ -47,4 +63,76 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });
     },
+
+    _onSetExaminers: function() {
+        Ext.widget('chooseexaminerswindow', {
+            title: gettext('Set examiners'),
+            itemId: 'setExaminersWindow'
+        }).show();
+    },
+
+
+    _findMatchingItem: function(destItem, sourceArray, isEqual) {
+        for(var sourceIndex=0; sourceIndex<sourceArray.length; sourceIndex++)  {
+            var sourceItem = sourceArray[sourceIndex];
+            if(isEqual(destItem, sourceItem)) {
+                return {
+                    sourceItem: sourceItem,
+                    sourceIndex: sourceIndex
+                };
+            }
+        }
+        return null;
+    },
+
+    _mergeIntoArray: function(config) {
+        var matchedSourceItems = {}; // Filled with sourceItems already in destinationArray, indexed by their index in sourceArray.
+        for(var destIndex=0; destIndex<config.destinationArray.length; destIndex++)  {
+            var destItem = config.destinationArray[destIndex];
+            var match = this._findMatchingItem(destItem, config.sourceArray, config.isEqual);
+            if(match) {
+                config.onMatch(destItem, match.sourceItem);
+                matchedSourceItems[match.sourceIndex] = true;
+            } else {
+                Ext.Array.erase(config.destinationArray, destIndex, 1);
+            }
+        }
+        for(var sourceIndex=0; sourceIndex<config.sourceArray.length; sourceIndex++)  {
+            // NOTE: We only add sourceItems not already matched
+            if(!matchedSourceItems[sourceIndex]) {
+                var sourceItem = config.sourceArray[sourceIndex];
+                config.onAdd(sourceItem);
+            }
+        }
+    },
+
+    _onSaveSetExaminers: function() {
+        var userStore = this.getSetExaminersPanel().store;
+        for(var index=0; index<this.groupRecords.length; index++)  {
+            var groupRecord = this.groupRecords[index];
+            var examiners = [];
+            this._mergeIntoArray({
+                destinationArray: groupRecord.get('examiners'),
+                sourceArray: userStore.data.items,
+                isEqual: function(examiner, userRecord) {
+                    return examiner.user.id == userRecord.get('id');
+                },
+                onMatch: function(examiner, userRecord) {
+                    examiners.push(examiner);
+                },
+                onAdd: function(userRecord) {
+                    examiners.push({
+                        user: {id: userRecord.get('id')}
+                    });
+                }
+            });
+            groupRecord.set('examiners', examiners);
+        }
+        //for(var i=0; i<this.groupRecords.length; i++)  {
+            //var groupRecord = this.groupRecords[i];
+            //console.log(groupRecord.debugFormat());
+        //}
+        this.manageStudentsController.notifyMultipleGroupsChange();
+        this.getSetExaminersWindow().closeWithoutConfirm();
+    }
 });

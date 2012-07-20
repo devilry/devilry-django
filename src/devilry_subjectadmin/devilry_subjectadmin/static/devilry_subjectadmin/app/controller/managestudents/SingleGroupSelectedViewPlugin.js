@@ -142,6 +142,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             }
         }, this);
         this.groupRecord.set('tags', tags);
-        this.manageStudentsController.notifySingleGroupChange(this.groupRecord);
+        this.manageStudentsController.notifySingleGroupChange();
     }
 });

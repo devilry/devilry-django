@@ -401,9 +401,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().setLoading(false);
     },
 
-    /** Used by related controllers (SingleGroupSelectedView) to notify this
+    /** Used by related controllers (MultipleGroupsSelectedViewPlugin) to
+     * notify this controller when multiple groups have changed, and needs to
+     * be saved. */
+    notifyMultipleGroupsChange: function() {
+        this._notifyGroupsChange();
+    },
+
+    /** Used by related controllers (SingleGroupSelectedViewPlugin) to notify this
      * controller when a single group is changed, and needs to be saved. */
-    notifySingleGroupChange: function(groupRecord, onSuccess) {
+    notifySingleGroupChange: function() {
+        this._notifyGroupsChange();
+    },
+
+    _notifyGroupsChange: function() {
         console.log('sync started');
         this._maskListOfGroups();
         this.getGroupsStore().sync({
