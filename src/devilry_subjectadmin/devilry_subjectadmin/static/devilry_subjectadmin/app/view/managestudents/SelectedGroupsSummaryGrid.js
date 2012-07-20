@@ -1,17 +1,13 @@
 /**
- * The grid that shows selected groups on .
+ * The grid that shows selected groups.
  */
 Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsSummaryGrid', {
-    extend: 'devilry_subjectadmin.view.managestudents.ListOfGroups',
+    extend: 'devilry_subjectadmin.view.managestudents.GridOfGroupsBase',
     alias: 'widget.selectedgroupssummarygrid',
     cls: 'devilry_subjectadmin_selectedgroupssummarygrid',
-    hideHeaders: false,
     store: 'SelectedGroups',
 
-    //initComponent: function() {
-        //var me = this;
-        //Ext.apply(this, {
-        //});
-        //this.callParent(arguments);
-    //}
+    getColumns: function() {
+        return [this.getGroupInfoColConfig(), this.getMetadataColConfig()];
+    }
 });
