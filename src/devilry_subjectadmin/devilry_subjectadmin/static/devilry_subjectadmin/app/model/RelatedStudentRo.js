@@ -3,7 +3,7 @@ Ext.define('devilry_subjectadmin.model.RelatedStudentRo', {
 
     proxy: {
         type: 'rest',
-        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/relatedstudent_ro/{0}/',
+        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/relatedstudent_assignment_ro/{0}/',
         url: null, // We use baseurl to dynamically set the url from urlpatt
         extraParams: {
             format: 'json'
