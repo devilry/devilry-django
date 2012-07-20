@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     requires: [
         'devilry_extjsextras.AlertMessage',
+        'devilry_subjectadmin.utils.Array',
         'Ext.window.Window'
     ],
 
@@ -71,47 +72,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }).show();
     },
 
-
-    _findMatchingItem: function(destItem, sourceArray, isEqual) {
-        for(var sourceIndex=0; sourceIndex<sourceArray.length; sourceIndex++)  {
-            var sourceItem = sourceArray[sourceIndex];
-            if(isEqual(destItem, sourceItem)) {
-                return {
-                    sourceItem: sourceItem,
-                    sourceIndex: sourceIndex
-                };
-            }
-        }
-        return null;
-    },
-
-    _mergeIntoArray: function(config) {
-        var matchedSourceItems = {}; // Filled with sourceItems already in destinationArray, indexed by their index in sourceArray.
-        for(var destIndex=0; destIndex<config.destinationArray.length; destIndex++)  {
-            var destItem = config.destinationArray[destIndex];
-            var match = this._findMatchingItem(destItem, config.sourceArray, config.isEqual);
-            if(match) {
-                config.onMatch(destItem, match.sourceItem);
-                matchedSourceItems[match.sourceIndex] = true;
-            } else {
-                Ext.Array.erase(config.destinationArray, destIndex, 1);
-            }
-        }
-        for(var sourceIndex=0; sourceIndex<config.sourceArray.length; sourceIndex++)  {
-            // NOTE: We only add sourceItems not already matched
-            if(!matchedSourceItems[sourceIndex]) {
-                var sourceItem = config.sourceArray[sourceIndex];
-                config.onAdd(sourceItem);
-            }
-        }
-    },
-
     _onSaveSetExaminers: function() {
         var userStore = this.getSetExaminersPanel().store;
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
             var examiners = [];
-            this._mergeIntoArray({
+            devilry_subjectadmin.utils.Array.mergeIntoArray({
                 destinationArray: groupRecord.get('examiners'),
                 sourceArray: userStore.data.items,
                 isEqual: function(examiner, userRecord) {
