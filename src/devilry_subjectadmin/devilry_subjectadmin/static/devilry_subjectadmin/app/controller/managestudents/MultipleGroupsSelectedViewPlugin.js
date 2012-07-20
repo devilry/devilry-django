@@ -99,10 +99,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onExaminerSetAdd: function(addedUserRecord) {
         var userStore = this.getSetExaminersPanel().store;
         this._syncExaminers(userStore);
-        //for(var i=0; i<this.groupRecords.length; i++)  {
-            //var groupRecord = this.groupRecords[i];
-            //console.log(groupRecord.debugFormat());
-        //}
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {

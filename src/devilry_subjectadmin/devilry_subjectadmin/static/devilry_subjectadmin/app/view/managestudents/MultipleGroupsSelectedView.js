@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 xtype: 'splitbutton',
                 margin: buttonmargin,
                 scale: 'medium',
-                text: gettext('Set examiners'),
+                text: gettext('Set examiner(s)'),
                 itemId: 'setExaminersButton',
                 menu: [{
                     text: 'TODO'
@@ -43,6 +43,29 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 xtype: 'formhelp',
                 margin: helpmargin,
                 html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
+            }, {
+                xtype: 'splitbutton',
+                margin: buttonmargin,
+                scale: 'medium',
+                text: gettext('Add examiner(s)'),
+                itemId: 'addExaminersButton',
+                menu: [{
+                    text: 'TODO'
+                }]
+            }, {
+                xtype: 'formhelp',
+                margin: helpmargin,
+                html: gettext('Add one or more examiner(s) to the selected groups. Use the arrow button for more methods of adding examiners, such as random and by tags.')
+            }, {
+                xtype: 'button',
+                margin: buttonmargin,
+                scale: 'medium',
+                text: gettext('Remove examiners'),
+                itemId: 'removeExaminersButton'
+            }, {
+                xtype: 'formhelp',
+                margin: helpmargin,
+                html: gettext('Remove/clear all examiners from the selected groups.')
             }]
         });
         this.callParent(arguments);
