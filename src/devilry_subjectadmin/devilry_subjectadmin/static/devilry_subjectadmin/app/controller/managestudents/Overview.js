@@ -205,11 +205,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
-    _selectGroupRecords: function(groupRecords, deselect) {
+    /** Select the given group records.
+     * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
+     * */
+    selectGroupRecords: function(groupRecords, deselect) {
         var selectionModel = this.getListOfGroups().getSelectionModel();
-        if(deselect) {
-            selectionModel.deselectAll();
-        }
         selectionModel.select(groupRecords);
     },
 
@@ -230,7 +230,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 selectedGroups.push(record);
             }
         }, this);
-        this._selectGroupRecords(selectedGroups);
+        this.selectGroupRecords(selectedGroups);
     },
 
     _handleLoadError: function(operation, title) {
@@ -247,6 +247,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.assignmentRecord = record;
         var period_id = this.assignmentRecord.get('parentnode');
         this.getRelatedExaminersRoStore().setPeriod(period_id);
+        this.getRelatedStudentsRoStore().setPeriod(period_id);
         this.getOverview().setLoading(false);
         this._loadGroupsStore();
     },
@@ -436,7 +437,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 }, this);
             }
         }, this);
-        this._selectGroupRecords(affectedRecords, true);
+        this.selectGroupRecords(affectedRecords);
         Ext.callback(callbackconfig.success, callbackconfig.scope);
     },
 
