@@ -142,15 +142,26 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
 
     _clearAndfocusAddUserField: function() {
         var field = this.down('autocompleteuserwidget');
+        console.log('clearandfocus');
         field.clearValue();
         field.focus();
+    },
+
+    /** May want to override for custom save masking. */
+    saveMask: function() {
+        this.setLoading(gettext('Saving ...'))
+    },
+
+    /** May want to override for custom save masking. */
+    removeSaveMask: function() {
+        this.setLoading(false);
     },
 
     _onAddUser: function(combo, userRecord) {
         var username = userRecord.get('username');
         if(this.store.findExact('username', username) == -1) {
+            this.saveMask();
             this.addUser(userRecord);
-            this._clearAndfocusAddUserField();
         } else {
             Ext.MessageBox.show({
                 title: gettext('Already in list'),
@@ -176,8 +187,13 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         if(this.confirmBeforeRemove) {
             this._confirmRemove(selectedUsers);
         } else {
-            this.removeUsers(selectedUsers);
+            this._removeUsers(selectedUsers);
         }
+    },
+
+    _removeUsers: function(selectedUsers) {
+        this.saveMask();
+        this.removeUsers(selectedUsers);
     },
 
     _confirmRemove: function(selectedUsers) {
@@ -191,7 +207,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
             icon: Ext.MessageBox.QUESTION,
             fn: function(buttonId) {
                 if(buttonId == 'yes') {
-                    this.removeUsers(selectedUsers);
+                    this._removeUsers(selectedUsers);
                 }
             },
             scope: this
@@ -257,11 +273,16 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     /** Called by subclasses when #addUser is successful. */
     onUserAdded: function(userRecord) {
         this._hightlightUser(userRecord);
+        Ext.defer(function() {
+            this.removeSaveMask();
+            this._clearAndfocusAddUserField();
+        }, 200, this);
         this.fireEvent('usersAdded', [userRecord]);
     },
 
     /** Called by subclasses when #removeUsers is successful. */
     onUsersRemoved: function(userRecords) {
+        this.removeSaveMask();
         this.fireEvent('usersRemoved', [userRecords]);
     },
 
