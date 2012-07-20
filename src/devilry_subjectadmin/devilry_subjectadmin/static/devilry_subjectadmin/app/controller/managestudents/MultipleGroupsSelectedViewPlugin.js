@@ -8,7 +8,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     views: [
         'managestudents.MultipleGroupsSelectedView',
-        'managestudents.ChooseExaminersWindow'
+        'managestudents.ChooseExaminersWindow',
+        'managestudents.SelectedGroupsSummaryGrid'
     ],
 
     requires: [
@@ -16,6 +17,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         'devilry_subjectadmin.utils.Array',
         'Ext.window.Window'
     ],
+
+    stores: ['SelectedGroups'],
 
     refs: [{
         ref: 'setExaminersPanel',
@@ -58,6 +61,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
             topMessage: this._createTopMessage()
         });
+
+        this._populateSelectedGroupsStore();
+    },
+
+    _populateSelectedGroupsStore: function() {
+        var store = this.getSelectedGroupsStore();
+        //Ext.Array.each(this.groupRecords, function(groupRecord, index) {
+            //console.log(groupRecord, 'loaded');
+            //store.add(groupRecord);
+        //}, this);
+        store.removeAll();
+        store.loadData(this.groupRecords);
     },
 
     _onRender: function() {

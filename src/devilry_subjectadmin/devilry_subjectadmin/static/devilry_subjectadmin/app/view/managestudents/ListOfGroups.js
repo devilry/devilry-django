@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     extend: 'Ext.grid.Panel',
     alias: 'widget.listofgroups',
-    cls: 'listofgroups',
+    cls: 'devilry_subjectadmin_listofgroups',
     store: 'Groups',
     hideHeaders: true,
     multiSelect: true,
