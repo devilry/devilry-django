@@ -9,7 +9,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     hideHeaders: true,
     multiSelect: true,
 
-    col1TemplateString: [
+    groupInfoColTemplateString: [
         '<div class="col1Wrapper">',
         '   <div class="name"><strong>{displayName}</strong></div>',
         '   <div class="username"><small>{displayUsername}</small></div>',
@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         '   </tpl>',
         '</div>'
     ],
-    col2TemplateString: [
+    metadataColTemplateString: [
         '<div class="col2Wrapper smallerfont">',
         '   <tpl if="is_open">',
         '       <div class="open"><small class="success">{openText}</small></div>',
@@ -48,6 +48,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
 
     initComponent: function() {
+        this.setTemplateVariables();
+        Ext.apply(this, {
+            columns: [this.getGroupInfoColConfig(), this.getMetadataColConfig()],
+        });
+        this.callParent(arguments);
+    },
+
+    setTemplateVariables: function() {
         this.approvedText = pgettext('group', 'Passed');
         this.notApprovedText = pgettext('group', 'Failed');
         this.openText = pgettext('group', 'Open');
@@ -55,21 +63,25 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         this.deliveriesText = gettext('Deliveries');
         this.deliveryText = gettext('Delivery');
 
-        this.col1Template = Ext.create('Ext.XTemplate', this.col1TemplateString);
-        this.col2Template = Ext.create('Ext.XTemplate', this.col2TemplateString);
-        Ext.apply(this, {
-            columns: [{
-                header: 'Col1',  dataIndex: 'id', flex: 1,
-                renderer: this.renderCol1
-            }, {
-                header: 'Col2',  dataIndex: 'id', width: 115,
-                renderer: this.renderCol2
-            }],
-        });
-        this.callParent(arguments);
+        this.groupInfoColTemplate = Ext.create('Ext.XTemplate', this.groupInfoColTemplateString);
+        this.metadataColTemplate = Ext.create('Ext.XTemplate', this.metadataColTemplateString);
     },
 
-    renderCol1: function(unused, unused2, record) {
+    getGroupInfoColConfig: function() {
+        return {
+            header: gettext('Group info'),  dataIndex: 'id', flex: 1,
+            renderer: this.renderGroupMembersCol
+        };
+    },
+
+    getMetadataColConfig: function() {
+        return {
+            header: gettext('Metadata'),  dataIndex: 'id', width: 115,
+            renderer: this.renderMetadataCol
+        };
+    },
+
+    renderGroupMembersCol: function(unused, unused2, record) {
         var data = {
             displayName: this.getNameDivContent(record),
             displayUsername: this.getUsernameDivContent(record),
@@ -78,11 +90,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             approvedText: this.approvedText
         };
         Ext.apply(data, record.data);
-        return this.col1Template.apply(data);
+        return this.groupInfoColTemplate.apply(data);
     },
 
-    renderCol2: function(unused, unused2, record) {
-        return this.col2Template.apply({
+    renderMetadataCol: function(unused, unused2, record) {
+        return this.metadataColTemplate.apply({
             num_deliveries: record.get('num_deliveries'),
             is_open: record.get('is_open'),
             openText: this.openText,
