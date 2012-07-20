@@ -404,27 +404,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     /** Used by related controllers (MultipleGroupsSelectedViewPlugin) to
      * notify this controller when multiple groups have changed, and needs to
      * be saved. */
-    notifyMultipleGroupsChange: function() {
-        this._notifyGroupsChange();
+    notifyMultipleGroupsChange: function(callbackconfig) {
+        this._notifyGroupsChange(callbackconfig);
     },
 
     /** Used by related controllers (SingleGroupSelectedViewPlugin) to notify this
      * controller when a single group is changed, and needs to be saved. */
-    notifySingleGroupChange: function() {
-        this._notifyGroupsChange();
+    notifySingleGroupChange: function(callbackconfig) {
+        this._notifyGroupsChange(callbackconfig);
     },
 
-    _notifyGroupsChange: function() {
+    _notifyGroupsChange: function(callbackconfig) {
         console.log('sync started');
         this._maskListOfGroups();
         this.getGroupsStore().sync({
             scope: this,
-            success: this._onSyncSuccess,
+            success: function(batch, options) {
+                this._onSyncSuccess(batch, options, callbackconfig);
+            },
             failure: this._onSyncFailure
         });
     },
 
-    _onSyncSuccess: function(batch, options) {
+    _onSyncSuccess: function(batch, options, callbackconfig) {
         this._unmaskListOfGroups();
         console.log('sync success', batch);
         var affectedRecords = [];
@@ -437,6 +439,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             }
         }, this);
         this._selectGroupRecords(affectedRecords, true);
+        Ext.callback(callbackconfig.success, callbackconfig.scope);
     },
 
     _onSyncFailure: function(batch, options) {

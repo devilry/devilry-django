@@ -17,41 +17,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersWindow', {
     initComponent: function() {
         Ext.apply(this, {
             items: {
-                xtype: 'chooseexaminerspanel',
-                buttonText: this.title
-            },
-            listeners: {
-                scope: this,
-                beforeclose: this._onBeforeClose
+                xtype: 'chooseexaminerspanel'
             }
         });
         this.callParent(arguments);
-    },
-
-    _onBeforeClose: function() {
-        var panel = this.down('chooseexaminerspanel');
-        var itemCount = panel.store.getCount();
-
-        if(itemCount > 0 && !this.closeConfirmed) {
-            Ext.MessageBox.show({
-                title: gettext('Close without saving?'),
-                msg: gettext('Are you sure you want to close the window without saving your changes?'),
-                buttons: Ext.Msg.YESNO,
-                icon: Ext.Msg.QUESTION,
-                scope: this,
-                fn: function(button) {
-                    if(button == 'yes') {
-                        this.closeConfirmed = true;
-                        this.close();
-                    }
-                }
-            });
-            return false;
-        }
-    },
-
-    closeWithoutConfirm: function() {
-        this.closeConfirmed = true;
-        this.close();
     }
 });

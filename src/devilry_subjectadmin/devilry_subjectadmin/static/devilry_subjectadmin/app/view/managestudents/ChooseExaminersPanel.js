@@ -3,54 +3,41 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
     alias: 'widget.chooseexaminerspanel',
     cls: 'devilry_subjectadmin_chooseexaminerspanel',
     requires: [
-        'devilry_extjsextras.PrimaryButton',
         'devilry_usersearch.ManageUsersGridModel'
     ],
 
-    /**
-     * @cfg {string} buttonText
-     * Text of the "save" button
-     */
-
-    confirmBeforeRemove: false,
+    //confirmBeforeRemove: false,
 
     constructor: function(config) {
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry_usersearch.ManageUsersGridModel'
         });
         this.callParent([config]);
-    },
 
-    _mask: function(message) {
-        this.setLoading(message);
-    },
-    _unmask: function() {
-        this.setLoading(false);
+        this.addEvents({
+            /**
+             * @event
+             * Fired to signal that a user should be added.
+             * @param {[object]} userRecord A user record.
+             * */
+            "addUser" : true,
+
+            /**
+             * @event
+             * Fired to signal that users should be removed.
+             * @param {[object]} userRecords Array of user records.
+             * */
+            "removeUsers" : true
+        });
     },
 
     addUser: function(userRecord) {
-        console.log('Add user', userRecord.data);
         this.store.add(userRecord);
-        this.onUserAdded(userRecord);
-        this.down('#saveButton').enable();
+        this.fireEvent('addUser', userRecord);
     },
 
     removeUsers: function(userRecords) {
         this.store.remove(userRecords);
-        this.onUsersRemoved();
-        if(this.store.count() == 0) {
-            this.down('#saveButton').disable();
-        }
-    },
-
-    getBbarItems: function() {
-        var items = this.callParent();
-        items.push({
-            xtype: 'primarybutton',
-            itemId: 'saveButton',
-            disabled: true,
-            text: this.buttonText
-        });
-        return items;
+        this.fireEvent('removeUsers', userRecords);
     }
 });

@@ -18,9 +18,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     ],
 
     refs: [{
-        ref: 'setExaminersWindow',
-        selector: '#setExaminersWindow'
-    }, {
         ref: 'setExaminersPanel',
         selector: '#setExaminersWindow chooseexaminerspanel'
     }],
@@ -37,8 +34,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setExaminersButton': {
                 click: this._onSetExaminers
             },
-            '#setExaminersWindow #saveButton': {
-                click: this._onSaveSetExaminers
+            '#setExaminersWindow chooseexaminerspanel': {
+                addUser: this._onExaminerSetAdd,
+                removeUsers: this._onExaminerSetRemove
             }
         });
     },
@@ -72,8 +70,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }).show();
     },
 
-    _onSaveSetExaminers: function() {
-        var userStore = this.getSetExaminersPanel().store;
+    _syncExaminers: function(userStore) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
             var examiners = [];
@@ -96,11 +93,31 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             });
             groupRecord.set('examiners', examiners);
         }
+    },
+
+    _onExaminerSetAdd: function(addedUserRecord) {
+        var userStore = this.getSetExaminersPanel().store;
+        this._syncExaminers(userStore);
         //for(var i=0; i<this.groupRecords.length; i++)  {
             //var groupRecord = this.groupRecords[i];
             //console.log(groupRecord.debugFormat());
         //}
-        this.manageStudentsController.notifyMultipleGroupsChange();
-        this.getSetExaminersWindow().closeWithoutConfirm();
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+                this.getSetExaminersPanel().onUserAdded(addedUserRecord);
+            }
+        });
+    },
+
+    _onExaminerSetRemove: function(removedUserRecords) {
+        var userStore = this.getSetExaminersPanel().store;
+        this._syncExaminers(userStore);
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+                this.getSetExaminersPanel().onUsersRemoved(removedUserRecords);
+            }
+        });
     }
 });
