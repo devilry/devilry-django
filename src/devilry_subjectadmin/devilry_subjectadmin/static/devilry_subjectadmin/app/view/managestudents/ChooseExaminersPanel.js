@@ -1,19 +1,14 @@
 Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
-    extend: 'devilry_usersearch.AbstractManageUsersPanel',
+    extend: 'devilry_extjsextras.ManageItemsPanel',
     alias: 'widget.chooseexaminerspanel',
     cls: 'devilry_subjectadmin_chooseexaminerspanel',
     requires: [
-        'devilry_usersearch.ManageUsersGridModel'
+        'devilry_usersearch.ManageUsersGridModel',
+        'devilry_subjectadmin.view.managestudents.AutocompleteRelatedUserWidget'
     ],
 
-    //confirmBeforeRemove: false,
-
     constructor: function(config) {
-        this.store = Ext.create('Ext.data.Store', {
-            model: 'devilry_usersearch.ManageUsersGridModel'
-        });
         this.callParent([config]);
-
         this.addEvents({
             /**
              * @event
@@ -31,13 +26,68 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
         });
     },
 
-    addUser: function(userRecord) {
-        this.store.add(userRecord);
-        this.fireEvent('addUser', userRecord);
+    initComponent: function() {
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'devilry_usersearch.ManageUsersGridModel'
+        });
+
+        this.addListener({
+            scope: this,
+            removeItems: this._onRemoveItems
+        });
+
+        var cellTpl = devilry_usersearch.ManageUsersGridModel.gridCellXTemplate();
+        Ext.apply(this, {
+            columns: [{
+                header: 'Userinfo',  dataIndex: 'id', flex: 1,
+                renderer: function(unused1, unused2, record) {
+                    return cellTpl.apply(record.data);
+                }
+            }],
+
+            fbar: [{
+                xtype: 'autocompleterelateduserwidget',
+                fieldLabel: gettext('Add examiner'),
+                flex: 1,
+                store: this.sourceStore,
+                listeners: {
+                    scope: this,
+                    userSelected: this._onUserSelected
+                }
+            }]
+        });
+        this.callParent(arguments);
     },
 
-    removeUsers: function(userRecords) {
+    _clearAndfocusAddField: function() {
+        this.clearAndfocusField('autocompleterelateduserwidget');
+    },
+
+    _onUserSelected: function(combo, relatedExaminerRecord) {
+        var username = relatedExaminerRecord.get('user').username;
+        if(this.store.findExact('username', username) == -1) {
+            var userRecord = this.store.add(relatedExaminerRecord.get('user'))[0];
+            this.fireEvent('addUser', userRecord);
+        } else {
+            this.showDuplicateItemMessage({
+                callback: this._clearAndfocusAddField,
+                scope: this
+            });
+        }
+    },
+
+    _onRemoveItems: function(userRecords) {
         this.store.remove(userRecords);
         this.fireEvent('removeUsers', userRecords);
+    },
+
+    afterItemAddedSuccessfully: function(record) {
+        this.callParent(arguments);
+        this._clearAndfocusAddField();
+    },
+
+    afterItemsRemovedSuccessfully: function(removedRecords) {
+        this.callParent(arguments);
+        this._clearAndfocusAddField();
     }
 });

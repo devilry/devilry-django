@@ -66,7 +66,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onSetExaminers: function() {
         Ext.widget('chooseexaminerswindow', {
             title: gettext('Set examiners'),
-            itemId: 'setExaminersWindow'
+            itemId: 'setExaminersWindow',
+            sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
         }).show();
     },
 
@@ -105,7 +106,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this.getSetExaminersPanel().onUserAdded(addedUserRecord);
+                this.getSetExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
             }
         });
     },
@@ -116,7 +117,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this.getSetExaminersPanel().onUsersRemoved(removedUserRecords);
+                this.getSetExaminersPanel().afterItemsRemovedSuccessfully(removedUserRecords);
             }
         });
     }

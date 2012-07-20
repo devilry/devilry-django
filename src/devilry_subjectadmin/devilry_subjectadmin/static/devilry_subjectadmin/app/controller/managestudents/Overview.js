@@ -27,18 +27,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     /**
      * Get the related examiners store.
-     * This store is automatically loaded with all the related examiners on the
-     * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {devilry_subjectadmin.store.RelatedExaminers} Store.
-     * @method getRelatedExaminersStore
+     * @method getRelatedExaminersRoStore
      */
 
     /**
      * Get the related students store.
-     * This store is automatically loaded with all the related students on the
-     * period before the ``managestudentsSuccessfullyLoaded`` event is fired.
      * @return {devilry_subjectadmin.store.RelatedStudents} Store.
-     * @method getRelatedStudentsStore
+     * @method getRelatedStudentsRoStore
      */
 
     /**
@@ -50,8 +46,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
 
     stores: [
-        'RelatedStudents',
-        'RelatedExaminers',
+        'RelatedStudentsRo',
+        'RelatedExaminersRo',
         'Groups'
     ],
 
@@ -249,6 +245,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
+        var period_id = this.assignmentRecord.get('parentnode');
+        this.getRelatedExaminersRoStore().setPeriod(period_id);
         this.getOverview().setLoading(false);
         this._loadGroupsStore();
     },

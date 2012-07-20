@@ -8,6 +8,41 @@ Ext.define('devilry_usersearch.AutocompleteUserWidget' ,{
 
     emptyText: gettext('Start typing name, username or email, and select the user from the popup list ...'),
     fieldLabel: gettext('Add user'),
+    queryMode: 'remote',
+    hideTrigger: true,
+    typeAhead: false,
+    displayField: 'full_name',
+    minChars: 3,
+    selectOnTab: false,
+
+    /**
+     * @cfg {String} listEmptyText
+     */
+    listEmptyText: gettext('No matching users found.'),
+
+    /**
+     * @cfg {Function} createStore
+     * Callback that returns the store.
+     */
+    createStore: function() {
+        return Ext.create('devilry_usersearch.UserSearchStore');
+    },
+
+    /**
+     * @cfg {Function} listInnerTpl
+     * Returns the xtemplate for listConfig.getInnerTpl
+     */
+    listGetInnerTpl: function() {
+        return[
+            '<div class="matchlistitem matchlistitem_{username}">',
+                '<h3>{full_name}</h3>',
+                '<small class="username">{username}</small>',
+                '<tpl if="email">',
+                    ' <small class="email">&lt;{email}&gt;</small>',
+                '</tpl>',
+            '</div>'
+        ].join('');
+    },
 
     constructor: function(config) {
         this.addEvents({
@@ -27,30 +62,17 @@ Ext.define('devilry_usersearch.AutocompleteUserWidget' ,{
     },
 
     initComponent: function() {
-        this.store = Ext.create('devilry_usersearch.UserSearchStore');
+        this.store = this.store || this.createStore();
+        var innerTpl = this.listGetInnerTpl();
         Ext.apply(this, {
-            queryMode: 'remote',
-            store: this.store,
-            hideTrigger: true,
-            typeAhead: false,
-            displayField: 'full_name',
-            minChars: 3,
             listConfig: {
                 loadingText: gettext('Searching...'),
-                emptyText: gettext('No matching users found.'),
+                emptyText: this.listEmptyText,
                 cls: 'autocompleteuserwidget_matchlist',
 
                 // Custom rendering template for each item
                 getInnerTpl: function() {
-                    return [
-                        '<div class="matchlistitem matchlistitem_{username}">',
-                            '<h3>{full_name}</h3>',
-                            '<small class="username">{username}</small>',
-                            '<tpl if="email">',
-                                ' <small class="email">&lt;{email}&gt;</small>',
-                            '</tpl>',
-                        '</div>'
-                    ].join('');
+                    return innerTpl;
                 }
             }
         });
