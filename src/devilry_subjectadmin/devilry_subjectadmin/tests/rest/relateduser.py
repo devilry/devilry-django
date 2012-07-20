@@ -27,7 +27,6 @@ class TestListOrCreateRelatedUserMixin(object):
         self.client.login(username=username, password='test')
         return self.client.rest_get(self.get_url(), **data)
 
-
     def _create_user(self, index):
         username = "reluser{0}".format(index)
         user = self.testhelper.create_user(username)
@@ -79,6 +78,35 @@ class TestListOrCreateRelatedUserMixin(object):
         self._create_relatedusers(2)
         content, response = self._listas(self.testhelper.p2admin, period=self.testhelper.sub_p1.id)
         self.assertEquals(response.status_code, 403)
+
+    def _listqueryas(self, username, query):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self.get_url(), **{'query': query})
+
+    def test_list_query(self):
+        self._create_relatedusers(2)
+        self.create_relateduser(self.testhelper.sub_p1, index=5, tags='group1,group2')
+        self.create_relateduser(self.testhelper.sub_p2, index=20, tags='') # Not on p1, so we shold not get this in the listing!
+        self.testhelper.reluser0.devilryuserprofile.full_name = 'Superhero'
+        self.testhelper.reluser0.devilryuserprofile.save()
+        self.testhelper.reluser1.devilryuserprofile.full_name = 'Super Not hero'
+        self.testhelper.reluser1.email = 'supernothero@example.com'
+        self.testhelper.reluser1.devilryuserprofile.save()
+        self.testhelper.reluser1.save()
+
+        content, response = self._listqueryas('p1admin', query='5')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+
+        content, response = self._listqueryas('p1admin', query='HeRo')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 2)
+
+        content, response = self._listqueryas('p1admin', query='group2')
+        self.assertEquals(len(content), 1)
+
+        content, response = self._listqueryas('p1admin', query='nothero@exAM')
+        self.assertEquals(len(content), 1)
 
     def _createas(self, username, data):
         self.client.login(username=username, password='test')

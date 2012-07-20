@@ -1,6 +1,7 @@
 """
 Manage related users.
 """
+from django.db.models import Q
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
 from djangorestframework.views import InstanceModelView
@@ -44,6 +45,14 @@ class ListRelatedUsersRestMixin(SelfdocumentingMixin):
         period_id = self.get_period_id()
         qry = self.resource.model.objects.filter(period=period_id)
         qry = qry.select_related('user', 'user__devilryuserprofile')
+
+        querystring = self.request.GET.get('query', '')
+        if len(querystring) > 0:
+            qry = qry.filter(Q(user__username__icontains=querystring) |
+                             Q(user__email__icontains=querystring) |
+                             Q(user__devilryuserprofile__full_name__icontains=querystring) |
+                             Q(tags__icontains=querystring))
+
         qry = qry.order_by('user__devilryuserprofile__full_name')
         return qry
 
