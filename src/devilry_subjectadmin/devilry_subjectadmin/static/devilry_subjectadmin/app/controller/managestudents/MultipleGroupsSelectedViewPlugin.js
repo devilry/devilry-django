@@ -86,6 +86,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 onMatch: function(examiner, userRecord) {
                     examiners.push(examiner);
                 },
+                //onNoMatch: function(destIndex) {
+                //},
                 onAdd: function(userRecord) {
                     examiners.push({
                         user: {id: userRecord.get('id')}

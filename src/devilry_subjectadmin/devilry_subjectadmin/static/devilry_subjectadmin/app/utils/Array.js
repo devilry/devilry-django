@@ -25,10 +25,19 @@ Ext.define('devilry_subjectadmin.utils.Array', {
      * @param {Object} [config] Configuration for the method.
      * @param {[Object]} [config.destinationArray] The destination array.
      * @param {[Object]} [config.sourceArray] The source array.
-     * @param {Function} [config.isEqual] Takes ``destItem`` and ``sourceItem`` as parameters, and returns ``true`` if they match.
-     * @param {Function} [config.onMatch] Called on match (when isEqual returns true), with ``destItem`` and ``sourceItem`` as parameters.
-     * @param {Function} [config.onAdd] Called for all items in ``sourceArray`` that is not in ``destinationArray``, with ``sourceItems`` as parameter.
-     *     
+     * @param {Object} [scope] The scope to execute the functions in.
+     * @param {Function} [config.isEqual]
+     *      Takes ``destItem`` and ``sourceItem`` as parameters, and returns
+     *      ``true`` if they match.
+     * @param {Function} [config.onMatch]
+     *      Called when isEqual returns ``true``, with ``destItem`` and
+     *      ``sourceItem`` as parameters.
+     * @param {Function} [config.onNoMatch]
+     *      Called when isEqual returns ``false``, with ``destItem`` and
+     *      ``sourceItem`` as parameters.
+     * @param {Function} [config.onAdd]
+     *      Called for all items in ``sourceArray`` that is not in
+     *      ``destinationArray``, with ``sourceItems`` as parameter.
      */
     mergeIntoArray: function(config) {
         var matchedSourceItems = {}; // Filled with sourceItems already in destinationArray, indexed by their index in sourceArray.
@@ -36,10 +45,10 @@ Ext.define('devilry_subjectadmin.utils.Array', {
             var destItem = config.destinationArray[destIndex];
             var match = this._findMatchingItem(destItem, config.sourceArray, config.isEqual);
             if(match) {
-                config.onMatch(destItem, match.sourceItem);
+                Ext.callback(config.onMatch, config.scope, [destItem, match.sourceItem]);
                 matchedSourceItems[match.sourceIndex] = true;
             } else {
-                Ext.Array.erase(config.destinationArray, destIndex, 1);
+                Ext.callback(config.onNoMatch, config.scope, [destIndex, destItem]);
             }
         }
         for(var sourceIndex=0; sourceIndex<config.sourceArray.length; sourceIndex++)  {
