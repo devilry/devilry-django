@@ -72,7 +72,7 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
                     data: {
                         html: this.bodyHtml
                     },
-                    padding: {right: 20},
+                    padding: '0 20 0 0',
                     columnWidth: 1
                 }, {
                     xtype: 'button',
