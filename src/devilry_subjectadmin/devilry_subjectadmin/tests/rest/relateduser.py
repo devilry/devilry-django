@@ -50,7 +50,7 @@ class TestListOrCreateRelatedUserMixin(object):
         self._create_relatedusers(2)
         self.create_relateduser(self.testhelper.sub_p1, index=5, tags='group1,group2')
         self.create_relateduser(self.testhelper.sub_p2, index=20, tags='') # Not on p1, so we shold not get this in the listing!
-        content, response = self._listas(self.testhelper.p1admin, period=self.testhelper.sub_p1.id)
+        content, response = self._listas('p1admin')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 3) # Since this is 3, we did not get the user registered on p2.
         first, second, last = content
@@ -64,19 +64,19 @@ class TestListOrCreateRelatedUserMixin(object):
         return content
 
     def test_list_none(self):
-        content, response = self._listas(self.testhelper.p1admin, period=self.testhelper.sub_p1.id)
+        content, response = self._listas('p1admin')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 0)
 
     def test_list_superuser(self):
         self._create_relatedusers(2)
-        content, response = self._listas(self.testhelper.superuser, period=self.testhelper.sub_p1.id)
+        content, response = self._listas('superuser')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 2)
 
     def test_list_not_admin(self):
         self._create_relatedusers(2)
-        content, response = self._listas(self.testhelper.p2admin, period=self.testhelper.sub_p1.id)
+        content, response = self._listas('p2admin')
         self.assertEquals(response.status_code, 403)
 
     def _listqueryas(self, username, query):
