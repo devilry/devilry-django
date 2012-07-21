@@ -75,6 +75,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             }, {
                 itemId: 'deselectall',
                 text: gettext('Deselect all')
+            }, {
+                itemId: 'invertselection',
+                text: gettext('Invert selection')
             }, '-', {
                 text: pgettext('group', 'Status'),
                 menu: [{

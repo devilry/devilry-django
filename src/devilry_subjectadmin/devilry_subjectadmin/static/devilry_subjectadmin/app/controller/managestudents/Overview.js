@@ -94,6 +94,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             'viewport managestudentsoverview #selectButton #deselectall': {
                 click: this._onDeselectAll
             },
+            'viewport managestudentsoverview #selectButton #invertselection': {
+                click: this._onInvertselection
+            },
             'viewport managestudentsoverview #sortby': {
                 select: this._onSelectSortBy
             },
@@ -214,6 +217,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
     _onDeselectAll: function() {
         this.getListOfGroups().getSelectionModel().deselectAll();
+    },
+    _onInvertselection: function() {
+        var selectionModel = this.getListOfGroups().getSelectionModel();
+        var selected = Ext.clone(selectionModel.selected.items);
+
+        // Add listener to the "next" selectionchange event, and trigger the selectionchange with selectAll
+        this.getListOfGroups().on({
+            selectionchange: function() {
+                this.deselectGroupRecords(selected);
+            },
+            scope: this,
+            single: true
+        });
+        this.getListOfGroups().getSelectionModel().selectAll();
     },
 
     /** Select the given group records.
