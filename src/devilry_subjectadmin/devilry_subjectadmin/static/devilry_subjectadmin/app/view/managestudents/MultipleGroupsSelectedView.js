@@ -32,7 +32,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 minHeight: 100,
                 flex: 6,
                 xtype: 'container',
-                padding: '20 20 10 0',
+                padding: 20,
                 autoScroll: true,
                 items: [{
                     xtype: 'alertmessage',

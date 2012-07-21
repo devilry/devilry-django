@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 xtype: 'panel',
                 region: 'center',
                 //margin: '10 40 10 20',
-                padding: '0 0 0 20',
+                //padding: '0 0 0 20',
                 border: false,
                 layout: 'fit',
                 itemId: 'body'
