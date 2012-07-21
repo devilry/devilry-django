@@ -113,6 +113,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         return this.getGroupsStore().count();
     },
 
+
+
+
     /*****************************************************
      *
      * Render handlers
