@@ -38,6 +38,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
 
     /**
+     * Get the search for groups store.
+     * @return {devilry_subjectadmin.store.RelatedStudents} Store.
+     * @method getSearchForGroupsStore
+     */
+
+    /**
      * Get the groups store.
      * This store is automatically loaded with all the groups on the assignment
      * before the ``managestudentsSuccessfullyLoaded`` event is fired.
@@ -48,6 +54,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     stores: [
         'RelatedStudentsRo',
         'RelatedExaminersRo',
+        'SearchForGroups',
         'Groups'
     ],
 
@@ -207,10 +214,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     /** Select the given group records.
      * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
+     * @param {Boolean} [keepExisting=false] True to retain existing selections
      * */
-    selectGroupRecords: function(groupRecords, deselect) {
+    selectGroupRecords: function(groupRecords, keepExisting) {
         var selectionModel = this.getListOfGroups().getSelectionModel();
-        selectionModel.select(groupRecords);
+        selectionModel.select(groupRecords, keepExisting);
+    },
+
+    getRecordByGroupId: function(groupId) {
+        var index = this.getGroupsStore().findExact('id', groupId);
+        return this.getGroupsStore().getAt(index);
     },
 
     _selectUrlIds: function() {
@@ -248,6 +261,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         var period_id = this.assignmentRecord.get('parentnode');
         this.getRelatedExaminersRoStore().setPeriod(period_id);
         this.getRelatedStudentsRoStore().setPeriod(period_id);
+        this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this.getOverview().setLoading(false);
         this._loadGroupsStore();
     },

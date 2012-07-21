@@ -43,7 +43,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     ],
     examinersListTemplateString: [
         '<div class="examinersWrapper">',
-            '<ul class="examiner">',
+            '<ul class="unstyled">',
             '<tpl for="examiners">',
                 '<li class="examiner">',
                     '<tpl if="user.full_name">',

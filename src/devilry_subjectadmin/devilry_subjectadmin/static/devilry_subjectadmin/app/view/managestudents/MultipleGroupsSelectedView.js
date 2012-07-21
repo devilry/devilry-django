@@ -27,10 +27,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 type: 'info',
                 message: [this.topMessage, this.multiselectHowto].join(' ')
             }, {
-                xtype: 'box',
-                cls: 'bootstrap',
-                html: '<strong>NOTE:</strong> This view is incomplete. Please see <a href="http://heim.ifi.uio.no/espeak/devilry-figures/managestudents-multiselect.png" target="_blank">this image mockup</a> of the planned interface.'
-            }, {
                 xtype: 'splitbutton',
                 margin: buttonmargin,
                 scale: 'medium',

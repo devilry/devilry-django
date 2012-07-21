@@ -49,6 +49,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             },
             '#addExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerAddPanelAdd
+            },
+            'viewport multiplegroupsview selectedgroupssummarygrid #selectUsersByAutocompleteWidget': {
+                userSelected: this._onUserSelectedByAutocomplete
             }
         });
     },
@@ -168,5 +171,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 this.getAddExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
             }
         });
+    },
+
+    _onUserSelectedByAutocomplete: function(combo, searchGroupRecord) {
+        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
+        //       "regular" list, so their internal IDs do not match. Therefore,
+        //       we use getRecordByGroupId() to get the correct receord.
+        var groupId = searchGroupRecord.get('id');
+        var groupRecord = this.manageStudentsController.getRecordByGroupId(groupId);
+        this.manageStudentsController.selectGroupRecords([groupRecord], true);
     }
 });
