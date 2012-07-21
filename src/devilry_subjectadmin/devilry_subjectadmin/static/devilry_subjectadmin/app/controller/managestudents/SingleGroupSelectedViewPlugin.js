@@ -144,9 +144,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onAddExaminer: function() {
         alert('Not implemented.');
     },
+    
     _onRemoveAllExaminers: function() {
-        alert('Not implemented.');
+        this._confirm({
+            title: gettext('Confirm clear examiners'),
+            msg: gettext('Do you want to remove all examiners from this group?'),
+            callback: this._removeAllExaminers
+        });
     },
+    _removeAllExaminers: function() {
+        this.groupRecord.set('examiners', []);
+        this.manageStudentsController.notifySingleGroupChange();
+    },
+
     _onRemoveExaminer: function(examinerRecord) {
         //console.log('Remove examiner:', examinerRecord.data);
         alert('Not implemented.');
