@@ -38,22 +38,31 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview': {
                 render: this._onRender
             },
-            'viewport multiplegroupsview #setExaminersButton': {
-                click: this._onSetExaminers
-            },
             'viewport multiplegroupsview selectedgroupssummarygrid': {
                 beforeselect: this._onSelectGroupInSummaryGrid
+            },
+
+            // setExaminers
+            'viewport multiplegroupsview #setExaminersButton': {
+                click: this._onSetExaminers
             },
             '#setExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerSetAdd,
                 removeUsers: this._onExaminerSetRemove
             },
+
+            // addExaminers
             'viewport multiplegroupsview #addExaminersButton': {
                 click: this._onAddExaminers
             },
             '#addExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerAddPanelAdd
-            }
+            },
+
+            // clearExaminers
+            'viewport multiplegroupsview #clearExaminersButton': {
+                click: this._onClearExaminers
+            },
         });
     },
 
@@ -111,6 +120,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
             }
         }).show();
+    },
+
+    _onClearExaminers: function() {
+        Ext.MessageBox.show({
+            title: gettext('Configm clear examiners'),
+            msg: gettext('Do you want to remove all examiners from the selected groups? Their existing feedback will not be removed, only their permission to give feedback on the groups.'),
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            scope: this,
+            fn: function(buttonid) {
+                if(buttonid == 'yes') {
+                    this._clearExaminers();
+                }
+            }
+        });
+    },
+
+    _clearExaminers: function() {
+        Ext.Array.each(this.groupRecords, function(groupRecord) {
+            groupRecord.set('examiners', []);
+        }, this);
+        this.manageStudentsController.notifyMultipleGroupsChange();
     },
 
     _syncExaminers: function(userStore, doNotDeleteUsers) {

@@ -555,7 +555,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             }
         }, this);
         this.selectGroupRecords(affectedRecords);
-        Ext.callback(callbackconfig.success, callbackconfig.scope);
+        if(callbackconfig) {
+            Ext.callback(callbackconfig.success, callbackconfig.scope);
+        }
     },
 
     _onSyncFailure: function(batch, options) {

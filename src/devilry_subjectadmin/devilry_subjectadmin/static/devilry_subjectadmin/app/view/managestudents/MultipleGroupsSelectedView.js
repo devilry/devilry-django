@@ -67,8 +67,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'button',
                     margin: buttonmargin,
                     scale: 'medium',
-                    text: gettext('Remove examiners'),
-                    itemId: 'removeExaminersButton'
+                    text: gettext('Clear examiners'),
+                    itemId: 'clearExaminersButton'
                 }, {
                     xtype: 'formhelp',
                     margin: helpmargin,
