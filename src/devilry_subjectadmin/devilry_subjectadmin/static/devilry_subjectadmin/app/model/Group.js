@@ -53,5 +53,34 @@ Ext.define('devilry_subjectadmin.model.Group', {
             this._debugFormatArray(this.get('candidates'), usertpl),
             this._debugFormatArray(this.get('examiners'), usertpl)
         );
+    },
+
+
+    _getUserNamesAsArray: function(users) {
+        var names = [];
+        Ext.Array.each(users, function(user, index) {
+            if(user.user.full_name) {
+                names.push(user.user.full_name);
+            } else {
+                names.push(user.user.username);
+            }
+        }, this);
+        return names;
+    },
+
+    getCandidateNamesAsArray: function() {
+        return this._getUserNamesAsArray(this.get('candidates'));
+    },
+
+    /** Get a string that should be usable to identify a group.
+     * If the group has any candidates, use #getCandidateNamesAsArray, else
+     * return the ID of the group.
+     * */
+    getIdentString: function() {
+        if(this.get('candidates')) {
+            return this.getCandidateNamesAsArray().join(', ');
+        } else {
+            return this.get('id');
+        }
     }
 });

@@ -16,5 +16,27 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsSummaryGrid',
             this.getMetadataColConfig(),
             this.getExaminersColConfig(),
         ];
+    },
+
+    initComponent: function() {
+        this.callParent(arguments);
+
+        this.getView().on('render', function(view) {
+            view.tip = Ext.create('Ext.tip.ToolTip', {
+                target: view.el,
+                delegate: view.itemSelector,
+                showDelay: 50,
+                trackMouse: true,
+                renderTo: Ext.getBody(),
+                listeners: {
+                    // Change content dynamically depending on which element triggered the show.
+                    beforeshow: function updateTipBody(tip) {
+                        var groupRecord = view.getRecord(tip.triggerElement);
+                        var group = groupRecord.getIdentString();
+                        tip.update(Ext.String.format('Click to deselect "{0}"', group));
+                    }
+                }
+            });
+        });
     }
 });
