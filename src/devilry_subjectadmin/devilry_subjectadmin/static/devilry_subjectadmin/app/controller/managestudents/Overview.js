@@ -68,13 +68,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * @method getOverview
      */
 
-    /**
-     * Get the toolbar for list of groups. Useful if a plugin needs to add
-     * items to this toolbar.
-     * @return {Ext.toolbar.Toolbar} The toolbar.
-     * @method getPrimaryToolbar
-     */
-
     refs: [{
         ref: 'overview',
         selector: 'managestudentsoverview'
@@ -84,9 +77,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     }, {
         ref: 'body',
         selector: 'managestudentsoverview #body'
-    }, {
-        ref: 'primaryToolbar',
-        selector: 'managestudentsoverview #primaryToolbar'
     }],
 
     init: function() {

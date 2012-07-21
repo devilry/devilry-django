@@ -46,13 +46,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onManageStudentsLoaded: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
-        this.manageStudentsController.getPrimaryToolbar().insert(1, {
-            xtype: 'button',
-            itemId: 'addstudents',
-            iconCls: 'icon-add-24',
-            text: gettext('Add students')
-        });
-        //this._onAddstudents();
     },
 
     _onRelatedLinkClick: function(ev) {

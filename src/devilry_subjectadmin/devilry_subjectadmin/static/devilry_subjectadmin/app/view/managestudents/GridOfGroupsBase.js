@@ -4,6 +4,8 @@
 Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     extend: 'Ext.grid.Panel',
     multiSelect: true,
+    border: 1,
+    frame: true,
 
     groupInfoColTemplateString: [
         '<div class="groupInfoWrapper">',
@@ -99,7 +101,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         return {
             header: gettext('Metadata'),
             dataIndex: 'id',
-            width: 115,
+            width: 95,
             menuDisabled: true,
             renderer: this.renderMetadataCol,
             sortable: false
