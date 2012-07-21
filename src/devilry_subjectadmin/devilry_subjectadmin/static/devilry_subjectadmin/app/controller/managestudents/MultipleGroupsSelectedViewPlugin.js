@@ -39,7 +39,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     init: function() {
         this.application.addListener({
             scope: this,
-            managestudentsMultipleGroupsSelected: this._onMultipleGroupsSelected
+            managestudentsMultipleGroupsSelected: this._onMultipleGroupsSelected,
+            managestudentsGroupSorterChanged: this._onGroupsSorterChanged
         });
         this.control({
             'viewport multiplegroupsview': {
@@ -101,6 +102,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         });
     },
 
+    _onGroupsSorterChanged: function(sorter) {
+        var store = this.getSelectedGroupsStore();
+        store.sortBySpecialSorter(sorter);
+        console.log('changed', sorter);
+    },
+
     _onMultipleGroupsSelected: function(manageStudentsController, groupRecords) {
         this.groupRecords = groupRecords;
         this.manageStudentsController = manageStudentsController;
@@ -121,6 +128,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         //}, this);
         store.removeAll();
         store.loadData(this.groupRecords);
+        store.sortBySpecialSorter(this.manageStudentsController.getCurrentGroupsStoreSorter());
     },
 
     _onRender: function() {

@@ -75,7 +75,14 @@ Ext.application({
              * @param {devilry_subjectadmin.controller.managestudents.Overview} manageStudentsController
              * @param {[devilry_subjectadmin.model.Group]} groupRecords
              */
-            'managestudentsMultipleGroupsSelected'
+            'managestudentsMultipleGroupsSelected',
+
+            /**
+             * @event
+             * Fired when the sorter for the Groups list is changed.
+             * @param {String} [sorter]
+             */
+            'managestudentsGroupSorterChanged'
         );
         this.callParent(arguments);
     },

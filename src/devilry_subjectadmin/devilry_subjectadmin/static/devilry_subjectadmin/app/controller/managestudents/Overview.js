@@ -61,6 +61,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     models: ['Assignment'],
 
+    defaultGroupsSorter: 'fullname',
+
 
     /**
      * Get the main view for managestudents.
@@ -80,7 +82,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     }],
 
     init: function() {
-        this.selectedSortByString = 'fullname';
         this.control({
             'viewport managestudentsoverview': {
                 render: this._onRenderOverview
@@ -140,8 +141,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             fn: this._onSelectAll,
             scope: this
         });
-        console.log(this.getGroupsStore());
-        this.getGroupsStore().sortBySpecialSorter(this.selectedSortByString);
+        this.getGroupsStore().sortBySpecialSorter(this.getCurrentGroupsStoreSorter());
     },
 
 
@@ -176,8 +176,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
 
     _onSelectSortBy: function(combo, records) {
-        this.selectedSortByString = records[0].get('value');
-        this.getGroupsStore().sortBySpecialSorter(this.selectedSortByString);
+        this.currentGroupsStoreSorter = records[0].get('value');
+        this.getGroupsStore().sortBySpecialSorter(this.currentGroupsStoreSorter);
+        this.application.fireEvent('managestudentsGroupSorterChanged', this.currentGroupsStoreSorter);
+    },
+
+    getCurrentGroupsStoreSorter: function() {
+        return this.currentGroupsStoreSorter || this.defaultGroupsSorter;
     },
 
 
