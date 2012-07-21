@@ -135,6 +135,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this._sortBy('fullname'); // NOTE: This must match the field selected as value for the sortby in the view.
     },
 
+    getTotalGroupsCount: function() {
+        return this.getGroupsStore().count();
+    },
+
     _onSearchChange: function(field, newValue, oldValue) {
         alert('Search is not supported yet');
     },
