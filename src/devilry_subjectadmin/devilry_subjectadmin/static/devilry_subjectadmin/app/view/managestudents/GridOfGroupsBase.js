@@ -58,6 +58,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             '</ul>',
         '</div>'
     ],
+    tagsListTemplateString: [
+        '<div class="tagsWrapper">',
+            '<ul class="unstyled">',
+            '<tpl for="tags">',
+                '<li class="tag">',
+                    '{tag}',
+                '</li>',
+            '</tpl>',
+            '</ul>',
+        '</div>'
+    ],
 
     initComponent: function() {
         var cssclasses = 'devilry_subjectadmin_gridofgroupsbase';
@@ -100,7 +111,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         this.metadataColTemplate = Ext.create('Ext.XTemplate', this.metadataColTemplateString);
         return {
             header: gettext('Metadata'),
-            dataIndex: 'id',
+            dataIndex: 'user',
             width: 95,
             menuDisabled: true,
             renderer: this.renderMetadataCol,
@@ -112,10 +123,22 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         this.examinersListTemplate = Ext.create('Ext.XTemplate', this.examinersListTemplateString);
         return {
             header: gettext('Examiners'),
-            dataIndex: 'id',
+            dataIndex: 'examiners',
             flex: 1,
             menuDisabled: true,
             renderer: this.renderExaminersCol,
+            sortable: false
+        };
+    },
+
+    getTagsColConfig: function() {
+        this.tagsListTemplate = Ext.create('Ext.XTemplate', this.tagsListTemplateString);
+        return {
+            header: gettext('Tags'),
+            dataIndex: 'tags',
+            flex: 1,
+            menuDisabled: true,
+            renderer: this.renderTagsCol,
             sortable: false
         };
     },
@@ -146,6 +169,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     renderExaminersCol: function(unused, unused2, record) {
         return this.examinersListTemplate.apply({
             examiners: record.get('examiners')
+        });
+    },
+
+    renderTagsCol: function(unused, unused2, record) {
+        return this.tagsListTemplate.apply({
+            tags: record.get('tags')
         });
     },
 

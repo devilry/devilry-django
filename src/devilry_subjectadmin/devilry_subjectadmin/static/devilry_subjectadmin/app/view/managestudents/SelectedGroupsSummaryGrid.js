@@ -15,6 +15,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsSummaryGrid',
             this.getGroupInfoColConfig(),
             this.getMetadataColConfig(),
             this.getExaminersColConfig(),
+            this.getTagsColConfig()
         ];
     },
 
