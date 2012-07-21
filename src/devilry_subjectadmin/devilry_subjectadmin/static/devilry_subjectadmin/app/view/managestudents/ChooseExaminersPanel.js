@@ -13,7 +13,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
             /**
              * @event
              * Fired to signal that a user should be added.
-             * @param {[object]} userRecord A user record.
+             * @param {[Object]} [userRecord] A user record.
+             * @param [panel] The object of this panel that fired the event.
              * */
             "addUser" : true,
 
@@ -21,6 +22,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
              * @event
              * Fired to signal that users should be removed.
              * @param {[object]} userRecords Array of user records.
+             * @param [panel] The object of this panel that fired the event.
              * */
             "removeUsers" : true
         });
@@ -68,7 +70,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
         combo.clearValue();
         if(this.store.findExact('username', username) == -1) {
             var userRecord = this.store.add(relatedExaminerRecord.get('user'))[0];
-            this.fireEvent('addUser', userRecord);
+            this.fireEvent('addUser', userRecord, this);
         } else {
             this.showDuplicateItemMessage({
                 callback: this._clearAndfocusAddField,
@@ -79,7 +81,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
 
     _onRemoveItems: function(userRecords) {
         this.store.remove(userRecords);
-        this.fireEvent('removeUsers', userRecords);
+        this.fireEvent('removeUsers', userRecords, this);
     },
 
     afterItemAddedSuccessfully: function(record) {
