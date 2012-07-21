@@ -92,6 +92,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
     },
 
+    _confirm: function(config) {
+        Ext.MessageBox.show({
+            title: config.title,
+            msg: config.msg,
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            scope: this,
+            fn: function(buttonid) {
+                if(buttonid == 'yes') {
+                    Ext.callback(config.callback, this);
+                }
+            }
+        });
+    },
+
+
+    /************************************************
+     *
+     * Students
+     *
+     ***********************************************/
+
     _createStudentsStore: function() {
         var store = Ext.create('Ext.data.Store', {
             model: this.getCandidateModel(),
@@ -104,6 +126,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         //console.log('Remove student:', candidateRecord.data);
     },
 
+
+
+    /************************************************
+     *
+     * Examiners
+     *
+     ***********************************************/
 
     _createExaminersStore: function() {
         var store = Ext.create('Ext.data.Store', {
@@ -130,7 +159,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      * Tags
      *
      **********************************************/
-
 
     _createTagsStore: function() {
         //console.log(this.groupRecord.data);
@@ -162,17 +190,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     // Remove all tags
 
     _onRemoveAllTags: function() {
-        Ext.MessageBox.show({
+        this._confirm({
             title: gettext('Confirm clear tags'),
             msg: gettext('Do you want to remove all tags from this group?'),
-            buttons: Ext.MessageBox.YESNO,
-            icon: Ext.MessageBox.QUESTION,
-            scope: this,
-            fn: function(buttonid) {
-                if(buttonid == 'yes') {
-                    this._removeAllTags();
-                }
-            }
+            callback: this._removeAllTags
         });
     },
     _removeAllTags: function() {
@@ -184,16 +205,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     // Remove tag
 
     _onRemoveTag: function(tagRecord) {
-        Ext.MessageBox.show({
+        this._confirm({
             title: gettext('Confirm remove tag'),
-            msg: Ext.String.format(gettext('Do you want to remove {0} from tags?'), tagRecord.get('tag')),
-            buttons: Ext.MessageBox.YESNO,
-            icon: Ext.MessageBox.QUESTION,
-            scope: this,
-            fn: function(buttonid) {
-                if(buttonid == 'yes') {
-                    this._removeTag(tagRecord);
-                }
+            msg: Ext.String.format(gettext('Do you want to remove "{0}" from tags?'), tagRecord.get('tag')),
+            callback: function() {
+                this._removeTag(tagRecord);
             }
         });
     },
