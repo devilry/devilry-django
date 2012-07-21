@@ -100,6 +100,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             'viewport managestudentsoverview #selectButton #selectall': {
                 click: this._onSelectAll
             },
+            'viewport managestudentsoverview #selectButton #deselectall': {
+                click: this._onDeselectAll
+            },
             'viewport managestudentsoverview #sortby': {
                 select: this._onSelectSortBy
             },
@@ -210,6 +213,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onSelectAll: function() {
         this.getListOfGroups().getSelectionModel().selectAll();
+    },
+    _onDeselectAll: function() {
+        this.getListOfGroups().getSelectionModel().deselectAll();
     },
 
     /** Select the given group records.

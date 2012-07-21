@@ -34,6 +34,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                         itemId: 'selectall',
                         text: gettext('Select all')
                     }, {
+                        itemId: 'deselectall',
+                        text: gettext('Deselect all')
+                    }, '-', {
                         text: pgettext('group', 'Status'),
                         menu: [{
                             text: pgettext('group', 'Open')
