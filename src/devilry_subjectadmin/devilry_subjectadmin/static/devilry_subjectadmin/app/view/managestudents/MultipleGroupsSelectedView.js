@@ -22,48 +22,61 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
         var buttonmargin = '20 0 0 0';
         var helpmargin = '4 0 0 0';
         Ext.apply(this, {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [{
-                xtype: 'alertmessage',
-                type: 'info',
-                message: [this.topMessage, this.multiselectHowto].join(' ')
-            }, {
-                xtype: 'splitbutton',
-                margin: buttonmargin,
-                scale: 'medium',
-                text: gettext('Set examiner(s)'),
-                itemId: 'setExaminersButton',
-                menu: [{
-                    text: 'TODO'
+                //region: 'center',
+                minHeight: 100,
+                flex: 6,
+                xtype: 'container',
+                padding: '0 0 20 0',
+                autoScroll: true,
+                items: [{
+                    xtype: 'alertmessage',
+                    type: 'info',
+                    message: [this.topMessage, this.multiselectHowto].join(' ')
+                }, {
+                    xtype: 'splitbutton',
+                    margin: buttonmargin,
+                    scale: 'medium',
+                    text: gettext('Set examiner(s)'),
+                    itemId: 'setExaminersButton',
+                    menu: [{
+                        text: 'TODO'
+                    }]
+                }, {
+                    xtype: 'formhelp',
+                    margin: helpmargin,
+                    html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
+                }, {
+                    xtype: 'splitbutton',
+                    margin: buttonmargin,
+                    scale: 'medium',
+                    text: gettext('Add examiner(s)'),
+                    itemId: 'addExaminersButton',
+                    menu: [{
+                        text: 'TODO'
+                    }]
+                }, {
+                    xtype: 'formhelp',
+                    margin: helpmargin,
+                    html: gettext('Add one or more examiner(s) to the selected groups. Use the arrow button for more methods of adding examiners, such as random and by tags.')
+                }, {
+                    xtype: 'button',
+                    margin: buttonmargin,
+                    scale: 'medium',
+                    text: gettext('Remove examiners'),
+                    itemId: 'removeExaminersButton'
+                }, {
+                    xtype: 'formhelp',
+                    margin: helpmargin,
+                    html: gettext('Remove/clear all examiners from the selected groups.')
                 }]
             }, {
-                xtype: 'formhelp',
-                margin: helpmargin,
-                html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
-            }, {
-                xtype: 'splitbutton',
-                margin: buttonmargin,
-                scale: 'medium',
-                text: gettext('Add examiner(s)'),
-                itemId: 'addExaminersButton',
-                menu: [{
-                    text: 'TODO'
-                }]
-            }, {
-                xtype: 'formhelp',
-                margin: helpmargin,
-                html: gettext('Add one or more examiner(s) to the selected groups. Use the arrow button for more methods of adding examiners, such as random and by tags.')
-            }, {
-                xtype: 'button',
-                margin: buttonmargin,
-                scale: 'medium',
-                text: gettext('Remove examiners'),
-                itemId: 'removeExaminersButton'
-            }, {
-                xtype: 'formhelp',
-                margin: helpmargin,
-                html: gettext('Remove/clear all examiners from the selected groups.')
-            }, {
-                margin: '20 0 0 0',
+                flex: 4,
+                minHeight: 150,
                 title: gettext('Selected groups'),
                 xtype: 'selectedgroupssummarygrid'
             }]

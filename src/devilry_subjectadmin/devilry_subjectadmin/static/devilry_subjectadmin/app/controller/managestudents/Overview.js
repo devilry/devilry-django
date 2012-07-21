@@ -223,7 +223,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     getRecordByGroupId: function(groupId) {
         var index = this.getGroupsStore().findExact('id', groupId);
+        if(index == -1) {
+            return undefined;
+        }
         return this.getGroupsStore().getAt(index);
+    },
+
+    groupRecordIsSelected: function(groupRecord) {
+        return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
     },
 
     _selectUrlIds: function() {
