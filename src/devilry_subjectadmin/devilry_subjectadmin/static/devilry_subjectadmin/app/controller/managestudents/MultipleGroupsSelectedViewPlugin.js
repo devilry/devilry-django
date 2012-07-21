@@ -15,7 +15,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     requires: [
         'devilry_extjsextras.AlertMessage',
-        'devilry_subjectadmin.utils.Array',
         'devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup',
         'Ext.tip.ToolTip',
         'Ext.util.KeyNav'
@@ -209,29 +208,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _syncExaminers: function(userStore, doNotDeleteUsers) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
-            var examiners = [];
-            var currentExaminers = groupRecord.get('examiners');
-            devilry_subjectadmin.utils.Array.mergeIntoArray({
-                destinationArray: currentExaminers,
-                sourceArray: userStore.data.items,
-                isEqual: function(examiner, userRecord) {
-                    return examiner.user.id == userRecord.get('id');
-                },
-                onMatch: function(examiner) {
-                    examiners.push(examiner);
-                },
-                onNoMatch: function(examiner) {
-                    if(doNotDeleteUsers) {
-                        examiners.push(examiner);
-                    }
-                },
-                onAdd: function(userRecord) {
-                    examiners.push({
-                        user: {id: userRecord.get('id')}
-                    });
-                }
-            });
-            groupRecord.set('examiners', examiners);
+            var userRecords = userStore.data.items;
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers(
+                    groupRecord, userRecords, doNotDeleteUsers);
         }
     },
 
