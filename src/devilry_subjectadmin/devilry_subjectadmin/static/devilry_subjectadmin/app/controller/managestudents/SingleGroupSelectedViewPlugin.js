@@ -130,9 +130,32 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onAddTag: function() {
         alert('Not implemented.');
     },
+
+
+    // Remove all tags
+
     _onRemoveAllTags: function() {
-        alert('Not implemented.');
+        Ext.MessageBox.show({
+            title: gettext('Confirm clear tags'),
+            msg: gettext('Do you want to remove all tags from this group?'),
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            scope: this,
+            fn: function(buttonid) {
+                if(buttonid == 'yes') {
+                    this._removeAllTags();
+                }
+            }
+        });
     },
+    _removeAllTags: function() {
+        this.groupRecord.set('tags', []);
+        this.manageStudentsController.notifySingleGroupChange();
+    },
+
+
+    // Remove tag
+
     _onRemoveTag: function(tagRecord) {
         Ext.MessageBox.show({
             title: gettext('Confirm remove tag'),
