@@ -103,14 +103,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             'viewport managestudentsoverview #viewselect': {
                 select: this._onSelectViewSelect
             },
-            'viewport managestudentsoverview #search': {
-                change: this._onSearchChange
-            },
             'viewport #selectUsersByAutocompleteWidget': {
                 userSelected: this._onUserSelectedBySearch
             }
         });
     },
+
+    getTotalGroupsCount: function() {
+        return this.getGroupsStore().count();
+    },
+
+    /*****************************************************
+     *
+     * Render handlers
+     *
+     *****************************************************/
 
     _onRenderOverview: function() {
         this.assignment_id = this.getOverview().assignment_id;
@@ -132,13 +139,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this._sortBy('fullname'); // NOTE: This must match the field selected as value for the sortby in the view.
     },
 
-    getTotalGroupsCount: function() {
-        return this.getGroupsStore().count();
-    },
 
-    _onSearchChange: function(field, newValue, oldValue) {
-        alert('Search is not supported yet');
-    },
+
+
+
+    /****************************************
+     *
+     * Select view
+     *
+     ****************************************/
+
 
     _onSelectViewSelect: function(combo, records) {
         var view = records[0].get('value');
@@ -148,6 +158,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     _view: function(view) {
         alert('Not implemented');
     },
+
+
+
+
+
+    /****************************************
+     *
+     * Sort by
+     *
+     ****************************************/
+
 
     _onSelectSortBy: function(combo, records) {
         var sortby = records[0].get('value');
@@ -212,6 +233,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         return a.localeCompare(b);
     },
 
+
+
+
+    /***********************************************
+     *
+     * Select menu button handlers
+     *
+     **********************************************/
+
     _onSelectAll: function() {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
@@ -232,6 +262,62 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         });
         this.getListOfGroups().getSelectionModel().selectAll();
     },
+
+
+
+    /**************************************************
+     *
+     * Select by search
+     *
+     **************************************************/
+
+    _showSelectSearchErrorMessage: function(combo, options) {
+        Ext.MessageBox.show({
+            title: options.title,
+            msg: options.msg,
+            buttons: Ext.MessageBox.OK,
+            icon: Ext.MessageBox.ERROR,
+            fn: function() {
+                Ext.defer(function() {
+                    combo.focus();
+                }, 100);
+            }
+        });
+    },
+
+    _onUserSelectedBySearch: function(combo, searchGroupRecord) {
+        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
+        //       "regular" list, so their internal IDs do not match. Therefore,
+        //       we use getGroupRecordById() to get the correct receord.
+        combo.clearValue();
+        combo.focus();
+        var groupId = searchGroupRecord.get('id');
+        var groupRecord = this.getGroupRecordById(groupId);
+        if(groupRecord) {
+            if(this.groupRecordIsSelected(groupRecord)) {
+                this._showSelectSearchErrorMessage(combo, {
+                    title: gettext('Already selected'),
+                    msg: gettext('The group is already selected')
+                });
+            } else {
+                this.selectGroupRecords([groupRecord], true);
+            }
+        } else {
+            this._showSelectSearchErrorMessage(combo, {
+                title: gettext('Selected group not loaded'),
+                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
+            });
+        }
+    },
+
+
+
+    /***************************************************
+     *
+     * Methods to simplify selecting users
+     *
+     **************************************************/
+
 
     /** Select the given group records.
      * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
@@ -267,101 +353,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
     },
 
-    _selectUrlIds: function() {
-        var selected_group_ids = this.getOverview().selected_group_ids;
-        if(!selected_group_ids) {
-            this._handleNoGroupsSelected();
-            return;
-        }
-        var selectionModel = this.getListOfGroups().getSelectionModel();
-        var groupsStore = this.getGroupsStore();
-        var selectedGroups = [];
-        Ext.Array.each(selected_group_ids.split(','), function(strid) {
-            var id = parseInt(strid);
-            var index = groupsStore.findExact('id', id);
-            if(index != -1) {
-                var record = groupsStore.getAt(index);
-                selectedGroups.push(record);
-            }
-        }, this);
-        this.selectGroupRecords(selectedGroups);
-    },
 
-    _handleLoadError: function(operation, title) {
-        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
-        error.addErrors(null, operation);
-        var errormessage = error.asHtmlList();
-        Ext.widget('htmlerrordialog', {
-            title: title,
-            bodyHtml: errormessage
-        }).show();
-    },
 
-    onLoadAssignmentSuccess: function(record) {
-        this.assignmentRecord = record;
-        var period_id = this.assignmentRecord.get('parentnode');
-        this.getRelatedExaminersRoStore().setPeriod(period_id);
-        this.getRelatedStudentsRoStore().setPeriod(period_id);
-        this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
-        this.getOverview().setLoading(false);
-        this._loadGroupsStore();
-    },
-    onLoadAssignmentFailure: function(operation) {
-        this.getOverview().setLoading(false);
-        this._handleLoadError(operation, gettext('Failed to load assignment'));
-    },
 
-    /**
-     * @private
+
+    /*********************************************
      *
-     * Load RelatedStudents and Groups stores.
-     * */
-    _loadGroupsStore: function() {
-        this.getOverview().setLoading(gettext('Loading groups ...'));
-        this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
-            scope: this,
-            callback: this._onLoadGroupsStore
-        });
-    },
-
-    _onLoadGroupsStore: function(records, operation) {
-        this.getOverview().setLoading(false);
-        if(operation.success) {
-            this._onLoadGroupsStoreSuccess();
-        } else {
-            this._handleLoadError(operation, gettext('Failed to load groups'));
-        }
-    },
-
-    _onLoadGroupsStoreSuccess: function() {
-        this.getOverview().setLoading(false);
-        this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
-        this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
-        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], gettext('Manage students'));
-        this._selectUrlIds();
-    },
-
-    /**
-     * Get the contents of the groups store (see {@link #getGroupsStore}
-     * as an object with usernames as key and an array of
-     * {@link devilry_subjectadmin.model.Group} records for values.
+     * Handle selection change
      *
-     * The values are arrays because we support the same user in multiple
-     * groups on the same assignment.
-     */
-    getGroupsMappedByUsername: function() {
-        var map = {};
-        this.getGroupsStore().each(function(record) {
-            Ext.each(record.get('students'), function(student) {
-                if(map[student.student__username]) {
-                    map[student.student__username].push(record);
-                } else {
-                    map[student.student__username] = [record];
-                }
-            }, this);
-        }, this);
-        return map;
-    },
+     *********************************************/
 
     _setSelectionUrl: function(selectedGroupRecords) {
         var ids = [];
@@ -398,44 +398,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.application.fireEvent('managestudentsMultipleGroupsSelected', this, groupRecords);
     },
 
-    /**
-     * Return ``true`` if this assignment is a project assignment.
-     */
-    isProjectAssignment: function() {
-        return false;
-    },
-
-    /**
-     * Get multiselect help message.
-     */
-    getMultiSelectHowto: function() {
-        var shortcutkey = 'CTRL';
-        if(Ext.isMac) {
-            shortcutkey = 'CMD';
-        }
-        var tpl = Ext.create('Ext.XTemplate', gettext('Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'));
-        return tpl.apply({
-            shortcutkey: shortcutkey,
-            groupunit_plural: this.getTranslatedGroupUnit(true)
-        });
-    },
-
-    /**
-     * Get translated group unit string. E.g.: One of ``"student"`` or ``"group"``.
-     * @param {boolean} pluralize Pluralize the group unit?
-     */
-    getTranslatedGroupUnit: function(pluralize) {
-        var translatekey;
-        var count = 0;
-        if(pluralize) {
-            count = 10;
-        }
-        if(this.isProjectAssignment()) {
-            return npgettext('groupunit', 'project group', 'project groups', count);
-        } else {
-            return npgettext('groupunit', 'student', 'students', count);
-        }
-    },
 
     /**
      * Set the body component (the center area of the borderlayout). Removes
@@ -445,6 +407,103 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getBody().removeAll();
         this.getBody().add(component);
     },
+
+
+
+
+    /********************************************************
+     *
+     * Select by IDs in the URL
+     *
+     ********************************************************/
+
+    _selectUrlIds: function() {
+        var selected_group_ids = this.getOverview().selected_group_ids;
+        if(!selected_group_ids) {
+            this._handleNoGroupsSelected();
+            return;
+        }
+        var selectionModel = this.getListOfGroups().getSelectionModel();
+        var groupsStore = this.getGroupsStore();
+        var selectedGroups = [];
+        Ext.Array.each(selected_group_ids.split(','), function(strid) {
+            var id = parseInt(strid);
+            var index = groupsStore.findExact('id', id);
+            if(index != -1) {
+                var record = groupsStore.getAt(index);
+                selectedGroups.push(record);
+            }
+        }, this);
+        this.selectGroupRecords(selectedGroups);
+    },
+
+
+
+    /***************************************************
+     *
+     * Load stores
+     *
+     ***************************************************/
+
+    _handleLoadError: function(operation, title) {
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        error.addErrors(null, operation);
+        var errormessage = error.asHtmlList();
+        Ext.widget('htmlerrordialog', {
+            title: title,
+            bodyHtml: errormessage
+        }).show();
+    },
+
+    onLoadAssignmentSuccess: function(record) {
+        this.assignmentRecord = record;
+        var period_id = this.assignmentRecord.get('parentnode');
+        this.getRelatedExaminersRoStore().setPeriod(period_id);
+        this.getRelatedStudentsRoStore().setPeriod(period_id);
+        this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
+        this.getOverview().setLoading(false);
+        this._loadGroupsStore();
+    },
+    onLoadAssignmentFailure: function(operation) {
+        this.getOverview().setLoading(false);
+        this._handleLoadError(operation, gettext('Failed to load assignment'));
+    },
+
+    _loadGroupsStore: function() {
+        this.getOverview().setLoading(gettext('Loading groups ...'));
+        this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
+            scope: this,
+            callback: this._onLoadGroupsStore
+        });
+    },
+
+    _onLoadGroupsStore: function(records, operation) {
+        this.getOverview().setLoading(false);
+        if(operation.success) {
+            this._onLoadGroupsStoreSuccess();
+        } else {
+            this._handleLoadError(operation, gettext('Failed to load groups'));
+        }
+    },
+
+    _onLoadGroupsStoreSuccess: function() {
+        this.getOverview().setLoading(false);
+        this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
+        this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
+        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], gettext('Manage students'));
+        this._selectUrlIds();
+    },
+
+
+
+
+
+    /***************************************************
+     *
+     * Sync Groups store
+     *
+     ***************************************************/
+
 
     _maskListOfGroups: function(message) {
         message = message || gettext('Saving ...');
@@ -502,48 +561,77 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
 
-    /*
-     *
-     * Select by search
-     *
-     */
 
-    _showSelectSearchErrorMessage: function(combo, options) {
-        Ext.MessageBox.show({
-            title: options.title,
-            msg: options.msg,
-            buttons: Ext.MessageBox.OK,
-            icon: Ext.MessageBox.ERROR,
-            fn: function() {
-                Ext.defer(function() {
-                    combo.focus();
-                }, 100);
-            }
+
+
+
+    /************************************************
+     *
+     * Other stuff
+     *
+     ************************************************/
+
+
+
+    /**
+     * Get the contents of the groups store (see {@link #getGroupsStore}
+     * as an object with usernames as key and an array of
+     * {@link devilry_subjectadmin.model.Group} records for values.
+     *
+     * The values are arrays because we support the same user in multiple
+     * groups on the same assignment.
+     */
+    getGroupsMappedByUsername: function() {
+        var map = {};
+        this.getGroupsStore().each(function(record) {
+            Ext.each(record.get('students'), function(student) {
+                if(map[student.student__username]) {
+                    map[student.student__username].push(record);
+                } else {
+                    map[student.student__username] = [record];
+                }
+            }, this);
+        }, this);
+        return map;
+    },
+
+
+    /**
+     * Return ``true`` if this assignment is a project assignment.
+     */
+    isProjectAssignment: function() {
+        return false;
+    },
+
+    /**
+     * Get multiselect help message.
+     */
+    getMultiSelectHowto: function() {
+        var shortcutkey = 'CTRL';
+        if(Ext.isMac) {
+            shortcutkey = 'CMD';
+        }
+        var tpl = Ext.create('Ext.XTemplate', gettext('Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'));
+        return tpl.apply({
+            shortcutkey: shortcutkey,
+            groupunit_plural: this.getTranslatedGroupUnit(true)
         });
     },
 
-    _onUserSelectedBySearch: function(combo, searchGroupRecord) {
-        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use getGroupRecordById() to get the correct receord.
-        combo.clearValue();
-        combo.focus();
-        var groupId = searchGroupRecord.get('id');
-        var groupRecord = this.getGroupRecordById(groupId);
-        if(groupRecord) {
-            if(this.groupRecordIsSelected(groupRecord)) {
-                this._showSelectSearchErrorMessage(combo, {
-                    title: gettext('Already selected'),
-                    msg: gettext('The group is already selected')
-                });
-            } else {
-                this.selectGroupRecords([groupRecord], true);
-            }
+    /**
+     * Get translated group unit string. E.g.: One of ``"student"`` or ``"group"``.
+     * @param {boolean} pluralize Pluralize the group unit?
+     */
+    getTranslatedGroupUnit: function(pluralize) {
+        var translatekey;
+        var count = 0;
+        if(pluralize) {
+            count = 10;
+        }
+        if(this.isProjectAssignment()) {
+            return npgettext('groupunit', 'project group', 'project groups', count);
         } else {
-            this._showSelectSearchErrorMessage(combo, {
-                title: gettext('Selected group not loaded'),
-                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
-            });
+            return npgettext('groupunit', 'student', 'students', count);
         }
     }
 });
