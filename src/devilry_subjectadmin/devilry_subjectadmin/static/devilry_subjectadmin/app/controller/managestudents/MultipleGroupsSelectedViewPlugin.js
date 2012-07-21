@@ -209,8 +209,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
             var userRecords = userStore.data.items;
-            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers(
-                    groupRecord, userRecords, doNotDeleteUsers);
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers({
+                groupRecord: groupRecord,
+                userRecords: userRecords,
+                doNotDeleteUsers: doNotDeleteUsers
+            });
         }
     },
 

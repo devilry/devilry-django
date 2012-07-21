@@ -42,18 +42,18 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
     /**
      * Merge examiners into groupRecord.
      *
-     * @param {devilry_subjectadmin.model.Group} [groupRecord] Group record.
-     * @param {[devilry_subjectadmin.model.RelatedExaminerRo]} [userRecords]
+     * @param {devilry_subjectadmin.model.Group} [config.groupRecord] Group record.
+     * @param {[devilry_subjectadmin.model.RelatedExaminerRo]} [config.userRecords]
      *      Array of user-records to merge into groupRecord. The only real requirement is
      *      that the record has an ID field, which contains a valid user-id.
-     * @param {Boolean} [doNotDeleteUsers=false] Set this to ``true`` to append to existing examiners.
+     * @param {Boolean} [config.doNotDeleteUsers=false] Set this to ``true`` to append to existing examiners.
      * */
-    mergeExaminers: function(groupRecord, userRecords, doNotDeleteUsers) {
+    mergeExaminers: function(config) {
         var examiners = [];
-        var currentExaminers = groupRecord.get('examiners');
+        var currentExaminers = config.groupRecord.get('examiners');
         devilry_subjectadmin.utils.Array.mergeIntoArray({
             destinationArray: currentExaminers,
-            sourceArray: userRecords,
+            sourceArray: config.userRecords,
             isEqual: function(examiner, userRecord) {
                 return examiner.user.id == userRecord.get('id');
             },
@@ -61,7 +61,7 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
                 examiners.push(examiner);
             },
             onNoMatch: function(examiner) {
-                if(doNotDeleteUsers) {
+                if(config.doNotDeleteUsers) {
                     examiners.push(examiner);
                 }
             },
@@ -71,7 +71,7 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
                 });
             }
         });
-        groupRecord.set('examiners', examiners);
+        config.groupRecord.set('examiners', examiners);
     },
 
 
