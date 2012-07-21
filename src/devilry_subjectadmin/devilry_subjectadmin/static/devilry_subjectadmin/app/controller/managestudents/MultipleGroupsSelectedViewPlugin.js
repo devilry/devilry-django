@@ -49,9 +49,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             },
             '#addExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerAddPanelAdd
-            },
-            'viewport multiplegroupsview selectedgroupssummarygrid #selectUsersByAutocompleteWidget': {
-                userSelected: this._onUserSelectedByAutocomplete
             }
         });
     },
@@ -172,44 +169,5 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 this.getAddExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
             }
         });
-    },
-
-    _showSelectSearchErrorMessage: function(combo, options) {
-        Ext.MessageBox.show({
-            title: options.title,
-            msg: options.msg,
-            buttons: Ext.MessageBox.OK,
-            icon: Ext.MessageBox.ERROR,
-            fn: function() {
-                Ext.defer(function() {
-                    combo.focus();
-                }, 100);
-            }
-        });
-    },
-
-    _onUserSelectedByAutocomplete: function(combo, searchGroupRecord) {
-        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use getRecordByGroupId() to get the correct receord.
-        combo.clearValue();
-        combo.focus();
-        var groupId = searchGroupRecord.get('id');
-        var groupRecord = this.manageStudentsController.getRecordByGroupId(groupId);
-        if(groupRecord) {
-            if(this.manageStudentsController.groupRecordIsSelected(groupRecord)) {
-                this._showSelectSearchErrorMessage(combo, {
-                    title: gettext('Already selected'),
-                    msg: gettext('The group is already selected')
-                });
-            } else {
-                this.manageStudentsController.selectGroupRecords([groupRecord], true);
-            }
-        } else {
-            this._showSelectSearchErrorMessage(combo, {
-                title: gettext('Selected group not loaded'),
-                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
-            });
-        }
     }
 });

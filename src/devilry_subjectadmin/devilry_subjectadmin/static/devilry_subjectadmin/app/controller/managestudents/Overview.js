@@ -22,7 +22,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     views: [
         'managestudents.Overview',
-        'managestudents.ListOfGroups'
+        'managestudents.ListOfGroups',
+        'managestudents.AutocompleteGroupWidget'
     ],
 
     /**
@@ -111,6 +112,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview #search': {
                 change: this._onSearchChange
+            },
+            'viewport #selectUsersByAutocompleteWidget': {
+                userSelected: this._onUserSelectedBySearch
             }
         });
     },
@@ -475,5 +479,51 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     _onSyncFailure: function(batch, options) {
         this._unmaskListOfGroups();
         console.log('failure', batch, options);
+    },
+
+
+    /*
+     *
+     * Select by search
+     *
+     */
+
+    _showSelectSearchErrorMessage: function(combo, options) {
+        Ext.MessageBox.show({
+            title: options.title,
+            msg: options.msg,
+            buttons: Ext.MessageBox.OK,
+            icon: Ext.MessageBox.ERROR,
+            fn: function() {
+                Ext.defer(function() {
+                    combo.focus();
+                }, 100);
+            }
+        });
+    },
+
+    _onUserSelectedBySearch: function(combo, searchGroupRecord) {
+        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
+        //       "regular" list, so their internal IDs do not match. Therefore,
+        //       we use getRecordByGroupId() to get the correct receord.
+        combo.clearValue();
+        combo.focus();
+        var groupId = searchGroupRecord.get('id');
+        var groupRecord = this.getRecordByGroupId(groupId);
+        if(groupRecord) {
+            if(this.groupRecordIsSelected(groupRecord)) {
+                this._showSelectSearchErrorMessage(combo, {
+                    title: gettext('Already selected'),
+                    msg: gettext('The group is already selected')
+                });
+            } else {
+                this.selectGroupRecords([groupRecord], true);
+            }
+        } else {
+            this._showSelectSearchErrorMessage(combo, {
+                title: gettext('Selected group not loaded'),
+                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
+            });
+        }
     }
 });

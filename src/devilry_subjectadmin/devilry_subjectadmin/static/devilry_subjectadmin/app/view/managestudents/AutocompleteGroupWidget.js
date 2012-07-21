@@ -9,9 +9,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget' ,{
     minChars: 1,
     store: 'SearchForGroups',
 
-    fieldLabel: gettext('Select more by search'),
-    labelWidth: 140,
-    emptyText: gettext('Search for for username, full name, tags or email...'),
+    fieldLabel: gettext('Select by search'),
+    labelWidth: 120,
+    emptyText: gettext('Search for groups by username, full name, tags or email...'),
 
     listGetInnerTpl: function() {
         return[

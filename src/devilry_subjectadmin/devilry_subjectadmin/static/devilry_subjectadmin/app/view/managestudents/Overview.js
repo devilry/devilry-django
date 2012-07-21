@@ -68,8 +68,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                         }]
                     }, '-', {
                         text: gettext('Select using search ...')
-                    }, {
-                        text: gettext('Select using advanced search ...') // Select with a query (E.g: username:thor OR username:examiner AND status:open)
                     }]
                 }, {
                     xtype: 'combobox',
@@ -136,6 +134,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 border: false,
                 layout: 'fit',
                 itemId: 'body'
+            }],
+
+            bbar: [{
+                xtype: 'autocompletegroupwidget',
+                flex: 1,
+                hideTrigger: true,
+                itemId: 'selectUsersByAutocompleteWidget'
             }]
         });
         this.callParent(arguments);
