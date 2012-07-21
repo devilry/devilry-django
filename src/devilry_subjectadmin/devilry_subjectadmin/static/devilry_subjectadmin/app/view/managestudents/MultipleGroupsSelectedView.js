@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     cls: 'multiplegroupsview',
     ui: 'transparentpanel',
     requires: [
+        'devilry_theme.Icons',
         'devilry_extjsextras.form.Help'
     ],
 
@@ -37,42 +38,29 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'alertmessage',
                     type: 'info',
                     message: [this.topMessage, this.multiselectHowto].join(' ')
+                
+                // Set examiners
                 }, {
                     xtype: 'splitbutton',
-                    margin: buttonmargin,
+                    margin: 0,
                     scale: 'medium',
                     text: gettext('Set examiner(s)'),
                     itemId: 'setExaminersButton',
                     menu: [{
-                        text: 'TODO'
+                        text: gettext('Add examiner(s)'),
+                        itemId: 'addExaminersButton',
+                        tooltip: gettext('Add one or more examiner(s) to the selected groups.')
+                    }, {
+                        text: gettext('Clear examiners'),
+                        itemId: 'clearExaminersButton',
+                        icon: devilry_theme.Icons.DELETE_SMALL,
+                        tooltip: gettext('Remove/clear all examiners from the selected groups.')
                     }]
                 }, {
                     xtype: 'formhelp',
                     margin: helpmargin,
                     html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
-                }, {
-                    xtype: 'splitbutton',
-                    margin: buttonmargin,
-                    scale: 'medium',
-                    text: gettext('Add examiner(s)'),
-                    itemId: 'addExaminersButton',
-                    menu: [{
-                        text: 'TODO'
-                    }]
-                }, {
-                    xtype: 'formhelp',
-                    margin: helpmargin,
-                    html: gettext('Add one or more examiner(s) to the selected groups. Use the arrow button for more methods of adding examiners, such as random and by tags.')
-                }, {
-                    xtype: 'button',
-                    margin: buttonmargin,
-                    scale: 'medium',
-                    text: gettext('Clear examiners'),
-                    itemId: 'clearExaminersButton'
-                }, {
-                    xtype: 'formhelp',
-                    margin: helpmargin,
-                    html: gettext('Remove/clear all examiners from the selected groups.')
+
                 }]
             }, {
                 flex: 4,
