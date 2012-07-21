@@ -17,13 +17,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     ],
 
     views: [
-        'managestudents.SingleGroupSelectedView'
+        'managestudents.SingleGroupSelectedView',
+        'managestudents.ChooseTagsWindow'
     ],
 
-    //refs: [{
-        //ref: '',
-        //selector: 'singlegroupview'
-    //}],
+    refs: [{
+        ref: 'addTagsOnSingleGroupWindow',
+        selector: '#addTagsOnSingleGroupWindow'
+    }],
 
     init: function() {
         this.application.addListener({
@@ -48,11 +49,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 click: this._onRemoveAllExaminers
             },
 
+            'viewport singlegroupview tagsingroupgrid #addTags': {
+                click: this._onAddTags
+            },
+            '#addTagsOnSingleGroupWindow': {
+                savetags: this._onSaveTags
+            },
             'viewport singlegroupview tagsingroupgrid': {
                 removeTag: this._onRemoveTag
-            },
-            'viewport singlegroupview tagsingroupgrid #addTag': {
-                click: this._onAddTag
             },
             'viewport singlegroupview tagsingroupgrid #removeAllTags': {
                 click: this._onRemoveAllTags
@@ -119,6 +123,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         alert('Not implemented.');
     },
 
+
+
+    /***********************************************
+     *
+     * Tags
+     *
+     **********************************************/
+
+
     _createTagsStore: function() {
         //console.log(this.groupRecord.data);
         var store = Ext.create('Ext.data.Store', {
@@ -127,8 +140,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
         return store;
     },
-    _onAddTag: function() {
-        alert('Not implemented.');
+
+    // Add tags
+
+    _onAddTags: function() {
+        Ext.widget('choosetagswindow', {
+            title: gettext('Add tags'),
+            itemId: 'addTagsOnSingleGroupWindow',
+            buttonText: gettext('Add tags')
+        }).show();
+    },
+
+    _onSaveTags: function(win, tags) {
+        win.close();
+        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags(
+                this.groupRecord, tags, true);
+        this.manageStudentsController.notifySingleGroupChange();
     },
 
 

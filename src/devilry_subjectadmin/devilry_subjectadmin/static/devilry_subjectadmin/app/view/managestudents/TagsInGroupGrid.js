@@ -19,7 +19,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
             tools: [{
                 xtype: 'splitbutton',
                 icon: devilry_theme.Icons.ADD_SMALL,
-                itemId: 'addTag',
+                itemId: 'addTags',
                 menu: [{
                     text: gettext('Remove all'),
                     itemId: 'removeAllTags',
