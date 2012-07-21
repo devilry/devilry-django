@@ -23,12 +23,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     stores: ['SelectedGroups'],
 
     refs: [{
-        ref: 'setExaminersPanel',
-        selector: '#setExaminersWindow chooseexaminerspanel'
-    }, {
-        ref: 'addExaminersPanel',
-        selector: '#addExaminersWindow chooseexaminerspanel'
-    }, {
         ref: 'setTagsWindow',
         selector: '#setTagsWindow'
     }, {
@@ -217,35 +211,35 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }
     },
 
-    _onExaminerSetAdd: function(addedUserRecord) {
-        var userStore = this.getSetExaminersPanel().store;
+    _onExaminerSetAdd: function(addedUserRecord, panel) {
+        var userStore = panel.store;
         this._syncExaminers(userStore);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this.getSetExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
+                panel.afterItemAddedSuccessfully(addedUserRecord);
             }
         });
     },
 
-    _onExaminerSetRemove: function(removedUserRecords) {
-        var userStore = this.getSetExaminersPanel().store;
+    _onExaminerSetRemove: function(removedUserRecords, panel) {
+        var userStore = panel.store;
         this._syncExaminers(userStore);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this.getSetExaminersPanel().afterItemsRemovedSuccessfully(removedUserRecords);
+                panel.afterItemsRemovedSuccessfully(removedUserRecords);
             }
         });
     },
 
-    _onExaminerAddPanelAdd: function(addedUserRecord) {
-        var userStore = this.getAddExaminersPanel().store;
+    _onExaminerAddPanelAdd: function(addedUserRecord, panel) {
+        var userStore = panel.store;
         this._syncExaminers(userStore, true);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this.getAddExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
+                panel.afterItemAddedSuccessfully(addedUserRecord);
             }
         });
     },
