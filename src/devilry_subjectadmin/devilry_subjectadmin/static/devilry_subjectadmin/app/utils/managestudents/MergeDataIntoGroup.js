@@ -36,5 +36,41 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
             }
         });
         groupRecord.set('tags', tags);
+    },
+
+
+    /**
+     * Merge examiners into groupRecord.
+     *
+     * @param {devilry_subjectadmin.model.Group} [groupRecord] Group record.
+     * @param {[devilry_subjectadmin.model.RelatedExaminerRo]} [userRecords]
+     *      Array of user-records to merge into groupRecord. The only real requirement is
+     *      that the record has an ID field, which contains a valid user-id.
+     * @param {Boolean} [doNotDeleteUsers=false] Set this to ``true`` to append to existing examiners.
+     * */
+    mergeExaminers: function(groupRecord, userRecords, doNotDeleteUsers) {
+        var examiners = [];
+        var currentExaminers = groupRecord.get('examiners');
+        devilry_subjectadmin.utils.Array.mergeIntoArray({
+            destinationArray: currentExaminers,
+            sourceArray: userRecords,
+            isEqual: function(examiner, userRecord) {
+                return examiner.user.id == userRecord.get('id');
+            },
+            onMatch: function(examiner) {
+                examiners.push(examiner);
+            },
+            onNoMatch: function(examiner) {
+                if(doNotDeleteUsers) {
+                    examiners.push(examiner);
+                }
+            },
+            onAdd: function(userRecord) {
+                examiners.push({
+                    user: {id: userRecord.get('id')}
+                });
+            }
+        });
+        groupRecord.set('examiners', examiners);
     }
 });
