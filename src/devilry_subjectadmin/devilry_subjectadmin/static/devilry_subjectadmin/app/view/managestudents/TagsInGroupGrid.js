@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
     alias: 'widget.tagsingroupgrid',
     cls: 'tagsingroupgrid',
     hideHeaders: true,
+    disableSelection: true,
     requires: [
         'Ext.XTemplate',
         'devilry_theme.Icons'
