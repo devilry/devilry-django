@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.NoGroupSelectedView' ,{
     alias: 'widget.nogroupselectedview',
     cls: 'nogroupselectedview bootstrap',
     ui: 'transparentpanel',
+    padding: '20 20 10 0',
 
     /**
      * @cfg {string} topMessage (required)

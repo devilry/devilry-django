@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 xtype: 'toolbar',
                 itemId: 'primaryToolbar',
                 dock: 'top',
-                padding: '2 40 2 40',
+                //padding: '2 40 2 40',
                 defaults: {
                     scale: 'medium',
                 },
@@ -114,7 +114,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 }, {
                     xtype: 'textfield',
                     itemId: 'search',
-                    margin: '0 0 0 10',
+                    //margin: '0 0 0 10',
                     width: 200,
                     emptyText: gettext('Search for students ...')
                 }]
@@ -122,7 +122,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
 
             items: [{
                 xtype: 'listofgroups',
-                margin: '10 0 10 40',
+                //margin: '10 0 10 40',
                 region: 'west',
                 //border: false,
                 resizable: true,
@@ -130,7 +130,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
             }, {
                 xtype: 'panel',
                 region: 'center',
-                margin: '10 40 10 20',
+                //margin: '10 40 10 20',
+                padding: '0 0 0 20',
                 border: false,
                 layout: 'fit',
                 itemId: 'body'
