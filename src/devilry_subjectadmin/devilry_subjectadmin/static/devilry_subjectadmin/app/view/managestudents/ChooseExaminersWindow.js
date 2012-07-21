@@ -9,8 +9,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersWindow', {
 
     layout: 'fit',
     closable: true,
-    width: 700,
-    height: 500,
+    width: 500,
+    height: 300,
     maximizable: true,
     modal: true,
 

@@ -15,7 +15,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     requires: [
         'devilry_extjsextras.AlertMessage',
         'devilry_subjectadmin.utils.Array',
-        'Ext.window.Window',
         'Ext.tip.ToolTip'
     ],
 

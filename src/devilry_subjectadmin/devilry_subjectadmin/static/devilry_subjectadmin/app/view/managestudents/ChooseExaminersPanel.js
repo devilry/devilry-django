@@ -65,6 +65,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseExaminersPanel', {
 
     _onUserSelected: function(combo, relatedExaminerRecord) {
         var username = relatedExaminerRecord.get('user').username;
+        combo.clearValue();
         if(this.store.findExact('username', username) == -1) {
             var userRecord = this.store.add(relatedExaminerRecord.get('user'))[0];
             this.fireEvent('addUser', userRecord);
