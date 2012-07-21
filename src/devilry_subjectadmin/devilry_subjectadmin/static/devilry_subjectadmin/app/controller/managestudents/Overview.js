@@ -80,6 +80,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     }],
 
     init: function() {
+        this.selectedSortByString = 'fullname';
         this.control({
             'viewport managestudentsoverview': {
                 render: this._onRenderOverview
@@ -139,7 +140,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             fn: this._onSelectAll,
             scope: this
         });
-        this._sortBy('fullname'); // NOTE: This must match the field selected as value for the sortby in the view.
+        console.log(this.getGroupsStore());
+        this.getGroupsStore().sortBySpecialSorter(this.selectedSortByString);
     },
 
 
@@ -174,68 +176,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
 
     _onSelectSortBy: function(combo, records) {
-        var sortby = records[0].get('value');
-        this._sortBy(sortby);
+        this.selectedSortByString = records[0].get('value');
+        this.getGroupsStore().sortBySpecialSorter(this.selectedSortByString);
     },
-
-    _sortBy: function(sortby) {
-        var sorter = null;
-        if(sortby == 'username') {
-            sorter = this._sortByUsername;
-        } else if(sortby == 'fullname') {
-            sorter = this._sortByFullname;
-        } else if(sortby == 'lastname') {
-            sorter = this._sortByLastname;
-        } else {
-            throw "Invalid sorter: " + sortby;
-        }
-        this.getGroupsStore().sort(Ext.create('Ext.util.Sorter', {
-            sorterFn: Ext.bind(sorter, this)
-        }));
-    },
-
-    _sortByUsername: function(a, b) {
-        return this._sortByUserlisProperty('candidates', 'username', a, b);
-    },
-
-    _sortByFullname: function(a, b) {
-        return this._sortByUserlisProperty('candidates', 'full_name', a, b);
-    },
-
-    _sortByUserlisProperty: function(listproperty, attribute, a, b) {
-        var listA = a.get(listproperty);
-        var listB = b.get(listproperty);
-        if(listA.length == 0) {
-            return -1;
-        }
-        if(listB.length == 0) {
-            return 1;
-        }
-        var a = listA[0].user[attribute]
-        var b = listB[0].user[attribute];
-        return a.localeCompare(b);
-    },
-
-    _getLastname: function(fullname) {
-        var split = fullname.split(/\s+/);
-        return split[split.length-1];
-    },
-
-    _sortByLastname: function(a, b) {
-        var listA = a.get('candidates');
-        var listB = b.get('candidates');
-        if(listA.length == 0) {
-            return -1;
-        }
-        if(listB.length == 0) {
-            return 1;
-        }
-        var attribute = 'full_name';
-        var a = this._getLastname(listA[0].user[attribute]);
-        var b = this._getLastname(listB[0].user[attribute]);
-        return a.localeCompare(b);
-    },
-
 
 
 
