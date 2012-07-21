@@ -444,6 +444,19 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
 
     def get(self, request, assignment_id):
         """
+        Without the ``query`` parameter, list all users.
+
+        # Parameters
+        Use the ``query`` parameter in the querystring to search for users by:
+
+        - Full name
+        - Username
+        - Email
+        - Tags
+
+        Uses case-ignore-contains search.
+
+        # Returns
         Returns a list with one object/map for each group in the assignment
         with the ``assignment_id`` specified in the URL. The object has the
         following attributes:
