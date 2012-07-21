@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     alias: 'widget.singlegroupview',
     cls: 'singlegroupview',
     ui: 'transparentpanel',
+    autoScroll: true,
 
     requires: [
         'devilry_subjectadmin.view.managestudents.StudentsInGroupGrid',
