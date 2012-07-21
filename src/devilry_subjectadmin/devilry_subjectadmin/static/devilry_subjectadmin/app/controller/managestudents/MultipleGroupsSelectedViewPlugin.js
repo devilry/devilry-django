@@ -16,6 +16,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     requires: [
         'devilry_extjsextras.AlertMessage',
         'devilry_subjectadmin.utils.Array',
+        'devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup',
         'Ext.tip.ToolTip',
         'Ext.util.KeyNav'
     ],
@@ -276,32 +277,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      *
      ************************************************/
 
-    _syncTags: function(sourceTags, doNotDeleteUsers) {
+    _syncTags: function(sourceTags, doNotDeleteTags) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
-            var tags = [];
-            var currentTags = groupRecord.get('tags');
-            devilry_subjectadmin.utils.Array.mergeIntoArray({
-                destinationArray: currentTags,
-                sourceArray: sourceTags,
-                isEqual: function(tagObj, sourceTagString) {
-                    return tagObj.tag == sourceTagString;
-                },
-                onMatch: function(tagObj) {
-                    tags.push(tagObj);
-                },
-                onNoMatch: function(tagObj) {
-                    if(doNotDeleteUsers) {
-                        tags.push(tagObj);
-                    }
-                },
-                onAdd: function(sourceTagString) {
-                    tags.push({
-                        tag: sourceTagString
-                    });
-                }
-            });
-            groupRecord.set('tags', tags);
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags(
+                    groupRecord, sourceTags, doNotDeleteTags);
         }
     },
 
@@ -318,7 +298,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     _onSetTagsSave: function(win, tags) {
         win.close();
-        console.log(tags);
         this._syncTags(tags);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
