@@ -325,15 +325,25 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
-        if(selectedGroupRecords.length === 1) {
-            this._handleSingleGroupSelected(selectedGroupRecords[0]);
+        if(selectedGroupRecords.length > 0) {
+            this._deselectAborted = true;
             this._setSelectionUrl(selectedGroupRecords);
-        } else if(selectedGroupRecords.length > 1) {
-            this._handleMultipleGroupsSelected(selectedGroupRecords);
-            this._setSelectionUrl(selectedGroupRecords);
+            if(selectedGroupRecords.length === 1) {
+                this._handleSingleGroupSelected(selectedGroupRecords[0]);
+            } else {
+                this._handleMultipleGroupsSelected(selectedGroupRecords);
+            }
         } else {
-            this._handleNoGroupsSelected();
-            this._setSelectionUrl([]);
+            // NOTE: We defer actually deselecting with a timeout to avoid
+            //       drawing the no-groups-selected view just to destroy it at once
+            //       each time we programmatically deselect and re-select.
+            this._deselectAborted = false;
+            Ext.defer(function() {
+                if(!this._deselectAborted) {
+                    this._handleNoGroupsSelected();
+                    this._setSelectionUrl([]);
+                }
+            }, 300, this);
         }
     },
 
