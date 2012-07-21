@@ -59,7 +59,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsWindow', {
         this.callParent(arguments);
     },
 
-    getParsedValue: function() {
+    getParsedValueAsArray: function() {
         var form = this.down('form').getForm();
         var tags = form.getFieldValues().tags.split(/\s*,\s*/);
         var nonEmptyTags = Ext.Array.filter(tags, function(tag) {

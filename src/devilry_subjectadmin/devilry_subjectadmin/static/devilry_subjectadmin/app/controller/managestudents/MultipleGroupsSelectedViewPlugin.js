@@ -269,6 +269,35 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      *
      ************************************************/
 
+    _syncTags: function(sourceTags, doNotDeleteUsers) {
+        for(var index=0; index<this.groupRecords.length; index++)  {
+            var groupRecord = this.groupRecords[index];
+            var tags = [];
+            var currentTags = groupRecord.get('tags');
+            devilry_subjectadmin.utils.Array.mergeIntoArray({
+                destinationArray: currentTags,
+                sourceArray: sourceTags,
+                isEqual: function(tagObj, sourceTagString) {
+                    return tagObj.tag == sourceTagString;
+                },
+                onMatch: function(tagObj) {
+                    tags.push(tagObj);
+                },
+                onNoMatch: function(tagObj) {
+                    if(doNotDeleteUsers) {
+                        tags.push(tag);
+                    }
+                },
+                onAdd: function(sourceTagString) {
+                    tags.push({
+                        tag: sourceTagString
+                    });
+                }
+            });
+            groupRecord.set('tags', tags);
+        }
+    },
+
     _onRenderSetTagsForm: function(formpanel) {
         formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
             enter: this._onSetTagsSave,
@@ -287,8 +316,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onSetTagsSave: function() {
         var win = this.getSetTagsWindow();
         if(win.isValid()) {
-            var tags = win.getParsedValue();
-            console.log(tags);
+            var tags = win.getParsedValueAsArray();
+            win.close();
+            this._syncTags(tags);
+            this.manageStudentsController.notifyMultipleGroupsChange({
+                scope: this,
+                success: function() {
+                    console.log('Success');
+                }
+            });
         }
     },
 
