@@ -62,6 +62,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #clearExaminersButton': {
                 click: this._onClearExaminers
             },
+
+
+            // setTags
+            'viewport multiplegroupsview #setTagsButton': {
+                click: this._onSetTags
+            },
+
+            // addTags
+            'viewport multiplegroupsview #addTagsButton': {
+                click: this._onAddTags
+            },
+
+            // clearTags
+            'viewport multiplegroupsview #clearTagsButton': {
+                click: this._onClearTags
+            },
         });
     },
 
@@ -100,6 +116,31 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         });
     },
 
+    _onSelectGroupInSummaryGrid: function(rowmodel, selectedGroupRecord) {
+        // NOTE: This selectedGroupRecord is not from the same proxy as the records in the
+        //       "regular" list, so their internal IDs do not match. Therefore,
+        //       we use getGroupRecordById() to get the correct receord.
+        var groupId = selectedGroupRecord.get('id');
+        var groupRecord = this.manageStudentsController.getGroupRecordById(groupId);
+        // NOTE: We defer deselecting to ensure that we return ``false`` before
+        //       deselecting. If we deselect before returning, the grid will be gone
+        //       when we return, and that causes an exception.
+        Ext.defer(function() {
+            this.manageStudentsController.deselectGroupRecords([groupRecord]);
+        }, 10, this);
+        return false;
+    },
+
+
+
+
+    /************************************************
+     *
+     * Set examiners
+     *
+     ************************************************/
+
+
     _onSetExaminers: function() {
         Ext.widget('chooseexaminerswindow', {
             title: gettext('Set examiners'),
@@ -123,7 +164,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     _onClearExaminers: function() {
         Ext.MessageBox.show({
-            title: gettext('Configm clear examiners'),
+            title: gettext('Confirm clear examiners'),
             msg: gettext('Do you want to remove all examiners from the selected groups? Their existing feedback will not be removed, only their permission to give feedback on the groups.'),
             buttons: Ext.MessageBox.YESNO,
             icon: Ext.MessageBox.QUESTION,
@@ -205,18 +246,56 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         });
     },
 
-    _onSelectGroupInSummaryGrid: function(rowmodel, selectedGroupRecord) {
-        // NOTE: This selectedGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use getGroupRecordById() to get the correct receord.
-        var groupId = selectedGroupRecord.get('id');
-        var groupRecord = this.manageStudentsController.getGroupRecordById(groupId);
-        // NOTE: We defer deselecting to ensure that we return ``false`` before
-        //       deselecting. If we deselect before returning, the grid will be gone
-        //       when we return, and that causes an exception.
-        Ext.defer(function() {
-            this.manageStudentsController.deselectGroupRecords([groupRecord]);
-        }, 10, this);
-        return false;
-    }
+
+
+
+    /************************************************
+     *
+     * Set tags
+     *
+     ************************************************/
+
+
+    _onSetTags: function() {
+        Ext.widget('choosetagswindow', {
+            title: gettext('Set tags'),
+            itemId: 'setTagsWindow',
+            panelConfig: {
+                includeRemove: true,
+                sourceStore: this.manageStudentsController.getRelatedTagsRoStore()
+            }
+        }).show();
+    },
+
+    _onAddTags: function() {
+        Ext.widget('choosetagswindow', {
+            title: gettext('Add tags'),
+            itemId: 'addTagsWindow',
+            panelConfig: {
+                sourceStore: this.manageStudentsController.getRelatedTagsRoStore()
+            }
+        }).show();
+    },
+
+    _onClearTags: function() {
+        Ext.MessageBox.show({
+            title: gettext('Confirm clear tags'),
+            msg: gettext('Do you want to remove all tags from the selected groups?'),
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            scope: this,
+            fn: function(buttonid) {
+                if(buttonid == 'yes') {
+                    this._clearTags();
+                }
+            }
+        });
+    },
+
+    _clearTags: function() {
+        Ext.Array.each(this.groupRecords, function(groupRecord) {
+            groupRecord.set('tags', []);
+        }, this);
+        this.manageStudentsController.notifyMultipleGroupsChange();
+    },
 });

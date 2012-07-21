@@ -61,6 +61,27 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     margin: helpmargin,
                     html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
 
+                // Set Tags
+                }, {
+                    xtype: 'splitbutton',
+                    margin: buttonmargin,
+                    scale: 'medium',
+                    text: gettext('Set tag(s)'),
+                    itemId: 'setTagsButton',
+                    menu: [{
+                        text: gettext('Add tag(s)'),
+                        itemId: 'addTagsButton',
+                        tooltip: gettext('Add one or more tag(s) to the selected groups.')
+                    }, {
+                        text: gettext('Clear tags'),
+                        itemId: 'clearTagsButton',
+                        icon: devilry_theme.Icons.DELETE_SMALL,
+                        tooltip: gettext('Remove/clear all tags from the selected groups.')
+                    }]
+                }, {
+                    xtype: 'formhelp',
+                    margin: helpmargin,
+                    html: gettext('Assign one or more tag(s) to the selected groups. Use the arrow button for methods of setting tags, such as random and by tags. Setting tags <strong>replaces</strong> the current tags.')
                 }]
             }, {
                 flex: 4,
