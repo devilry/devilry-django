@@ -145,6 +145,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         alert('Not implemented.');
     },
     
+
+    // Remove all examiners
+
     _onRemoveAllExaminers: function() {
         this._confirm({
             title: gettext('Confirm clear examiners'),
@@ -157,9 +160,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.manageStudentsController.notifySingleGroupChange();
     },
 
+
+    // Remove examiner
+
     _onRemoveExaminer: function(examinerRecord) {
-        //console.log('Remove examiner:', examinerRecord.data);
-        alert('Not implemented.');
+        this._confirm({
+            title: gettext('Confirm remove examiner'),
+            msg: Ext.String.format(gettext('Do you want to remove "{0}" from examiners?'), examinerRecord.get('user').username),
+            callback: function() {
+                this._removeExaminer(examinerRecord);
+            }
+        });
+    },
+
+    _removeExaminer: function(examinerRecord) {
+        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.removeExaminers({
+            groupRecord: this.groupRecord,
+            userRecords: [examinerRecord],
+            getUserId: function(examinerRecord) {
+                return examinerRecord.get('user').id;
+            }
+        });
+        this.manageStudentsController.notifySingleGroupChange();
     },
 
 

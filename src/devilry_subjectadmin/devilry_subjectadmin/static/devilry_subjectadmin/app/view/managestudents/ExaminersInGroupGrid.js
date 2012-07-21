@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     alias: 'widget.examinersingroupgrid',
     cls: 'examinersingroupgrid',
     hideHeaders: true,
+    disableSelection: true,
     requires: [
         'Ext.XTemplate',
         'devilry_theme.Icons'
