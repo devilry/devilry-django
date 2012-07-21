@@ -77,22 +77,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setTagsButton': {
                 click: this._onSetTags
             },
-            '#setTagsWindow form': {
-                render: this._onRenderSetTagsForm
-            },
-            '#setTagsWindow form #saveTags': {
-                click: this._onSetTagsSave
+            '#setTagsWindow': {
+                savetags: this._onSetTagsSave
             },
 
             // addTags
             'viewport multiplegroupsview #addTagsButton': {
                 click: this._onAddTags
             },
-            '#addTagsWindow form': {
-                render: this._onRenderAddTagsForm
-            },
-            '#addTagsWindow form #saveTags': {
-                click: this._onAddTagsSave
+            '#addTagsWindow': {
+                savetags: this._onAddTagsSave
             },
 
             // clearTags
@@ -314,13 +308,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     // Set tags
 
-    _onRenderSetTagsForm: function(formpanel) {
-        formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
-            enter: this._onSetTagsSave,
-            scope: this
-        });
-    },
-
     _onSetTags: function() {
         Ext.widget('choosetagswindow', {
             title: gettext('Set tags'),
@@ -329,41 +316,27 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }).show();
     },
 
-    _onSetTagsSave: function() {
-        var win = this.getSetTagsWindow();
-        if(win.isValid()) {
-            var tags = win.getParsedValueAsArray();
-            win.close();
-            this._syncTags(tags);
-            this.manageStudentsController.notifyMultipleGroupsChange({
-                scope: this,
-                success: function() {
-                }
-            });
-        }
+    _onSetTagsSave: function(win, tags) {
+        win.close();
+        console.log(tags);
+        this._syncTags(tags);
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+            }
+        });
     },
 
     // Add tags
 
-    _onRenderAddTagsForm: function(formpanel) {
-        formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
-            enter: this._onAddTagsSave,
-            scope: this
+    _onAddTagsSave: function(win, tags) {
+        win.close();
+        this._syncTags(tags, true);
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+            }
         });
-    },
-
-    _onAddTagsSave: function() {
-        var win = this.getAddTagsWindow();
-        if(win.isValid()) {
-            var tags = win.getParsedValueAsArray();
-            win.close();
-            this._syncTags(tags, true);
-            this.manageStudentsController.notifyMultipleGroupsChange({
-                scope: this,
-                success: function() {
-                }
-            });
-        }
     },
 
     _onAddTags: function() {
