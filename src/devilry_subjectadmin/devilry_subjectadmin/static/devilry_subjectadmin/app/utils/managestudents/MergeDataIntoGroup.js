@@ -8,16 +8,16 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
     /**
      * Merge tags into groupRecord.
      *
-     * @param {devilry_subjectadmin.model.Group} [groupRecord] Group record.
-     * @param {[String]} [sourceTags] Array of tags. Each item is a string.
-     * @param {Boolean} [doNotDeleteTags=false] Set this to ``true`` to append to existing tags.
+     * @param {devilry_subjectadmin.model.Group} [config.groupRecord] Group record.
+     * @param {[String]} [config.sourceTags] Array of tags. Each item is a string.
+     * @param {Boolean} [config.doNotDeleteTags=false] Set this to ``true`` to append to existing tags.
      */
-    mergeTags: function(groupRecord, sourceTags, doNotDeleteTags) {
+    mergeTags: function(config) {
         var tags = [];
-        var currentTags = groupRecord.get('tags');
+        var currentTags = config.groupRecord.get('tags');
         devilry_subjectadmin.utils.Array.mergeIntoArray({
             destinationArray: currentTags,
-            sourceArray: sourceTags,
+            sourceArray: config.sourceTags,
             isEqual: function(tagObj, sourceTagString) {
                 return tagObj.tag == sourceTagString;
             },
@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
                 tags.push(tagObj);
             },
             onNoMatch: function(tagObj) {
-                if(doNotDeleteTags) {
+                if(config.doNotDeleteTags) {
                     tags.push(tagObj);
                 }
             },
@@ -35,7 +35,36 @@ Ext.define('devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup', {
                 });
             }
         });
-        groupRecord.set('tags', tags);
+        config.groupRecord.set('tags', tags);
+    },
+
+    /**
+     * Remove tags from groupRecord.
+     *
+     * @param {devilry_subjectadmin.model.Group} [config.groupRecord] Group record.
+     * @param {[String]} [config.sourceTags] Array of tags to remove. Each item is a string.
+     */
+    removeTags: function(config) {
+        var tags = [];
+        var currentTags = config.groupRecord.get('tags');
+        devilry_subjectadmin.utils.Array.mergeIntoArray({
+            destinationArray: currentTags,
+            sourceArray: config.sourceTags,
+            isEqual: function(tagObj, sourceTagString) {
+                return tagObj.tag == sourceTagString;
+            },
+            onMatch: function(tagObj) {
+                // We do not include matches, which means they are deleted
+                // since they are not included in the new examiners array
+            },
+            onNoMatch: function(tagObj) {
+                tags.push(tagObj);
+            },
+            onAdd: function(sourceTagString) {
+                // Ignore any tags not already in record
+            }
+        });
+        config.groupRecord.set('tags', tags);
     },
 
 

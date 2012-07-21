@@ -262,8 +262,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _syncTags: function(sourceTags, doNotDeleteTags) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
-            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags(
-                    groupRecord, sourceTags, doNotDeleteTags);
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags({
+                groupRecord: groupRecord,
+                sourceTags: sourceTags,
+                doNotDeleteTags: doNotDeleteTags
+            });
         }
     },
 

@@ -213,8 +213,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     _onSaveTags: function(win, tags) {
         win.close();
-        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags(
-                this.groupRecord, tags, true);
+        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags({
+            groupRecord: this.groupRecord,
+            sourceTags: tags,
+            doNotDeleteTags: true
+        });
         this.manageStudentsController.notifySingleGroupChange();
     },
 
@@ -247,14 +250,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _removeTag: function(tagRecord) {
-        var tags = Ext.clone(this.groupRecord.get('tags'));
-        Ext.Array.each(tags, function(tagObj, index) {
-            if(tagObj.tag == tagRecord.get('tag')) {
-                Ext.Array.erase(tags, index, 1);
-                return false; // break
-            }
-        }, this);
-        this.groupRecord.set('tags', tags);
+        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.removeTags({
+            groupRecord: this.groupRecord,
+            sourceTags: [tagRecord.get('tag')]
+        });
         this.manageStudentsController.notifySingleGroupChange();
     }
 });
