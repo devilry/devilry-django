@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db import transaction
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
@@ -430,6 +431,14 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                                    'examiners__user__devilryuserprofile',
                                    'candidates', 'candidates__student',
                                    'candidates__student__devilryuserprofile')
+
+        querystring = self.request.GET.get('query', '')
+        if len(querystring) > 0:
+            qry = qry.filter(Q(candidates__student__username__icontains=querystring) |
+                             Q(candidates__student__email__icontains=querystring) |
+                             Q(candidates__student__devilryuserprofile__full_name__icontains=querystring) |
+                             Q(tags__tag__icontains=querystring))
+
         qry = qry.order_by('id')
         return qry
 
