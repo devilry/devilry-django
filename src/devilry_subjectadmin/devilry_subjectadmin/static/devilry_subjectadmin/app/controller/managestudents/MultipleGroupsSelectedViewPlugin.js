@@ -87,6 +87,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #addTagsButton': {
                 click: this._onAddTags
             },
+            '#addTagsWindow form': {
+                render: this._onRenderAddTagsForm
+            },
+            '#addTagsWindow form #saveTags': {
+                click: this._onAddTagsSave
+            },
 
             // clearTags
             'viewport multiplegroupsview #clearTagsButton': {
@@ -285,7 +291,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 },
                 onNoMatch: function(tagObj) {
                     if(doNotDeleteUsers) {
-                        tags.push(tag);
+                        tags.push(tagObj);
                     }
                 },
                 onAdd: function(sourceTagString) {
@@ -297,6 +303,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             groupRecord.set('tags', tags);
         }
     },
+
+
+    // Set tags
 
     _onRenderSetTagsForm: function(formpanel) {
         formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
@@ -322,7 +331,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             this.manageStudentsController.notifyMultipleGroupsChange({
                 scope: this,
                 success: function() {
-                    console.log('Success');
+                }
+            });
+        }
+    },
+
+    // Add tags
+
+    _onRenderAddTagsForm: function(formpanel) {
+        formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
+            enter: this._onAddTagsSave,
+            scope: this
+        });
+    },
+
+    _onAddTagsSave: function() {
+        var win = this.getAddTagsWindow();
+        if(win.isValid()) {
+            var tags = win.getParsedValueAsArray();
+            win.close();
+            this._syncTags(tags, true);
+            this.manageStudentsController.notifyMultipleGroupsChange({
+                scope: this,
+                success: function() {
                 }
             });
         }
@@ -335,6 +366,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             buttonText: gettext('Add tags')
         }).show();
     },
+
+
+    // Clear tags
 
     _onClearTags: function() {
         Ext.MessageBox.show({
@@ -356,5 +390,5 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             groupRecord.set('tags', []);
         }, this);
         this.manageStudentsController.notifyMultipleGroupsChange();
-    },
+    }
 });

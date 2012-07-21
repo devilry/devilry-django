@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsWindow', {
                         render: function(field) {
                             Ext.defer(function() {
                                 field.focus();
-                            }, 250);
+                            }, 300);
                         }
                     }
                 }, {
