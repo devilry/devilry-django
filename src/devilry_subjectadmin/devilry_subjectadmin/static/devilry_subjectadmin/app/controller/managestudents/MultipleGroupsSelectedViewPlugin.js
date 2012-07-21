@@ -9,13 +9,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     views: [
         'managestudents.MultipleGroupsSelectedView',
         'managestudents.ChooseExaminersWindow',
+        'managestudents.ChooseTagsWindow',
         'managestudents.SelectedGroupsSummaryGrid'
     ],
 
     requires: [
         'devilry_extjsextras.AlertMessage',
         'devilry_subjectadmin.utils.Array',
-        'Ext.tip.ToolTip'
+        'Ext.tip.ToolTip',
+        'Ext.util.KeyNav'
     ],
 
     stores: ['SelectedGroups'],
@@ -26,6 +28,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     }, {
         ref: 'addExaminersPanel',
         selector: '#addExaminersWindow chooseexaminerspanel'
+    }, {
+        ref: 'setTagsWindow',
+        selector: '#setTagsWindow'
+    }, {
+        ref: 'addTagsWindow',
+        selector: '#addTagsWindow'
     }],
 
     init: function() {
@@ -68,6 +76,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setTagsButton': {
                 click: this._onSetTags
             },
+            '#setTagsWindow form': {
+                render: this._onRenderSetTagsForm
+            },
+            '#setTagsWindow form #saveTags': {
+                click: this._onSetTagsSave
+            },
 
             // addTags
             'viewport multiplegroupsview #addTagsButton': {
@@ -77,7 +91,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             // clearTags
             'viewport multiplegroupsview #clearTagsButton': {
                 click: this._onClearTags
-            },
+            }
         });
     },
 
@@ -255,25 +269,34 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      *
      ************************************************/
 
+    _onRenderSetTagsForm: function(formpanel) {
+        formpanel.keyNav = Ext.create('Ext.util.KeyNav', formpanel.el, {
+            enter: this._onSetTagsSave,
+            scope: this
+        });
+    },
 
     _onSetTags: function() {
         Ext.widget('choosetagswindow', {
             title: gettext('Set tags'),
             itemId: 'setTagsWindow',
-            panelConfig: {
-                includeRemove: true,
-                sourceStore: this.manageStudentsController.getRelatedTagsRoStore()
-            }
+            buttonText: gettext('Set tags')
         }).show();
+    },
+
+    _onSetTagsSave: function() {
+        var win = this.getSetTagsWindow();
+        if(win.isValid()) {
+            var tags = win.getParsedValue();
+            console.log(tags);
+        }
     },
 
     _onAddTags: function() {
         Ext.widget('choosetagswindow', {
             title: gettext('Add tags'),
             itemId: 'addTagsWindow',
-            panelConfig: {
-                sourceStore: this.manageStudentsController.getRelatedTagsRoStore()
-            }
+            buttonText: gettext('Add tags')
         }).show();
     },
 
