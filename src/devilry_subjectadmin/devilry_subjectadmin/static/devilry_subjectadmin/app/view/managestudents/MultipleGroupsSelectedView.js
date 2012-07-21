@@ -77,7 +77,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
             }, {
                 flex: 4,
                 minHeight: 150,
-                title: gettext('Selected groups'),
                 xtype: 'selectedgroupssummarygrid'
             }]
         });

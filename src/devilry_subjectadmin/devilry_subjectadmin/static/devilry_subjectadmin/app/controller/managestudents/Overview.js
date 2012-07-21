@@ -225,7 +225,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         selectionModel.select(groupRecords, keepExisting);
     },
 
-    getRecordByGroupId: function(groupId) {
+    /** Deselect the given group records.
+     * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
+     * */
+    deselectGroupRecords: function(groupRecords) {
+        var selectionModel = this.getListOfGroups().getSelectionModel();
+        selectionModel.deselect(groupRecords);
+    },
+
+    /** Get group record by group id.
+     * @param {int} [groupId] The group id.
+     * @return {devilry_subjectadmin.model.Group} The group record, or ``undefined`` if it is not found.
+     * */
+    getGroupRecordById: function(groupId) {
         var index = this.getGroupsStore().findExact('id', groupId);
         if(index == -1) {
             return undefined;
@@ -233,6 +245,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         return this.getGroupsStore().getAt(index);
     },
 
+    /** Return ``true`` if ``groupRecord`` is selected. */
     groupRecordIsSelected: function(groupRecord) {
         return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
     },
@@ -495,11 +508,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     _onUserSelectedBySearch: function(combo, searchGroupRecord) {
         // NOTE: This searchGroupRecord is not from the same proxy as the records in the
         //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use getRecordByGroupId() to get the correct receord.
+        //       we use getGroupRecordById() to get the correct receord.
         combo.clearValue();
         combo.focus();
         var groupId = searchGroupRecord.get('id');
-        var groupRecord = this.getRecordByGroupId(groupId);
+        var groupRecord = this.getGroupRecordById(groupId);
         if(groupRecord) {
             if(this.groupRecordIsSelected(groupRecord)) {
                 this._showSelectSearchErrorMessage(combo, {

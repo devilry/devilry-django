@@ -40,6 +40,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setExaminersButton': {
                 click: this._onSetExaminers
             },
+            'viewport multiplegroupsview selectedgroupssummarygrid': {
+                beforeselect: this._onSelectGroupInSummaryGrid
+            },
             '#setExaminersWindow chooseexaminerspanel': {
                 addUser: this._onExaminerSetAdd,
                 removeUsers: this._onExaminerSetRemove
@@ -169,5 +172,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 this.getAddExaminersPanel().afterItemAddedSuccessfully(addedUserRecord);
             }
         });
+    },
+
+    _onSelectGroupInSummaryGrid: function(rowmodel, selectedGroupRecord) {
+        // NOTE: This selectedGroupRecord is not from the same proxy as the records in the
+        //       "regular" list, so their internal IDs do not match. Therefore,
+        //       we use getGroupRecordById() to get the correct receord.
+        var groupId = selectedGroupRecord.get('id');
+        var groupRecord = this.manageStudentsController.getGroupRecordById(groupId);
+        // NOTE: We defer deselecting to ensure that we return ``false`` before
+        //       deselecting. If we deselect before returning, the grid will be gone
+        //       when we return, and that causes an exception.
+        Ext.defer(function() {
+            this.manageStudentsController.deselectGroupRecords([groupRecord]);
+        }, 10, this);
+        return false;
     }
 });
