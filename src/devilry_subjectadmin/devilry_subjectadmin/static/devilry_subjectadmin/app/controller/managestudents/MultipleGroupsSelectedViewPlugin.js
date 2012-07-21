@@ -105,7 +105,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onGroupsSorterChanged: function(sorter) {
         var store = this.getSelectedGroupsStore();
         store.sortBySpecialSorter(sorter);
-        console.log('changed', sorter);
     },
 
     _onMultipleGroupsSelected: function(manageStudentsController, groupRecords) {
