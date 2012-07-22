@@ -63,6 +63,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #selectStatusClosed': {
                 click: this._onSelectStatusClosed
             },
+
+            // By status
+            'viewport managestudentsoverview #selectGradeFailed': {
+                click: this._onSelectGradeFailed
+            },
+            'viewport managestudentsoverview #selectGradePassed': {
+                click: this._onSelectGradePassed
+            },
         });
     },
 
@@ -177,6 +185,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         return button.up('#replaceSelectionMenu') == undefined;
     },
 
+    // Status
     _onSelectStatusOpen: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('is_open') == true;
@@ -185,6 +194,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectStatusClosed: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('is_open') == false;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+
+    // Grade
+    _onSelectGradeFailed: function(button) {
+        this._selectBy(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            return feedback && !feedback.is_passing_grade;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onSelectGradePassed: function(button) {
+        this._selectBy(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            return feedback && feedback.is_passing_grade;
         }, this, this._isInAddToSelectionMenu(button));
     },
 

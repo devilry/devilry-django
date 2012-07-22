@@ -96,8 +96,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 }, {
                     text: pgettext('group', 'Grade'),
                     menu: [{
+                        itemId: 'selectGradePassed',
                         text: pgettext('group', 'Failed')
                     }, {
+                        itemId: 'selectGradeFailed',
                         text: pgettext('group', 'Passed')
                     }, '-', {
                         text: 'TODO: Will list of all current grades here unless there are more than XXX (20?)'
