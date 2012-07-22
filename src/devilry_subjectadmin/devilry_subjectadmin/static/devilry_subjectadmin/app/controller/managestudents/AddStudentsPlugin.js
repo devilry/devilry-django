@@ -29,6 +29,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     }, {
         ref: 'automapExaminersCheckbox',
         selector: 'addstudentswindow #automapExaminersCheckbox'
+    }, {
+        ref: 'includeTagsCheckbox',
+        selector: 'addstudentswindow #includeTagsCheckbox'
     }],
 
     init: function() {
@@ -122,7 +125,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.getAddStudentsWindow().refreshBody();
     },
     _onIncludeTagsChange: function(field, includeTags) {
-        console.log(field.itemSelector);
         if(includeTags) {
             this.getAddStudentsWindow().refreshBody();
             this.getAutomapExaminersCheckbox().enable();
@@ -144,8 +146,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();
         var selectedRelatedStudents = selModel.getSelection();
         var groupsStore = this.getGroupsStore();
-        var includeTags = true;
-        var automapExaminers = true;
+        var includeTags = this.getIncludeTagsCheckbox().getValue();
+        var automapExaminers = this.getAutomapExaminersCheckbox().getValue();
 
         Ext.Array.each(selectedRelatedStudents, function(relatedStudentRecord) {
             var groupRecord = groupsStore.addFromRelatedStudentRecord({
