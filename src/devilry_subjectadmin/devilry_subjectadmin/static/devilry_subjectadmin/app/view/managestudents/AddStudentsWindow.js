@@ -53,6 +53,27 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         this.removeAll();
         this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
         var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
+
+        var tagsCellTemplate = new Ext.XTemplate(
+            '<ul class="unstyled">',
+                '<tpl for="tags">',
+                    '<li>{.}</li>',
+                '</tpl>',
+            '</ul>'
+        );
+        var userCellTemplate = new Ext.XTemplate(
+            '<div class="userinfo">',
+                '<div class="full_name"><strong>',
+                    '<tpl if="full_name">',
+                        '{full_name}',
+                    '<tpl else>',
+                        gettext('Full name missing'),
+                    '</tpl>',
+                '</strong></div>',
+                '<div class="username"><small>{username}</small></div>',
+            '</div>'
+        );
+
         if(allIgnored) {
             this.add([{
                 xtype: 'panel',
@@ -77,18 +98,20 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                     dataIndex: 'id',
                     menuDisabled: true,
                     sortable: false,
-                    flex: 1,
+                    flex: 6,
                     renderer: function(unused1, unused2, relatedStudentRecord) {
-                        return relatedStudentRecord.get('user').full_name;
+                        return userCellTemplate.apply(relatedStudentRecord.get('user'));
                     }
                 }, {
-                    header: 'Username',
-                    dataIndex: 'id',
+                    header: 'Tags',
+                    dataIndex: 'tags',
                     menuDisabled: true,
                     sortable: false,
-                    width: 100,
+                    flex: 4,
                     renderer: function(unused1, unused2, relatedStudentRecord) {
-                        return relatedStudentRecord.get('user').username;
+                        return tagsCellTemplate.apply({
+                            tags: relatedStudentRecord.getTagsAsArray()
+                        });
                     }
                 }],
             }, {
@@ -119,7 +142,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 gettext('Only students registered on <em>{periodpath}</em> is available in the list.'),
             '</p>',
             '<p><a target="_blank" href="{manageRelatedStudentsUrl}">',
-                gettext('Add more students to {periodpath}'),
+                gettext('Add or edit students on {periodpath}'),
             '</a></p>'
         ).apply({
             periodpath: this.periodinfo.path,
