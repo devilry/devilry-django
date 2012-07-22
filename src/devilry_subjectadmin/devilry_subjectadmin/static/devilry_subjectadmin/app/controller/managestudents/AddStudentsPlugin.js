@@ -16,6 +16,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         'Groups'
     ],
 
+    requires: [
+        'Ext.tip.ToolTip'
+    ],
+
     refs: [{
         ref: 'addStudentsWindow',
         selector: 'addstudentswindow'
@@ -40,14 +44,27 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
                 click: this._onSave
             },
             'addstudentswindow #allowDuplicatesCheckbox': {
-                change: this._onAllowDuplicatesChange
+                change: this._onAllowDuplicatesChange,
+                render: this._setTooltip
             },
             'addstudentswindow #includeTagsCheckbox': {
-                change: this._onIncludeTagsChange
+                change: this._onIncludeTagsChange,
+                render: this._setTooltip
             },
             'addstudentswindow #automapExaminersCheckbox': {
-                change: this._onAutomapExaminersChange
+                change: this._onAutomapExaminersChange,
+                render: this._setTooltip
             }
+        });
+    },
+
+    _setTooltip: function(item) {
+        var tip = Ext.create('Ext.tip.ToolTip', {
+            target: item.el,
+            constrainPosition: true,
+            anchor: 'top',
+            dismissDelay: 20000, // NOTE: Setting this high (20sec) instead of to 0 so that it disappears even when the framework do not catch the event that should hide it.
+            html: item.tooltip
         });
     },
 
@@ -105,6 +122,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.getAddStudentsWindow().refreshBody();
     },
     _onIncludeTagsChange: function(field, includeTags) {
+        console.log(field.itemSelector);
         if(includeTags) {
             this.getAddStudentsWindow().refreshBody();
             this.getAutomapExaminersCheckbox().enable();
