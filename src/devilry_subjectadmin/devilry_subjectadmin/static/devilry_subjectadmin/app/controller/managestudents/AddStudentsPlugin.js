@@ -65,6 +65,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onLoad: function() {
+        this.relatedExaminersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
 
@@ -72,7 +73,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         relatedStudentsStore.sortBySpecialSorter('full_name');
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore,
-            periodinfo: this.manageStudentsController.getPeriodInfo()
+            periodinfo: this.manageStudentsController.getPeriodInfo(),
+            relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
         }).show();
     },
 
@@ -101,14 +103,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         var includeTags = true;
         var automapExaminers = true;
 
-        var examinersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
         Ext.Array.each(selectedRelatedStudents, function(relatedStudentRecord) {
             var groupRecord = groupsStore.addFromRelatedStudentRecord({
                 relatedStudentRecord: relatedStudentRecord,
                 includeTags: includeTags
             });
             if(automapExaminers) {
-                groupRecord.setExaminersFromMapOfRelatedExaminers(examinersMappedByTag);
+                groupRecord.setExaminersFromMapOfRelatedExaminers(this.relatedExaminersMappedByTag);
             }
         }, this);
         this.getAddStudentsWindow().close();

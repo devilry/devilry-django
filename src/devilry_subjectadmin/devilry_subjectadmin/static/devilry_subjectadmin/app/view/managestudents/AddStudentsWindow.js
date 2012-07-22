@@ -22,10 +22,47 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
 
 
     initComponent: function() {
+        this.tagsCellTemplate = new Ext.XTemplate(
+            '<ul class="unstyled">',
+                '<tpl for="tags">',
+                    '<li>{.}</li>',
+                '</tpl>',
+            '</ul>'
+        );
+        this.userCellTemplate = new Ext.XTemplate(
+            '<div class="userinfo">',
+                '<div class="full_name"><strong>',
+                    '<tpl if="full_name">',
+                        '{full_name}',
+                    '<tpl else>',
+                        gettext('Full name missing'),
+                    '</tpl>',
+                '</strong></div>',
+                '<div class="username"><small>{username}</small></div>',
+            '</div>'
+        );
+        this.tagsAndExaminersCellTemplate = new Ext.XTemplate(
+            '<ul class="unstyled">',
+                '<tpl for="tagsAndExaminers">',
+                    '<li style="white-space:normal !important;">',
+                        '{tag}: <small>',
+                        '<tpl for="examiners">',
+                            '<tpl if="data.user.full_name">',
+                                '{data.user.full_name}',
+                            '<tpl else>',
+                                '{data.user.username}',
+                            '</tpl>',
+                            '<tpl if="xindex != xcount">, </tpl>',
+                        '</tpl></small>',
+                    '</li>',
+                '</tpl>',
+            '</ul>'
+        );
+
         Ext.apply(this, {
             layout: 'border',
             closable: true,
-            width: 700,
+            width: 850,
             height: 500,
             //maximizable: true,
             modal: true,
@@ -40,6 +77,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 itemId: 'allowDuplicatesCheckbox',
                 boxLabel: gettext('Allow duplicates')
             }, '->', {
+                xtype: 'checkbox',
+                itemId: 'includeTagsCheckbox',
+                checked: true,
+                boxLabel: gettext('Include tags')
+            }, {
+                xtype: 'checkbox',
+                checked: true,
+                itemId: 'autoSetExaminersCheckbox',
+                boxLabel: gettext('Autoset examiners')
+            }, {
                 xtype: 'primarybutton',
                 itemId: 'saveButton',
                 text: gettext('Add selected students')
@@ -53,26 +100,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         this.removeAll();
         this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
         var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
-
-        var tagsCellTemplate = new Ext.XTemplate(
-            '<ul class="unstyled">',
-                '<tpl for="tags">',
-                    '<li>{.}</li>',
-                '</tpl>',
-            '</ul>'
-        );
-        var userCellTemplate = new Ext.XTemplate(
-            '<div class="userinfo">',
-                '<div class="full_name"><strong>',
-                    '<tpl if="full_name">',
-                        '{full_name}',
-                    '<tpl else>',
-                        gettext('Full name missing'),
-                    '</tpl>',
-                '</strong></div>',
-                '<div class="username"><small>{username}</small></div>',
-            '</div>'
-        );
 
         if(allIgnored) {
             this.add([{
@@ -93,27 +120,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 region: 'center',
                 store: this.relatedStudentsStore,
                 selModel: selModel,
-                columns: [{
-                    header: 'Name',
-                    dataIndex: 'id',
-                    menuDisabled: true,
-                    sortable: false,
-                    flex: 6,
-                    renderer: function(unused1, unused2, relatedStudentRecord) {
-                        return userCellTemplate.apply(relatedStudentRecord.get('user'));
-                    }
-                }, {
-                    header: 'Tags',
-                    dataIndex: 'tags',
-                    menuDisabled: true,
-                    sortable: false,
-                    flex: 4,
-                    renderer: function(unused1, unused2, relatedStudentRecord) {
-                        return tagsCellTemplate.apply({
-                            tags: relatedStudentRecord.getTagsAsArray()
-                        });
-                    }
-                }],
+                columns: this._getGridColumns()
             }, {
                 xtype: 'panel',
                 region: 'east',
@@ -127,6 +134,40 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 }]
             }]);
         }
+    },
+
+
+    _getGridColumns: function() {
+        var columns = [{
+            header: gettext('Name'),
+            dataIndex: 'id',
+            menuDisabled: true,
+            sortable: false,
+            flex: 4,
+            renderer: Ext.bind(this._renderUserCell, this)
+        }];
+        var includeTags = this.down('#includeTagsCheckbox').getValue();
+        var autoSetExaminers = this.down('#autoSetExaminersCheckbox').getValue();
+        if(includeTags && autoSetExaminers) {
+            columns.push({
+                header: gettext('Tags and matching examiners'),
+                dataIndex: 'tags',
+                menuDisabled: true,
+                sortable: false,
+                flex: 6,
+                renderer: Ext.bind(this._renderTagsAndExaminersCell, this)
+            });
+        } else if(includeTags) {
+            columns.push({
+                header: gettext('Tags'),
+                dataIndex: 'tags',
+                menuDisabled: true,
+                sortable: false,
+                flex: 4,
+                renderer: Ext.bind(this, this._renderTagsCell)
+            });
+        }
+        return columns;
     },
 
 
@@ -167,6 +208,33 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         ).apply({
             periodpath: this.periodinfo.path,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id)
+        });
+    },
+
+
+    _renderUserCell: function(unused1, unused2, relatedStudentRecord) {
+        return this.userCellTemplate.apply(relatedStudentRecord.get('user'));
+    },
+
+    _renderTagsCell: function(unused1, unused2, relatedStudentRecord) {
+        return this.tagsCellTemplate.apply({
+            tags: relatedStudentRecord.getTagsAsArray()
+        });
+    },
+
+    _renderTagsAndExaminersCell: function(unused1, unused2, relatedStudentRecord) {
+        var tags = relatedStudentRecord.getTagsAsArray();
+        var tagsAndExaminers = [];
+        for(var index=0; index<tags.length; index++)  {
+            var tag = tags[index];
+            var relatedExaminerRecords = this.relatedExaminersMappedByTag[tag];
+            tagsAndExaminers.push({
+                tag: tag,
+                examiners: relatedExaminerRecords
+            });
+        }
+        return this.tagsAndExaminersCellTemplate.apply({
+            tagsAndExaminers: tagsAndExaminers
         });
     }
 });
