@@ -49,7 +49,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             },
             'viewport managestudentsoverview #selectButton #invertselection': {
                 click: this._onInvertselection
-            }
+            },
+
+            // By status
+            'viewport managestudentsoverview #selectButton #selectStatusOpen': {
+                click: this._onSelectStatusOpen
+            },
+            'viewport managestudentsoverview #selectButton #selectStatusClosed': {
+                click: this._onSelectStatusClosed
+            },
         });
     },
 
@@ -159,6 +167,32 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
+    _findGroupRecordsBy: function(fn, scope) {
+        var groupRecords = [];
+        this.getGroupsStore().each(function(groupRecord) {
+            var match = Ext.bind(fn, scope)(groupRecord);
+            if(match) {
+                groupRecords.push(groupRecord);
+            }
+        }, this);
+        return groupRecords;
+    },
+
+    _selectBy: function(fn, scope, keepExisting) {
+        var groupRecords = this._findGroupRecordsBy(fn, scope);
+        this._selectGroupRecords(groupRecords, keepExisting);
+    },
+
+    _onSelectStatusOpen: function() {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('is_open') == true;
+        }, this, false);
+    },
+    _onSelectStatusClosed: function() {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('is_open') == false;
+        }, this, false);
+    },
 
 
     /***************************************************

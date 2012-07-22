@@ -81,8 +81,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             }, '-', {
                 text: pgettext('group', 'Status'),
                 menu: [{
+                    itemId: 'selectStatusOpen',
                     text: pgettext('group', 'Open')
                 }, {
+                    itemId: 'selectStatusClosed',
                     text: pgettext('group', 'Closed')
                 }]
             }, {
