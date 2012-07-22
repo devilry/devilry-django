@@ -47,6 +47,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                     header: 'Name',
                     dataIndex: 'id',
                     menuDisabled: true,
+                    sortable: false,
                     flex: 1,
                     renderer: function(unused1, unused2, relatedStudentRecord) {
                         return relatedStudentRecord.get('user').full_name;
@@ -55,6 +56,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                     header: 'Username',
                     dataIndex: 'id',
                     menuDisabled: true,
+                    sortable: false,
                     width: 100,
                     renderer: function(unused1, unused2, relatedStudentRecord) {
                         return relatedStudentRecord.get('user').username;

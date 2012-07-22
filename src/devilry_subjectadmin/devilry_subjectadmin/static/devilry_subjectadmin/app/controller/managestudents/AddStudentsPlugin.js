@@ -35,7 +35,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             }
             //'addstudentswindow cancelbutton': {
                 //click: this._onCancel
-            //},
+            //}
         });
     },
 
@@ -56,9 +56,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
 
-        this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
-
-        //relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+        this._filterOutRelatedStudentsAlreadyInGroup();
+        relatedStudentsStore.sortBySpecialSorter('full_name');
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore,
             periodinfo: this.manageStudentsController.getPeriodInfo(),
@@ -66,7 +65,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         }).show();
     },
 
-    _filterOutRelatedStudentsAlreadyInGroup: function(relatedStudentsStore) {
+    _filterOutRelatedStudentsAlreadyInGroup: function() {
+        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
         var currentUsers = this.manageStudentsController.getGroupsStore().getGroupsMappedByUserId();
         relatedStudentsStore.filterBy(function(relatedStudentRecord) {
             var userid = relatedStudentRecord.get('user').id;
@@ -80,5 +80,5 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onSave: function(button) {
         alert('Not implemented yet');
-    },
+    }
 });

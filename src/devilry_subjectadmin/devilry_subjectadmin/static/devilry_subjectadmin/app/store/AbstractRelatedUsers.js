@@ -45,5 +45,32 @@ Ext.define('devilry_subjectadmin.store.AbstractRelatedUsers', {
             title: errortitle,
             bodyHtml: errormessage
         }).show();
+    },
+
+
+    sortBySpecialSorter: function(sortby) {
+        var sorter = null;
+        if(sortby == 'username') {
+            sorter = this._sortByUsername;
+        } else if(sortby == 'full_name') {
+            sorter = this._sortByFullname;
+        } else {
+            throw "Invalid sorter: " + sortby;
+        }
+        this.sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: Ext.bind(sorter, this)
+        }));
+    },
+
+    _sortByUsername: function(a, b) {
+        return this._sortByUserProperty('username', a, b);
+    },
+
+    _sortByFullname: function(a, b) {
+        return this._sortByUserProperty('full_name', a, b);
+    },
+
+    _sortByUserProperty: function(property, a, b) {
+        return a.get('user')[property].localeCompare(b.get('user')[property]);
     }
 });
