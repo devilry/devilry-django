@@ -69,5 +69,29 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         var a = this._getLastname(listA[0].user[attribute]);
         var b = this._getLastname(listB[0].user[attribute]);
         return a.localeCompare(b);
+    },
+
+
+
+    /**
+     * Get the contents of the groups store with userids as key and an array of
+     * {@link devilry_subjectadmin.model.Group} records as value.
+     *
+     * The values are arrays because we support the same user in multiple
+     * groups on the same assignment.
+     */
+    getGroupsMappedByUserId: function() {
+        var map = {}; // userid -> [groupRecord]
+        this.each(function(groupRecord) {
+            Ext.each(groupRecord.get('candidates'), function(candidate) {
+                var userid = candidate.user.id;
+                if(map[userid]) {
+                    map[userid].push(groupRecord);
+                } else {
+                    map[userid] = [groupRecord];
+                }
+            }, this);
+        }, this);
+        return map;
     }
 });
