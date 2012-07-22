@@ -2,8 +2,6 @@
  * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
  * adds the ability to add students (groups with a single student) to an
  * assignment.
- *
- * Adds a _add students_ button to the list of groups toolbar.
  */
 Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     extend: 'Ext.app.Controller',
@@ -32,15 +30,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             'viewport managestudentsoverview button[itemId=addstudents]': {
                 click: this._onAddstudents
             },
-            'addstudentswindow button[itemId=relatedLink]': {
-                click: this._onRelatedLinkClick
-            },
             'addstudentswindow savebutton': {
                 click: this._onSave
-            },
-            'addstudentswindow cancelbutton': {
-                click: this._onCancel
-            },
+            }
+            //'addstudentswindow cancelbutton': {
+                //click: this._onCancel
+            //},
         });
     },
 
@@ -48,39 +43,42 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.manageStudentsController = manageStudentsController;
     },
 
-    _onRelatedLinkClick: function(ev) {
-        alert('Not implemented yet');
+    _onAddstudents: function() {
+        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
+        relatedStudentsStore.loadWithAutomaticErrorHandling({
+            scope: this,
+            success: this._onLoadRelatedStudentsStoreSuccess,
+            errortitle: gettext('Failed to load students from the period')
+        });
     },
 
-    _onAddstudents: function() {
-        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsStore();
+    _onLoadRelatedStudentsStoreSuccess: function(records) {
+        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
+
         this._filterOutRelatedStudentsAlreadyInGroup(relatedStudentsStore);
-        relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
+
+        //relatedStudentsStore.sort('user__devilryuserprofile__full_name', 'ASC');
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore,
-            periodpath: Ext.String.format(
-                '{0}.{1}',
-                this.manageStudentsController.getSubjectShortname(),
-                this.manageStudentsController.getPeriodShortname()
-            ),
+            periodinfo: this.manageStudentsController.getPeriodInfo(),
             ignoredcount: relatedStudentsStore.getTotalCount() - relatedStudentsStore.getCount()
         }).show();
     },
 
     _filterOutRelatedStudentsAlreadyInGroup: function(relatedStudentsStore) {
-        var currentUsers = this.manageStudentsController.getGroupsMappedByUsername();
-        relatedStudentsStore.filterBy(function(record) {
-            var username = record.get('user__username');
-            return currentUsers[username] === undefined;
+        var currentUsers = this.manageStudentsController.getGroupsStore().getGroupsMappedByUserId();
+        relatedStudentsStore.filterBy(function(relatedStudentRecord) {
+            var userid = relatedStudentRecord.get('user').id;
+            return typeof currentUsers[userid] == 'undefined';
         });
     },
 
-    _onCancel: function(button) {
-        this.getWindow().close();
-    },
+    //_onCancel: function(button) {
+        //this.getWindow().close();
+    //},
 
     _onSave: function(button) {
         alert('Not implemented yet');
-    }
+    },
 });

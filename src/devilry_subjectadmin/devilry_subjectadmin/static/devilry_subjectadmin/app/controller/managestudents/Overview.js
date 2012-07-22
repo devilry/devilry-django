@@ -118,6 +118,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 this.getOverview().setLoading(gettext('Loading assignment ...'));
             }
         }, 100, this);
+        this.setLoadingBreadcrumb();
         this.loadAssignment(this.assignment_id);
     },
 
@@ -283,6 +284,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      *
      ***************************************************/
 
+    getPeriodInfo: function() {
+        var breadcrumb = this.assignmentRecord.get('breadcrumb');
+        var subjectBreadcrumb = breadcrumb[breadcrumb.length-2];
+        var periodBreadcrumb = breadcrumb[breadcrumb.length-1];
+        var periodpath = Ext.String.format('{0}.{1}', subjectBreadcrumb.short_name, periodBreadcrumb.short_name);
+        return {
+            id: periodBreadcrumb.id,
+            short_name: periodBreadcrumb.short_name,
+            path: periodpath
+        };
+    },
+
     _handleLoadError: function(operation, title) {
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
         error.addErrors(null, operation);
@@ -410,30 +423,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * Other stuff
      *
      ************************************************/
-
-
-
-    /**
-     * Get the contents of the groups store (see {@link #getGroupsStore}
-     * as an object with usernames as key and an array of
-     * {@link devilry_subjectadmin.model.Group} records for values.
-     *
-     * The values are arrays because we support the same user in multiple
-     * groups on the same assignment.
-     */
-    getGroupsMappedByUsername: function() {
-        var map = {};
-        this.getGroupsStore().each(function(record) {
-            Ext.each(record.get('students'), function(student) {
-                if(map[student.student__username]) {
-                    map[student.student__username].push(record);
-                } else {
-                    map[student.student__username] = [record];
-                }
-            }, this);
-        }, this);
-        return map;
-    },
 
 
     /**
