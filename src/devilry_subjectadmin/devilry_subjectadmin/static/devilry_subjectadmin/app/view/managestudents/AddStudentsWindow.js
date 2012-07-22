@@ -20,9 +20,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
      * @cfg {Object} [periodinfo] (required)
      */
 
-    /**
-     * @cfg {int} [ignoredcount] (required)
-     */
 
     initComponent: function() {
         Ext.apply(this, {
@@ -30,7 +27,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             closable: true,
             width: 700,
             height: 500,
-            maximizable: true,
+            //maximizable: true,
             modal: true,
             title: gettext('Add students'),
             buttons: [{
@@ -54,6 +51,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
 
     refreshBody: function() {
         this.removeAll();
+        this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
         var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
         if(allIgnored) {
             this.add([{
@@ -112,7 +110,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
     _getHelp: function() {
         return Ext.create('Ext.XTemplate',
             '<p>',
-                gettext('Choose the students you want to add to the assignment, and click {savebuttonlabel}.'),
+                gettext('Choose the students you want to add on the assignment, and click {savebuttonlabel}.'),
             '</p>',
             '<tpl if="hasIgnored"><p>',
                 gettext('<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment.'),

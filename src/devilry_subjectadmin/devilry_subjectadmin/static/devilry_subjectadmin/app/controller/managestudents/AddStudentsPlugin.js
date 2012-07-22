@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     ],
 
     refs: [{
-        ref: 'window',
+        ref: 'addStudentsWindow',
         selector: 'addstudentswindow'
     }],
 
@@ -32,10 +32,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             },
             'addstudentswindow #saveButton': {
                 click: this._onSave
+            },
+            'addstudentswindow #allowDuplicatesCheckbox': {
+                change: this._onAllowDuplicatesChange
             }
-            //'addstudentswindow cancelbutton': {
-                //click: this._onCancel
-            //}
         });
     },
 
@@ -60,8 +60,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         relatedStudentsStore.sortBySpecialSorter('full_name');
         Ext.widget('addstudentswindow', {
             relatedStudentsStore: relatedStudentsStore,
-            periodinfo: this.manageStudentsController.getPeriodInfo(),
-            ignoredcount: relatedStudentsStore.getTotalCount() - relatedStudentsStore.getCount()
+            periodinfo: this.manageStudentsController.getPeriodInfo()
         }).show();
     },
 
@@ -74,9 +73,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         });
     },
 
-    //_onCancel: function(button) {
-        //this.getWindow().close();
-    //},
+    _onAllowDuplicatesChange: function(field, allowDuplicates) {
+        if(allowDuplicates) {
+            this.manageStudentsController.getRelatedStudentsRoStore().clearFilter();
+        } else {
+            this._filterOutRelatedStudentsAlreadyInGroup();
+        }
+        this.getAddStudentsWindow().refreshBody();
+    },
 
     _onSave: function(button) {
         alert('Not implemented yet');
