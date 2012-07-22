@@ -25,7 +25,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
      */
 
     initComponent: function() {
-        var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
         Ext.apply(this, {
             layout: 'border',
             closable: true,
@@ -34,7 +33,43 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             maximizable: true,
             modal: true,
             title: gettext('Add students'),
-            items: [{
+            buttons: [{
+                xtype: 'button',
+                itemId: 'refreshButton',
+                scale: 'medium',
+                text: gettext('Refresh')
+            }, {
+                xtype: 'checkbox',
+                itemId: 'allowDuplicatesCheckbox',
+                boxLabel: gettext('Allow duplicates')
+            }, '->', {
+                xtype: 'primarybutton',
+                itemId: 'saveButton',
+                text: gettext('Add selected students')
+            }]
+        });
+        this.callParent(arguments);
+        this.refreshBody();
+    },
+
+    refreshBody: function() {
+        this.removeAll();
+        var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
+        if(allIgnored) {
+            this.add([{
+                xtype: 'panel',
+                region: 'center',
+                autoScroll: true,
+                bodyPadding: 20,
+                items: [{
+                    xtype: 'box',
+                    cls: 'bootstrap',
+                    html: this._getAllIgnoredHelp()
+                }]
+            }]);
+        } else {
+            var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
+            this.add([{
                 xtype: 'grid',
                 region: 'center',
                 store: this.relatedStudentsStore,
@@ -61,6 +96,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             }, {
                 xtype: 'panel',
                 region: 'east',
+                autoScroll: true,
                 width: 250,
                 bodyPadding: 20,
                 items: [{
@@ -68,43 +104,22 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                     cls: 'bootstrap',
                     html: this._getHelp()
                 }]
-            }],
-            buttons: [{
-                xtype: 'button',
-                itemId: 'refreshButton',
-                scale: 'medium',
-                text: gettext('Refresh')
-            }, {
-                xtype: 'checkbox',
-                itemId: 'allowDuplicatesCheckbox',
-                boxLabel: gettext('Allow duplicates')
-            }, '->', {
-                xtype: 'primarybutton',
-                itemId: 'saveButton',
-                text: gettext('Add selected students')
-            }]
-        });
-        this.callParent(arguments);
+            }]);
+        }
     },
 
 
     _getHelp: function() {
         return Ext.create('Ext.XTemplate',
-            '<tpl if="allIgnored">',
-                '<p>',
-                    gettext('All students registered on <strong>{periodpath}</strong> is already added to the assignment. Use the link below to go to {periodpath} and add more students.'),
-                '</p>',
-            '<tpl else>',
-                '<p>',
-                    gettext('Choose the students you want to add to the assignment, and click {savebuttonlabel}.'),
-                '</p>',
-                '<tpl if="hasIgnored"><p>',
-                    gettext('<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment.'),
-                '</p></tpl>',
-                '<p>',
-                    gettext('Only students registered on <em>{periodpath}</em> is available in the list.'),
-                '</p>',
-            '</tpl>',
+            '<p>',
+                gettext('Choose the students you want to add to the assignment, and click {savebuttonlabel}.'),
+            '</p>',
+            '<tpl if="hasIgnored"><p>',
+                gettext('<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment.'),
+            '</p></tpl>',
+            '<p>',
+                gettext('Only students registered on <em>{periodpath}</em> is available in the list.'),
+            '</p>',
             '<p><a target="_blank" href="{manageRelatedStudentsUrl}">',
                 gettext('Add more students to {periodpath}'),
             '</a></p>'
@@ -113,8 +128,24 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             hasIgnored: this.ignoredcount > 0,
             ignoredcount: this.ignoredcount,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id),
-            savebuttonlabel: gettext('Add selected students'),
-            allIgnored: this.relatedStudentsStore.getTotalCount() == this.ignoredcount
+            savebuttonlabel: gettext('Add selected students')
         })
+    },
+
+    _getAllIgnoredHelp: function() {
+        return Ext.create('Ext.XTemplate',
+            '<p>',
+                gettext('All students registered on <strong>{periodpath}</strong> is already registered on the assignment. Use the link below to go to {periodpath} and add more students.'),
+            '</p>',
+            '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}">',
+                gettext('Add more students to {periodpath}'),
+            '</a></strong> <small>(', gettext('Opens in new window') ,')</small></p>',
+            '<p>',
+                gettext('Use the refresh button to reload students when you return to this page.'),
+            '</p>'
+        ).apply({
+            periodpath: this.periodinfo.path,
+            manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id)
+        });
     }
 });
