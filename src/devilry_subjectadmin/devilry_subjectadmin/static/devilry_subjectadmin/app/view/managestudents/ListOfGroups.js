@@ -8,6 +8,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     store: 'Groups',
     hideHeaders: true,
 
+    requires: [
+        'devilry_subjectadmin.view.managestudents.DynamicLoadMenu'
+    ],
+
     getColumns: function() {
         return [this.getGroupInfoColConfig(), this.getMetadataColConfig()];
     },
@@ -158,7 +162,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 itemId: 'selectNoExaminer',
                 text: gettext('No examiner(s)')
             }, {
-                text: 'TODO: Will list all related examiners'
+                text: gettext('Specific examiner'),
+                menu: {
+                    xtype: 'dynamicloadmenu',
+                    itemId: 'specificExaminerMenu'
+                }
             }]
 
         // By tag

@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     ],
 
     requires: [
-        'Ext.util.KeyMap'
+        'Ext.util.KeyMap',
+        'Ext.util.MixedCollection'
     ],
 
     stores: [
@@ -86,6 +87,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             },
             'viewport managestudentsoverview #selectNoExaminer': {
                 click: this._onSelectNoExaminer
+            },
+            'viewport managestudentsoverview #specificExaminerMenu': {
+                show: this._onShowSpecificExaminerMenu
+            },
+            'viewport managestudentsoverview #specificExaminerMenu menuitem': {
+                click: this._onSpecificExaminerMenuItemClick
             },
 
             // By tags
@@ -258,6 +265,50 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectNoExaminer: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('examiners').length == 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+    _onShowSpecificExaminerMenu: function(menu) {
+        // Add unique users, and count groups
+        var examinerMap = new Ext.util.MixedCollection(); // userid -> {user: userObj, count: COUNT, name: NAME}
+        this.getGroupsStore().each(function(groupRecord) {
+            var examiners = groupRecord.get('examiners');
+            for(var index=0; index<examiners.length; index++)  {
+                var examiner = examiners[index];
+                var userid = examiner.user.id;
+                if(examinerMap.containsKey(userid)) {
+                    examinerMap.get(userid).count ++;
+                } else {
+                    var name = examiner.user.full_name || examiner.user.username || Ext.String.format('User ID: ', examiner.user.id);
+                    examinerMap.add(userid, {
+                        user: examiner.user,
+                        name: name,
+                        count: 1
+                    });
+                }
+            }
+        }, this);
+        
+        // Sort
+        examinerMap.sortBy(function(a, b) {
+            return a.name.localeCompare(b.name);
+        });
+
+        // Create and set items
+        var items = [];
+        examinerMap.each(function(examiner) {
+            items.push({
+                itemId: Ext.String.format('selectByExaminerUserId_{0}', examiner.user.id),
+                text: Ext.String.format('{0} ({1})', examiner.name, examiner.count)
+            });
+        });
+        menu.setItems(items);
+    },
+
+    _onSpecificExaminerMenuItemClick: function(button) {
+        var userid = parseInt(button.itemId.split('_')[1]);
+        this._selectBy(function(groupRecord) {
+            return groupRecord.hasExaminer(userid);
         }, this, this._isInAddToSelectionMenu(button));
     },
 
