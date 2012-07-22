@@ -72,5 +72,24 @@ Ext.define('devilry_subjectadmin.store.AbstractRelatedUsers', {
 
     _sortByUserProperty: function(property, a, b) {
         return a.get('user')[property].localeCompare(b.get('user')[property]);
+    },
+
+
+    /**
+     * Get the contents of the related users store as an object with tag as key
+     * and an array of related user records as value.
+     */
+    getMappedByTags: function() {
+        var map = {}; // tag -> [relatedUserRecord]
+        this.each(function(relatedUserRecord) {
+            Ext.each(relatedUserRecord.getTagsAsArray(), function(tag) {
+                if(map[tag]) {
+                    map[tag].push(relatedUserRecord);
+                } else {
+                    map[tag] = [relatedUserRecord];
+                }
+            }, this);
+        }, this);
+        return map;
     }
 });

@@ -111,5 +111,36 @@ Ext.define('devilry_subjectadmin.model.Group', {
             });
         }, this);
         this.set('tags', tags);
+    },
+
+    setExaminersFromArrayOfUserIds: function(userids) {
+        var examiners = [];
+        for(var index=0; index<userids.length; index++)  {
+            var userid = userids[index];
+            examiners.push({
+                user: {id: userid}
+            });
+        }
+        this.set('examiners', examiners);
+    },
+
+    /**
+     * Set examiners by matching tags on examiners with ``this.get('tags')``.
+     *
+     * @param {Object} [relatedExaminersMappedByTag]
+     *      Like the one returned by getMappedByTags() in AbstractRelatedUsers.
+     */
+    setExaminersFromMapOfRelatedExaminers: function(relatedExaminersMappedByTag) {
+        var examiners = [];
+        Ext.Array.each(this.get('tags'), function(tagObj) {
+            var tag = tagObj.tag;
+            if(relatedExaminersMappedByTag[tag]) {
+                Ext.Array.each(relatedExaminersMappedByTag[tag], function(relatedExaminerRecord) {
+                    var userid = relatedExaminerRecord.get('user').id;
+                    examiners.push(userid);
+                }, this);
+            }
+        }, this);
+        this.setExaminersFromArrayOfUserIds(Ext.Array.unique(examiners));
     }
 });

@@ -12,6 +12,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     stores: [
         'RelatedStudentsRo',
+        'RelatedExaminersRo',
         'Groups'
     ],
 
@@ -55,6 +56,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onLoadRelatedStudentsStoreSuccess: function(records) {
+        var relatedExaminersStore = this.getRelatedExaminersRoStore();
+        relatedExaminersStore.loadWithAutomaticErrorHandling({
+            scope: this,
+            success: this._onLoad,
+            errortitle: gettext('Failed to load examiners from the period')
+        });
+    },
+
+    _onLoad: function() {
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
 
@@ -89,11 +99,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         var selectedRelatedStudents = selModel.getSelection();
         var groupsStore = this.getGroupsStore();
         var includeTags = true;
+        var automapExaminers = true;
+
+        var examinersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
         Ext.Array.each(selectedRelatedStudents, function(relatedStudentRecord) {
             var groupRecord = groupsStore.addFromRelatedStudentRecord({
                 relatedStudentRecord: relatedStudentRecord,
                 includeTags: includeTags
             });
+            if(automapExaminers) {
+                groupRecord.setExaminersFromMapOfRelatedExaminers(examinersMappedByTag);
+            }
         }, this);
         this.getAddStudentsWindow().close();
         this.manageStudentsController.notifyMultipleGroupsChange();
