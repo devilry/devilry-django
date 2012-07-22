@@ -22,13 +22,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
 
 
     initComponent: function() {
-        this.tagsCellTemplate = new Ext.XTemplate(
-            '<ul class="unstyled">',
-                '<tpl for="tags">',
-                    '<li>{.}</li>',
-                '</tpl>',
-            '</ul>'
-        );
         this.userCellTemplate = new Ext.XTemplate(
             '<div class="userinfo">',
                 '<div class="full_name"><strong>',
@@ -55,6 +48,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                             '<tpl if="xindex != xcount">, </tpl>',
                         '</tpl></small>',
                     '</li>',
+                '</tpl>',
+            '</ul>'
+        );
+        this.tagsCellTemplate = new Ext.XTemplate(
+            '<ul class="unstyled">',
+                '<tpl for="tags">',
+                    '<li>{.}</li>',
                 '</tpl>',
             '</ul>'
         );
