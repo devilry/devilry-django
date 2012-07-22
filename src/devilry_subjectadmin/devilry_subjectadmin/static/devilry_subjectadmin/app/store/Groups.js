@@ -93,5 +93,21 @@ Ext.define('devilry_subjectadmin.store.Groups', {
             }, this);
         }, this);
         return map;
+    },
+
+
+    addFromRelatedStudentRecord: function(relatedStudentRecord) {
+        var tags = [];
+        var examiners = [];
+        this.add({
+            is_open: true,
+            tags: tags,
+            examiners: examiners,
+            candidates: [{
+                user: {
+                    id: relatedStudentRecord.get('user').id
+                }
+            }]
+        });
     }
 });

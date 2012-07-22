@@ -11,14 +11,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     ],
 
     stores: [
-        'RelatedStudents',
-        'RelatedExaminers',
+        'RelatedStudentsRo',
         'Groups'
     ],
 
     refs: [{
         ref: 'addStudentsWindow',
         selector: 'addstudentswindow'
+    }, {
+        ref: 'selectedStudentsGrid',
+        selector: 'addstudentswindow grid'
     }],
 
     init: function() {
@@ -44,7 +46,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onAddstudents: function() {
-        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
+        var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.loadWithAutomaticErrorHandling({
             scope: this,
             success: this._onLoadRelatedStudentsStoreSuccess,
@@ -53,7 +55,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onLoadRelatedStudentsStoreSuccess: function(records) {
-        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
+        var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
 
         this._filterOutRelatedStudentsAlreadyInGroup();
@@ -65,8 +67,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _filterOutRelatedStudentsAlreadyInGroup: function() {
-        var relatedStudentsStore = this.manageStudentsController.getRelatedStudentsRoStore();
-        var currentUsers = this.manageStudentsController.getGroupsStore().getGroupsMappedByUserId();
+        var relatedStudentsStore = this.getRelatedStudentsRoStore();
+        var currentUsers = this.getGroupsStore().getGroupsMappedByUserId();
         relatedStudentsStore.filterBy(function(relatedStudentRecord) {
             var userid = relatedStudentRecord.get('user').id;
             return typeof currentUsers[userid] == 'undefined';
@@ -75,7 +77,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onAllowDuplicatesChange: function(field, allowDuplicates) {
         if(allowDuplicates) {
-            this.manageStudentsController.getRelatedStudentsRoStore().clearFilter();
+            this.getRelatedStudentsRoStore().clearFilter();
         } else {
             this._filterOutRelatedStudentsAlreadyInGroup();
         }
@@ -83,6 +85,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSave: function(button) {
-        alert('Not implemented yet');
+        var selModel = this.getSelectedStudentsGrid().getSelectionModel();
+        var selectedRelatedStudents = selModel.getSelection();
+        console.log(selectedRelatedStudents);
+        var groupsStore = this.getGroupsStore();
+        Ext.Array.each(selectedRelatedStudents, function(relatedStudentRecord) {
+            groupsStore.addFromRelatedStudentRecord(relatedStudentRecord);
+        }, this);
+        this.manageStudentsController.notifyMultipleGroupsChange();
     }
 });
