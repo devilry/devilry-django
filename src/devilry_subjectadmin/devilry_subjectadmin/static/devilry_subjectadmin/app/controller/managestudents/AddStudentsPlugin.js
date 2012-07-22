@@ -30,7 +30,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             'viewport managestudentsoverview button[itemId=addstudents]': {
                 click: this._onAddstudents
             },
-            'addstudentswindow savebutton': {
+            'addstudentswindow #saveButton': {
                 click: this._onSave
             }
             //'addstudentswindow cancelbutton': {
