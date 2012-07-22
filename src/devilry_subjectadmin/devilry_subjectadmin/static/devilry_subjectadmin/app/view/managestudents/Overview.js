@@ -17,20 +17,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     initComponent: function() {
         Ext.apply(this, {
             layout: 'border',
-            frame: false,
+            frame: true,
             items: [{
                 xtype: 'listofgroups',
-                //margin: '10 0 10 40',
                 region: 'west',
-                //border: false,
-                resizable: true,
-                width: 300,
+                border: true,
+                frame: false,
+                split: true,
+                width: 300
             }, {
                 xtype: 'panel',
                 region: 'center',
-                //margin: '10 40 10 20',
-                //padding: '0 0 0 20',
-                border: false,
+                //border: false,
                 layout: 'fit',
                 itemId: 'body'
             }],
