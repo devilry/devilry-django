@@ -87,7 +87,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             }, {
                 xtype: 'checkbox',
                 checked: true,
-                tooltip: gettext('Check this to automatically set examiners that have at least one tag in common with the student as their examiner on this assignment. When this is checked, the result of the tag-matching is displayed in the second column of the table.'),
+                tooltip: gettext('Check this to automatically set examiners that have at least one tag in common with a student as their examiner on this assignment. When this is checked, the result of the tag-matching is displayed in the second column of the table.'),
                 itemId: 'automapExaminersCheckbox',
                 boxLabel: gettext('Autoset examiners by tags')
             }, {
