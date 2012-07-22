@@ -126,7 +126,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             hasIgnored: this.ignoredcount > 0,
             ignoredcount: this.ignoredcount,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id),
-            savebuttonlabel: gettext('Add selected students')
+            savebuttonlabel: Ext.String.format('<em>{0}</em>', gettext('Add selected students'))
         })
     },
 

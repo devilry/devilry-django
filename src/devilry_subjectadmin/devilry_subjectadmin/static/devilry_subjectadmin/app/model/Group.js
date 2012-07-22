@@ -97,5 +97,19 @@ Ext.define('devilry_subjectadmin.model.Group', {
         return Ext.Array.some(this.get('tags'), function(tagObj) {
             return tagObj.tag == tag;
         });
+    },
+
+
+    /**
+     * Set ``tags`` from an array of strings, where each string is a tag.
+     */
+    setTagsFromArrayOfStrings: function(tagsAsStrings) {
+        var tags = [];
+        Ext.Array.each(tagsAsStrings, function(tagString) {
+            tags.push({
+                tag: tagString
+            });
+        }, this);
+        this.set('tags', tags);
     }
 });

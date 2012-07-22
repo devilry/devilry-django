@@ -102,18 +102,22 @@ Ext.define('devilry_subjectadmin.store.Groups', {
     },
 
 
-    addFromRelatedStudentRecord: function(relatedStudentRecord) {
-        var tags = [];
-        var examiners = [];
-        this.add({
+    addFromRelatedStudentRecord: function(config) {
+        var relatedStudentRecord = config.relatedStudentRecord;
+        var includeTags = config.includeTags;
+        var groupRecord = this.add({
             is_open: true,
-            tags: tags,
-            examiners: examiners,
+            examiners: [],
+            tags: [],
             candidates: [{
                 user: {
                     id: relatedStudentRecord.get('user').id
                 }
             }]
-        });
+        })[0];
+        if(config.includeTags) {
+            groupRecord.setTagsFromArrayOfStrings(relatedStudentRecord.getTagsAsArray());
+        }
+        return groupRecord;
     }
 });

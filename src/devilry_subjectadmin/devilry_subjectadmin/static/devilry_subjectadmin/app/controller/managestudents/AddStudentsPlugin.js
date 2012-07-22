@@ -87,11 +87,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     _onSave: function(button) {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();
         var selectedRelatedStudents = selModel.getSelection();
-        console.log(selectedRelatedStudents);
         var groupsStore = this.getGroupsStore();
+        var includeTags = true;
         Ext.Array.each(selectedRelatedStudents, function(relatedStudentRecord) {
-            groupsStore.addFromRelatedStudentRecord(relatedStudentRecord);
+            var groupRecord = groupsStore.addFromRelatedStudentRecord({
+                relatedStudentRecord: relatedStudentRecord,
+                includeTags: includeTags
+            });
         }, this);
+        this.getAddStudentsWindow().close();
         this.manageStudentsController.notifyMultipleGroupsChange();
     }
 });
