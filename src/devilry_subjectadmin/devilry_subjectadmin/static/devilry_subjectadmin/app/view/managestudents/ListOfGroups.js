@@ -150,7 +150,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
         // With examiner
         }, {
-            text: gettext('With examiner'),
+            text: gettext('By examiner'),
             menu: [{
                 itemId: 'selectHasExaminer',
                 text: gettext('Has examiner(s)')
@@ -159,6 +159,19 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 text: gettext('No examiner(s)')
             }, {
                 text: 'TODO: Will list all related examiners'
+            }]
+
+        // By tag
+        }, {
+            text: gettext('By tag'),
+            menu: [{
+                itemId: 'selectHasTag',
+                text: gettext('Has tag(s)')
+            }, {
+                itemId: 'selectNoTag',
+                text: gettext('No tag(s)')
+            }, {
+                text: 'TODO: Will list all related tags'
             }]
         }]);
         var menu = {

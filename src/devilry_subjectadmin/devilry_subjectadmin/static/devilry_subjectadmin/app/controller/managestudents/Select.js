@@ -86,6 +86,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             },
             'viewport managestudentsoverview #selectNoExaminer': {
                 click: this._onSelectNoExaminer
+            },
+
+            // By tags
+            'viewport managestudentsoverview #selectHasTag': {
+                click: this._onSelectHasTag
+            },
+            'viewport managestudentsoverview #selectNoTag': {
+                click: this._onSelectNoTag
             }
         });
     },
@@ -250,6 +258,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectNoExaminer: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('examiners').length == 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+    // Tags
+    _onSelectHasTag: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('tags').length > 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onSelectNoTag: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('tags').length == 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
