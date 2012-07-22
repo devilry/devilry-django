@@ -15,7 +15,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     requires: [
-        'Ext.util.KeyMap',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
         'devilry_extjsextras.HtmlErrorDialog'
     ],
@@ -90,23 +89,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 selectionchange: this._onGroupSelectionChange,
                 render: this._onRenderListOfGroups
             },
-            'viewport managestudentsoverview #selectButton #selectall': {
-                click: this._onSelectAll
-            },
-            'viewport managestudentsoverview #selectButton #deselectall': {
-                click: this._onDeselectAll
-            },
-            'viewport managestudentsoverview #selectButton #invertselection': {
-                click: this._onInvertselection
-            },
             'viewport managestudentsoverview #sortby': {
                 select: this._onSelectSortBy
             },
             'viewport managestudentsoverview #viewselect': {
                 select: this._onSelectViewSelect
-            },
-            'viewport #selectUsersByAutocompleteWidget': {
-                userSelected: this._onUserSelectedBySearch
             }
         });
     },
@@ -135,12 +122,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _onRenderListOfGroups: function() {
-        var map = new Ext.util.KeyMap(this.getListOfGroups().getEl(), {
-            key: 'a',
-            ctrl: true,
-            fn: this._onSelectAll,
-            scope: this
-        });
         this.getGroupsStore().sortBySpecialSorter(this.getCurrentGroupsStoreSorter());
     },
 
@@ -187,82 +168,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
 
 
-    /***********************************************
-     *
-     * Select menu button handlers
-     *
-     **********************************************/
-
-    _onSelectAll: function() {
-        this.getListOfGroups().getSelectionModel().selectAll();
-    },
-    _onDeselectAll: function() {
-        this.getListOfGroups().getSelectionModel().deselectAll();
-    },
-    _onInvertselection: function() {
-        var selectionModel = this.getListOfGroups().getSelectionModel();
-        var selected = Ext.clone(selectionModel.selected.items);
-
-        // Add listener to the "next" selectionchange event, and trigger the selectionchange with selectAll
-        this.getListOfGroups().on({
-            selectionchange: function() {
-                this.deselectGroupRecords(selected);
-            },
-            scope: this,
-            single: true
-        });
-        this.getListOfGroups().getSelectionModel().selectAll();
-    },
-
-
-
-    /**************************************************
-     *
-     * Select by search
-     *
-     **************************************************/
-
-    _showSelectSearchErrorMessage: function(combo, options) {
-        Ext.MessageBox.show({
-            title: options.title,
-            msg: options.msg,
-            buttons: Ext.MessageBox.OK,
-            icon: Ext.MessageBox.ERROR,
-            fn: function() {
-                Ext.defer(function() {
-                    combo.focus();
-                }, 100);
-            }
-        });
-    },
-
-    _onUserSelectedBySearch: function(combo, searchGroupRecord) {
-        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use getGroupRecordById() to get the correct receord.
-        combo.clearValue();
-        combo.focus();
-        var groupId = searchGroupRecord.get('id');
-        var groupRecord = this.getGroupRecordById(groupId);
-        if(groupRecord) {
-            if(this.groupRecordIsSelected(groupRecord)) {
-                this._showSelectSearchErrorMessage(combo, {
-                    title: gettext('Already selected'),
-                    msg: gettext('The group is already selected')
-                });
-            } else {
-                this.selectGroupRecords([groupRecord], true);
-            }
-        } else {
-            this._showSelectSearchErrorMessage(combo, {
-                title: gettext('Selected group not loaded'),
-                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
-            });
-        }
-    },
-
-
-
     /***************************************************
      *
      * Methods to simplify selecting users
@@ -274,38 +179,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
      * @param {Boolean} [keepExisting=false] True to retain existing selections
      * */
-    selectGroupRecords: function(groupRecords, keepExisting) {
+    _selectGroupRecords: function(groupRecords, keepExisting) {
         var selectionModel = this.getListOfGroups().getSelectionModel();
         selectionModel.select(groupRecords, keepExisting);
     },
-
-    /** Deselect the given group records.
-     * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.
-     * */
-    deselectGroupRecords: function(groupRecords) {
-        var selectionModel = this.getListOfGroups().getSelectionModel();
-        selectionModel.deselect(groupRecords);
-    },
-
-    /** Get group record by group id.
-     * @param {int} [groupId] The group id.
-     * @return {devilry_subjectadmin.model.Group} The group record, or ``undefined`` if it is not found.
-     * */
-    getGroupRecordById: function(groupId) {
-        var index = this.getGroupsStore().findExact('id', groupId);
-        if(index == -1) {
-            return undefined;
-        }
-        return this.getGroupsStore().getAt(index);
-    },
-
-    /** Return ``true`` if ``groupRecord`` is selected. */
-    groupRecordIsSelected: function(groupRecord) {
-        return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
-    },
-
-
-
 
 
     /*********************************************
@@ -395,7 +272,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 selectedGroups.push(record);
             }
         }, this);
-        this.selectGroupRecords(selectedGroups);
+        this._selectGroupRecords(selectedGroups);
     },
 
 
@@ -512,7 +389,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 }, this);
             }
         }, this);
-        this.selectGroupRecords(affectedRecords);
+        this._selectGroupRecords(affectedRecords);
         if(callbackconfig) {
             Ext.callback(callbackconfig.success, callbackconfig.scope);
         }

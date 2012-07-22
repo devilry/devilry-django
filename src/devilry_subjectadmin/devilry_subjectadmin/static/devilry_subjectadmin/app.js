@@ -28,6 +28,7 @@ Ext.application({
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
         'managestudents.Overview',
+        'managestudents.Select',
         'managestudents.AddStudentsPlugin',
         'managestudents.NoGroupSelectedViewPlugin',
         'managestudents.SingleGroupSelectedViewPlugin',
