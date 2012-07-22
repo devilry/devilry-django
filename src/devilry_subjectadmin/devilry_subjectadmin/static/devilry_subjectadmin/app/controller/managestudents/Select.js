@@ -320,7 +320,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         var items = [];
         examinerMap.each(function(examiner) {
             items.push({
-                itemId: Ext.String.format('selectByExaminerUserId_{0}', examiner.user.id),
+                examinerUserId: examiner.user.id,
                 text: Ext.String.format('{0} ({1})', examiner.name, examiner.count)
             });
         });
@@ -328,7 +328,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
     _onSpecificExaminerMenuItemClick: function(button) {
-        var userid = parseInt(button.itemId.split('_')[1]);
+        var userid = button.examinerUserId;
         this._selectBy(function(groupRecord) {
             return groupRecord.hasExaminer(userid);
         }, this, this._isInAddToSelectionMenu(button));
@@ -378,7 +378,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         var items = [];
         tagMap.each(function(tag) {
             items.push({
-                itemId: Ext.String.format('selectByTag_{0}', tag.tag),
+                tagString: tag.tag,
                 text: Ext.String.format('{0} ({1})', tag.tag, tag.count)
             });
         });
@@ -386,8 +386,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
     _onSpecificTagMenuItemClick: function(button) {
-        var tag = button.itemId.split('_')[1];
-        console.log(tag);
+        var tag = button.tagString;
         this._selectBy(function(groupRecord) {
             return groupRecord.hasTag(tag);
         }, this, this._isInAddToSelectionMenu(button));
