@@ -50,12 +50,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #selectButton #invertselection': {
                 click: this._onInvertselection
             },
+            
+            // NOTE: The listeners below are shared by items in both
+            //       #replaceSelectionMenu and #addToSelectionMenu.
+            //       We use the itemId of their menu to determine if we want to
+            //       keepExisting or not. See _isInAddToSelectionMenu()
 
             // By status
-            'viewport managestudentsoverview #selectButton #selectStatusOpen': {
+            'viewport managestudentsoverview #selectStatusOpen': {
                 click: this._onSelectStatusOpen
             },
-            'viewport managestudentsoverview #selectButton #selectStatusClosed': {
+            'viewport managestudentsoverview #selectStatusClosed': {
                 click: this._onSelectStatusClosed
             },
         });
@@ -167,6 +172,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         this.getListOfGroups().getSelectionModel().selectAll();
     },
 
+
+    _isInAddToSelectionMenu: function(button) {
+        return button.up('#replaceSelectionMenu') == undefined;
+    },
+
+    _onSelectStatusOpen: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('is_open') == true;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onSelectStatusClosed: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('is_open') == false;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+
+    /***************************************************
+     *
+     * Methods to simplify selecting users
+     *
+     **************************************************/
+
     _findGroupRecordsBy: function(fn, scope) {
         var groupRecords = [];
         this.getGroupsStore().each(function(groupRecord) {
@@ -182,25 +210,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         var groupRecords = this._findGroupRecordsBy(fn, scope);
         this._selectGroupRecords(groupRecords, keepExisting);
     },
-
-    _onSelectStatusOpen: function() {
-        this._selectBy(function(groupRecord) {
-            return groupRecord.get('is_open') == true;
-        }, this, false);
-    },
-    _onSelectStatusClosed: function() {
-        this._selectBy(function(groupRecord) {
-            return groupRecord.get('is_open') == false;
-        }, this, false);
-    },
-
-
-    /***************************************************
-     *
-     * Methods to simplify selecting users
-     *
-     **************************************************/
-
 
     /** Select the given group records.
      * @param {[devilry_subjectadmin.model.Group]} [groupRecords] Group records array.

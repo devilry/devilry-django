@@ -69,48 +69,75 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             xtype: 'button',
             itemId: 'selectButton',
             text: gettext('Select'),
-            menu: [{
-                itemId: 'selectall',
-                text: gettext('Select all')
-            }, {
-                itemId: 'deselectall',
-                text: gettext('Deselect all')
-            }, {
-                itemId: 'invertselection',
-                text: gettext('Invert selection')
-            }, '-', {
-                text: pgettext('group', 'Status'),
-                menu: [{
-                    itemId: 'selectStatusOpen',
-                    text: pgettext('group', 'Open')
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                itemId: 'replaceSelectionMenu',
+                items: [
+                    Ext.String.format('<b>{0}:</b>', gettext('Replace current selection')),
+                {
+                    itemId: 'selectall',
+                    text: gettext('Select all')
                 }, {
-                    itemId: 'selectStatusClosed',
-                    text: pgettext('group', 'Closed')
-                }]
-            }, {
-                text: pgettext('group', 'Grade'),
-                menu: [{
-                    text: pgettext('group', 'Failed')
+                    itemId: 'deselectall',
+                    text: gettext('Deselect all')
                 }, {
-                    text: pgettext('group', 'Passed')
+                    itemId: 'invertselection',
+                    text: gettext('Invert selection')
                 }, '-', {
-                    text: 'TODO: Will list of all current grades here unless there are more than XXX (20?)'
-                }]
-            }, {
-                text: gettext('Number of deliveries'),
-                menu: [{
-                    text: gettext('No deliveries')
+                    text: pgettext('group', 'Status'),
+                    menu: [{
+                        itemId: 'selectStatusOpen',
+                        text: pgettext('group', 'Open')
+                    }, {
+                        itemId: 'selectStatusClosed',
+                        text: pgettext('group', 'Closed')
+                    }]
                 }, {
-                    text: gettext('Has deliveries')
-                }, '-', {
-                    text: 'TOOD: Will list all numbers of deliveries.'
+                    text: pgettext('group', 'Grade'),
+                    menu: [{
+                        text: pgettext('group', 'Failed')
+                    }, {
+                        text: pgettext('group', 'Passed')
+                    }, '-', {
+                        text: 'TODO: Will list of all current grades here unless there are more than XXX (20?)'
+                    }]
+                }, {
+                    text: gettext('Number of deliveries'),
+                    menu: [{
+                        text: gettext('No deliveries')
+                    }, {
+                        text: gettext('Has deliveries')
+                    }, '-', {
+                        text: 'TOOD: Will list all numbers of deliveries.'
+                    }]
+                }, {
+                    text: gettext('With examiner'),
+                    menu: [{
+                        text: 'TODO: Will list all related examiners'
+                    }]
                 }]
-            }, {
-                text: gettext('With examiner'),
-                menu: [{
-                    text: 'TODO: Will list all related examiners'
+            }
+        }, {
+            xtype: 'button',
+            itemId: 'addToSelectionButton',
+            text: gettext('Add to selection'),
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                itemId: 'addToSelectionMenu',
+                items: [Ext.String.format('<b>{0}:</b>', gettext('Add to current selection')),
+                {
+                    text: pgettext('group', 'Status'),
+                    menu: [{
+                        itemId: 'selectStatusOpen',
+                        text: pgettext('group', 'Open')
+                    }, {
+                        itemId: 'selectStatusClosed',
+                        text: pgettext('group', 'Closed')
+                    }]
                 }]
-            }]
+            }
         }, '->', {
             xtype: 'button',
             itemId: 'addstudents',
