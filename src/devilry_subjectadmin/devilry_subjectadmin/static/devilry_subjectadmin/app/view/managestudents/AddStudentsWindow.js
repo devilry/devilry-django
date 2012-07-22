@@ -100,7 +100,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
     },
 
     refreshBody: function() {
-        console.log('Refresh');
         this.removeAll();
         this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
         var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
@@ -152,25 +151,33 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         }];
         var includeTags = this.down('#includeTagsCheckbox').getValue();
         var automapExaminers = this.down('#automapExaminersCheckbox').getValue();
+        var showTagsAndExaminersCol = false;
+        var showTagsCol = false;
         if(includeTags && automapExaminers) {
-            columns.push({
-                header: gettext('Tags and matching examiners'),
-                dataIndex: 'tags',
-                menuDisabled: true,
-                sortable: false,
-                flex: 6,
-                renderer: Ext.bind(this._renderTagsAndExaminersCell, this)
-            });
+            showTagsAndExaminersCol = true;
         } else if(includeTags) {
-            columns.push({
-                header: gettext('Tags'),
-                dataIndex: 'tags',
-                menuDisabled: true,
-                sortable: false,
-                flex: 4,
-                renderer: Ext.bind(this._renderTagsCell, this)
-            });
+            showTagsCol = true
         }
+        columns.push({
+            header: gettext('Tags and matching examiners'),
+            dataIndex: 'tags',
+            menuDisabled: true,
+            sortable: false,
+            flex: 6,
+            hidden: !showTagsAndExaminersCol,
+            itemId: 'tagsAndExaminersColumn',
+            renderer: Ext.bind(this._renderTagsAndExaminersCell, this)
+        });
+        columns.push({
+            header: gettext('Tags'),
+            dataIndex: 'tags',
+            menuDisabled: true,
+            sortable: false,
+            flex: 4,
+            hidden: !showTagsCol,
+            itemId: 'tagsColumn',
+            renderer: Ext.bind(this._renderTagsCell, this)
+        });
         return columns;
     },
 

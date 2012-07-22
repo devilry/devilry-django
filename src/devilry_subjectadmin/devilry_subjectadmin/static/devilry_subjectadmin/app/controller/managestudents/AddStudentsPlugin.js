@@ -32,6 +32,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     }, {
         ref: 'includeTagsCheckbox',
         selector: 'addstudentswindow #includeTagsCheckbox'
+    }, {
+        ref: 'tagsColumn',
+        selector: 'addstudentswindow #tagsColumn'
+    }, {
+        ref: 'tagsAndExaminersColumn',
+        selector: 'addstudentswindow #tagsAndExaminersColumn'
     }],
 
     init: function() {
@@ -126,20 +132,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
     _onIncludeTagsChange: function(field, includeTags) {
         if(includeTags) {
-            this.getAddStudentsWindow().refreshBody();
+            this.getTagsColumn().show();
             this.getAutomapExaminersCheckbox().enable();
         } else {
             if(this.getAutomapExaminersCheckbox().getValue() == true) {
                 this.getAutomapExaminersCheckbox().setValue(false);
-                // NOTE: we do not refreshBody() because changing automapExaminersCheckbox will trigger it in _onAutomapExaminersChange()
+                // NOTE: we do nothing more because changing automapExaminersCheckbox will trigger _onAutomapExaminersChange
             } else {
-                this.getAddStudentsWindow().refreshBody();
+                this.getTagsColumn().hide();
             }
             this.getAutomapExaminersCheckbox().disable();
         }
     },
-    _onAutomapExaminersChange: function() {
-        this.getAddStudentsWindow().refreshBody();
+    _onAutomapExaminersChange: function(field, automapExaminers) {
+        if(automapExaminers) {
+            this.getTagsColumn().hide();
+            this.getTagsAndExaminersColumn().show();
+        } else {
+            //this.getTagsColumn().show();
+            this.getTagsAndExaminersColumn().hide();
+            if(this.getIncludeTagsCheckbox().getValue() == true) {
+                this.getTagsColumn().show();
+            }
+        }
     },
 
     _onSave: function(button) {
