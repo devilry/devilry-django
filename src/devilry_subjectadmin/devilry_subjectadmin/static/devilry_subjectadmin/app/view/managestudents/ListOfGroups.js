@@ -139,9 +139,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         }, {
             text: gettext('Number of deliveries'),
             menu: [{
-                text: gettext('No deliveries')
-            }, {
+                itemId: 'selectHasDeliveries',
                 text: gettext('Has deliveries')
+            }, {
+                itemId: 'selectNoDeliveries',
+                text: gettext('No deliveries')
             }, '-', {
                 text: 'TOOD: Will list all numbers of deliveries.'
             }]

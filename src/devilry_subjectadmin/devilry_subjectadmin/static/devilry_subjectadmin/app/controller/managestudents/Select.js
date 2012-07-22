@@ -64,12 +64,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
                 click: this._onSelectStatusClosed
             },
 
-            // By status
+            // By grade
             'viewport managestudentsoverview #selectGradeFailed': {
                 click: this._onSelectGradeFailed
             },
             'viewport managestudentsoverview #selectGradePassed': {
                 click: this._onSelectGradePassed
+            },
+
+            // By deliveries
+            'viewport managestudentsoverview #selectHasDeliveries': {
+                click: this._onSelectHasDeliveries
+            },
+            'viewport managestudentsoverview #selectNoDeliveries': {
+                click: this._onSelectNoDeliveries
             },
         });
     },
@@ -209,6 +217,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
             return feedback && feedback.is_passing_grade;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+
+    // Deliveries
+    _onSelectHasDeliveries: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('num_deliveries') > 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onSelectNoDeliveries: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('num_deliveries') == 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
