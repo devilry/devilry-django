@@ -82,5 +82,13 @@ Ext.define('devilry_subjectadmin.model.Group', {
         } else {
             return this.get('id');
         }
-    }
+    },
+
+
+    /** Return ``true`` if the given ``userid`` is in ``examiners``. */
+    hasExaminer: function(userid) {
+        return Ext.Array.some(this.get('examiners'), function(examiner) {
+            return examiner.user.id == userid;
+        });
+    },
 });
