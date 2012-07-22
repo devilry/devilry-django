@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         this.tagsAndExaminersCellTemplate = new Ext.XTemplate(
             '<ul class="unstyled">',
                 '<tpl for="tagsAndExaminers">',
-                    '<li style="white-space:normal !important;">',
+                    '<li>',
                         '{tag}: <small>',
                         '<tpl for="examiners">',
                             '<tpl if="data.user.full_name">',
@@ -58,6 +58,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 '</tpl>',
             '</ul>'
         );
+
 
         Ext.apply(this, {
             layout: 'border',
