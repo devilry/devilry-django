@@ -328,7 +328,7 @@ class ExaminersField(ListOfDictField):
         user = UserField(required=False)
 
 class GroupForm(forms.Form):
-    name = forms.CharField(required=True,
+    name = forms.CharField(required=False,
                            help_text='The name of the group (string)')
     is_open = forms.BooleanField(required=False,
                                  help_text='Is open? (boolean)')
