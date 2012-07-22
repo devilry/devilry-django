@@ -22,6 +22,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     }, {
         ref: 'selectedStudentsGrid',
         selector: 'addstudentswindow grid'
+    }, {
+        ref: 'automapExaminersCheckbox',
+        selector: 'addstudentswindow #automapExaminersCheckbox'
     }],
 
     init: function() {
@@ -38,6 +41,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             },
             'addstudentswindow #allowDuplicatesCheckbox': {
                 change: this._onAllowDuplicatesChange
+            },
+            'addstudentswindow #includeTagsCheckbox': {
+                change: this._onIncludeTagsChange
+            },
+            'addstudentswindow #automapExaminersCheckbox': {
+                change: this._onAutomapExaminersChange
             }
         });
     },
@@ -93,6 +102,23 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         } else {
             this._filterOutRelatedStudentsAlreadyInGroup();
         }
+        this.getAddStudentsWindow().refreshBody();
+    },
+    _onIncludeTagsChange: function(field, includeTags) {
+        if(includeTags) {
+            this.getAddStudentsWindow().refreshBody();
+            this.getAutomapExaminersCheckbox().enable();
+        } else {
+            if(this.getAutomapExaminersCheckbox().getValue() == true) {
+                this.getAutomapExaminersCheckbox().setValue(false);
+                // NOTE: we do not refreshBody() because changing automapExaminersCheckbox will trigger it in _onAutomapExaminersChange()
+            } else {
+                this.getAddStudentsWindow().refreshBody();
+            }
+            this.getAutomapExaminersCheckbox().disable();
+        }
+    },
+    _onAutomapExaminersChange: function() {
         this.getAddStudentsWindow().refreshBody();
     },
 

@@ -84,8 +84,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             }, {
                 xtype: 'checkbox',
                 checked: true,
-                itemId: 'autoSetExaminersCheckbox',
-                boxLabel: gettext('Autoset examiners')
+                itemId: 'automapExaminersCheckbox',
+                boxLabel: gettext('Autoset examiners by tags')
             }, {
                 xtype: 'primarybutton',
                 itemId: 'saveButton',
@@ -97,6 +97,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
     },
 
     refreshBody: function() {
+        console.log('Refresh');
         this.removeAll();
         this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
         var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
@@ -147,8 +148,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             renderer: Ext.bind(this._renderUserCell, this)
         }];
         var includeTags = this.down('#includeTagsCheckbox').getValue();
-        var autoSetExaminers = this.down('#autoSetExaminersCheckbox').getValue();
-        if(includeTags && autoSetExaminers) {
+        var automapExaminers = this.down('#automapExaminersCheckbox').getValue();
+        if(includeTags && automapExaminers) {
             columns.push({
                 header: gettext('Tags and matching examiners'),
                 dataIndex: 'tags',
@@ -164,7 +165,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
                 menuDisabled: true,
                 sortable: false,
                 flex: 4,
-                renderer: Ext.bind(this, this._renderTagsCell)
+                renderer: Ext.bind(this._renderTagsCell, this)
             });
         }
         return columns;
