@@ -11,7 +11,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
 
     requires: [
         'Ext.util.KeyMap',
-        'Ext.util.MixedCollection'
+        'Ext.util.MixedCollection',
+        'Ext.XTemplate'
     ],
 
     stores: [
@@ -31,6 +32,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     }],
 
     init: function() {
+        this.labelWithGroupCountTpl = new Ext.XTemplate(
+            gettext('{label} (Matching groups: {groupcount})')
+        );
         this.control({
             'viewport managestudentsoverview listofgroups': {
                 render: this._onRenderListOfGroups
@@ -313,9 +317,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         gradeMap.each(function(grade) {
             items.push({
                 feedback_grade: grade.grade,
-                text: Ext.String.format('{0} ({1})', grade.grade, grade.count)
+                text: grade.grade
+                //text: this.labelWithGroupCountTpl.apply({
+                    //label: grade.grade,
+                    //groupcount: grade.count
+                //})
             });
-        });
+        }, this);
         menu.setItems(items);
     },
 
@@ -356,9 +364,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         pointsMap.each(function(points) {
             items.push({
                 feedback_points: points.points,
-                text: Ext.String.format('{0} ({1})', points.points, points.count)
+                text: points.points
+                //text: this.labelWithGroupCountTpl.apply({
+                    //label: points.points,
+                    //groupcount: points.count
+                //})
             });
-        });
+        }, this);
         menu.setItems(items);
     },
 
@@ -463,9 +475,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         examinerMap.each(function(examiner) {
             items.push({
                 examinerUserId: examiner.user.id,
-                text: Ext.String.format('{0} ({1})', examiner.name, examiner.count)
+                text: this.labelWithGroupCountTpl.apply({
+                    label: examiner.name,
+                    groupcount: examiner.count
+                })
             });
-        });
+        }, this);
         menu.setItems(items);
     },
 
@@ -521,7 +536,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         tagMap.each(function(tag) {
             items.push({
                 tagString: tag.tag,
-                text: Ext.String.format('{0} ({1})', tag.tag, tag.count)
+                text: tag.tag
+                //text: this.labelWithGroupCountTpl.apply({
+                    //label: tag.tag,
+                    //groupcount: tag.count
+                //})
             });
         });
         menu.setItems(items);
