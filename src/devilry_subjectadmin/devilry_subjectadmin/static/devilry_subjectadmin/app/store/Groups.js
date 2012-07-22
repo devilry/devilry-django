@@ -30,14 +30,14 @@ Ext.define('devilry_subjectadmin.store.Groups', {
     },
 
     _sortByUsername: function(a, b) {
-        return this._sortByUserlisProperty('candidates', 'username', a, b);
+        return this._sortByUserlistProperty('candidates', 'username', a, b);
     },
 
     _sortByFullname: function(a, b) {
-        return this._sortByUserlisProperty('candidates', 'full_name', a, b);
+        return this._sortByUserlistProperty('candidates', 'full_name', a, b);
     },
 
-    _sortByUserlisProperty: function(listproperty, attribute, a, b) {
+    _sortByUserlistProperty: function(listproperty, attribute, a, b) {
         var listA = a.get(listproperty);
         var listB = b.get(listproperty);
         if(listA.length == 0) {
@@ -46,8 +46,14 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         if(listB.length == 0) {
             return 1;
         }
-        var a = listA[0].user[attribute]
+        var a = listA[0].user[attribute];
         var b = listB[0].user[attribute];
+        if(!a) {
+            return -1;
+        }
+        if(!b) {
+            return 1;
+        }
         return a.localeCompare(b);
     },
 
