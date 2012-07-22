@@ -101,6 +101,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             },
             'viewport managestudentsoverview #selectNoTag': {
                 click: this._onSelectNoTag
+            },
+            'viewport managestudentsoverview #specificTagMenu': {
+                show: this._onShowSpecificTagMenu
+            },
+            'viewport managestudentsoverview #specificTagMenu menuitem': {
+                click: this._onSpecificTagMenuItemClick
             }
         });
     },
@@ -184,6 +190,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
 
+
+
     /***********************************************
      *
      * Select menu button handlers
@@ -216,7 +224,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         return button.up('#replaceSelectionMenu') == undefined;
     },
 
+
+    // 
     // Status
+    //
+
     _onSelectStatusOpen: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('is_open') == true;
@@ -229,7 +241,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
 
+    //
     // Grade
+    //
+
     _onSelectGradeFailed: function(button) {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
@@ -244,7 +259,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
 
+    // 
     // Deliveries
+    //
+
     _onSelectHasDeliveries: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('num_deliveries') > 0;
@@ -256,7 +274,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         }, this, this._isInAddToSelectionMenu(button));
     },
 
+
+    //
     // Examiners
+    //
+
     _onSelectHasExaminer: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('examiners').length > 0;
@@ -312,7 +334,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         }, this, this._isInAddToSelectionMenu(button));
     },
 
-    // Tags
+
+
+    //
+    //Tags
+    //
+
     _onSelectHasTag: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('tags').length > 0;
@@ -323,6 +350,52 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             return groupRecord.get('tags').length == 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
+
+    _onShowSpecificTagMenu: function(menu) {
+        // Add unique tags, and count groups
+        var tagMap = new Ext.util.MixedCollection(); // TAG -> {tag: TAG, count: COUNT}
+        this.getGroupsStore().each(function(groupRecord) {
+            var tags = groupRecord.get('tags');
+            for(var index=0; index<tags.length; index++)  {
+                var tagObj = tags[index];
+                if(tagMap.containsKey(tagObj.tag)) {
+                    tagMap.get(tagObj.tag).count ++;
+                } else {
+                    tagMap.add(tagObj.tag, {
+                        tag: tagObj.tag,
+                        count: 1
+                    });
+                }
+            }
+        }, this);
+        
+        // Sort
+        tagMap.sortBy(function(a, b) {
+            return a.tag.localeCompare(b.tag);
+        });
+
+        // Create and set items
+        var items = [];
+        tagMap.each(function(tag) {
+            items.push({
+                itemId: Ext.String.format('selectByTag_{0}', tag.tag),
+                text: Ext.String.format('{0} ({1})', tag.tag, tag.count)
+            });
+        });
+        menu.setItems(items);
+    },
+
+    _onSpecificTagMenuItemClick: function(button) {
+        var tag = button.itemId.split('_')[1];
+        console.log(tag);
+        this._selectBy(function(groupRecord) {
+            return groupRecord.hasTag(tag);
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+
+
+
 
 
     /***************************************************

@@ -95,7 +95,7 @@ Ext.define('devilry_subjectadmin.model.Group', {
     /** Return ``true`` if the given ``tag`` is in ``tags``. */
     hasTag: function(tag) {
         return Ext.Array.some(this.get('tags'), function(tagObj) {
-            return tagOb.tag == tag;
+            return tagObj.tag == tag;
         });
     }
 });

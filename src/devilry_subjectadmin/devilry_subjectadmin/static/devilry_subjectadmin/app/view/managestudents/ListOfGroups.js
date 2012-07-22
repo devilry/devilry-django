@@ -179,7 +179,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 itemId: 'selectNoTag',
                 text: gettext('No tag(s)')
             }, {
-                text: 'TODO: Will list all related tags'
+                text: gettext('Specific tag'),
+                menu: {
+                    xtype: 'dynamicloadmenu',
+                    itemId: 'specificTagMenu'
+                }
             }]
         }]);
         var menu = {
