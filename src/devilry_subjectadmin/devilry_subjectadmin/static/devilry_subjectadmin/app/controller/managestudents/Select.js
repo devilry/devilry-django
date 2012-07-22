@@ -79,6 +79,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #selectNoDeliveries': {
                 click: this._onSelectNoDeliveries
             },
+
+            // By examiners
+            'viewport managestudentsoverview #selectHasExaminer': {
+                click: this._onSelectHasExaminer
+            },
+            'viewport managestudentsoverview #selectNoExaminer': {
+                click: this._onSelectNoExaminer
+            }
         });
     },
 
@@ -230,6 +238,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectNoDeliveries: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('num_deliveries') == 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+    // Examiners
+    _onSelectHasExaminer: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('examiners').length > 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onSelectNoExaminer: function(button) {
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('examiners').length == 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 

@@ -152,6 +152,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         }, {
             text: gettext('With examiner'),
             menu: [{
+                itemId: 'selectHasExaminer',
+                text: gettext('Has examiner(s)')
+            }, {
+                itemId: 'selectNoExaminer',
+                text: gettext('No examiner(s)')
+            }, {
                 text: 'TODO: Will list all related examiners'
             }]
         }]);
