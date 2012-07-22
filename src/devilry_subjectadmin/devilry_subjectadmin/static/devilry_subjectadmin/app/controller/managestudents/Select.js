@@ -143,9 +143,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
     _intCompare: function(a, b) {
-        if(a > b)
+        if(a < b)
             return -1;
-        else if(b > a)
+        else if(a > b)
             return 1;
         else
             return 0;
@@ -301,6 +301,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
                 } else {
                     gradeMap.add(grade, {
                         grade: grade,
+                        points: feedback.points,
                         count: 1
                     });
                 }
@@ -308,8 +309,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         }, this);
         
         // Sort
+        // NOTE: Using points for sorting since sorting by grade do not work well for grades like 12/24
+        var me = this;
         gradeMap.sortBy(function(a, b) {
-            return a.grade.localeCompare(b.grade);
+            return me._intCompare(a.points, b.points);
         });
 
         // Create and set items
@@ -356,7 +359,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         // Sort
         var me = this;
         pointsMap.sortBy(function(a, b) {
-            return me._intCompare(a, b);
+            return me._intCompare(a.points, b.points);
         });
 
         // Create and set items
