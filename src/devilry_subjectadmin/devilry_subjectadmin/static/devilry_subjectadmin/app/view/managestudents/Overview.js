@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 border: true,
                 frame: false,
                 split: true,
-                width: 300
+                width: 350
             }, {
                 xtype: 'panel',
                 region: 'center',

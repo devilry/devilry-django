@@ -135,8 +135,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             }, {
                 itemId: 'selectGradeFailed',
                 text: pgettext('group', 'Failed')
-            }, '-', {
-                text: 'TODO: Will list of all current grades here unless there are more than XXX (20?)'
+            }, {
+                text: gettext('Specific grade'),
+                menu: {
+                    xtype: 'dynamicloadmenu',
+                    itemId: 'specificGradeMenu'
+                }
             }]
 
         // Number of deliveries

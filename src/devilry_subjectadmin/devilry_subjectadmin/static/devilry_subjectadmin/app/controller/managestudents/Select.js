@@ -72,6 +72,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #selectGradePassed': {
                 click: this._onSelectGradePassed
             },
+            'viewport managestudentsoverview #specificGradeMenu': {
+                show: this._onShowSpecificGradeMenu
+            },
+            'viewport managestudentsoverview #specificGradeMenu menuitem': {
+                click: this._onSpecificGradeMenuItemClick
+            },
 
             // By deliveries
             'viewport managestudentsoverview #selectHasDeliveries': {
@@ -261,6 +267,47 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
             return feedback && feedback.is_passing_grade;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+    _onShowSpecificGradeMenu: function(menu) {
+        // Add unique grades, and count groups
+        var gradeMap = new Ext.util.MixedCollection(); // grade -> {grade: grade, count: COUNT}
+        this.getGroupsStore().each(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            if(feedback) {
+                var grade = feedback.grade;
+                if(gradeMap.containsKey(grade)) {
+                    gradeMap.get(grade).count ++;
+                } else {
+                    gradeMap.add(grade, {
+                        grade: grade,
+                        count: 1
+                    });
+                }
+            }
+        }, this);
+        
+        // Sort
+        gradeMap.sortBy(function(a, b) {
+            return a.grade.localeCompare(b.grade);
+        });
+
+        // Create and set items
+        var items = [];
+        gradeMap.each(function(grade) {
+            items.push({
+                feedback_grade: grade.grade,
+                text: Ext.String.format('{0} ({1})', grade.grade, grade.count)
+            });
+        });
+        menu.setItems(items);
+    },
+
+    _onSpecificGradeMenuItemClick: function(button) {
+        var grade = button.feedback_grade;
+        this._selectBy(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            return feedback && feedback.grade == grade;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
