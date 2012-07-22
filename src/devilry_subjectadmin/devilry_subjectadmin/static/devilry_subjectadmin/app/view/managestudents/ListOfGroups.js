@@ -148,8 +148,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             }, {
                 itemId: 'selectNoDeliveries',
                 text: gettext('No deliveries')
-            }, '-', {
-                text: 'TOOD: Will list all numbers of deliveries.'
+            }, {
+                text: pgettext('numdeliveries', 'Exact number'),
+                menu: {
+                    xtype: 'dynamicloadmenu',
+                    itemId: 'specificNumDeliveriesMenu'
+                }
             }]
 
         // With examiner

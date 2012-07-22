@@ -80,6 +80,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #selectNoDeliveries': {
                 click: this._onSelectNoDeliveries
             },
+            'viewport managestudentsoverview #specificNumDeliveriesMenu': {
+                show: this._onShowSpecificNumDeliveriesMenu
+            },
+            'viewport managestudentsoverview #specificNumDeliveriesMenu menuitem': {
+                click: this._onSpecificNumDeliveriesMenuItemClick
+            },
 
             // By examiners
             'viewport managestudentsoverview #selectHasExaminer': {
@@ -271,6 +277,36 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectNoDeliveries: function(button) {
         this._selectBy(function(groupRecord) {
             return groupRecord.get('num_deliveries') == 0;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+    _onShowSpecificNumDeliveriesMenu: function(menu) {
+        // Add unique num_deliveriess, and count groups
+        var num_deliveriesMap = {}; // NUMDELIVERIES -> true
+        this.getGroupsStore().each(function(groupRecord) {
+            var num_deliveries = groupRecord.get('num_deliveries');
+            num_deliveriesMap[num_deliveries] = true;
+        }, this);
+        
+        // Sort
+        var num_deliveriesArray = Ext.Object.getKeys(num_deliveriesMap);
+        var num_deliveriesArray = Ext.Array.sort(num_deliveriesArray);
+
+        // Create and set items
+        var items = [];
+        Ext.Array.each(num_deliveriesArray, function(num_deliveries) {
+            items.push({
+                num_deliveries: num_deliveries,
+                text: Ext.String.format('{0}', num_deliveries)
+            });
+        }, this);
+        menu.setItems(items);
+    },
+
+    _onSpecificNumDeliveriesMenuItemClick: function(button) {
+        var num_deliveries = button.num_deliveries;
+        this._selectBy(function(groupRecord) {
+            return groupRecord.get('num_deliveries') == num_deliveries;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
