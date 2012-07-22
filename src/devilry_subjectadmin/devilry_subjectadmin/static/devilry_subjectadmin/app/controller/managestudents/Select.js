@@ -78,6 +78,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview #specificGradeMenu menuitem': {
                 click: this._onSpecificGradeMenuItemClick
             },
+            'viewport managestudentsoverview #specificPointsMenu': {
+                show: this._onShowSpecificPointsMenu
+            },
+            'viewport managestudentsoverview #specificPointsMenu menuitem': {
+                click: this._onSpecificPointsMenuItemClick
+            },
 
             // By deliveries
             'viewport managestudentsoverview #selectHasDeliveries': {
@@ -130,6 +136,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             fn: this._onSelectAll,
             scope: this
         });
+    },
+
+    _intCompare: function(a, b) {
+        if(a > b)
+            return -1;
+        else if(b > a)
+            return 1;
+        else
+            return 0;
     },
 
 
@@ -269,6 +284,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             return feedback && feedback.is_passing_grade;
         }, this, this._isInAddToSelectionMenu(button));
     },
+
     _onShowSpecificGradeMenu: function(menu) {
         // Add unique grades, and count groups
         var gradeMap = new Ext.util.MixedCollection(); // grade -> {grade: grade, count: COUNT}
@@ -308,6 +324,49 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
             return feedback && feedback.grade == grade;
+        }, this, this._isInAddToSelectionMenu(button));
+    },
+
+    _onShowSpecificPointsMenu: function(menu) {
+        // Add unique pointss, and count groups
+        var pointsMap = new Ext.util.MixedCollection(); // points -> {points: points, count: COUNT}
+        this.getGroupsStore().each(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            if(feedback) {
+                var points = feedback.points;
+                if(pointsMap.containsKey(points)) {
+                    pointsMap.get(points).count ++;
+                } else {
+                    pointsMap.add(points, {
+                        points: points,
+                        count: 1
+                    });
+                }
+            }
+        }, this);
+        
+        // Sort
+        var me = this;
+        pointsMap.sortBy(function(a, b) {
+            return me._intCompare(a, b);
+        });
+
+        // Create and set items
+        var items = [];
+        pointsMap.each(function(points) {
+            items.push({
+                feedback_points: points.points,
+                text: Ext.String.format('{0} ({1})', points.points, points.count)
+            });
+        });
+        menu.setItems(items);
+    },
+
+    _onSpecificPointsMenuItemClick: function(button) {
+        var points = button.feedback_points;
+        this._selectBy(function(groupRecord) {
+            var feedback = groupRecord.get('feedback');
+            return feedback && feedback.points == points;
         }, this, this._isInAddToSelectionMenu(button));
     },
 

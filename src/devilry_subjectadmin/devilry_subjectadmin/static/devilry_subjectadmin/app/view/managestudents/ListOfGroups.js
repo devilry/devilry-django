@@ -141,6 +141,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                     xtype: 'dynamicloadmenu',
                     itemId: 'specificGradeMenu'
                 }
+            }, {
+                text: gettext('Points'),
+                menu: {
+                    xtype: 'dynamicloadmenu',
+                    itemId: 'specificPointsMenu'
+                }
             }]
 
         // Number of deliveries
