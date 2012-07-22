@@ -117,7 +117,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         Ext.Array.push(menuitems, [{
 
         // Status
-            text: pgettext('group', 'Status'),
+            text: pgettext('group', 'By status'),
             menu: [{
                 itemId: 'selectStatusOpen',
                 text: pgettext('group', 'Open')
@@ -126,9 +126,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 text: pgettext('group', 'Closed')
             }]
 
-        // Grade
+        // Feedback
         }, {
-            text: pgettext('group', 'Feedback'),
+            text: pgettext('group', 'By feedback'),
             menu: [{
                 itemId: 'selectGradePassed',
                 text: pgettext('group', 'Passed')
@@ -151,7 +151,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
         // Number of deliveries
         }, {
-            text: gettext('Number of deliveries'),
+            text: gettext('By number of deliveries'),
             menu: [{
                 itemId: 'selectHasDeliveries',
                 text: gettext('Has deliveries')
@@ -166,7 +166,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 }
             }]
 
-        // With examiner
+        // By examiner
         }, {
             text: gettext('By examiner'),
             menu: [{
