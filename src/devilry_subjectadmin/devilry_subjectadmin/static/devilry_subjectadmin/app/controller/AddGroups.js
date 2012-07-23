@@ -3,7 +3,15 @@
  */
 Ext.define('devilry_subjectadmin.controller.AddGroups', {
     extend: 'Ext.app.Controller',
-    mixins: ['devilry_subjectadmin.utils.LoadAssignmentMixin'],
+    mixins: [
+        'devilry_subjectadmin.utils.LoadAssignmentMixin',
+        'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
+    ],
+
+    requires: [
+        'Ext.tip.ToolTip',
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
 
     views: [
         'addgroups.Overview',
@@ -16,10 +24,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         'RelatedStudentsRo',
         'RelatedExaminersRo',
         'Groups'
-    ],
-
-    requires: [
-        'Ext.tip.ToolTip'
     ],
 
     refs: [{
@@ -80,6 +84,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         var assignment_id = this.getOverview().assignment_id;
         this.on_save_success_url = this.getOverview().on_save_success_url;
         this.getOverview().setLoading(true);
+        this.setLoadingBreadcrumb();
         this.loadAssignment(assignment_id);
     },
 
@@ -93,6 +98,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
+        this._setBreadcrumb();
 
         var period_id = this.assignmentRecord.get('parentnode');
         this.getRelatedExaminersRoStore().setPeriod(period_id);
@@ -156,6 +162,16 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             var userid = relatedStudentRecord.get('user').id;
             return typeof currentUsers[userid] == 'undefined';
         });
+    },
+
+    _setBreadcrumb: function() {
+        var breadcrumbtype = this.getOverview().breadcrumbtype;
+        if(breadcrumbtype == 'managestudents') {
+            this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [{
+                text: gettext('Manage students'),
+                url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignmentRecord.get('id'))
+            }], gettext('Add students'));
+        }
     },
 
 

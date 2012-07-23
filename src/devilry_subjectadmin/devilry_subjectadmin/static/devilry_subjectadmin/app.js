@@ -243,7 +243,8 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'addgroupsoverview',
             assignment_id: assignment_id,
-            on_save_success_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(assignment_id)
+            on_save_success_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(assignment_id),
+            breadcrumbtype: 'managestudents'
         });
     }
 });

@@ -17,6 +17,10 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
      * @cfg {String} [on_save_success_url] (required)
      */
 
+    /**
+     * @cfg {String} [breadcrumbtype] (required)
+     * See controller.AddGroups._setBreadcrumb
+     */
 
     initComponent: function() {
         this.userCellTemplate = new Ext.XTemplate(
