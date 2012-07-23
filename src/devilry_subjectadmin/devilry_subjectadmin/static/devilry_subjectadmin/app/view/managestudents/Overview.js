@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.managestudentsoverview',
-    cls: 'managestudentsoverview sidebarlayout',
+    cls: 'devilry_subjectadmin_managestudentsoverview',
     requires: [
         'devilry_subjectadmin.view.managestudents.ListOfGroups'
     ],
