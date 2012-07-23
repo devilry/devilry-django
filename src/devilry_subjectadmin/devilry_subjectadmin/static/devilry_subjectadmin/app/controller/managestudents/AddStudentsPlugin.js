@@ -10,6 +10,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         'managestudents.AddStudentsPanel',
     ],
 
+    mixins: ['devilry_subjectadmin.utils.LoadAssignmentMixin'],
+
+    models: [
+        'Assignment'
+    ],
     stores: [
         'RelatedStudentsRo',
         'RelatedExaminersRo',
@@ -21,46 +26,46 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     ],
 
     refs: [{
-        ref: 'addStudentsWindow',
-        selector: 'addstudentswindow'
+        ref: 'addStudentsPanel',
+        selector: 'addstudentspanel'
     }, {
         ref: 'selectedStudentsGrid',
-        selector: 'addstudentswindow grid'
+        selector: 'addstudentspanel grid'
     }, {
         ref: 'automapExaminersCheckbox',
-        selector: 'addstudentswindow #automapExaminersCheckbox'
+        selector: 'addstudentspanel #automapExaminersCheckbox'
     }, {
         ref: 'includeTagsCheckbox',
-        selector: 'addstudentswindow #includeTagsCheckbox'
+        selector: 'addstudentspanel #includeTagsCheckbox'
     }, {
         ref: 'tagsColumn',
-        selector: 'addstudentswindow #tagsColumn'
+        selector: 'addstudentspanel #tagsColumn'
     }, {
         ref: 'tagsAndExaminersColumn',
-        selector: 'addstudentswindow #tagsAndExaminersColumn'
+        selector: 'addstudentspanel #tagsAndExaminersColumn'
     }],
 
     init: function() {
-        this.application.addListener({
-            scope: this,
-            managestudentsSuccessfullyLoaded: this._onManageStudentsLoaded
-        });
         this.control({
-            'viewport managestudentsoverview button[itemId=addstudents]': {
-                click: this._onAddstudents
+            //'viewport managestudentsoverview button[itemId=addstudents]': {
+                //click: this._onAddstudents
+            //},
+            'addstudentspanel': {
+                render: this._onRender
             },
-            'addstudentswindow #saveButton': {
+
+            'addstudentspanel #saveButton': {
                 click: this._onSave
             },
-            'addstudentswindow #allowDuplicatesCheckbox': {
+            'addstudentspanel #allowDuplicatesCheckbox': {
                 change: this._onAllowDuplicatesChange,
                 render: this._setTooltip
             },
-            'addstudentswindow #includeTagsCheckbox': {
+            'addstudentspanel #includeTagsCheckbox': {
                 change: this._onIncludeTagsChange,
                 render: this._setTooltip
             },
-            'addstudentswindow #automapExaminersCheckbox': {
+            'addstudentspanel #automapExaminersCheckbox': {
                 change: this._onAutomapExaminersChange,
                 render: this._setTooltip
             }
@@ -77,26 +82,39 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         });
     },
 
-    _onManageStudentsLoaded: function(manageStudentsController) {
-        this.manageStudentsController = manageStudentsController;
-        this._handleAddStudentsOnLoad();
+    _onRender: function() {
+        var assignment_id = this.getAddStudentsPanel().assignment_id;
+        this.loadAssignment(assignment_id);
     },
 
-    _handleAddStudentsOnLoad: function() {
-        var add_students_on_load = this.manageStudentsController.getOverview().add_students_on_load;
-        console.log(add_students_on_load);
-        if(add_students_on_load) {
-            this._onAddstudents();
-        }
-    },
+    onLoadAssignmentSuccess: function(record) {
+        console.log(record);
+        this.assignmentRecord = record;
+        var period_id = this.assignmentRecord.get('parentnode');
 
-    _onAddstudents: function() {
+        this.getRelatedExaminersRoStore().setPeriod(period_id);
+        this.getRelatedStudentsRoStore().setPeriod(period_id);
+
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.loadWithAutomaticErrorHandling({
             scope: this,
             success: this._onLoadRelatedStudentsStoreSuccess,
             errortitle: gettext('Failed to load students from the period')
         });
+    },
+
+    _handleLoadError: function(operation, title) {
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        error.addErrors(null, operation);
+        var errormessage = error.asHtmlList();
+        Ext.widget('htmlerrordialog', {
+            title: title,
+            bodyHtml: errormessage
+        }).show();
+    },
+    onLoadAssignmentFailure: function(operation) {
+        this.getOverview().setLoading(false);
+        this._handleLoadError(operation, gettext('Failed to load assignment'));
     },
 
     _onLoadRelatedStudentsStoreSuccess: function(records) {
@@ -115,18 +133,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
         this._filterOutRelatedStudentsAlreadyInGroup();
         relatedStudentsStore.sortBySpecialSorter('full_name');
-        //Ext.widget('addstudentswindow', {
+
+        console.log('LOADED');
+        //this.manageStudentsController.setBody({
+            //xtype: 'addstudentspanel',
             //relatedStudentsStore: relatedStudentsStore,
             //periodinfo: this.manageStudentsController.getPeriodInfo(),
             //relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
-        //}).show();
-
-        this.manageStudentsController.setBody({
-            xtype: 'addstudentspanel',
-            relatedStudentsStore: relatedStudentsStore,
-            periodinfo: this.manageStudentsController.getPeriodInfo(),
-            relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
-        });
+        //});
+        this._setBody();
     },
 
     _filterOutRelatedStudentsAlreadyInGroup: function() {
@@ -144,7 +159,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         } else {
             this._filterOutRelatedStudentsAlreadyInGroup();
         }
-        this.getAddStudentsWindow().refreshBody();
+        this._setBody();
     },
     _onIncludeTagsChange: function(field, includeTags) {
         if(includeTags) {
@@ -189,7 +204,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
                 groupRecord.setExaminersFromMapOfRelatedExaminers(this.relatedExaminersMappedByTag);
             }
         }, this);
-        this.getAddStudentsWindow().close();
-        this.manageStudentsController.notifyMultipleGroupsChange();
+        //this.manageStudentsController.notifyMultipleGroupsChange();
+    },
+
+
+    _setBody: function() {
+        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
+        var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
+        this.getAddStudentsPanel().setBody({
+            ignoredcount: ignoredcount,
+            allIgnored: allIgnored,
+            relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
+            periodinfo: {
+                path: 'TOOD',
+                id: 1000
+            }
+        });
     }
 });

@@ -29,5 +29,9 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         reader: {
             type: 'json'
         }
+    },
+
+    tull: function() {
+        console.log('HEI');
     }
 });

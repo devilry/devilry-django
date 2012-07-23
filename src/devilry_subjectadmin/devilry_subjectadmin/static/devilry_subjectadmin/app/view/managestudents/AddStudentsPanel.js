@@ -13,11 +13,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
     ],
 
     /**
-     * @cfg {Ext.data.Store} [relatedStudentsStore] (required)
-     */
-
-    /**
-     * @cfg {Object} [periodinfo] (required)
+     * @cfg {Object} [assignment_id] (required)
      */
 
 
@@ -92,13 +88,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
             }]
         });
         this.callParent(arguments);
-        this.refreshBody();
+        //this.setBody();
     },
 
-    refreshBody: function() {
+    setBody: function(config) {
         this.removeAll();
-        this.ignoredcount = this.relatedStudentsStore.getTotalCount() - this.relatedStudentsStore.getCount()
-        var allIgnored = this.relatedStudentsStore.getTotalCount() == this.ignoredcount;
+        this.ignoredcount = config.ignoredcount;
+        var allIgnored = config.allIgnored;
+        this.relatedExaminersMappedByTag = config.relatedExaminersMappedByTag;
+        this.periodinfo = config.periodinfo;
 
         if(allIgnored) {
             this.add([{
@@ -117,7 +115,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
             this.add([{
                 xtype: 'grid',
                 region: 'center',
-                store: this.relatedStudentsStore,
+                store: 'RelatedStudentsRo',
                 selModel: selModel,
                 columns: this._getGridColumns()
             }, {

@@ -240,9 +240,8 @@ Ext.application({
     },
     manageGroupsAddStudents: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
-            xtype: 'managestudentsoverview',
-            assignment_id: assignment_id,
-            add_students_on_load: true
+            xtype: 'addstudentspanel',
+            assignment_id: assignment_id
         });
     }
 });
