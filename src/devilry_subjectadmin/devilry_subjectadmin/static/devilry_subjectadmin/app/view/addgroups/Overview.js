@@ -63,7 +63,6 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
 
         Ext.apply(this, {
             layout: 'border',
-            title: gettext('Add students'),
             buttons: [{
                 xtype: 'checkbox',
                 itemId: 'allowDuplicatesCheckbox',
