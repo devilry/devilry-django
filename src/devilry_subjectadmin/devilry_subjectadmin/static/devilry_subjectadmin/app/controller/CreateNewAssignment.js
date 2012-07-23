@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         'Ext.Date',
         'devilry_extjsextras.NextButton',
         'devilry_extjsextras.form.ErrorUtils',
-        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_subjectadmin.utils.AutoGenShortname'
     ],
     views: [
         'createnewassignment.Form',
@@ -36,6 +37,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'metainfo',
         selector: 'createnewassignmentform #metainfo'
     }, {
+        ref: 'shortNameField',
+        selector: 'createnewassignmentform textfield[name=short_name]'
+    }, {
         ref: 'deliveryTypesRadioGroup',
         selector: 'createnewassignmentform #deliveryTypesRadioGroup'
     }, {
@@ -59,7 +63,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 render: this._onRenderCreateNewAssignmentForm,
             },
             'viewport createnewassignmentform textfield[name=long_name]': {
-                render: this._onRenderLongName
+                render: this._onRenderLongName,
+                blur: this._onLongNameBlur
+            },
+            'viewport createnewassignmentform textfield[name=short_name]': {
+                blur: this._onShortNameBlur
             },
             'viewport createnewassignmentform createbutton': {
                 click: this._onCreate,
@@ -86,6 +94,17 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         //}
         //radioButtons[index].setValue(true);
     //},
+
+    _onLongNameBlur: function(field) {
+        var shortnamefield = this.getShortNameField();
+        if(shortnamefield.getValue() == '') {
+            var value = field.getValue();
+            var short_name = devilry_subjectadmin.utils.AutoGenShortname.autogenShortname(value);
+            shortnamefield.setValue(short_name);
+        }
+    },
+    _onShortNameBlur: function() {
+    },
 
 
     _onRenderLongName: function(field) {
