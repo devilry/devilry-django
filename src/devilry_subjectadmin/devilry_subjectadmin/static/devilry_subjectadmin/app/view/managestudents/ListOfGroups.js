@@ -137,7 +137,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             }, {
                 itemId: 'selectGradeFailed',
                 text: pgettext('group', 'Failed')
+            }, '-', {
+                itemId: 'selectHasFeedback',
+                text: pgettext('group', 'Has feedback')
             }, {
+                itemId: 'selectNoFeedback',
+                text: pgettext('group', 'No feedback')
+            }, '-', {
                 text: pgettext('group', 'Grade'),
                 menu: {
                     xtype: 'dynamicloadmenu',
