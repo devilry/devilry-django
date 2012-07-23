@@ -70,9 +70,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 items: [{
                     xtype: 'button',
                     itemId: 'selectButton',
+                    cls: 'selectButton',
                     text: gettext('Select'),
                     menu: this._createSelectMenu({
                         itemId: 'replaceSelectionMenu',
+                        cls: 'replaceSelectionMenu',
                         title: gettext('Replace current selection'),
                         prefixItems: [{
                             itemId: 'selectall',
@@ -88,6 +90,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 }, {
                     xtype: 'button',
                     itemId: 'addToSelectionButton',
+                    cls: 'addToSelectionButton',
                     text: gettext('Add to selection'),
                     menu: this._createSelectMenu({
                         title: gettext('Add to current selection'),
@@ -96,6 +99,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 }, '->', {
                     xtype: 'button',
                     itemId: 'addstudents',
+                    cls: 'addstudents',
                     iconCls: 'icon-add-24',
                     text: gettext('Add students')
                 }]
@@ -118,103 +122,151 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
         // Status
             text: pgettext('group', 'By status'),
+            cls: 'byStatusButton',
             hideOnClick: false,
-            menu: [{
-                itemId: 'selectStatusOpen',
-                text: pgettext('group', 'Open')
-            }, {
-                itemId: 'selectStatusClosed',
-                text: pgettext('group', 'Closed')
-            }]
+            menu: {
+                xtype: 'menu',
+                cls: 'byStatusMenu',
+                items: [{
+                    itemId: 'selectStatusOpen',
+                    cls: 'selectStatusOpen',
+                    text: pgettext('group', 'Open')
+                }, {
+                    itemId: 'selectStatusClosed',
+                    cls: 'selectStatusClosed',
+                    text: pgettext('group', 'Closed')
+                }]
+            }
 
         // Feedback
         }, {
             text: pgettext('group', 'By feedback'),
+            cls: 'byFeedbackButton',
             hideOnClick: false,
-            menu: [{
-                itemId: 'selectGradePassed',
-                text: pgettext('group', 'Passed')
-            }, {
-                itemId: 'selectGradeFailed',
-                text: pgettext('group', 'Failed')
-            }, '-', {
-                itemId: 'selectHasFeedback',
-                text: pgettext('group', 'Has feedback')
-            }, {
-                itemId: 'selectNoFeedback',
-                text: pgettext('group', 'No feedback')
-            }, '-', {
-                text: pgettext('group', 'Grade'),
-                menu: {
-                    xtype: 'dynamicloadmenu',
-                    itemId: 'specificGradeMenu'
-                }
-            }, {
-                text: pgettext('points', 'Points'),
-                menu: {
-                    xtype: 'dynamicloadmenu',
-                    itemId: 'specificPointsMenu'
-                }
-            }]
+            menu: {
+                xtype: 'menu',
+                cls: 'byFeedbackMenu',
+                items: [{
+                    itemId: 'selectGradePassed',
+                    cls: 'selectGradePassed',
+                    text: pgettext('group', 'Passed')
+                }, {
+                    itemId: 'selectGradeFailed',
+                    cls: 'selectGradeFailed',
+                    text: pgettext('group', 'Failed')
+                }, '-', {
+                    itemId: 'selectHasFeedback',
+                    cls: 'selectHasFeedback',
+                    text: pgettext('group', 'Has feedback')
+                }, {
+                    itemId: 'selectNoFeedback',
+                    cls: 'selectNoFeedback',
+                    text: pgettext('group', 'No feedback')
+                }, '-', {
+                    text: pgettext('group', 'Grade'),
+                    cls: 'selectByFeedbackWithGrade',
+                    hideOnClick: false,
+                    menu: {
+                        xtype: 'dynamicloadmenu',
+                        itemId: 'specificGradeMenu'
+                    }
+                }, {
+                    text: pgettext('points', 'Points'),
+                    cls: 'selectByFeedbackWithPoints',
+                    hideOnClick: false,
+                    menu: {
+                        xtype: 'dynamicloadmenu',
+                        itemId: 'specificPointsMenu'
+                    }
+                }]
+            }
 
         // Number of deliveries
         }, {
             text: gettext('By number of deliveries'),
+            cls: 'byDeliveryNumButton',
             hideOnClick: false,
-            menu: [{
-                itemId: 'selectHasDeliveries',
-                text: gettext('Has deliveries')
-            }, {
-                itemId: 'selectNoDeliveries',
-                text: gettext('No deliveries')
-            }, {
-                text: pgettext('numdeliveries', 'Exact number'),
-                menu: {
-                    xtype: 'dynamicloadmenu',
-                    itemId: 'specificNumDeliveriesMenu'
-                }
-            }]
+            menu: {
+                xtype: 'menu',
+                cls: 'byDeliveryMenu',
+                items: [{
+                    itemId: 'selectHasDeliveries',
+                    cls: 'selectHasDeliveries',
+                    text: gettext('Has deliveries')
+                }, {
+                    itemId: 'selectNoDeliveries',
+                    cls: 'selectNoDeliveries',
+                    text: gettext('No deliveries')
+                }, {
+                    text: pgettext('numdeliveries', 'Exact number'),
+                    cls: 'selectByDeliveryExactNum',
+                    hideOnClick: false,
+                    menu: {
+                        xtype: 'dynamicloadmenu',
+                        itemId: 'specificNumDeliveriesMenu'
+                    }
+                }]
+            }
 
         // By examiner
         }, {
             text: gettext('By examiner'),
+            cls: 'byExaminerButton',
             hideOnClick: false,
-            menu: [{
-                itemId: 'selectHasExaminer',
-                text: gettext('Has examiner(s)')
-            }, {
-                itemId: 'selectNoExaminer',
-                text: gettext('No examiner(s)')
-            }, {
-                text: gettext('Specific examiner'),
-                menu: {
-                    xtype: 'dynamicloadmenu',
-                    itemId: 'specificExaminerMenu'
-                }
-            }]
+            menu: {
+                xtype: 'menu',
+                cls: 'byExaminerMenu',
+                items: [{
+                    itemId: 'selectHasExaminer',
+                    cls: 'selectHasExaminer',
+                    text: gettext('Has examiner(s)')
+                }, {
+                    itemId: 'selectNoExaminer',
+                    cls: 'selectNoExaminer',
+                    text: gettext('No examiner(s)')
+                }, {
+                    text: gettext('Specific examiner'),
+                    cls: 'selectBySpecificExaminer',
+                    hideOnClick: false,
+                    menu: {
+                        xtype: 'dynamicloadmenu',
+                        itemId: 'specificExaminerMenu'
+                    }
+                }]
+            }
 
         // By tag
         }, {
             text: gettext('By tag'),
+            cls: 'byTagButton',
             hideOnClick: false,
-            menu: [{
-                itemId: 'selectHasTag',
-                text: gettext('Has tag(s)')
-            }, {
-                itemId: 'selectNoTag',
-                text: gettext('No tag(s)')
-            }, {
-                text: gettext('Specific tag'),
-                menu: {
-                    xtype: 'dynamicloadmenu',
-                    itemId: 'specificTagMenu'
-                }
-            }]
+            menu: {
+                xtype: 'menu',
+                cls: 'byTagMenu',
+                items: [{
+                    itemId: 'selectHasTag',
+                    cls: 'selectHasTag',
+                    text: gettext('Has tag(s)')
+                }, {
+                    itemId: 'selectNoTag',
+                    cls: 'selectNoTag',
+                    text: gettext('No tag(s)')
+                }, {
+                    text: gettext('Specific tag'),
+                    cls: 'selectBySpecificTac',
+                    hideOnClick: false,
+                    menu: {
+                        xtype: 'dynamicloadmenu',
+                        itemId: 'specificTagMenu'
+                    }
+                }]
+            }
         }]);
         var menu = {
             xtype: 'menu',
             plain: true,
             itemId: config.itemId,
+            cls: config.cls,
             items: menuitems
         }
         return menu;
