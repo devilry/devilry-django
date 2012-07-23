@@ -16,7 +16,8 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     views: [
         'addgroups.Overview',
         'addgroups.AddGroups',
-        'addgroups.AllIgnoredHelp'
+        'addgroups.AllIgnoredHelp',
+        'addgroups.AllowDuplicatesCheckbox'
     ],
 
     models: [
@@ -66,7 +67,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             'addgroupsoverview #deselectAll': {
                 click: this._onDeselectAll
             },
-            'addgroupsoverview #allowDuplicatesCheckbox': {
+            'addgroupsoverview addgroupsallowduplicatescheckbox': {
                 change: this._onAllowDuplicatesChange,
                 render: this._setTooltip
             },
@@ -207,6 +208,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         } else {
             this._filterOutRelatedStudentsAlreadyInGroup();
         }
+        this._checkAllIgnored();
     },
     _onIncludeTagsChange: function(field, includeTags) {
         if(includeTags) {

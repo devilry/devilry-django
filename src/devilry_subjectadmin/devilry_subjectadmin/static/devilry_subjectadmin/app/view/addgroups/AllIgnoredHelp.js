@@ -1,10 +1,23 @@
 Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
-    extend: 'Ext.Component',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.addgroupsallignored',
-    padding: 40,
     cls: 'devilry_subjectadmin_addgroupsallignoredhelp bootstrap',
 
-    html: '',
+    bodyPadding: 40,
+    items: [{
+        xtype: 'box',
+        itemId: 'help'
+    }],
+    tbar: [{
+        text: gettext('Advanced options'),
+        menu: {
+            xtype: 'menu',
+            plain: true,
+            items: [{
+                xtype: 'addgroupsallowduplicatescheckbox'
+            }]
+        }
+    }],
 
     setBody: function(periodinfo) {
         var help = Ext.create('Ext.XTemplate',
@@ -21,6 +34,6 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
             periodpath: periodinfo.path,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(periodinfo.id)
         });
-        this.update(help);
+        this.down('#help').update(help);
     }
 });
