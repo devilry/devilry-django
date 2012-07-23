@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'managestudents.AddStudentsWindow',
+        'managestudents.AddStudentsPanel',
     ],
 
     stores: [
@@ -115,11 +115,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
         this._filterOutRelatedStudentsAlreadyInGroup();
         relatedStudentsStore.sortBySpecialSorter('full_name');
-        Ext.widget('addstudentswindow', {
+        //Ext.widget('addstudentswindow', {
+            //relatedStudentsStore: relatedStudentsStore,
+            //periodinfo: this.manageStudentsController.getPeriodInfo(),
+            //relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
+        //}).show();
+
+        this.manageStudentsController.setBody({
+            xtype: 'addstudentspanel',
             relatedStudentsStore: relatedStudentsStore,
             periodinfo: this.manageStudentsController.getPeriodInfo(),
             relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
-        }).show();
+        });
     },
 
     _filterOutRelatedStudentsAlreadyInGroup: function() {

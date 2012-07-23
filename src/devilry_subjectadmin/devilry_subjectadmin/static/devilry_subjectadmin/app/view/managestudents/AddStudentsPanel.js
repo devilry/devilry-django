@@ -1,10 +1,10 @@
 /**
  * A window for adding students to an assignment.
  * */
-Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
-    extend: 'Ext.window.Window',
-    alias: 'widget.addstudentswindow',
-    cls: 'addstudentswindow',
+Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.addstudentspanel',
+    cls: 'devilry_subjectadmin_addstudentspanel',
     requires: [
         'devilry_extjsextras.form.Help',
         'devilry_extjsextras.PrimaryButton',
@@ -62,11 +62,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
 
         Ext.apply(this, {
             layout: 'border',
-            closable: true,
-            width: 850,
-            height: 500,
-            //maximizable: true,
-            modal: true,
             title: gettext('Add students'),
             buttons: [{
                 xtype: 'button',
