@@ -1,9 +1,6 @@
-/**
- * A window for adding students to an assignment.
- * */
-Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
+Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.addstudentspanel',
+    alias: 'widget.addgroupsoverview',
     cls: 'devilry_subjectadmin_addstudentspanel',
     requires: [
         'devilry_extjsextras.form.Help',

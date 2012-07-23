@@ -29,10 +29,10 @@ Ext.application({
         'assignment.EditAnonymous',
         'managestudents.Overview',
         'managestudents.Select',
-        'managestudents.AddStudentsPlugin',
         'managestudents.NoGroupSelectedViewPlugin',
         'managestudents.SingleGroupSelectedViewPlugin',
-        'managestudents.MultipleGroupsSelectedViewPlugin'
+        'managestudents.MultipleGroupsSelectedViewPlugin',
+        'AddGroups'
     ],
 
     constructor: function() {
@@ -240,8 +240,9 @@ Ext.application({
     },
     manageGroupsAddStudents: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
-            xtype: 'addstudentspanel',
+            xtype: 'addgroupsoverview',
             assignment_id: assignment_id
+            //on_save_success_url: 
         });
     }
 });

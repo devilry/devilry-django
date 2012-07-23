@@ -1,16 +1,13 @@
 /**
- * Plugin for {@link devilry_subjectadmin.controller.managestudents.Overview} that
- * adds the ability to add students (groups with a single student) to an
- * assignment.
+ * Add groups on assignment.
  */
-Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
+Ext.define('devilry_subjectadmin.controller.AddGroups', {
     extend: 'Ext.app.Controller',
+    mixins: ['devilry_subjectadmin.utils.LoadAssignmentMixin'],
 
     views: [
-        'managestudents.AddStudentsPanel',
+        'addgroups.Overview',
     ],
-
-    mixins: ['devilry_subjectadmin.utils.LoadAssignmentMixin'],
 
     models: [
         'Assignment'
@@ -26,23 +23,23 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     ],
 
     refs: [{
-        ref: 'addStudentsPanel',
-        selector: 'addstudentspanel'
+        ref: 'overview',
+        selector: 'addgroupsoverview'
     }, {
         ref: 'selectedStudentsGrid',
-        selector: 'addstudentspanel grid'
+        selector: 'addgroupsoverview grid'
     }, {
         ref: 'automapExaminersCheckbox',
-        selector: 'addstudentspanel #automapExaminersCheckbox'
+        selector: 'addgroupsoverview #automapExaminersCheckbox'
     }, {
         ref: 'includeTagsCheckbox',
-        selector: 'addstudentspanel #includeTagsCheckbox'
+        selector: 'addgroupsoverview #includeTagsCheckbox'
     }, {
         ref: 'tagsColumn',
-        selector: 'addstudentspanel #tagsColumn'
+        selector: 'addgroupsoverview #tagsColumn'
     }, {
         ref: 'tagsAndExaminersColumn',
-        selector: 'addstudentspanel #tagsAndExaminersColumn'
+        selector: 'addgroupsoverview #tagsAndExaminersColumn'
     }],
 
     init: function() {
@@ -50,22 +47,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             //'viewport managestudentsoverview button[itemId=addstudents]': {
                 //click: this._onAddstudents
             //},
-            'addstudentspanel': {
+            'addgroupsoverview': {
                 render: this._onRender
             },
 
-            'addstudentspanel #saveButton': {
+            'addgroupsoverview #saveButton': {
                 click: this._onSave
             },
-            'addstudentspanel #allowDuplicatesCheckbox': {
+            'addgroupsoverview #allowDuplicatesCheckbox': {
                 change: this._onAllowDuplicatesChange,
                 render: this._setTooltip
             },
-            'addstudentspanel #includeTagsCheckbox': {
+            'addgroupsoverview #includeTagsCheckbox': {
                 change: this._onIncludeTagsChange,
                 render: this._setTooltip
             },
-            'addstudentspanel #automapExaminersCheckbox': {
+            'addgroupsoverview #automapExaminersCheckbox': {
                 change: this._onAutomapExaminersChange,
                 render: this._setTooltip
             }
@@ -83,8 +80,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onRender: function() {
-        var assignment_id = this.getAddStudentsPanel().assignment_id;
-        this.getAddStudentsPanel().setLoading(true);
+        var assignment_id = this.getOverview().assignment_id;
+        this.getOverview().setLoading(true);
         this.loadAssignment(assignment_id);
     },
 
@@ -143,7 +140,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onLoad: function() {
-        this.getAddStudentsPanel().setLoading(false);
+        this.getOverview().setLoading(false);
         this.relatedExaminersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
 
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
@@ -209,7 +206,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     _setBody: function() {
         var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
         var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
-        this.getAddStudentsPanel().setBody({
+        this.getOverview().setBody({
             ignoredcount: ignoredcount,
             allIgnored: allIgnored,
             relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
@@ -245,7 +242,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _syncGroupsStore: function() {
         console.log('sync started');
-        this.getAddStudentsPanel().setLoading(gettext('Saving ...'));
+        this.getOverview().setLoading(gettext('Saving ...'));
         this.getGroupsStore().sync({
             scope: this,
             success: this._onSyncGroupsStoreSuccess,
@@ -254,7 +251,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSyncGroupsStoreSuccess: function(batch, options) {
-        this.getAddStudentsPanel().setLoading(false);
+        this.getOverview().setLoading(false);
         console.log('sync success', batch);
         var affectedRecords = [];
         var operations = batch.operations;
@@ -270,7 +267,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSyncGroupsStoreFailure: function(batch, options) {
-        this.getAddStudentsPanel().setLoading(false);
+        this.getOverview().setLoading(false);
         this._unmaskListOfGroups();
         console.log('failure', batch, options);
     },
