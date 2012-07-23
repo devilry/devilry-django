@@ -83,7 +83,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
             }]
         });
         this.callParent(arguments);
-        //this.setBody();
     },
 
     setBody: function(config) {

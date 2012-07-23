@@ -245,7 +245,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _syncGroupsStore: function() {
         console.log('sync started');
-        this._maskListOfGroups();
+        this.getAddStudentsPanel().setLoading(gettext('Saving ...'));
         this.getGroupsStore().sync({
             scope: this,
             success: this._onSyncGroupsStoreSuccess,
@@ -254,7 +254,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSyncGroupsStoreSuccess: function(batch, options) {
-        this._unmaskListOfGroups();
+        this.getAddStudentsPanel().setLoading(false);
         console.log('sync success', batch);
         var affectedRecords = [];
         var operations = batch.operations;
@@ -270,6 +270,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
     },
 
     _onSyncGroupsStoreFailure: function(batch, options) {
+        this.getAddStudentsPanel().setLoading(false);
         this._unmaskListOfGroups();
         console.log('failure', batch, options);
     },
