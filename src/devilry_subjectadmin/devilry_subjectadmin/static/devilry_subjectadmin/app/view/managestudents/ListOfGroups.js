@@ -76,7 +76,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                         title: gettext('Replace current selection'),
                         prefixItems: [{
                             itemId: 'selectall',
-                            text: gettext('Select all')
+                            text: gettext('Select all') + ' <small>(CTRL-a)</small>'
                         }, {
                             itemId: 'deselectall',
                             text: gettext('Deselect all')

@@ -72,7 +72,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             target: item.el,
             constrainPosition: true,
             anchor: 'top',
-            dismissDelay: 20000, // NOTE: Setting this high (20sec) instead of to 0 so that it disappears even when the framework do not catch the event that should hide it.
+            dismissDelay: 30000, // NOTE: Setting this high (30sec) instead of to 0 (no autodismiss) so that it disappears eventually even when the framework do not catch the event that should hide it.
             html: item.tooltip
         });
     },

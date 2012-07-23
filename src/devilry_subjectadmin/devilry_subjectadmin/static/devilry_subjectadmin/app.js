@@ -153,6 +153,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
         this.route.add("/assignment/:assignment_id/@@manage-students/:group_ids", 'manageGroups');
+        this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroups');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         this.route.start();

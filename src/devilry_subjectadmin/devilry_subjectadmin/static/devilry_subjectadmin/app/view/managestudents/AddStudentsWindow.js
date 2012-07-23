@@ -142,14 +142,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
 
 
     _getGridColumns: function() {
-        var columns = [{
-            header: gettext('Name'),
-            dataIndex: 'id',
-            menuDisabled: true,
-            sortable: false,
-            flex: 4,
-            renderer: Ext.bind(this._renderUserCell, this)
-        }];
         var includeTags = this.down('#includeTagsCheckbox').getValue();
         var automapExaminers = this.down('#automapExaminersCheckbox').getValue();
         var showTagsAndExaminersCol = false;
@@ -159,7 +151,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
         } else if(includeTags) {
             showTagsCol = true
         }
-        columns.push({
+
+        var columns = [{
+            header: gettext('Name'),
+            dataIndex: 'id',
+            menuDisabled: true,
+            sortable: false,
+            flex: 4,
+            renderer: Ext.bind(this._renderUserCell, this)
+        }, {
             header: gettext('Tags and matching examiners'),
             dataIndex: 'tags',
             menuDisabled: true,
@@ -168,8 +168,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             hidden: !showTagsAndExaminersCol,
             itemId: 'tagsAndExaminersColumn',
             renderer: Ext.bind(this._renderTagsAndExaminersCell, this)
-        });
-        columns.push({
+        }, {
             header: gettext('Tags'),
             dataIndex: 'tags',
             menuDisabled: true,
@@ -178,7 +177,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsWindow', {
             hidden: !showTagsCol,
             itemId: 'tagsColumn',
             renderer: Ext.bind(this._renderTagsCell, this)
-        });
+        }];
         return columns;
     },
 
