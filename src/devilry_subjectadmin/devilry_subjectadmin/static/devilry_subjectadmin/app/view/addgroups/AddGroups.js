@@ -90,8 +90,14 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 selModel: selModel,
                 columns: this._getGridColumns(),
                 tbar: [{
-                    text: gettext('Select all'),
-                    itemId: 'selectAll'
+                    text: gettext('Select'),
+                    menu: [{
+                        text: gettext('Select all'),
+                        itemId: 'selectAll'
+                    }, {
+                        text: gettext('Deselect all'),
+                        itemId: 'deselectAll'
+                    }]
                 }, '->', {
                     text: gettext('Advanced options'),
                     menu: {

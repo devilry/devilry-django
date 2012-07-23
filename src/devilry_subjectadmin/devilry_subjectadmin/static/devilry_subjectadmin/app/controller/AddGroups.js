@@ -59,6 +59,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             'addgroupsoverview #selectAll': {
                 click: this._onSelectAll
             },
+            'addgroupsoverview #deselectAll': {
+                click: this._onDeselectAll
+            },
             'addgroupsoverview #allowDuplicatesCheckbox': {
                 change: this._onAllowDuplicatesChange,
                 render: this._setTooltip
@@ -188,6 +191,10 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     _onSelectAll: function() {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();
         selModel.selectAll();
+    },
+    _onDeselectAll: function() {
+        var selModel = this.getSelectedStudentsGrid().getSelectionModel();
+        selModel.deselectAll();
     },
 
     _onAllowDuplicatesChange: function(field, allowDuplicates) {
