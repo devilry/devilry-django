@@ -84,7 +84,7 @@ def noextjsdebug_server():
     """
     Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
     """
-    local('bin/django_dev.py runserver --settings settings.noextjsdebug')
+    local('bin/django_dev.py runserver 0.0.0.0:8001 --settings settings.noextjsdebug')
 
 @task
 def jsbuild(appname):
