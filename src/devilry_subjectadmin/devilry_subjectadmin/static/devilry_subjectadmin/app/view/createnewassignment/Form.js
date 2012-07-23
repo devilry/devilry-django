@@ -61,41 +61,55 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             gettext("The short name can have max 20 letters, and it can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>.")
         ]
 
-    // How do students add deliveries
     }, {
-        xtype: 'radiogroup',
-        fieldLabel: gettext('How do students add deliveries?'),
-        vertical: true,
-        itemId: 'deliveryTypesRadioGroup',
-        cls: 'delivery_types-radiogroup',
-        columns: 1,
+        xtype: 'container',
+        layout: 'column',
         items: [{
-            boxLabel: gettext('Using Devilry'),
-            name: 'delivery_types',
-            inputValue: 0,
-            checked: true
-        }, {
-            boxLabel: gettext('Not using Devilry'),
-            name: 'delivery_types',
-            inputValue: 1
-        }]
-    }, {
-        xtype: 'formhelp',
-        margin: '5 0 0 0',
-        html: gettext('If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.')
+            // How do students add deliveries
+            xtype: 'container',
+            columnWidth: 1,
+            padding: '0 20 20 0',
+            items: [{
+                xtype: 'radiogroup',
+                fieldLabel: gettext('How do students add deliveries?'),
+                vertical: true,
+                itemId: 'deliveryTypesRadioGroup',
+                cls: 'delivery_types-radiogroup',
+                columns: 1,
+                items: [{
+                    boxLabel: gettext('Using Devilry'),
+                    name: 'delivery_types',
+                    inputValue: 0,
+                    checked: true
+                }, {
+                    boxLabel: gettext('Not using Devilry'),
+                    name: 'delivery_types',
+                    inputValue: 1
+                }]
+            }, {
+                xtype: 'formhelp',
+                margin: '5 0 0 0',
+                html: gettext('If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.')
+            }]
 
-    // First deadline
-    }, {
-        xtype: 'devilry_extjsextras-datetimefield',
-        cls: 'first_deadline',
-        name: 'first_deadline',
-        width: 300,
-        fieldLabel: gettext('First deadline')
-    }, {
-        xtype: 'formhelp',
-        itemId: 'first_deadline-help',
-        margin: '5 0 0 0',
-        html: gettext('The default deadline added to each student when adding new students to the assignment.')
+        }, {
+            // First deadline
+            xtype: 'container',
+            //columnWidth: 0.5,
+            width: 350,
+            items: [{
+                xtype: 'devilry_extjsextras-datetimefield',
+                cls: 'first_deadline',
+                name: 'first_deadline',
+                width: 300,
+                fieldLabel: gettext('First deadline')
+            }, {
+                xtype: 'formhelp',
+                itemId: 'first_deadline-help',
+                margin: '5 0 0 0',
+                html: gettext('The default deadline added to each student when adding new students to the assignment.')
+            }]
+        }]
 
     }, {
         xtype: 'fieldset',
