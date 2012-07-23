@@ -15,6 +15,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     views: [
         'addgroups.Overview',
+        'addgroups.AddGroups'
     ],
 
     models: [
@@ -54,6 +55,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
             'addgroupsoverview #saveButton': {
                 click: this._onSave
+            },
+            'addgroupsoverview #selectAll': {
+                click: this._onSelectAll
             },
             'addgroupsoverview #allowDuplicatesCheckbox': {
                 change: this._onAllowDuplicatesChange,
@@ -177,9 +181,14 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     //
     //
-    // Checkbox handlers
+    // Checkbox/button handlers
     //
     //
+
+    _onSelectAll: function() {
+        var selModel = this.getSelectedStudentsGrid().getSelectionModel();
+        selModel.selectAll();
+    },
 
     _onAllowDuplicatesChange: function(field, allowDuplicates) {
         if(allowDuplicates) {
@@ -187,7 +196,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         } else {
             this._filterOutRelatedStudentsAlreadyInGroup();
         }
-        this._setBody();
     },
     _onIncludeTagsChange: function(field, includeTags) {
         if(includeTags) {
@@ -221,8 +229,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
         var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
         this.getOverview().setBody({
+            xtype: 'addgroupspanel',
             ignoredcount: ignoredcount,
-            allIgnored: allIgnored,
+            //allIgnored: allIgnored,
             relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
             periodinfo: this.assignmentRecord.getPeriodInfoFromBreadcrumb()
         });

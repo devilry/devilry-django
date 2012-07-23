@@ -1,8 +1,9 @@
-Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
+Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.addgroupsoverview',
-    cls: 'devilry_subjectadmin_addstudentspanel',
+    alias: 'widget.addgroupspanel',
+    cls: 'devilry_subjectadmin_addgroupspanel',
     requires: [
+        'Ext.XTemplate',
         'devilry_extjsextras.form.Help',
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.GridMultiSelectModel',
@@ -61,14 +62,10 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
         );
 
 
+        var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
         Ext.apply(this, {
             layout: 'border',
-            buttons: [{
-                xtype: 'checkbox',
-                itemId: 'allowDuplicatesCheckbox',
-                boxLabel: gettext('Allow duplicates'),
-                tooltip: gettext('Check this to allow students to be in more than one group. Checking this stops hiding students that are already in a group on this assignment from the list. The use-case for this feature is if you have project assignments where students are in more than one project group. <strong>Keep this unchecked if you are unsure of what to do</strong>.')
-            }, '->', {
+            buttons: ['->', {
                 xtype: 'checkbox',
                 itemId: 'includeTagsCheckbox',
                 checked: true,
@@ -81,60 +78,52 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
                 itemId: 'automapExaminersCheckbox',
                 boxLabel: gettext('Autoset examiners by tags')
             }, {
-                xtype: 'primarybutton',
+                xtype: 'button',
+                scale: 'medium',
                 itemId: 'saveButton',
                 text: gettext('Add selected students')
-            }]
-        });
-        this.callParent(arguments);
-    },
-
-    setBody: function(config) {
-        this.removeAll();
-        this.ignoredcount = config.ignoredcount;
-        var allIgnored = config.allIgnored;
-        this.relatedExaminersMappedByTag = config.relatedExaminersMappedByTag;
-        this.periodinfo = config.periodinfo;
-
-        if(allIgnored) {
-            this.add([{
-                xtype: 'panel',
-                region: 'center',
-                autoScroll: true,
-                bodyPadding: 20,
-                items: [{
-                    xtype: 'box',
-                    cls: 'bootstrap',
-                    html: this._getAllIgnoredHelp()
-                }]
-            }]);
-        } else {
-            var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
-            this.add([{
+            }],
+            items: [{
                 xtype: 'grid',
                 region: 'center',
                 store: 'RelatedStudentsRo',
                 selModel: selModel,
-                columns: this._getGridColumns()
+                columns: this._getGridColumns(),
+                tbar: [{
+                    text: gettext('Select all'),
+                    itemId: 'selectAll'
+                }, '->', {
+                    text: gettext('Advanced options'),
+                    menu: {
+                        xtype: 'menu',
+                        plain: true,
+                        items: [{
+                            xtype: 'checkbox',
+                            itemId: 'allowDuplicatesCheckbox',
+                            boxLabel: gettext('Allow duplicates'),
+                            tooltip: gettext('Check this to allow students to be in more than one group. Checking this stops hiding students that are already in a group on this assignment from the list. The use-case for this feature is if you have project assignments where students are in more than one project group. <strong>Keep this unchecked if you are unsure of what to do</strong>.')
+                        }]
+                    }
+                }]
             }, {
                 xtype: 'panel',
                 region: 'east',
                 autoScroll: true,
-                width: 250,
+                width: 300,
                 bodyPadding: 20,
                 items: [{
                     xtype: 'box',
                     cls: 'bootstrap',
                     html: this._getHelp()
                 }]
-            }]);
-        }
+            }]
+        });
+        this.callParent(arguments);
     },
 
-
     _getGridColumns: function() {
-        var includeTags = this.down('#includeTagsCheckbox').getValue();
-        var automapExaminers = this.down('#automapExaminersCheckbox').getValue();
+        var includeTags = true;
+        var automapExaminers = true;
         var showTagsAndExaminersCol = false;
         var showTagsCol = false;
         if(includeTags && automapExaminers) {

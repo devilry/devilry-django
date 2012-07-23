@@ -19,6 +19,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
      */
 
     layout: 'fit',
+    title: gettext('Choose from students registered on the period'),
 
     setBody: function(config) {
         this.removeAll();
