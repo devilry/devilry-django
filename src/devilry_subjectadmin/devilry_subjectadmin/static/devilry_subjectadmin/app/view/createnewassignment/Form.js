@@ -28,6 +28,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         itemId: 'cardPanel',
         items: [{
             xtype: 'panel',
+            itemId: 'pageOne',
             border: 0,
             defaults: {
                 margin: '20 0 0 0'
@@ -151,33 +152,6 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     xtype: 'formhelp',
                     margin: '5 0 0 0',
                     html: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. The default is to publish assignment when creating the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.')
-
-                    // Add all related students
-                }, {
-                    xtype: 'checkboxfield',
-                    name:'add_all_relatedstudents',
-                    margin: '20 0 0 0',
-                    boxLabel: gettext('Add all students to this assignment?'),
-                    checked: true,
-                    labelAlign: 'left'
-                }, {
-                    xtype: 'formhelp',
-                    margin: '0 0 10 0',
-                    html: gettext('If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.')
-
-                    // Autosetup examiners
-                }, {
-                    xtype: 'checkboxfield',
-                    margin: '20 0 0 0',
-                    name: 'autosetup_examiners',
-                    checked: true,
-                    labelAlign: 'left',
-                    boxLabel: gettext('Automatically setup examiners?')
-                }, {
-                    xtype: 'formhelp',
-                    itemId: 'autosetup_examiners-help',
-                    margin: '5 0 0 0',
-                    html: gettext('Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period.')
                 }]
             }],
 
@@ -192,10 +166,43 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             }]
         }, {
             xtype: 'panel',
+            itemId: 'pageTwo',
             border: 0,
+            defaults: {
+                margin: '20 0 0 0'
+            },
             items: [{
+                margin: 0,
                 xtype: 'box',
-                html: 'page2'
+                cls: 'metainfo bootstrap',
+                itemId: 'metainfo',
+                html: gettext('Setup students and examiners. If none of the options below suites your needs, uncheck all the checkboxes, and set up students and examiners manually later.')
+            }, {
+                // Add all related students
+                xtype: 'checkboxfield',
+                name:'add_all_relatedstudents',
+                margin: '20 0 0 0',
+                boxLabel: gettext('Add all students registered on the period to this assignment?'),
+                checked: true,
+                labelAlign: 'left'
+            }, {
+                xtype: 'formhelp',
+                margin: '0 0 10 0',
+                html: gettext('If this option is selected, all students registered on the period will automatically be added to the assignment when it is created.')
+
+                // Autosetup examiners
+            }, {
+                xtype: 'checkboxfield',
+                margin: '20 0 0 0',
+                name: 'autosetup_examiners',
+                checked: true,
+                labelAlign: 'left',
+                boxLabel: gettext('Automatically setup examiners?')
+            }, {
+                xtype: 'formhelp',
+                itemId: 'autosetup_examiners-help',
+                margin: '5 0 20 0',
+                html: gettext('Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period.')
             }],
             fbar: [{
                 xtype: 'button',

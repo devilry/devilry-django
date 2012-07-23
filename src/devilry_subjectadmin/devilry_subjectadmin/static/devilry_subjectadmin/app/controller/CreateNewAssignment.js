@@ -11,7 +11,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         'devilry_extjsextras.NextButton',
         'devilry_extjsextras.form.ErrorUtils',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_subjectadmin.utils.AutoGenShortname'
+        'devilry_subjectadmin.utils.AutoGenShortname',
+        'devilry_subjectadmin.utils.UrlLookup'
     ],
     views: [
         'createnewassignment.Form',
@@ -54,6 +55,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'autoSetupExaminersField',
         selector: 'createnewassignmentform checkboxfield[name=autosetup_examiners]'
+    }, {
+        ref: 'addAllRelatedStudentsField',
+        selector: 'createnewassignmentform checkboxfield[name=add_all_relatedstudents]'
     }, {
         ref: 'autoSetupExaminersHelp',
         selector: 'createnewassignmentform #autosetup_examiners-help'
@@ -127,7 +131,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onRenderCreateNewAssignmentForm: function() {
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
-            enter: this._onCreate,
+            enter: this._onHitEnter,
             scope: this
         });
         this._setInitialValues();
@@ -138,6 +142,17 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
         this.period_id = this.getCreateNewAssignment().period_id;
         this._loadPeriod(this.period_id);
+    },
+
+    _onHitEnter: function() {
+        var itemId = this.getCardPanel().getLayout().getActiveItem().itemId;
+        if(this._isValid()) {
+            if(itemId == 'pageOne') {
+                this._onNext();
+            } else {
+                this._onCreate();
+            }
+        }
     },
 
     _onNext: function() {
@@ -206,8 +221,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
+    _isValid: function() {
+        return this.getCreateNewAssignmentForm().getForm().isValid();
+    },
+
     _onCreate: function() {
-        if(this.getCreateNewAssignmentForm().getForm().isValid()) {
+        if(this._isValid()) {
             this._save();
         }
     },
@@ -237,19 +256,21 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onSuccessfulSave: function(record) {
         this._unmask();
-        this.successPanelSetupConfig = {
-            period_id: this.periodRecord.get('id'),
-            periodpath : this.periodpath,
-            short_name: record.get('short_name'),
-            assignment_id: record.get('id')
-        };
-        this.application.route.navigate('/@@create-new-assignment/@@success');
+        //this.successPanelSetupConfig = {
+            //period_id: this.periodRecord.get('id'),
+            //periodpath : this.periodpath,
+            //short_name: record.get('short_name'),
+            //assignment_id: record.get('id')
+        //};
+        //this.application.route.navigate('/@@create-new-assignment/@@success');
+        this.application.route.navigate(devilry_subjectadmin.utils.UrlLookup.assignmentOverview(record.get('id')));
     },
 
     _onProxyError: function(proxy, response, operation) {
         this._unmask();
         this.handleProxyError(this.getGlobalAlertmessagelist(), this.getCreateNewAssignmentForm(),
             response, operation);
+        this.getCardPanel().getLayout().setActiveItem(0);
     },
 
     _mask: function() {
@@ -262,10 +283,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _setInitialValues: Ext.emptyFn,
 
     //_setInitialValues: function() {
-        //this.getCreateNewAssignmentForm().getForm().setValues({
-            //long_name: 'A2',
-            //short_name: 'a2'
-        //})
+        //Ext.defer(function() {
+            //this.getCreateNewAssignmentForm().getForm().setValues({
+                //long_name: 'A2',
+                //short_name: 'a2'
+            //});
+        //}, 300, this);
     //},
 
 
