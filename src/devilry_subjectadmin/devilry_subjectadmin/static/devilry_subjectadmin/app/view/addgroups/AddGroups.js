@@ -191,24 +191,6 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         })
     },
 
-    _getAllIgnoredHelp: function() {
-        return Ext.create('Ext.XTemplate',
-            '<p>',
-                gettext('All students registered on <strong>{periodpath}</strong> is already registered on the assignment. Use the link below to go to {periodpath} and add more students.'),
-            '</p>',
-            '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}">',
-                gettext('Add more students to {periodpath}'),
-            '</a></strong> <small>(', gettext('Opens in new window') ,')</small></p>',
-            '<p>',
-                gettext('When you return to this page, reload it to see newly added students.'),
-            '</p>'
-        ).apply({
-            periodpath: this.periodinfo.path,
-            manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id)
-        });
-    },
-
-
     _renderUserCell: function(unused1, unused2, relatedStudentRecord) {
         return this.userCellTemplate.apply(relatedStudentRecord.get('user'));
     },

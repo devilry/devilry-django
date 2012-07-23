@@ -18,11 +18,12 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
      * See controller.AddGroups._setBreadcrumb
      */
 
-    layout: 'fit',
-    title: gettext('Choose from students registered on the period'),
+    layout: 'card',
 
     setBody: function(config) {
         this.removeAll();
-        this.add(config);
+        this.add([config, {
+            xtype: 'addgroupsallignored'
+        }]);
     }
 });

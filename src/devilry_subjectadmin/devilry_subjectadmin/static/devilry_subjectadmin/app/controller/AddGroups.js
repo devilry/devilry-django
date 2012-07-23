@@ -15,7 +15,8 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     views: [
         'addgroups.Overview',
-        'addgroups.AddGroups'
+        'addgroups.AddGroups',
+        'addgroups.AllIgnoredHelp'
     ],
 
     models: [
@@ -33,6 +34,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     }, {
         ref: 'selectedStudentsGrid',
         selector: 'addgroupsoverview grid'
+    }, {
+        ref: 'allIgnoredHelp',
+        selector: 'addgroupsoverview addgroupsallignored'
     }, {
         ref: 'automapExaminersCheckbox',
         selector: 'addgroupsoverview #automapExaminersCheckbox'
@@ -233,15 +237,31 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
 
     _setBody: function() {
-        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
-        var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
+        var ignoredcount = this._getIgnoredCount();
         this.getOverview().setBody({
             xtype: 'addgroupspanel',
             ignoredcount: ignoredcount,
-            //allIgnored: allIgnored,
             relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
             periodinfo: this.assignmentRecord.getPeriodInfoFromBreadcrumb()
         });
+        this._checkAllIgnored();
+    },
+
+    _getIgnoredCount: function() {
+        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
+        return ignoredcount;
+    },
+
+    _checkAllIgnored: function() {
+        var ignoredcount = this._getIgnoredCount();
+        var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
+        if(allIgnored) {
+            var periodinfo = this.assignmentRecord.getPeriodInfoFromBreadcrumb()
+            this.getAllIgnoredHelp().setBody(periodinfo);
+            this.getOverview().getLayout().setActiveItem(1);
+        } else {
+            this.getOverview().getLayout().setActiveItem(0);
+        }
     },
 
 
