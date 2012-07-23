@@ -88,6 +88,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         this.loadAssignment(assignment_id);
     },
 
+
+    //
+    //
+    // Load stores
+    //
+    //
+
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
@@ -156,6 +163,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         });
     },
 
+
+    //
+    //
+    // Checkbox handlers
+    //
+    //
+
     _onAllowDuplicatesChange: function(field, allowDuplicates) {
         if(allowDuplicates) {
             this.getRelatedStudentsRoStore().clearFilter();
@@ -199,14 +213,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
             ignoredcount: ignoredcount,
             allIgnored: allIgnored,
             relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
-            periodinfo: {
-                path: 'TOOD',
-                id: 1000
-            }
+            periodinfo: this.assignmentRecord.getPeriodInfoFromBreadcrumb()
         });
     },
 
 
+    //
+    //
+    // Save
+    //
+    //
 
     _onSave: function(button) {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();

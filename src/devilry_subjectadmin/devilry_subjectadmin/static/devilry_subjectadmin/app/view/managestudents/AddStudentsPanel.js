@@ -60,11 +60,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
             layout: 'border',
             title: gettext('Add students'),
             buttons: [{
-                xtype: 'button',
-                itemId: 'refreshButton',
-                scale: 'medium',
-                text: gettext('Refresh')
-            }, {
                 xtype: 'checkbox',
                 itemId: 'allowDuplicatesCheckbox',
                 boxLabel: gettext('Allow duplicates'),
@@ -207,7 +202,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.AddStudentsPanel', {
                 gettext('Add more students to {periodpath}'),
             '</a></strong> <small>(', gettext('Opens in new window') ,')</small></p>',
             '<p>',
-                gettext('Use the refresh button to reload students when you return to this page.'),
+                gettext('When you return to this page, reload it to see newly added students.'),
             '</p>'
         ).apply({
             periodpath: this.periodinfo.path,

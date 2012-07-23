@@ -284,18 +284,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      *
      ***************************************************/
 
-    getPeriodInfo: function() {
-        var breadcrumb = this.assignmentRecord.get('breadcrumb');
-        var subjectBreadcrumb = breadcrumb[breadcrumb.length-2];
-        var periodBreadcrumb = breadcrumb[breadcrumb.length-1];
-        var periodpath = Ext.String.format('{0}.{1}', subjectBreadcrumb.short_name, periodBreadcrumb.short_name);
-        return {
-            id: periodBreadcrumb.id,
-            short_name: periodBreadcrumb.short_name,
-            path: periodpath
-        };
-    },
-
     _handleLoadError: function(operation, title) {
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
         error.addErrors(null, operation);
