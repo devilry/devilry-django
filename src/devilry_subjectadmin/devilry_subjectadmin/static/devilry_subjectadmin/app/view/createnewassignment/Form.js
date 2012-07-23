@@ -35,28 +35,31 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
     // Long name
     }, {
-        name: "long_name",
-        fieldLabel: gettext('Long name'),
-        xtype: 'textfield',
-        emptyText: pgettext('createnewassignment', 'Example: Obligatory assignment one'),
-        allowBlank: false,
-        width: 400
+        xtype: 'container',
+        layout: 'column',
+        items: [{
+            columnWidth: 0.7,
+            name: "long_name",
+            fieldLabel: gettext('Long name'),
+            xtype: 'textfield',
+            emptyText: pgettext('createnewassignment', 'Example: Obligatory assignment one'),
+            allowBlank: false,
+            padding: '0 20 0 0'
+        }, {
+            name: "short_name",
+            columnWidth: 0.3,
+            fieldLabel: gettext('Short name'),
+            xtype: 'textfield',
+            allowBlank: false,
+            emptyText: pgettext('createnewassignment', 'Example: oblig-1'),
+        }]
     }, {
         xtype: 'formhelp',
         margin: '5 0 0 0',
-        html: gettext('Choose a descriptive name for your assignment.')
-
-    // Short name
-    }, {
-        name: "short_name",
-        fieldLabel: gettext('Short name'),
-        xtype: 'textfield',
-        allowBlank: false,
-        emptyText: pgettext('createnewassignment', 'Example: oblig-1'),
-    }, {
-        xtype: 'formhelp',
-        margin: '5 0 0 0',
-        html: gettext("Choose a short name with at most 20 letters for your assignment. Can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>. This is used the the regular name takes to much space.")
+        html: [
+            gettext('Choose a long and a short name. Short name is used in places where long name takes too much space, such as table headers and navigation.'),
+            gettext("The short name can have max 20 letters, and it can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>.")
+        ]
 
     // How do students add deliveries
     }, {
