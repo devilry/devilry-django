@@ -315,7 +315,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             }
         }, this);
 
-        console.log('Saved', affectedRecords);
         this.application.route.navigate(this.on_save_success_url);
     },
 
