@@ -24,6 +24,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         '               <small class="grade danger">({feedback.grade})</small>',
         '           </div>',
         '       </tpl>',
+        '   <tpl else>',
+        '       <div class="nofeedback"><small>', gettext('No feedback'), '</small></div>',
         '   </tpl>',
         '</div>'
     ],
