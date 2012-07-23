@@ -28,6 +28,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'createNewAssignmentForm',
         selector: 'createnewassignmentform'
     }, {
+        ref: 'cardPanel',
+        selector: 'createnewassignmentform #cardPanel'
+    }, {
         ref: 'createNewAssignment',
         selector: 'createnewassignment'
     }, {
@@ -69,8 +72,14 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform textfield[name=short_name]': {
                 blur: this._onShortNameBlur
             },
-            'viewport createnewassignmentform createbutton': {
+            'viewport createnewassignmentform #createButton': {
                 click: this._onCreate,
+            },
+            'viewport createnewassignmentform #nextButton': {
+                click: this._onNext,
+            },
+            'viewport createnewassignmentform #backButton': {
+                click: this._onBack,
             },
             'viewport createnewassignmentform radiogroup radio': {
                 change: this._onDeliveryTypesSelect
@@ -129,6 +138,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
         this.period_id = this.getCreateNewAssignment().period_id;
         this._loadPeriod(this.period_id);
+    },
+
+    _onNext: function() {
+        this.getCardPanel().getLayout().setActiveItem(1);
+    },
+    _onBack: function() {
+        this.getCardPanel().getLayout().setActiveItem(0);
     },
 
     _loadPeriod: function(period_id) {
