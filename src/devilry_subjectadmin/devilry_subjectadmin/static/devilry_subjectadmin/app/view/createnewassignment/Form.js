@@ -96,11 +96,12 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
     }, {
         xtype: 'fieldset',
-        title: gettext('Advanced options'),
-        cls: 'advanced_options_fieldset',
+        title: gettext('Advanced options (click to expand)'),
+        //cls: 'advanced_options_fieldset',
         collapsible: true,
         collapsed: true,
-        padding: 10,
+        titleCollapse: true,
+        padding: 20,
         defaults: {
             margin: '20 0 0 0'
         },

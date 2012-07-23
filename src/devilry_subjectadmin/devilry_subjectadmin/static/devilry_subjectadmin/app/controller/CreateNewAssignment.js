@@ -70,12 +70,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
                 change: this._onAddRelatedStudentChange
             },
-            'viewport fieldset': {
-                afterlayout: function() {
-                    // NOTE: When the fieldset is expanded, we get horizontal scrolling without this workaround
-                    this.getCreateNewAssignmentForm().doLayout();
-                }
-            },
 
             // Success page
             'viewport createnewassignment-successpanel': {
