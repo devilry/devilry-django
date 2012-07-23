@@ -79,6 +79,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onManageStudentsLoaded: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
+        this._handleAddStudentsOnLoad();
+    },
+
+    _handleAddStudentsOnLoad: function() {
+        var add_students_on_load = this.manageStudentsController.getOverview().add_students_on_load;
+        console.log(add_students_on_load);
+        if(add_students_on_load) {
+            this._onAddstudents();
+        }
     },
 
     _onAddstudents: function() {

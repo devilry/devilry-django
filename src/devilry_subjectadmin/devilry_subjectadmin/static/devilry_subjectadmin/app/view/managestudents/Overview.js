@@ -20,8 +20,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
      */
 
     /**
-     * @cfg {String} [add_students_on_load] (optional)
-     * String containing a comma-separated list of group-ids that should be selected on load.
+     * @cfg {Boolean} [add_students_on_load=false] (optional)
+     * Should we show the add-students window on load?
      */
 
     initComponent: function() {
