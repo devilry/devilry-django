@@ -13,6 +13,10 @@ Ext.define('devilry_subjectadmin.view.addgroups.Overview', {
      * @cfg {Object} [assignment_id] (required)
      */
 
+    /**
+     * @cfg {String} [on_save_success_url] (required)
+     */
+
 
     initComponent: function() {
         this.userCellTemplate = new Ext.XTemplate(

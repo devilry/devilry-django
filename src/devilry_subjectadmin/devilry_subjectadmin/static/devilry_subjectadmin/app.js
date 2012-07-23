@@ -14,7 +14,8 @@ Ext.application({
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_extjsextras.DevilryHeader',
-        'devilry_extjsextras.Breadcrumbs'
+        'devilry_extjsextras.Breadcrumbs',
+        'devilry_subjectadmin.utils.UrlLookup'
     ],
 
     controllers: [
@@ -241,8 +242,8 @@ Ext.application({
     manageGroupsAddStudents: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
             xtype: 'addgroupsoverview',
-            assignment_id: assignment_id
-            //on_save_success_url: 
+            assignment_id: assignment_id,
+            on_save_success_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(assignment_id)
         });
     }
 });

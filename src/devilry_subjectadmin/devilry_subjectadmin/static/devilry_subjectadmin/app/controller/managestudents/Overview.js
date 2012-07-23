@@ -82,6 +82,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     init: function() {
         this.control({
+            'viewport managestudentsoverview button[itemId=addstudents]': {
+                click: this._onAddstudents
+            },
             'viewport managestudentsoverview': {
                 render: this._onRenderOverview
             },
@@ -103,6 +106,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
 
+    _onAddstudents: function() {
+        this.application.route.navigate(devilry_subjectadmin.utils.UrlLookup.manageStudentsAddStudents(this.assignmentRecord.get('id')));
+    },
 
 
     /*****************************************************

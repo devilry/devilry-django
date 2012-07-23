@@ -44,9 +44,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     init: function() {
         this.control({
-            //'viewport managestudentsoverview button[itemId=addstudents]': {
-                //click: this._onAddstudents
-            //},
             'addgroupsoverview': {
                 render: this._onRender
             },
@@ -81,6 +78,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     _onRender: function() {
         var assignment_id = this.getOverview().assignment_id;
+        this.on_save_success_url = this.getOverview().on_save_success_url;
         this.getOverview().setLoading(true);
         this.loadAssignment(assignment_id);
     },
@@ -264,6 +262,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         }, this);
 
         console.log('Saved', affectedRecords);
+        this.application.route.navigate(this.on_save_success_url);
     },
 
     _onSyncGroupsStoreFailure: function(batch, options) {

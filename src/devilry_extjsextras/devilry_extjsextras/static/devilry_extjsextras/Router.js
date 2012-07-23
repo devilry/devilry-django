@@ -98,6 +98,10 @@ Ext.define('devilry_extjsextras.Router', {
 
 
     navigate: function(token) {
+        if(token.length > 0 && token.charAt(0) == '#') {
+            token = token.substring(1);
+        }
+        console.log(token);
         Ext.util.History.add(token);
     },
 
