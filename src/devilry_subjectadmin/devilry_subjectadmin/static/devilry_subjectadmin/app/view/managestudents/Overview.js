@@ -11,7 +11,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
 
 
     /**
-     * @cfg {String} assignment_id (required)
+     * @cfg {String} [assignment_id] (required)
+     */
+
+    /**
+     * @cfg {String} [select_groupids_on_load] (optional)
+     * String containing a comma-separated list of group-ids that should be selected on load.
+     */
+
+    /**
+     * @cfg {String} [add_students_on_load] (optional)
+     * String containing a comma-separated list of group-ids that should be selected on load.
      */
 
     initComponent: function() {

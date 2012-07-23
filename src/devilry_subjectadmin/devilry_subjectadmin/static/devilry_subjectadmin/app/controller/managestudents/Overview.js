@@ -197,7 +197,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         Ext.Array.each(selectedGroupRecords, function(record) {
             ids.push(record.get('id'));
         }, this);
-        var hashpatt = '/assignment/{0}/@@manage-students/{1}';
+        var hashpatt = '/assignment/{0}/@@manage-students/@@select/{1}';
         var hash = Ext.String.format(hashpatt, this.assignmentRecord.get('id'), ids.join(','));
         this.application.route.setHashWithoutEvent(hash);
     },
@@ -257,15 +257,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      ********************************************************/
 
     _selectUrlIds: function() {
-        var selected_group_ids = this.getOverview().selected_group_ids;
-        if(!selected_group_ids) {
+        var select_groupids_on_load = this.getOverview().select_groupids_on_load;
+        if(!select_groupids_on_load) {
             this._handleNoGroupsSelected();
             return;
         }
         var selectionModel = this.getListOfGroups().getSelectionModel();
         var groupsStore = this.getGroupsStore();
         var selectedGroups = [];
-        Ext.Array.each(selected_group_ids.split(','), function(strid) {
+        Ext.Array.each(select_groupids_on_load.split(','), function(strid) {
             var id = parseInt(strid);
             var index = groupsStore.findExact('id', id);
             if(index != -1) {

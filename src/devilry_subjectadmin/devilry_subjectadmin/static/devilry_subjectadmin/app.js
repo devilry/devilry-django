@@ -152,8 +152,8 @@ Ext.application({
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
-        this.route.add("/assignment/:assignment_id/@@manage-students/:group_ids", 'manageGroups');
-        this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroups');
+        this.route.add("/assignment/:assignment_id/@@manage-students/@@select/:group_ids", 'manageGroupsSelectGroups');
+        this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroupsAddStudents');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         this.route.start();
@@ -225,11 +225,24 @@ Ext.application({
         });
     },
 
-    manageGroups: function(routeInfo, assignment_id, group_ids) {
+    manageGroups: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'managestudentsoverview',
+            assignment_id: assignment_id
+        });
+    },
+    manageGroupsSelectGroups: function(routeInfo, assignment_id, group_ids) {
         this.setPrimaryContent({
             xtype: 'managestudentsoverview',
             assignment_id: assignment_id,
-            selected_group_ids: group_ids
+            select_groupids_on_load: group_ids
+        });
+    },
+    manageGroupsAddStudents: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'managestudentsoverview',
+            assignment_id: assignment_id,
+            add_students_on_load: true
         });
     }
 });
