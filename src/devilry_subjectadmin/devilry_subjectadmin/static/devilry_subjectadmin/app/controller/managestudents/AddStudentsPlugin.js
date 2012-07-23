@@ -84,14 +84,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
 
     _onRender: function() {
         var assignment_id = this.getAddStudentsPanel().assignment_id;
+        this.getAddStudentsPanel().setLoading(true);
         this.loadAssignment(assignment_id);
     },
 
     onLoadAssignmentSuccess: function(record) {
-        console.log(record);
         this.assignmentRecord = record;
-        var period_id = this.assignmentRecord.get('parentnode');
+        this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
 
+        var period_id = this.assignmentRecord.get('parentnode');
         this.getRelatedExaminersRoStore().setPeriod(period_id);
         this.getRelatedStudentsRoStore().setPeriod(period_id);
 
@@ -121,26 +122,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         var relatedExaminersStore = this.getRelatedExaminersRoStore();
         relatedExaminersStore.loadWithAutomaticErrorHandling({
             scope: this,
-            success: this._onLoad,
+            success: this._onLoadRelatedExaminersStoreSuccess,
             errortitle: gettext('Failed to load examiners from the period')
         });
     },
 
+    _onLoadRelatedExaminersStoreSuccess: function() {
+        this.getGroupsStore().loadWithAutomaticErrorHandling({
+            scope: this,
+            success: this._onLoad,
+            errortitle: gettext('Failed to load groups')
+        });
+    },
+
     _onLoad: function() {
+        this.getAddStudentsPanel().setLoading(false);
         this.relatedExaminersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
+
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.clearFilter();
-
         this._filterOutRelatedStudentsAlreadyInGroup();
         relatedStudentsStore.sortBySpecialSorter('full_name');
 
-        console.log('LOADED');
-        //this.manageStudentsController.setBody({
-            //xtype: 'addstudentspanel',
-            //relatedStudentsStore: relatedStudentsStore,
-            //periodinfo: this.manageStudentsController.getPeriodInfo(),
-            //relatedExaminersMappedByTag: this.relatedExaminersMappedByTag
-        //});
         this._setBody();
     },
 
@@ -188,6 +191,23 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
         }
     },
 
+
+    _setBody: function() {
+        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
+        var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
+        this.getAddStudentsPanel().setBody({
+            ignoredcount: ignoredcount,
+            allIgnored: allIgnored,
+            relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
+            periodinfo: {
+                path: 'TOOD',
+                id: 1000
+            }
+        });
+    },
+
+
+
     _onSave: function(button) {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();
         var selectedRelatedStudents = selModel.getSelection();
@@ -204,21 +224,37 @@ Ext.define('devilry_subjectadmin.controller.managestudents.AddStudentsPlugin', {
                 groupRecord.setExaminersFromMapOfRelatedExaminers(this.relatedExaminersMappedByTag);
             }
         }, this);
-        //this.manageStudentsController.notifyMultipleGroupsChange();
+        this._syncGroupsStore();
     },
 
-
-    _setBody: function() {
-        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
-        var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
-        this.getAddStudentsPanel().setBody({
-            ignoredcount: ignoredcount,
-            allIgnored: allIgnored,
-            relatedExaminersMappedByTag: this.relatedExaminersMappedByTag,
-            periodinfo: {
-                path: 'TOOD',
-                id: 1000
-            }
+    _syncGroupsStore: function() {
+        console.log('sync started');
+        this._maskListOfGroups();
+        this.getGroupsStore().sync({
+            scope: this,
+            success: this._onSyncGroupsStoreSuccess,
+            failure: this._onSyncGroupsStoreFailure
         });
-    }
+    },
+
+    _onSyncGroupsStoreSuccess: function(batch, options) {
+        this._unmaskListOfGroups();
+        console.log('sync success', batch);
+        var affectedRecords = [];
+        var operations = batch.operations;
+        Ext.Array.each(operations, function(operation) {
+            if(operation.action == 'create') {
+                Ext.Array.each(operation.records, function(record) {
+                    affectedRecords.push(record);
+                }, this);
+            }
+        }, this);
+
+        console.log('Saved', affectedRecords);
+    },
+
+    _onSyncGroupsStoreFailure: function(batch, options) {
+        this._unmaskListOfGroups();
+        console.log('failure', batch, options);
+    },
 });
