@@ -11,7 +11,7 @@ class SimplifiedAssignment(HasAdminsMixin, CanSaveBase):
     class Meta(HasAdminsMixin.MetaMixin, SimplifiedAssignmentMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
-        resultfields = FieldSpec(admins=['admins__username']) + SimplifiedAssignmentMetaMixin.resultfields
+        resultfields = FieldSpec('deadline_handling', admins=['admins__username']) + SimplifiedAssignmentMetaMixin.resultfields
 
     @classmethod
     def is_empty(cls, obj):

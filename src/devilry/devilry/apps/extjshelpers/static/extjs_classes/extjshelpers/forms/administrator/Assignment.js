@@ -9,7 +9,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
 
     suggested_windowsize: {
         width: 850,
-        height: 490
+        height: 550
     },
 
     flex: 5,
@@ -69,6 +69,23 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
             data : [
                 {value:0, label:"Electronically using Devilry"},
                 {value:1, label:"Non-electronic (hand in on paper, oral examination, ...)"}
+            ]
+        })
+    }, {
+        name: "deadline_handling",
+        fieldLabel: "How would you like to handle deadlines?",
+        xtype: 'combobox',
+        queryMode: 'local',
+        valueField: 'value',
+        displayField: 'label',
+        forceSelection: true,
+        editable: false,
+        value: 0,
+        store: Ext.create('Ext.data.Store', {
+            fields: ['value', 'label'],
+            data : [
+                {value:0, label:"SOFT: Students can add deliveries after the deadline, but deliveries after the deadline are distinctly highlighted in the examiner and admin interfaces."},
+                {value:1, label:"HARD: Students can not add deliveries after the deadline"}
             ]
         })
     }, {
