@@ -4,11 +4,17 @@ from django.utils.formats import date_format
 from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import Q, Max
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from deadline import Deadline
 from filemeta import FileMeta
 from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 import deliverytypes
+
+
+DEFAULT_DEADLINE_EXPIRED_MESSAGE = _('Your active deadline, {deadline} has expired, and the administrators of {assignment} have configured HARD deadlines. This means that you can not add more deliveries to this assignment before an administrator have extended your deadline.')
+DEADLINE_EXPIRED_MESSAGE = getattr(settings, 'DEADLINE_EXPIRED_MESSAGE', DEFAULT_DEADLINE_EXPIRED_MESSAGE)
 
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
@@ -155,6 +161,20 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def _set_number(self):
         m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
         self.number = (m['number__max'] or 0) + 1
+
+    def clean(self, *args, **kwargs):
+        """Validate the delivery.
+
+        ..raise ValidationError::
+            If the ``deadline_handling`` attribute of the assignment is ``1``, and the deadline has expired.
+        """
+        assignment = self.deadline.assignment_group.parentnode
+        if assignment.deadline_handling == 1:
+            if self.deadline.deadline < datetime.now():
+                raise ValidationError(DEADLINE_EXPIRED_MESSAGE.format(deadline=self.deadline.deadline.isoformat(),
+                                                                      assignment=unicode(assignment)))
+
+        super(Delivery, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         """

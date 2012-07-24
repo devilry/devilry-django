@@ -1,8 +1,10 @@
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
-from ..models import Delivery, AssignmentGroup
+from ..models import Delivery
 from ..testhelper import TestHelper
 
 class TestDelivery(TestCase, TestHelper):
@@ -10,8 +12,8 @@ class TestDelivery(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
-                 periods=["period1:admin(teacher1)"],
-                 assignments=["assignment1"],
+                 periods=["period1:admin(teacher1):begins(-5):ends(10)"],
+                 assignments=["assignment1:pub(60)"],
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
                                    "g2:candidate(student2):examiner(examiner2)",
                                    "g3:candidate(student3,student2):examiner(examiner1,examiner2,examiner3)",
@@ -56,3 +58,19 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(Delivery.published_where_is_candidate(self.student2).count(), 7)
         self.assertEquals(Delivery.published_where_is_candidate(self.student3).count(), 3)
         self.assertEquals(Delivery.published_where_is_candidate(self.student4).count(), 0)
+
+
+    def test_hard_deadline(self):
+        self.add_to_path('uni.ifi;inf1100.period1.assignment0.g1:candidate(student1):examiner(examiner1).d0:ends(1)')
+
+        # Soft deadlines work without any errors
+        deadline = self.inf1100_period1_assignment0_g1_d0
+        self.assertTrue(deadline.deadline < datetime.now())
+        self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
+
+        # Hard deadlines
+        assignment = self.inf1100_period1_assignment0
+        assignment.deadline_handling = 1
+        assignment.save()
+        with self.assertRaises(ValidationError):
+            self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
