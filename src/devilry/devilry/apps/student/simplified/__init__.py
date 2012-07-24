@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db.models import Count, Max
 import django.dispatch
+from django.db.models import Q
 
 from devilry.simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied, FieldSpec
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
@@ -130,10 +131,14 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
         :param user: A django user object.
         :rtype: a django queryset
         """
-        return cls._meta.model.published_where_is_candidate(user).annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
-                                                                           latest_deadline_id=Max('deadlines__id'),
-                                                                           latest_deadline_deadline=Max('deadlines__deadline'),
-                                                                           number_of_deliveries=Count('deadlines__deliveries'))
+        qry = cls._meta.model.published_where_is_candidate(user)
+        qry = qry.annotate(latest_delivery_id=Max('deadlines__deliveries__id'),
+                           latest_deadline_id=Max('deadlines__id'),
+                           latest_deadline_deadline=Max('deadlines__deadline'),
+                           number_of_deliveries=Count('deadlines__deliveries'))
+        qry = qry.filter(Q(Q(latest_deadline_deadline__gte=datetime.now()) & Q(parentnode__deadline_handling__exact=1)) |
+                         Q(parentnode__deadline_handling__exact=0))
+        return qry
 
 
 

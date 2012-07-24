@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from django.test import TestCase
 
 from devilry.simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
@@ -21,7 +22,7 @@ class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):
         # create a base structure
         self.add(nodes='uni:admin(admin)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstsem:begins(-1):ends(2)', 'secondsem:begins(-1):ends(2)'],
+                 periods=['firstsem:begins(-1):ends(6)', 'secondsem:begins(-1):ends(2)'],
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
@@ -360,7 +361,28 @@ class TestSimplifiedAssignmentGroup(SimplifiedStudentTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for i in xrange(len(search_res)):
             self.assertEquals(search_res[i], expected_res[i])
-            
+
+    def test_search_hard_deadlines(self):
+        self.add_to_path('uni.ifi;inf101.firstsem.deadlineinpast.g1:candidate(harddeadlinestudent):examiner(harddeadlineexaminer).d0:ends(1)')
+        self.add_to_path('uni.ifi;inf101.firstsem.deadlineinfuture.g1:candidate(harddeadlinestudent):examiner(harddeadlineexaminer).d0:ends(60)')
+        old_deadline = self.inf101_firstsem_deadlineinpast_g1_d0
+        future_deadline = self.inf101_firstsem_deadlineinfuture_g1_d0
+        self.assertTrue(old_deadline.deadline < datetime.now())
+        self.assertTrue(future_deadline.deadline > datetime.now())
+
+        # Before we set hard deadlines
+        search_res = SimplifiedAssignmentGroup.search(self.harddeadlinestudent)
+        self.assertEquals(SimplifiedAssignmentGroup.search(self.harddeadlinestudent).count(), 2)
+
+        # After setting hard deadlines
+        deadlineinpast = self.inf101_firstsem_deadlineinpast
+        deadlineinfuture = self.inf101_firstsem_deadlineinfuture
+        for assignment in deadlineinpast, deadlineinfuture:
+            assignment.deadline_handling = 1
+            assignment.save()
+        self.assertEquals(SimplifiedAssignmentGroup.search(self.harddeadlinestudent).count(), 1)
+
+
     def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstStud, result_fieldgroups=self.allExtras)
