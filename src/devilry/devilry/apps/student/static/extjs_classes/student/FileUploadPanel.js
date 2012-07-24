@@ -174,9 +174,20 @@ Ext.define('devilry.student.FileUploadPanel', {
     /**
      * @private
      */
-    onCreateDeliveryFailure: function(x) {
+    onCreateDeliveryFailure: function(unused, operation) {
         this.getEl().unmask();
-        Ext.Msg.alert('Error', 'Could not create delivery on the selected deadline.'); // TODO: Check status code for permission denied.
+        console.log(operation);
+        var message = 'Could not create delivery on the selected deadline.';
+        var response = Ext.JSON.decode(operation.response.responseText);
+        if(response && response.items.errormessages) {
+            message = response.items.errormessages.join('. ');
+        }
+        Ext.MessageBox.show({
+            title: 'Error',
+            msg: message,
+            icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK
+        });
     },
 
 
