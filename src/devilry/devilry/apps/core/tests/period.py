@@ -29,7 +29,7 @@ class TestPeriod(TestCase, TestHelper):
     def test_etag_update(self):
         etag = datetime.now()
         obj = self.inf1100_looong
-        obj.minimum_points = 66
+        obj.long_name = 'Updated'
         self.assertRaises(EtagMismatchException, obj.etag_update, etag)
         try:
             obj.etag_update(etag)
@@ -37,7 +37,7 @@ class TestPeriod(TestCase, TestHelper):
             # Should not raise exception
             obj.etag_update(e.etag)
         obj2 = Period.objects.get(id=obj.id)
-        self.assertEquals(obj2.minimum_points, 66)
+        self.assertEquals(obj2.long_name, 'Updated')
 
     def test_where_is_admin(self):
         self.assertEquals(Period.where_is_admin(self.uioadmin).count(), 2)
