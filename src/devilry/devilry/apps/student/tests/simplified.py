@@ -21,7 +21,7 @@ class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):
         # create a base structure
         self.add(nodes='uni:admin(admin)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstsem', 'secondsem'],
+                 periods=['firstsem:begins(-1):ends(2)', 'secondsem:begins(-1):ends(2)'],
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
