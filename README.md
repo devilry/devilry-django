@@ -35,7 +35,7 @@ script does).
 
 ### Alternative step 3 - Setup an empty databse
 
-If you just want to setup and empty database, run ``bin/fab reset``
+If you just want to setup an empty database, run ``bin/fab autogen_extjsmodels syncdb``.
 
 
 ## 4 - Run the development server
