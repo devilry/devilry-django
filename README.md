@@ -3,22 +3,33 @@ See http://devilry.org for documentation. The rest of this readme is intended fo
 
 # Setup a local development environment with testdata
 
-(Instructions assume you have ahecked out the sources from git, and that you are in a terminal at the root of the repo).
+
+## 1 - Check out from GIT
+
+Check out the devilry repo from git. If you plan to develop devilry, you should
+fork the devilry-django repo, changes to your own repo and request inclusion to
+the master repo using github pull requests. If you are just trying out devilry, use:
+
+    $ git checkout https://github.com/devilry/devilry-django.git
+
+The ``master``, which git checks out by default, is usually the latest
+semi-stable development version. The latest stable version is in the
+``latest-stable`` branch.
 
 
-## 1 - Run buildout (get all dependencies)
+## 2 - Run buildout (get all dependencies)
 
     $ cd devenv/
     $ python ../bootstrap.py
     $ bin/buildout
 
 
-## 2 - Create a demo database
+## 3 - Create a demo database
 
     $ bin/fab setup_demo
 
 
-## Alternative step 2 - Setup an empty databse
+### Alternative step 3 - Setup an empty databse
 
     $ bin/fab reset
 
