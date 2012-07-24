@@ -1,6 +1,14 @@
-from os import remove, rename, listdir, getcwd, chdir
 from fabric.api import local, abort, task
-from os.path import join, exists, dirname, abspath
+
+
+
+@task
+def setup_demo():
+    """
+    Runs ``reset`` and ``autodb`` tasks.
+    """
+    reset()
+    autodb()
 
 
 @task
