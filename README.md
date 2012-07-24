@@ -6,13 +6,13 @@ See http://devilry.org for documentation. The rest of this readme is intended fo
 
 ## 1 - Check out from GIT
 
-Check out the devilry repo from git. If you plan to develop devilry, you should
-fork the devilry-django repo, changes to your own repo and request inclusion to
-the master repo using github pull requests. If you are just trying out devilry, use:
+If you plan to develop devilry, you should fork the devilry-django repo,
+changes to your own repo and request inclusion to the master repo using github
+pull requests. If you are just trying out devilry, use:
 
     $ git checkout https://github.com/devilry/devilry-django.git
 
-The ``master``, which git checks out by default, is usually the latest
+The ``master`` branch, which git checks out by default, is usually the latest
 semi-stable development version. The latest stable version is in the
 ``latest-stable`` branch.
 
