@@ -35,8 +35,7 @@ script does).
 
 ### Alternative step 3 - Setup an empty databse
 
-If you just want to setup and empty database
-    $ bin/fab reset
+If you just want to setup and empty database, run ``bin/fab reset``
 
 
 ## 4 - Run the development server
