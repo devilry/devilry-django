@@ -11,16 +11,17 @@ class TestFeedback(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
-                 periods=["period1:admin(teacher1)", "old_period:begins(-2):ends(1)"],
+                 periods=[
+                          "period1:admin(teacher1):begins(-1):ends(5)",
+                          "old_period:begins(-2):ends(1)"],
                  assignments=["assignment1"],
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
-                                   "g2:candidate(student2):examiner(examiner2)",
-                                   ],
+                                   "g2:candidate(student2):examiner(examiner2)"],
                  deadlines=['d1'])
         # file and verdict
         self.goodFile = {"good.py": "print awesome"}
         self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
-                
+
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.old_period.assignment1.g1", self.goodFile)
@@ -46,13 +47,13 @@ class TestFeedback(TestCase, TestHelper):
         self.add_feedback(self.inf1100_period1_assignment1_g1_deliveries[0], verdict=self.okVerdict)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.student1, active=False).count(), 0)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.student1, old=False).count(), 1)
-        
+
         # Feedback on old period
         self.add_feedback(self.inf1100_old_period_assignment1_g1_deliveries[0], verdict=self.okVerdict)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.student1).count(), 2)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.student1, active=False).count(), 1)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.student1, old=False).count(), 1)
-        
+
         # Set publishing time to future for period1.assignment1
         self.inf1100_period1_assignment1.publishing_time = datetime.now() + timedelta(10)
         self.inf1100_period1_assignment1.save()
@@ -88,7 +89,7 @@ class TestFeedback(TestCase, TestHelper):
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2).count(), 4)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, active=False).count(), 2)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, old=False).count(), 2)
-        
+
         # Create assignment2 with delivery and feedback for examiner2
         self.add_to_path('uio.ifi;inf1100.period1.assignment2.group1:candidate(student2):examiner(examiner2).d1')
         d = self.add_delivery("inf1100.period1.assignment2.group1", self.goodFile)
@@ -96,7 +97,7 @@ class TestFeedback(TestCase, TestHelper):
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2).count(), 5)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, active=False).count(), 2)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, old=False).count(), 3)
-        
+
         # Set publishing time to future for period1.assignment1
         self.inf1100_period1_assignment1.publishing_time = datetime.now() + timedelta(10)
         self.inf1100_period1_assignment1.save()
