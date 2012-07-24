@@ -28,10 +28,25 @@ semi-stable development version. The latest stable version is in the
 
     $ bin/fab setup_demo
 
+Note: Creating the testdata takes a lot of time, but you can start using the
+server as soon as the users have been created (one of the first things the
+script does).
+
 
 ### Alternative step 3 - Setup an empty databse
 
+If you just want to setup and empty database
     $ bin/fab reset
+
+
+## 4 - Run the development server
+
+    $ bin/django_dev.py runserver
+
+Go to http://localhost:8000/ and log in as a superuser using:
+
+    user: grandma
+    password: test
 
 
 ## Why bin/fab??

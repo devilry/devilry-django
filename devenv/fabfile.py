@@ -1,3 +1,5 @@
+from os.path import exists
+from os import remove
 from fabric.api import local, abort, task
 
 
@@ -5,11 +7,18 @@ from fabric.api import local, abort, task
 @task
 def setup_demo():
     """
-    Runs ``reset`` and ``autodb`` tasks.
+    Runs ``autogen_extjsmodels``, ``remove_db`` and ``autodb`` tasks.
     """
-    reset()
+    autogen_extjsmodels()
+    remove_db()
     autodb()
 
+
+@task
+def remove_db():
+    """ Remove ``db.sqlite3`` if it exists. """
+    if exists('db.sqlite3'):
+        remove('db.sqlite3')
 
 @task
 def virtualenv():
@@ -69,14 +78,14 @@ def reset():
     virtualenv()
     bootstrap()
     buildout()
-    syncdb()
     autogen_extjsmodels()
 
 @task
 def autodb():
     """
-    Run ``bin/django_dev.py dev_autodb -v2``
+    Run ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
     """
+    syncdb()
     local('bin/django_dev.py dev_autodb -v2')
 
 @task
