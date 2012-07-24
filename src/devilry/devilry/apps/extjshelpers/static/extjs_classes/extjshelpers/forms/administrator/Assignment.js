@@ -80,7 +80,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
         displayField: 'label',
         forceSelection: true,
         editable: false,
-        value: 0,
+        value: DevilrySettings.DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD,
         store: Ext.create('Ext.data.Store', {
             fields: ['value', 'label'],
             data : [
