@@ -48,6 +48,11 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
                                            'body': 'You are not registered as an administrator on any Node, Subject/Course, Period/Semester or Assignment in Devilry. If this is wrong, please contact the system administrator.'}
 
 
+## Deadline handling method:
+## 0: Soft deadlines
+## 1: Hard deadlines
+DEFAULT_DEADLINE_HANDLING_METHOD = 0
+
 #################################################
 # Settings without a default value
 #################################################
