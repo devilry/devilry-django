@@ -3,6 +3,7 @@ Ext.define('devilry_subjectadmin.store.Groups', {
     extend: 'Ext.data.Store',
     model: 'devilry_subjectadmin.model.Group',
     mixins: ['devilry_subjectadmin.store.LoadStoreWithAutomaticErrorHandlingMixin'],
+    requires: ['devilry_subjectadmin.store.GroupByExaminerGrouper'],
 
     setAssignment: function(assignment_id) {
         this.proxy.url = Ext.String.format(this.proxy.urlpatt, assignment_id);
@@ -13,6 +14,12 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         this.load(loadConfig);
     },
 
+
+    //
+    //
+    // Sorting
+    //
+    //
 
     sortBySpecialSorter: function(sortby) {
         var sorter = null;
@@ -78,6 +85,24 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         return a.localeCompare(b);
     },
 
+
+
+    //
+    //
+    // Grouping
+    //
+    //
+    groupBySpecialGrouper: function(groupby) {
+        var grouper = null;
+        if(groupby == 'examiner') {
+            grouper = Ext.create('devilry_subjectadmin.store.GroupByExaminerGrouper');
+        } else if(groupby == 'is_open') {
+            grouper = 'is_open';
+        } else {
+            throw "Invalid grouper: " + groupby;
+        }
+        this.group([grouper]);
+    },
 
 
     /**

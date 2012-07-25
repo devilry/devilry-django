@@ -17,7 +17,22 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     },
 
     initComponent: function() {
+        this.groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            groupHeaderTpl: [
+                '<tpl if="groupField == \'is_open\'">',
+                    '<tpl if="groupValue">',
+                        gettext('Open'),
+                    '<tpl else>',
+                        gettext('Closed'),
+                    '</tpl>',
+                '<tpl else>',
+                    '{groupField}: {groupValue}',
+                '</tpl>',
+            ]
+        });
         Ext.apply(this, {
+            features: [this.groupingFeature],
+            //groupHeaderTpl: '',
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
