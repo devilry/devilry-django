@@ -94,3 +94,4 @@ all-classes.js
 
 # awsdemo
 awsdemo/bin
+awsdemo/awsfab_settings_local.py
