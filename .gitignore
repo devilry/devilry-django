@@ -84,6 +84,13 @@ src/devilry/devilry/apps/gradeeditors/static/extjs_classes/apps/
 src/devilry/devilry/apps/student/static/extjs_classes/apps/
 
 
+# Checked out from mr.developer
+src/django_extjs4/
+
 
 # Generated ExtJS apps
 all-classes.js
+
+
+# awsdemo
+awsdemo/bin
