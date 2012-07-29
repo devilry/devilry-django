@@ -1,5 +1,3 @@
-from os.path import exists
-from os import remove
 """
 Basic tasks, mostly useful for setting up demos, and just testing that
 example-productionenv/ works.
@@ -15,7 +13,6 @@ def setup_demo():
     """
     reset()
     autodb()
-
 
 @task
 def virtualenv():
@@ -46,11 +43,23 @@ def autogen_extjsmodels():
     local('bin/django_production.py dev_autogen_extjsmodels')
     local('bin/django_production.py devilry_extjs_jsmerge')
 
+
 @task
 def reset():
     clean()
     virtualenv()
+    refresh()
+
+@task
+def refresh():
+    """
+    Just run buildout, collectstatic and autogen_extjsmodels. Useful when
+    updating the demo when database changes/reset is not required.
+    """
+    local('bin/django_production.py collectstatic --noinput')
     autogen_extjsmodels()
+
+
 
 @task
 def autodb():
