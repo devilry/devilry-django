@@ -1,3 +1,6 @@
+"""
+This command creates a demo database for Devilry. See dev_autodb.readme.md for more info.
+"""
 import logging
 from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
