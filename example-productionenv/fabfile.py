@@ -1,7 +1,11 @@
 from os.path import exists
 from os import remove
-from fabric.api import local, abort, task
+"""
+Basic tasks, mostly useful for setting up demos, and just testing that
+example-productionenv/ works.
+"""
 
+from fabric.api import local, abort, task
 
 
 @task
