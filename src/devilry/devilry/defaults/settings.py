@@ -26,6 +26,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
                   'django.contrib.messages',
                   'django.contrib.admin',
+                  'errortemplates',
                   'djangorestframework',
                   'gunicorn',
 
