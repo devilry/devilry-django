@@ -94,6 +94,7 @@ all-classes.js
 # example-productionenv/
 example-productionenv/bin/
 example-productionenv/virtualenv/
+example-productionenv/static/
 
 # awsdemo
 awsdemo/bin
