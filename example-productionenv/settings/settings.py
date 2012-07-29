@@ -4,16 +4,17 @@ from os.path import abspath, dirname, join
 from devilry.defaults.settings import *
 
 ## Convenience variable to use paths relative to this file. With the magic below,
-## this_dir is set to the directory containing _this_ file. Some settings below use
-## join(this_dir, 'something') to create OS-independent filesystem paths
-## relative to this_dir. Feel free to use absolute paths instead
-this_dir = dirname(abspath(__file__))
+## parent_dir is set to the parentdirectory of the directory containing _this_ file.
+## Some settings below use join(parent_dir, 'something') to create
+## OS-independent filesystem paths relative to parent_dir.
+## Feel free to use absolute paths instead
+parent_dir = dirname(dirname(abspath(__file__)))
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
 
 ## Where do we store files that students deliver?
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(this_dir, 'deliverystore')
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(parent_dir, 'deliverystore')
 
 ## You can dump related users into devilry. This setting is where the system
 ## tells users that this data comes from.
@@ -28,13 +29,14 @@ DEBUG = True
 #############################################
 # Configure the database
 #############################################
+DATABASES = {}
 
 ## Example config for SQLite (see also PostgreSQL below)
 DATABASES["default"] = {
     'ENGINE': 'django.db.backends.sqlite3',
 
     # Path to sqlite database file
-    'NAME': join(this_dir, 'db.sqlite3')
+    'NAME': join(parent_dir, 'db.sqlite3')
 }
 
 ## Example config for PostgreSQL
@@ -57,7 +59,7 @@ DATABASES["default"] = {
 #######################################################
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = join(this_dir, 'email_log')
+EMAIL_FILE_PATH = join(parent_dir, 'email_log')
 
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_HOST = 'smtp.example.com'
@@ -80,7 +82,7 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 #   _this_ file.
 ###########################################
 from devilry.defaults.log import create_logging_config
-logdir = join(this_dir, 'log')
+logdir = join(parent_dir, 'log')
 LOGGING = create_logging_config(
                                 # Send error log messages to ADMINS on email?
                                 mail_admins=True,

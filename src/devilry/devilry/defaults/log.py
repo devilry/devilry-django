@@ -89,7 +89,7 @@ def create_logging_config(mail_admins=True,
                      # We set all handlers except mail_admins to level=DEBUG, and configure the actual loglevel in the loggers
             'stderr': {
                 'level': 'DEBUG',
-                'formatter': 'simple',
+                'formatter': 'verbose',
                 'class': 'logging.StreamHandler'
             },
             'logfile': {
@@ -129,7 +129,7 @@ def create_logging_config(mail_admins=True,
             },
             'devilry': {
                 'handlers': request_handlers,
-                'level': request_handlers,
+                'level': request_loglevel,
                 'propagate': False
             },
             'devilry_subjectadmin': {

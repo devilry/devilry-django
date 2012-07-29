@@ -1,31 +1,14 @@
-from fabric.api import task, run
-from awsfabrictasks.decorators import ec2instance
+from fabric.api import task, run, sudo
 
 
-###########################
-# Add some of our own tasks
-###########################
 
 @task
-def uname():
+def install_requirements():
     """
     Run ``uname -a``
     """
-    run('uname -a')
+    sudo('uname -a')
 
-
-@task
-@ec2instance(nametag='tst')
-def example_nametag_specific_task():
-    """
-    Example of using ``@ec2instance``.
-    Enables us to run::
-
-        awsfab example_nametag_specific_task``
-
-    and have it automatically use the EC2 instance tagged with ``Name="tst"``.
-    """
-    run('uname -a')
 
 
 #####################
