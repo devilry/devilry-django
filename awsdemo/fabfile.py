@@ -17,7 +17,8 @@ def install_requirements():
     """
     Install requirements for the demo.
     """
-    _install('python-virtualenv', 'fabric', 'nginx', 'git')
+    _install('python-virtualenv', 'fabric', 'nginx', 'git', 'postgresql',
+             'libpq-dev', 'python-dev', 'build-essential')
 
 @task
 def checkout_devilry():
