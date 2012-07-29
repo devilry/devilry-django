@@ -2,7 +2,7 @@
 Fabric tasks that simplifies updating Devilry, and setting up a demo instance.
 """
 
-from fabric.api import local, abort, task, local
+from fabric.api import local, task
 
 
 
@@ -37,6 +37,7 @@ def refresh():
     """
     virtualenv()
     refreshstatic()
+    syncdb()
 
 
 @task
@@ -54,31 +55,14 @@ def update_devilry():
 #
 
 @task
-def autodb():
+def demodb():
     syncdb()
     local('bin/django_production.py dev_autodb -v2')
 
 @task
-def setup_demo():
-    """
-    Runs ``reset``, ``remove_db`` and ``autodb`` tasks.
-    """
-    reset()
-    autodb()
-
-@task
-def clean():
-    print('Are you sure you want to completely reset the environment? This '
-          'will run "git clean -dfx .", which removes any '
-          'untracked files in this directory:')
-    local('git clean -ndfx .')
-    ok = raw_input('Proceed (y/N)? ')
-    if ok != 'y':
-        abort('Aborted')
-    local('git clean -dfx .')
-
-@task
-def reset():
-    clean()
-    virtualenv()
-    refreshstatic()
+def reset_demodb():
+    from os.path import exists
+    from os import remove
+    if exists('db.sqlite3'):
+        remove('db.sqlite3')
+    demodb()
