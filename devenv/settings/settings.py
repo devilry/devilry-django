@@ -115,6 +115,9 @@ if delay_middleware:
     ]
 
 
+TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + ('extjs4.context_processors.extjs4',)
+
+
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.apps.developertools.middleware.FakeLoginMiddleware']
 
