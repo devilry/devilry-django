@@ -56,8 +56,8 @@ def refresh():
     Just run buildout, collectstatic and autogen_extjsmodels. Useful when
     updating the demo when database changes/reset is not required.
     """
-    local('bin/django_production.py collectstatic --noinput')
     autogen_extjsmodels()
+    local('bin/django_production.py collectstatic --noinput')
 
 
 
