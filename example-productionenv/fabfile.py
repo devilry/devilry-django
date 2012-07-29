@@ -44,6 +44,7 @@ def syncdb():
 @task
 def autogen_extjsmodels():
     local('bin/django_production.py dev_autogen_extjsmodels')
+    local('bin/django_production.py devilry_extjs_jsmerge')
 
 @task
 def reset():
