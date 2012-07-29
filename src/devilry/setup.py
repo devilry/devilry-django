@@ -9,5 +9,6 @@ setup(
     author = 'The Devilry developers',
     packages = find_packages(),
     install_requires = ['setuptools', 'Django', 'Markdown', 'django_errortemplates',
-                        'djangorestframework', 'Pygments', 'flup', 'PyYAML']
+                        'djangorestframework', 'Pygments', 'flup', 'PyYAML',
+                        'gunicorn']
 )

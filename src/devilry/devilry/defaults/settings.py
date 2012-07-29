@@ -27,6 +27,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.messages',
                   'django.contrib.admin',
                   'djangorestframework',
+                  'gunicorn',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
