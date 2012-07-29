@@ -7,6 +7,7 @@ repo = 'git://github.com/devilry/devilry-django.git'
 branch = 'master'
 checkout_dir = '/home/ubuntu/devilry-django'
 prodenv_dir = checkout_dir + '/example-productionenv'
+gunicorn_pidfile = '/tmp/gunicorn.pid'
 
 
 def _install(*packages):
@@ -37,20 +38,54 @@ def checkout_devilry():
 
 @task
 def refresh():
+    """
+    Refresh the virtualenv and rebuild static files.
+    """
     with cd(prodenv_dir):
         run('fab refresh')
 
 
 @task
-def run_gunicorn_fg():
-    with cd(prodenv_dir):
-        run('bin/django_production.py run_gunicorn -w 4 127.0.0.1:9000')
+def setup():
+    """
+    Run install_requirements, checkout_devilry and refresh
+    """
+    install_requirements()
+    checkout_devilry()
+    refresh()
 
 
 @task
-def run_nginx_fg():
+def reset_demodb():
     with cd(prodenv_dir):
-        run('nginx -c {prodenv_dir}/server-conf/nginx.conf -g "daemon off;"'.format(prodenv_dir=prodenv_dir))
+        run('fab reset_demodb')
+
+
+@task
+def start_servers():
+    run('{prodenv_dir}/bin/django_production.py run_gunicorn -w 4 127.0.0.1:9000 --daemon --pid={pidfile}'.format(pidfile=gunicorn_pidfile,
+                                                                                                                  prodenv_dir=prodenv_dir),
+        pty=False)
+    sudo('nginx -c {prodenv_dir}/server-conf/nginx.conf'.format(prodenv_dir=prodenv_dir), pty=False)
+
+
+def _kill_by_pidfile(pidfile):
+    if exists(pidfile):
+        pid = run('cat {pidfile}'.format(pidfile=pidfile)).strip()
+        sudo('kill {pid}'.format(pid=pid))
+    else:
+        print 'File does not exist:', pidfile
+
+@task
+def stop_servers():
+    _kill_by_pidfile(gunicorn_pidfile)
+    _kill_by_pidfile('/tmp/nginx.pid')
+
+
+@task
+def restart_servers():
+    stop_servers()
+    start_servers()
 
 
 #####################
