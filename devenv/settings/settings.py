@@ -21,7 +21,6 @@ INSTALLED_APPS += [
                    #'devilry.projects.dev.apps.test',
 
                    'errortemplates',
-                   'djangorestframework',
                    'devilry_theme',
                    'devilry_subjectadmin',
                    'devilry_extjsextras',
@@ -30,7 +29,6 @@ INSTALLED_APPS += [
                    'seleniumhelpers',
                    'extjs4',
                    'djangosenchatools',
-                   'django.contrib.admin',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',

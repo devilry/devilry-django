@@ -20,12 +20,13 @@ AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 
 INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
-                  'django.contrib.sites',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
                   'django.contrib.staticfiles',
                   'django.contrib.sessions',
                   'django.contrib.messages',
+                  'django.contrib.admin',
+                  'djangorestframework',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
@@ -48,7 +49,11 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.superadmin',
                   'devilry.apps.authenticate',
                   'devilry.apps.gradeeditors',
-                  'devilry.apps.send_email_to_students']
+                  'devilry.apps.send_email_to_students',
+
+                  'devilry_usersearch',
+                  'devilry_useradmin'
+                 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.debug",
