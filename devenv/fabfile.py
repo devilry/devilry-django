@@ -7,9 +7,9 @@ from fabric.api import local, abort, task
 @task
 def setup_demo():
     """
-    Runs ``autogen_extjsmodels``, ``remove_db`` and ``autodb`` tasks.
+    Runs ``reset``, ``remove_db`` and ``autodb`` tasks.
     """
-    autogen_extjsmodels()
+    reset()
     remove_db()
     autodb()
 
