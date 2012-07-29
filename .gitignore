@@ -91,6 +91,8 @@ src/django_extjs4/
 # Generated ExtJS apps
 all-classes.js
 
+# example-productionenv/
+example-productionenv/bin/
 
 # awsdemo
 awsdemo/bin
