@@ -39,11 +39,11 @@ def clean():
 
 @task
 def syncdb():
-    local('bin/django_dev.py syncdb -v0 --noinput')
+    local('bin/django_production.py syncdb -v0 --noinput')
 
 @task
 def autogen_extjsmodels():
-    local('bin/django_dev.py dev_autogen_extjsmodels')
+    local('bin/django_production.py dev_autogen_extjsmodels')
 
 @task
 def reset():
@@ -54,4 +54,4 @@ def reset():
 @task
 def autodb():
     syncdb()
-    local('bin/django_dev.py dev_autodb -v2')
+    local('bin/django_production.py dev_autodb -v2')
