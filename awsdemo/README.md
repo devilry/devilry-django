@@ -17,7 +17,10 @@ You only need to do this once (or when the dependencies have updates):
 ### Create a keypair for the devilry demo
 
 Go to http://console.aws.amazon.com, and select ``EC2 -> Key Pairs``. Create a
-key named ``devilrydemo``. Put the ``.pem`` file in ``~/.ssh/``.
+key named ``devilrydemo``. Put the ``.pem`` file in ``~/.ssh/``. Make sure you
+set the permissions of your .pem-file so only you can access it:
+
+    $ chmod 600 ~/.ssh/devilrydemo.pem
 
 
 ### Create awsfab_settings_local.py
