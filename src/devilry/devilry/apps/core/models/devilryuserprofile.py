@@ -3,6 +3,44 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
 
+def user_is_basenodeadmin(userobj, *basenode_modelsclasses):
+    """
+    Check if the given user is admin on any of the given
+    ``basenode_modelsclasses``.
+
+    :param basenode_modelsclasses:
+        Model classes. They must have an ``admins`` one-to-many relationship
+        with User.
+
+    Example (is period admin):
+
+        >>> from devilry.apps.core.models import Period
+        >>> from django.contrib.auth.models import User
+        >>> donald = User.objects.get(username='donald')
+        >>> donald_is_periodadmin = user_is_basenodeadmin(donald, Period)
+    """
+    for cls in basenode_modelsclasses:
+        if cls.objects.filter(admins__id=userobj.id).exists():
+            return True
+    return False
+
+def user_is_nodeadmin(userobj):
+    """
+    Check if the given user is admin on any node.
+    """
+    from .node import Node
+    return user_is_basenodeadmin(userobj, Node)
+
+def user_is_subjectadmin(userobj):
+    """
+    Check if the given user is admin on any subject, period or assignment.
+    """
+    from .subject import Subject
+    from .period import Period
+    from .assignment import Assignment
+    return user_is_basenodeadmin(userobj, Subject, Period, Assignment)
+
+
 def user_is_admin(userobj):
     """
     Check if the given user is admin on any node, subject, period or
@@ -12,10 +50,7 @@ def user_is_admin(userobj):
     from .subject import Subject
     from .period import Period
     from .assignment import Assignment
-    for cls in (Node, Subject, Period, Assignment):
-        if cls.where_is_admin(userobj).count() > 0:
-            return True
-    return False
+    return user_is_basenodeadmin(userobj, Node, Subject, Period, Assignment)
 
 def user_is_admin_or_superadmin(userobj):
     """

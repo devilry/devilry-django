@@ -1,6 +1,8 @@
 from django.test import TestCase
 from ..testhelper import TestHelper
 from ..models.devilryuserprofile import user_is_admin
+from ..models.devilryuserprofile import user_is_subjectadmin
+from ..models.devilryuserprofile import user_is_nodeadmin
 from ..models.devilryuserprofile import user_is_admin_or_superadmin
 
 class TestUserIsAdmin(TestCase):
@@ -12,6 +14,22 @@ class TestUserIsAdmin(TestCase):
                             assignments=["a1:admin(a1admin)"])
         self.testhelper.create_superuser('grandma')
         self.testhelper.create_user('notadmin')
+
+    def test_user_is_nodeadmin(self):
+        self.assertTrue(user_is_nodeadmin(self.testhelper.uniadmin))
+        self.assertFalse(user_is_nodeadmin(self.testhelper.subadmin))
+        self.assertFalse(user_is_nodeadmin(self.testhelper.p1admin))
+        self.assertFalse(user_is_nodeadmin(self.testhelper.a1admin))
+        self.assertFalse(user_is_nodeadmin(self.testhelper.notadmin))
+        self.assertFalse(user_is_nodeadmin(self.testhelper.grandma))
+
+    def test_user_is_subjectadmin(self):
+        self.assertFalse(user_is_subjectadmin(self.testhelper.uniadmin))
+        self.assertTrue(user_is_subjectadmin(self.testhelper.subadmin))
+        self.assertTrue(user_is_subjectadmin(self.testhelper.p1admin))
+        self.assertTrue(user_is_subjectadmin(self.testhelper.a1admin))
+        self.assertFalse(user_is_subjectadmin(self.testhelper.notadmin))
+        self.assertFalse(user_is_subjectadmin(self.testhelper.grandma))
 
     def test_user_is_admin(self):
         self.assertTrue(user_is_admin(self.testhelper.uniadmin))
