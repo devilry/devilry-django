@@ -23,12 +23,23 @@
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
         <script type="text/javascript">
+            // No-op gettext functions to make the old stuff work with the new
+            // apps that use i18n.
+            function gettext(msgid) {
+                return msgid;
+            }
+            function pgettext(context, msgid) {
+                return msgid;
+            }
+
+
             // Path to the blank image should point to a valid location on your server
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
             Ext.Loader.setConfig({
                 enabled: {% if debug %}true{% else %}false{% endif %},
                 paths: {
                     'devilry': '{{ DEVILRY_STATIC_URL }}/extjs_classes',
+                    'devilry_header': '{{ DEVILRY_STATIC_URL }}/devilry_header',
                     'Ext': '{{ DEVILRY_STATIC_URL }}/extjsux'
                 }
             });
@@ -81,6 +92,7 @@
             {% block imports %}
                 Ext.require('devilry.extjshelpers.page.Header');
                 Ext.require('devilry.extjshelpers.page.Footer');
+                Ext.require('devilry_header.Header');
             {% endblock %}
             {% block appjs %}{% endblock %}
             Ext.onReady(function() {
