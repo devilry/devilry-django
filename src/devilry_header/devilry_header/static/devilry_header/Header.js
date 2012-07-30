@@ -10,6 +10,7 @@ Ext.define('devilry_header.Header', {
 
     requires: [
         'devilry_header.CurrentRoleButton',
+        'devilry_header.HoverMenu',
         'devilry_header.Roles'
     ],
 
@@ -77,10 +78,19 @@ Ext.define('devilry_header.Header', {
                     render: this._onRender,
                     trigger: this._onTrigger
                 }
-            }, this.breadcrumbarea = Ext.widget('container', {
+            }, {
+                xtype: 'container',
+                itemId: 'breadcrumbarea',
                 cls: 'breadcrumbarea',
                 region: 'center'
-            })]
+            }, {
+                xtype: 'devilryheader_hovermenu',
+                listeners: {
+                    scope: this,
+                    show: this._onShowHovermenu,
+                    hide: this._onHideHovermenu
+                }
+            }]
         });
         this.callParent(arguments);
     },
@@ -88,10 +98,16 @@ Ext.define('devilry_header.Header', {
     _getCurrentRoleButton: function() {
         return this.down('devilryheader_currentrolebutton');
     },
+    _getHoverMenu: function() {
+        return this.down('devilryheader_hovermenu');
+    },
+    _getBreadcrumbArea: function() {
+        return this.down('#breadcrumbarea');
+    },
 
     setBreadcrumbComponent: function(config) {
-        this.breadcrumbarea.removeAll();
-        this.breadcrumbarea.add(config);
+        this._getBreadcrumbArea().removeAll();
+        this._getBreadcrumbArea().add(config);
     },
 
     _onRender: function() {
@@ -99,6 +115,18 @@ Ext.define('devilry_header.Header', {
     },
 
     _onTrigger: function() {
-        console.log('trigger2');
-    }
+        var hovermenu = this._getHoverMenu();
+        if(hovermenu.isVisible()) {
+            hovermenu.hide();
+        } else {
+            hovermenu.show();
+        }
+    },
+
+    _onShowHovermenu: function() {
+        console.log('Show menu');
+    },
+    _onHideHovermenu: function() {
+        console.log('Hide menu');
+    },
 });

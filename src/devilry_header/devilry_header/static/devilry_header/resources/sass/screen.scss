@@ -20,7 +20,8 @@ $subjectadmincolor_bg: #CC4400;
 }
 
 .devilryheader {
-    background-color: #000; color: #fff;
+    background-color: #000;
+    color: #fff;
     position: relative;
     top: 0;
     left: 0;
@@ -36,8 +37,10 @@ $subjectadmincolor_bg: #CC4400;
         }
 
         &.currentrolebutton_loading {
-            //background-color: $studentcolor_bg;
-            background-color: lighten($almostblack, 20%);
+            background-color: $almostblack;
+            .textwrapper {
+                color: #fff;
+            }
         }
         &.student {
             background-color: $studentcolor_bg;
@@ -49,4 +52,9 @@ $subjectadmincolor_bg: #CC4400;
             }
         }
     }
+}
+
+.devilryheader_hovermenu {
+    background-color: $almostblack;
+    color: #fff;
 }
