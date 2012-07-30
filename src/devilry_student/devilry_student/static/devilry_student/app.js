@@ -41,7 +41,7 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'subjectadmin'
+                navclass: 'student'
             }, {
                 xtype: 'container',
                 region: 'center',
