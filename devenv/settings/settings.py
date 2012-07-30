@@ -25,6 +25,7 @@ INSTALLED_APPS += [
                    'devilry_extjsextras',
                    'devilry_usersearch',
                    'devilry_useradmin',
+                   'devilry_student',
                    'seleniumhelpers',
                    'extjs4',
                    'djangosenchatools',
