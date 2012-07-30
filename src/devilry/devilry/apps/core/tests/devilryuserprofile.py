@@ -1,9 +1,11 @@
 from django.test import TestCase
 from ..testhelper import TestHelper
 from ..models.devilryuserprofile import user_is_admin
-from ..models.devilryuserprofile import user_is_subjectadmin
-from ..models.devilryuserprofile import user_is_nodeadmin
 from ..models.devilryuserprofile import user_is_admin_or_superadmin
+from ..models.devilryuserprofile import user_is_nodeadmin
+from ..models.devilryuserprofile import user_is_subjectadmin
+from ..models.devilryuserprofile import user_is_periodadmin
+from ..models.devilryuserprofile import user_is_assignmentadmin
 
 class TestUserIsAdmin(TestCase):
     def setUp(self):
@@ -26,10 +28,26 @@ class TestUserIsAdmin(TestCase):
     def test_user_is_subjectadmin(self):
         self.assertFalse(user_is_subjectadmin(self.testhelper.uniadmin))
         self.assertTrue(user_is_subjectadmin(self.testhelper.subadmin))
-        self.assertTrue(user_is_subjectadmin(self.testhelper.p1admin))
-        self.assertTrue(user_is_subjectadmin(self.testhelper.a1admin))
+        self.assertFalse(user_is_subjectadmin(self.testhelper.p1admin))
+        self.assertFalse(user_is_subjectadmin(self.testhelper.a1admin))
         self.assertFalse(user_is_subjectadmin(self.testhelper.notadmin))
         self.assertFalse(user_is_subjectadmin(self.testhelper.grandma))
+
+    def test_user_is_periodadmin(self):
+        self.assertFalse(user_is_periodadmin(self.testhelper.uniadmin))
+        self.assertFalse(user_is_periodadmin(self.testhelper.subadmin))
+        self.assertTrue(user_is_periodadmin(self.testhelper.p1admin))
+        self.assertFalse(user_is_periodadmin(self.testhelper.a1admin))
+        self.assertFalse(user_is_periodadmin(self.testhelper.notadmin))
+        self.assertFalse(user_is_periodadmin(self.testhelper.grandma))
+
+    def test_user_is_assignmentadmin(self):
+        self.assertFalse(user_is_assignmentadmin(self.testhelper.uniadmin))
+        self.assertFalse(user_is_assignmentadmin(self.testhelper.subadmin))
+        self.assertFalse(user_is_assignmentadmin(self.testhelper.p1admin))
+        self.assertTrue(user_is_assignmentadmin(self.testhelper.a1admin))
+        self.assertFalse(user_is_assignmentadmin(self.testhelper.notadmin))
+        self.assertFalse(user_is_assignmentadmin(self.testhelper.grandma))
 
     def test_user_is_admin(self):
         self.assertTrue(user_is_admin(self.testhelper.uniadmin))

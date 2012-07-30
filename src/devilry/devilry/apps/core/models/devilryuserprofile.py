@@ -33,12 +33,25 @@ def user_is_nodeadmin(userobj):
 
 def user_is_subjectadmin(userobj):
     """
-    Check if the given user is admin on any subject, period or assignment.
+    Check if the given user is admin on any subject.
     """
     from .subject import Subject
+    return user_is_basenodeadmin(userobj, Subject)
+
+def user_is_periodadmin(userobj):
+    """
+    Check if the given user is admin on any period.
+    """
     from .period import Period
+    return user_is_basenodeadmin(userobj, Period)
+
+def user_is_assignmentadmin(userobj):
+    """
+    Check if the given user is admin on any assignment.
+    """
     from .assignment import Assignment
-    return user_is_basenodeadmin(userobj, Subject, Period, Assignment)
+    return user_is_basenodeadmin(userobj, Assignment)
+
 
 
 def user_is_admin(userobj):
