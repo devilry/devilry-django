@@ -1,6 +1,7 @@
 @import "compass/css3/border-radius";
 
 $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$baseLineHeight: 18px;
 $almostblack: #191919 !default;
 $radiussize_big: 14px;
 $radiussize_small: 6px;
@@ -57,4 +58,29 @@ $subjectadmincolor_bg: #CC4400;
 .devilryheader_hovermenu {
     background-color: $almostblack;
     color: #fff;
+    font-family: $baseFontFamily;
+
+    h2 {
+        font-size: 20px;
+        margin: 20 0 10 0;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .discreet {
+        font-size: 11px;
+        color: #aaa;
+    }
+
+    a {
+        text-decoration: underline;
+        color: #3366FF;
+    }
+
+    p {
+        margin: 0 0 $baseLineHeight/2;
+        line-height: $baseLineHeight;
+    }
 }

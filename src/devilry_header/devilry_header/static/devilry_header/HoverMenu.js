@@ -6,14 +6,19 @@ Ext.define('devilry_header.HoverMenu', {
     frame: false,
     border: 0,
     autoShow: true,
+    autoScroll: true,
+
+    requires: [
+        'devilry_header.Roles'
+    ],
 
     initComponent: function() {
         this._setupAutosizing();
 
         Ext.apply(this, {
             items: [{
-                xtype: 'box',
-                html: 'Hei'
+                xtype: 'devilryheader_roles',
+                padding: 10
             }]
         });
         this.callParent(arguments);
