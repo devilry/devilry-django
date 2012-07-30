@@ -2,20 +2,22 @@
  * Devilry page header with the role tabs and log in/out links.
  */
 Ext.define('devilry_header.Header', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    //bodyStyle: 'background-color: transparent !important',
-    ui: 'transparentpanel',
-    border: false,
+    cls: 'devilryheader',
     margins: '0 0 0 0',
-    height: 49,
-    //autoHeight: true,
+    height: 30,
+
+    requires: [
+        'devilry_header.CurrentRoleButton',
+        'devilry_header.Roles'
+    ],
 
     /**
      * @cfg {string} navclass (required)
      */
 
-    bodyTpl: Ext.create('Ext.XTemplate',
+    bodyTpl: [
         '<div class="devilryheader">',
             '<div id="heading" style="z-index: 1000;">',
                 '<div id="authenticated-user-bar">',
@@ -51,19 +53,52 @@ Ext.define('devilry_header.Header', {
                 '</ul>',
             '</div>',
         '</div>'
-    ),
+    ],
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    //constructor: function(config) {
+        //this.initConfig(config);
+        //this.callParent([config]);
+    //},
 
     initComponent: function() {
-        this.html = this.bodyTpl.apply({
-            navclass: this.navclass,
-            DevilrySettings: DevilrySettings,
-            DevilryUser: DevilryUser
+        //var data = {
+            //navclass: this.navclass,
+            //DevilrySettings: DevilrySettings,
+            //DevilryUser: DevilryUser
+        //};
+        Ext.apply(this, {
+            layout: 'border',
+            items: [{
+                xtype: 'devilryheader_currentrolebutton',
+                region: 'west',
+                width: 150,
+                listeners: {
+                    scope: this,
+                    render: this._onRender,
+                    trigger: this._onTrigger
+                }
+            }, this.breadcrumbarea = Ext.widget('container', {
+                cls: 'breadcrumbarea',
+                region: 'center'
+            })]
         });
         this.callParent(arguments);
+    },
+
+    _getCurrentRoleButton: function() {
+        return this.down('devilryheader_currentrolebutton');
+    },
+
+    setBreadcrumbComponent: function(config) {
+        this.breadcrumbarea.removeAll();
+        this.breadcrumbarea.add(config);
+    },
+
+    _onRender: function() {
+        this._getCurrentRoleButton().setCurrentRole('Student', 'student');
+    },
+
+    _onTrigger: function() {
+        console.log('trigger2');
     }
 });

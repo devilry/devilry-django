@@ -1,6 +1,52 @@
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+@import "compass/css3/border-radius";
 
-@import "compass/reset";
+$baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$almostblack: #191919 !default;
+$radiussize_big: 14px;
+$radiussize_small: 6px;
+
+$studentcolor_bg: #77B300;
+$examinercolor_bg: #0077B3;
+$oldadmincolor_bg: #CC4400;
+$subjectadmincolor_bg: #CC4400;
+
+@mixin navitemlink($bg) {
+    background-color: $almostblack;
+    color: #fff;
+    &:hover {
+        color: #fff;
+        background-color: lighten($bg, 6%) !important;
+    }
+}
+
+.devilryheader {
+    background-color: #000; color: #fff;
+    position: relative;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+
+
+    .currentrolebutton {
+        @include border-top-right-radius(10);
+        @include border-bottom-right-radius(10);
+        .textwrapper {
+            color: #000;
+            padding: 6px 0 0 10px;
+        }
+
+        &.currentrolebutton_loading {
+            //background-color: $studentcolor_bg;
+            background-color: lighten($almostblack, 20%);
+        }
+        &.student {
+            background-color: $studentcolor_bg;
+        }
+        &.currentrolebutton_hover {
+            cursor: pointer;
+            .textwrapper {
+                color: #fff;
+            }
+        }
+    }
+}
