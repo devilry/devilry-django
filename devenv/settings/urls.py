@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic import View
 
 from devilry.apps.core import pluginloader
-from devilry.defaults.urls import devilry_urls
+from devilry_settings.default_urls import devilry_urls
 
 
 class RedirectToFrontpage(View):

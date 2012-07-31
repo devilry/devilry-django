@@ -22,7 +22,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
-ROOT_URLCONF = 'devilry.defaults.root_urlconf'
+ROOT_URLCONF = 'devilry_settings.default_root_urlconf'
 AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 
 
