@@ -44,7 +44,6 @@ Ext.define('devilry_header.UserInfoBox', {
      * Set UserInfo record and update view.
      */
     setUserInfoRecord: function(userInfoRecord) {
-        console.log(userInfoRecord.data);
         this.update({
             userInfo: userInfoRecord.data,
             wrong_userinfo_url: '#',
