@@ -19,6 +19,9 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
     proxy: {
         type: 'ajax',
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_authenticateduserinfo/userinfo',
+        extraParams: {
+            format: 'json'
+        },
         reader: {
             type: 'json'
         }
