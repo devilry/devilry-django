@@ -10,7 +10,7 @@ Ext.define('devilry_header.Roles', {
             '<h2>',
                 gettext('Choose your role'),
             '</h2>',
-            '<tpl if="userInfo">',
+            '<tpl if="has_any_roles">',
                 '<p class="discreet">',
                     gettext('All your available roles are listed below.'),
                 '</p>',
@@ -59,9 +59,11 @@ Ext.define('devilry_header.Roles', {
                 '<p><a href="{lacking_permissions_url}">',
                     gettext('I should have had more roles'),
                 '</a></p>',
-            '<tpl else><p class="nopermissions">',
-                gettext('You have no permissions on anything in Devilry. Click <a href="{no_permissions_url}">this link</a> to go to a page explaining how to get access to Devilry.'),
-            '</p></tpl>',
+            '<tpl else>',
+                '<p class="nopermissions">',
+                    gettext('You have no permissions on anything in Devilry. Click <a href="{no_permissions_url}">this link</a> to go to a page explaining how to get access to Devilry.'),
+                '</p>',
+            '</tpl>',
         '</tpl>'
     ],
 
@@ -77,6 +79,7 @@ Ext.define('devilry_header.Roles', {
         console.log(userInfoRecord.data);
         this.update({
             userInfo: userInfoRecord.data,
+            has_any_roles: userInfoRecord.hasAnyRoles(),
             lacking_permissions_url: '#',
             urlpath_prefix: DevilrySettings.DEVILRY_URLPATH_PREFIX,
             no_permissions_url: '#'
