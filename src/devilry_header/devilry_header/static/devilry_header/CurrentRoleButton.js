@@ -3,7 +3,7 @@ Ext.define('devilry_header.CurrentRoleButton', {
     alias: 'widget.devilryheader_currentrolebutton',
     cls: 'currentrolebutton currentrolebutton_loading',
     overCls: 'currentrolebutton_hover',
-    disabledCls: 'currentrolebutton_disabled',
+    //disabledCls: 'currentrolebutton_disabled',
 
     tpl: [
         '<div class="textwrapper">{text}</div>'
@@ -40,6 +40,13 @@ Ext.define('devilry_header.CurrentRoleButton', {
         this.update({
             text: text
         });
+    },
+
+    setPressedClass: function() {
+        this.addCls('currentrolebutton_pressed');
+    },
+    removePressedClass: function() {
+        this.removeCls('currentrolebutton_pressed');
     },
 
     _onRender: function() {

@@ -122,9 +122,11 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowHovermenu: function() {
+        this._getCurrentRoleButton().setPressedClass();
         console.log('Show menu');
     },
     _onHideHovermenu: function() {
+        this._getCurrentRoleButton().removePressedClass();
         console.log('Hide menu');
     },
 });

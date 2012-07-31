@@ -34,9 +34,7 @@ $logocolor: #A00;
 
 
     .currentrolebutton {
-        //@include border-top-right-radius(30);
-        //@include border-bottom-right-radius(10);
-        background-image: url('../images/reversearrow.png');
+        background-image: url('../images/reversearrow_down.png');
         background-repeat:no-repeat;
         background-position: right top;        
         .textwrapper {
@@ -59,6 +57,11 @@ $logocolor: #A00;
             .textwrapper {
                 //color: #fff;
             }
+            background-color: #666 !important;
+        }
+        &.currentrolebutton_pressed {
+            background-image: url('../images/reversearrow_up.png') !important;
+            background-color: #444;
         }
     }
     .devilrylogo {
