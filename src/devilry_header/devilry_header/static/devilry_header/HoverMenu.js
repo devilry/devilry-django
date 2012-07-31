@@ -10,6 +10,7 @@ Ext.define('devilry_header.HoverMenu', {
 
     requires: [
         'devilry_header.Roles',
+        'devilry_header.HelpLinksBox',
         'devilry_header.UserInfoBox'
     ],
 
@@ -24,8 +25,13 @@ Ext.define('devilry_header.HoverMenu', {
                 padding: '10 20 10 10'
             }, {
                 columnWidth: 1.0,
-                xtype: 'devilryheader_userinfobox',
-                padding: '10 10 10 20'
+                padding: '10 10 10 20',
+                xtype: 'container',
+                items: [{
+                    xtype: 'devilryheader_userinfobox'
+                }, {
+                    xtype: 'devilryheader_helplinksbox'
+                }]
             }]
         });
         this.callParent(arguments);
@@ -37,10 +43,14 @@ Ext.define('devilry_header.HoverMenu', {
     _getUserInfoBox: function() {
         return this.down('devilryheader_userinfobox');
     },
+    _getHelpLinksBox: function() {
+        return this.down('devilryheader_helplinksbox');
+    },
 
     setUserInfoRecord: function(userInfoRecord) {
         this._getRoles().setUserInfoRecord(userInfoRecord);
         this._getUserInfoBox().setUserInfoRecord(userInfoRecord);
+        this._getHelpLinksBox().setUserInfoRecord(userInfoRecord);
     },
 
 
