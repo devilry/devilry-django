@@ -74,6 +74,10 @@ $superusercolor_bg: #CC3300;
     .discreet {
         font-size: 11px;
         color: #aaa;
+        a {
+            color: #fff;
+            text-decoration: underline;
+        }
     }
 
     a {
@@ -118,6 +122,22 @@ $superusercolor_bg: #CC3300;
                     @include role_link($superusercolor_bg);
                 }
             }
+        }
+    }
+}
+
+.devilryheader_userinfobox {
+    table.userinfotable {
+        th, td {
+            line-height: $baseLineHeight;
+        }
+        th {
+            color: #ddd;
+            font-weight: bold;
+            padding: 4px 10px 4px 0;
+        }
+        td {
+            color: #fff;
         }
     }
 }

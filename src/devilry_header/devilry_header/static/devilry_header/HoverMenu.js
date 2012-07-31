@@ -9,16 +9,23 @@ Ext.define('devilry_header.HoverMenu', {
     autoScroll: true,
 
     requires: [
-        'devilry_header.Roles'
+        'devilry_header.Roles',
+        'devilry_header.UserInfoBox'
     ],
 
     initComponent: function() {
         this._setupAutosizing();
 
         Ext.apply(this, {
+            layout: 'column',
             items: [{
+                width: 300,
                 xtype: 'devilryheader_roles',
-                padding: 10
+                padding: '10 20 10 10'
+            }, {
+                columnWidth: 1.0,
+                xtype: 'devilryheader_userinfobox',
+                padding: '10 10 10 20'
             }]
         });
         this.callParent(arguments);
@@ -27,9 +34,13 @@ Ext.define('devilry_header.HoverMenu', {
     _getRoles: function() {
         return this.down('devilryheader_roles');
     },
+    _getUserInfoBox: function() {
+        return this.down('devilryheader_userinfobox');
+    },
 
     setUserInfoRecord: function(userInfoRecord) {
         this._getRoles().setUserInfoRecord(userInfoRecord);
+        this._getUserInfoBox().setUserInfoRecord(userInfoRecord);
     },
 
 
