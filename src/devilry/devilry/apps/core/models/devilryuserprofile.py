@@ -75,6 +75,20 @@ def user_is_admin_or_superadmin(userobj):
     else:
         return user_is_admin(userobj)
 
+def user_is_examiner(userobj):
+    """
+    Returns ``True`` if the given ``userobj`` is examiner on any AssignmentGroup.
+    """
+    from .assignment_group import AssignmentGroup
+    return AssignmentGroup.published_where_is_examiner(userobj).exists()
+
+def user_is_student(userobj):
+    """
+    Returns ``True`` if the given ``userobj`` is candidate on any AssignmentGroup.
+    """
+    from .assignment_group import AssignmentGroup
+    return AssignmentGroup.published_where_is_candidate(userobj).exists()
+
 
 class DevilryUserProfile(models.Model):
     """ User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
