@@ -1,5 +1,5 @@
 from os.path import abspath, dirname, join
-from devilry.defaults.settings import *
+from devilry_settings.default_settings import *
 
 parent_dir = dirname(dirname(abspath(__file__)))
 

@@ -1,7 +1,7 @@
 from os.path import abspath, dirname, join
 
 # Import the default settings from devilry
-from devilry.defaults.settings import *
+from devilry_settings.default_settings import *
 
 ## Convenience variable to use paths relative to this file. With the magic below,
 ## parent_dir is set to the parentdirectory of the directory containing _this_ file.
