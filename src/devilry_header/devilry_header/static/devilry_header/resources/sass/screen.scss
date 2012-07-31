@@ -64,11 +64,8 @@ $superusercolor_bg: #CC3300;
 
     h2 {
         font-size: 20px;
-        margin: 20 0 10 0;
+        margin: 0 0 7px 0;
 
-        &:first-child {
-            margin-top: 0;
-        }
     }
 
     .discreet {
@@ -132,12 +129,30 @@ $superusercolor_bg: #CC3300;
             line-height: $baseLineHeight;
         }
         th {
-            color: #ddd;
+            color: #999;
             font-weight: bold;
             padding: 4px 10px 4px 0;
         }
         td {
             color: #fff;
+        }
+    }
+}
+
+
+.devilryheader_helplinksbox {
+    ul.helplinks {
+        li {
+            margin: 0 0 10px 0;
+            .title {
+                a {
+                    font-weight: bold;
+                }
+            }
+            .description {
+                font-size: 11px;
+                color: #aaa;
+            }
         }
     }
 }

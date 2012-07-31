@@ -30,6 +30,7 @@ Ext.define('devilry_header.HoverMenu', {
                 items: [{
                     xtype: 'devilryheader_userinfobox'
                 }, {
+                    margin: '30 0 0 0',
                     xtype: 'devilryheader_helplinksbox'
                 }]
             }]
