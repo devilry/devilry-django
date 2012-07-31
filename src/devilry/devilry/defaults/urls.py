@@ -14,5 +14,5 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
 
                 (r'^devilry_usersearch/', include('devilry_usersearch.urls')),
                 (r'^devilry_authenticateduserinfo/', include('devilry_authenticateduserinfo.urls')),
-                (r'^superadmin/', include(admin.site.urls))
+                (r'^superuser/', include(admin.site.urls))
                )
