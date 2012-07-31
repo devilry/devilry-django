@@ -79,9 +79,9 @@ Ext.define('devilry_header.Roles', {
         this.update({
             userInfo: userInfoRecord.data,
             has_any_roles: userInfoRecord.hasAnyRoles(),
-            lacking_permissions_url: '#',
+            lacking_permissions_url: DevilrySettings.DEVILRY_LACKING_PERMISSIONS_URL,
             urlpath_prefix: DevilrySettings.DEVILRY_URLPATH_PREFIX,
-            no_permissions_url: '#'
+            no_permissions_url: DevilrySettings.DEVILRY_LACKING_PERMISSIONS_URL
         });
     }
 });

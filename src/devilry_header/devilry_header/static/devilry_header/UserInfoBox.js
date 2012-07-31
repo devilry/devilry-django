@@ -46,7 +46,7 @@ Ext.define('devilry_header.UserInfoBox', {
     setUserInfoRecord: function(userInfoRecord) {
         this.update({
             userInfo: userInfoRecord.data,
-            wrong_userinfo_url: '#',
+            wrong_userinfo_url: DevilrySettings.DEVILRY_WRONG_USERINFO_URL,
             logout_url: DevilrySettings.DEVILRY_LOGOUT_URL
         });
     }
