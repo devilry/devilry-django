@@ -1,5 +1,4 @@
 
-
 ########################################################################
 #
 # Defaults for django settings
@@ -117,16 +116,16 @@ DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDelivery
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
 DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
 
-## Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
-## to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
+#: Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
+#: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
 #DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
 
-## When sorting by fullname, would you like to sort by last name? Currently
-## only affects the overview over an entire period.
+#: When sorting by fullname, would you like to sort by last name? Currently
+#: only affects the overview over an entire period.
 DEVILRY_SORT_FULL_NAME_BY_LASTNAME = True
 
-## Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
-## The body of each message can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
+#: Messages that are displayed in the 3 dashboards for users with no permission to the dashboard
+#: The body of each message can contain html. For example, you can add an email link using: <a href="mailto:admin@example.com">admin@example.com</a>
 DEVILRY_STUDENT_NO_PERMISSION_MSG = {'title': 'No published assignments',
                                      'body': 'You are not registered as a student on any assignments in Devilry. This is usually because you subject/course administrator has not published any assignments yet. Contact your subject/course administrator if this is wrong.'}
 DEVILRY_EXAMINER_NO_PERMISSION_MSG = {'title': 'You are not an examiner',
@@ -135,10 +134,13 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
                                            'body': 'You are not registered as an administrator on any Node, Subject/Course, Period/Semester or Assignment in Devilry. If this is wrong, please contact the system administrator.'}
 
 
-## Deadline handling method:
-## 0: Soft deadlines
-## 1: Hard deadlines
+#: Deadline handling method:
+#:
+#:    0: Soft deadlines
+#:    1: Hard deadlines
 DEFAULT_DEADLINE_HANDLING_METHOD = 0
+
+
 
 #################################################
 # Settings without a default value
