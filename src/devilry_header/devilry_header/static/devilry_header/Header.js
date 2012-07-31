@@ -10,51 +10,10 @@ Ext.define('devilry_header.Header', {
 
     requires: [
         'devilry_header.CurrentRoleButton',
+        'devilry_header.UserButton',
         'devilry_header.HoverMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo'
-    ],
-
-    /**
-     * @cfg {string} navclass (required)
-     */
-
-    bodyTpl: [
-        '<div class="devilryheader">',
-            '<div id="heading" style="z-index: 1000;">',
-                '<div id="authenticated-user-bar">',
-                    '<tpl if="DevilryUser.is_authenticated">',
-                        '<span id="authenticated-user-info">',
-                            '{DevilryUser.username}',
-                        '</span>',
-                        ' | <a class="loginout-link" href="{DevilrySettings.DEVILRY_LOGOUT_URL}">Log out</a>',
-                    '</tpl>',
-                    '<tpl if="!DevilryUser.is_authenticated">',
-                        '<a class="loginout-link" href="{DevilrySettings.DEVILRY_LOGIN_URL}">Log in</a>',
-                    '</tpl>',
-                '</div>',
-                '<h1>Devilry</h1>',
-            '</div>',
-            '<div class="nav {navclass}">',
-                '<ul>',
-                    '<li class="student-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/student/">',
-                        pgettext('devilryheader', 'Student'),
-                    '</a></li>',
-                    '<li class="examiner-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/examiner/">',
-                        pgettext('devilryheader', 'Examiner'),
-                    '</a></li>',
-                    '<li class="subjectadmin-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/devilry_subjectadmin/#">',
-                        pgettext('devilryheader', 'Subjectadmin'),
-                    '</a></li>',
-                    '<li class="oldadmin-navitem"><a href="{DevilrySettings.DEVILRY_URLPATH_PREFIX}/administrator/">',
-                        'Administrator (old UI)',
-                    '</a></li>',
-                    '<li class="externallink-navitem"><a href="{DevilrySettings.DEVILRY_HELP_URL}" target="_blank">',
-                        pgettext('devilryheader', 'Help'),
-                    '</a></li>',
-                '</ul>',
-            '</div>',
-        '</div>'
     ],
 
     constructor: function() {
@@ -63,17 +22,14 @@ Ext.define('devilry_header.Header', {
     },
 
     initComponent: function() {
-        //var data = {
-            //navclass: this.navclass,
-            //DevilrySettings: DevilrySettings,
-            //DevilryUser: DevilryUser
-        //};
         Ext.apply(this, {
-            layout: 'border',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
             items: [{
                 xtype: 'devilryheader_currentrolebutton',
-                region: 'west',
-                width: 150,
+                width: 120,
                 listeners: {
                     scope: this,
                     render: this._onRender,
@@ -83,7 +39,26 @@ Ext.define('devilry_header.Header', {
                 xtype: 'container',
                 itemId: 'breadcrumbarea',
                 cls: 'breadcrumbarea',
-                region: 'center'
+                style: 'background-color: #333 !important;',
+                flex: 1,
+            }, {
+                xtype: 'box',
+                width: 100,
+                cls: 'devilrylogo',
+                html: 'Devilry'
+            }, {
+                xtype: 'container',
+                width: 100,
+                layout: 'fit',
+                padding: 5,
+                items: [{
+                    xtype: 'devilryheader_userbutton',
+                    text: gettext('Loading ...'),
+                    listeners: {
+                        scope: this,
+                        toggle: this._onToggleUserButton
+                    }
+                }]
             }, {
                 xtype: 'devilryheader_hovermenu',
                 listeners: {
@@ -102,6 +77,9 @@ Ext.define('devilry_header.Header', {
     _getHoverMenu: function() {
         return this.down('devilryheader_hovermenu');
     },
+    _getUserButton: function() {
+        return this.down('devilryheader_userbutton');
+    },
     _getBreadcrumbArea: function() {
         return this.down('#breadcrumbarea');
     },
@@ -118,15 +96,26 @@ Ext.define('devilry_header.Header', {
 
     _onLoadUserInfo: function(userInfoRecord) {
         this._getHoverMenu().setUserInfoRecord(userInfoRecord);
+        this._getUserButton().setText(userInfoRecord.getDisplayName());
+    },
+
+    _onToggleUserButton: function(button) {
+        var hovermenu = this._getHoverMenu();
+        if(button.pressed) {
+            hovermenu.show();
+        } else {
+            hovermenu.hide();
+        }
     },
 
     _onTrigger: function() {
-        var hovermenu = this._getHoverMenu();
-        if(hovermenu.isVisible()) {
-            hovermenu.hide();
-        } else {
-            hovermenu.show();
-        }
+        //var hovermenu = this._getHoverMenu();
+        //if(hovermenu.isVisible()) {
+            //hovermenu.hide();
+        //} else {
+            //hovermenu.show();
+        //}
+        this._getUserButton().toggle();
     },
 
     _onShowHovermenu: function() {

@@ -5,7 +5,7 @@ Ext.define('devilry_header.HoverMenu', {
     floating: true,
     frame: false,
     border: 0,
-    autoShow: true,
+    //autoShow: true,
     autoScroll: true,
 
     requires: [
