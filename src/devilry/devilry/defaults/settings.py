@@ -54,7 +54,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.send_email_to_students',
 
                   'devilry_usersearch',
-                  'devilry_useradmin'
+                  'devilry_useradmin',
+                  'devilry_settings'
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
