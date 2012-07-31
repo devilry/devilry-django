@@ -76,7 +76,6 @@ Ext.define('devilry_header.Roles', {
      * Set UserInfo record and update view.
      */
     setUserInfoRecord: function(userInfoRecord) {
-        console.log(userInfoRecord.data);
         this.update({
             userInfo: userInfoRecord.data,
             has_any_roles: userInfoRecord.hasAnyRoles(),
