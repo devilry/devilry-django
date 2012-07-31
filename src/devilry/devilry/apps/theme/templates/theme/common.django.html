@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/common.css"
             type="text/css" media="screen" charset="utf-8"/>
 
+        <script type="text/javascript" src="{% url devilry-settings %}"></script>
+
         <!-- ** ExtJS ** -->
         {% comment %}
         <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
@@ -50,20 +52,6 @@
             Ext.Ajax.defaultHeaders = {
                     'X_DEVILRY_USE_EXTJS': true
             };
-
-            Ext.define('DevilrySettings', {
-                singleton: true,
-                DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
-                DEVILRY_URLPATH_PREFIX: '{{ DEVILRY_URLPATH_PREFIX }}',
-                DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}',
-                DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
-                DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
-                DEVILRY_COMMON_CSS: '{{DEVILRY_THEME_URL }}/common.css',
-                DEVILRY_I18N_CURRENT_LOCALE: '{{ DEVILRY_I18N_CURRENT_LOCALE }}',
-                DEVILRY_SORT_FULL_NAME_BY_LASTNAME: {{ DEVILRY_SORT_FULL_NAME_BY_LASTNAME|yesno:"true,false" }},
-                DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD: {{ DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD }},
-                DEVILRY_LOGIN_URL: '{% url login %}'
-            });
 
             Ext.define('DevilryUser', {
                 singleton: true,
