@@ -3,7 +3,16 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
     idProperty: 'id',
     fields: [
         {name: 'id',  type: 'int'},
-        {name: 'full_name',  type: 'string'}
+        {name: 'username',  type: 'string'},
+        {name: 'full_name',  type: 'string'},
+        {name: 'email',  type: 'string'},
+        {name: 'languagecode',  type: 'string'},
+        {name: 'is_superuser',  type: 'bool'},
+        {name: 'is_nodeadmin',  type: 'bool'},
+        {name: 'is_periodadmin',  type: 'bool'},
+        {name: 'is_assignmentadmin',  type: 'bool'},
+        {name: 'is_student',  type: 'bool'},
+        {name: 'is_examiner',  type: 'bool'}
     ],
 
     proxy: {
