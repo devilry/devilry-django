@@ -58,6 +58,10 @@ Ext.define('devilry_authenticateduserinfo.UserInfo', {
 
     _onFailure: function(unused, operation) {
         this.loading = false;
-        console.log('Failed to load UserInfo', operation);
+        Ext.MessageBox.show({
+            title: gettext('Error'),
+            msg: gettext('Failed to load infomation about the authenticated user. Try to reload the page.'),
+            icon: Ext.MessageBox.ERROR
+        });
     }
 });
