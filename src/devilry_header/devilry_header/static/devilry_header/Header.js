@@ -28,8 +28,16 @@ Ext.define('devilry_header.Header', {
                 align: 'stretch'
             },
             items: [{
+                xtype: 'box',
+                width: 80,
+                cls: 'devilrylogo',
+                tpl: '<span class="logotext">{text}</span>',
+                data: {
+                    text: 'Devilry'
+                }
+            }, {
                 xtype: 'devilryheader_currentrolebutton',
-                width: 120,
+                //width: 100,
                 listeners: {
                     scope: this,
                     render: this._onRender,
@@ -39,13 +47,8 @@ Ext.define('devilry_header.Header', {
                 xtype: 'container',
                 itemId: 'breadcrumbarea',
                 cls: 'breadcrumbarea',
-                style: 'background-color: #333 !important;',
+                //style: 'background-color: #333 !important;',
                 flex: 1,
-            }, {
-                xtype: 'box',
-                width: 100,
-                cls: 'devilrylogo',
-                html: 'Devilry'
             }, {
                 xtype: 'container',
                 width: 100,

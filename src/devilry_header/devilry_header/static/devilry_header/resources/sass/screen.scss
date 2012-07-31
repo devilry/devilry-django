@@ -1,4 +1,5 @@
 @import "compass/css3/border-radius";
+@import "compass/css3/user-interface";
 
 $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $baseLineHeight: 18px;
@@ -10,6 +11,7 @@ $studentcolor_bg: #77B300;
 $examinercolor_bg: #0077B3;
 $administratorcolor_bg: #ff9900;
 $superusercolor_bg: #CC3300;
+$logocolor: #A00;
 
 @mixin role_link($bg) {
     background-color: $bg;
@@ -32,11 +34,15 @@ $superusercolor_bg: #CC3300;
 
 
     .currentrolebutton {
-        @include border-top-right-radius(10);
-        @include border-bottom-right-radius(10);
+        //@include border-top-right-radius(30);
+        //@include border-bottom-right-radius(10);
+        background-image: url('../images/reversearrow.png');
+        background-repeat:no-repeat;
+        background-position: right top;        
         .textwrapper {
             color: #000;
-            padding: 6px 0 0 10px;
+            padding: 7px 28px 0 10px;
+            @include user-select(none);
         }
 
         &.currentrolebutton_loading {
@@ -51,8 +57,17 @@ $superusercolor_bg: #CC3300;
         &.currentrolebutton_hover {
             cursor: pointer;
             .textwrapper {
-                color: #fff;
+                //color: #fff;
             }
+        }
+    }
+    .devilrylogo {
+        padding: 6px 0 0 10px;
+        background-color: $almostblack;
+        .logotext {
+            font-weight: bold;
+            font-size: 15px;
+            color: $logocolor;
         }
     }
 }
