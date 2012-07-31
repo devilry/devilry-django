@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def settings_view(request):
     s = {'DEVILRY_STATIC_URL': settings.DEVILRY_STATIC_URL,
+         'DEVILRY_SUPERUSERPANEL_URL': settings.DEVILRY_URLPATH_PREFIX + '/superuser/',
          'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
          'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
          'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
