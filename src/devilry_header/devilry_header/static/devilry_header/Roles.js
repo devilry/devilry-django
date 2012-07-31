@@ -4,12 +4,12 @@ Ext.define('devilry_header.Roles', {
     cls: 'devilryheader_roles',
 
     tpl: [
+        '<h2>',
+            gettext('Choose your role'),
+        '</h2>',
         '<tpl if="loading">',
             '<p>', gettext('Loading ...'), '</p>',
         '<tpl else>',
-            '<h2>',
-                gettext('Choose your role'),
-            '</h2>',
             '<tpl if="has_any_roles">',
                 '<p class="discreet">',
                     gettext('All your available roles are listed below.'),

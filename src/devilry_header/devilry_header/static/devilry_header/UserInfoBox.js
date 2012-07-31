@@ -4,12 +4,12 @@ Ext.define('devilry_header.UserInfoBox', {
     cls: 'devilryheader_userinfobox',
 
     tpl: [
+        '<h2>',
+            gettext('About you'),
+        '</h2>',
         '<tpl if="loading">',
             '<p>', gettext('Loading ...'), '</p>',
         '<tpl else>',
-            '<h2>',
-                gettext('About you'),
-            '</h2>',
             '<p class="discreet">',
                 gettext('The table below shows the personal information registered about you in Devilry. <a href="{wrong_userinfo_url}">Click here</a> if any information is incorrect.'),
             '</p>',
