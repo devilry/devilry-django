@@ -9,7 +9,7 @@ $radiussize_small: 6px;
 $studentcolor_bg: #77B300;
 $examinercolor_bg: #0077B3;
 $administratorcolor_bg: #ff9900;
-$superusercolor_bg: #CC2200;
+$superusercolor_bg: #CC3300;
 
 @mixin role_link($bg) {
     background-color: $bg;
