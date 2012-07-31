@@ -21,5 +21,8 @@ def settings_view(request):
          'DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD': settings.DEFAULT_DEADLINE_HANDLING_METHOD,
          'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM}
     settings_json = dumps(s, indent=4)
-    js = 'var DevilrySettings = {settings_json};'.format(settings_json=settings_json)
+    # NOTE: Defining this as ``window.DevilrySettings``, and not as ``var
+    #       DevilrySettings``, makes it a global to all javascript in the window.
+    #       See: https://developer.mozilla.org/en/JavaScript/Guide/Values,_Variables,_and_Literals#Global_variables
+    js = 'window.DevilrySettings = {settings_json};'.format(settings_json=settings_json)
     return HttpResponse(js, content_type="application/javascript")
