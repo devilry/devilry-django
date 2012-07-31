@@ -142,6 +142,11 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
 DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
 
+#: Url where users are directed when they do not have the permissions they believe they should have.
+DEVILRY_LACKING_PERMISSIONS_URL = None
+
+#: Url where users are directed when they want to know what to do if their personal info in Devilry is wrong.
+DEVILRY_WRONG_USERINFO_URL = None
 
 #################################################
 # Settings without a default value

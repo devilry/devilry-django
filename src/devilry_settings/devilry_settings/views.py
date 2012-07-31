@@ -2,6 +2,23 @@ from json import dumps
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+
+
+@login_required
+def missing_setting(request, setting):
+    message = """
+You have been redirected to this view because your local Devilry system administrator
+have not set the <strong>{setting}</strong>-setting. Please tell them to set it.""".format(setting=setting)
+    return HttpResponse('<html><body>{message}</body></html>'.format(message=message))
+
+
+def urlsetting_or_unsetview(settingname):
+    setting = getattr(settings, settingname, None)
+    if setting:
+        return setting
+    else:
+        return reverse(missing_setting, args=(settingname,))
 
 
 @login_required
@@ -13,6 +30,8 @@ def settings_view(request):
          'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
          'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
          'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
+         'DEVILRY_LACKING_PERMISSIONS_URL': urlsetting_or_unsetview('DEVILRY_LACKING_PERMISSIONS_URL'),
+         'DEVILRY_WRONG_USERINFO_URL': urlsetting_or_unsetview('DEVILRY_WRONG_USERINFO_URL'),
          'DEVILRY_HELP_URL': settings.DEVILRY_HELP_URL,
          'DEVILRY_SYSTEM_ADMIN_EMAIL': settings.DEVILRY_SYSTEM_ADMIN_EMAIL,
          'DEVILRY_STUDENT_NO_PERMISSION_MSG': settings.DEVILRY_STUDENT_NO_PERMISSION_MSG,
