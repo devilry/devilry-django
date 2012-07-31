@@ -9,6 +9,7 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
         {name: 'languagecode',  type: 'string'},
         {name: 'is_superuser',  type: 'bool'},
         {name: 'is_nodeadmin',  type: 'bool'},
+        {name: 'is_subjectadmin',  type: 'bool'},
         {name: 'is_periodadmin',  type: 'bool'},
         {name: 'is_assignmentadmin',  type: 'bool'},
         {name: 'is_student',  type: 'bool'},
@@ -21,5 +22,12 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
         reader: {
             type: 'json'
         }
+    },
+
+    /** Returns true is the user has any roles. */
+    hasAnyRoles: function() {
+        return this.get('is_superuser') || this.get('is_nodeadmin')
+            || this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin')
+            || this.get('is_student') || this.get('is_examiner');
     }
 });
