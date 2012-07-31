@@ -5,7 +5,7 @@ from models import HelpLink
 
 
 class HelpLinkAdmin(admin.ModelAdmin):
-    fieldsets = ((None, {'fields': ('url', 'title', 'description')}),
+    fieldsets = ((None, {'fields': ('help_url', 'title', 'description')}),
                  (_('Roles that see this link:'),
                   {'fields': ('superuser', 'nodeadmin', 'subjectadmin',
                               'periodadmin', 'assignmentadmin', 'examiner',
