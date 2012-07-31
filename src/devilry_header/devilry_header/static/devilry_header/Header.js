@@ -11,7 +11,8 @@ Ext.define('devilry_header.Header', {
     requires: [
         'devilry_header.CurrentRoleButton',
         'devilry_header.HoverMenu',
-        'devilry_header.Roles'
+        'devilry_header.Roles',
+        'devilry_authenticateduserinfo.UserInfo'
     ],
 
     /**
@@ -56,10 +57,10 @@ Ext.define('devilry_header.Header', {
         '</div>'
     ],
 
-    //constructor: function(config) {
-        //this.initConfig(config);
-        //this.callParent([config]);
-    //},
+    constructor: function() {
+        devilry_authenticateduserinfo.UserInfo.load(); // Load the userinfo as soon as possible.
+        this.callParent(arguments);
+    },
 
     initComponent: function() {
         //var data = {
@@ -112,6 +113,11 @@ Ext.define('devilry_header.Header', {
 
     _onRender: function() {
         this._getCurrentRoleButton().setCurrentRole('Student', 'student');
+        devilry_authenticateduserinfo.UserInfo.load(this._onLoadUserInfo, this);
+    },
+
+    _onLoadUserInfo: function(userInfoRecord) {
+        this._getHoverMenu().setUserInfoRecord(userInfoRecord);
     },
 
     _onTrigger: function() {

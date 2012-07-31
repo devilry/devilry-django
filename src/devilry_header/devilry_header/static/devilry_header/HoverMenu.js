@@ -24,6 +24,14 @@ Ext.define('devilry_header.HoverMenu', {
         this.callParent(arguments);
     },
 
+    _getRoles: function() {
+        return this.down('devilryheader_roles');
+    },
+
+    setUserInfoRecord: function(userInfoRecord) {
+        this._getRoles().setUserInfoRecord(userInfoRecord);
+    },
+
 
     //
     //
