@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 
 class HelpLink(models.Model):
-    url = models.URLField(max_length=500)
+    url = models.URLField(max_length=500, primary_key=True)
     title = models.CharField(max_length=40, help_text=_('A title with no more than 40 characters.'))
     description = models.TextField(help_text=_('A longer description.'))
     superuser = models.BooleanField(help_text=_('Visible to superusers?'))
