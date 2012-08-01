@@ -3,6 +3,7 @@
 @import "compass/typography/text/ellipsis";
 
 $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$baseFontSize: 13px;
 $baseLineHeight: 18px;
 $almostblack: #191919 !default;
 $radiussize_big: 14px;
@@ -26,6 +27,7 @@ $logocolor: #A00;
 }
 
 .devilryheader {
+    font-size: $baseFontSize;
     background-color: $almostblack;
     color: #fff;
     position: relative;
@@ -111,6 +113,7 @@ $logocolor: #A00;
 }
 
 .devilryheader_hovermenu {
+    font-size: $baseFontSize;
     //background-color: $almostblack;
     background-color: #000;
     //border-top: 2px solid #444 !important;
@@ -182,6 +185,7 @@ $logocolor: #A00;
     table.userinfotable {
         th, td {
             line-height: $baseLineHeight;
+            font-size: $baseFontSize;
         }
         th {
             color: #999;
