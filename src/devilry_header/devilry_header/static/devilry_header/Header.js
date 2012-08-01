@@ -15,12 +15,23 @@ Ext.define('devilry_header.Header', {
         'devilry_authenticateduserinfo.UserInfo'
     ],
 
+
+    navclass_to_rolename: {
+        'student': gettext('Student'),
+        'examiner': gettext('Examiner'),
+        'administrator': gettext('Administrator'),
+        'superuser': gettext('Superuser')
+    },
+
     /**
      * @cfg {navclass} [config]
      * The css class to style the header buttons with.
      */
 
-    constructor: function() {
+    constructor: function(config) {
+        if(!this.navclass_to_rolename[config.navclass]) {
+            throw "Invalid navclass: " + config.navclass;
+        }
         devilry_authenticateduserinfo.UserInfo.load(); // Load the userinfo as soon as possible.
         this.callParent(arguments);
     },
@@ -96,7 +107,7 @@ Ext.define('devilry_header.Header', {
     },
 
     _onRenderCurrentRoleButton: function() {
-        this._getCurrentRoleButton().setText('Student')
+        this._getCurrentRoleButton().setText(this.navclass_to_rolename[this.navclass]);
         this._getCurrentRoleButton().addExtraClass(this.navclass);
     },
     _onRenderUserButton: function() {
