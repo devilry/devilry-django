@@ -13,7 +13,7 @@ Ext.define('devilry_usersearch.UserSearchModel', {
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_usersearch/search/',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_usersearch/search',
         extraParams: {
             format: 'json'
         },
