@@ -5,7 +5,9 @@ Ext.application({
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
-        'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch'
+        'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header',
+        'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo'
     },
 
     requires: [
@@ -13,7 +15,7 @@ Ext.application({
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
-        'devilry_extjsextras.DevilryHeader',
+        'devilry_header.Header',
         'devilry_extjsextras.Breadcrumbs',
         'devilry_subjectadmin.utils.UrlLookup'
     ],
@@ -112,7 +114,7 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'subjectadmin'
+                navclass: 'administrator'
             }, {
                 xtype: 'container',
                 region: 'center',
