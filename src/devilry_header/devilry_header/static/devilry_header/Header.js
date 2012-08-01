@@ -9,12 +9,17 @@ Ext.define('devilry_header.Header', {
     height: 30,
 
     requires: [
-        'devilry_header.CurrentRoleButton',
+        'devilry_header.FlatButton',
         'devilry_header.UserButton',
         'devilry_header.HoverMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo'
     ],
+
+    /**
+     * @cfg {navclass} [config]
+     * The css class to style the header buttons with.
+     */
 
     constructor: function() {
         devilry_authenticateduserinfo.UserInfo.load(); // Load the userinfo as soon as possible.
@@ -36,12 +41,13 @@ Ext.define('devilry_header.Header', {
                     text: 'Devilry'
                 }
             }, {
-                xtype: 'devilryheader_currentrolebutton',
-                //width: 100,
+                xtype: 'devilryheader_flatbutton',
+                itemId: 'currentRoleButton',
+                cls: 'flatbutton currentrolebutton',
                 listeners: {
                     scope: this,
-                    render: this._onRender,
-                    trigger: this._onTrigger
+                    render: this._onRenderCurrentRoleButton,
+                    click: this._onClickCurrentRoleButton
                 }
             }, {
                 xtype: 'container',
@@ -50,19 +56,17 @@ Ext.define('devilry_header.Header', {
                 //style: 'background-color: #333 !important;',
                 flex: 1,
             }, {
-                xtype: 'container',
-                width: 100,
-                layout: 'fit',
-                padding: 5,
-                items: [{
-                    xtype: 'devilryheader_userbutton',
-                    text: gettext('Loading ...'),
-                    listeners: {
-                        scope: this,
-                        toggle: this._onToggleUserButton
-                    }
-                }]
+                xtype: 'devilryheader_flatbutton',
+                itemId: 'userButton',
+                enableToggle: true,
+                width: 70,
+                listeners: {
+                    scope: this,
+                    render: this._onRenderUserButton,
+                    toggle: this._onToggleUserButton
+                }
             }, {
+                // NOTE: This component is floating, so it is not really part of the layout
                 xtype: 'devilryheader_hovermenu',
                 listeners: {
                     scope: this,
@@ -75,13 +79,13 @@ Ext.define('devilry_header.Header', {
     },
 
     _getCurrentRoleButton: function() {
-        return this.down('devilryheader_currentrolebutton');
+        return this.down('#currentRoleButton');
     },
     _getHoverMenu: function() {
         return this.down('devilryheader_hovermenu');
     },
     _getUserButton: function() {
-        return this.down('devilryheader_userbutton');
+        return this.down('#userButton');
     },
     _getBreadcrumbArea: function() {
         return this.down('#breadcrumbarea');
@@ -92,14 +96,20 @@ Ext.define('devilry_header.Header', {
         this._getBreadcrumbArea().add(config);
     },
 
-    _onRender: function() {
-        this._getCurrentRoleButton().setCurrentRole('Student', 'student');
-        devilry_authenticateduserinfo.UserInfo.load(this._onLoadUserInfo, this);
+    _onRenderCurrentRoleButton: function() {
+        this._getCurrentRoleButton().setText('Student')
+        this._getCurrentRoleButton().addExtraClass(this.navclass);
+    },
+    _onRenderUserButton: function() {
+        devilry_authenticateduserinfo.UserInfo.load(function(userInfoRecord) {
+            this._getHoverMenu().setUserInfoRecord(userInfoRecord);
+            this._getUserButton().addExtraClass(this.navclass);
+            this._getUserButton().setText(userInfoRecord.getDisplayName());
+        }, this);
     },
 
-    _onLoadUserInfo: function(userInfoRecord) {
-        this._getHoverMenu().setUserInfoRecord(userInfoRecord);
-        this._getUserButton().setText(userInfoRecord.getDisplayName());
+    _onClickCurrentRoleButton: function() {
+        this._getUserButton().toggle();
     },
 
     _onToggleUserButton: function(button) {
@@ -111,22 +121,14 @@ Ext.define('devilry_header.Header', {
         }
     },
 
-    _onTrigger: function() {
-        //var hovermenu = this._getHoverMenu();
-        //if(hovermenu.isVisible()) {
-            //hovermenu.hide();
-        //} else {
-            //hovermenu.show();
-        //}
-        this._getUserButton().toggle();
-    },
-
     _onShowHovermenu: function() {
-        this._getCurrentRoleButton().setPressedClass();
+        this._getCurrentRoleButton().setPressedCls();
+        this._getUserButton().setPressedCls();
         console.log('Show menu');
     },
     _onHideHovermenu: function() {
-        this._getCurrentRoleButton().removePressedClass();
+        this._getCurrentRoleButton().setNotPressedCls();
+        this._getUserButton().setNotPressedCls();
         console.log('Hide menu');
     },
 });

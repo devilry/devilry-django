@@ -1,5 +1,6 @@
 @import "compass/css3/border-radius";
 @import "compass/css3/user-interface";
+@import "compass/typography/text/ellipsis";
 
 $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $baseLineHeight: 18px;
@@ -32,38 +33,60 @@ $logocolor: #A00;
     left: 0;
     overflow: hidden;
 
-
-    .currentrolebutton {
-        background-image: url('../images/reversearrow_down.png');
-        background-repeat:no-repeat;
-        background-position: right top;        
+    .flatbutton {
         .textwrapper {
             color: #000;
-            padding: 7px 28px 0 10px;
+            padding: 7px 10px 0 10px;
             @include user-select(none);
+            @include ellipsis;
         }
 
-        &.currentrolebutton_loading {
+        &.flatbutton_loading {
             background-color: $almostblack;
             .textwrapper {
-                color: #fff;
+                color: #999;
             }
         }
-        &.student {
-            background-color: $studentcolor_bg;
-        }
-        &.currentrolebutton_hover {
+        &.flatbutton_hover {
             cursor: pointer;
             .textwrapper {
                 //color: #fff;
             }
             background-color: #666 !important;
         }
-        &.currentrolebutton_pressed {
-            background-image: url('../images/reversearrow_up.png') !important;
+        &.flatbutton_pressed {
             background-color: #444;
         }
+        &.flatbutton_toggleable {
+            background-image: url('../images/menuarrow_black_down.png');
+            background-repeat: no-repeat;
+            background-position: 92% center;
+            .textwrapper {
+                padding-right: 20px;
+            }
+            &.flatbutton_pressed {
+                background-image: url('../images/menuarrow_black_up.png');
+            }
+        }
+        &.flatbutton_not_pressed {
+            &.student {
+                background-color: $studentcolor_bg;
+            }
+        }
     }
+
+    .currentrolebutton {
+        background-image: url('../images/reversearrow_down.png');
+        background-repeat:no-repeat;
+        background-position: right top;
+        .textwrapper {
+            padding-right: 28px;
+        }
+        &.flatbutton_pressed {
+            background-image: url('../images/reversearrow_up.png') !important;
+        }
+    }
+
     .devilrylogo {
         padding: 6px 0 0 10px;
         background-color: #000;
