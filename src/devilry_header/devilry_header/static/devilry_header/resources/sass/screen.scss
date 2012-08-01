@@ -97,8 +97,11 @@ $logocolor: #A00;
     }
 
     .devilrylogo {
-        padding: 6px 0 0 10px;
+        padding: 6px 10px 0 35px;
         background-color: #000;
+        background-image: url('../images/devilrylogo_small.png');
+        background-repeat: no-repeat;
+        background-position: 10px center;
         .logotext {
             font-weight: bold;
             font-size: 15px;
