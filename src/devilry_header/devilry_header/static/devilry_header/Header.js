@@ -1,5 +1,5 @@
 /**
- * Devilry page header with the role tabs and log in/out links.
+ * Devilry page header.
  */
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
@@ -143,11 +143,9 @@ Ext.define('devilry_header.Header', {
     _onShowHovermenu: function() {
         this._getCurrentRoleButton().setPressedCls();
         this._getUserButton().setPressedCls();
-        console.log('Show menu');
     },
     _onHideHovermenu: function() {
         this._getCurrentRoleButton().setNotPressedCls();
         this._getUserButton().setNotPressedCls();
-        console.log('Hide menu');
     },
 });
