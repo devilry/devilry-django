@@ -72,6 +72,15 @@ $logocolor: #A00;
             &.student {
                 background-color: $studentcolor_bg;
             }
+            &.examiner {
+                background-color: $examinercolor_bg;
+            }
+            &.administrator {
+                background-color: $administratorcolor_bg;
+            }
+            &.superuser {
+                background-color: $superusercolor_bg;
+            }
         }
     }
 
