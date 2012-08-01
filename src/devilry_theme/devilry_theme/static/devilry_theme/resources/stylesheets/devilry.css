@@ -11638,31 +11638,30 @@ svg, vml {
 
 /* line 4, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb {
-  padding: 7px 40px 8px 40px;
+  padding: 7px 40px 8px 15px;
   margin: 0;
-  background-color: #191919;
 }
-/* line 8, ../sass/_breadcrumbs.scss */
+/* line 7, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb li {
   display: inline;
   font-size: 12px;
 }
-/* line 11, ../sass/_breadcrumbs.scss */
+/* line 10, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb li a {
   color: #e6e6e6;
   text-decoration: underline;
 }
-/* line 16, ../sass/_breadcrumbs.scss */
+/* line 15, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb .divider {
   padding: 0 5px;
   color: #e6e6e6;
 }
-/* line 20, ../sass/_breadcrumbs.scss */
+/* line 19, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb .active {
   color: #e6e6e6;
   font-weight: bold;
 }
-/* line 24, ../sass/_breadcrumbs.scss */
+/* line 23, ../sass/_breadcrumbs.scss */
 .devilry_extjsextras_breadcrumb .prefixtext {
   color: gray;
   font-weight: normal;
