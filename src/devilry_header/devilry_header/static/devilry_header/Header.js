@@ -24,8 +24,13 @@ Ext.define('devilry_header.Header', {
     },
 
     /**
-     * @cfg {navclass} [config]
+     * @cfg {string} [navclass]
      * The css class to style the header buttons with.
+     */
+
+    /**
+     * @cfg {Object} [breadcrumbs=undefined]
+     * The object to use for breadcrumbs. You can also set this after load with #setBreadcrumbComponent.
      */
 
     constructor: function(config) {
@@ -37,6 +42,10 @@ Ext.define('devilry_header.Header', {
     },
 
     initComponent: function() {
+        var breadcrumbareaItems = [];
+        if(this.breadcrumbs) {
+            breadcrumbareaItems = [this.breadcrumbs];
+        }
         Ext.apply(this, {
             layout: {
                 type: 'hbox',
@@ -63,8 +72,8 @@ Ext.define('devilry_header.Header', {
                 xtype: 'container',
                 itemId: 'breadcrumbarea',
                 cls: 'breadcrumbarea',
-                //style: 'background-color: #333 !important;',
-                flex: 1,
+                items: breadcrumbareaItems,
+                flex: 1
             }, {
                 xtype: 'devilryheader_flatbutton',
                 itemId: 'userButton',
