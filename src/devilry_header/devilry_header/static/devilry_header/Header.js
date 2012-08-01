@@ -58,7 +58,7 @@ Ext.define('devilry_header.Header', {
                 xtype: 'devilryheader_flatbutton',
                 itemId: 'userButton',
                 enableToggle: true,
-                width: 70,
+                width: 100,
                 listeners: {
                     scope: this,
                     render: this._onRenderUserButton,
