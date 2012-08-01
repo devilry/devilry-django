@@ -25,7 +25,7 @@ $logocolor: #A00;
 }
 
 .devilryheader {
-    background-color: #000;
+    background-color: $almostblack;
     color: #fff;
     position: relative;
     top: 0;
@@ -66,7 +66,7 @@ $logocolor: #A00;
     }
     .devilrylogo {
         padding: 6px 0 0 10px;
-        background-color: $almostblack;
+        background-color: #000;
         .logotext {
             font-weight: bold;
             font-size: 15px;
@@ -76,7 +76,9 @@ $logocolor: #A00;
 }
 
 .devilryheader_hovermenu {
-    background-color: $almostblack;
+    //background-color: $almostblack;
+    background-color: #000;
+    //border-top: 2px solid #444 !important;
     color: #fff;
     font-family: $baseFontFamily;
 
