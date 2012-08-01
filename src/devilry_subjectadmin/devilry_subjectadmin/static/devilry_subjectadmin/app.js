@@ -98,7 +98,6 @@ Ext.application({
 
     _createViewport: function() {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
-            region: 'north'
             //defaultBreadcrumbs: [{
                 //text: gettext("Subjectadmin"),
                 //url: ''
@@ -114,12 +113,13 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'administrator'
+                navclass: 'administrator',
+                breadcrumbs: this.breadcrumbs
             }, {
                 xtype: 'container',
                 region: 'center',
-                layout: 'border',
-                items: [this.breadcrumbs, this.primaryContentContainer]
+                layout: 'fit',
+                items: [this.primaryContentContainer]
             }]
         });
     },
