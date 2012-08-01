@@ -10,7 +10,6 @@ Ext.define('devilry_header.Header', {
 
     requires: [
         'devilry_header.FlatButton',
-        'devilry_header.UserButton',
         'devilry_header.HoverMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo'
