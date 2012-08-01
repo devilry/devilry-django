@@ -53,7 +53,7 @@ Ext.define('devilry_header.Header', {
             },
             items: [{
                 xtype: 'box',
-                width: 80,
+                //width: 110,
                 cls: 'devilrylogo',
                 tpl: '<span class="logotext">{text}</span>',
                 data: {
