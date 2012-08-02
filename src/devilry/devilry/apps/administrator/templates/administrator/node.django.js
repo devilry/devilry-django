@@ -23,7 +23,7 @@
         style: 'background-color: transparent',
         items: [{
             region: 'north',
-            xtype: 'pageheader',
+            xtype: 'devilryheader',
             navclass: 'administrator'
         }, {
             region: 'south',
