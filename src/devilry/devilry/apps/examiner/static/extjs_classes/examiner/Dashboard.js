@@ -49,10 +49,9 @@ Ext.define('devilry.examiner.Dashboard', {
             },
             items: [searchwidget, {
                 xtype: 'panel',
-                margin: {top: 10},
+                //margin: '10 0 0 0',
                 border: false,
                 flex: 1,
-                bodyPadding: 10,
                 autoScroll: true,
                 layout: {
                     type: 'vbox',
@@ -60,7 +59,7 @@ Ext.define('devilry.examiner.Dashboard', {
                 },
                 items: [activeAssignmentsView, {
                     xtype: 'container',
-                    margin: {top: 10},
+                    margin: '10 0 0 0',
                     layout: {
                         type: 'hbox',
                         align: 'stretch'

@@ -19,7 +19,7 @@
         style: 'background-color: transparent',
         items: [{
             region: 'north',
-            xtype: 'pageheader',
+            xtype: 'devilryheader',
             navclass: 'examiner'
         }, {
             region: 'south',
@@ -28,7 +28,7 @@
             region: 'center',
             xtype: 'examiner-dashboard',
             dashboardUrl: DASHBOARD_URL,
-            padding: {left: 20, right: 20},
+            padding: '0 20 0 20',
             border: false
         }]
     });
