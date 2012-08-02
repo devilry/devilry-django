@@ -33,10 +33,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         this.heading = Ext.widget('singlerecordview', {
             singlerecordontainer: this.assignment_recordcontainer,
             tpl: Ext.create('Ext.XTemplate',
-                '<div class="section treeheading">',
-                '    <h1>{long_name} ({short_name})</h1>',
-                '    <h2>{parentnode__long_name}</h2>',
-                '    <h3>{parentnode__parentnode__long_name}</h3>',
+                '<div class="section pathheading">',
+                '    <h1><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
                 '</div>'
             )
         });
