@@ -6,7 +6,7 @@ Ext.define('devilry.extjshelpers.models.StaticFeedback', {
         {"type": "auto", "name": "grade"},
         {"type": "bool", "name": "is_passing_grade"},
         {"type": "auto", "name": "saved_by"},
-        {"type": "date", "name": "save_timestamp", "dateFormat": "Y-m-dTH:i:s"},
+        {"type": "date", "name": "save_timestamp", "dateFormat": "Y-m-d\\TH:i:s"},
         {"type": "int", "name": "delivery"},
         {"type": "auto", "name": "rendered_view"}
     ],
