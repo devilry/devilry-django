@@ -37,8 +37,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
                 '    <h1>{long_name} ({short_name})</h1>',
                 '    <h2>{parentnode__long_name}</h2>',
                 '    <h3>{parentnode__parentnode__long_name}</h3>',
-                '</tpl>'
-            ),
+                '</div>'
+            )
         });
         Ext.apply(this, {
             layout: {
