@@ -63,11 +63,11 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
                 type: 'hbox',
                 align: 'stretch'
             },
-            height: 50,
+            height: 40,
             items: [this.searchfield, {
                 xtype: 'button',
                 text: 'Browse',
-                scale: 'large',
+                scale: 'medium',
                 listeners: {
                     scope: this,
                     click: function() {

@@ -560,9 +560,13 @@ body {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  padding: 4px 5px 4px 5px !important; }
+  padding: 4px 5px 4px 5px !important;
+  border-style: none none solid none !important;
+  border-width: 2px 0 2px 0 !important;
+  border-color: #ccc;
+  border-radius: 0; }
   .widget-searchwidget .widget-searchfield {
-    font-size: 24px;
+    font-size: 18px;
     padding: 0 !important;
     margin: 5px 0 0 0 !important;
     color: #aaa !important;

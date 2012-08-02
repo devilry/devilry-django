@@ -40,15 +40,19 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWindow', {
 
             listeners: {
                 scope: this,
-                show: function() {
-                    this.getSearchField().focus();
-                }
+                show: this._forceFocus,
+                render: this._forceFocus
             }
         });
         this.callParent(arguments);
         this.setupSearchEventListeners();
     },
 
+    _forceFocus: function() {
+        Ext.defer(function() {
+            this.getSearchField().focus();
+        }, 200, this);
+    },
 
     setupSearchEventListeners: function() {
         var me = this;

@@ -103,9 +103,14 @@ body {
     border-style: solid;
     border-radius: 5px;
     padding: 4px 5px 4px 5px !important;
+
+    border-style: none none solid none !important;
+    border-width: 2px 0 2px 0 !important;
+    border-color: #ccc;
+    border-radius: 0;
     .widget-searchfield {
         //width: $mainwidth !important;
-        font-size: 24px;
+        font-size: 18px;
         //padding: 4px 15px 4px 15px !important;
         padding: 0 !important;
         margin: 5px 0 0 0 !important;
