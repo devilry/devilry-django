@@ -50,9 +50,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
 
 
     initComponent: function() {
-
-        
-        console.log(this.store.data.items);
         var me = this;
         Ext.apply(this, {
             columns: [{
