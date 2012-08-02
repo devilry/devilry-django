@@ -36,7 +36,7 @@ Ext.define('devilry_header.Roles', {
                         '</a></li>',
                     '</tpl>',
                     '<tpl if="userInfo.is_superuser | userInfo.is_nodeadmin | userInfo.is_subjectadmin | userInfo.is_periodadmin | userInfo.is_assignmentadmin">',
-                        '<li><a href="{urlpath_prefix}/administrator/#" class="administrator_role">',
+                        '<li><a href="{urlpath_prefix}/administrator/" class="administrator_role">',
                             '<div class="heading">',
                                 gettext('Administrator'),
                             '</div>',
