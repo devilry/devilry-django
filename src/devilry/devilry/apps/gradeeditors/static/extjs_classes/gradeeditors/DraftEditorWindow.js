@@ -3,11 +3,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditormainwin',
     title: 'Create feedback',
-    width: 800,
-    height: 600,
     layout: 'fit',
     modal: true,
-    maximizable: true,
+    maximizable: false,
     requires: [
         'devilry.extjshelpers.NotificationManager',
         'devilry.gradeeditors.FailureHandler',
@@ -71,9 +69,16 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             },
             onEsc: Ext.emptyFn
         });
+        this._setupAutosizing();
         this.initComponentExtra();
         this.callParent(arguments);
     },
+
+    _setupAutosizing: function() {
+        Ext.fly(window).on('resize', this._onWindowResize, this);
+        this.on('show', this._onShow, this);
+    },
+
 
     initComponentExtra: function() {
         this.previewButton = Ext.widget('button', {
@@ -384,5 +389,27 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      */
     getGradeEditorConfig: function() {
         return this.gradeeditor_config;
+    },
+
+
+    _onWindowResize: function() {
+        if(this.isVisible() && this.isFloating()) {
+            this._setSizeAndPosition();
+        }
+    },
+
+    _onShow: function() {
+        this._setSizeAndPosition();
+    },
+
+    _setSizeAndPosition: function() {
+        if(this.isFloating()) {
+            var bodysize = Ext.getBody().getViewSize();
+            this.setSize({
+                width: bodysize.width - 40,
+                height: bodysize.height - 40
+            });
+            this.setPagePosition(20, 20);
+        }
     }
 });
