@@ -7,6 +7,7 @@ Ext.define('devilry_header.HoverMenu', {
     border: 0,
     //autoShow: true,
     autoScroll: true,
+    topOffset: 30,
 
     requires: [
         'devilry_header.Roles',
@@ -68,13 +69,23 @@ Ext.define('devilry_header.HoverMenu', {
         // Clear any dimensions, we will size later on
         this.width = this.height = undefined;
 
-        Ext.fly(window).on('resize', this._setSizeAndPosition, this);
+        Ext.fly(window).on('resize', this._onWindowResize, this);
         this.on('show', this._onShow, this);
     },
 
+    _onWindowResize: function() {
+        if(this.isVisible()) {
+            this._setSizeAndPosition();
+        }
+    },
+
     _setSizeAndPosition: function() {
-        this.setSize(Ext.getBody().getViewSize());
-        this.setPagePosition(0, 30);
+        var bodysize = Ext.getBody().getViewSize();
+        this.setSize({
+            width: bodysize.width,
+            height: bodysize.height - this.topOffset
+        });
+        this.setPagePosition(0, this.topOffset);
     },
 
     _onShow: function() {
