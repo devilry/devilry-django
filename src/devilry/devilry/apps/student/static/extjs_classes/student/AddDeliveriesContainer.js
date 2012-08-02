@@ -7,7 +7,8 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.student.FileUploadPanel',
         'devilry.student.DeadlineTitle',
-        'devilry.student.stores.UploadedFileStore'
+        'devilry.student.stores.UploadedFileStore',
+        'devilry_extjsextras.Breadcrumbs'
     ],
 
     config: {
@@ -19,6 +20,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         ag_modelname: undefined
     },
 
+
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
@@ -27,9 +29,11 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
     initComponent: function() {
         var agroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         Ext.ModelManager.getModel(this.ag_modelname).load(this.assignmentgroupid, {
+            scope: this,
             success: function(record) {
                 Ext.getBody().unmask();
                 agroup_recordcontainer.setRecord(record);
+                this._onLoadGroup(record);
             }
         });
 
@@ -124,5 +128,14 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 this.aboutdeadline.collapse();
             }
         }
+    },
+
+    _onLoadGroup: function(groupRecord) {
+        var path = [
+            groupRecord.get('parentnode__parentnode__parentnode__short_name'),
+            groupRecord.get('parentnode__parentnode__short_name'),
+            groupRecord.get('parentnode__short_name')].join('.');
+        var breadcrumbText = Ext.String.format(gettext('Add delivery on {0}'), path);
+        devilry_extjsextras.Breadcrumbs.getInBody().set([], breadcrumbText);
     }
 });
