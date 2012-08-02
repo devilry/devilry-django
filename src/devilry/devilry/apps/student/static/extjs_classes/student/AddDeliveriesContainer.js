@@ -43,7 +43,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         this.sidebar = Ext.widget('panel', {
             layout: 'accordion',
             flex: 3,
-            margin: {left: 10},
+            margin: '0 0 0 10',
             hidden: true,
             listeners: {
                 scope: this,
@@ -59,7 +59,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 type: 'hbox',
                 align: 'stretchmax'
             },
-            margin: {bottom: 10},
+            margin: '0 0 10 0',
             style: 'background-color: transparent',
             autoScroll: true,
             items: [{

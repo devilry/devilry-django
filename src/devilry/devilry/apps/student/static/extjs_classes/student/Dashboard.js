@@ -78,7 +78,7 @@ Ext.define('devilry.student.Dashboard', {
                         },
                         items: [addDeliveriesGrid, {
                             xtype: 'container',
-                            margin: {top: 10},
+                            margin: '10 0 0 0',
                             layout: {
                                 type: 'hbox',
                                 align: 'stretch'

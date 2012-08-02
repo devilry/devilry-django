@@ -109,7 +109,7 @@ Ext.define('devilry.student.FileUploadPanel', {
                 allowBlank: true,
                 emptyText: 'Select file...',
                 buttonText: 'Add new file',
-                margin: {top: 20},
+                margin: '20 0 0 0',
                 //height: 70,
                 
                 listeners: {
