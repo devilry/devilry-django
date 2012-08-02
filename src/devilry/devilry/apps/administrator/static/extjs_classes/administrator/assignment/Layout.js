@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.assignment.Layout', {
     requires: [
         'devilry.administrator.assignment.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.Assignment'
+        'devilry.extjshelpers.forms.administrator.Assignment',
+        'devilry_header.Breadcrumbs'
     ],
 
     /**

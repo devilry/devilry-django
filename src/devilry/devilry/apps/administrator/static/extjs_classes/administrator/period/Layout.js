@@ -7,7 +7,8 @@ Ext.define('devilry.administrator.period.Layout', {
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.Period',
         'devilry.statistics.PeriodAdminLayout',
-        'devilry.administrator.ListOfChildnodes'
+        'devilry.administrator.ListOfChildnodes',
+        'devilry_header.Breadcrumbs'
     ],
 
     mainHelpTpl: Ext.create('Ext.XTemplate',
@@ -112,6 +113,19 @@ Ext.define('devilry.administrator.period.Layout', {
             period: record.data,
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
         });
+        this._setBreadcrumbAndTitle(record);
+    },
+
+    _setBreadcrumbAndTitle: function(periodRecord) {
+        var path = [
+            periodRecord.get('parentnode__short_name'),
+            periodRecord.get('short_name')].join('.');
+        window.document.title = Ext.String.format('{0} - Devilry', path);
+
+        devilry_header.Breadcrumbs.getInBody().set([{
+            text: periodRecord.get('parentnode__short_name'),
+            url: '../subject/' + periodRecord.get('parentnode')
+        }], periodRecord.get('short_name'));
     },
 
     _onEdit: function(record, button) {
