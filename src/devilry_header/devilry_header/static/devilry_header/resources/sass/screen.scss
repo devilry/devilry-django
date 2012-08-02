@@ -16,6 +16,8 @@ $flatbutton_pressedcolor: #444;
 $flatbutton_hovercolor: #666;
 $hovermenu_bgcolor: #000;
 
+@import "breadcrumbs";
+
 @mixin role_link($bg) {
     background-color: $bg;
     padding: 8px 12px 4px 8px;

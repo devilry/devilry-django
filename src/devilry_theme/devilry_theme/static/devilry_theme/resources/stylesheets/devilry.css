@@ -11636,38 +11636,6 @@ svg, vml {
   margin-top: 5px;
 }
 
-/* line 4, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb {
-  padding: 7px 40px 8px 10px;
-  margin: 0;
-}
-/* line 7, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb li {
-  display: inline;
-  font-size: 12px;
-}
-/* line 10, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb li a {
-  color: #e6e6e6;
-  text-decoration: underline;
-}
-/* line 15, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb .divider {
-  padding: 0 5px;
-  color: #e6e6e6;
-}
-/* line 19, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb .active {
-  color: #e6e6e6;
-  font-weight: bold;
-}
-/* line 23, ../sass/_breadcrumbs.scss */
-.devilry_extjsextras_breadcrumb .prefixtext {
-  color: gray;
-  font-weight: normal;
-  margin-right: 4px;
-}
-
 /* line 9, ../sass/_buttons.scss */
 .btn {
   display: inline-block;

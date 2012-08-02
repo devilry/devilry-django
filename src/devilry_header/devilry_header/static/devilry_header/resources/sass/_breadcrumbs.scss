@@ -1,7 +1,11 @@
 // BREADCRUMBS
 // -----------
 
-.devilry_extjsextras_breadcrumb {
+$grayLighter: lighten(#000, 90%);
+$gray: lighten(#000, 50%);
+
+
+.devilry_header_breadcrumb {
   padding: 7px 40px 8px 10px;
   margin: 0;
   li {

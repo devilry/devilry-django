@@ -2,14 +2,14 @@
 Ext.define('devilry_header.Breadcrumbs', {
     extend: 'Ext.Component',
     alias: 'widget.breadcrumbs',
-    cls: 'devilry_extjsextras_breadcrumbcomponent',
+    cls: 'devilry_header_breadcrumbcomponent',
 
     requires: [
         'Ext.ComponentQuery'
     ],
 
     tpl: [
-        '<ul class="devilry_extjsextras_breadcrumb">',
+        '<ul class="devilry_header_breadcrumb">',
             '<tpl for="breadcrumbs">',
                 '<tpl if="xindex != xcount">',
                     '<li>',
