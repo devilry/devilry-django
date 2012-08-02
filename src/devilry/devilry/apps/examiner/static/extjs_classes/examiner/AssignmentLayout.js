@@ -4,7 +4,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     requires: [
         'devilry.examiner.AssignmentLayoutTodoList',
         'devilry.extjshelpers.SingleRecordContainer',
-        'devilry.extjshelpers.SingleRecordView'
+        'devilry.extjshelpers.SingleRecordView',
+        'devilry_header.Breadcrumbs'
     ],
     
     /**
@@ -50,6 +51,12 @@ Ext.define('devilry.examiner.AssignmentLayout', {
 
     _onLoadAssignmentSuccess: function(record) {
         this.assignment_recordcontainer.setRecord(record);
+        var path = [
+            record.get('parentnode__parentnode__short_name'),
+            record.get('parentnode__short_name'),
+            record.get('short_name')].join('.');
+        devilry_header.Breadcrumbs.getInBody().set([], path);
+
     },
 
     _onLoadAssignmentFailure: function() {
