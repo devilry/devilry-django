@@ -99,19 +99,19 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Period, related_name='assignments',
-                                   verbose_name=_('Period'))
+                                   verbose_name='Period')
     etag = models.DateTimeField(auto_now_add=True)
-    publishing_time = models.DateTimeField(verbose_name=_("Publishing time"),
+    publishing_time = models.DateTimeField(verbose_name="Publishing time",
                                            help_text='The time when the assignment is to be published (visible to students and examiners).')
     anonymous = models.BooleanField(default=False,
-                                    verbose_name=_("Anonymous"),
+                                    verbose_name="Anonymous",
                                     help_text='Specifies if this assignment is anonymous.')
     students_can_see_points = models.BooleanField(default=True,
-            verbose_name=_("Students can see points"))
+            verbose_name="Students can see points")
     admins = models.ManyToManyField(User, blank=True,
-            verbose_name=_("Administrators"))
+            verbose_name="Administrators")
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
-                                                     verbose_name=_("Examiners publish directly?"),
+                                                     verbose_name="Examiners publish directly?",
                                                      help_text=('Should feedbacks published by examiners be made '
                                                                 'avalable to the students immediately? If not, an '
                                                                 'administrator have to publish feedbacks '
