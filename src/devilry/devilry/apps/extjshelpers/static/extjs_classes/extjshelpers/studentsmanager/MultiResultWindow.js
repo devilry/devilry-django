@@ -37,12 +37,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
 
     operationErrorTpl: Ext.create('Ext.XTemplate',
         '{msg}. ',
-        'Error details: ',
         '<tpl if="status === 0">',
-        '    Could not connect to the Devilry server.',
+        '    Error details: Could not connect to the Devilry server.',
         '</tpl>',
         '<tpl if="status !== 0">',
-        '    {status} {statusText}.',
+        '    (Error code: {status}) Error details: <strong>{statusText}</strong>',
         '</tpl>'
     ),
 
@@ -103,11 +102,46 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         this.addToLog('error', assgnmentGroupRecord, msg);
     },
 
+    _createErrorMessageFromResponseData: function(responseData) {
+        if(typeof responseData.items === 'undefined') {
+            throw "responseData.items == undefined";
+        }
+        var messages = [];
+
+        var fieldErrors = responseData.items.fielderrors;
+        if(typeof fieldErrors !== 'undefined') {
+            Ext.Object.each(fieldErrors, function(fieldname, errormessages) {
+                if(fieldname !== '__all__') { // Note: We assume __all__ is also in errormessages, which is added below
+                    messages.push(Ext.String.format('{0}: {1}', fieldname, errormessages.join('. ')));
+                }
+            }, this);
+        }
+
+        var globalErrors = responseData.items.errormessages;
+        if(typeof globalErrors !== 'undefined') {
+            Ext.Array.each(globalErrors, function(errormessage) {
+                messages.push(errormessage);
+            }, this);
+        }
+
+        return messages;
+    },
+
     addErrorFromOperation: function(assgnmentGroupRecord, msg, operation) {
+        var errormessage = operation.error.statusText;
+        try {
+            var responseData = Ext.JSON.decode(operation.response.responseText);
+            var messages = this._createErrorMessageFromResponseData(responseData);
+            if(messages.length > 0) {
+                errormessage = messages.join('<br/>');
+            }
+        } catch(e) {
+            // Ignore decode errors (we just use the generic statusText instead.
+        }
         var fullMsg = this.operationErrorTpl.apply({
             msg: msg,
             status: operation.error.status,
-            statusText: operation.error.statusText
+            statusText: errormessage
         });
         this.addToLog('error', assgnmentGroupRecord, fullMsg);
     },

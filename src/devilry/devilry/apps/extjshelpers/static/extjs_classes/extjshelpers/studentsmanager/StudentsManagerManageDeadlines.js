@@ -53,9 +53,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
                 if(operation.success) {
                     this.progressWindow.addSuccess(assignmentGroupRecord, 'Deadline successfully created.');
                 } else {
-                    this.progressWindow.addErrorFromOperation(
-                        assignmentGroupRecord, 'Failed to create deadline', operation
-                    );
+                    this._onAddDeadlineFailure(assignmentGroupRecord, operation);
                 }
 
                 this._finishedSavingGroupCount ++;
@@ -71,6 +69,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerManageDeadlines'
             this.loadFirstPage();
             this.getEl().unmask();
         }
+    },
+
+    _onAddDeadlineFailure: function(assignmentGroupRecord, operation) {
+        this.progressWindow.addErrorFromOperation(
+            assignmentGroupRecord, 'Failed to create deadline', operation
+        );
     },
 
     statics: {
