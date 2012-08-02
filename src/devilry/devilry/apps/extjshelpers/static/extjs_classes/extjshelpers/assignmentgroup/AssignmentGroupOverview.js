@@ -232,27 +232,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         items: [{
                             xtype: 'button',
                             hidden: !this.canExamine,
-                            //text: '',
-                            iconCls: 'icon-up-32',
-                            scale: 'large',
-                            listeners: {
-                                scope: this,
-                                click: this._onGoToAssignmentsView,
-                                render: function(button) {
-                                    Ext.tip.QuickTipManager.register({
-                                        target: button.getEl(),
-                                        title: 'Go to assignment overview',
-                                        text: 'Click to leave this page and go to the overview of all students on this assignment.',
-                                        width: 250,
-                                        dismissDelay: 10000 // Hide after 10 seconds hover
-                                    });
-                                }
-                            }
-                        }, {xtype: 'box', width: 10}, {
-                            xtype: 'button',
-                            hidden: !this.canExamine,
                             text: 'To-do list',
                             scale: 'large',
+                            flex: 6,
                             listeners: {
                                 scope: this,
                                 click: function() {
@@ -264,7 +246,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             }
                         }, {xtype: 'box', width: 10}, {
                             xtype: 'assignmentgroup_isopen',
-                            flex: 1,
+                            flex: 10,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             canExamine: this.canExamine
                         }]
@@ -337,18 +319,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         } else {
             this._selectMostNaturalDelivery(deliveriesgroupedbydeadline);
         }
-    },
-
-    /**
-     * @private
-     */
-    _onGoToAssignmentsView: function() {
-        var url = Ext.String.format('../assignment/{0}',
-            this.assignmentgroup_recordcontainer.record.data.parentnode
-        );
-        if(this.isAdministrator) {
-            url += '?open_students=yes';
-        }
-        window.location.href = url;
     }
 });
