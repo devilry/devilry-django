@@ -260,7 +260,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     loadGradeEditorRegistryItem: function() {
         var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
-        this.gradeeditormenu.getEl().mask('Loading');
+        if(this.gradeeditormenu.isVisible()) {
+            this.gradeeditormenu.getEl().mask('Loading');
+        }
         registryitem_model.load(this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid, {
             scope: this,
             success: function(record) {
@@ -274,7 +276,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         var registryitem = this.gradeeditor_registryitem_recordcontainer.record.data;
         this.missingGradeEditorConfig = config.config === "" && registryitem.config_editor_url != "";
         this.refreshBody();
-        this.gradeeditormenu.getEl().unmask();
+        if(this.gradeeditormenu.isVisible()) {
+            this.gradeeditormenu.getEl().unmask();
+        }
         if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
             this.configuregradeeditorbutton.enable();
         } else {
