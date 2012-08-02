@@ -425,6 +425,15 @@ span.menuref {
     color: $warningcolor_bg;
 }
 
+.widget-deadlinetitle {
+    .groupname {
+        font-style: italic;
+    }
+    .deadline em {
+        font-style: italic;
+    }
+}
+
 
 .selectable-grid {
     tr.x-grid-row {
@@ -518,20 +527,30 @@ span.menuref {
 
 div.section {
     h1 {
-        font-size: 2.6em;
+        font-size: 30px;
         margin: 20px 0 15px 0;
+        small {
+            font-size: 24px;
+        }
     }
     h1:first-child {
         margin-top: 0;
     }
     h2 {
-        font-size: 2.0em;
+        font-size: 24px;
         margin: 16px 0 6px 0;
     }
     h3 {
-        font-size: 1.5em;
+        font-size: 18px;
         margin: 16px 0 6px 0;
     }
+}
+
+div.section.pathheading {
+    h1 {
+        margin-bottom: 6px;
+    }
+    margin-bottom: 15px;
 }
 
 .gradeeditorselector {

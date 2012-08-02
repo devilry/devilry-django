@@ -861,6 +861,11 @@ span.menuref {
   display: inline-block;
   color: #cc4400; }
 
+.widget-deadlinetitle .groupname {
+  font-style: italic; }
+.widget-deadlinetitle .deadline em {
+  font-style: italic; }
+
 .selectable-grid tr.x-grid-row:hover .x-grid-cell-inner {
   cursor: pointer;
   font-weight: bold;
@@ -1291,16 +1296,23 @@ span.menuref {
   list-style: square !important; }
 
 div.section h1 {
-  font-size: 2.6em;
+  font-size: 30px;
   margin: 20px 0 15px 0; }
+  div.section h1 small {
+    font-size: 24px; }
 div.section h1:first-child {
   margin-top: 0; }
 div.section h2 {
-  font-size: 2.0em;
+  font-size: 24px;
   margin: 16px 0 6px 0; }
 div.section h3 {
-  font-size: 1.5em;
+  font-size: 18px;
   margin: 16px 0 6px 0; }
+
+div.section.pathheading {
+  margin-bottom: 15px; }
+  div.section.pathheading h1 {
+    margin-bottom: 6px; }
 
 .gradeeditorselector {
   padding: 8px !important; }
