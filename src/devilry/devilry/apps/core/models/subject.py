@@ -51,7 +51,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
     parentnode = models.ForeignKey(Node, related_name='subjects',
-                                   verbose_name=_('Node'))
+                                   verbose_name='Node')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
