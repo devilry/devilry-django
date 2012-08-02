@@ -8,7 +8,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         'devilry.student.FileUploadPanel',
         'devilry.student.DeadlineTitle',
         'devilry.student.stores.UploadedFileStore',
-        'devilry_extjsextras.Breadcrumbs'
+        'devilry_header.Breadcrumbs'
     ],
 
     config: {
@@ -136,6 +136,6 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
             groupRecord.get('parentnode__parentnode__short_name'),
             groupRecord.get('parentnode__short_name')].join('.');
         var breadcrumbText = Ext.String.format(gettext('Add delivery on {0}'), path);
-        devilry_extjsextras.Breadcrumbs.getInBody().set([], breadcrumbText);
+        devilry_header.Breadcrumbs.getInBody().set([], breadcrumbText);
     }
 });

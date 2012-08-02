@@ -12,7 +12,7 @@ Ext.application({
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.DevilryHeader',
-        'devilry_extjsextras.Breadcrumbs',
+        'devilry_header.Breadcrumbs',
     ],
 
     controllers: [

@@ -13,7 +13,7 @@ Ext.define('devilry_header.Header', {
         'devilry_header.HoverMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo',
-        'devilry_extjsextras.Breadcrumbs'
+        'devilry_header.Breadcrumbs'
     ],
 
 
@@ -30,9 +30,9 @@ Ext.define('devilry_header.Header', {
      */
 
     /**
-     * @cfg {Object} [breadcrumbs=devilry_extjsextras.Breadcrumbs]
+     * @cfg {Object} [breadcrumbs=devilry_header.Breadcrumbs]
      * The object to use for breadcrumbs. You can also set this after load with #setBreadcrumbComponent.
-     * Defaults to an instance of devilry_extjsextras.Breadcrumbs.
+     * Defaults to an instance of devilry_header.Breadcrumbs.
      */
 
     constructor: function(config) {

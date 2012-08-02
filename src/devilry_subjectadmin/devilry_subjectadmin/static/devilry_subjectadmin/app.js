@@ -16,7 +16,7 @@ Ext.application({
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_header.Header',
-        'devilry_extjsextras.Breadcrumbs',
+        'devilry_header.Breadcrumbs',
         'devilry_subjectadmin.utils.UrlLookup'
     ],
 

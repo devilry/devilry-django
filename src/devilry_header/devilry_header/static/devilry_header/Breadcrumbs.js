@@ -1,5 +1,5 @@
 /** Breadcrumb management. */
-Ext.define('devilry_extjsextras.Breadcrumbs', {
+Ext.define('devilry_header.Breadcrumbs', {
     extend: 'Ext.Component',
     alias: 'widget.breadcrumbs',
     cls: 'devilry_extjsextras_breadcrumbcomponent',
@@ -97,9 +97,9 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
             if(components.length === 1) {
                 return components[0];
             } else if(components.length === 0) {
-                throw "Could not find any devilry_extjsextras.Breadcrumbs compoent in body.";
+                throw "Could not find any devilry_header.Breadcrumbs component in body.";
             } else {
-                throw "Found more than one devilry_extjsextras.Breadcrumbs compoent in body.";
+                throw "Found more than one devilry_header.Breadcrumbs component in body.";
             }
         }
     }
