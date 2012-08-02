@@ -12,7 +12,8 @@ Ext.define('devilry_header.Header', {
         'devilry_header.FlatButton',
         'devilry_header.HoverMenu',
         'devilry_header.Roles',
-        'devilry_authenticateduserinfo.UserInfo'
+        'devilry_authenticateduserinfo.UserInfo',
+        'devilry_extjsextras.Breadcrumbs'
     ],
 
 
@@ -29,8 +30,9 @@ Ext.define('devilry_header.Header', {
      */
 
     /**
-     * @cfg {Object} [breadcrumbs=undefined]
+     * @cfg {Object} [breadcrumbs=devilry_extjsextras.Breadcrumbs]
      * The object to use for breadcrumbs. You can also set this after load with #setBreadcrumbComponent.
+     * Defaults to an instance of devilry_extjsextras.Breadcrumbs.
      */
 
     constructor: function(config) {
@@ -42,9 +44,11 @@ Ext.define('devilry_header.Header', {
     },
 
     initComponent: function() {
-        var breadcrumbareaItems = [];
+        var breadcrumbareaItem;
         if(this.breadcrumbs) {
-            breadcrumbareaItems = [this.breadcrumbs];
+            breadcrumbareaItem = this.breadcrumbs;
+        } else {
+            breadcrumbareaItem = Ext.widget('breadcrumbs');
         }
         Ext.apply(this, {
             layout: {
@@ -72,7 +76,7 @@ Ext.define('devilry_header.Header', {
                 xtype: 'container',
                 itemId: 'breadcrumbarea',
                 cls: 'breadcrumbarea',
-                items: breadcrumbareaItems,
+                items: [breadcrumbareaItem],
                 flex: 1
             }, {
                 xtype: 'devilryheader_flatbutton',
