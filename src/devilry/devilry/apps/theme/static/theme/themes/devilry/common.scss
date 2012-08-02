@@ -561,14 +561,10 @@ div.section.pathheading {
         display: inline-block;
         li {
             display: inline-block;
-            margin: 0 3px 0 3px;
-            vertical-align: baseline;
-            border-radius: 3px;
-            padding: 3px;
-            //background-color: $studentcolor_bg;
-            border: 1px solid #aaa;
+            margin: 0 5px 0 0;
+            padding: 0 10px 0 0;
+            border-right: 1px solid #aaa;
             //color: #fff;
-            //font-weight: bold;
             font-size: 11px;
         }
     }

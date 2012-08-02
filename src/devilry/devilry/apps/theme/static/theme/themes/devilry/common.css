@@ -1322,11 +1322,9 @@ div.section.pathheading {
     display: inline-block; }
     div.section.pathheading ul.names li {
       display: inline-block;
-      margin: 0 3px 0 3px;
-      vertical-align: baseline;
-      border-radius: 3px;
-      padding: 3px;
-      border: 1px solid #aaa;
+      margin: 0 5px 0 0;
+      padding: 0 10px 0 0;
+      border-right: 1px solid #aaa;
       font-size: 11px; }
   div.section.pathheading a.email {
     display: inline-block;
