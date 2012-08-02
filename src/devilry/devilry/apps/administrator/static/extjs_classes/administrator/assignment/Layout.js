@@ -32,19 +32,13 @@ Ext.define('devilry.administrator.assignment.Layout', {
             items: [this.heading = Ext.ComponentManager.create({
                 xtype: 'component',
                 data: {hasdata: false},
-                cls: 'section treeheading',
+                cls: 'section pathheading',
                 tpl: [
                     '<tpl if="!hasdata">',
                     '   <span class="loading">Loading...</span>',
                     '</tpl>',
                     '<tpl if="hasdata">',
-                    '    <h1>{assignment.long_name}</h1>',
-                    '    <h2><a href="{DEVILRY_URLPATH_PREFIX}/administrator/period/{assignment.parentnode}">',
-                    '       {assignment.parentnode__long_name}',
-                    '    </a></h2>',
-                    '    <h3 class="endoflist"><a href="{DEVILRY_URLPATH_PREFIX}/administrator/subject/{assignment.parentnode__parentnode}">',
-                    '       {assignment.parentnode__parentnode__long_name}',
-                    '    </a></h2>',
+                    '    <h1><small>{assignment.parentnode__parentnode__short_name}.{assignment.parentnode__short_name}.</small>{assignment.long_name}</h1>',
                     '</tpl>'
                 ]
             }), {
