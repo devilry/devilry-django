@@ -149,7 +149,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     createInitialDelivery: function() {
-        this.getEl().mask('Initializing delivery...');
+        this.setLoading('Initializing delivery...');
         var delivery = Ext.create(this.deliverymodelname, {
             deadline: this.deadlineid,
             id: null,
@@ -167,7 +167,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onCreateDeliverySuccess: function(deliveryrecord) {
         this.deliveryrecord = deliveryrecord;
-        this.getEl().unmask();
+        this.setLoading(false);
         this.uploadFileInForm();
     },
 
@@ -175,7 +175,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onCreateDeliveryFailure: function(unused, operation) {
-        this.getEl().unmask();
+        this.setLoading(false);
         console.log(operation);
         var message = 'Could not create delivery on the selected deadline.';
         var response = Ext.JSON.decode(operation.response.responseText);
@@ -213,11 +213,12 @@ Ext.define('devilry.student.FileUploadPanel', {
             DevilrySettings.DEVILRY_URLPATH_PREFIX, this.assignmentgroupid
         );
         if(form.isValid()){
+            this.setLoading('Uploading your file ...');
             form.submit({
                 url: url,
                 scope: this,
                 params: {deliveryid: this.deliveryrecord.data.id},
-                waitMsg: 'Uploading your file...',
+                //waitMsg: 'Uploading your file...',
                 success: this.onAddFileSuccess,
                 failure: this.onAddFileFailure
             });
@@ -228,6 +229,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileSuccess: function(form, res) {
+        this.setLoading(false);
         this.uploadedFilesStore.add({filename: res.result.file});
 
         this.uploadedFiles.push(res.result.file);
@@ -239,6 +241,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     onAddFileFailure: function(form, res) {
+        this.setLoading(false);
         var errormsg = 'Error during upload. Please try again.'
         try {
             var responseData = Ext.JSON.decode(res.response.responseText);
@@ -254,7 +257,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onDeliver: function() {
         this.deliveryrecord.data.successful = true;
-        this.getEl().mask('Saving...');
+        this.setLoading('Saving...');
         this.deliveryrecord.save({
             scope: this,
             success: this.onDeliverSuccess,
@@ -270,14 +273,14 @@ Ext.define('devilry.student.FileUploadPanel', {
         this.deliverbutton.disable();
         this.updateInfoBox(true);
         this.deliveryrecord = null;
-        this.getEl().unmask();
+        this.setLoading(false);
     },
 
     /**
      * @private
      */
     onDeliverFailure: function() {
-        this.getEl().unmask();
+        this.setLoading(false);
         Ext.Msg.alert('Failure', 'Error when finalizing the delivery, TRY AGAIN!');
     }
 });
