@@ -135,7 +135,9 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
             groupRecord.get('parentnode__parentnode__parentnode__short_name'),
             groupRecord.get('parentnode__parentnode__short_name'),
             groupRecord.get('parentnode__short_name')].join('.');
-        var breadcrumbText = Ext.String.format(gettext('Add delivery on {0}'), path);
-        devilry_header.Breadcrumbs.getInBody().set([], breadcrumbText);
+        devilry_header.Breadcrumbs.getInBody().set([{
+            text: path,
+            url: Ext.String.format('{0}/student/assignmentgroup/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, groupRecord.get('id'))
+        }], gettext('Add delivery'));
     }
 });
