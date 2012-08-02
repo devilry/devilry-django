@@ -51,7 +51,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         '<ul class="namecolumn">',
         '    <tpl for="candidates">',
         '       <li>',
-        '           {identifier}',
+        '           <a href="../assignmentgroup/{parent.id}">{identifier}</a>',
         '       </li>',
         '    </tpl>',
         '</ul>'
@@ -69,7 +69,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     realUsernamesCol: Ext.create('Ext.XTemplate', 
         '<ul class="namecolumn">',
         '    <tpl for="candidates__student__username">',
-        '       <li>{.}</li>',
+        '       <li><a href="../assignmentgroup/{parent.id}">{.}</a></li>',
         '    </tpl>',
         '</ul>'
     ),
