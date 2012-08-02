@@ -305,19 +305,21 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                 me.previewButton.getEl().unmask();
             },
             failure: onFailure,
-            success: function(response) {
+            success: function(response, operation) {
                 devilry.extjshelpers.NotificationManager.show({
                     title: 'Draft saved',
                     message: 'The feedback draft has been saved.'
                 });
                 if(showpreview) {
-                    me.showPreview(response.raw.extra_responsedata);
+                    me.showPreview(response, operation);
                 }
             },
         });
     },
 
-    showPreview: function(fake_staticfeedback) {
+    showPreview: function(record, operation) {
+        var responseData = Ext.JSON.decode(operation.response.responseText);
+        var fake_staticfeedback = responseData.items.extra_responsedata;
         var fake_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         fake_recordcontainer.setRecord({data: fake_staticfeedback});
         Ext.widget('window', {
