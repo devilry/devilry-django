@@ -53,15 +53,15 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         *Class variable*.
     """
     delivery = models.ForeignKey("core.Delivery", related_name='filemetas')
-    filename = models.CharField(max_length=255, help_text=_('Name of the file.'))
-    size = models.IntegerField(help_text=_('Size of the file in bytes.'))
+    filename = models.CharField(max_length=255, help_text='Name of the file.')
+    size = models.IntegerField(help_text='Size of the file in bytes.')
 
     deliverystore = load_deliverystore_backend()
 
     class Meta:
         app_label = 'core'
-        verbose_name = _('FileMeta')
-        verbose_name_plural = _('FileMetas')
+        verbose_name = 'FileMeta'
+        verbose_name_plural = 'FileMetas'
         unique_together = ('delivery', 'filename')
         ordering = ['filename']
 

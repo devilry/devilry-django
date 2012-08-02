@@ -74,16 +74,16 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
     time_of_delivery = models.DateTimeField(auto_now_add=True,
-                                           help_text=_('Holds the date and time the Delivery was uploaded.'))
+                                           help_text='Holds the date and time the Delivery was uploaded.')
     deadline = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField(
-        help_text=_('The delivery-number within this assignment-group. This number is automatically '
+        help_text='The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
-                    'unique within the assignment-group.'))
+                    'unique within the assignment-group.')
 
     # Fields set by user
     successful = models.BooleanField(blank=True, default=False,
-                                    help_text=_('Has the delivery and all its files been uploaded successfully?'))
+                                    help_text='Has the delivery and all its files been uploaded successfully?')
     delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
 
@@ -100,8 +100,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     class Meta:
         app_label = 'core'
-        verbose_name = _('Delivery')
-        verbose_name_plural = _('Deliveries')
+        verbose_name = 'Delivery'
+        verbose_name_plural = 'Deliveries'
         ordering = ['-time_of_delivery']
         #unique_together = ('assignment_group', 'number')
 

@@ -47,20 +47,20 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     """
     assignment_group = models.ForeignKey(AssignmentGroup,
             related_name='deadlines')
-    deadline = models.DateTimeField(help_text=_('The time of the deadline.'))
+    deadline = models.DateTimeField(help_text='The time of the deadline.')
     text = models.TextField(blank=True, null=True,
-                            help_text=_('An optional text to show to students and examiners.'))
+                            help_text='An optional text to show to students and examiners.')
     deliveries_available_before_deadline = models.BooleanField(default=False,
-                                                              help_text=_('Should deliveries on this deadline be available to examiners before the'
-                                                                          'deadline expires? This is set by students.'))
+                                                              help_text='Should deliveries on this deadline be available to examiners before the'
+                                                                          'deadline expires? This is set by students.')
     feedbacks_published = models.BooleanField(default=False,
-                                              help_text=_('If this is ``True``, the student can see all '\
-                                                          'StaticFeedbacks associated with this Deadline'))
+                                              help_text='If this is ``True``, the student can see all '\
+                                                          'StaticFeedbacks associated with this Deadline')
 
     class Meta:
         app_label = 'core'
-        verbose_name = _('Deadline')
-        verbose_name_plural = _('Deadlines')
+        verbose_name = 'Deadline'
+        verbose_name_plural = 'Deadlines'
         ordering = ['-deadline']
 
     def clean(self, *args, **kwargs):
@@ -76,12 +76,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         if self.deadline != None:
             if self.deadline < self.assignment_group.parentnode.publishing_time:
-                raise ValidationError(_('Deadline cannot be before publishing time.'))
-            
+                raise ValidationError('Deadline cannot be before publishing time.')
+
             if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
                 raise ValidationError(
-                    _("Deadline must be within it's period (%(period)s)."
-                      % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
+                    "Deadline must be within it's period (%(period)s)."
+                      % dict(period=unicode(self.assignment_group.parentnode.parentnode)))
         super(Deadline, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):

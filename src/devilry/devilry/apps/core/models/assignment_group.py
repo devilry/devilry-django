@@ -63,12 +63,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
-                           help_text=_('An optional name for the group. Typically used a project '\
-                                       'name on project assignments.'))
+                           help_text='An optional name for the group. Typically used a project '\
+                                       'name on project assignments.')
     #examiners = models.ManyToManyField(User, blank=True,
                                        #related_name="examiners", through=Examiner)
     is_open = models.BooleanField(blank=True, default=True,
-            help_text = _('If this is checked, the group can add deliveries.'))
+            help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
 
