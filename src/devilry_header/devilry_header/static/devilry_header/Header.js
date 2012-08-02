@@ -24,6 +24,13 @@ Ext.define('devilry_header.Header', {
         'superuser': gettext('Superuser')
     },
 
+    navclass_to_dashboard_url: {
+        'student': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/student/',
+        'examiner': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/examiner/',
+        'administrator': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/',
+        'superuser': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/superuser/'
+    },
+
     /**
      * @cfg {string} [navclass]
      * The css class to style the header buttons with.
@@ -48,7 +55,13 @@ Ext.define('devilry_header.Header', {
         if(this.breadcrumbs) {
             breadcrumbareaItem = this.breadcrumbs;
         } else {
-            breadcrumbareaItem = Ext.widget('breadcrumbs');
+            var defaultBreadcrumbs = [{
+                url: this.navclass_to_dashboard_url[this.navclass],
+                text: gettext('Dashboard')
+            }];
+            breadcrumbareaItem = Ext.widget('breadcrumbs', {
+                defaultBreadcrumbs: defaultBreadcrumbs
+            });
         }
         Ext.apply(this, {
             layout: {
