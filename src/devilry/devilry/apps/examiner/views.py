@@ -31,7 +31,7 @@ class AssignmentGroupView(View):
                    'gradeeditors': dump_all_into_dict(gradeeditors_restful)
                   }
         return render(request,
-                      'examiner/assignmentgroupview.django.html',
+                      'examiner/assignmentgroupview.django.js',
                        context)
 
 class AssignmentView(View):
