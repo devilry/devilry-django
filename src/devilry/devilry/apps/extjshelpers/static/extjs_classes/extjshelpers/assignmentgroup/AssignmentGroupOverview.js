@@ -31,34 +31,33 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         '</tpl>'
     ),
 
-    config: {
-        /**
-         * @cfg
-         * Enable creation of new feedbacks? Defaults to ``false``.
-         * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
-         *
-         * When this is ``true``, the authenticated user still needs to have
-         * permission to POST new feedbacks for the view to work.
-         */
-        canExamine: false,
+    /**
+     * @cfg
+     * Enable creation of new feedbacks? Defaults to ``false``.
+     * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
+     *
+     * When this is ``true``, the authenticated user still needs to have
+     * permission to POST new feedbacks for the view to work.
+     */
+    canExamine: false,
 
-        /**
-         * @cfg
-         * AssignmentGroup ID.
-         */
-        assignmentgroupid: undefined,
+    /**
+     * @cfg
+     * AssignmentGroup ID.
+     */
+    assignmentgroupid: undefined,
 
-        /**
-         * @cfg
-         * Use the administrator RESTful interface to store drafts? If this is
-         * ``false``, we use the examiner RESTful interface.
-         */
-        isAdministrator: false
-    },
+    /**
+     * @cfg
+     * Use the administrator RESTful interface to store drafts? If this is
+     * ``false``, we use the examiner RESTful interface.
+     */
+    isAdministrator: false,
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
+
+    constructor: function() {
+        this.addEvents('assignmentGroupLoaded');
+        this.callParent(arguments);
     },
 
 
@@ -114,7 +113,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             success: function(record) {
                 this.assignmentgroup_recordcontainer.setRecord(record);
                 this.loadGradeEditorConfigModel();
-
+                this.fireEvent('assignmentGroupLoaded', record);
             },
             failure: function() {
                 // TODO: Handle errors

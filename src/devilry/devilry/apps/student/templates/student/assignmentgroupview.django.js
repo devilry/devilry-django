@@ -6,7 +6,10 @@
 
 {% block imports %}
     {{ block.super }}
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require([
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview',
+        'devilry_header.Breadcrumbs'
+    ]);
 {% endblock %}
 
 {% block onready %}
@@ -30,7 +33,16 @@
             assignmentgroupid: {{ objectid }},
             isAdministrator: false,
             canExamine: false,
-            padding: '0 20 0 20'
+            padding: '0 20 0 20',
+            listeners: {
+                assignmentGroupLoaded: function(groupRecord) {
+                    var path = [
+                        groupRecord.get('parentnode__parentnode__parentnode__short_name'),
+                        groupRecord.get('parentnode__parentnode__short_name'),
+                        groupRecord.get('parentnode__short_name')].join('.');
+                    devilry_header.Breadcrumbs.getInBody().set([], path);
+                }
+            }
         }]
     });
 {% endblock %}
