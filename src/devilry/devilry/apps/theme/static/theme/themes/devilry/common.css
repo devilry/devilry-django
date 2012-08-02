@@ -1321,10 +1321,7 @@ div.section.pathheading {
       vertical-align: baseline;
       border-radius: 3px;
       padding: 3px;
-      background-color: #77b300;
-      border: 1px solid #222;
-      color: #fff;
-      font-weight: bold;
+      border: 1px solid #aaa;
       font-size: 11px; }
   div.section.pathheading a.email {
     display: inline-block;
