@@ -14,16 +14,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
     },
 
     titleTpl: Ext.create('Ext.XTemplate',
-        '<div class="deadline_title">',
-        '    <div style="font-weight:bold">Deadline: ',
+        '<span class="deadline_title">',
+        '    <span style="font-weight:bold">Deadline: ',
         '        <tpl if="assignmentgroup.parentnode__delivery_types !== 1">{deadline.deadline:date}</tpl>',
         '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">Not defined in Devilry</tpl>',
-        '    </div>',
+        '    </span>',
         //'    <div>',
         ////'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
         //'        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
         //'    </div>',
-        '<div>'
+        '</span>'
     ),
 
     constructor: function(config) {
@@ -43,7 +43,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 assignmentgroup: this.assignmentgroup_recordcontainer.record.data
                 //extra: extra
             }),
-            layout: 'fit',
+            //layout: 'fit',
             border: false,
             listeners: {
                 scope: this,
