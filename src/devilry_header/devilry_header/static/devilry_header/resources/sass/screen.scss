@@ -6,23 +6,30 @@ $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $baseFontSize: 13px;
 $baseLineHeight: 18px;
 $almostblack: #191919 !default;
-$radiussize_big: 14px;
-$radiussize_small: 6px;
 
 $studentcolor_bg: #77B300;
 $examinercolor_bg: #0077B3;
 $administratorcolor_bg: #ff9900;
 $superusercolor_bg: #CC3300;
 $logocolor: #A00;
+$flatbutton_pressedcolor: #444;
+$flatbutton_hovercolor: #666;
+$hovermenu_bgcolor: #000;
 
 @mixin role_link($bg) {
     background-color: $bg;
     padding: 8px 12px 4px 8px;
-    border-bottom: 4px solid $bg;
-    border-top: 4px solid $bg;
+    border-left: 8px solid $bg;
+    border-right: 8px solid $hovermenu_bgcolor;
     &:hover {
-        border-bottom: 4px solid #444; //lighten($bg, 30%);
-        border-top: 4px solid #444;//lighten($bg, 30%);
+        border-left: 8px solid $hovermenu_bgcolor;
+        border-right: 8px solid darken($bg, 5%);
+        background-color: darken($bg, 5%);
+        @include border-top-right-radius(8px);
+        @include border-bottom-right-radius(8px);
+        background-image: url('../images/navarrow.png');
+        background-repeat: no-repeat;
+        background-position: 100% center;
     }
 }
 
@@ -54,10 +61,10 @@ $logocolor: #A00;
             .textwrapper {
                 //color: #fff;
             }
-            background-color: #666 !important;
+            background-color: $flatbutton_hovercolor !important;
         }
         &.flatbutton_pressed {
-            background-color: #444;
+            background-color: $flatbutton_pressedcolor;
         }
         &.flatbutton_toggleable {
             background-image: url('../images/menuarrow_black_down.png');
@@ -100,7 +107,7 @@ $logocolor: #A00;
 
     .devilrylogo {
         padding: 6px 10px 0 35px;
-        background-color: #000;
+        background-color: $hovermenu_bgcolor;
         background-image: url('../images/devilrylogo_small.png');
         background-repeat: no-repeat;
         background-position: 10px center;
@@ -115,7 +122,7 @@ $logocolor: #A00;
 .devilryheader_hovermenu {
     font-size: $baseFontSize;
     //background-color: $almostblack;
-    background-color: #000;
+    background-color: $hovermenu_bgcolor;
     //border-top: 2px solid #444 !important;
     color: #fff;
     font-family: $baseFontFamily;
