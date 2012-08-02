@@ -16,7 +16,7 @@
         cls: 'viewport',
         items: [{
             region: 'north',
-            xtype: 'pageheader',
+            xtype: 'devilryheader',
             navclass: 'student'
         }, {
             region: 'south',
@@ -24,7 +24,7 @@
         }, {
             region: 'center',
             xtype: 'add_deliveries_container',
-            padding: {left: 20, right: 20},
+            padding: '0 20 0 20',
             assignmentgroupid: {{ assignmentgroupid }},
             deadlineid: {{ deadlineid }},
             latest_deadline: new Date({{ deadline_timestamp_milliseconds }}),

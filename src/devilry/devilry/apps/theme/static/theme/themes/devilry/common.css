@@ -543,6 +543,9 @@ body {
 .viewport {
   background-color: #f8f8f8 !important; }
 
+.devilryheader {
+  margin-bottom: 15px; }
+
 /**
  *
  * SearchWidget
