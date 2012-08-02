@@ -551,6 +551,31 @@ div.section.pathheading {
         margin-bottom: 6px;
     }
     margin-bottom: 15px;
+    ul.names {
+        display: inline-block;
+        li {
+            display: inline-block;
+            margin: 0 3px 0 3px;
+            vertical-align: baseline;
+            border-radius: 3px;
+            padding: 3px;
+            background-color: $studentcolor_bg;
+            border: 1px solid #222;
+            color: #fff;
+            font-weight: bold;
+            font-size: 11px;
+        }
+    }
+    a.email {
+        display: inline-block;
+        height: 18px;
+        margin-left: 6px;
+        padding-left: 19px;
+        color: #444;
+        background-image: url(icons/16x16/email.png);
+        background-repeat: no-repeat;
+        background-position: left center;
+    }
 }
 
 .gradeeditorselector {
