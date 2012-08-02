@@ -32,7 +32,33 @@
             assignmentgroupid: {{ objectid }},
             isAdministrator: true,
             canExamine: true,
-            padding: '0 20 0 20'
+            padding: '0 20 0 20',
+            listeners: {
+                assignmentGroupLoaded: function(groupRecord) {
+                    var groupmemebers = [];
+                    Ext.Array.each(groupRecord.get('candidates'), function(candidate) {
+                        groupmemebers.push(candidate.full_name || candidate.identifier);
+                    }, this);
+                    var groupIdent = groupmemebers.join(', ');
+                    if(groupRecord.get('name')) {
+                        groupIdent = Ext.String.format('{0}: {1}', groupRecord.get('name'), groupIdent);
+                    }
+                    if(Ext.String.trim(groupIdent) == '') {
+                        groupIdent = groupRecord.get('id');
+                    }
+                    devilry_header.Breadcrumbs.getInBody().set([{
+                        text: groupRecord.get('parentnode__parentnode__parentnode__short_name'),
+                        url: '../subject/' + groupRecord.get('parentnode__parentnode__parentnode')
+                    }, {
+                        text: groupRecord.get('parentnode__parentnode__short_name'),
+                        url: '../period/' + groupRecord.get('parentnode__parentnode')
+                    }, {
+                        text: groupRecord.get('parentnode__short_name'),
+                        url: '../assignment/' + groupRecord.get('parentnode') + '?open_students=yes'
+                    }], groupIdent);
+                    window.document.title = Ext.String.format('{0} - Devilry', groupIdent);
+                }
+            }
         }]
     });
 {% endblock %}
