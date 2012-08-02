@@ -41,6 +41,7 @@
                         groupRecord.get('parentnode__parentnode__short_name'),
                         groupRecord.get('parentnode__short_name')].join('.');
                     devilry_header.Breadcrumbs.getInBody().set([], path);
+                    window.document.title = Ext.String.format('{0} - Devilry', path);
                 }
             }
         }]

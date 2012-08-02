@@ -84,6 +84,22 @@ Ext.define('devilry.administrator.assignment.Layout', {
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
         });
         this._onStudents();
+        this._setBreadcrumbAndTitle(assignmentRecord);
+    },
+
+    _setBreadcrumbAndTitle: function(assignmentRecord) {
+        var path = [
+            assignmentRecord.get('parentnode__parentnode__short_name'),
+            assignmentRecord.get('parentnode__short_name'),
+            assignmentRecord.get('short_name')].join('.');
+        window.document.title = Ext.String.format('{0} - Devilry', path);
+        devilry_header.Breadcrumbs.getInBody().set([{
+            text: assignmentRecord.get('parentnode__parentnode__short_name'),
+            url: '../subject/' + assignmentRecord.get('parentnode__parentnode')
+        }, {
+            text: assignmentRecord.get('parentnode__short_name'),
+            url: '../period/' + assignmentRecord.get('parentnode')
+        }], assignmentRecord.get('short_name'));
     },
 
     _onEdit: function(record, button) {

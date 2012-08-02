@@ -56,7 +56,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             record.get('parentnode__short_name'),
             record.get('short_name')].join('.');
         devilry_header.Breadcrumbs.getInBody().set([], path);
-
+        window.document.title = Ext.String.format('{0} - Devilry', path);
     },
 
     _onLoadAssignmentFailure: function() {
