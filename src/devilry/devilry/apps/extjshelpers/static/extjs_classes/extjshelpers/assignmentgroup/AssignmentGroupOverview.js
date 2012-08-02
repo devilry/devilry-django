@@ -218,7 +218,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 items: [{
                     xtype: 'container',
                     region: 'west',
-                    margin: {right: 10},
+                    margin: '0 10 0 0',
                     width: 250,
                     layout: {
                         type: 'vbox',
@@ -271,7 +271,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         }]
                     }, {
                         xtype: 'panel',
-                        margin: {top: 10},
+                        margin: '10 0 0 0',
                         flex: 1,
                         border: false,
                         layout: {
@@ -279,7 +279,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             align: 'stretch'
                         },
                         items: [this.nonElectronicNote = Ext.widget('box', {
-                            margin: {bottom: 10},
+                            margin: '0 0 10 0',
                             hidden: true,
                             cls: 'readable-section',
                             html: this.nonElectronicNodeTpl.apply({canExamine: this.canExamine, DEVILRY_HELP_URL: DevilrySettings.DEVILRY_HELP_URL})

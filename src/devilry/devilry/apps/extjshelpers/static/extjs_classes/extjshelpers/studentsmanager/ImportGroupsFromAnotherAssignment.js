@@ -45,7 +45,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignme
                     labelStyle: 'font-weight:bold'
                 },
                 defaults: {
-                    margins: '0 0 10 0'
+                    margin: '0 0 10 0'
                 },
                 items: [{
                     xtype: 'combo',

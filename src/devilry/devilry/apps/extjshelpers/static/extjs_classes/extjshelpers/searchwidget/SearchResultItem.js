@@ -50,7 +50,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
 
             Ext.apply(button, {
                 minWidth: 100,
-                margin: {left: 20}
+                margin: '0 0 0 10 0'
             });
             items.push(button);
         }

@@ -25,7 +25,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
         labelStyle: 'font-weight:bold'
     },
     defaults: {
-        margins: '0 0 10 0'
+        margin: '0 0 10 0'
     },
 
 
