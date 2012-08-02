@@ -25,15 +25,13 @@ Ext.define('devilry.administrator.subject.Layout', {
             items: [this.heading = Ext.ComponentManager.create({
                 xtype: 'component',
                 data: {},
-                cls: 'section treeheading',
+                cls: 'section pathheading',
                 tpl: [
                     '<tpl if="!hasdata">',
-                    '   <span class="loading">Loading...</span>',
+                        '<span class="loading">Loading...</span>',
                     '</tpl>',
                     '<tpl if="hasdata">',
-                    '    <h1 class="endoflist">',
-                    '       {subject.long_name}',
-                    '    </h1>',
+                        '<h1>{subject.long_name}</h1>',
                     '</tpl>'
                 ]
             }), {
@@ -68,6 +66,12 @@ Ext.define('devilry.administrator.subject.Layout', {
             hasdata: true,
             subject: subjectRecord.data
         });
+        this._setBreadcrumbAndTitle(subjectRecord);
+    },
+
+    _setBreadcrumbAndTitle: function(subjectRecord) {
+        window.document.title = Ext.String.format('{0} - Devilry', subjectRecord.get('short_name'));
+        devilry_header.Breadcrumbs.getInBody().set([], subjectRecord.get('short_name'));
     },
 
     _onEdit: function(record, button) {
