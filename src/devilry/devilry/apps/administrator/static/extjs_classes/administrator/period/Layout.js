@@ -36,18 +36,13 @@ Ext.define('devilry.administrator.period.Layout', {
             items: [this.heading = Ext.ComponentManager.create({
                 xtype: 'component',
                 data: {},
-                cls: 'section treeheading',
+                cls: 'section pathheading',
                 tpl: [
                     '<tpl if="!hasdata">',
                     '   <span class="loading">Loading...</span>',
                     '</tpl>',
                     '<tpl if="hasdata">',
-                    '    <h1>',
-                    '       {period.long_name}',
-                    '    </h1>',
-                    '    <h2 class="endoflist"><a href="{DEVILRY_URLPATH_PREFIX}/administrator/subject/{period.parentnode}">',
-                    '       {period.parentnode__long_name}',
-                    '    </a></h2>',
+                    '    <h1><small>{period.parentnode__short_name}.</small>{period.long_name}</h1>',
                     '</tpl>'
                 ]
             }), {
