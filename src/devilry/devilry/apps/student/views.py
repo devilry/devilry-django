@@ -107,7 +107,7 @@ class AssignmentGroupView(View):
         context = {'objectid': assignmentgroupid,
                    'restfulapi': dump_all_into_dict(restful)}
         return render(request,
-                      'student/assignmentgroupview.django.html',
+                      'student/assignmentgroupview.django.js',
                        context)
 
 
