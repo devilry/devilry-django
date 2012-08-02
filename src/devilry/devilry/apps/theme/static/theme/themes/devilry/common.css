@@ -446,7 +446,7 @@ table.horizontalinfotable {
 .studentsmanager .widget-studentsmanager_studentsgrid .namecolumn li {
   list-style: none; }
 .studentsmanager .widget-studentsmanager_studentsgrid .pointscolumn {
-  font-size: 30px; }
+  font-size: 20px; }
 .studentsmanager .widget-studentsmanager_studentsgrid .nofeedback, .studentsmanager .widget-studentsmanager_studentsgrid .nodeliveries {
   color: #aaa; }
 .studentsmanager .widget-studentsmanager_studentsgrid .gradecolumn {
