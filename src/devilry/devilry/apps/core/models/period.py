@@ -70,13 +70,11 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject, related_name='periods',
-                                   verbose_name = _('Subject'))
+                                   verbose_name = 'Subject')
     start_time = models.DateTimeField(
-            help_text=_(
-                'Start time and end time defines when the period is active.'))
+            help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
-            help_text=_(
-                'Start time and end time defines when the period is active.'))
+            help_text='Start time and end time defines when the period is active.')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
