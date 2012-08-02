@@ -49,11 +49,32 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     initComponent: function() {
         this.isLoading = true;
-        this.assignmentgroup_recordcontainer.on('setRecord', this.loadAllDeadlines, this);
+        this.assignmentgroup_recordcontainer.on('setRecord', this._onLoadAssignmentGroup, this);
         if(this.assignmentgroup_recordcontainer.record) {
-            this.loadAllDeadlines();
+            this._onLoadAssignmentGroup();
         }
-        if(this.role != 'student') {
+        if(this.role === 'student') {
+            this.dockedItems = [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: [{
+                    xtype: 'box',
+                    itemId: 'addDeliveryLink',
+                    tpl: [
+                        '<tpl if="loading">',
+                            gettext('Loading ...'),
+                        '<tpl else>',
+                            '<a href="../add-delivery/{groupId}">{text}</a>',
+                        '</tpl>'
+                    ],
+                    padding: '5 0 5 0',
+                    data: {
+                        loading: true
+                    }
+                }]
+            }];
+        } else {
             this.bbar = [{
                 xtype: 'button',
                 text: 'New deadline',
@@ -70,6 +91,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 this.addLoadMask();
             }, 100, this);
         }, this);
+    },
+
+    _onLoadAssignmentGroup: function(groupRecordContainer) {
+        var groupRecord = groupRecordContainer.record;
+        this.loadAllDeadlines();
+        if(this.role === 'student') {
+            this.down('#addDeliveryLink').update({
+                text: gettext('Add delivery'),
+                groupId: groupRecord.get('id')
+            });
+        }
     },
 
 
