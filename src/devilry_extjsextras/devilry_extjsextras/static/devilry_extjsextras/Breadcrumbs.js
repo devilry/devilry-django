@@ -4,6 +4,10 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
     alias: 'widget.breadcrumbs',
     cls: 'devilry_extjsextras_breadcrumbcomponent',
 
+    requires: [
+        'Ext.ComponentQuery'
+    ],
+
     tpl: [
         '<ul class="devilry_extjsextras_breadcrumb">',
             '<tpl for="breadcrumbs">',
@@ -84,5 +88,19 @@ Ext.define('devilry_extjsextras.Breadcrumbs', {
     setHome: function() {
         this.clear();
         this.draw();
+    },
+
+    statics: {
+        /** Return the first detected instance of this component in body. */
+        getInBody: function() {
+            var components = Ext.ComponentQuery.query('breadcrumbs');
+            if(components.length === 1) {
+                return components[0];
+            } else if(components.length === 0) {
+                throw "Could not find any devilry_extjsextras.Breadcrumbs compoent in body.";
+            } else {
+                throw "Found more than one devilry_extjsextras.Breadcrumbs compoent in body.";
+            }
+        }
     }
 });
