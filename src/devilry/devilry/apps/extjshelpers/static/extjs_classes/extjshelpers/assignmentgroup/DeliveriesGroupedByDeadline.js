@@ -53,28 +53,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         if(this.assignmentgroup_recordcontainer.record) {
             this._onLoadAssignmentGroup();
         }
-        if(this.role === 'student') {
-            this.dockedItems = [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: [{
-                    xtype: 'box',
-                    itemId: 'addDeliveryLink',
-                    tpl: [
-                        '<tpl if="loading">',
-                            gettext('Loading ...'),
-                        '<tpl else>',
-                            '<a href="../add-delivery/{groupId}">{text}</a>',
-                        '</tpl>'
-                    ],
-                    padding: '5 0 5 0',
-                    data: {
-                        loading: true
-                    }
-                }]
-            }];
-        } else {
+        if(this.role !== 'student') {
             this.bbar = [{
                 xtype: 'button',
                 text: 'New deadline',
@@ -96,10 +75,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _onLoadAssignmentGroup: function(groupRecordContainer) {
         var groupRecord = groupRecordContainer.record;
         this.loadAllDeadlines();
-        if(this.role === 'student') {
-            this.down('#addDeliveryLink').update({
-                text: gettext('Add delivery'),
-                groupId: groupRecord.get('id')
+        if(this.role === 'student' && groupRecord.get('is_open')) {
+            this.addDocked({
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: [{
+                    xtype: 'box',
+                    tpl: '<a href="../add-delivery/{groupId}">{text}</a>',
+                    padding: '5 0 5 0',
+                    data: {
+                        text: gettext('Add delivery'),
+                        groupId: groupRecord.get('id')
+                    }
+                }]
             });
         }
     },
