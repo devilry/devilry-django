@@ -8,17 +8,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
     studentsColTpl: Ext.create('Ext.XTemplate',
         '<div class="section popuplistitem">',
-        '    <tpl if="name">',
-        '        {name}: ',
-        '    </tpl>',
-        '    <ul style="display: inline-block;">',
-        '    <tpl for="candidates">',
-        '       <li>{identifier} <tpl if="full_name">({full_name})</tpl></li>',
-        '    </tpl>',
-        '    </ul>',
-        '    <tpl if="id == current_assignment_group_id">',
-        '        &mdash; <strong>(currently selected)</strong>',
-        '    </tpl>',
+            '<a href="{groupUrlPrefix}{id}" style="display: block;">',
+            '<tpl if="name">',
+                '{name}: ',
+            '</tpl>',
+            '<tpl for="candidates">',
+                '{identifier} <tpl if="full_name">({full_name})</tpl>',
+                '<tpl if="xindex < xcount">, </tpl>',
+            '</tpl>',
+            '<tpl if="id == current_assignment_group_id">',
+                ' &mdash; <strong>(currently selected)</strong>',
+            '</tpl>',
+            '</a>',
         '</div>'
     ),
 
@@ -89,6 +90,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             Ext.Array.insert(this.tbarItems, 1, this.toolbarExtra);
         }
 
+        var groupUrlPrefix = this.getGroupUrlPrefix();
         Ext.apply(this, {
             layout: {
                 type: 'hbox',
@@ -97,7 +99,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             items: [{
                 flex: 6,
                 xtype: 'grid',
-                cls: 'selectable-grid',
+                disableSelection: true,
+                //rowLines: false,
                 store: this.store,
                 frame: false,
                 border: false,
@@ -109,7 +112,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                     flex: 2,
                     menuDisabled: true,
                     renderer: function(value, metaData, grouprecord) {
-                        var data = {};
+                        var data = {
+                            groupUrlPrefix: groupUrlPrefix
+                        };
                         if(me.assignmentgroup_recordcontainer) {
                             data.current_assignment_group_id = me.assignmentgroup_recordcontainer.record.data.id;
                         }
@@ -121,10 +126,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                     renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
                 }],
 
-                listeners: {
-                    scope: this,
-                    itemmouseup: this.onSelectGroup
-                }
+                //listeners: {
+                    //scope: this,
+                    //itemmouseup: this.onSelectGroup
+                //}
             }, {
                 xtype: 'box',
                 width: 300,
@@ -166,8 +171,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         });
     },
 
-    onSelectGroup: function(grid, assignmentgroupRecord) {
-        window.location.href = assignmentgroupRecord.data.id.toString();
+    //onSelectGroup: function(grid, assignmentgroupRecord) {
+        //window.location.href = assignmentgroupRecord.data.id.toString();
+    //},
+
+    getGroupUrlPrefix: function() {
+        return '';
     },
 
     /**

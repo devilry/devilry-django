@@ -44,12 +44,15 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
                 '</div>'
             ),
 
-            onSelectGroup: function(grid, assignmentgroupRecord) {
-                var url = Ext.String.format('../assignmentgroup/{0}',
-                    assignmentgroupRecord.data.id
-                );
-                window.location.href = url;
-            },
+            //onSelectGroup: function(grid, assignmentgroupRecord) {
+                //var url = Ext.String.format('../assignmentgroup/{0}',
+                    //assignmentgroupRecord.data.id
+                //);
+                //window.location.href = url;
+            //},
+            getGroupUrlPrefix: function() {
+                return '../assignmentgroup/';
+            }
         });
         this.callParent(arguments);
         this._loadTodoList();
