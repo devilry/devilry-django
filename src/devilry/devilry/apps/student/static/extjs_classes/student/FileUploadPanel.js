@@ -121,8 +121,17 @@ Ext.define('devilry.student.FileUploadPanel', {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
+                itemId: 'buttonBar',
                 ui: 'footer',
-                items: ['->', this.deliverbutton]
+                items: [{
+                    xtyle: 'button',
+                    scale: 'small',
+                    text: gettext('Cancel'),
+                    listeners: {
+                        scope: this,
+                        click: this._onCancel
+                    }
+                }, '->', this.deliverbutton]
             }]
         });
         this.callParent(arguments);
@@ -271,6 +280,8 @@ Ext.define('devilry.student.FileUploadPanel', {
     onDeliverSuccess: function() {
         this.uploadedFiles = [];
         this.deliverbutton.disable();
+        this.remove(this.down('fileuploadfield'));
+        this.removeDocked(this.down('#buttonBar'));
         this.updateInfoBox(true);
         this.deliveryrecord = null;
         this.setLoading(false);
@@ -282,5 +293,30 @@ Ext.define('devilry.student.FileUploadPanel', {
     onDeliverFailure: function() {
         this.setLoading(false);
         Ext.Msg.alert('Failure', 'Error when finalizing the delivery, TRY AGAIN!');
+    },
+
+
+    _onCancel: function() {
+        if(this.uploadedFiles.length > 0) {
+            var msg = gettext('Are you sure you want to cancel/abort this Delivery? Your uploaded files: {0} will be removed from Devilry.');
+            Ext.MessageBox.show({
+                title: gettext('Confirm cancel'),
+                msg: Ext.String.format(msg, '<pre>' + this.uploadedFiles.join("\n") + '</pre>'),
+                buttons: Ext.MessageBox.OKCANCEL,
+                icon: Ext.MessageBox.WARNING,
+                scope: this,
+                fn: function(buttonname) {
+                    if(buttonname == 'ok') {
+                        this._cancel();
+                    }
+                }
+            });
+        } else {
+            this._cancel();
+        }
+    },
+
+    _cancel: function() {
+        window.location.href = DASHBOARD_URL;
     }
 });
