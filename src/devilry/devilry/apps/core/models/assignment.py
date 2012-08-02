@@ -102,20 +102,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                    verbose_name=_('Period'))
     etag = models.DateTimeField(auto_now_add=True)
     publishing_time = models.DateTimeField(verbose_name=_("Publishing time"),
-                                           help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
+                                           help_text='The time when the assignment is to be published (visible to students and examiners).')
     anonymous = models.BooleanField(default=False,
                                     verbose_name=_("Anonymous"),
-                                    help_text=_('Specifies if this assignment is anonymous.'))
+                                    help_text='Specifies if this assignment is anonymous.')
     students_can_see_points = models.BooleanField(default=True,
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
     examiners_publish_feedbacks_directly = models.BooleanField(default=True,
                                                      verbose_name=_("Examiners publish directly?"),
-                                                     help_text=_('Should feedbacks published by examiners be made '
-                                                                 'avalable to the students immediately? If not, an '
-                                                                 'administrator have to publish feedbacks '
-                                                                 'manually.'))
+                                                     help_text=('Should feedbacks published by examiners be made '
+                                                                'avalable to the students immediately? If not, an '
+                                                                'administrator have to publish feedbacks '
+                                                                'manually.'))
     delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                  choices=deliverytypes.as_choices_tuple(),
                                                  help_text='This option controls what types of deliveries this assignment accepts. See the Delivery documentation for more info.')
