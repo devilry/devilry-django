@@ -23,7 +23,7 @@
             region: 'center',
             xtype: 'administrator-periodlayout',
             periodid: {{ objectid }},
-            padding: {left: 20, right: 20}
+            padding: '0 20 0 20'
         }]
     });
 {% endblock %}

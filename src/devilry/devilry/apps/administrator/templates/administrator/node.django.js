@@ -32,7 +32,7 @@
             region: 'center',
             xtype: 'administrator-nodelayout',
             nodeid: {{ objectid }},
-            padding: {left: 20, right: 20}
+            padding: '0 20 0 20'
         }]
     });
 
