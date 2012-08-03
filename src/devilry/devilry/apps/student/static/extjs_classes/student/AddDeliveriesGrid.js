@@ -2,7 +2,8 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
     extend: 'devilry.extjshelpers.DashGrid',
 
     requires: [
-        'devilry.extjshelpers.DateTime'
+        'devilry.extjshelpers.DateTime',
+        'Ext.XTemplate'
     ],
 
     config: {
@@ -107,7 +108,18 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         });
         this.add([{
             xtype: 'box',
-            html: '<div class="section"><h3>Assignments / Add deliveries</h3></div>'
+            cls: 'section',
+            tpl: '<div class="section"><h3>Assignments / Add deliveries</h3></div>',
+            data: {
+                text: this._apply_tpl(gettext('{term_Assignments} / Add {term_deliveries}'), {
+                    term_Assignments: gettext('Assignments'),
+                    term_deliveries: gettext('deliveries')
+                })
+            }
         }, grid]);
+    },
+
+    _apply_tpl: function(tpl, data) {
+        return new Ext.XTemplate(tpl).apply(data);
     }
 });

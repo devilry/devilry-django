@@ -1,12 +1,15 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
+from django.views.i18n import javascript_catalog
 
 from devilry.restful.forbidden import forbidden_if_not_authenticated
 from restful import student_restful
-from views import (MainView, AddDeliveryView, 
+from views import (MainView, AddDeliveryView,
                    FileUploadView, AssignmentGroupView,
                    FileDownloadView, ShowDeliveryView,
                    CompressedFileDownloadView)
+
+i18n_packages = ('core',)
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),
@@ -31,6 +34,8 @@ urlpatterns = patterns('devilry.apps.student',
                        #url(r'^show-delivery/tarfiledownload/(?P<deliveryid>\d+)$',
                            #login_required(TarFileDownloadView.as_view()),
                            #name='tar-file-download'),
+                       url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
+                           name='devilry_student_i18n')
                        )
 
 urlpatterns += student_restful

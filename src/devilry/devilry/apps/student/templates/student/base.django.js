@@ -1,6 +1,11 @@
 {% extends "theme/common.django.html" %}
 {% load extjs %}
 
+
+{% block extra_js_libraries %}
+    <script type="text/javascript" src="{% url devilry_student_i18n %}"></script>
+{% endblock %}
+
 {% block imports %}
     {{ block.super }}
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
