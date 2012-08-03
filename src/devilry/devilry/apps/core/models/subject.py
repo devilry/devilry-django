@@ -44,14 +44,11 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     """
     class Meta:
         app_label = 'core'
-        verbose_name = _('Subject')
-        verbose_name_plural = _('Subjects')
         ordering = ['short_name']
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Node, related_name='subjects',
-                                   verbose_name='Node')
+    parentnode = models.ForeignKey(Node, related_name='subjects')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 

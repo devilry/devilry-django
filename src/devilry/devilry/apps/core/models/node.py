@@ -46,8 +46,6 @@ class Node(models.Model, BaseNode, Etag):
 
     class Meta:
         app_label = 'core'
-        verbose_name = _('Node')
-        verbose_name_plural = _('Nodes')
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
 

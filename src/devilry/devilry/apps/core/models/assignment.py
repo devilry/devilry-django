@@ -91,8 +91,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     """
     class Meta:
         app_label = 'core'
-        verbose_name = _('Assignment')
-        verbose_name_plural = _('Assignments')
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
 

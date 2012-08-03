@@ -62,15 +62,13 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     """
     class Meta:
         app_label = 'core'
-        verbose_name = _('Period')
-        verbose_name_plural = _('Periods')
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
 
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject, related_name='periods',
-                                   verbose_name = 'Subject')
+                                   verbose_name='Subject')
     start_time = models.DateTimeField(
             help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
