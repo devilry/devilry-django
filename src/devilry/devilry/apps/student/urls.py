@@ -34,7 +34,8 @@ urlpatterns = patterns('devilry.apps.student',
                        #url(r'^show-delivery/tarfiledownload/(?P<deliveryid>\d+)$',
                            #login_required(TarFileDownloadView.as_view()),
                            #name='tar-file-download'),
-                       url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
+                       url('^i18n.js$', javascript_catalog,
+                           kwargs={'packages': i18n_packages},
                            name='devilry_student_i18n')
                        )
 
