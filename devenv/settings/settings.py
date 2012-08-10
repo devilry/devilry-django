@@ -31,6 +31,7 @@ INSTALLED_APPS += [
                    'seleniumhelpers',
                    'extjs4',
                    'djangosenchatools',
+                   'devilry_university_translations',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
@@ -44,6 +45,7 @@ TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
 LANGUAGE_CODE = 'no'
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
