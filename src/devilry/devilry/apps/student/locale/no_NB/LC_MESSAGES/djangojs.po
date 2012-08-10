@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-11 00:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: static/extjs_classes/student/AddDeliveriesContainer.js:141
+msgid "Add delivery"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:13
+msgid "No active electronic %(assignments)s"
+msgstr "Ingen aktive elektroniske %(assignments)s"
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:14
+#: static/extjs_classes/student/AddDeliveriesGrid.js:18
+#: static/extjs_classes/student/AddDeliveriesGrid.js:126
+msgid "Assignments"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:16
+msgid ""
+"You are not expected to make any electronic deliveries at this time. This "
+"may be because none of your %(subjects)s uses Devilry for electronic "
+"deliveries, or because all your published %(assignments)s have been "
+"corrected."
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:17
+msgid "Subjects"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:89
+msgid "Deadline"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:105
+#: static/extjs_classes/student/AddDeliveriesGrid.js:127
+msgid "Deliveries"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:125
+msgid "%(assignments)s / Add %(deliveries)s"
+msgstr "%(assignments)s / Legg til %(deliveries)s"
+
+#: static/extjs_classes/student/FileUploadPanel.js:129
+msgid "Cancel"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:301
+msgid ""
+"Are you sure you want to cancel/abort this Delivery? Your uploaded files: "
+"{0} will be removed from Devilry."
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:303
+msgid "Confirm cancel"
+msgstr ""

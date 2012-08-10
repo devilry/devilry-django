@@ -10,7 +10,7 @@ from views import (MainView, AddDeliveryView,
                    FileDownloadView, ShowDeliveryView,
                    CompressedFileDownloadView)
 
-i18n_packages = get_javascript_catalog_packages('devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry.apps.core', 'devilry.apps.student')
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),

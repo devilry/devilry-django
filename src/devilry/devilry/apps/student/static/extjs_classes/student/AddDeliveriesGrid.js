@@ -10,8 +10,13 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         store: undefined,
         model: undefined,
         noRecordsMessage: {
-            title: 'No active electronic assignments',
-            msg: "You are not expected to make any electronic deliveries at this time. This may be because none of your subjects/courses uses Devilry for electronic deliveries, or because all your published assignments have been corrected."
+            title: interpolate(gettext('No active electronic %(assignments)s'), {
+                assignments: gettext('Assignments').toLocaleLowerCase()
+            }, true),
+            msg: interpolate(gettext("You are not expected to make any electronic deliveries at this time. This may be because none of your %(subjects)s uses Devilry for electronic deliveries, or because all your published %(assignments)s have been corrected."), {
+                subjects: gettext('Subjects').toLocaleLowerCase(),
+                assignments: gettext('Assignments').toLocaleLowerCase()
+            }, true)
         },
         dashboard_url: undefined
     },
@@ -78,21 +83,27 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 dataIndex: 'latest_deadline_deadline',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
-                        '<em style="font-style:italic">Deadline:</em> {latest_deadline_deadline}'
+                        '<em style="font-style:italic">{deadline}:</em> {record.latest_deadline_deadline}'
                     );
-                    return rowTpl.apply(record.data);
+                    return rowTpl.apply({
+                        deadline: gettext('Deadline'),
+                        record: record.data
+                    });
                 }
             },{
-                text: '#Deliveries',
+                text: 'Deliveries',
                 menuDisabled: true,
                 hideAble: false,
                 width: 100,
                 dataIndex: 'number_of_deliveries',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
-                        '<em style="font-style:italic">Deliveries:</em> {number_of_deliveries}'
+                        '<em style="font-style:italic">{deliveries}:</em> {record.number_of_deliveries}'
                     );
-                    return rowTpl.apply(record.data);
+                    return rowTpl.apply({
+                        record: record.data,
+                        deliveries: gettext('Deliveries')
+                    });
                 }
             }],
             listeners: {
@@ -109,17 +120,13 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         this.add([{
             xtype: 'box',
             cls: 'section',
-            tpl: '<div class="section"><h3>Assignments / Add deliveries</h3></div>',
+            tpl: '<div class="section"><h3>{text}</h3></div>',
             data: {
-                text: this._apply_tpl(gettext('{term_Assignments} / Add {term_deliveries}'), {
-                    term_Assignments: gettext('Assignments'),
-                    term_deliveries: gettext('deliveries')
-                })
+                text: interpolate(gettext('%(assignments)s / Add %(deliveries)s'), {
+                    assignments: gettext('Assignments'),
+                    deliveries: gettext('Deliveries').toLocaleLowerCase()
+                }, true)
             }
         }, grid]);
-    },
-
-    _apply_tpl: function(tpl, data) {
-        return new Ext.XTemplate(tpl).apply(data);
     }
 });
