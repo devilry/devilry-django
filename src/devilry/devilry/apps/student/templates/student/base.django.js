@@ -2,7 +2,7 @@
 {% load extjs %}
 
 
-{% block extra_js_libraries %}
+{% block i18nimport %}
     <script type="text/javascript" src="{% url devilry_student_i18n %}"></script>
 {% endblock %}
 

@@ -5,6 +5,19 @@
         </title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" >
 
+        {% block i18nimport %}
+        <script type="text/javascript">
+            // No-op gettext functions to make the old stuff work with the new
+            // apps that use i18n.
+            function gettext(msgid) {
+                return msgid;
+            }
+            function pgettext(context, msgid) {
+                return msgid;
+            }
+        </script>
+        {% endblock %}
+
         {# TODO: Remove this when we are completely viewport/app based #}
         {% block extra_js_libraries %}{% endblock %}
 
@@ -27,15 +40,6 @@
 
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
         <script type="text/javascript">
-            // No-op gettext functions to make the old stuff work with the new
-            // apps that use i18n.
-            function gettext(msgid) {
-                return msgid;
-            }
-            function pgettext(context, msgid) {
-                return msgid;
-            }
-
 
             // Path to the blank image should point to a valid location on your server
             Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/themes/images/default/tree/s.gif';
