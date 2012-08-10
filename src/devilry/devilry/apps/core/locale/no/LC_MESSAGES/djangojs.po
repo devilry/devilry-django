@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-04 01:22+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: static/devilry_core/terminology.js:7
+msgid "Node"
+msgstr "Node"
+
+#: static/devilry_core/terminology.js:7
+msgid "Nodes"
+msgstr "Noder"
+
+#: static/devilry_core/terminology.js:8
+msgid "Subject"
+msgstr "Emne"
+
+#: static/devilry_core/terminology.js:8
+msgid "Subjects"
+msgstr "Emner"
+
+#: static/devilry_core/terminology.js:9
+msgid "Period"
+msgstr "Periode"
+
+#: static/devilry_core/terminology.js:9
+msgid "Periods"
+msgstr "Perioder"
+
+#: static/devilry_core/terminology.js:10
+msgid "Assignment"
+msgstr "Oppgave"
+
+#: static/devilry_core/terminology.js:10
+msgid "Assignments"
+msgstr "Oppgaver"
+
+#: static/devilry_core/terminology.js:11
+msgid "Group"
+msgstr "Gruppe"
+
+#: static/devilry_core/terminology.js:11
+msgid "Groups"
+msgstr "Grupper"
+
+#: static/devilry_core/terminology.js:12
+msgid "Deadline"
+msgstr "Deadline"
+
+#: static/devilry_core/terminology.js:12
+msgid "Deadlines"
+msgstr "Deadlines"
+
+#: static/devilry_core/terminology.js:13
+msgid "Delivery"
+msgstr "Innlevering"
+
+#: static/devilry_core/terminology.js:13
+msgid "Deliveries"
+msgstr "Innleveringer"
+
+#: static/devilry_core/terminology.js:14
+msgid "Examiner"
+msgstr ""
+
+#: static/devilry_core/terminology.js:14
+msgid "Examiners"
+msgstr ""
