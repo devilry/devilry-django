@@ -9,7 +9,7 @@ from views import (MainView, AddDeliveryView,
                    FileDownloadView, ShowDeliveryView,
                    CompressedFileDownloadView)
 
-i18n_packages = ('core',)
+i18n_packages = ('devilry.apps.core',)
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),
