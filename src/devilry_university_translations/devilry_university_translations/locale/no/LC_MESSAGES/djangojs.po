@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: static/devilry_core/terminology.js:7
+msgid "Node"
+msgstr "Department/Faculty/School"
+
+#: static/devilry_core/terminology.js:7
+msgid "Nodes"
+msgstr "Departments/Faculties/Schools"
+
 #: static/devilry_core/terminology.js:9
 msgid "Period"
 msgstr "Semester"
