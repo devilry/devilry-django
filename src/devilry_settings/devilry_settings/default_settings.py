@@ -148,6 +148,12 @@ DEVILRY_LACKING_PERMISSIONS_URL = None
 #: Url where users are directed when they want to know what to do if their personal info in Devilry is wrong.
 DEVILRY_WRONG_USERINFO_URL = None
 
+
+#: Django apps that override the Devilry javascript translations (which is most
+#: of the Devilry user interface).
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
+
+
 #################################################
 # Settings without a default value
 #################################################
