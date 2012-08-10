@@ -44,7 +44,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
-LANGUAGE_CODE = 'no'
+LANGUAGE_CODE = 'no-nb'
 DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 
 # Make this unique, and don't share it with anybody.
