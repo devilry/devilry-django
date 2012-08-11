@@ -11,11 +11,11 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         model: undefined,
         noRecordsMessage: {
             title: interpolate(gettext('No active electronic %(assignments)s'), {
-                assignments: gettext('Assignments').toLocaleLowerCase()
+                assignments: gettext('assignments')
             }, true),
             msg: interpolate(gettext("You are not expected to make any electronic deliveries at this time. This may be because none of your %(subjects)s uses Devilry for electronic deliveries, or because all your published %(assignments)s have been corrected."), {
-                subjects: gettext('Subjects').toLocaleLowerCase(),
-                assignments: gettext('Assignments').toLocaleLowerCase()
+                subjects: gettext('subjects'),
+                assignments: gettext('assignments')
             }, true)
         },
         dashboard_url: undefined
@@ -124,7 +124,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             data: {
                 text: interpolate(gettext('%(assignments)s / Add %(deliveries)s'), {
                     assignments: gettext('Assignments'),
-                    deliveries: gettext('Deliveries').toLocaleLowerCase()
+                    deliveries: gettext('deliveries')
                 }, true)
             }
         }, grid]);

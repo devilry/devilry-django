@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-11 00:43+0200\n"
+"POT-Creation-Date: 2012-08-11 07:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: static/extjs_classes/student/AddDeliveriesContainer.js:141
-msgid "Add delivery"
+msgid "Add %(delivery)s"
+msgstr "Legg til %(delivery)s"
+
+#: static/extjs_classes/student/AddDeliveriesContainer.js:142
+msgid "delivery"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:13
@@ -27,8 +31,7 @@ msgstr "Ingen aktive elektroniske %(assignments)s"
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:14
 #: static/extjs_classes/student/AddDeliveriesGrid.js:18
-#: static/extjs_classes/student/AddDeliveriesGrid.js:126
-msgid "Assignments"
+msgid "assignments"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:16
@@ -40,7 +43,7 @@ msgid ""
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:17
-msgid "Subjects"
+msgid "subjects"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:89
@@ -48,13 +51,20 @@ msgid "Deadline"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:105
-#: static/extjs_classes/student/AddDeliveriesGrid.js:127
 msgid "Deliveries"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:125
 msgid "%(assignments)s / Add %(deliveries)s"
 msgstr "%(assignments)s / Legg til %(deliveries)s"
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:126
+msgid "Assignments"
+msgstr ""
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:127
+msgid "deliveries"
+msgstr ""
 
 #: static/extjs_classes/student/FileUploadPanel.js:129
 msgid "Cancel"

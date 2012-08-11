@@ -138,6 +138,8 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         devilry_header.Breadcrumbs.getInBody().set([{
             text: path,
             url: Ext.String.format('{0}/student/assignmentgroup/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, groupRecord.get('id'))
-        }], gettext('Add delivery'));
+        }], interpolate(gettext('Add %(delivery)s'), {
+            delivery: gettext('delivery')
+        }, true));
     }
 });
