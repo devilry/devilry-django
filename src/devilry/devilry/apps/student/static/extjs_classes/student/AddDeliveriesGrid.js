@@ -1,5 +1,6 @@
 Ext.define('devilry.student.AddDeliveriesGrid', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.student-add-deliveriesgrid',
 
     requires: [
         'devilry.extjshelpers.DateTime',

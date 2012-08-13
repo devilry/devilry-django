@@ -5,18 +5,18 @@ Ext.define('devilry.student.Dashboard', {
     requires: [
         'devilry.student.StudentSearchWidget',
         'devilry.student.AddDeliveriesGrid',
-        'devilry.student.browseperiods.BrowsePeriods'
+        'devilry.student.browseperiods.BrowsePeriods',
+        'devilry_extjsextras.Router'
     ],
 
     /**
-     * @cfg
+     * @cfg {string} [dashboardUrl]
      */
-    dasboardUrl: undefined,
     
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    //constructor: function(config) {
+        //this.initConfig(config);
+        //this.callParent([config]);
+    //},
     
     initComponent: function() {
         var assignmentgroup_store = Ext.create('Ext.data.Store', {
@@ -25,41 +25,25 @@ Ext.define('devilry.student.Dashboard', {
             remoteSort: true,
             autoSync: true
         });
-        var addDeliveriesGrid = Ext.create('devilry.student.AddDeliveriesGrid', {
-            store: assignmentgroup_store,
-            dashboard_url: this.dashboardUrl,
-            minHeight: 140,
-            flex: 1
-        });
-
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedDelivery'),
             showStudentsCol: false,
             dashboard_url: this.dashboardUrl,
-            flex: 1
+            columnWidth: 0.5
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedStaticFeedback'),
             showStudentsCol: false,
             dashboard_url: this.dashboardUrl,
-            flex: 1
+            columnWidth: 0.5
         });
-
-        var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
-            urlPrefix: DASHBOARD_URL,
-            hidden: false
-        });
-
 
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
                 align: 'stretch'
             },
-            items: [
-                searchwidget,
-                {xtype:'box', height: 20},
-            {
+            items: [{
                 xtype: 'panel',
                 flex: 1,
                 layout: 'fit',
@@ -70,22 +54,21 @@ Ext.define('devilry.student.Dashboard', {
                     items: [{
                         xtype: 'panel',
                         title: gettext('Dashboard'),
+                        itemId: 'dashboard',
                         bodyPadding: 10,
                         autoScroll: true,
-                        layout: {
-                            type: 'vbox',
-                            align: 'stretch'
-                        },
-                        items: [addDeliveriesGrid, {
+                        items: [{
+                            xtype: 'studentsearchwidget',
+                            urlPrefix: this.dashboardUrl
+                        }, {
+                            xtype: 'student-add-deliveriesgrid',
+                            store: assignmentgroup_store,
+                            dashboard_url: this.dashboardUrl
+                        }, {
                             xtype: 'container',
-                            margin: '10 0 0 0',
-                            layout: {
-                                type: 'hbox',
-                                align: 'stretch'
-                            },
-                            height: 200,
-                            width: 800, // Needed to avoid layout issue in FF3.6
-                            items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
+                            margin: '20 0 0 0',
+                            layout: 'column',
+                            items: [recentDeliveries, recentFeedbacks]
                         }]
                     }, {
                         xtype: 'student-browseperiods',
@@ -94,6 +77,24 @@ Ext.define('devilry.student.Dashboard', {
                 }]
             }]
         });
+        this.on('render', this._onRender, this);
         this.callParent(arguments);
+    },
+
+    _onRender: function() {
+        //this.route = Ext.create('devilry_extjsextras.Router', this);
+        //this.route.add("", 'dashboard');
+        //this.route.add("/browse/", 'browse');
+        //this.route.start();
+    },
+
+    dashboard: function() {
+        //console.log('dashboard');
+        //this.down('#dashboard').show();
+    },
+
+    browse: function() {
+        //console.log('browse');
+        //this.down('student-browseperiods').show();
     }
 });
