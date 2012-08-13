@@ -130,7 +130,7 @@ msgid ""
 "<em>Add new file</em> to upload more files."
 msgstr ""
 "Velg Lever-knappen for å laste opp disse {filenameCount} filene, eller velg "
-"<em>Legg til ny fil</em> for å laste flere filer."
+"<em>Legg til ny fil</em> for å laste opp flere filer."
 
 #: static/extjs_classes/student/FileUploadPanel.js:68
 msgid "Create %(delivery)s"
