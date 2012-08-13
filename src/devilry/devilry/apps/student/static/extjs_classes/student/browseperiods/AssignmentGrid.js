@@ -36,25 +36,25 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
         '<div class="gradecolumn">',
             '<tpl if="feedback">',
                 '<span class="is_passing_grade">',
-                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade">',
+                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade success">',
                         gettext('Passed'),
                     '</span></tpl>',
-                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">',
+                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade danger">',
                         gettext('Failed'),
                     '</span></tpl>',
                     ' (<span class="grade">{feedback__grade}</span>)',
                 '</span>',
-                //'<div class="delivery_type">',
+                //' <small>(',
                     //'<tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
                     //'<tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
                     //'<tpl if="feedback__delivery__delivery_type == 2"><span class="neutralInlineItem">From previous period (semester)</span></tpl>',
                     //'<tpl if="feedback__delivery__delivery_type &gt; 2"><span class="warningInlineItem">Unknown delivery type</span></tpl>',
-                //'</div>',
+                //')</small>',
             '</tpl>',
             '<tpl if="!feedback">',
-                '<span class="nofeedback">',
+                '<small class="nofeedback">',
                     gettext('No feedback'),
-                '</span>',
+                '</small>',
             '</tpl>',
         '</div>'
     ),
@@ -90,13 +90,14 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     initComponent: function() {
         var urlCreateFunction = Ext.bind(this.urlCreateFn, this.urlCreateFnScope);
         Ext.apply(this, {
-            //cls: 'selectable-grid',
-            //hideHeaders: true,
             disableSelection: true,
+            cls: 'bootstrap',
             columns: [{
                 header: gettext('Assignment'),
                 dataIndex: 'parentnode__long_name',
                 flex: 4,
+                sortable: false,
+                menuDisabled: true,
                 renderer: function(value, m, record) {
                     return this.assignmentTpl.apply({
                         data: record.data,
@@ -112,6 +113,8 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
                 header: gettext('Grade'),
                 dataIndex: 'feedback__grade',
                 flex: 2,
+                sortable: false,
+                menuDisabled: true,
                 renderer: function(value, m, record) {
                     return this.gradeTpl.apply(record.data);
                 }
