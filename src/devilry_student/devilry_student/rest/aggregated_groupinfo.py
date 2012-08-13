@@ -18,10 +18,12 @@ class IsCandidate(BasePermission):
     is candidate on the requested group.
     """
     def check_permission(self, user):
-        pass
-        #if not user_is_admin_or_superadmin(user):
-            #raise ErrorResponse(status.HTTP_403_FORBIDDEN,
-                                #{'detail': 'Only administrators have permission to query the user database.'})
+        groupid = self.view.kwargs['id']
+        try:
+            AssignmentGroup.where_is_candidate(user).get(id=groupid)
+        except AssignmentGroup.DoesNotExist, e:
+            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
+                                {'detail': 'Only candidates on group with ID={0} can make this request.'.format(groupid)})
 
 class GroupResource(ModelResource):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines')
