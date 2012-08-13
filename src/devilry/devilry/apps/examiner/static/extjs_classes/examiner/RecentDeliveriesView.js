@@ -5,16 +5,39 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     ],
 
 
-    config: {
-        model: undefined,
-        limit: 4,
-        showStudentsCol: true,
-        noRecordsMessage: {
-            title: 'No recent deliveries',
-            msg: "You are not registered on any assignment groups with recent deliveries."
-        },
-        dashboard_url: undefined
+    /**
+     * @cfg {Object} [model]
+     */
+
+    /**
+     * @cfg {int} [limit]
+     */
+    limit: 4,
+    
+    /**
+     * @cfg {bool} [showStudentsCol]
+     */
+    showStudentsCol: true,
+
+    /**
+     * @cfg {Object} [noRecordsMessage]
+     */
+    noRecordsMessage: {
+        title: gettext('No recent deliveries'),
+        msg: gettext("You are not registered on any assignment groups with recent deliveries.")
     },
+
+    /**
+     * @cfg {Function} [urlCreateFn]
+     * Function to call to genereate urls. Takes a record of the given
+     * ``model`` as argument.
+     */
+
+    /**
+     * @cfg {Object} [urlCreateFnScope]
+     * Scope of ``urlCreateFn``.
+     */
+
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
         '<ul class="commaSeparatedList">',
@@ -25,16 +48,13 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     ),
 
     assignmentRowTpl: Ext.create('Ext.XTemplate',
-        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
-        '{deadline__assignment_group__parentnode__parentnode__short_name}.',
-        '{deadline__assignment_group__parentnode__short_name}'
+        '<a href="{url}">',
+            '{data.deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
+            '{data.deadline__assignment_group__parentnode__parentnode__short_name}.',
+            '{data.deadline__assignment_group__parentnode__short_name}',
+        '</a>'
     ),
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
-    
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
             model: this.model,
@@ -64,13 +84,17 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
     createBody: function() {
         var me = this;
 
+        var urlCreateFunction = Ext.bind(this.urlCreateFn, this.urlCreateFnScope);
         var columns = [{
             text: 'Assignment',
             menuDisabled: true,
             flex: 18,
             dataIndex: 'deadline__assignment_group__parentnode__long_name',
             renderer: function(value, meta, record) {
-                return me.assignmentRowTpl.apply(record.data);
+                return me.assignmentRowTpl.apply({
+                    data: record.data,
+                    url: urlCreateFunction(record)
+                });
             }
         }, {
             text: 'Time of delivery',
@@ -97,6 +121,8 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             }]);
         };
 
+
+
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             cls: 'bootstrap',
@@ -106,21 +132,8 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             sortableColumns: false,
             autoScroll: true,
             flex: 1,
-            //cls: 'selectable-grid',
             store: this.store,
-            columns: columns,
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = Ext.String.format(
-                        "{0}assignmentgroup/{1}?deliveryid={2}",
-                        this.dashboard_url,
-                        record.data.deadline__assignment_group,
-                        record.data.id
-                    );
-                    window.location = url;
-                }
-            }
+            columns: columns
         });
         this.add({
             xtype: 'box',

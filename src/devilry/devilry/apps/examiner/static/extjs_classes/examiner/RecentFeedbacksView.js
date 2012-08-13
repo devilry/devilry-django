@@ -5,16 +5,28 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     ],
 
 
-    config: {
-        model: undefined,
-        limit: 4,
-        showStudentsCol: true,
-        noRecordsMessage: {
-            title: 'No recent feedback',
-            msg: "You are not registered on any assignment groups with recent feedback."
-        },
-        dashboard_url: undefined
+    /**
+     * @cfg {Object} [model]
+     */
+
+    /**
+     * @cfg {int} [limit]
+     */
+    limit: 4,
+    
+    /**
+     * @cfg {bool} [showStudentsCol]
+     */
+    showStudentsCol: true,
+
+    /**
+     * @cfg {Object} [noRecordsMessage]
+     */
+    noRecordsMessage: {
+        title: gettext('No recent feedback'),
+        msg: gettext("You are not registered on any assignment groups with recent feedback.")
     },
+
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
         '<ul class="commaSeparatedList">',
@@ -25,9 +37,11 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     ),
 
     assignmentRowTpl: Ext.create('Ext.XTemplate',
-        '{delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
-        '{delivery__deadline__assignment_group__parentnode__parentnode__short_name}.',
-        '{delivery__deadline__assignment_group__parentnode__short_name}'
+        '<a href="{url}">',
+            '{data.delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.',
+            '{data.delivery__deadline__assignment_group__parentnode__parentnode__short_name}.',
+            '{data.delivery__deadline__assignment_group__parentnode__short_name}',
+        '</a>'
     ),
 
     constructor: function(config) {
@@ -59,13 +73,17 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
     createBody: function() {
         var me = this;
 
+        var urlCreateFunction = Ext.bind(this.urlCreateFn, this.urlCreateFnScope);
         var columns = [{
             text: 'Assignment',
             menuDisabled: true,
             flex: 30,
             dataIndex: 'id',
             renderer: function(value, meta, record) {
-                return me.assignmentRowTpl.apply(record.data);
+                return me.assignmentRowTpl.apply({
+                    data: record.data,
+                    url: urlCreateFunction(record)
+                });
             }
         }, {
             text: 'Feedback save time',
@@ -101,19 +119,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             sortableColumns: false,
             cls: 'bootstrap',
             store: this.store,
-            columns: columns,
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = Ext.String.format(
-                        "{0}assignmentgroup/{1}?deliveryid={2}",
-                        this.dashboard_url,
-                        record.data.delivery__deadline__assignment_group,
-                        record.data.delivery
-                    );
-                    window.location = url;
-                }
-            }
+            columns: columns
         });
         this.add({
             xtype: 'box',

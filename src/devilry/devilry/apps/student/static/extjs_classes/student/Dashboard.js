@@ -28,14 +28,30 @@ Ext.define('devilry.student.Dashboard', {
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedDelivery'),
             showStudentsCol: false,
-            dashboard_url: this.dashboardUrl,
-            columnWidth: 0.5
+            columnWidth: 0.5,
+            urlCreateFn: function(record) {
+                return Ext.String.format(
+                    "{0}assignmentgroup/{1}?deliveryid={2}",
+                    this.dashboardUrl,
+                    record.get('deadline__assignment_group'),
+                    record.get('id')
+                );
+            },
+            urlCreateFnScope: this
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedStaticFeedback'),
             showStudentsCol: false,
-            dashboard_url: this.dashboardUrl,
-            columnWidth: 0.5
+            columnWidth: 0.5,
+            urlCreateFn: function(record) {
+                return Ext.String.format(
+                    "{0}assignmentgroup/{1}?deliveryid={2}",
+                    this.dashboardUrl,
+                    record.get('delivery__deadline__assignment_group'),
+                    record.get('delivery')
+                );
+            },
+            urlCreateFnScope: this
         });
 
         Ext.apply(this, {
