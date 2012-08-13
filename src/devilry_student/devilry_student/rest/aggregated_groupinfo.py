@@ -56,6 +56,7 @@ class GroupResource(ModelResource):
 
     def format_feedback(self, staticfeedback):
         return {'id': staticfeedback.id,
+                'rendered_view': staticfeedback.rendered_view,
                 'save_timestamp': staticfeedback.save_timestamp,
                 'grade': staticfeedback.grade,
                 # NOTE: points is not included because students are not supposed to get direct access to points.
