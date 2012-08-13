@@ -1,6 +1,16 @@
 Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.student-browseperiods-assignmentgrid',
+
+    /**
+     * @cfg {Function} [urlCreateFn]
+     * Function to call to genereate urls. Takes an AssignmentGroup record as parameter.
+     */
+
+    /**
+     * @cfg {Object} [urlCreateFnScope]
+     * Scope of ``urlCreateFn``.
+     */
     
     constructor: function(config) {
         this.createStore();
@@ -8,7 +18,7 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     },
 
     assignmentTpl: Ext.create('Ext.XTemplate',
-        '{parentnode__long_name}'
+        '<a href="{url}">{data.parentnode__long_name}</a>'
     ),
 
     pointsTpl: Ext.create('Ext.XTemplate', 
@@ -78,15 +88,20 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     },
     
     initComponent: function() {
+        var urlCreateFunction = Ext.bind(this.urlCreateFn, this.urlCreateFnScope);
         Ext.apply(this, {
             //cls: 'selectable-grid',
             //hideHeaders: true,
+            disableSelection: true,
             columns: [{
                 header: gettext('Assignment'),
                 dataIndex: 'parentnode__long_name',
                 flex: 4,
                 renderer: function(value, m, record) {
-                    return this.assignmentTpl.apply(record.data);
+                    return this.assignmentTpl.apply({
+                        data: record.data,
+                        url: urlCreateFunction(record)
+                    });
                 }
             //}, {
                 //header: 'Points', dataIndex: 'feedback__points', flex: 1,
@@ -100,18 +115,8 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
                 renderer: function(value, m, record) {
                     return this.gradeTpl.apply(record.data);
                 }
-            }],
-
-            listeners: {
-                scope: this,
-                select: this._onSelect
-            }
+            }]
         });
         this.callParent(arguments);
-    },
-
-    _onSelect: function(grid, record) {
-        var url = Ext.String.format('{0}/student/assignmentgroup/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('id'));
-        window.location.href = url;
     }
 });

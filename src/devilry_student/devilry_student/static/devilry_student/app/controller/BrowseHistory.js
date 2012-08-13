@@ -18,7 +18,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
         this.control({
             'viewport browsehistory': {
                 render: this._onRender
-            },
+            }
         });
     },
 

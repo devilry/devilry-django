@@ -6,6 +6,16 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
         'devilry.student.browseperiods.AssignmentGrid',
         'devilry.statistics.OverviewOfSingleStudent'
     ],
+
+    /**
+     * @cfg {Function} [urlCreateFn]
+     * Function to call to genereate urls. Takes an AssignmentGroup record as parameter.
+     */
+
+    /**
+     * @cfg {Object} [urlCreateFnScope]
+     * Scope of ``urlCreateFn``.
+     */
     
     initComponent: function() {
         Ext.apply(this, {
@@ -21,7 +31,9 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
                 }
             }, {
                 xtype: 'student-browseperiods-assignmentgrid',
-                region: 'center'
+                region: 'center',
+                urlCreateFn: this.urlCreateFn,
+                urlCreateFnScope: this.urlCreateFnScope
             }]
         });
         this.callParent(arguments);

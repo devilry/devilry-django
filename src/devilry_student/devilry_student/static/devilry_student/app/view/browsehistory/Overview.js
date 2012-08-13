@@ -10,6 +10,11 @@ Ext.define('devilry_student.view.browsehistory.Overview' ,{
     layout: 'fit',
 
     items: [{
-        xtype: 'student-browseperiods'
+        xtype: 'student-browseperiods',
+        urlCreateFn: function(groupRecord) {
+            return Ext.String.format('{0}/student/assignmentgroup/{1}',
+                DevilrySettings.DEVILRY_URLPATH_PREFIX, groupRecord.get('id'));
+
+        }
     }]
 });
