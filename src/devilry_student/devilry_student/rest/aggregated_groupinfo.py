@@ -99,6 +99,10 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     An object with the following attributes:
 
     - ``id`` (int): Internal Devilry ID of the group. Is never ``null``.
+    - ``name`` (string|null): The name of the group.
+    - ``is_open`` (bool): Is the group open?
+    - ``candidates`` (list): List of all candidates on the group.
+    - ``deadlines`` (list): List of all deadlines and deliveries on the group.
     """
     permissions = (IsAuthenticated, IsCandidate)
     resource = GroupResource
