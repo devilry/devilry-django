@@ -5,6 +5,6 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
 
     frame: false,
     border: 0,
-    bodyPadding: 40,
+    bodyPadding: 20,
     autoScroll: true
 });

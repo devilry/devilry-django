@@ -10,7 +10,7 @@ Ext.define('devilry_student.view.browsehistory.Overview' ,{
 
     frame: false,
     border: 0,
-    //bodyPadding: 40,
+    bodyPadding: 20,
     autoScroll: true,
     layout: 'fit',
 
