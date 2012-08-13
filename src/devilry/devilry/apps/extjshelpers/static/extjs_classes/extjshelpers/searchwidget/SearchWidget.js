@@ -31,30 +31,28 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         'devilry.extjshelpers.searchwidget.SearchWindow'
     ],
 
-    config: {
-        /**
-         * @cfg
-         * The {@link devilry.extjshelpers.searchwidget.SearchResults}, use
-         * when searching.
-         */
-        searchResultItems: undefined
-    },
+    /**
+     * @cfg {devilry.extjshelpers.searchwidget.SearchResults} [searchResultItems]
+     * The SearchResults widget to use when searching.
+     */
 
-    constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
+    /**
+     * @cfg {string} [emptyText]
+     * Empty text of the search field.
+     */
+    emptyText: 'Search for anything...',
 
     initComponent: function() {
         this.searchwindow = Ext.create('devilry.extjshelpers.searchwidget.SearchWindow', {
             searchResultItems: this.searchResultItems,
-            searchWidget: this
+            searchWidget: this,
+            emptyText: this.emptyText
         });
         this.searchwindow.on('hide', function() {
             this.getSearchField().setValue('');
         }, this);
         this.searchfield = Ext.widget('searchfield', {
-            emptyText: 'Search for anything...',
+            emptyText: this.emptyText,
             flex: 1
         });
 
@@ -66,7 +64,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
             height: 40,
             items: [this.searchfield, {
                 xtype: 'button',
-                text: 'Browse',
+                text: gettext('Browse') + ' ...',
                 scale: 'medium',
                 listeners: {
                     scope: this,

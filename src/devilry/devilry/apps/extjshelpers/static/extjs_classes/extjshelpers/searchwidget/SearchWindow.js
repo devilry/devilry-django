@@ -11,15 +11,19 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWindow', {
         'devilry.extjshelpers.searchwidget.MultiSearchResults'
     ],
 
-    config: {
-        searchWidget: undefined,
-        searchResultItems: undefined
-    },
+    /**
+     * @cfg {Object} [searchWidget]
+     */
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg {Object} [searchResultItems]
+     */
+
+    /**
+     * @cfg {string} [emptyText]
+     * Empty text of the search field.
+     */
+    emptyText: 'Search for anything...',
 
     initComponent: function() {
         Ext.apply(this, {
@@ -30,7 +34,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWindow', {
             items: [{
                 xtype: 'searchfield',
                 margin: 5,
-                emptyText: 'Search for anything...'
+                emptyText: this.emptyText
             }, {
                 xtype: 'multisearchresults',
                 items: this.searchResultItems,
