@@ -59,13 +59,32 @@ Ext.define('devilry_student.controller.Dashboard', {
                 showStudentsCol: false,
                 dashboard_url: this.application.dashboard_url,
                 columnWidth: 0.5,
-                margin: '0 20 0 0'
+                margin: '0 20 0 0',
+                urlCreateFn: function(record) {
+                    return Ext.String.format(
+                        "{0}/student/assignmentgroup/{1}?deliveryid={2}",
+                        DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        record.get('deadline__assignment_group'),
+                        record.get('id')
+                    );
+                },
+                urlCreateFnScope: this
+
             }), Ext.create('devilry.examiner.RecentFeedbacksView', {
                 model: Ext.ModelManager.getModel('devilry.apps.student.simplified.SimplifiedStaticFeedback'),
                 showStudentsCol: false,
                 dashboard_url: this.application.dashboard_url,
                 columnWidth: 0.5,
-                margin: '0 0 20 0'
+                margin: '0 0 20 0',
+                urlCreateFn: function(record) {
+                    return Ext.String.format(
+                        "{0}/student/assignmentgroup/{1}?deliveryid={2}",
+                        DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        record.get('delivery__deadline__assignment_group'),
+                        record.get('delivery')
+                    );
+                },
+
             })]
         }])
     },
