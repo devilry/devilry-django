@@ -43,6 +43,7 @@ var terms = [
 
     // These are probably not something you want to change, however they are
     // included because they are used all over the UI
+    gettext_noop('Dashboard'),
     gettext_noop('Yes'),
     gettext_noop('No'),
     gettext_noop('Ok'),
