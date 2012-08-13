@@ -11,20 +11,31 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
         'devilry_header.Breadcrumbs'
     ],
 
-    config: {
-        assignmentgroupid: undefined,
-        deadlineid: undefined,
-        deliverymodelname: undefined,
-        latest_deadline: undefined,
-        deadline_modelname: undefined,
-        ag_modelname: undefined
-    },
+    /**
+     * @cfg {int} [assignmentgroupid]
+     */
+
+    /**
+     * @cfg {int} [deadlineid]
+     */
+
+    /**
+     * @cfg {string} [deliverymodelname]
+     */
+
+    /**
+     * @cfg {Object} [latest_deadline]
+     */
+
+    /**
+     * @cfg {string} [deadline_modelname]
+     */
+
+    /**
+     * @cfg {string} [ag_modelname]
+     */
 
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
 
     initComponent: function() {
         var agroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
