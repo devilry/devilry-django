@@ -7,25 +7,37 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         'Ext.XTemplate'
     ],
 
-    config: {
-        store: undefined,
-        model: undefined,
-        noRecordsMessage: {
-            title: interpolate(gettext('No active electronic %(assignments)s'), {
-                assignments: gettext('assignments')
-            }, true),
-            msg: interpolate(gettext("You are not expected to make any electronic deliveries at this time. This may be because none of your %(subjects)s uses Devilry for electronic deliveries, or because all your published %(assignments)s have been corrected."), {
-                subjects: gettext('subjects'),
-                assignments: gettext('assignments')
-            }, true)
-        },
-        dashboard_url: undefined
+    /**
+     * @cfg {Object} [store]
+     */
+
+    /**
+     * @cfg {Object} [model]
+     */
+
+    /**
+     * @cfg {Object} [noRecordsMessage]
+     */
+    noRecordsMessage: {
+        title: interpolate(gettext('No active electronic %(assignments)s'), {
+            assignments: gettext('assignments')
+        }, true),
+        msg: interpolate(gettext("You are not expected to make any electronic deliveries at this time. This may be because none of your %(subjects)s uses Devilry for electronic deliveries, or because all your published %(assignments)s have been corrected."), {
+            subjects: gettext('subjects'),
+            assignments: gettext('assignments')
+        }, true)
     },
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+
+    /**
+     * @cfg {Function} [urlCreateFn]
+     * Function to call to genereate urls. Takes a record of the given ``model`` as argument.
+     */
+
+    /**
+     * @cfg {Object} [urlCreateFnScope]
+     * Scope of ``urlCreateFn``.
+     */
 
     createStore: function() {
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
@@ -52,16 +64,24 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         var rowTpl = Ext.create('Ext.XTemplate',
             '{.:date}'
         );
+        var nametpl = Ext.create('Ext.XTemplate',
+            '<a href="{url}">',
+                '{data.parentnode__parentnode__parentnode__short_name} - {data.parentnode__long_name}',
+            '</a>'
+        );
 
+        var me = this;
+        var urlCreateFunction = Ext.bind(this.urlCreateFn, this.urlCreateFnScope);
         var grid = Ext.create('Ext.grid.Panel', {
             frame: false,
             hideHeaders: true,
             frameHeader: false,
+            disableSelection: true,
             autoScroll: true,
             flex: 1,
             border: false,
             sortableColumns: false,
-            cls: 'selectable-grid',
+            //cls: 'selectable-grid',
             store: this.store,
         
             columns: [{
@@ -69,18 +89,18 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 menuDisabled: true,
                 hideable: false,
                 dataIndex: 'parentnode__parentnode__parentnode__long_name',
-                flex: 20
-            },{
-                text: 'Assignment',
-                menuDisabled: true,
-                hideable: false,
-                flex: 15,
-                dataIndex: 'parentnode__long_name'
+                flex: 20,
+                renderer: function(unused, unused2, record) {
+                    return nametpl.apply({
+                        data: record.data,
+                        url: urlCreateFunction(record)
+                    });
+                }
             },{
                 text: 'Deadline',
                 menuDisabled: true,
                 hideable: false,
-                width: 180,
+                width: 200,
                 dataIndex: 'latest_deadline_deadline',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
@@ -95,7 +115,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                 text: 'Deliveries',
                 menuDisabled: true,
                 hideAble: false,
-                width: 100,
+                width: 120,
                 dataIndex: 'number_of_deliveries',
                 renderer: function(value, m, record) {
                     var rowTpl = Ext.create('Ext.XTemplate',
@@ -106,17 +126,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
                         deliveries: gettext('Deliveries')
                     });
                 }
-            }],
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = this.dashboard_url + "add-delivery/" + record.data.id;
-                    window.location = url;
-                },
-                itemmouseenter: function(view, record, item) {
-                    //console.log(item);
-                }
-            }
+            }]
         });
         this.add([{
             xtype: 'box',

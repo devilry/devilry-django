@@ -36,7 +36,10 @@ Ext.define('devilry_student.controller.Dashboard', {
         }, {
             xtype: 'student-add-deliveriesgrid',
             store: this._createActiveAssignmentsStore(),
-            dashboard_url: this.application.dashboard_url,
+            urlCreateFn: function(record) {
+                return DevilrySettings.DEVILRY_URLPATH_PREFIX + '/student/add-delivery/' + record.get('id');
+            },
+            urlCreateFnScope: this,
             margin: '20 0 0 0'
         }, {
             xtype: 'box',
