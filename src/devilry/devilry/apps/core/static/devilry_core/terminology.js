@@ -33,6 +33,13 @@ var terms = [
 
     gettext_noop('Feedback'), gettext_noop('Feedbacks'),
     gettext_noop('feedback'), gettext_noop('feedbacks'),
+    gettext_noop('No feedback'),
+    gettext_noop('Passed'),
+    gettext_noop('Failed'),
+    gettext_noop('Electronic'),
+    gettext_noop('Non-electronic'),
+    gettext_noop('Grade'),
+    gettext_noop('grade'),
 
     gettext_noop('Yes'),
     gettext_noop('No'),

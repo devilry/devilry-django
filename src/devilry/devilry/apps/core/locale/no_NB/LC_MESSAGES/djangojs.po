@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 14:05+0200\n"
+"POT-Creation-Date: 2012-08-13 14:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,22 +177,50 @@ msgstr "tilbakemelding"
 msgid "feedbacks"
 msgstr "tilbakemeldinger"
 
+#: static/devilry_core/terminology.js:36
+msgid "No feedback"
+msgstr "Ingen tilbakemelding"
+
 #: static/devilry_core/terminology.js:37
+msgid "Passed"
+msgstr "Bestått"
+
+#: static/devilry_core/terminology.js:38
+msgid "Failed"
+msgstr "Ikke bestått"
+
+#: static/devilry_core/terminology.js:39
+msgid "Electronic"
+msgstr "Elektronisk"
+
+#: static/devilry_core/terminology.js:40
+msgid "Non-electronic"
+msgstr "Ikke elektronisk"
+
+#: static/devilry_core/terminology.js:41
+msgid "Grade"
+msgstr "Karakter"
+
+#: static/devilry_core/terminology.js:42
+msgid "grade"
+msgstr "karakter"
+
+#: static/devilry_core/terminology.js:44
 msgid "Yes"
 msgstr "Ja"
 
-#: static/devilry_core/terminology.js:38
+#: static/devilry_core/terminology.js:45
 msgid "No"
 msgstr "Nei"
 
-#: static/devilry_core/terminology.js:39
+#: static/devilry_core/terminology.js:46
 msgid "Ok"
 msgstr "Ok"
 
-#: static/devilry_core/terminology.js:40
+#: static/devilry_core/terminology.js:47
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: static/devilry_core/terminology.js:41
+#: static/devilry_core/terminology.js:48
 msgid "Error"
 msgstr "Feil"
