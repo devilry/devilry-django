@@ -5,6 +5,13 @@
  * */
 Ext.define('devilry.student.StudentSearchWidget', {
     extend: 'devilry.extjshelpers.searchwidget.DashboardSearchWidget',
+    alias: 'widget.studentsearchwidget',
+
+    requires: [
+        'devilry.apps.student.simplified.SimplifiedDelivery',
+        'devilry.apps.student.simplified.SimplifiedDeadline',
+        'devilry.apps.student.simplified.SimplifiedAssignmentGroup'
+    ],
 
     /**
      * @cfg
