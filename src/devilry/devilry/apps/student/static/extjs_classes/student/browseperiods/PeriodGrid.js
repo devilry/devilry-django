@@ -65,6 +65,17 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     
     initComponent: function() {
         Ext.apply(this, {
+            title: gettext('Subject'),
+            hideHeaders: true,
+            tbar: [{
+                xtype: 'textfield',
+                emptyText: gettext('Filter') + ' ...',
+                flex: 1,
+                listeners: {
+                    scope: this,
+                    change: this._onFilterChange
+                }
+            }],
             columns: [{
                 header: gettext('Subject'),
                 dataIndex: 'parentnode__short_name',
@@ -97,5 +108,31 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
             labelsGroupedByPeriod[periodid].push({label: labelRecord.get('key')});
         }
         return labelsGroupedByPeriod;
+    },
+
+    _onFilterChange: function(textfield, newvalue, oldvalue) {
+        if(Ext.String.trim(newvalue) == '') {
+            this.store.clearFilter();
+        } else {
+            this._filterByValue(newvalue);
+        }
+    },
+
+
+    _filterByValue: function(value) {
+        var filterFields = [
+            'long_name', 'short_name',
+            'parentnode__short_name', 'parentnode__long_name'
+        ];
+        var filtervalue = value.toLocaleLowerCase();
+        this.store.filterBy(function(periodRecord) {
+            for(var index=0; index<filterFields.length; index++)  {
+                var fieldname = filterFields[index];
+                var fieldvalue = periodRecord.get(fieldname);
+                if(fieldvalue.indexOf(filtervalue) != -1) {
+                    return true;
+                }
+            }
+        }, this);
     }
 });
