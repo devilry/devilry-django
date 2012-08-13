@@ -31,6 +31,9 @@ var terms = [
     gettext_noop('Student'), gettext_noop('Students'),
     gettext_noop('student'), gettext_noop('students'),
 
+    gettext_noop('Feedback'), gettext_noop('Feedbacks'),
+    gettext_noop('feedback'), gettext_noop('feedbacks'),
+
     gettext_noop('Yes'),
     gettext_noop('No'),
     gettext_noop('Ok'),
