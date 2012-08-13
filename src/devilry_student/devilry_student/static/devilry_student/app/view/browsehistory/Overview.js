@@ -5,6 +5,11 @@ Ext.define('devilry_student.view.browsehistory.Overview' ,{
 
     frame: false,
     border: 0,
-    bodyPadding: 40,
-    autoScroll: true
+    //bodyPadding: 40,
+    autoScroll: true,
+    layout: 'fit',
+
+    items: [{
+        xtype: 'student-browseperiods'
+    }]
 });

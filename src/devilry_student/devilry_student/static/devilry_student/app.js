@@ -32,7 +32,7 @@ Ext.application({
         this.breadcrumbs = Ext.widget('breadcrumbs', {
             defaultBreadcrumbs: [{
                 text: gettext("Dashboard"),
-                url: ''
+                url: '#'
             }]
         });
 

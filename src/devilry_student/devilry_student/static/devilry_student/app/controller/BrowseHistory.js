@@ -2,6 +2,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
     extend: 'Ext.app.Controller',
 
     requires: [
+        'devilry.student.browseperiods.BrowsePeriods'
     ],
 
     views: [

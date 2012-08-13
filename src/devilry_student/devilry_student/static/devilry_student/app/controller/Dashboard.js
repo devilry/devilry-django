@@ -39,6 +39,14 @@ Ext.define('devilry_student.controller.Dashboard', {
             dashboard_url: this.application.dashboard_url,
             margin: '20 0 0 0'
         }, {
+            xtype: 'box',
+            margin: '6 0 0 0',
+            tpl: '<p><a class="browseall_link" href="{url}">{text}</a></p>',
+            data: {
+                url: '#/browse/',
+                text: gettext('Browse all assignments and deliveries, including feedback')
+            }
+        }, {
             xtype: 'container',
             margin: '20 0 0 0',
             layout: 'column',
