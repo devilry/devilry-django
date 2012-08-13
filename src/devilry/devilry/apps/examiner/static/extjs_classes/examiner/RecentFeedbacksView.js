@@ -112,6 +112,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             hideHeaders: true,
+            disableSelection: true,
             frameHeader: false,
             autoScroll: true,
             flex: 1,

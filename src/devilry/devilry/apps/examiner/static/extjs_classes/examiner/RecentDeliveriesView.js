@@ -128,6 +128,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
             cls: 'bootstrap',
             hideHeaders: true,
             frameHeader: false,
+            disableSelection: true,
             border: false,
             sortableColumns: false,
             autoScroll: true,
