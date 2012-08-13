@@ -16,10 +16,6 @@ Ext.define('devilry_student.controller.Dashboard', {
         'dashboard.Overview'
     ],
 
-    stores: [
-        'ActiveAssignments'
-    ],
-
     refs: [{
         ref: 'dashboard',
         selector: 'viewport dashboard'
