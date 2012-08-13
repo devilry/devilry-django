@@ -47,10 +47,11 @@ Ext.define('devilry.student.FileUploadPanel', {
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
         '<tpl if="finished">',
         '   <div class="section ok">',
-        '       <h1>Success</h1>',
-        '       <p>Delivery created.',
+        '       <h1>', gettext('Success'), '</h1>',
+        '       <p>', interpolate(gettext('%(delivery)s created'), {delivery: gettext('Delivery')}, true), '.',
         '           <tpl if="agroup">',
-        '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{agroup.id}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '               <a href="{DEVILRY_URLPATH_PREFIX}/student/assignmentgroup/{agroup.id}?deliveryid={delivery.id}">',
+        '                   ', interpolate(gettext('View the %(delivery)s', {delivery: gettext('delivery')}, true)), '.</a>',
         '           </tpl>',
         '       </p>',
         '   </div>',
@@ -58,13 +59,13 @@ Ext.define('devilry.student.FileUploadPanel', {
         '<tpl if="!finished">',
         '   <tpl if="filenameCount &gt; 0">',
         '      <div class="section info">',
-        '          <h1>File uploaded successfully</h1>',
-        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenameCount} files, or choose <span class="menuref">Add new file</span> to upload more files.</p>',
+        '          <h1>', gettext('File uploaded successfully'), '</h1>',
+        '          <p>', gettext('Click the Deliver-button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
         '      </div>',
         '   </tpl>',
         '   <tpl if="filenameCount == 0">',
         '      <div class="section help">',
-        '          <h1>Create delivery</h1>',
+        '          <h1>', interpolate(gettext('Create %(delivery)s'), {delivery: gettext('delivery')}, true), '</h1>',
         '          <p>{initialhelptext}</p>',
         '      </div>',
         '   </tpl>',
@@ -86,7 +87,7 @@ Ext.define('devilry.student.FileUploadPanel', {
         this.updateInfoBox();
 
         this.deliverbutton = Ext.widget('button', {
-            text: 'Deliver!',
+            text: gettext('Deliver!'),
             scale: 'large',
             disabled: true,
             listeners: {
@@ -104,11 +105,11 @@ Ext.define('devilry.student.FileUploadPanel', {
                 flex: 1,
                 xtype: 'fileuploadfield',
                 name: 'uploaded_file',
-                fieldLabel: 'Delivery',
+                fieldLabel: gettext('Delivery'),
                 hideLabel: true,
                 allowBlank: true,
-                emptyText: 'Select file...',
-                buttonText: 'Add new file',
+                emptyText: gettext('Select file...'),
+                buttonText: gettext('Add new file'),
                 margin: '20 0 0 0',
                 //height: 70,
                 
@@ -158,7 +159,9 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     createInitialDelivery: function() {
-        this.setLoading('Initializing delivery...');
+        this.setLoading(interpolate(gettext('Initializing %(delivery)s...'), {
+            delivery: gettext('delivery'),
+        }, true));
         var delivery = Ext.create(this.deliverymodelname, {
             deadline: this.deadlineid,
             id: null,
@@ -185,14 +188,16 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onCreateDeliveryFailure: function(unused, operation) {
         this.setLoading(false);
-        console.log(operation);
-        var message = 'Could not create delivery on the selected deadline.';
+        //console.log(operation);
+        var message = interpolate(gettext('Could not create %(delivery)s on the selected deadline.'), {
+            delivery: gettext('delivery')
+        }, true);
         var response = Ext.JSON.decode(operation.response.responseText);
         if(response && response.items.errormessages) {
             message = response.items.errormessages.join('. ');
         }
         Ext.MessageBox.show({
-            title: 'Error',
+            title: gettext('Error'),
             msg: message,
             icon: Ext.MessageBox.ERROR,
             buttons: Ext.MessageBox.OK
@@ -222,12 +227,11 @@ Ext.define('devilry.student.FileUploadPanel', {
             DevilrySettings.DEVILRY_URLPATH_PREFIX, this.assignmentgroupid
         );
         if(form.isValid()){
-            this.setLoading('Uploading your file ...');
+            this.setLoading(gettext('Uploading your file ...'));
             form.submit({
                 url: url,
                 scope: this,
                 params: {deliveryid: this.deliveryrecord.data.id},
-                //waitMsg: 'Uploading your file...',
                 success: this.onAddFileSuccess,
                 failure: this.onAddFileFailure
             });
@@ -251,12 +255,12 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onAddFileFailure: function(form, res) {
         this.setLoading(false);
-        var errormsg = 'Error during upload. Please try again.'
+        var errormsg = gettext('Error during upload. Please try again.')
         try {
             var responseData = Ext.JSON.decode(res.response.responseText);
             errormsg = responseData.errormessages[0];
         } catch(e) {}
-        Ext.Msg.alert('Error', errormsg);
+        Ext.Msg.alert(gettext('Error'), errormsg);
     },
 
 
@@ -266,7 +270,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onDeliver: function() {
         this.deliveryrecord.data.successful = true;
-        this.setLoading('Saving...');
+        this.setLoading(gettext('Saving' + '...'));
         this.deliveryrecord.save({
             scope: this,
             success: this.onDeliverSuccess,
@@ -292,16 +296,19 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onDeliverFailure: function() {
         this.setLoading(false);
-        Ext.Msg.alert('Failure', 'Error when finalizing the delivery, TRY AGAIN!');
+        Ext.Msg.alert(gettext('Error'), interpolate(gettext('Error when finalizing the %(delivery)s. Please re-try.'), {delivery: gettext('delivery')}, true));
     },
 
 
     _onCancel: function() {
         if(this.uploadedFiles.length > 0) {
-            var msg = gettext('Are you sure you want to cancel/abort this Delivery? Your uploaded files: {0} will be removed from Devilry.');
+            var msg = gettext('Are you sure you want to cancel/abort this %(delivery)s? Your uploaded files: %(fileListing)s will be removed from Devilry.');
             Ext.MessageBox.show({
                 title: gettext('Confirm cancel'),
-                msg: Ext.String.format(msg, '<pre>' + this.uploadedFiles.join("\n") + '</pre>'),
+                msg: interpolate(msg, {
+                    fileListing: '<pre>' + this.uploadedFiles.join("\n") + '</pre>',
+                    delivery: gettext('delivery')
+                }, true),
                 buttons: Ext.MessageBox.OKCANCEL,
                 icon: Ext.MessageBox.WARNING,
                 scope: this,

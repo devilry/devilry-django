@@ -84,7 +84,9 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 bodyPadding: 20,
                 assignmentgroupid: this.assignmentgroupid,
                 deadlineid: this.deadlineid,
-                initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
+                initialhelptext: interpolate(gettext('Upload files for your %(delivery)s. You can upload multiple files.'), {
+                    delivery: gettext('delivery')
+                }, true),
                 deliverymodelname: this.deliverymodelname,
                 agroup_recordcontainer: agroup_recordcontainer,
                 uploadedFilesStore: this.uploadedFilesStore
@@ -116,7 +118,7 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
                 if(record.data.text) {
                     this.aboutdeadline = this.sidebar.add({
                         xtype: 'panel',
-                        title: 'About this deadline',
+                        title: gettext('About this deadline'),
                         html: record.data.text,
                         style: 'white-space: pre-line',
                         bodyPadding: 10

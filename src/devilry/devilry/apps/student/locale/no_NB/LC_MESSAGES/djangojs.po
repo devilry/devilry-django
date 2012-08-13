@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 15:13+0200\n"
+"POT-Creation-Date: 2012-08-13 19:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,54 +17,73 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/extjs_classes/student/AddDeliveriesContainer.js:141
-msgid "Add %(delivery)s"
-msgstr "Legg til %(delivery)s"
+#: static/extjs_classes/student/AddDeliveriesContainer.js:87
+msgid "Upload files for your %(delivery)s. You can upload multiple files."
+msgstr "Last opp filer til din %(delivery)s. Du kan laste opp flere filer."
 
-#: static/extjs_classes/student/AddDeliveriesContainer.js:142
+#: static/extjs_classes/student/AddDeliveriesContainer.js:88
+#: static/extjs_classes/student/AddDeliveriesContainer.js:155
+#: static/extjs_classes/student/FileUploadPanel.js:54
+#: static/extjs_classes/student/FileUploadPanel.js:68
+#: static/extjs_classes/student/FileUploadPanel.js:163
+#: static/extjs_classes/student/FileUploadPanel.js:193
+#: static/extjs_classes/student/FileUploadPanel.js:299
+#: static/extjs_classes/student/FileUploadPanel.js:310
 msgid "delivery"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:13
+#: static/extjs_classes/student/AddDeliveriesContainer.js:121
+msgid "About this deadline"
+msgstr "Om denne deadlinen"
+
+#: static/extjs_classes/student/AddDeliveriesContainer.js:154
+msgid "Add %(delivery)s"
+msgstr "Legg til %(delivery)s"
+
+#: static/extjs_classes/student/AddDeliveriesGrid.js:22
 msgid "No active electronic %(assignments)s"
 msgstr "Ingen aktive elektroniske %(assignments)s"
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:14
-#: static/extjs_classes/student/AddDeliveriesGrid.js:18
-#: static/extjs_classes/student/StudentSearchWidget.js:18
+#: static/extjs_classes/student/AddDeliveriesGrid.js:23
+#: static/extjs_classes/student/AddDeliveriesGrid.js:27
+#: static/extjs_classes/student/StudentSearchWidget.js:25
 msgid "assignments"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:16
+#: static/extjs_classes/student/AddDeliveriesGrid.js:25
 msgid ""
 "You are not expected to make any electronic deliveries at this time. This "
 "may be because none of your %(subjects)s uses Devilry for electronic "
 "deliveries, or because all your published %(assignments)s have been "
 "corrected."
 msgstr ""
+"Det er ingen oppgaver i Devilry som venter på innleveringer fra deg. Dette "
+"kan komme av at ingen av dine %(subjects)s bruker Devilry til elektroniske "
+"innleveringer, eller det kan komme av at alle dine publiserte %(assignments)"
+"s allerede er rettet."
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:17
+#: static/extjs_classes/student/AddDeliveriesGrid.js:26
 msgid "subjects"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:89
+#: static/extjs_classes/student/AddDeliveriesGrid.js:111
 msgid "Deadline"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:105
+#: static/extjs_classes/student/AddDeliveriesGrid.js:127
 msgid "Deliveries"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:125
+#: static/extjs_classes/student/AddDeliveriesGrid.js:137
 msgid "%(assignments)s / Add %(deliveries)s"
 msgstr "%(assignments)s / Legg til %(deliveries)s"
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:126
+#: static/extjs_classes/student/AddDeliveriesGrid.js:138
 msgid "Assignments"
 msgstr ""
 
-#: static/extjs_classes/student/AddDeliveriesGrid.js:127
-#: static/extjs_classes/student/StudentSearchWidget.js:16
+#: static/extjs_classes/student/AddDeliveriesGrid.js:139
+#: static/extjs_classes/student/StudentSearchWidget.js:23
 msgid "deliveries"
 msgstr ""
 
@@ -72,29 +91,111 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: static/extjs_classes/student/Dashboard.js:92
+#: static/extjs_classes/student/Dashboard.js:94
 msgid "Browse all"
 msgstr ""
 
-#: static/extjs_classes/student/FileUploadPanel.js:129
+#: static/extjs_classes/student/DeadlineTitle.js:9
+msgid "deadline"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:50
+msgid "Success"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:51
+msgid "%(delivery)s created"
+msgstr "%(delivery)s lagret"
+
+#: static/extjs_classes/student/FileUploadPanel.js:51
+#: static/extjs_classes/student/FileUploadPanel.js:108
+msgid "Delivery"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:54
+msgid "View the %(delivery)s"
+msgstr "Se på innleveringen"
+
+#: static/extjs_classes/student/FileUploadPanel.js:62
+msgid "File uploaded successfully"
+msgstr "Filen ble lastet opp uten feil"
+
+#: static/extjs_classes/student/FileUploadPanel.js:63
+msgid ""
+"Click the Deliver-button to deliver these {filenameCount} files, or choose "
+"<em>Add new file</em> to upload more files."
+msgstr ""
+"Velg Lever-knappen for å laste opp disse {filenameCount} filene, eller "
+"velg <em>Legg til ny fil</em> for å laste flere filer."
+
+#: static/extjs_classes/student/FileUploadPanel.js:68
+msgid "Create %(delivery)s"
+msgstr "Lag en %(delivery)s"
+
+#: static/extjs_classes/student/FileUploadPanel.js:90
+msgid "Deliver!"
+msgstr "Lever!"
+
+#: static/extjs_classes/student/FileUploadPanel.js:111
+msgid "Select file..."
+msgstr "Velg fil..."
+
+#: static/extjs_classes/student/FileUploadPanel.js:112
+msgid "Add new file"
+msgstr "Legg til ny fil"
+
+#: static/extjs_classes/student/FileUploadPanel.js:130
 msgid "Cancel"
 msgstr ""
 
-#: static/extjs_classes/student/FileUploadPanel.js:301
+#: static/extjs_classes/student/FileUploadPanel.js:162
+msgid "Initializing %(delivery)s..."
+msgstr "Setter opp %(delivery)s..."
+
+#: static/extjs_classes/student/FileUploadPanel.js:192
+msgid "Could not create %(delivery)s on the selected deadline."
+msgstr "Kunne ikke lage %(delivery)s"
+
+#: static/extjs_classes/student/FileUploadPanel.js:200
+#: static/extjs_classes/student/FileUploadPanel.js:263
+#: static/extjs_classes/student/FileUploadPanel.js:299
+msgid "Error"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:230
+msgid "Uploading your file ..."
+msgstr "Last opp din fil ..."
+
+#: static/extjs_classes/student/FileUploadPanel.js:258
+msgid "Error during upload. Please try again."
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:273
+msgid "Saving"
+msgstr ""
+
+#: static/extjs_classes/student/FileUploadPanel.js:299
+msgid "Error when finalizing the %(delivery)s. Please re-try."
+msgstr ""
+"Feil ved avsluttende lagring av din %(innlevering)s. Venligst prøv igjen."
+
+#: static/extjs_classes/student/FileUploadPanel.js:305
 msgid ""
-"Are you sure you want to cancel/abort this Delivery? Your uploaded files: "
-"{0} will be removed from Devilry."
+"Are you sure you want to cancel/abort this %(delivery)s? Your uploaded "
+"files: %(fileListing)s will be removed from Devilry."
 msgstr ""
+"Er du sikker på at du vil avbryte din %(delivery)s? Dine opplastede filer: "
+"%(fileListing)s vil slettes fra Devilry."
 
-#: static/extjs_classes/student/FileUploadPanel.js:303
+#: static/extjs_classes/student/FileUploadPanel.js:307
 msgid "Confirm cancel"
-msgstr ""
+msgstr "Bekreft avbryt"
 
-#: static/extjs_classes/student/StudentSearchWidget.js:15
+#: static/extjs_classes/student/StudentSearchWidget.js:22
 msgid "Search all your %(deliveries)s, open %(deadlines)s and %(assignments)s"
 msgstr "Søk i alle dine %(deliveries)s, åpne %(deadlines)s og %(assignments)s"
 
-#: static/extjs_classes/student/StudentSearchWidget.js:17
+#: static/extjs_classes/student/StudentSearchWidget.js:24
 msgid "deadlines"
 msgstr ""
 
@@ -118,6 +219,6 @@ msgstr ""
 msgid "Grade"
 msgstr ""
 
-#: static/extjs_classes/student/browseperiods/PeriodGrid.js:61
+#: static/extjs_classes/student/browseperiods/PeriodGrid.js:66
 msgid "Subject"
 msgstr ""
