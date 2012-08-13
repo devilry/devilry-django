@@ -1,4 +1,4 @@
-Ext.define('devilry.student.browseperiods.AssignmentGrid', {
+Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.student-browseperiods-assignmentgrid',
 

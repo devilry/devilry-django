@@ -1,4 +1,4 @@
-Ext.define('devilry.student.browseperiods.PeriodGrid', {
+Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.student-browseperiods-periodgrid',
 

@@ -4,7 +4,6 @@ Ext.define('devilry_student.controller.Dashboard', {
     requires: [
         'devilry.student.StudentSearchWidget',
         'devilry.student.AddDeliveriesGrid',
-        'devilry.student.browseperiods.BrowsePeriods',
         'devilry.examiner.RecentFeedbacksView',
         'devilry.examiner.RecentDeliveriesView',
         'devilry.apps.student.simplified.SimplifiedAssignmentGroup',

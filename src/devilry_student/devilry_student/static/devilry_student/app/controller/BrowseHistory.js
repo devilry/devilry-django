@@ -3,7 +3,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
 
     requires: [
         'Ext.window.MessageBox',
-        'devilry.student.browseperiods.BrowsePeriods'
+        'devilry_student.view.browsehistory.BrowsePeriods'
     ],
 
     views: [

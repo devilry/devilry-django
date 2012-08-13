@@ -1,9 +1,10 @@
-Ext.define('devilry.student.browseperiods.BrowsePeriods', {
+// NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
+Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.student-browseperiods',
     requires: [
-        'devilry.student.browseperiods.PeriodGrid',
-        'devilry.student.browseperiods.AssignmentGrid',
+        'devilry_student.view.browsehistory.PeriodGrid',
+        'devilry_student.view.browsehistory.AssignmentGrid',
         'devilry.statistics.OverviewOfSingleStudent'
     ],
 
