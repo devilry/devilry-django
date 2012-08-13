@@ -19,7 +19,8 @@ Ext.application({
 
     controllers: [
         'Dashboard',
-        'BrowseHistory'
+        'BrowseHistory',
+        'GroupInfo'
     ],
 
     launch: function() {
@@ -77,6 +78,7 @@ Ext.application({
         this.route.add("", 'dashboard');
         this.route.add("/browse/", 'browse');
         this.route.add("/browse/:period_id", 'browsePeriod');
+        this.route.add("/group/:group_id", 'groupinfo');
         this.route.start();
     },
     
@@ -105,6 +107,13 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'browsehistory',
             period_id: period_id
+        });
+    },
+
+    groupinfo: function(routeinfo, group_id) {
+        this.setPrimaryContent({
+            xtype: 'groupinfo',
+            group_id: group_id
         });
     }
 });
