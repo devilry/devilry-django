@@ -76,6 +76,7 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/browse/", 'browse');
+        this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.start();
     },
     
@@ -95,9 +96,15 @@ Ext.application({
     },
 
     browse: function() {
-        this.breadcrumbs.set([], gettext('Browse'));
         this.setPrimaryContent({
             xtype: 'browsehistory'
         });
     },
+
+    browsePeriod: function(routeinfo, period_id) {
+        this.setPrimaryContent({
+            xtype: 'browsehistory',
+            period_id: period_id
+        });
+    }
 });

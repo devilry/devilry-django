@@ -3,6 +3,11 @@ Ext.define('devilry_student.view.browsehistory.Overview' ,{
     alias: 'widget.browsehistory',
     cls: 'devilry_student_browsehistory',
 
+    /**
+     * @cfg {string} [period_id]
+     * ID of a period that should be selected on load.
+     */
+
     frame: false,
     border: 0,
     //bodyPadding: 40,
