@@ -36,11 +36,17 @@
             padding: '0 20 0 20',
             listeners: {
                 assignmentGroupLoaded: function(groupRecord) {
-                    var path = [
+                    var periodpath = [
                         groupRecord.get('parentnode__parentnode__parentnode__short_name'),
-                        groupRecord.get('parentnode__parentnode__short_name'),
-                        groupRecord.get('parentnode__short_name')].join('.');
-                    devilry_header.Breadcrumbs.getInBody().set([], path);
+                        groupRecord.get('parentnode__parentnode__short_name')].join('.');
+                    devilry_header.Breadcrumbs.getInBody().set([{
+                        text: periodpath,
+                        url: Ext.String.format('{0}/devilry_student/#/browse/{1}',
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                            groupRecord.get('parentnode__parentnode'))
+                    }], groupRecord.get('parentnode__short_name'));
+
+                    var path = [periodpath, groupRecord.get('parentnode__short_name')].join('.');
                     window.document.title = Ext.String.format('{0} - Devilry', path);
                 }
             }
