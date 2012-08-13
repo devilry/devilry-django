@@ -29,12 +29,30 @@ Ext.define('devilry.examiner.Dashboard', {
         var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
             model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
             dashboard_url: this.dashboardUrl,
-            flex: 1
+            flex: 1,
+            urlCreateFn: function(record) {
+                return Ext.String.format(
+                    "{0}assignmentgroup/{1}?deliveryid={2}",
+                    this.dashboardUrl,
+                    record.get('deadline__assignment_group'),
+                    record.get('id')
+                );
+            },
+            urlCreateFnScope: this
         });
         var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
             model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedStaticFeedback'),
             dashboard_url: this.dashboardUrl,
-            flex: 1
+            flex: 1,
+            urlCreateFn: function(record) {
+                return Ext.String.format(
+                    "{0}assignmentgroup/{1}?deliveryid={2}",
+                    this.dashboardUrl,
+                    record.get('delivery__deadline__assignment_group'),
+                    record.get('delivery')
+                );
+            },
+            urlCreateFnScope: this
         });
 
         var searchwidget = Ext.create('devilry.examiner.ExaminerSearchWidget', {
