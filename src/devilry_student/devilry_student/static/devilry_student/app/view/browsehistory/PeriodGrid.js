@@ -1,6 +1,7 @@
+// NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
 Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.student-browseperiods-periodgrid',
+    alias: 'widget.browsehistory_periodgrid',
 
     requires: [
         'Ext.window.MessageBox',

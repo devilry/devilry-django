@@ -22,7 +22,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
         Ext.apply(this, {
             layout: 'border',
             items: [{
-                xtype: 'student-browseperiods-periodgrid',
+                xtype: 'browsehistory_periodgrid',
                 region: 'west',
                 width: 250,
                 split: true,
@@ -31,7 +31,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
                     select: this._onSelectPeriod
                 }
             }, {
-                xtype: 'student-browseperiods-assignmentgrid',
+                xtype: 'browsehistory_assignmentgrid',
                 region: 'center',
                 urlCreateFn: this.urlCreateFn,
                 urlCreateFnScope: this.urlCreateFnScope
@@ -41,7 +41,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
     },
 
     _onSelectPeriod: function(grid, periodRecord) {
-        var assignmentGrid = this.down('student-browseperiods-assignmentgrid');
+        var assignmentGrid = this.down('browsehistory_assignmentgrid');
         assignmentGrid.loadGroupsInPeriod(periodRecord);
     }
 });

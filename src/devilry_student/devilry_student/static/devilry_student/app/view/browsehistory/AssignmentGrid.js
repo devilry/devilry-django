@@ -1,6 +1,7 @@
+// NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
 Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.student-browseperiods-assignmentgrid',
+    alias: 'widget.browsehistory_assignmentgrid',
 
     /**
      * @cfg {Function} [urlCreateFn]

@@ -15,7 +15,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
         selector: 'viewport browsehistory'
     }, {
         ref: 'periodGrid',
-        selector: 'viewport browsehistory student-browseperiods-periodgrid'
+        selector: 'viewport browsehistory browsehistory_periodgrid'
     }],
 
     init: function() {
@@ -23,7 +23,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
             'viewport browsehistory': {
                 render: this._onRender
             },
-            'viewport browsehistory student-browseperiods-periodgrid': {
+            'viewport browsehistory browsehistory_periodgrid': {
                 select: this._onSelectPeriod,
                 allStoresLoadedSuccessfully: this._onAllPeriodStoresLoaded
             }
