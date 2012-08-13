@@ -40,6 +40,10 @@
                         groupRecord.get('parentnode__parentnode__parentnode__short_name'),
                         groupRecord.get('parentnode__parentnode__short_name')].join('.');
                     devilry_header.Breadcrumbs.getInBody().set([{
+                        text: gettext('Browse'),
+                        url: Ext.String.format('{0}/devilry_student/#/browse/',
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX)
+                    }, {
                         text: periodpath,
                         url: Ext.String.format('{0}/devilry_student/#/browse/{1}',
                             DevilrySettings.DEVILRY_URLPATH_PREFIX,

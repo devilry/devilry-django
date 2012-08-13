@@ -145,15 +145,28 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
     },
 
     _onLoadGroup: function(groupRecord) {
-        var path = [
+        var periodpath = [
             groupRecord.get('parentnode__parentnode__parentnode__short_name'),
-            groupRecord.get('parentnode__parentnode__short_name'),
-            groupRecord.get('parentnode__short_name')].join('.');
-        devilry_header.Breadcrumbs.getInBody().set([{
-            text: path,
-            url: Ext.String.format('{0}/student/assignmentgroup/{1}', DevilrySettings.DEVILRY_URLPATH_PREFIX, groupRecord.get('id'))
-        }], interpolate(gettext('Add %(delivery)s'), {
+            groupRecord.get('parentnode__parentnode__short_name')].join('.');
+        var addDeliveryText = interpolate(gettext('Add %(delivery)s'), {
             delivery: gettext('delivery')
-        }, true));
+        }, true);
+        devilry_header.Breadcrumbs.getInBody().set([{
+            text: gettext('Browse'),
+            url: Ext.String.format('{0}/devilry_student/#/browse/',
+                DevilrySettings.DEVILRY_URLPATH_PREFIX)
+        }, {
+            text: periodpath,
+            url: Ext.String.format('{0}/devilry_student/#/browse/{1}',
+                DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                groupRecord.get('parentnode__parentnode'))
+        }, {
+            text: groupRecord.get('parentnode__short_name'),
+            url: Ext.String.format('{0}/student/assignmentgroup/{1}',
+                DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                groupRecord.get('id'))
+        }], addDeliveryText);
+
+        window.document.title = addDeliveryText + ' - Devilry';
     }
 });
