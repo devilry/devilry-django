@@ -13,7 +13,8 @@ Ext.define('devilry.student.browseperiods.BrowsePeriods', {
             items: [{
                 xtype: 'student-browseperiods-periodgrid',
                 region: 'west',
-                width: 200,
+                width: 250,
+                split: true,
                 listeners: {
                     scope: this,
                     select: this._onSelectPeriod

@@ -25,7 +25,7 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     },
 
     cellTpl: Ext.create('Ext.XTemplate',
-        '<div style="margin-bottom: 3px;">{period.parentnode__short_name}.{period.short_name}</div>',
+        '<div>{period.parentnode__short_name}.{period.short_name}</div>',
         '<ul class="labels-list">',
         '    <tpl for="labels">',
         '       <li class="label-{label}">{label}</li>',
