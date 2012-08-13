@@ -18,7 +18,8 @@ Ext.application({
     ],
 
     controllers: [
-        'Dashboard'
+        'Dashboard',
+        'BrowseHistory'
     ],
 
     launch: function() {
@@ -29,8 +30,12 @@ Ext.application({
 
     _createViewport: function() {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
-            region: 'north'
+            defaultBreadcrumbs: [{
+                text: gettext("Dashboard"),
+                url: ''
+            }]
         });
+
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
             layout: 'fit'
@@ -41,12 +46,13 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'student'
+                navclass: 'student',
+                breadcrumbs: this.breadcrumbs
             }, {
                 xtype: 'container',
                 region: 'center',
                 layout: 'border',
-                items: [this.breadcrumbs, this.primaryContentContainer]
+                items: [this.primaryContentContainer]
             }]
         });
     },
@@ -69,6 +75,7 @@ Ext.application({
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
+        this.route.add("/browse/", 'browse');
         this.route.start();
     },
     
@@ -85,5 +92,12 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'dashboard'
         });
-    }
+    },
+
+    browse: function() {
+        this.breadcrumbs.set([], gettext('Browse'));
+        this.setPrimaryContent({
+            xtype: 'browsehistory'
+        });
+    },
 });
