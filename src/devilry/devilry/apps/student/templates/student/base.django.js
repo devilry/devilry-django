@@ -14,5 +14,5 @@
 
 {% block appjs %}
     {{ block.super }}
-    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/student/';
+    var DASHBOARD_URL = '{{ DEVILRY_URLPATH_PREFIX }}/devilry_student/';
 {% endblock %}
