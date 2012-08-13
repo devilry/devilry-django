@@ -4,6 +4,8 @@ Ext.application({
     paths: {
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header',
+        'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme'
     },
 
@@ -11,14 +13,16 @@ Ext.application({
         'Ext.container.Viewport',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
-        'devilry_extjsextras.DevilryHeader',
+        'devilry_header.Header',
         'devilry_header.Breadcrumbs',
     ],
 
     controllers: [
+        'Dashboard'
     ],
 
     launch: function() {
+        this.dashboard_url = DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_student/';
         this._createViewport();
         this._setupRoutes();
     },
@@ -26,10 +30,6 @@ Ext.application({
     _createViewport: function() {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
             region: 'north'
-            //defaultBreadcrumbs: [{
-                //text: gettext("Subjectadmin"),
-                //url: ''
-            //}]
         });
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
@@ -83,8 +83,7 @@ Ext.application({
     dashboard: function() {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'box',
-            html: 'Hello world'
+            xtype: 'dashboard'
         });
     }
 });
