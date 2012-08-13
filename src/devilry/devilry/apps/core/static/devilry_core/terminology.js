@@ -41,10 +41,13 @@ var terms = [
     gettext_noop('Grade'),
     gettext_noop('grade'),
 
+    // These are probably not something you want to change, however they are
+    // included because they are used all over the UI
     gettext_noop('Yes'),
     gettext_noop('No'),
     gettext_noop('Ok'),
     gettext_noop('Cancel'),
     gettext_noop('Error'),
-    gettext_noop('Search')
+    gettext_noop('Search'),
+    gettext_noop('Browse')
 ]
