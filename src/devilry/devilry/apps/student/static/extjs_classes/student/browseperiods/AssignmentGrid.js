@@ -8,7 +8,7 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     },
 
     assignmentTpl: Ext.create('Ext.XTemplate',
-        '<div style="height: 37px">{parentnode__long_name}</div>'
+        '{parentnode__long_name}'
     ),
 
     pointsTpl: Ext.create('Ext.XTemplate', 
@@ -23,25 +23,29 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     ),
 
     gradeTpl: Ext.create('Ext.XTemplate', 
-        '<div class="section gradecolumn" style="line-height: 1.8em; height:37px">',
-        '   <tpl if="feedback">',
-        '        <div class="is_passing_grade">',
-        '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">Passed</span></tpl>',
-        '           <tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">Failed</span></tpl>',
-        '           : <span class="grade">{feedback__grade}</span>',
-        '        </div>',
-        '        <div class="delivery_type">',
-        '            <tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type == 2"><span class="neutralInlineItem">From previous period (semester)</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type &gt; 2"><span class="warningInlineItem">Unknown delivery type</span></tpl>',
-        '       </div>',
-        '   </tpl>',
-        '    <tpl if="!feedback">',
-        '        <div class="nofeedback">',
-        '           No feedback',
-        '        </div>',
-        '    </tpl>',
+        '<div class="gradecolumn">',
+            '<tpl if="feedback">',
+                '<span class="is_passing_grade">',
+                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade">',
+                        gettext('Passed'),
+                    '</span></tpl>',
+                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">',
+                        gettext('Failed'),
+                    '</span></tpl>',
+                    ' (<span class="grade">{feedback__grade}</span>)',
+                '</span>',
+                //'<div class="delivery_type">',
+                    //'<tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
+                    //'<tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
+                    //'<tpl if="feedback__delivery__delivery_type == 2"><span class="neutralInlineItem">From previous period (semester)</span></tpl>',
+                    //'<tpl if="feedback__delivery__delivery_type &gt; 2"><span class="warningInlineItem">Unknown delivery type</span></tpl>',
+                //'</div>',
+            '</tpl>',
+            '<tpl if="!feedback">',
+                '<span class="nofeedback">',
+                    gettext('No feedback'),
+                '</span>',
+            '</tpl>',
         '</div>'
     ),
 
@@ -75,7 +79,7 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
     
     initComponent: function() {
         Ext.apply(this, {
-            cls: 'selectable-grid',
+            //cls: 'selectable-grid',
             //hideHeaders: true,
             columns: [{
                 header: gettext('Assignment'),
