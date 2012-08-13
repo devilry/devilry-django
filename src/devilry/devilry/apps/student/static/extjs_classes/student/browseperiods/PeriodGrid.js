@@ -1,6 +1,11 @@
 Ext.define('devilry.student.browseperiods.PeriodGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.student-browseperiods-periodgrid',
+
+    requires: [
+        'devilry.apps.student.simplified.SimplifiedPeriod',
+        'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
+    ],
     
     constructor: function(config) {
         this.createStore();
