@@ -45,5 +45,6 @@ var terms = [
     gettext_noop('No'),
     gettext_noop('Ok'),
     gettext_noop('Cancel'),
-    gettext_noop('Error')
+    gettext_noop('Error'),
+    gettext_noop('Search')
 ]
