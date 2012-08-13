@@ -25,7 +25,7 @@ Ext.define('devilry_header.Header', {
     },
 
     navclass_to_dashboard_url: {
-        'student': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/student/',
+        'student': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_student/',
         'examiner': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/examiner/',
         'administrator': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/administrator/',
         'superuser': DevilrySettings.DEVILRY_URLPATH_PREFIX + '/superuser/'

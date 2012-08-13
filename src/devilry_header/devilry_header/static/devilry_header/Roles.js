@@ -16,7 +16,7 @@ Ext.define('devilry_header.Roles', {
                 '</p>',
                 '<ul role="navigation">',
                     '<tpl if="userInfo.is_student">',
-                        '<li><a href="{urlpath_prefix}/student/" class="student_role">',
+                        '<li><a href="{urlpath_prefix}/devilry_student/" class="student_role">',
                             '<div class="heading">',
                                 gettext('Student'),
                             '</div>',
