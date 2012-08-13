@@ -6,6 +6,7 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
         'devilry.apps.student.simplified.SimplifiedPeriod',
         'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
     ],
+
     
     constructor: function(config) {
         this.createStore();
@@ -38,9 +39,12 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
             model: 'devilry.apps.student.simplified.SimplifiedPeriod',
             remoteFilter: false,
             remoteSort: false,
-            autoSync: true
+            autoSync: true,
+            groupField: 'long_name',
+            remoteGroup: false
         });
-        this.store.proxy.setDevilryOrderby(['parentnode__short_name', '-start_time']);
+        this.store.proxy.setDevilryOrderby(['-start_time']);
+        //this.store.proxy.setDevilryOrderby(['parentnode__short_name', '-start_time']);
         this.store.pageSize = 100000;
     },
 
@@ -61,17 +65,22 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     
     initComponent: function() {
         Ext.apply(this, {
-            cls: 'selectable-grid',
             columns: [{
                 header: gettext('Subject'),
                 dataIndex: 'parentnode__short_name',
                 flex: 1,
+                sortable: false,
+                menuDisabled: true,
                 renderer: function(value, m, record) {
                     return this.cellTpl.apply({
                         period: record.data,
                         labels: this.labelsGroupedByPeriod[record.get('id')]
                     });
                 }
+            }],
+            features: [{
+                ftype: 'grouping',
+                groupHeaderTpl: '{name}'
             }]
         });
         this.callParent(arguments);
