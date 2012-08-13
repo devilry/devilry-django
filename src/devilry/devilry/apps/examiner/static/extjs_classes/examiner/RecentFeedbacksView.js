@@ -99,7 +99,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
             flex: 1,
             border: false,
             sortableColumns: false,
-            cls: 'selectable-grid',
+            cls: 'bootstrap',
             store: this.store,
             columns: columns,
             listeners: {
@@ -118,6 +118,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         this.add({
             xtype: 'box',
             tpl: '<div class="section"><h3>{text}</h3></div>',
+            cls: 'bootstrap',
             data: {
                 text: interpolate(gettext("Recent %(feedbacks)s"), {
                     feedbacks: gettext('feedbacks')

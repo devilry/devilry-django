@@ -43,6 +43,7 @@ Ext.define('devilry_student.controller.Dashboard', {
             margin: '20 0 0 0'
         }, {
             xtype: 'box',
+            cls: 'bootstrap',
             margin: '6 0 0 0',
             tpl: '<p><a class="browseall_link" href="{url}">{text}</a></p>',
             data: {

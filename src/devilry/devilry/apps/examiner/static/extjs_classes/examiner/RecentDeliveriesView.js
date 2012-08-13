@@ -99,13 +99,14 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
+            cls: 'bootstrap',
             hideHeaders: true,
             frameHeader: false,
             border: false,
             sortableColumns: false,
             autoScroll: true,
             flex: 1,
-            cls: 'selectable-grid',
+            //cls: 'selectable-grid',
             store: this.store,
             columns: columns,
             listeners: {
@@ -123,6 +124,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
         });
         this.add({
             xtype: 'box',
+            cls: 'bootstrap',
             tpl: '<div class="section"><h3>{text}</h3></div>',
             data: {
                 text: interpolate(gettext('Recent %(deliveries)s'), {

@@ -83,6 +83,7 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
             sortableColumns: false,
             //cls: 'selectable-grid',
             store: this.store,
+            cls: 'bootstrap',
         
             columns: [{
                 text: 'Subject',
@@ -130,8 +131,8 @@ Ext.define('devilry.student.AddDeliveriesGrid', {
         });
         this.add([{
             xtype: 'box',
-            cls: 'section',
-            tpl: '<div class="section"><h3>{text}</h3></div>',
+            cls: 'bootstrap',
+            tpl: '<div class="section"><h2>{text}</h2></div>',
             data: {
                 text: interpolate(gettext('%(assignments)s / Add %(deliveries)s'), {
                     assignments: gettext('Assignments'),
