@@ -131,10 +131,11 @@ Ext.define('devilry.student.AddDeliveriesContainer', {
     onAddToUploadFilesStore: function(store, records, index) {
         if(index === 0) {
             this.sidebar.insert(0, {
-                title: 'Uploaded files',
+                title: gettext('Uploaded files'),
                 xtype: 'grid',
                 store: this.uploadedFilesStore,
                 hideHeaders: true,
+                disableSelection: true,
                 columns: [{header: 'Filename', flex: 1, dataIndex: 'filename'}]
             });
             if(this.aboutdeadline) {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 19:34+0200\n"
+"POT-Creation-Date: 2012-08-13 19:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,6 +35,10 @@ msgstr ""
 #: static/extjs_classes/student/AddDeliveriesContainer.js:121
 msgid "About this deadline"
 msgstr "Om denne deadlinen"
+
+#: static/extjs_classes/student/AddDeliveriesContainer.js:134
+msgid "Uploaded files"
+msgstr "Filer du har lastet opp"
 
 #: static/extjs_classes/student/AddDeliveriesContainer.js:154
 msgid "Add %(delivery)s"
@@ -125,8 +129,8 @@ msgid ""
 "Click the Deliver-button to deliver these {filenameCount} files, or choose "
 "<em>Add new file</em> to upload more files."
 msgstr ""
-"Velg Lever-knappen for å laste opp disse {filenameCount} filene, eller "
-"velg <em>Legg til ny fil</em> for å laste flere filer."
+"Velg Lever-knappen for å laste opp disse {filenameCount} filene, eller velg "
+"<em>Legg til ny fil</em> for å laste flere filer."
 
 #: static/extjs_classes/student/FileUploadPanel.js:68
 msgid "Create %(delivery)s"
