@@ -3,6 +3,7 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     alias: 'widget.student-browseperiods-periodgrid',
 
     requires: [
+        'Ext.window.MessageBox',
         'devilry.apps.student.simplified.SimplifiedPeriod',
         'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
     ],
@@ -11,17 +12,6 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
     constructor: function(config) {
         this.createStore();
         this.createRelatedStudentKeyValueStore();
-        this.studentkeyvalue_store.load({
-            scope: this,
-            callback: function(records, op) {
-                if(op.success) {
-                    this.labelsGroupedByPeriod = this._groupLabelsByPeriod();
-                    this.store.load();
-                } else {
-                    Ext.MessageBox.alert('Failed to load a resource. Please try to reload the page.');
-                }
-            },
-        });
         this.callParent([config]);
     },
 
@@ -94,7 +84,40 @@ Ext.define('devilry.student.browseperiods.PeriodGrid', {
                 groupHeaderTpl: '{name}'
             }]
         });
+
+        this.on('render', this._onRender, this);
         this.callParent(arguments);
+    },
+
+    _onRender: function() {
+        this.studentkeyvalue_store.load({
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this.labelsGroupedByPeriod = this._groupLabelsByPeriod();
+                    this.store.load({
+                        scope: this,
+                        callback: function(records, op) {
+                            if(op.success) {
+                                this._onLoadSuccess();
+                            } else {
+                                this._showError('Failed to load period store. Please try to reload the page.');
+                            }
+                        }
+                    });
+                } else {
+                    this._showError('Failed to load key-value resource containing results. Please try to reload the page.');
+                }
+            }
+        });
+    },
+
+    _showError: function(message) {
+        Ext.MessageBox.alert('Error', message);
+    },
+
+    _onLoadSuccess: function() {
+        this.fireEvent('allStoresLoadedSuccessfully', this.store, this.studentkeyvalue_store)
     },
 
     _groupLabelsByPeriod: function() {
