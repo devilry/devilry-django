@@ -12,6 +12,12 @@ Ext.define('devilry.student.StudentSearchWidget', {
      */
     urlPrefix: '',
 
+    emptyText: interpolate(gettext('Search all your %(deliveries)s, open %(deadlines)s and %(assignments)s') + ' ...', {
+        deliveries: gettext('deliveries'),
+        deadlines: gettext('deadlines'),
+        assignments: gettext('assignments')
+    }, true),
+
     deadlineRowTpl: [
         '<div class="section popuplistitem">',
         '   <p class="path">',

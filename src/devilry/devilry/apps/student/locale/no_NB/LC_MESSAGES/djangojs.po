@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 13:47+0200\n"
+"POT-Creation-Date: 2012-08-13 15:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,6 +31,7 @@ msgstr "Ingen aktive elektroniske %(assignments)s"
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:14
 #: static/extjs_classes/student/AddDeliveriesGrid.js:18
+#: static/extjs_classes/student/StudentSearchWidget.js:18
 msgid "assignments"
 msgstr ""
 
@@ -63,6 +64,7 @@ msgid "Assignments"
 msgstr ""
 
 #: static/extjs_classes/student/AddDeliveriesGrid.js:127
+#: static/extjs_classes/student/StudentSearchWidget.js:16
 msgid "deliveries"
 msgstr ""
 
@@ -72,7 +74,7 @@ msgstr ""
 
 #: static/extjs_classes/student/Dashboard.js:92
 msgid "Browse all"
-msgstr "Bla i alle"
+msgstr ""
 
 #: static/extjs_classes/student/FileUploadPanel.js:129
 msgid "Cancel"
@@ -86,4 +88,36 @@ msgstr ""
 
 #: static/extjs_classes/student/FileUploadPanel.js:303
 msgid "Confirm cancel"
+msgstr ""
+
+#: static/extjs_classes/student/StudentSearchWidget.js:15
+msgid "Search all your %(deliveries)s, open %(deadlines)s and %(assignments)s"
+msgstr "Søk i alle dine %(deliveries)s, åpne %(deadlines)s og %(assignments)s"
+
+#: static/extjs_classes/student/StudentSearchWidget.js:17
+msgid "deadlines"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/AssignmentGrid.js:30
+msgid "Passed"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/AssignmentGrid.js:33
+msgid "Failed"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/AssignmentGrid.js:46
+msgid "No feedback"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/AssignmentGrid.js:85
+msgid "Assignment"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/AssignmentGrid.js:97
+msgid "Grade"
+msgstr ""
+
+#: static/extjs_classes/student/browseperiods/PeriodGrid.js:61
+msgid "Subject"
 msgstr ""
