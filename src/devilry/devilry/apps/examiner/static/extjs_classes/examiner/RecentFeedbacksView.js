@@ -117,7 +117,12 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
         });
         this.add({
             xtype: 'box',
-            html: '<div class="section"><h3>Recent feedback</h3></div>'
+            tpl: '<div class="section"><h3>{text}</h3></div>',
+            data: {
+                text: interpolate(gettext("Recent %(feedbacks)s"), {
+                    feedbacks: gettext('feedbacks')
+                }, true)
+            }
         });
         this.add(activeAssignmentsGrid);
     }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-11 07:09+0200\n"
+"POT-Creation-Date: 2012-08-13 13:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,6 +65,14 @@ msgstr ""
 #: static/extjs_classes/student/AddDeliveriesGrid.js:127
 msgid "deliveries"
 msgstr ""
+
+#: static/extjs_classes/student/Dashboard.js:72
+msgid "Dashboard"
+msgstr ""
+
+#: static/extjs_classes/student/Dashboard.js:92
+msgid "Browse all"
+msgstr "Bla i alle"
 
 #: static/extjs_classes/student/FileUploadPanel.js:129
 msgid "Cancel"

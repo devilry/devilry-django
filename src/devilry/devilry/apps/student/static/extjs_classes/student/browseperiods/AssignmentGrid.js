@@ -78,7 +78,9 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
             cls: 'selectable-grid',
             //hideHeaders: true,
             columns: [{
-                header: 'Assignment', dataIndex: 'parentnode__long_name', flex: 4,
+                header: gettext('Assignment'),
+                dataIndex: 'parentnode__long_name',
+                flex: 4,
                 renderer: function(value, m, record) {
                     return this.assignmentTpl.apply(record.data);
                 }
@@ -88,7 +90,9 @@ Ext.define('devilry.student.browseperiods.AssignmentGrid', {
                     //return this.pointsTpl.apply(record.data);
                 //}
             }, {
-                header: 'Grade', dataIndex: 'feedback__grade', flex: 2,
+                header: gettext('Grade'),
+                dataIndex: 'feedback__grade',
+                flex: 2,
                 renderer: function(value, m, record) {
                     return this.gradeTpl.apply(record.data);
                 }

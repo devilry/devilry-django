@@ -123,7 +123,12 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
         });
         this.add({
             xtype: 'box',
-            html: '<div class="section"><h3>Recent deliveries</h3></div>'
+            tpl: '<div class="section"><h3>{text}</h3></div>',
+            data: {
+                text: interpolate(gettext('Recent %(deliveries)s'), {
+                    deliveries: gettext('deliveries')
+                }, true)
+            }
         });
         this.add(activeAssignmentsGrid);
     }

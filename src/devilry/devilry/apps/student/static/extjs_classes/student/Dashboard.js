@@ -69,7 +69,7 @@ Ext.define('devilry.student.Dashboard', {
                     border: false,
                     items: [{
                         xtype: 'panel',
-                        title: 'Dashboard',
+                        title: gettext('Dashboard'),
                         bodyPadding: 10,
                         autoScroll: true,
                         layout: {
@@ -89,7 +89,7 @@ Ext.define('devilry.student.Dashboard', {
                         }]
                     }, {
                         xtype: 'student-browseperiods',
-                        title: 'Browse all'
+                        title: gettext('Browse all')
                     }]
                 }]
             }]
