@@ -12662,25 +12662,25 @@ select:focus {
   outline: 1px dotted #666;
 }
 
-/* line 2, ../sass/_devilry_mixins.scss */
+/* line 11, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner strong {
   font-size: 15px;
   line-height: 21px;
 }
-/* line 6, ../sass/_devilry_mixins.scss */
+/* line 15, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner small {
   font-size: 11px;
   color: gray;
 }
-/* line 10, ../sass/_devilry_mixins.scss */
+/* line 2, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
   color: #46a546;
 }
-/* line 13, ../sass/_devilry_mixins.scss */
+/* line 5, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
   color: #dc5600;
 }
-/* line 17, ../sass/_devilry_mixins.scss */
+/* line 21, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .countbox {
   background-color: gray;
   color: white;
@@ -12700,38 +12700,38 @@ select:focus {
 .x-grid-row-selected .x-grid-cell-inner {
   color: #fff;
 }
-/* line 30, ../sass/_devilry_mixins.scss */
+/* line 34, ../sass/_devilry_mixins.scss */
 .x-grid-row-selected .x-grid-cell-inner small {
   color: #eee;
 }
-/* line 34, ../sass/_devilry_mixins.scss */
+/* line 38, ../sass/_devilry_mixins.scss */
 .x-grid-row-selected .x-grid-cell-inner .success, .x-grid-row-selected .x-grid-cell-inner small.success {
   color: #fff;
 }
-/* line 37, ../sass/_devilry_mixins.scss */
+/* line 41, ../sass/_devilry_mixins.scss */
 .x-grid-row-selected .x-grid-cell-inner .danger, .x-grid-row-selected .x-grid-cell-inner small.danger {
   color: #fff;
 }
 
-/* line 2, ../sass/_devilry_mixins.scss */
+/* line 11, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item strong {
   font-size: 15px;
   line-height: 21px;
 }
-/* line 6, ../sass/_devilry_mixins.scss */
+/* line 15, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item small {
   font-size: 11px;
   color: gray;
 }
-/* line 10, ../sass/_devilry_mixins.scss */
+/* line 2, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .success, .x-boundlist .x-boundlist-item small.success {
   color: #46a546;
 }
-/* line 13, ../sass/_devilry_mixins.scss */
+/* line 5, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .danger, .x-boundlist .x-boundlist-item small.danger {
   color: #dc5600;
 }
-/* line 17, ../sass/_devilry_mixins.scss */
+/* line 21, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .countbox {
   background-color: gray;
   color: white;
@@ -16436,4 +16436,13 @@ You only need something like this extjs code to make it work:
 /* line 68, ../sass/_devilry_discussionview.scss */
 .x-panel.devilry_discussionview_container > .x-panel-body > .x-panel > .x-panel-header:hover .x-panel-header-body .x-panel-header-text-container .x-panel-header-text .linklike {
   text-decoration: underline;
+}
+
+/* line 2, ../sass/_devilry_mixins.scss */
+.bootstrap .success, .bootstrap small.success {
+  color: #46a546;
+}
+/* line 5, ../sass/_devilry_mixins.scss */
+.bootstrap .danger, .bootstrap small.danger {
+  color: #dc5600;
 }

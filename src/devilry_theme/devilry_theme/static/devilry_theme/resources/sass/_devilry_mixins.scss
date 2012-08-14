@@ -1,3 +1,12 @@
+@mixin inlineStyles() {
+    .success, small.success {
+        color: $green;
+    }
+    .danger, small.danger {
+        color: $orangeDark;
+    }
+}
+
 @mixin selectableRowStyles() {
     strong {
         font-size: $baseFontSize + 2;
@@ -7,12 +16,7 @@
         font-size: $baseFontSize - 2;
         color: $gray;
     }
-    .success, small.success {
-        color: $green;
-    }
-    .danger, small.danger {
-        color: $orangeDark;
-    }
+    @include inlineStyles();
 
     .countbox {
         background-color: $gray;
