@@ -95,8 +95,8 @@ class GroupResource(ModelResource):
         """
         if instance.feedback:
             return {'feedback': self.format_feedback(instance.feedback),
-                    'delivery_id': instance.feedback.delivery.deadline_id,
-                    'deadline_id': instance.feedback.delivery_id}
+                    'deadline_id': instance.feedback.delivery.deadline_id,
+                    'delivery_id': instance.feedback.delivery_id}
         else:
             return None
 
