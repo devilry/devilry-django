@@ -11,6 +11,10 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
      * @cfg {Object} [deadline]
      */
 
+    /**
+     * @cfg {Object} [active_feedback]
+     */
+
     headerTpl: [
         '<div class="linklike">',
             '<em class="deadline_text">{deadline_text}</em>: ',
@@ -30,7 +34,8 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
         Ext.Array.each(this.deadline.deliveries, function(delivery) {
             this.items.push({
                 xtype: 'groupinfo_delivery',
-                delivery: delivery
+                delivery: delivery,
+                active_feedback: this.active_feedback
             });
         }, this);
         this.callParent(arguments);

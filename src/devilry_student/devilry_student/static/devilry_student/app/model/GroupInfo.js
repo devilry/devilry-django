@@ -3,11 +3,12 @@ Ext.define('devilry_student.model.GroupInfo', {
 
     idProperty: 'id',
     fields: [
-        {name: 'id',  type: 'int'},
-        {name: 'name',  type: 'string'},
-        {name: 'is_open',  type: 'bool'},
-        {name: 'candidates',  type: 'auto'},
-        {name: 'deadlines',  type: 'auto'}
+        {name: 'id', type: 'int'},
+        {name: 'name', type: 'string'},
+        {name: 'is_open', type: 'bool'},
+        {name: 'candidates', type: 'auto'},
+        {name: 'deadlines', type: 'auto'},
+        {name: 'active_feedback', type: 'auto'}
     ],
 
     proxy: {

@@ -30,9 +30,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onRender: function() {
-        console.log('render');
         var group_id = this.getOverview().group_id;
-        console.log(group_id);
         this.getGroupInfoModel().load(group_id, {
             scope: this,
             success: this._onGroupInfoLoadSuccess,
@@ -41,8 +39,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onGroupInfoLoadSuccess: function(groupInfoRecord) {
-        console.log(groupInfoRecord.data);
-        this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'));
+        this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
     },
 
     _onGroupInfoLoadFailure: function() {
@@ -50,17 +47,17 @@ Ext.define('devilry_student.controller.GroupInfo', {
             gettext('Failed to load group. Try to reload the page'));
     },
 
-    _addDeadlineToContainer: function(deadline) {
-        console.log(deadline);
+    _addDeadlineToContainer: function(deadline, active_feedback) {
         this.getDeadlinesContainer().add({
             xtype: 'groupinfo_deadline',
-            deadline: deadline
+            deadline: deadline,
+            active_feedback: active_feedback
         });
     },
 
-    _populateDeadlinesContainer: function(deadlines) {
+    _populateDeadlinesContainer: function(deadlines, active_feedback) {
         Ext.Array.each(deadlines, function(deadline) {
-            this._addDeadlineToContainer(deadline);
+            this._addDeadlineToContainer(deadline, active_feedback);
         }, this);
     }
 });
