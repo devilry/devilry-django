@@ -13,52 +13,45 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
      */
 
     metaTpl: [
-        '<dl>',
-            '<tpl if="latest_feedback">',
-                '<dt>', gettext('Grade') ,'</dt>',
-                '<dd>',
-                    '<tpl if="latest_feedback.is_passing_grade">',
-                        '<span class="success">', gettext('Passed') ,'</span>',
-                    '<tpl else>',
-                        '<span class="danger">', gettext('Failed') ,'</span>',
-                    '</tpl>',
-                    ' <small>({latest_feedback.grade})</small>',
-                '</dd>',
-            '</tpl>',
-
-            '<dt>', gettext('Time of delivery'), '</dt>',
-            '<dd>',
-                '<p>{delivery.time_of_delivery}</p>',
-                '<tpl if="delivery.after_deadline">',
-                    '<p><span class="danger">',
-                        gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} min and {offset.seconds} seconds AFTER the deadline'),
-                    '</span></p>',
+        '<tpl if="latest_feedback">',
+            '<h3>', gettext('Grade') ,'</h3>',
+            '<p>',
+                '<tpl if="latest_feedback.is_passing_grade">',
+                    '<span class="success">', gettext('Passed') ,'</span>',
                 '<tpl else>',
-                    '<small>',
-                        gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} minutes and {offset.seconds} seconds before the deadline'),
-                    '</small>',
+                    '<span class="danger">', gettext('Failed') ,'</span>',
                 '</tpl>',
-            '</dd>',
+                ' <small>({latest_feedback.grade})</small>',
+            '</p>',
+        '</tpl>',
 
-            '<dt>', gettext('Delivery made by'), '</dt>',
-            '<dd>{delivery.delivered_by.user.displayname}</dd>',
-
-            '<dt>', gettext('Files'), '</dt>',
-            '<dd>',
-                '<ul>',
-                    '<tpl for="delivery.filemetas">',
-                        '<li><a href="#" class="filename">{filename}</a> <small class="filesize">({pretty_size})</small></li>',
-                    '</tpl>',
-                '</ul>',
-                '<a href="#">', gettext('Download all files'), '</a>',
-            '</dd>',
-            '<tpl if="has_active_feedback">',
-                '<p>',
-                    gettext('This is the active {feedback_term}. This feedback is the one that counts for this assignment unless an {examiner_term} makes a new {feedback_term}.'),
-                '</p>',
+        '<h3>', gettext('Time of delivery'), '</h3>',
+        '<p>',
+            '<tpl if="delivery.after_deadline">',
+                '<span class="danger">',
+                    gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} min and {offset.seconds} seconds AFTER the deadline.'),
+                '</span>',
+            '<tpl else>',
+                gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} minutes and {offset.seconds} seconds before the deadline.'),
             '</tpl>',
-            
-        '</dl>',
+            '<br/><small>({delivery.time_of_delivery})</small>',
+        '</p>',
+
+        '<h3>', gettext('Delivery made by'), '</h3>',
+        '<p>{delivery.delivered_by.user.displayname}</p>',
+
+        '<h3>', gettext('Files'), '</h3>',
+        '<ul>',
+            '<tpl for="delivery.filemetas">',
+                '<li><a href="{download_url}" class="filename">{filename}</a> <small class="filesize">({pretty_size})</small></li>',
+            '</tpl>',
+        '</ul>',
+        '<a href="{delivery.download_all_url.zip}">', gettext('Download all files'), '</a>',
+        '<tpl if="has_active_feedback">',
+            '<p>',
+                gettext('This is the active {feedback_term}. This feedback is the one that counts for this assignment unless an {examiner_term} makes a new {feedback_term}.'),
+            '</p>',
+        '</tpl>'
     ],
 
     feedbackTpl: [
@@ -76,6 +69,11 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     initComponent: function() {
         var latest_feedback = this.delivery.feedbacks[0];
         var has_active_feedback = this.active_feedback.delivery_id == this.delivery.id;
+
+        //var metaTplCompiled = Ext.create('Ext.XTemplate', this.metaTpl, {
+            //getFileDownloadUrl: Ext.bind(this._getFileDownloadUrl, this)
+        //});
+
         Ext.apply(this, {
             ui: has_active_feedback? 'inset-header-strong-panel': 'inset-header-panel',
             cls: 'devilry_student_groupinfo_delivery devilry_student_groupinfo_delivery_' + (this._hasFeedback()? 'hasfeedback': 'nofeedback'),
@@ -87,16 +85,17 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
             items: [{
                 width: 250,
                 xtype: 'box',
-                tpl: this.metaTpl,
                 cls: 'bootstrap devilry_student_groupinfo_delivery_meta',
                 itemId: 'meta',
+                tpl: this.metaTpl,
                 data: {
                     delivery: this.delivery,
                     latest_feedback: latest_feedback,
                     has_active_feedback: has_active_feedback,
                     offset: this.delivery.offset_from_deadline,
                     feedback_term: gettext('feedback'),
-                    examiner_term: gettext('examiner')
+                    examiner_term: gettext('examiner'),
+                    downloadAllUrl: this._getDownloadAllUrl()
                 }
             }, {
                 xtype: 'box',
@@ -110,11 +109,17 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 }
             }]
         });
-        console.log(this.delivery.filemetas);
         this.callParent(arguments);
     },
 
     _hasFeedback: function() {
         return this.delivery.feedbacks.length > 0;
+    },
+
+    _getDownloadAllUrl: function() {
+        return Ext.String.format(
+            '{0}/student/show-delivery/compressedfiledownload/{1}',
+            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.delivery.id
+        );
     }
 });
