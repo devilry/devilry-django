@@ -13,21 +13,7 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
         itemId: 'metadata'
     }, {
         xtype: 'panel',
-        //frame: false,
-        //border: 0,
         itemId: 'deadlinesContainer',
-        layout: {
-            // layout-specific configs go here
-            type: 'accordion',
-            titleCollapse: true,
-            animate: true,
-            multi: true
-            //hideCollapseTool: true
-            //activeOnTop: true
-        }
-        //defaults: {
-            //// applied to each contained panel
-            //bodyStyle: 'padding:15px'
-        //},
+        cls: 'devilry_discussionview_container'
     }]
 });
