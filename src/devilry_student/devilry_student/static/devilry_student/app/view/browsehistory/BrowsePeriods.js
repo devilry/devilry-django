@@ -24,7 +24,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
             items: [{
                 xtype: 'browsehistory_periodgrid',
                 region: 'west',
-                width: 250,
+                width: 340,
                 split: true,
                 listeners: {
                     scope: this,

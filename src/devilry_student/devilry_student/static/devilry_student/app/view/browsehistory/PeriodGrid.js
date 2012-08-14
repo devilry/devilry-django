@@ -9,21 +9,25 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
         'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
     ],
 
-    
+    col1Tpl: [
+        '<div><strong>{period.parentnode__long_name}</strong></div>',
+        '<div><small>{period.parentnode__short_name}.{period.short_name}</small></div>',
+        '<div class="labels">',
+            '<tpl for="labels">',
+                '<tpl if="label == \'unqualified-for-exam\'">',
+                    '<span class="label-{label} danger">{label}</span>',
+                '<tpl else>',
+                    '<span class="label-{label} success">{label}</span>',
+                '</tpl>',
+            '</tpl>',
+        '</div>'
+    ],
+
     constructor: function(config) {
         this.createStore();
         this.createRelatedStudentKeyValueStore();
         this.callParent([config]);
     },
-
-    cellTpl: Ext.create('Ext.XTemplate',
-        '<div>{period.parentnode__short_name}.{period.short_name}</div>',
-        '<ul class="labels-list">',
-        '    <tpl for="labels">',
-        '       <li class="label-{label}">{label}</li>',
-        '    </tpl>',
-        '</ul>'
-    ),
 
     createStore: function() {
         this.store = Ext.create('Ext.data.Store', {
@@ -55,6 +59,7 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     },
     
     initComponent: function() {
+        var col1TplCompiled = Ext.create('Ext.XTemplate', this.col1Tpl);
         Ext.apply(this, {
             title: gettext('Subject'),
             hideHeaders: true,
@@ -74,7 +79,7 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
                 sortable: false,
                 menuDisabled: true,
                 renderer: function(value, m, record) {
-                    return this.cellTpl.apply({
+                    return col1TplCompiled.apply({
                         period: record.data,
                         labels: this.labelsGroupedByPeriod[record.get('id')]
                     });
