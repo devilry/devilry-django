@@ -1,3 +1,22 @@
+
+/*
+A discussion view container for a panel containing panels.
+You only need something like this extjs code to make it work:
+
+    {
+        xtype: 'panel',
+        cls: 'devilry_discussionview_container',
+        items: [{
+            xtype: 'panel',
+            title: '<div class="linklike">Hello cruel world</div><small>Some metadata</small>',
+            html: 'This is a test'
+        }, {
+            xtype: 'panel',
+            title: '<div class="linklike">Another hello </div><small>Some metadata</small>',
+            html: 'This is another test'
+        }]
+    }
+*/
 .x-panel.devilry_discussionview_container {
     border: none;
     &>.x-panel-body {
@@ -16,9 +35,6 @@
                 background-image: none;
                 background-color: #efefef;
                 border: 1px solid #E5E5E5;
-                &:hover {
-                    background-color: #dddddd;
-                }
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 .x-panel-header-body {
@@ -35,13 +51,22 @@
                             strong {
                                 font-weight: bold;
                             }
-                            span.linklike {
-                                
+                            .linklike {
+                                color: $linkColor;
+                                text-decoration: none;
                             }
                             small {
                                 font-size: $baseFontSize - 2;
                                 color: $gray;
                             }
+                        }
+                    }
+                }
+                &:hover {
+                    background-color: #efefef;
+                    .x-panel-header-body .x-panel-header-text-container .x-panel-header-text {
+                        .linklike {
+                            text-decoration: underline;
                         }
                     }
                 }

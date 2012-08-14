@@ -34,8 +34,8 @@ $tip-base-color: $base-color;
 //grid
 $grid-header-over-border-color: #bbb; //darken($base-color, 3);
 $grid-row-cell-selected-border-style: solid;
-$grid-row-cell-selected-border-color: darken($blueDark, 10%);
-$grid-row-cell-selected-background-color: $blueDark;
+$grid-row-cell-selected-border-color: $devilry_selected_box_bordercolor;
+$grid-row-cell-selected-background-color: $devilry_selected_box_bgcolor;
 
 
 //toolbar
