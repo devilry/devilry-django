@@ -13,7 +13,7 @@ from views import (MainView, AddDeliveryView,
 i18n_packages = get_javascript_catalog_packages('devilry.apps.student', 'devilry.apps.examiner', 'devilry.apps.core')
 
 urlpatterns = patterns('devilry.apps.student',
-                       url(r'^$', login_required(MainView.as_view()), name='student'),
+                       url(r'^$', login_required(MainView.as_view())),
                        url(r'^add-delivery/(?P<assignmentgroupid>\d+)$', 
                            login_required(AddDeliveryView.as_view()), 
                            name='add-delivery'),

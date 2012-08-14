@@ -8,7 +8,8 @@ from views import AppView
 i18n_packages = ('devilry_student', 'devilry_extjsextras')
 
 urlpatterns = patterns('devilry_subjectadmin',
-                       url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
+                       url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
+                           name='devilry_student'),
                        url('^rest/', include('devilry_student.rest.urls')),
                        url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
                            name='devilry_student_i18n'))
