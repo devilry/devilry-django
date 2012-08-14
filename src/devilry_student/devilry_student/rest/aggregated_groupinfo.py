@@ -7,6 +7,7 @@ from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.permissions import BasePermission
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status
+from django.core.urlresolvers import reverse
 
 from devilry.apps.core.models import AssignmentGroup
 
@@ -84,6 +85,8 @@ class GroupResource(ModelResource):
         return {'id': filemeta.id,
                 'filename': filemeta.filename,
                 'size': filemeta.size,
+                'download_url': reverse('devilry-delivery-file-download',
+                                        kwargs={'filemetaid': filemeta.id}),
                 'pretty_size': pretty_filesize(filemeta.size)}
 
     def format_delivery(self, delivery):
@@ -96,6 +99,8 @@ class GroupResource(ModelResource):
                 'offset_from_deadline': self.format_timedelta(timedelta_before_deadline),
                 'alias_delivery': delivery.alias_delivery_id,
                 'feedbacks': map(self.format_feedback, delivery.feedbacks.all()),
+                'download_all_url': {'zip': reverse('devilry-delivery-download-all-zip',
+                                                    kwargs={'deliveryid': delivery.id})},
                 'filemetas': map(self.format_filemeta, delivery.filemetas.all())}
 
     def format_deliveries(self, deadline):
