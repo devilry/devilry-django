@@ -20,5 +20,11 @@ Ext.define('devilry_student.model.GroupInfo', {
         reader: {
             type: 'json'
         }
+    },
+
+    statics: {
+        parseDateTime: function(datetimeString) {
+            return Ext.Date.parse(datetimeString, 'Y-m-d H:i:s');
+        }
     }
 });

@@ -17,17 +17,21 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
 
     headerTpl: [
         '<div class="linklike">',
-            '<em class="deadline_text">{deadline_text}</em>: ',
-            '<span class="deadline_datetime">{deadline_datetime}</span>',
+            '<em class="deadline_label">{deadline_term}</em>: ',
+            '<span class="deadline">{deadline_formatted}</span>',
         '</div>',
-        '<div class="metadata"><small>meta</small></div>'
+        '<div class="metadata"><small><em>{deliveries_term}</em>: {delivery_count}</small></div>'
     ],
 
     initComponent: function() {
+        var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
+        var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d h:i:s');
         Ext.apply(this, {
             title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
-                deadline_text: gettext('Deadline'),
-                deadline_datetime: this.deadline.deadline
+                deadline_term: gettext('Deadline'),
+                deadline_formatted: deadline_formatted,
+                delivery_count: this.deadline.deliveries.length,
+                deliveries_term: gettext('Deliveries')
             }),
             items: []
         });

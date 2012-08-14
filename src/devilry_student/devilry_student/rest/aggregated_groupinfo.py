@@ -44,11 +44,12 @@ class IsCandidate(BasePermission):
                                 {'detail': 'Only candidates on group with ID={0} can make this request.'.format(groupid)})
 
 class GroupResource(ModelResource):
-    fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback')
+    fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
+              'deadline_handling')
     model = AssignmentGroup
 
     def _format_datetime(self, datetime):
-        return datetime.strftime('%Y-%m-%dT%H:%M:%S')
+        return datetime.strftime('%Y-%m-%d %H:%M:%S')
 
     def format_user(self, user):
         return {'email': user.email,
@@ -128,6 +129,9 @@ class GroupResource(ModelResource):
                     'delivery_id': instance.feedback.delivery_id}
         else:
             return None
+
+    def deadline_handling(self, instance):
+        return instance.parentnode.deadline_handling
 
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
