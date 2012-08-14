@@ -1,4 +1,3 @@
-from django.db.models import Q
 from djangorestframework.views import ModelView
 from djangorestframework.mixins import InstanceMixin
 from djangorestframework.mixins import ReadModelMixin
@@ -7,7 +6,6 @@ from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.permissions import BasePermission
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status
-
 
 from devilry.apps.core.models import AssignmentGroup
 
@@ -26,7 +24,7 @@ class IsCandidate(BasePermission):
                                 {'detail': 'Only candidates on group with ID={0} can make this request.'.format(groupid)})
 
 class GroupResource(ModelResource):
-    fields = ('id', 'name', 'is_open', 'candidates', 'deadlines')
+    fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback')
     model = AssignmentGroup
 
     def format_user(self, user):
@@ -91,6 +89,17 @@ class GroupResource(ModelResource):
     def deadlines(self, instance):
         return map(self.format_deadline, instance.deadlines.all())
 
+    def active_feedback(self, instance):
+        """
+        The active feedback is the feedback that was saved last.
+        """
+        if instance.feedback:
+            return {'feedback': self.format_feedback(instance.feedback),
+                    'delivery_id': instance.feedback.delivery.deadline_id,
+                    'deadline_id': instance.feedback.delivery_id}
+        else:
+            return None
+
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     """
@@ -104,6 +113,7 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     - ``is_open`` (bool): Is the group open?
     - ``candidates`` (list): List of all candidates on the group.
     - ``deadlines`` (list): List of all deadlines and deliveries on the group.
+    - ``active_feedback`` (object|null): Information about the active feedback.
     """
     permissions = (IsAuthenticated, IsCandidate)
     resource = GroupResource
