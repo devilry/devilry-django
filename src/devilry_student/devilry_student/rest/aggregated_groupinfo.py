@@ -47,6 +47,9 @@ class GroupResource(ModelResource):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback')
     model = AssignmentGroup
 
+    def _format_datetime(self, datetime):
+        return datetime.strftime('%Y-%m-%dT%H:%M:%S')
+
     def format_user(self, user):
         return {'email': user.email,
                 'username': user.username,
@@ -76,7 +79,7 @@ class GroupResource(ModelResource):
     def format_feedback(self, staticfeedback):
         return {'id': staticfeedback.id,
                 'rendered_view': staticfeedback.rendered_view,
-                'save_timestamp': staticfeedback.save_timestamp,
+                'save_timestamp': self._format_datetime(staticfeedback.save_timestamp),
                 'grade': staticfeedback.grade,
                 # NOTE: points is not included because students are not supposed to get direct access to points.
                 'is_passing_grade': staticfeedback.is_passing_grade}
@@ -95,7 +98,7 @@ class GroupResource(ModelResource):
                 'number': delivery.number,
                 'delivered_by': self.format_candidate(delivery.delivered_by),
                 'after_deadline': delivery.after_deadline,
-                'time_of_delivery': delivery.time_of_delivery,
+                'time_of_delivery': self._format_datetime(delivery.time_of_delivery),
                 'offset_from_deadline': self.format_timedelta(timedelta_before_deadline),
                 'alias_delivery': delivery.alias_delivery_id,
                 'feedbacks': map(self.format_feedback, delivery.feedbacks.all()),
@@ -108,7 +111,7 @@ class GroupResource(ModelResource):
 
     def format_deadline(self, deadline):
         return {'id': deadline.id,
-                'deadline': deadline.deadline,
+                'deadline': self._format_datetime(deadline.deadline),
                 'text': deadline.text,
                 'deliveries': self.format_deliveries(deadline)}
 
