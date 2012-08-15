@@ -49,6 +49,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onGroupInfoLoadSuccess: function(groupInfoRecord) {
+        this._setBreadcrumbs(groupInfoRecord);
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
@@ -115,5 +116,23 @@ Ext.define('devilry_student.controller.GroupInfo', {
         } else {
             this._showLoadError(interpolate(gettext('Invalid delivery: %s'), [delivery_id]));
         }
+    },
+
+    _setBreadcrumbs: function(groupInfoRecord) {
+        var subject = groupInfoRecord.get('breadcrumbs').subject;
+        var period = groupInfoRecord.get('breadcrumbs').period;
+        var assignment = groupInfoRecord.get('breadcrumbs').assignment;
+        var periodpath = [subject.short_name, period.short_name].join('.');
+
+        this.application.breadcrumbs.set([{
+            url: '#/browse/',
+            text: gettext('Browse')
+        }, {
+            url: Ext.String.format('#/browse/{0}', period.id),
+            text: periodpath
+        }], assignment.short_name);
+
+        var path = [periodpath, assignment.shortname].join('.');
+        this.application.setTitle(path);
     }
 });

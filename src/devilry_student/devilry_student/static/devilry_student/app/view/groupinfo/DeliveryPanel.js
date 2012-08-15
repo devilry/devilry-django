@@ -53,7 +53,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         '<tpl if="latest_feedback">',
             '{latest_feedback.rendered_view}',
         '<tpl else>',
-            gettext('No feedback'),
+            '<p><small>', gettext('No feedback'), '</small></p>',
         '</tpl>'  
     ],
 
@@ -63,7 +63,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
 
     initComponent: function() {
         var latest_feedback = this.delivery.feedbacks[0];
-        var has_active_feedback = this.active_feedback.delivery_id == this.delivery.id;
+        var has_active_feedback = this.active_feedback && this.active_feedback.delivery_id == this.delivery.id;
 
         //var metaTplCompiled = Ext.create('Ext.XTemplate', this.metaTpl, {
             //getFileDownloadUrl: Ext.bind(this._getFileDownloadUrl, this)
