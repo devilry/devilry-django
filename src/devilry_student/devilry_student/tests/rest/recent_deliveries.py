@@ -50,8 +50,8 @@ class TestRestRecentDeliveries(TestCase):
 
     def test_recent_deliveries_over10(self):
         fileinfo = {'ok.py': ['print ', 'meh']}
-        for x in xrange(14):
+        for x in xrange(8):
             self.testhelper.add_delivery('sub.p1.a1.g1', fileinfo)
         content, response = self._getas('student1')
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(content), 10)
+        self.assertEquals(len(content), 6)

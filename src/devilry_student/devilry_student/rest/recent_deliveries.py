@@ -26,7 +26,7 @@ class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):
 
 class RecentDeliveriesView(ListModelView):
     """
-    Lists the 10 most recent deliveries made by the authenticated user ordered
+    Lists the 6 most recent deliveries made by the authenticated user ordered
     by ``time_of_delivery``.
 
     # GET
@@ -44,4 +44,4 @@ class RecentDeliveriesView(ListModelView):
     def get_queryset(self):
         qry = Delivery.where_is_candidate(self.request.user)
         qry = qry.order_by('-time_of_delivery')
-        return qry[:10]
+        return qry[:6]
