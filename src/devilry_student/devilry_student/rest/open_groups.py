@@ -38,7 +38,7 @@ class OpenGroupsView(ListModelView):
     authenticated user in an active period.
 
     # GET
-    An object with the following attributes:
+    List of objects with the following attributes:
 
     - ``id`` (int): Internal Devilry ID of the group. Is never ``null``.
     - ``name`` (string|null): The name of the group.
