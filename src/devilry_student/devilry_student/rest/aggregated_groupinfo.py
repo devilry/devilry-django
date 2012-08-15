@@ -97,9 +97,12 @@ class GroupResource(ModelResource):
 
     def format_delivery(self, delivery):
         timedelta_before_deadline = delivery.deadline.deadline - delivery.time_of_delivery
+        delivered_by = None
+        if delivery.delivered_by:
+            delivered_by = self.format_candidate(delivery.delivered_by)
         return {'id': delivery.id,
                 'number': delivery.number,
-                'delivered_by': self.format_candidate(delivery.delivered_by),
+                'delivered_by': delivered_by,
                 'after_deadline': delivery.after_deadline,
                 'time_of_delivery': self._format_datetime(delivery.time_of_delivery),
                 'offset_from_deadline': self.format_timedelta(timedelta_before_deadline),
