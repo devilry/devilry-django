@@ -47,7 +47,7 @@ class IsCandidate(BasePermission):
 
 class GroupResource(ModelResource):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
-              'deadline_handling', 'breadcrumbs', 'add_delivery_url')
+              'deadline_handling', 'breadcrumbs')
     model = AssignmentGroup
 
     def _format_datetime(self, datetime):
@@ -147,9 +147,6 @@ class GroupResource(ModelResource):
         return {'assignment': self._format_basenodebreadcrumb(instance.parentnode),
                 'period': self._format_basenodebreadcrumb(instance.parentnode.parentnode),
                 'subject': self._format_basenodebreadcrumb(instance.parentnode.parentnode.parentnode)}
-
-    def add_delivery_url(self, instance):
-        return reverse('devilry-add-delivery', kwargs={'assignmentgroupid': instance.id})
 
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
