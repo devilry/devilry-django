@@ -26,7 +26,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     '<span class="danger">', gettext('Failed') ,'</span>',
                 '</tpl>',
                 ' <small>({groupinfo.active_feedback.feedback.grade})</small>',
-                ' - <a href="#/group/{groupinfo.id}/{groupinfo.active_feedback.delivery_id}">', gettext('Details'), '</a>',
+                ' - <a class="active_feedback_link" href="#/group/{groupinfo.id}/{groupinfo.active_feedback.delivery_id}">', gettext('Details'), '</a>',
             '</tpl>',
         '</p>',
 
@@ -42,8 +42,27 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
         '</p>',
         '<tpl if="groupinfo.is_open">',
             '<p>',
-                '<a href="{groupinfo.add_delivery_url}">', gettext('Add delivery') ,'</a>',
+                '<a class="add_delivery_link" href="{groupinfo.add_delivery_url}">', gettext('Add delivery') ,'</a>',
             '</p>',
         '</tpl>'
-    ]
+    ],
+
+
+    initComponent: function() {
+        Ext.apply(this, {
+            
+        });
+
+        this.addListener({
+            element: 'el',
+            delegate: 'a.active_feedback_link',
+            scope: this,
+            click: function(e) {
+                this.fireEvent('active_feedback_link_clicked');
+                e.preventDefault();
+            }
+        });
+
+        this.callParent(arguments);
+    }
 });

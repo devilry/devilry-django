@@ -32,6 +32,9 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this.control({
             'viewport groupinfo #deadlinesContainer': {
                 render: this._onRender
+            },
+            'viewport groupinfo groupmetadata': {
+                active_feedback_link_clicked: this._onActiveFeedbackLink
             }
         });
     },
@@ -50,6 +53,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
         var delivery_id = this.getOverview().delivery_id;
+        this.groupInfoRecord = groupInfoRecord;
         if(delivery_id != undefined) {
             this._hightlightSelectedDelivery(delivery_id);
         }
@@ -92,6 +96,10 @@ Ext.define('devilry_student.controller.GroupInfo', {
                 examiner_term: gettext('examiner')
             }
         });
+    },
+
+    _onActiveFeedbackLink: function() {
+        this._hightlightSelectedDelivery(this.groupInfoRecord.get('active_feedback').delivery_id);
     },
 
     _hightlightSelectedDelivery: function(delivery_id) {
