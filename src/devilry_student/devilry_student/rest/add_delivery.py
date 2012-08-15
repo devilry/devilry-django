@@ -71,6 +71,9 @@ class AddDeliveryView(View):
       always be ``true`` when ``delivery_id`` is omitted from the request.
     - ``finished`` (bool): Did the request finish the delivery? Will always be
       ``true`` if the ``finish=true``-parameter was in the request.
+    - ``success`` (bool): ``true`` when the request is successful. This is only
+      included to make integration with ExtJS easier. Status code is normally
+      used for this purpose.
     """
     resource = AddDeliveryResource
     permissions = (IsAuthenticated, IsCandidate)
@@ -99,7 +102,8 @@ class AddDeliveryView(View):
                 'delivery_id': self.delivery.id,
                 'added_filename': filename,
                 'created_delivery': created_delivery,
-                'finished': finished}
+                'finished': finished,
+                'success': True} # NOTE: ``success`` is included for ExtJS compatibility
 
     def _get_or_notfounderror(self, modelcls, id):
         try:

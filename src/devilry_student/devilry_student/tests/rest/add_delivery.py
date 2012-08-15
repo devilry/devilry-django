@@ -44,6 +44,7 @@ class TestRestAddDeliveryView(TestCase):
                                     'delivery_id': delivery.id,
                                     'added_filename': 'hello.txt',
                                     'finished': False,
+                                    'success': True,
                                     'created_delivery': True})
         self.assertEquals(delivery.successful, False)
         self.assertEquals(delivery.filemetas.count(), 1)
@@ -59,6 +60,7 @@ class TestRestAddDeliveryView(TestCase):
                                     'delivery_id': delivery.id,
                                     'added_filename': 'test.txt',
                                     'finished': False,
+                                    'success': True,
                                     'created_delivery': False})
         delivery = deadline.deliveries.all()[0]
         self.assertEquals(delivery.filemetas.count(), 2)
@@ -74,6 +76,7 @@ class TestRestAddDeliveryView(TestCase):
                                     'delivery_id': delivery.id,
                                     'added_filename': None,
                                     'finished': True,
+                                    'success': True,
                                     'created_delivery': False})
         delivery = deadline.deliveries.all()[0]
         self.assertEquals(delivery.filemetas.count(), 2)
