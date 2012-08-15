@@ -10,6 +10,9 @@ from djangorestframework import status
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.models import AssignmentGroup
+from .helpers import format_datetime
+from .helpers import format_timedelta
+from .helpers import GroupResourceHelpersMixin
 
 
 
@@ -45,44 +48,19 @@ class IsCandidate(BasePermission):
 
 
 
-class GroupResource(ModelResource):
+class GroupResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
               'deadline_handling', 'breadcrumbs')
     model = AssignmentGroup
 
-    def _format_datetime(self, datetime):
-        return datetime.strftime('%Y-%m-%d %H:%M:%S')
-
-    def format_user(self, user):
-        return {'email': user.email,
-                'username': user.username,
-                'id': user.id,
-                'full_name': user.devilryuserprofile.full_name,
-                'displayname': user.devilryuserprofile.full_name or user.username}
-
-    def format_candidate(self, candidate):
-        cand = {'id': candidate.id,
-                'user': self.format_user(candidate.student),
-                'candidate_id': candidate.candidate_id,
-                'identifier': candidate.identifier}
-        return cand
 
     def candidates(self, instance):
         return map(self.format_candidate, instance.candidates.all())
 
-
-    def format_timedelta(self, td):
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        return {'days': abs(td.days),
-                'hours': hours,
-                'minutes': minutes,
-                'seconds': seconds}
-
     def format_feedback(self, staticfeedback):
         return {'id': staticfeedback.id,
                 'rendered_view': staticfeedback.rendered_view,
-                'save_timestamp': self._format_datetime(staticfeedback.save_timestamp),
+                'save_timestamp': format_datetime(staticfeedback.save_timestamp),
                 'grade': staticfeedback.grade,
                 # NOTE: points is not included because students are not supposed to get direct access to points.
                 'is_passing_grade': staticfeedback.is_passing_grade}
@@ -104,8 +82,8 @@ class GroupResource(ModelResource):
                 'number': delivery.number,
                 'delivered_by': delivered_by,
                 'after_deadline': delivery.after_deadline,
-                'time_of_delivery': self._format_datetime(delivery.time_of_delivery),
-                'offset_from_deadline': self.format_timedelta(timedelta_before_deadline),
+                'time_of_delivery': format_datetime(delivery.time_of_delivery),
+                'offset_from_deadline': format_timedelta(timedelta_before_deadline),
                 'alias_delivery': delivery.alias_delivery_id,
                 'feedbacks': map(self.format_feedback, delivery.feedbacks.all()),
                 'download_all_url': {'zip': reverse('devilry-delivery-download-all-zip',
@@ -117,7 +95,7 @@ class GroupResource(ModelResource):
 
     def format_deadline(self, deadline):
         return {'id': deadline.id,
-                'deadline': self._format_datetime(deadline.deadline),
+                'deadline': format_datetime(deadline.deadline),
                 'text': deadline.text,
                 'deliveries': self.format_deliveries(deadline)}
 
@@ -138,15 +116,10 @@ class GroupResource(ModelResource):
     def deadline_handling(self, instance):
         return instance.parentnode.deadline_handling
 
-    def _format_basenodebreadcrumb(self, basenode):
-        return {'id': basenode.id,
-                'short_name': basenode.short_name,
-                'long_name': basenode.long_name}
-
     def breadcrumbs(self, instance):
-        return {'assignment': self._format_basenodebreadcrumb(instance.parentnode),
-                'period': self._format_basenodebreadcrumb(instance.parentnode.parentnode),
-                'subject': self._format_basenodebreadcrumb(instance.parentnode.parentnode.parentnode)}
+        return {'assignment': self.format_basenode(instance.parentnode),
+                'period': self.format_basenode(instance.parentnode.parentnode),
+                'subject': self.format_basenode(instance.parentnode.parentnode.parentnode)}
 
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
