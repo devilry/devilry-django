@@ -4,15 +4,13 @@ from djangorestframework.mixins import InstanceMixin
 from djangorestframework.mixins import ReadModelMixin
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.permissions import BasePermission
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.models import AssignmentGroup
 from .helpers import format_datetime
 from .helpers import format_timedelta
 from .helpers import GroupResourceHelpersMixin
+from .helpers import IsPublishedAndCandidate
 
 
 
@@ -31,21 +29,6 @@ def pretty_filesize(num):
         return '0 bytes'
     if num == 1:
         return '1 byte'
-
-
-class IsCandidate(BasePermission):
-    """
-    Djangorestframework permission checker that checks if the requesting user
-    is candidate on the requested group.
-    """
-    def check_permission(self, user):
-        groupid = self.view.kwargs['id']
-        try:
-            AssignmentGroup.where_is_candidate(user).get(id=groupid)
-        except AssignmentGroup.DoesNotExist, e:
-            raise ErrorResponse(status.HTTP_403_FORBIDDEN,
-                                {'detail': 'Only candidates on group with ID={0} can make this request.'.format(groupid)})
-
 
 
 class GroupResource(ModelResource, GroupResourceHelpersMixin):
@@ -136,5 +119,5 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     - ``deadlines`` (list): List of all deadlines and deliveries on the group.
     - ``active_feedback`` (object|null): Information about the active feedback.
     """
-    permissions = (IsAuthenticated, IsCandidate)
+    permissions = (IsAuthenticated, IsPublishedAndCandidate)
     resource = GroupResource

@@ -10,7 +10,7 @@ from djangorestframework.resources import FormResource
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
-from .aggregated_groupinfo import IsCandidate
+from .helpers import IsPublishedAndCandidate
 
 
 class NotFoundError(ErrorResponse):
@@ -82,7 +82,7 @@ class AddDeliveryView(View):
       used for this purpose.
     """
     resource = AddDeliveryResource
-    permissions = (IsAuthenticated, IsCandidate)
+    permissions = (IsAuthenticated, IsPublishedAndCandidate)
 
     def post(self, request, id):
         group_id = int(id)

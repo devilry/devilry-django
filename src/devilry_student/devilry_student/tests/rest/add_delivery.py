@@ -19,7 +19,7 @@ class TestRestAddDeliveryView(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
-                            periods=['p1'],
+                            periods=['p1:begins(-1)'],
                             assignments=['a1'])
         #self.testhelper.create_user('testuser')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
