@@ -2,15 +2,15 @@ Ext.define('devilry_student.controller.GroupInfo', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'Ext.window.MessageBox'
+        'Ext.window.MessageBox',
+        'devilry_student.view.add_delivery.AddDeliveryPanel'
     ],
 
     views: [
         'groupinfo.Overview',
         'groupinfo.DeadlinePanel',
         'groupinfo.DeliveryPanel',
-        'groupinfo.GroupMetadata',
-        'groupinfo.AddDeliveryPanel'
+        'groupinfo.GroupMetadata'
     ],
 
     models: ['GroupInfo'],
@@ -140,7 +140,6 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _addDelivery: function() {
-        console.log('Make delivery');
         if(!this.groupInfoRecord.get('is_open')) {
             // NOTE: We use an error message since the user do not get this through normal UI navigation
             this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on closed groups.'), {
@@ -149,21 +148,31 @@ Ext.define('devilry_student.controller.GroupInfo', {
             return;
         }
         var deadlines = this.groupInfoRecord.get('deadlines');
-        if(deadlines.length == 0) {
+        var latest_deadline = this._getLatestDeadline();
+        if(typeof latest_deadline == 'undefined') {
             // NOTE: We use an error message since the user do not get this through normal UI navigation
             this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on groups without a deadline.'), {
                 deliveries_term: gettext('deliveries')
             }, true));
+            return;
         }
-        var latest_deadline = deadlines[0];
         var deadlinePanel = this._getDeadlinePanelById(latest_deadline.id);
         deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
         deadlinePanel.down('#addDeliveryPanelContainer').add({
-            xtype: 'groupinfo_add_delivery',
+            xtype: 'add_delivery',
             groupInfoRecord: this.groupInfoRecord
         });
         deadlinePanel.expand();
         deadlinePanel.hideDeliveries();
+    },
+
+    _getLatestDeadline: function() {
+        var deadlines = this.groupInfoRecord.get('deadlines');
+        if(deadlines.length == 0) {
+            return undefined;
+        } else {
+            return deadlines[0];
+        }
     },
 
     _getDeadlinePanelById: function(deadline_id) {

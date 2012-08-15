@@ -1,13 +1,11 @@
-Ext.define('devilry_student.view.groupinfo.AddDeliveryPanel' ,{
+Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     extend: 'Ext.panel.Panel',
-    alias: 'widget.groupinfo_add_delivery',
-    //ui: 'lookslike-parawitheader-panel',
+    alias: 'widget.add_delivery',
     margin: '40 20 20 20',
 
     /**
      * @cfg {Object} [groupInfoRecord]
      */
-
 
     metaTpl: [
         '<h3>', gettext('Uploaded files'), '</h3>',
@@ -47,19 +45,21 @@ Ext.define('devilry_student.view.groupinfo.AddDeliveryPanel' ,{
                         delivery_term: gettext('delivery')
                     }
                 }, {
+                    xtype: 'hidden',
+                    name: 'delivery_id',
+                    value: ''
+                }, {
+                    xtype: 'hidden',
+                    name: 'finish',
+                    value: ''
+                }, {
                     xtype: 'fileuploadfield',
-                    name: 'uploaded_file',
+                    name: 'file_to_add',
                     hideLabel: true,
                     allowBlank: true,
                     anchor: '100%', // anchor width by percentage
                     emptyText: gettext('Select file...'),
-                    buttonText: gettext('Add new file'),
-                
-                //listeners: {
-                    //scope: this,
-                    //change: this.onAddFile
-                //}
-
+                    buttonText: gettext('Add new file')
                 }]
             }, {
                 columnWidth: 0.3,

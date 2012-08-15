@@ -20,7 +20,8 @@ Ext.application({
     controllers: [
         'Dashboard',
         'BrowseHistory',
-        'GroupInfo'
+        'GroupInfo',
+        'AddDelivery'
     ],
 
     launch: function() {
