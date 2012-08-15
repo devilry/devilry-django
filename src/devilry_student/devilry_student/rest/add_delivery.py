@@ -44,7 +44,33 @@ class AddDeliveryView(View):
 
 
     # POST
-    To create a Delivery, you make one or more POST-requests.
+    To create a Delivery, you make one or more POST-requests. The content-type of the request
+    should be ``multipart/form-data``.
+
+    ## Parameters
+
+    - ``file_to_add`` (not required): A file to add to the delivery. See the [w3 docs](http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2)
+      for the format of file uploads in multiplart forms.
+    - ``delivery_id``: The ID of a delivery to change. If this is ``null``, a new delivery is
+      created. You will normally make one request to create a delivery, and include the
+      ``delivery_id`` from the response of the first request in subsequent
+      requests (to upload more files or finish the delivery).
+    - ``finish`` (not required): Finish the delivery? If this is ``true``, we
+      sets the ``successful`` flag if the delivery to ``True``, which makes is
+      impossible to make further changes to the delivery.
+
+    ## Response
+    An object/map/dict with the following attributes:
+
+    - ``group_id`` (int): The ID of the group (the same as the ID in the URL).
+    - ``deadline_id`` (int): The ID of the deadline where the delivery is made.
+    - ``delivery_id`` (int): The ID of the delivery.
+    - ``added_filename`` (string|null): The name of the uploaded file, if
+      ``file_to_add`` was supplied in the request.
+    - ``created_delivery`` (bool): Did the request create a new delivery? Will
+      always be ``true`` when ``delivery_id`` is omitted from the request.
+    - ``finished`` (bool): Did the request finish the delivery? Will always be
+      ``true`` if the ``finish=true``-parameter was in the request.
     """
     resource = AddDeliveryResource
     permissions = (IsAuthenticated, IsCandidate)
