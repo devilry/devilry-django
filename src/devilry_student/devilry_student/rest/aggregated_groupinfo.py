@@ -43,6 +43,8 @@ class IsCandidate(BasePermission):
             raise ErrorResponse(status.HTTP_403_FORBIDDEN,
                                 {'detail': 'Only candidates on group with ID={0} can make this request.'.format(groupid)})
 
+
+
 class GroupResource(ModelResource):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
               'deadline_handling', 'breadcrumbs', 'add_delivery_url')
@@ -163,7 +165,3 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     """
     permissions = (IsAuthenticated, IsCandidate)
     resource = GroupResource
-
-    def get_queryset(self):
-        qry = super(AggregatedGroupInfo, self).get_queryset()
-        return qry

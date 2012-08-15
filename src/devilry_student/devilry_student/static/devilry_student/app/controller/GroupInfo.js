@@ -9,7 +9,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
         'groupinfo.Overview',
         'groupinfo.DeadlinePanel',
         'groupinfo.DeliveryPanel',
-        'groupinfo.GroupMetadata'
+        'groupinfo.GroupMetadata',
+        'groupinfo.AddDeliveryPanel'
     ],
 
     models: ['GroupInfo'],
@@ -53,10 +54,15 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
-        var delivery_id = this.getOverview().delivery_id;
         this.groupInfoRecord = groupInfoRecord;
+
+        var delivery_id = this.getOverview().delivery_id;
         if(delivery_id != undefined) {
             this._hightlightSelectedDelivery(delivery_id);
+        }
+
+        if(this.getOverview().add_delivery) {
+            this._addDelivery();
         }
     },
 
@@ -68,17 +74,13 @@ Ext.define('devilry_student.controller.GroupInfo', {
         Ext.MessageBox.alert(gettext('Error'), message);
     },
 
-    _addDeadlineToContainer: function(deadline, active_feedback) {
-        this.getDeadlinesContainer().add({
-            xtype: 'groupinfo_deadline',
-            deadline: deadline,
-            active_feedback: active_feedback
-        });
-    },
-
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
         Ext.Array.each(deadlines, function(deadline) {
-            this._addDeadlineToContainer(deadline, active_feedback);
+            this.getDeadlinesContainer().add({
+                xtype: 'groupinfo_deadline',
+                deadline: deadline,
+                active_feedback: active_feedback
+            });
         }, this);
     },
 
@@ -135,5 +137,37 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
         var path = [periodpath, assignment.shortname].join('.');
         this.application.setTitle(path);
+    },
+
+    _addDelivery: function() {
+        console.log('Make delivery');
+        if(!this.groupInfoRecord.get('is_open')) {
+            // NOTE: We use an error message since the user do not get this through normal UI navigation
+            this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on closed groups.'), {
+                deliveries_term: gettext('deliveries')
+            }, true));
+            return;
+        }
+        var deadlines = this.groupInfoRecord.get('deadlines');
+        if(deadlines.length == 0) {
+            // NOTE: We use an error message since the user do not get this through normal UI navigation
+            this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on groups without a deadline.'), {
+                deliveries_term: gettext('deliveries')
+            }, true));
+        }
+        var latest_deadline = deadlines[0];
+        var deadlinePanel = this._getDeadlinePanelById(latest_deadline.id);
+        deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
+        deadlinePanel.down('#addDeliveryPanelContainer').add({
+            xtype: 'groupinfo_add_delivery',
+            groupInfoRecord: this.groupInfoRecord
+        });
+        deadlinePanel.expand();
+        deadlinePanel.hideDeliveries();
+    },
+
+    _getDeadlinePanelById: function(deadline_id) {
+        var selector = Ext.String.format('#deadline-{0}', deadline_id);
+        return this.getOverview().down(selector);
     }
 });

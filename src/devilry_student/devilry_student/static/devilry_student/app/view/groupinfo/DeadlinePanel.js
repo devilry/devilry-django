@@ -26,22 +26,44 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
     initComponent: function() {
         var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
         var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d h:i:s');
+
         Ext.apply(this, {
+            itemId: Ext.String.format('deadline-{0}', this.deadline.id),
             title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
                 deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
                 delivery_count: this.deadline.deliveries.length,
                 deliveries_term: gettext('Deliveries')
             }),
-            items: []
+            items: [{
+                xtype: 'container',
+                itemId: 'addDeliveryPanelContainer'
+            }, {
+                xtype: 'container',
+                itemId: 'deliveriesContainer',
+                items: this._getDeliveryPanelConfigs()
+            }]
         });
+        this.callParent(arguments);
+    },
+
+    _getDeliveryPanelConfigs: function() {
+        var configs = [];
         Ext.Array.each(this.deadline.deliveries, function(delivery) {
-            this.items.push({
+            configs.push({
                 xtype: 'groupinfo_delivery',
                 delivery: delivery,
                 active_feedback: this.active_feedback
             });
         }, this);
-        this.callParent(arguments);
+        return configs;
+    },
+
+    hideDeliveries: function() {
+        this.down('#deliveriesContainer').hide();
+    },
+
+    showDeliveries: function() {
+        this.down('#deliveriesContainer').show();
     }
 });

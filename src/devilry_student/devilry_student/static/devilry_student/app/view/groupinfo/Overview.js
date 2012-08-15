@@ -12,6 +12,11 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
      * ID of a delivery that should be highlighted on load.
      */
 
+    /**
+     * @cfg {bool} [add_delivery]
+     * Show add delivery wizard on load?
+     */
+
     frame: false,
     border: 0,
     bodyPadding: 0,
