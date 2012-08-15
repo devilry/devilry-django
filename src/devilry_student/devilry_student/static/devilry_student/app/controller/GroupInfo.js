@@ -99,7 +99,10 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onActiveFeedbackLink: function() {
-        this._hightlightSelectedDelivery(this.groupInfoRecord.get('active_feedback').delivery_id);
+        var group_id = this.groupInfoRecord.get('id');
+        var delivery_id = this.groupInfoRecord.get('active_feedback').delivery_id;
+        this._hightlightSelectedDelivery(delivery_id);
+        this.application.route.setHashWithoutEvent(Ext.String.format('/group/{0}/{1}', group_id, delivery_id));
     },
 
     _hightlightSelectedDelivery: function(delivery_id) {

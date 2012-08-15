@@ -4,6 +4,11 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
     cls: 'bootstrap devilry_student_groupmetadata',
 
     tpl: [
+        '<tpl if="groupinfo.name">',
+            '<h3>', gettext('Group name'), '</h3>',
+            '<p>{groupinfo.name}</p>',
+        '</tpl>',
+
         '<h3>', gettext('Students'), '</h3>',
         '<ul>',
         '<tpl for="groupinfo.candidates">',

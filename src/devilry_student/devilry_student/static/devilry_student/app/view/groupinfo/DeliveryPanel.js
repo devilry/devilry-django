@@ -46,12 +46,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 '<li><a href="{download_url}" class="filename">{filename}</a> <small class="filesize">({pretty_size})</small></li>',
             '</tpl>',
         '</ul>',
-        '<a href="{delivery.download_all_url.zip}">', gettext('Download all files'), '</a>',
-        '<tpl if="has_active_feedback">',
-            '<p>',
-                gettext('This is the active {feedback_term}. This feedback is the one that counts for this assignment unless an {examiner_term} makes a new {feedback_term}.'),
-            '</p>',
-        '</tpl>'
+        '<a href="{delivery.download_all_url.zip}">', gettext('Download all files'), '</a>'
     ],
 
     feedbackTpl: [
