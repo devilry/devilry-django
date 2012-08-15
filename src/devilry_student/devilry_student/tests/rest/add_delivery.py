@@ -1,0 +1,100 @@
+import json
+from django.test import TestCase
+from StringIO import StringIO
+
+from devilry.apps.core.testhelper import TestHelper
+#from devilry.utils.rest_testclient import RestClient
+from django.test.client import Client
+
+
+class FakeFile(StringIO):
+    def __init__(self, name, content):
+        self.name = name
+        StringIO.__init__(self, content)
+
+
+class TestRestAddDeliveryView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1'],
+                            assignments=['a1'])
+        #self.testhelper.create_user('testuser')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        self.group = self.testhelper.sub_p1_a1_g1
+        self.url = '/devilry_student/rest/add-delivery/{0}'.format(self.group.id)
+
+    def _postas(self, username, data):
+        self.client.login(username=username, password='test')
+        response = self.client.post(self.url, data)
+        return response, json.loads(response.content)
+
+    def test_add_delivery(self):
+        # Create the delivery and upload a file
+        fp = FakeFile('hello.txt', 'Hello world')
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 200)
+        deadline = self.group.get_active_deadline()
+        self.assertEquals(deadline.deliveries.count(), 1)
+        delivery = deadline.deliveries.all()[0]
+        self.assertEquals(content, {'group_id': self.group.id,
+                                    'deadline_id': deadline.id,
+                                    'delivery_id': delivery.id,
+                                    'added_filename': 'hello.txt',
+                                    'finished': False,
+                                    'created_delivery': True})
+        self.assertEquals(delivery.successful, False)
+        self.assertEquals(delivery.filemetas.count(), 1)
+        self.assertEquals(delivery.filemetas.all()[0].filename, 'hello.txt')
+
+        # Upload another file
+        fp2 = FakeFile('test.txt', 'test')
+        response, content = self._postas('student1', {'delivery_id': delivery.id,
+                                                      'file_to_add': fp2})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content, {'group_id': self.group.id,
+                                    'deadline_id': deadline.id,
+                                    'delivery_id': delivery.id,
+                                    'added_filename': 'test.txt',
+                                    'finished': False,
+                                    'created_delivery': False})
+        delivery = deadline.deliveries.all()[0]
+        self.assertEquals(delivery.filemetas.count(), 2)
+        self.assertEquals(deadline.deliveries.count(), 1)
+        self.assertEquals(delivery.successful, False)
+
+        # Set the delivery to successful
+        response, content = self._postas('student1', {'delivery_id': delivery.id,
+                                                      'finish': True})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content, {'group_id': self.group.id,
+                                    'deadline_id': deadline.id,
+                                    'delivery_id': delivery.id,
+                                    'added_filename': None,
+                                    'finished': True,
+                                    'created_delivery': False})
+        delivery = deadline.deliveries.all()[0]
+        self.assertEquals(delivery.filemetas.count(), 2)
+        self.assertEquals(deadline.deliveries.count(), 1)
+        self.assertEquals(delivery.successful, True)
+
+    def test_add_delivery_nobody(self):
+        self.testhelper.create_user('nobody')
+        response, content = self._postas('nobody', {})
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(content['detail'],
+                         'Only candidates on group with ID={0} can make this request.'.format(self.group.id))
+
+    def test_add_delivery_duplicated_filename(self):
+        fp = FakeFile('hello.txt', 'Hello world')
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 200)
+        deadline = self.group.get_active_deadline()
+        delivery = deadline.deliveries.all()[0]
+
+        response, content = self._postas('student1', {'delivery_id': delivery.id,
+                                                      'file_to_add': fp})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['detail'], 'Filename must be unique')
