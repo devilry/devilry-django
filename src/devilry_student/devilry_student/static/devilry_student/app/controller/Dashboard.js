@@ -60,9 +60,14 @@ Ext.define('devilry_student.controller.Dashboard', {
                 columnWidth: 0.5,
                 margin: '0 20 0 0',
                 urlCreateFn: function(record) {
+                    //return Ext.String.format(
+                        //"{0}/student/assignmentgroup/{1}?deliveryid={2}",
+                        //DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        //record.get('deadline__assignment_group'),
+                        //record.get('id')
+                    //);
                     return Ext.String.format(
-                        "{0}/student/assignmentgroup/{1}?deliveryid={2}",
-                        DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        "#/group/{0}/{1}",
                         record.get('deadline__assignment_group'),
                         record.get('id')
                     );
@@ -76,9 +81,14 @@ Ext.define('devilry_student.controller.Dashboard', {
                 columnWidth: 0.5,
                 margin: '0 0 20 0',
                 urlCreateFn: function(record) {
+                    //return Ext.String.format(
+                        //"{0}/student/assignmentgroup/{1}?deliveryid={2}",
+                        //DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        //record.get('delivery__deadline__assignment_group'),
+                        //record.get('delivery')
+                    //);
                     return Ext.String.format(
-                        "{0}/student/assignmentgroup/{1}?deliveryid={2}",
-                        DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                        "#/group/{0}/{1}",
                         record.get('delivery__deadline__assignment_group'),
                         record.get('delivery')
                     );
