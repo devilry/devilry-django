@@ -12,14 +12,20 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
      */
 
     metaTpl: [
-        '<h3>', gettext('Uploaded files'), '</h3>',
-        '<p>TODO</p>'
+        '<tpl if="uploadedfiles">',
+            '<h3>', gettext('Uploaded files'), '</h3>',
+            '<ul>',
+                '<tpl for="uploadedfiles">',
+                    '<li>{filename}</li>',
+                '</tpl>',
+            '</ul>',
+        '</tpl>'
     ],
 
     helptextTpl: [
-        '<tpl if="created">',
-            '<p><strong>', gettext('File uploaded successfully'), '<strong></p>',
-            '<p>', gettext('Click the Deliver-button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
+        '<tpl if="added_filename">',
+            '<p><strong>', gettext('{added_filename} uploaded successfully'), '</strong></p>',
+            '<p>', gettext('Click the <em>Submit {delivery_term}</em> to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
         '<tpl else>',
             '<p>', gettext('Upload files for your {delivery_term}. You can upload multiple files.'), '</p>',
         '</tpl>'
@@ -41,11 +47,10 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                 items: [{
                     xtype: 'box',
                     tpl: this.helptextTpl,
-                    itemid: 'help',
+                    itemId: 'help',
                     anchor: '100%', // anchor width by percentage
                     cls: 'bootstrap devilry_student_groupinfo_add_delivery_help',
                     data: {
-                        created: false,
                         delivery_term: gettext('delivery')
                     }
                 }, {
@@ -68,6 +73,25 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     anchor: '100%', // anchor width by percentage
                     emptyText: gettext('Select file...'),
                     buttonText: gettext('Add new file')
+                }],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    margin: '20 0 0 0',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    items: [{
+                        xtype: 'button',
+                        itemId: 'cancelbutton',
+                        text: gettext('Cancel')
+                    }, '->', {
+                        xtype: 'button',
+                        itemId: 'deliverbutton',
+                        scale: 'large',
+                        disabled: true,
+                        text: interpolate(gettext('Submit %(delivery_term)s'), {
+                            delivery_term: gettext('delivery')
+                        }, true)
+                    }]
                 }]
             }, {
                 columnWidth: 0.3,

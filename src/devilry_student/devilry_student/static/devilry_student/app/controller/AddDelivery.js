@@ -15,6 +15,15 @@ Ext.define('devilry_student.controller.AddDelivery', {
     }, {
         ref: 'addDeliveryPanelForm',
         selector: 'viewport add_delivery form'
+    }, {
+        ref: 'metaBox',
+        selector: 'viewport add_delivery #meta'
+    }, {
+        ref: 'helpBox',
+        selector: 'viewport add_delivery #help'
+    }, {
+        ref: 'deliverButton',
+        selector: 'viewport add_delivery #deliverbutton'
     }],
 
     init: function() {
@@ -24,17 +33,37 @@ Ext.define('devilry_student.controller.AddDelivery', {
             },
             'viewport add_delivery fileuploadfield': {
                 change: this._onChooseFile
+            },
+            'viewport add_delivery #cancelbutton': {
+                click: this._onCancel
+            },
+            'viewport add_delivery #deliverbutton': {
+                click: this._onDeliver
             }
         });
     },
 
     _onRender: function() {
         this.groupInfoRecord = this.getAddDeliveryPanel().groupInfoRecord;
+        this.uploadedfiles = [];
     },
 
     _onChooseFile: function() {
         this._submitForm();
     },
+
+    _onCancel: function() {
+        console.log('cancel');
+    },
+
+    _onDeliver: function() {
+        this._setFormValues({
+            finish: 'true'
+        });
+        this._submitForm();
+    },
+
+
 
     _setLoading: function(message) {
         this.getAddDeliveryPanel().setLoading(message);
@@ -44,7 +73,6 @@ Ext.define('devilry_student.controller.AddDelivery', {
         var form = this.getAddDeliveryPanelForm().getForm();
         form.setValues(values);
     },
-
 
     _submitForm: function() {
         var form = this.getAddDeliveryPanelForm().getForm();
@@ -65,22 +93,44 @@ Ext.define('devilry_student.controller.AddDelivery', {
 
     _onSubmitFormSuccess: function(form, action) {
         this._setLoading(false);
-        console.log('success', action);
         var result = action.result;
         this._setFormValues({
-            delivery_id: result.delivery_id
+            delivery_id: result.delivery_id,
+            file_to_add: ''
         });
+        if(result.added_filename) {
+            this.uploadedfiles.push({
+                filename: result.added_filename
+            });
+        }
+        this._updateMeta();
+        this._updateHelp(result);
+        this.getDeliverButton().enable();
     },
 
     _onSubmitFormFailure: function(form, action) {
         this._setLoading(false);
-        console.log('failure', action);
         var result = action.result;
         Ext.MessageBox.show({
             title: gettext('Error'),
             msg: result.detail,
             icon: Ext.MessageBox.ERROR,
             buttons: Ext.MessageBox.OK
+        });
+    },
+
+
+    _updateMeta: function() {
+        this.getMetaBox().update({
+            uploadedfiles: this.uploadedfiles
+        });
+    },
+
+    _updateHelp: function(result) {
+        this.getHelpBox().update({
+            added_filename: result.added_filename,
+            filenameCount: this.uploadedfiles.length,
+            delivery_term: gettext('delivery')
         });
     }
 });
