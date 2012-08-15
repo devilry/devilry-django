@@ -83,7 +83,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
             }),
             layout: 'column',
             items: [{
-                width: 250,
+                columnWidth: 0.3,
                 xtype: 'box',
                 cls: 'bootstrap devilry_student_groupinfo_delivery_meta',
                 itemId: 'meta',
@@ -99,7 +99,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 }
             }, {
                 xtype: 'box',
-                columnWidth: 1,
+                columnWidth: 0.7,
                 tpl: this.feedbackTpl,
                 itemid: 'feedback',
                 cls: 'bootstrap devilry_student_groupinfo_delivery_rendered_view',

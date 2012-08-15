@@ -8,7 +8,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
     views: [
         'groupinfo.Overview',
         'groupinfo.DeadlinePanel',
-        'groupinfo.DeliveryPanel'
+        'groupinfo.DeliveryPanel',
+        'groupinfo.GroupMetadata'
     ],
 
     models: ['GroupInfo'],
@@ -19,6 +20,12 @@ Ext.define('devilry_student.controller.GroupInfo', {
     }, {
         ref: 'deadlinesContainer',
         selector: 'viewport groupinfo #deadlinesContainer'
+    }, {
+        ref: 'metadataContainer',
+        selector: 'viewport groupinfo #metadataContainer'
+    }, {
+        ref: 'titleBox',
+        selector: 'viewport groupinfo #titleBox'
     }],
 
     init: function() {
@@ -40,6 +47,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
     _onGroupInfoLoadSuccess: function(groupInfoRecord) {
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
+        this._populateMetadata(groupInfoRecord);
+        this._populateTitleBox(groupInfoRecord);
     },
 
     _onGroupInfoLoadFailure: function() {
@@ -59,5 +68,23 @@ Ext.define('devilry_student.controller.GroupInfo', {
         Ext.Array.each(deadlines, function(deadline) {
             this._addDeadlineToContainer(deadline, active_feedback);
         }, this);
+    },
+
+    _populateTitleBox: function(groupInfoRecord) {
+        this.getTitleBox().update({
+            groupinfo: groupInfoRecord.data
+        });
+    },
+
+    _populateMetadata: function(groupInfoRecord) {
+        this.getMetadataContainer().removeAll();
+        console.log(groupInfoRecord.data);
+        this.getMetadataContainer().add({
+            xtype: 'groupmetadata',
+            data: {
+                groupinfo: groupInfoRecord.data,
+                examiner_term: gettext('examiner')
+            }
+        });
     }
 });
