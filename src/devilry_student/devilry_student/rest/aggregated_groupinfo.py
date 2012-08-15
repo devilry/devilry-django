@@ -118,6 +118,21 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     - ``candidates`` (list): List of all candidates on the group.
     - ``deadlines`` (list): List of all deadlines and deliveries on the group.
     - ``active_feedback`` (object|null): Information about the active feedback.
+    - ``breadcrumbs`` (object): Contains id, long and shortnames of assignment, period and subject.
     """
     permissions = (IsAuthenticated, IsPublishedAndCandidate)
     resource = GroupResource
+
+    def get_queryset(self):
+        qry = super(AggregatedGroupInfo, self).get_queryset()
+        qry = qry.select_related('feedback',
+                                 'parentnode',
+                                 'parentnode__parentnode',
+                                 'parentnode__parentnode__parentnode')
+        qry = qry.prefetch_related('deadlines',
+                                   'deadlines__deliveries',
+                                   'deadlines__deliveries__feedbacks',
+                                   'deadlines__deliveries__filemetas',
+                                   'candidates', 'candidates__student',
+                                   'candidates__student__devilryuserprofile')
+        return qry
