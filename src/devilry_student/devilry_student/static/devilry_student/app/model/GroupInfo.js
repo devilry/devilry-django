@@ -15,7 +15,7 @@ Ext.define('devilry_student.model.GroupInfo', {
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_student/rest/aggregated_groupinfo',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_student/rest/aggregated-groupinfo',
         extraParams: {
             format: 'json'
         },
