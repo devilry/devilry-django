@@ -40,6 +40,8 @@ var terms = [
     gettext_noop('Non-electronic'),
     gettext_noop('Grade'),
     gettext_noop('grade'),
+    gettext_noop('Open'),
+    gettext_noop('Closed'),
 
     // These are probably not something you want to change, however they are
     // included because they are used all over the UI
