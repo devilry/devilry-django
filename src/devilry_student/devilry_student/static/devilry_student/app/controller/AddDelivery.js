@@ -23,7 +23,7 @@ Ext.define('devilry_student.controller.AddDelivery', {
                 render: this._onRender
             },
             'viewport add_delivery fileuploadfield': {
-                change: this._onAddFileOnDelivery
+                change: this._onChooseFile
             }
         });
     },
@@ -32,77 +32,55 @@ Ext.define('devilry_student.controller.AddDelivery', {
         this.groupInfoRecord = this.getAddDeliveryPanel().groupInfoRecord;
     },
 
-    /////////////////////////////////////////////////////
-    // Handle adding a delivery
-    /////////////////////////////////////////////////////
+    _onChooseFile: function() {
+        this._submitForm();
+    },
 
-    _onAddFileOnDelivery: function() {
-        console.log('HEI');
+    _setLoading: function(message) {
+        this.getAddDeliveryPanel().setLoading(message);
+    },
+
+    _setFormValues: function(values) {
+        var form = this.getAddDeliveryPanelForm().getForm();
+        form.setValues(values);
     },
 
 
-    //_createInitialDelivery: function() {
-        //console.log('create');
-        //this.getAddDeliveryPanel().setLoading(interpolate(gettext('Initializing %(delivery)s...'), {
-            //delivery: gettext('delivery'),
-        //}, true));
-        //var delivery = Ext.create(this.getDeliveryModel(), {
-            //deadline: this._getLatestDeadline().id,
-            //id: null,
-            //successful: false
-        //});
-        //delivery.save({
-            //scope: this,
-            //success: this._onCreateDeliverySuccess,
-            //failure: this._onCreateDeliveryFailure
-        //});
-    //},
+    _submitForm: function() {
+        var form = this.getAddDeliveryPanelForm().getForm();
+        var url = Ext.String.format(
+            '{0}/devilry_student/rest/add-delivery/{1}?format=json',
+            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.groupInfoRecord.get('id')
+        );
+        if(form.isValid()){
+            this._setLoading(gettext('Uploading your file ...'));
+            form.submit({
+                url: url,
+                scope: this,
+                success: this._onSubmitFormSuccess,
+                failure: this._onSubmitFormFailure
+            });
+        }
+    },
 
-    //_onCreateDeliverySuccess: function(deliveryrecord) {
-        //console.log('created', deliveryrecord.data);
-        //this.deliveryInProgressRecord = deliveryrecord;
-        //this.getAddDeliveryPanel().setLoading(false);
-        //this._uploadFileToDelivery();
-    //},
+    _onSubmitFormSuccess: function(form, action) {
+        this._setLoading(false);
+        console.log('success', action);
+        var result = action.result;
+        this._setFormValues({
+            delivery_id: result.delivery_id
+        });
+    },
 
-    //_onCreateDeliveryFailure: function(unused, operation) {
-        //this.getAddDeliveryPanel().setLoading(false);
-        ////console.log(operation);
-        //var message = interpolate(gettext('Could not create %(delivery)s on the selected deadline.'), {
-            //delivery: gettext('delivery')
-        //}, true);
-        //var response = Ext.JSON.decode(operation.response.responseText);
-        //if(response && response.items.errormessages) {
-            //message = response.items.errormessages.join('. ');
-        //}
-        //Ext.MessageBox.show({
-            //title: gettext('Error'),
-            //msg: message,
-            //icon: Ext.MessageBox.ERROR,
-            //buttons: Ext.MessageBox.OK
-        //});
-    //},
-
-
-    //_uploadFileToDelivery: function() {
-        //console.log('upload');
-        //var form = this.getAddDeliveryPanelForm().getForm();
-        //var url = Ext.String.format(
-            //'{0}/student/add-delivery/fileupload/{1}',
-            //DevilrySettings.DEVILRY_URLPATH_PREFIX, this.groupInfoRecord.get('id')
-        //);
-        //if(form.isValid()){
-            //console.log('valid', this.deliveryInProgressRecord.data);
-            //this.getAddDeliveryPanel().setLoading(gettext('Uploading your file ...'));
-            //form.submit({
-                //url: url,
-                //scope: this,
-                //params: {deliveryid: this.deliveryInProgressRecord.get('id')},
-                //success: this.onAddFileSuccess,
-                //failure: this.onAddFileFailure
-            //});
-        //} else {
-            //console.log('invalid');
-        //}
-    //}
+    _onSubmitFormFailure: function(form, action) {
+        this._setLoading(false);
+        console.log('failure', action);
+        var result = action.result;
+        Ext.MessageBox.show({
+            title: gettext('Error'),
+            msg: result.detail,
+            icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK
+        });
+    }
 });

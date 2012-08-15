@@ -8,7 +8,6 @@ from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 
 from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup
 from .aggregated_groupinfo import IsCandidate
 
@@ -97,13 +96,14 @@ class AddDeliveryView(View):
             self._finish()
             finished = True
 
-        return {'group_id': group_id,
-                'deadline_id': self.deadline.id,
-                'delivery_id': self.delivery.id,
-                'added_filename': filename,
-                'created_delivery': created_delivery,
-                'finished': finished,
-                'success': True} # NOTE: ``success`` is included for ExtJS compatibility
+        result = {'group_id': group_id,
+                  'deadline_id': self.deadline.id,
+                  'delivery_id': self.delivery.id,
+                  'added_filename': filename,
+                  'created_delivery': created_delivery,
+                  'finished': finished,
+                  'success': True} # NOTE: ``success`` is included for ExtJS compatibility
+        return result
 
     def _get_or_notfounderror(self, modelcls, id):
         try:

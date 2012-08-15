@@ -3,6 +3,10 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     alias: 'widget.add_delivery',
     margin: '40 20 20 20',
 
+    requires: [
+        'Ext.util.Cookies'
+    ],
+
     /**
      * @cfg {Object} [groupInfoRecord]
      */
@@ -52,6 +56,10 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     xtype: 'hidden',
                     name: 'finish',
                     value: ''
+                }, {
+                    xtype: 'hidden',
+                    name: 'csrfmiddlewaretoken',
+                    value: Ext.util.Cookies.get('csrftoken')
                 }, {
                     xtype: 'fileuploadfield',
                     name: 'file_to_add',
