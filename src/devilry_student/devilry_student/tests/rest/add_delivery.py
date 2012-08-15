@@ -82,6 +82,7 @@ class TestRestAddDeliveryView(TestCase):
         self.assertEquals(delivery.filemetas.count(), 2)
         self.assertEquals(deadline.deliveries.count(), 1)
         self.assertEquals(delivery.successful, True)
+        self.assertEquals(delivery.delivered_by.student.username, 'student1')
 
     def test_add_delivery_nobody(self):
         self.testhelper.create_user('nobody')

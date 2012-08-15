@@ -9,6 +9,7 @@ from djangorestframework.resources import FormResource
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 from .aggregated_groupinfo import IsCandidate
 
 
@@ -33,6 +34,12 @@ class AddDeliveryForm(forms.Form):
 
 class AddDeliveryResource(FormResource):
     form = AddDeliveryForm
+
+    def validate_request(self, data, files=None):
+        if 'file_to_add' in data:
+            del data['file_to_add']
+        return super(AddDeliveryResource, self).validate_request(data, files)
+
 
 
 class AddDeliveryView(View):
@@ -108,12 +115,19 @@ class AddDeliveryView(View):
     def _get_or_notfounderror(self, modelcls, id):
         try:
             return modelcls.objects.get(id=id)
-        except modelcls.DoesNotExist, e:
+        except modelcls.DoesNotExist:
             raise NotFoundError('No {0} with ID={1}'.format(modelcls.__name__, id))
 
     def _finish(self):
         self.delivery.successful = True
+        self.delivery.delivered_by = self._get_canidate()
         self.delivery.save()
+
+    def _get_canidate(self):
+        try:
+            return self.group.candidates.get(student=self.request.user)
+        except Candidate.DoesNotExist:
+            return None
 
     def _create_or_get_delivery(self):
         delivery_id = self.CONTENT['delivery_id']
@@ -126,7 +140,8 @@ class AddDeliveryView(View):
             return delivery, False
 
     def _create_delivery(self):
-        delivery = self.deadline.deliveries.create(successful=False)
+        delivery = self.deadline.deliveries.create(successful=False,
+                                                   delivered_by=self._get_canidate())
         return delivery
 
     def _add_file(self):
