@@ -108,3 +108,11 @@ class TestRestAddDeliveryView(TestCase):
                                                       'file_to_add': fp})
         self.assertEquals(response.status_code, 400)
         self.assertEquals(content['detail'], 'Can not change finished deliveries.')
+
+    def test_add_delivery_to_closed_group(self):
+        self.group.is_open = False
+        self.group.save()
+        fp = FakeFile('hello.txt', 'Hello world')
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['detail'], 'Can not add deliveries on closed groups.')

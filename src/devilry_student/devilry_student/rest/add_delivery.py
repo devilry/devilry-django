@@ -52,6 +52,10 @@ class AddDeliveryView(View):
     def post(self, request, id):
         group_id = int(id)
         self.group = self._get_or_notfounderror(AssignmentGroup, group_id)
+
+        if not self.group.is_open:
+            raise BadRequestError('Can not add deliveries on closed groups.')
+
         self.deadline = self.group.get_active_deadline()
         self.delivery, created_delivery = self._create_or_get_delivery()
 
