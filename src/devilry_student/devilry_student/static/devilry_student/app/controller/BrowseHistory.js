@@ -16,6 +16,9 @@ Ext.define('devilry_student.controller.BrowseHistory', {
     }, {
         ref: 'periodGrid',
         selector: 'viewport browsehistory browsehistory_periodgrid'
+    }, {
+        ref: 'heading',
+        selector: 'viewport browsehistory #heading'
     }],
 
     init: function() {
@@ -79,5 +82,10 @@ Ext.define('devilry_student.controller.BrowseHistory', {
             url: '#/browse/',
             text: gettext('Browse')
         }], path);
+
+        this.getHeading().update({
+            heading: periodRecord.get('parentnode__long_name'),
+            subheading: path
+        });
     }
 });
