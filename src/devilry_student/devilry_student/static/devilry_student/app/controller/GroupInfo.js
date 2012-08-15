@@ -112,7 +112,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
         if(deliveryPanel) {
             var container = deliveryPanel.up('groupinfo_deadline');
             container.expand();
-            deliveryPanel.el.scrollIntoView(this.getOverview().body, false, true);
+            //deliveryPanel.el.scrollIntoView(this.getOverview().body, false, true);
+            deliveryPanel.el.scrollIntoView(this.getDeadlinesContainer().body, false, true);
         } else {
             this._showLoadError(interpolate(gettext('Invalid delivery: %s'), [delivery_id]));
         }

@@ -15,39 +15,41 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
     frame: false,
     border: 0,
     bodyPadding: 0,
-    autoScroll: true,
 
-    layout: 'column',
+    layout: 'border',
 
     items: [{
-        xtype: 'container',
-        columnWidth: 0.75,
-        padding: 20,
-        items: [{
-            xtype: 'box',
-            itemId: 'titleBox',
-            cls: 'bootstrap',
-            tpl: [
-                '<tpl if="groupinfo">',
-                    '<h1>{groupinfo.breadcrumbs.assignment.long_name}</h1>',
-                    '<p><small>',
-                        '{groupinfo.breadcrumbs.subject.short_name}.',
-                        '{groupinfo.breadcrumbs.period.short_name}.',
-                        '{groupinfo.breadcrumbs.assignment.short_name}',
-                    '</small></p>',
-                '<tpl else>',
-                    gettext('Loading ...'),
-                '</tpl>'
-            ]
-        }, {
-            xtype: 'panel',
-            itemId: 'deadlinesContainer',
-            cls: 'devilry_discussionview_container'
-        }]
+        xtype: 'box',
+        height: 'auto',
+        region: 'north',
+        padding: '20 20 0 20',
+        itemId: 'titleBox',
+        cls: 'bootstrap',
+        tpl: [
+            '<tpl if="groupinfo">',
+                '<h1>{groupinfo.breadcrumbs.assignment.long_name}</h1>',
+                '<p><small>',
+                    '{groupinfo.breadcrumbs.subject.short_name}.',
+                    '{groupinfo.breadcrumbs.period.short_name}.',
+                    '{groupinfo.breadcrumbs.assignment.short_name}',
+                '</small></p>',
+            '<tpl else>',
+                gettext('Loading ...'),
+            '</tpl>'
+        ]
     }, {
         xtype: 'container',
-        columnWidth: 0.25,
+        region: 'west',
+        autoScroll: true,
+        width: 200,
         padding: 20,
         itemId: 'metadataContainer'
+    }, {
+        xtype: 'panel',
+        region: 'center',
+        bodyPadding: 20,
+        autoScroll: true,
+        itemId: 'deadlinesContainer',
+        cls: 'devilry_discussionview_container'
     }]
 });
