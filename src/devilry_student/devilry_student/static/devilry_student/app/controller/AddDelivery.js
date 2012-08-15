@@ -107,7 +107,7 @@ Ext.define('devilry_student.controller.AddDelivery', {
         this._updateHelp(result);
         this.getDeliverButton().enable();
         if(result.finished) {
-            this._onFinished();
+            this._onFinished(result.delivery_id);
         }
     },
 
@@ -137,7 +137,7 @@ Ext.define('devilry_student.controller.AddDelivery', {
         });
     },
 
-    _onFinished: function() {
-        this.getAddDeliveryPanel().fireEvent('deliveryFinished');
+    _onFinished: function(delivery_id) {
+        this.getAddDeliveryPanel().fireEvent('deliveryFinished', delivery_id);
     }
 });

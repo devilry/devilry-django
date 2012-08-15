@@ -41,7 +41,12 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onRender: function() {
+        this._reload();
+    },
+
+    _reload: function() {
         var group_id = this.getOverview().group_id;
+        this.getOverview().setLoading(true);
         this.getGroupInfoModel().load(group_id, {
             scope: this,
             success: this._onGroupInfoLoadSuccess,
@@ -64,9 +69,11 @@ Ext.define('devilry_student.controller.GroupInfo', {
         if(this.getOverview().add_delivery) {
             this._addDelivery();
         }
+        this.getOverview().setLoading(false);
     },
 
     _onGroupInfoLoadFailure: function() {
+        this.setLoading(false);
         this._showLoadError(gettext('Failed to load group. Try to reload the page'));
     },
 
@@ -75,6 +82,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
+        this.getDeadlinesContainer().removeAll();
         Ext.Array.each(deadlines, function(deadline) {
             this.getDeadlinesContainer().add({
                 xtype: 'groupinfo_deadline',
@@ -121,22 +129,35 @@ Ext.define('devilry_student.controller.GroupInfo', {
         }
     },
 
-    _setBreadcrumbs: function(groupInfoRecord) {
+    _setBreadcrumbs: function(groupInfoRecord, extra) {
         var subject = groupInfoRecord.get('breadcrumbs').subject;
         var period = groupInfoRecord.get('breadcrumbs').period;
         var assignment = groupInfoRecord.get('breadcrumbs').assignment;
         var periodpath = [subject.short_name, period.short_name].join('.');
 
-        this.application.breadcrumbs.set([{
+        var breadcrumbs = [{
             url: '#/browse/',
             text: gettext('Browse')
         }, {
             url: Ext.String.format('#/browse/{0}', period.id),
             text: periodpath
-        }], assignment.short_name);
+        }];
 
-        var path = [periodpath, assignment.shortname].join('.');
-        this.application.setTitle(path);
+        if(extra) {
+            breadcrumbs.push({
+                url: Ext.String.format('#/group/{0}/', groupInfoRecord.get('id')),
+                text: assignment.short_name
+            });
+            this.application.breadcrumbs.set(breadcrumbs, extra);
+        } else {
+            this.application.breadcrumbs.set(breadcrumbs, assignment.short_name);
+        }
+
+        var title = [periodpath, assignment.shortname].join('.');
+        if(extra) {
+            title += ' - ' + extra;
+        }
+        this.application.setTitle(title);
     },
 
     _addDelivery: function() {
@@ -169,21 +190,25 @@ Ext.define('devilry_student.controller.GroupInfo', {
         });
         deadlinePanel.expand();
         deadlinePanel.hideDeliveries();
+        this._setBreadcrumbs(this.groupInfoRecord, interpolate(gettext('Add %(delivery_term)s'), {
+            delivery_term: gettext('delivery'),
+        }, true));
     },
 
-    _removeAddDeliveriesPanel: function() {
+    _removeAddDeliveriesPanel: function(delivery_id) {
         var deadlinePanel = this._getDeadlinePanelById(this._getLatestDeadline().id)
         deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
         deadlinePanel.showDeliveries();
+        var token = Ext.String.format('/group/{0}/{1}', this.groupInfoRecord.get('id'), delivery_id || '');
+        this.application.route.navigate(token);
     },
 
     _onAddDeliveryCancel: function() {
         this._removeAddDeliveriesPanel();
     },
 
-    _onAddDeliveryFinished: function() {
-        console.log('finished');
-        this._removeAddDeliveriesPanel();
+    _onAddDeliveryFinished: function(delivery_id) {
+        this._removeAddDeliveriesPanel(delivery_id);
     },
 
     _getLatestDeadline: function() {
