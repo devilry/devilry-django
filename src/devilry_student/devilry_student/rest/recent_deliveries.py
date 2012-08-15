@@ -32,7 +32,7 @@ class RecentDeliveriesView(ListModelView):
     # GET
     List of objects with the following attributes:
 
-    - ``id`` (int): Internal Devilry ID of the group. Is never ``null``.
+    - ``id`` (int): Internal Devilry ID of the delivery. Is never ``null``.
     - ``assignment`` (object): Information about the assignment.
     - ``period`` (object): Information about the period.
     - ``subject`` (object): Information about the subject.
