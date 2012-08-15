@@ -44,4 +44,8 @@ class RecentDeliveriesView(ListModelView):
     def get_queryset(self):
         qry = Delivery.where_is_candidate(self.request.user)
         qry = qry.order_by('-time_of_delivery')
+        qry = qry.select_related('deadline', 'deadline__assignment_group',
+                                 'deadline__assignment_group__parentnode',
+                                 'deadline__assignment_group__parentnode__parentnode',
+                                 'deadline__assignment_group__parentnode__parentnode__parentnode')
         return qry[:6]
