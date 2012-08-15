@@ -2,8 +2,6 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.db import IntegrityError
 from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 
@@ -11,20 +9,8 @@ from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from .helpers import IsPublishedAndCandidate
-
-
-class NotFoundError(ErrorResponse):
-    """
-    Raised to signal that an item was not found
-    """
-    def __init__(self, errormsg):
-        super(NotFoundError, self).__init__(status.HTTP_404_NOT_FOUND,
-                                            {'detail': errormsg})
-
-class BadRequestError(ErrorResponse):
-    def __init__(self, errormsg):
-        super(BadRequestError, self).__init__(status.HTTP_400_BAD_REQUEST,
-                                              {'detail': errormsg})
+from .errors import NotFoundError
+from .errors import BadRequestError
 
 
 class AddDeliveryForm(forms.Form):
