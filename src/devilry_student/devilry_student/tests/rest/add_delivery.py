@@ -98,3 +98,13 @@ class TestRestAddDeliveryView(TestCase):
                                                       'file_to_add': fp})
         self.assertEquals(response.status_code, 400)
         self.assertEquals(content['detail'], 'Filename must be unique')
+
+    def test_change_after_successful(self):
+        deadline = self.testhelper.sub_p1_a1_g1_d1
+        delivery = deadline.deliveries.create(successful=True)
+
+        fp = FakeFile('hello.txt', 'Hello world')
+        response, content = self._postas('student1', {'delivery_id': delivery.id,
+                                                      'file_to_add': fp})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['detail'], 'Can not change finished deliveries.')

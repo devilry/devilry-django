@@ -38,6 +38,13 @@ class AddDeliveryResource(FormResource):
 
 class AddDeliveryView(View):
     """
+    Makes it easy to add a delivery on a Group.
+
+    **NOTE:** This is not strictly a REST API, however it is a programming API, developed using Djangorestframework.
+
+
+    # POST
+    To create a Delivery, you make one or more POST-requests.
     """
     resource = AddDeliveryResource
     permissions = (IsAuthenticated, IsCandidate)
@@ -79,7 +86,10 @@ class AddDeliveryView(View):
         if delivery_id == None:
             return self._create_delivery(), True
         else:
-            return self._get_or_notfounderror(Delivery, delivery_id), False
+            delivery = self._get_or_notfounderror(Delivery, delivery_id)
+            if delivery.successful:
+                raise BadRequestError('Can not change finished deliveries.')
+            return delivery, False
 
     def _create_delivery(self):
         delivery = self.deadline.deliveries.create(successful=False)
