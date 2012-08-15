@@ -81,6 +81,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 delivery_text: gettext('Delivery'),
                 delivery: this.delivery
             }),
+            itemId: Ext.String.format('delivery-{0}', this.delivery.id),
             layout: 'column',
             items: [{
                 columnWidth: 0.3,

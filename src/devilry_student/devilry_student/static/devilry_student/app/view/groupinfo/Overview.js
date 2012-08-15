@@ -3,6 +3,15 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
     alias: 'widget.groupinfo',
     cls: 'devilry_student_groupinfo',
 
+    /**
+     * @cfg {Object} [group_id]
+     */
+
+    /**
+     * @cfg {Object} [delivery_id]
+     * ID of a delivery that should be highlighted on load.
+     */
+
     frame: false,
     border: 0,
     bodyPadding: 0,
@@ -12,7 +21,6 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
 
     items: [{
         xtype: 'container',
-        autoScroll: true,
         columnWidth: 0.75,
         padding: 20,
         items: [{

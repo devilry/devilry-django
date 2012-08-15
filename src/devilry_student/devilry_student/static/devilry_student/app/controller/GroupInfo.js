@@ -49,11 +49,18 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
+        var delivery_id = this.getOverview().delivery_id;
+        if(delivery_id != undefined) {
+            this._hightlightSelectedDelivery(delivery_id);
+        }
     },
 
     _onGroupInfoLoadFailure: function() {
-        Ext.MessageBox.alert(gettext('Error'),
-            gettext('Failed to load group. Try to reload the page'));
+        this._showLoadError(gettext('Failed to load group. Try to reload the page'));
+    },
+
+    _showLoadError: function(message) {
+        Ext.MessageBox.alert(gettext('Error'), message);
     },
 
     _addDeadlineToContainer: function(deadline, active_feedback) {
@@ -78,7 +85,6 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
     _populateMetadata: function(groupInfoRecord) {
         this.getMetadataContainer().removeAll();
-        console.log(groupInfoRecord.data);
         this.getMetadataContainer().add({
             xtype: 'groupmetadata',
             data: {
@@ -86,5 +92,17 @@ Ext.define('devilry_student.controller.GroupInfo', {
                 examiner_term: gettext('examiner')
             }
         });
+    },
+
+    _hightlightSelectedDelivery: function(delivery_id) {
+        var itemid = Ext.String.format('#delivery-{0}', delivery_id);
+        var deliveryPanel = this.getOverview().down(itemid);
+        if(deliveryPanel) {
+            var container = deliveryPanel.up('groupinfo_deadline');
+            container.expand();
+            deliveryPanel.el.scrollIntoView(this.getOverview().body, false, true);
+        } else {
+            this._showLoadError(interpolate(gettext('Invalid delivery: %s'), [delivery_id]));
+        }
     }
 });

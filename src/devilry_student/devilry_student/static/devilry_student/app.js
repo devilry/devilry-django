@@ -78,7 +78,8 @@ Ext.application({
         this.route.add("", 'dashboard');
         this.route.add("/browse/", 'browse');
         this.route.add("/browse/:period_id", 'browsePeriod');
-        this.route.add("/group/:group_id", 'groupinfo');
+        this.route.add("/group/:group_id/", 'groupinfo');
+        this.route.add("/group/:group_id/:delivery_id", 'groupinfo');
         this.route.start();
     },
     
@@ -110,10 +111,11 @@ Ext.application({
         });
     },
 
-    groupinfo: function(routeinfo, group_id) {
+    groupinfo: function(routeinfo, group_id, delivery_id) {
         this.setPrimaryContent({
             xtype: 'groupinfo',
-            group_id: group_id
+            group_id: group_id,
+            delivery_id: delivery_id
         });
     }
 });

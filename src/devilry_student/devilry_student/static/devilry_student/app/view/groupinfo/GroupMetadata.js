@@ -26,7 +26,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     '<span class="danger">', gettext('Failed') ,'</span>',
                 '</tpl>',
                 ' <small>({groupinfo.active_feedback.feedback.grade})</small>',
-                ' - <a href="#/browse/{groupinfo.id}/{groupinfo.active_feedback.delivery_id}">', gettext('Details'), '</a>',
+                ' - <a href="#/group/{groupinfo.id}/{groupinfo.active_feedback.delivery_id}">', gettext('Details'), '</a>',
             '</tpl>',
         '</p>',
 
