@@ -1,0 +1,71 @@
+from django.test import TestCase
+
+from devilry.apps.core.testhelper import TestHelper
+from devilry.utils.rest_testclient import RestClient
+
+
+
+class TestRestAggregatedGroupInfo(TestCase):
+    def setUp(self):
+        self.client = RestClient()
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:begins(-1)'],
+                            assignments=['a1'])
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2')
+        self.group = self.testhelper.sub_p1_a1_g1
+        self.url = '/devilry_student/rest/aggregated-groupinfo/{0}'.format(self.group.id)
+
+    def _getas(self, username):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self.url)
+
+    def test_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._getas('nobody')
+        self.assertEquals(response.status_code, 403)
+
+    def test_groupinfo(self):
+        content, response = self._getas('student1')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(set(content.keys()),
+                          set(['id', 'name', 'is_open', 'candidates',
+                               'deadlines', 'active_feedback',
+                               'deadline_handling', 'breadcrumbs']))
+        self.assertEquals(content['id'], self.group.id)
+        self.assertEquals(content['name'], 'g1')
+        self.assertEquals(content['is_open'], True)
+        self.assertEquals(content['deadline_handling'], 0)
+        self.assertEquals(content['active_feedback'], None)
+
+    def test_candidates(self):
+        content, response = self._getas('student1')
+        candidates = content['candidates']
+        self.assertEquals(len(candidates), 2)
+        self.assertEquals(set(candidates[0].keys()),
+                          set(['id', 'candidate_id', 'identifier', 'user']))
+        self.assertEquals(set(candidates[0]['user'].keys()),
+                          set(['id', 'username', 'email', 'full_name', 'displayname']))
+
+    def test_deadlines(self):
+        content, response = self._getas('student1')
+        deadlines = content['deadlines']
+        self.assertEquals(len(deadlines), 2)
+        self.assertEquals(set(deadlines[0].keys()),
+                          set(['id', 'deadline', 'deliveries', 'text']))
+
+    def test_breadcrumbs(self):
+        content, response = self._getas('student1')
+        breadcrumbs = content['breadcrumbs']
+        self.assertEquals(breadcrumbs,
+                          {u'assignment': {u'id': self.group.parentnode.id,
+                                           u'long_name': u'A1',
+                                           u'short_name': u'a1'},
+                           u'period': {u'id': self.group.parentnode.parentnode.id,
+                                       u'long_name': u'P1',
+                                       u'short_name': u'p1'},
+                           u'subject': {u'id': self.group.parentnode.parentnode.parentnode.id,
+                                        u'long_name': u'Sub',
+                                        u'short_name': u'sub'}})
