@@ -53,7 +53,7 @@ Ext.define('devilry_student.controller.AddDelivery', {
     },
 
     _onCancel: function() {
-        console.log('cancel');
+        this.getAddDeliveryPanel().fireEvent('deliveryCancelled');
     },
 
     _onDeliver: function() {
@@ -106,6 +106,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
         this._updateMeta();
         this._updateHelp(result);
         this.getDeliverButton().enable();
+        if(result.finished) {
+            this._onFinished();
+        }
     },
 
     _onSubmitFormFailure: function(form, action) {
@@ -132,5 +135,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
             filenameCount: this.uploadedfiles.length,
             delivery_term: gettext('delivery')
         });
+    },
+
+    _onFinished: function() {
+        this.getAddDeliveryPanel().fireEvent('deliveryFinished');
     }
 });

@@ -160,10 +160,30 @@ Ext.define('devilry_student.controller.GroupInfo', {
         deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
         deadlinePanel.down('#addDeliveryPanelContainer').add({
             xtype: 'add_delivery',
-            groupInfoRecord: this.groupInfoRecord
+            groupInfoRecord: this.groupInfoRecord,
+            listeners: {
+                scope: this,
+                deliveryCancelled: this._onAddDeliveryCancel,
+                deliveryFinished: this._onAddDeliveryFinished
+            }
         });
         deadlinePanel.expand();
         deadlinePanel.hideDeliveries();
+    },
+
+    _removeAddDeliveriesPanel: function() {
+        var deadlinePanel = this._getDeadlinePanelById(this._getLatestDeadline().id)
+        deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
+        deadlinePanel.showDeliveries();
+    },
+
+    _onAddDeliveryCancel: function() {
+        this._removeAddDeliveriesPanel();
+    },
+
+    _onAddDeliveryFinished: function() {
+        console.log('finished');
+        this._removeAddDeliveriesPanel();
     },
 
     _getLatestDeadline: function() {
