@@ -55,12 +55,11 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                         assignments_term: gettext('Assignments'),
                         deadlines_term: gettext('deadlines')
                     }, true),
-                    subheading: interpolate(gettext('These %(assignments_term)s use soft deadlines, so you are allowed to add %(deliveries_term)s even if the deadline has expired. You normally need a valid reason to add %(deliveries_term)s after a %(deadline_term)s has expired, and your %(examiner_term)s will clearly see any deliveries made after the deadline.'), {
+                    subheading: interpolate(gettext('These %(assignments_term)s use soft %(deadlines_term)s, so you are allowed to add %(deliveries_term)s even though the %(deadline_term)s has expired. You normally need a valid reason to add %(deliveries_term)s after a %(deadline_term)s has expired, even on %(assignments_term)s with soft deadlines.'), {
                         assignments_term: gettext('assignments'),
                         deadlines_term: gettext('deadlines'),
                         deadline_term: gettext('deadline'),
-                        deliveries_term: gettext('deliveries'),
-                        examiner_term: gettext('examiner')
+                        deliveries_term: gettext('deliveries')
                     }, true),
                 }
             }, {

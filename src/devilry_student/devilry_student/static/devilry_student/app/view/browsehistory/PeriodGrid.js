@@ -65,7 +65,9 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
             hideHeaders: true,
             tbar: [{
                 xtype: 'textfield',
-                emptyText: interpolate(gettext('Find a %(subject)s ...'), {subject: gettext('Subject')}, true),
+                emptyText: interpolate(gettext('Find a %(subject_term)s ...'), {
+                    subject_term: gettext('Subject')
+                }, true),
                 flex: 1,
                 listeners: {
                     scope: this,

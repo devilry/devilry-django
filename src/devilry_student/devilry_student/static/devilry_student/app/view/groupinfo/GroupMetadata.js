@@ -41,10 +41,16 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
         '<p>',
             '<tpl if="groupinfo.is_open">',
                 '<span class="label label-success">', gettext('Open'), '</span> ',
-                gettext('You can add more deliveries.'),
+                interpolate(gettext('You can add more %(deliveries_term)s.'), {
+                    deliveries_term: gettext('deliveries')
+                }, true),
             '<tpl else>',
                 '<span class="label label-warning">', gettext('Closed'), '</span> ',
-                gettext('The current grade is the final grade. You can not add more deliveries unless an {examiner_term} opens the group.'),
+                interpolate(gettext('The current %(grade_term)s is the final grade. You can not add more %(deliveries_term)s unless an %(examiner_term)s opens the group.'), {
+                    deliveries_term: gettext('deliveries'),
+                    examiner_term: gettext('examiner'),
+                    grade_term: gettext('grade'),
+                }, true),
             '</tpl>',
         '</p>',
         '<tpl if="groupinfo.is_open">',

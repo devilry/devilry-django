@@ -39,7 +39,7 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
                     '{groupinfo.breadcrumbs.assignment.short_name}',
                 '</small></p>',
             '<tpl else>',
-                gettext('Loading ...'),
+                gettext('Loading') + ' ...',
             '</tpl>'
         ]
     }, {

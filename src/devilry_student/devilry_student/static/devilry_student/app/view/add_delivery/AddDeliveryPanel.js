@@ -25,7 +25,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     helptextTpl: [
         '<tpl if="added_filename">',
             '<p><strong>', gettext('{added_filename} uploaded successfully'), '</strong></p>',
-            '<p>', gettext('Click the <em>Submit {delivery_term}</em> to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
+            '<p>', gettext('Click the <em>Submit {delivery_term}</em> button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
         '<tpl else>',
             '<p>', gettext('Upload files for your {delivery_term}. You can upload multiple files.'), '</p>',
         '</tpl>'

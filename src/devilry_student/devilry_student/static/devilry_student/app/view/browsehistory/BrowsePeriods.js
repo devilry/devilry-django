@@ -35,7 +35,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
                 ],
                 data: {
                     heading: gettext('Browse'),
-                    subheading: interpolate(gettext('Browse all your %(assignments_term)s and %(deliveries_term)s, including assignments from old %(periods_term)s.'), {
+                    subheading: interpolate(gettext('Browse all your %(assignments_term)s and %(deliveries_term)s, including %(assignments_term)s from old %(periods_term)s.'), {
                         assignments_term: gettext('assignments'),
                         deliveries_term: gettext('deliveries'),
                         periods_term: gettext('periods')

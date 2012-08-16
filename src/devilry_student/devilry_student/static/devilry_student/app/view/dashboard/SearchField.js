@@ -17,7 +17,7 @@ Ext.define('devilry_student.view.dashboard.SearchField', {
     }, true),
 
     listConfig: {
-        loadingText: gettext('Searching ...'),
+        loadingText: gettext('Searching') + ' ...',
         emptyText: gettext('Nothing matches your search'),
         getInnerTpl: function () {
             return [
