@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-15 01:48+0200\n"
+"POT-Creation-Date: 2012-08-16 06:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,19 +99,19 @@ msgstr "grupper"
 
 #: static/devilry_core/terminology.js:22
 msgid "Deadline"
-msgstr "Deadline"
+msgstr "Innleveringsfrist"
 
 #: static/devilry_core/terminology.js:22
 msgid "Deadlines"
-msgstr "Deadlines"
+msgstr "Innleveringsfrister"
 
 #: static/devilry_core/terminology.js:23
 msgid "deadline"
-msgstr "deadline"
+msgstr "innleveringsfrist"
 
 #: static/devilry_core/terminology.js:23
 msgid "deadlines"
-msgstr "deadlines"
+msgstr "innleveringsfrister"
 
 #: static/devilry_core/terminology.js:25
 msgid "Delivery"
@@ -242,5 +242,9 @@ msgid "Search"
 msgstr "Søk"
 
 #: static/devilry_core/terminology.js:55
+msgid "Loading"
+msgstr "Laster"
+
+#: static/devilry_core/terminology.js:56
 msgid "Browse"
 msgstr "Bla i alle"

@@ -52,5 +52,6 @@ var terms = [
     gettext_noop('Cancel'),
     gettext_noop('Error'),
     gettext_noop('Search'),
+    gettext_noop('Loading'),
     gettext_noop('Browse')
 ]
