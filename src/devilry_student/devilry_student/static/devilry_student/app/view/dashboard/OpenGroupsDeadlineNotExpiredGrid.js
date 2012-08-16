@@ -1,4 +1,4 @@
-Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid' ,{
+Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.opengroups_deadline_not_expired_grid',
     cls: 'devilry_student_opengroupsgrid not_expired',
