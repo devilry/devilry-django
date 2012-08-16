@@ -7,9 +7,11 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
     border: 0,
     bodyPadding: 20,
     autoScroll: true,
+    layout: 'column',
 
     items: [{
         xtype: 'container',
+        columnWidth: 0.65,
         items: [{
             xtype: 'container',
             itemId: 'notExpired',
@@ -55,9 +57,31 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }, {
                 xtype: 'opengroups_deadline_expired_grid'
             }]
+        }, {
+            xtype: 'container',
+            itemId: 'old'
         }]
     }, {
         xtype: 'container',
-        itemId: 'old'
+        padding: '0 0 0 40',
+        columnWidth: 0.35,
+        items: {
+            xtype: 'container',
+            itemId: 'recentDeliveries',
+            items: [{
+                xtype: 'box',
+                cls: 'bootstrap',
+                tpl: [
+                    '<h4>{heading}</h4>'
+                ],
+                data: {
+                    heading: interpolate(gettext('Recent %(deliveries_term)s'), {
+                        deliveries_term: gettext('deliveries')
+                    }, true)
+                }
+            }, {
+                xtype: 'recentdeliveriesgrid'
+            }]
+        }
     }]
 });

@@ -14,10 +14,9 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineExpiredGrid', {
         '<div>',
             '<small class="deliveries"><em>{deliveries_term}:</em> {group.deliveries}</small>',
             '<small class="divider">,&nbsp;&nbsp;</small>',
-            '<small class="deadline"><em>{deadline_term}:</em> {group.active_deadline.deadline}</small>',
-        '</div>',
-        '<div><small class="danger">',
-            gettext('{deadline_term} was {offset_from_deadline} ago'),
-        '</small></div>'
+            '<small class="deadline danger">',
+                gettext('{deadline_term} was {offset_from_deadline} ago'),
+            '</small>',
+        '</div>'
     ],
 });

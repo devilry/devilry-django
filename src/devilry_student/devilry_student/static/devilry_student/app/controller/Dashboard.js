@@ -16,12 +16,14 @@ Ext.define('devilry_student.controller.Dashboard', {
     views: [
         'dashboard.Overview',
         'dashboard.OpenGroupsDeadlineExpiredGrid',
-        'dashboard.OpenGroupsDeadlineNotExpiredGrid'
+        'dashboard.OpenGroupsDeadlineNotExpiredGrid',
+        'dashboard.RecentDeliveriesGrid'
     ],
 
     stores: [
         'OpenGroupsDeadlineNotExpired',
-        'OpenGroupsDeadlineExpired'
+        'OpenGroupsDeadlineExpired',
+        'RecentDeliveries'
     ],
 
     refs: [{
@@ -58,6 +60,13 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
+                }
+            }
+        });
+        this.getRecentDeliveriesStore().load({
+            callback: function(records, operation) {
+                if(!operation.success) {
+                    this._handleGroupLoadError(gettext('Failed to load your recent deliveries. Please try to reload the page.'));
                 }
             }
         });
