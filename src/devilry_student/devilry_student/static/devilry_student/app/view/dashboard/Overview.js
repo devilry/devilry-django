@@ -57,9 +57,6 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }, {
                 xtype: 'opengroups_deadline_expired_grid'
             }]
-        }, {
-            xtype: 'container',
-            itemId: 'old'
         }]
     }, {
         xtype: 'container',
