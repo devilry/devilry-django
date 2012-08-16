@@ -2,6 +2,8 @@ Ext.define('devilry_student.controller.Dashboard', {
     extend: 'Ext.app.Controller',
 
     requires: [
+        'Ext.window.MessageBox',
+
         'devilry.student.StudentSearchWidget',
         'devilry.student.AddDeliveriesGrid',
         'devilry.examiner.RecentFeedbacksView',
@@ -12,11 +14,18 @@ Ext.define('devilry_student.controller.Dashboard', {
     ],
 
     views: [
-        'dashboard.Overview'
+        'dashboard.Overview',
+        'dashboard.OpenGroupsDeadlineExpiredGrid',
+        'dashboard.OpenGroupsDeadlineNotExpiredGrid'
+    ],
+
+    stores: [
+        'OpenGroupsDeadlineNotExpired',
+        'OpenGroupsDeadlineExpired'
     ],
 
     refs: [{
-        ref: 'dashboard',
+        ref: 'overview',
         selector: 'viewport dashboard'
     }],
 
@@ -28,8 +37,32 @@ Ext.define('devilry_student.controller.Dashboard', {
         });
     },
 
+    _handleGroupLoadError: function(message) {
+        Ext.MessageBox.show({
+            title: gettext('Error'),
+            msg: message,
+            icon: Ext.MessageBox.ERROR,
+            buttons: Ext.MessageBox.OK
+        });
+    },
+
     _onRenderDashboard: function() {
-        this.getDashboard().add([{
+        this.getOpenGroupsDeadlineExpiredStore().load({
+            callback: function(records, operation) {
+                if(!operation.success) {
+                    this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
+                }
+            }
+        });
+        this.getOpenGroupsDeadlineNotExpiredStore().load({
+            callback: function(records, operation) {
+                if(!operation.success) {
+                    this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
+                }
+            }
+        });
+
+        this.getOverview().down('#old').add([{
             xtype: 'studentsearchwidget',
             urlPrefix: this.dashboard_url
         }, {
