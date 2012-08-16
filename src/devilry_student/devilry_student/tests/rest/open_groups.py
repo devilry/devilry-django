@@ -12,15 +12,15 @@ class TestRestOpenGroups(TestCase):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['p0:begins(-10):ends(2)',
-                                     'p1:begins(-1)',
+                                     'p1:begins(-2)',
                                      'p2:begins(5)'],
                             assignments=['a1'])
         self.testhelper.create_user('testuser')
         self.url = '/devilry_student/rest/open-groups/'
 
-    def _getas(self, username):
+    def _getas(self, username, **data):
         self.client.login(username=username, password='test')
-        return self.client.rest_get(self.url)
+        return self.client.rest_get(self.url, **data)
 
     def test_open_groups_empty(self):
         content, response = self._getas('testuser')
@@ -45,3 +45,32 @@ class TestRestOpenGroups(TestCase):
         self.assertEquals(len(content), 2)
         groupnames = set([group['name'] for group in content])
         self.assertEquals(groupnames, set(['g2', 'g3']))
+
+    def test_deadline_expired_and_order(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1).d1:ends(70)')
+        content, response = self._getas('student1')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 2)
+        self.assertEquals(content[0]['name'], 'g1')
+        self.assertEquals(content[0]['active_deadline']['deadline_expired'], True)
+        self.assertEquals(content[1]['name'], 'g2')
+        self.assertEquals(content[1]['active_deadline']['deadline_expired'], False)
+
+    def test_only_deadline_expired(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1).d1:ends(70)')
+        content, response = self._getas('student1', only='deadline_expired')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        self.assertEquals(content[0]['name'], 'g1')
+        self.assertEquals(content[0]['active_deadline']['deadline_expired'], True)
+
+    def test_only_deadline_not_expired(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1).d1:ends(70)')
+        content, response = self._getas('student1', only='deadline_not_expired')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        self.assertEquals(content[0]['name'], 'g2')
+        self.assertEquals(content[0]['active_deadline']['deadline_expired'], False)
