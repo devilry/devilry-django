@@ -1,7 +1,7 @@
 Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.add_delivery',
-    margin: '40 20 20 20',
+    margin: '20 20 20 20',
 
     requires: [
         'Ext.util.Cookies'
@@ -23,6 +23,11 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     ],
 
     helptextTpl: [
+        '<h2>',
+            interpolate(gettext('Add %(delivery_term)s'), {
+                delivery_term: gettext('delivery'),
+            }, true),
+        '</h2>',
         '<tpl if="added_filename">',
             '<p><strong>', gettext('{added_filename} uploaded successfully'), '</strong></p>',
             '<p>', gettext('Click the <em>Submit {delivery_term}</em> button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
@@ -33,11 +38,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
 
     initComponent: function() {
         Ext.apply(this, {
-            ui: 'inset-header-panel',
             cls: 'devilry_student_groupinfo_add_delivery',
-            title: interpolate(gettext('Add %(delivery_term)s'), {
-                delivery_term: gettext('delivery'),
-            }, true),
             layout: 'column',
             items: [{
                 xtype: 'form',
