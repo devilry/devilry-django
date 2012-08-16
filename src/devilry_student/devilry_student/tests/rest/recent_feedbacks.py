@@ -39,7 +39,7 @@ class TestRestRecentFeedbacks(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 1)
         self.assertEquals(set(content[0].keys()),
-                          set(['id', 'assignment', 'period', 'subject', 'time_of_delivery',
+                          set(['id', 'assignment', 'period', 'subject',
                                'number_of_feedbacks', 'number', 'last_feedback']))
 
     def test_recent_deliveries_overflow(self):
