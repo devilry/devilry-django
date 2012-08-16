@@ -265,7 +265,7 @@ msgid ""
 msgstr ""
 "Disse %(assignments_term)s bruker snille %(deadlines_term)s. Det betyr at du "
 "kan levere selv om fristen er over. Du vil vanligvis behøve gyldig grunn for "
-"å levere etter fristen selv om om snille deadlines benyttes."
+"å levere etter fristen selv om om snille %(deadlines_term)s benyttes."
 
 #: static/devilry_student/app/view/dashboard/Overview.js:96
 msgid "Recent %(deliveries_term)s"
