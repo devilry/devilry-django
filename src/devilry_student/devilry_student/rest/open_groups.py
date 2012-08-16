@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Max, Q
+from django.db.models import Max, Q, Count
 from djangorestframework.views import ListModelView
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
@@ -74,6 +74,8 @@ class OpenGroupsView(ListModelView):
         qry = AssignmentGroup.active_where_is_candidate(self.request.user)
         qry = qry.filter(is_open=True)
         qry = qry.annotate(newest_deadline=Max('deadlines__deadline'))
+        qry = qry.annotate(deadline_count=Count('deadlines__deadline'))
+        qry = qry.filter(deadline_count__gt=0)
 
         # Only include assignments with SOFT deadline handling where deadline has expired
         qry = qry.filter(Q(newest_deadline__lt=datetime.now()) | Q(parentnode__deadline_handling=0))
