@@ -12,7 +12,7 @@ from .helpers import format_timedelta
 
 class RecentFeedbacksResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'assignment', 'period', 'subject', 'number',
-              'last_feedback')
+              'last_feedback', 'group')
     model = Delivery
 
     def assignment(self, instance):
@@ -31,6 +31,11 @@ class RecentFeedbacksResource(ModelResource, GroupResourceHelpersMixin):
                 'grade': last_feedback.grade,
                 'is_passing_grade': last_feedback.is_passing_grade,
                 'save_offset_from_now': format_timedelta(datetime.now() - last_feedback.save_timestamp)}
+
+    def group(self, instance):
+        group = instance.deadline.assignment_group
+        return {'id': group.id,
+                'name': group.name}
 
 
 class RecentFeedbacksView(ListModelView):
