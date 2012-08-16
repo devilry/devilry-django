@@ -3,6 +3,10 @@ Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.browsehistory_assignmentgrid',
 
+    requires: [
+        'devilry.apps.student.simplified.SimplifiedAssignmentGroup'
+    ],
+
     /**
      * @cfg {Function} [urlCreateFn]
      * Function to call to genereate urls. Takes an AssignmentGroup record as parameter.
