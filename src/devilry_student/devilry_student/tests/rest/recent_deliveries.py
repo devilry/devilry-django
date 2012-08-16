@@ -38,7 +38,7 @@ class TestRestRecentDeliveries(TestCase):
         self.assertEquals(len(content), 1)
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'assignment', 'period', 'subject',
-                               'time_of_delivery', 'group']))
+                               'time_of_delivery', 'group', 'number']))
         assignment = self.group.parentnode
         period = self.group.parentnode.parentnode
         subject = self.group.parentnode.parentnode.parentnode

@@ -1,3 +1,4 @@
+from datetime import datetime
 from djangorestframework.views import ListModelView
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
@@ -5,10 +6,12 @@ from djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import Delivery
 from .helpers import GroupResourceHelpersMixin
 from .helpers import format_datetime
+from .helpers import format_timedelta
 
 
 class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):
-    fields = ('id', 'group', 'assignment', 'period', 'subject', 'time_of_delivery', 'group')
+    fields = ('id', 'group', 'assignment', 'period', 'subject',
+              'time_of_delivery', 'group', 'number')
     model = Delivery
 
     def assignment(self, instance):
@@ -21,7 +24,8 @@ class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):
         return self.format_basenode(instance.deadline.assignment_group.parentnode.parentnode.parentnode)
 
     def time_of_delivery(self, instance):
-        return format_datetime(instance.time_of_delivery)
+        return {'offset_from_now': format_timedelta(datetime.now() - instance.time_of_delivery),
+                'datetime': format_datetime(instance.time_of_delivery)}
 
     def group(self, instance):
         group = instance.deadline.assignment_group
@@ -39,10 +43,11 @@ class RecentDeliveriesView(ListModelView):
 
     - ``id`` (int): Internal Devilry ID of the delivery. Is never ``null``.
     - ``group`` (object): Information about the group.
+    - ``number`` (object): Delivery number.
     - ``assignment`` (object): Information about the assignment.
     - ``period`` (object): Information about the period.
     - ``subject`` (object): Information about the subject.
-    - ``time_of_delivery`` (datetime): The datetime when the delivery was made.
+    - ``time_of_delivery`` (object): The date and time when the delivery was made, including the offset from _now_.
     """
     permissions = (IsAuthenticated,)
     resource = RecentDeliveriesResource
