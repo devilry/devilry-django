@@ -18,9 +18,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
-                tpl: [
-                    '<h2>{heading} <small>- {heading_suffix}</small></h2>'
-                ],
+                tpl: '<h1>{heading} <small>- {heading_suffix}</small></h1>',
                 data: {
                     heading: gettext('Assignments'),
                     heading_suffix: interpolate(gettext('click one to add a %(delivery_term)s'), {
@@ -29,6 +27,17 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                 }
             }, {
                 xtype: 'opengroups_deadline_not_expired_grid'
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                margin: '10 0 0 0',
+                tpl: '<a href="#/browse/">{text}</a>',
+                data: {
+                    text: interpolate(gettext('Browse all your %(assignments_term)s, including old %(deliveries_term)s'), {
+                        assignments_term: gettext('assignments'),
+                        deliveries_term: gettext('deliveries')
+                    }, true)
+                }
             }]
         }, {
             xtype: 'container',
