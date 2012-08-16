@@ -1,0 +1,184 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-16 06:41+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: static/devilry_extjsextras/CancelButton.js:9
+msgctxt "uibutton"
+msgid "Cancel"
+msgstr ""
+
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:19
+msgid "DELETE"
+msgstr ""
+
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:32
+msgid ""
+"Type {required_confirm_text} in the field below to confirm that you really "
+"intend to delete {short_description}."
+msgstr "Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du virkelig ønsker å slette {short_description}."
+
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:47
+msgid "Write \"{something}\""
+msgstr ""
+
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:57
+msgid "Delete {something}?"
+msgstr ""
+
+#: static/devilry_extjsextras/CreateButton.js:5
+msgctxt "uibutton"
+msgid "Create"
+msgstr ""
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:6
+#, c-format
+msgid "%s days"
+msgstr "%s dager"
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:8
+#, c-format
+msgid "%s hours"
+msgstr "%s timer"
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:10
+#, c-format
+msgid "%s minutes"
+msgstr "%s minutter"
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:12
+#, c-format
+msgid "%s seconds"
+msgstr "%s sekunder"
+
+#: static/devilry_extjsextras/DeleteButton.js:9
+msgctxt "uibutton"
+msgid "Delete"
+msgstr ""
+
+#: static/devilry_extjsextras/DevilryHeader.js:37
+msgctxt "devilryheader"
+msgid "Student"
+msgstr ""
+
+#: static/devilry_extjsextras/DevilryHeader.js:40
+msgctxt "devilryheader"
+msgid "Examiner"
+msgstr ""
+
+#: static/devilry_extjsextras/DevilryHeader.js:43
+msgctxt "devilryheader"
+msgid "Subjectadmin"
+msgstr ""
+
+#: static/devilry_extjsextras/DevilryHeader.js:49
+msgctxt "devilryheader"
+msgid "Help"
+msgstr ""
+
+#: static/devilry_extjsextras/EditableSidebarBox.js:22
+msgid "Loading..."
+msgstr ""
+
+#: static/devilry_extjsextras/EditableSidebarBox.js:29
+msgctxt "uibutton"
+msgid "Edit"
+msgstr ""
+
+#: static/devilry_extjsextras/HtmlErrorDialog.js:32
+msgid "Error"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:94
+msgid "Select all"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:102
+msgid "Remove"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:116
+msgid "Filter ..."
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:132
+msgid "Saving ..."
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:148
+msgid "Already in list"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:149
+msgid "The selected item is already in the list"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:185
+msgid ""
+"Do you really want to remove the {numselected} selected items from the list?"
+msgstr ""
+
+#: static/devilry_extjsextras/ManageItemsPanel.js:187
+msgid "Confirm remove"
+msgstr ""
+
+#: static/devilry_extjsextras/NextButton.js:5
+msgctxt "uibutton"
+msgid "Next"
+msgstr ""
+
+#: static/devilry_extjsextras/OkButton.js:5
+msgctxt "uibutton"
+msgid "Ok"
+msgstr ""
+
+#: static/devilry_extjsextras/ProxyErrorHandler.js:46
+msgid "Could not connect to server at URL \"{url}\"."
+msgstr ""
+
+#: static/devilry_extjsextras/RouteNotFound.js:16
+msgid "Route not found"
+msgstr ""
+
+#: static/devilry_extjsextras/RouteNotFound.js:17
+msgid "Return to dashboard"
+msgstr ""
+
+#: static/devilry_extjsextras/SaveButton.js:5
+msgctxt "uibutton"
+msgid "Save"
+msgstr ""
+
+#: static/devilry_extjsextras/form/DateField.js:5
+msgctxt "extjs date input format"
+msgid "Y-m-d"
+msgstr ""
+
+#: static/devilry_extjsextras/form/DateTimeField.js:33
+msgctxt "extjs date emptytext"
+msgid "YYYY-MM-DD"
+msgstr ""
+
+#: static/devilry_extjsextras/form/DateTimeField.js:38
+msgctxt "extjs time emptytext"
+msgid "hh:mm"
+msgstr ""
+
+#: static/devilry_extjsextras/form/TimeField.js:5
+msgctxt "extjs time input format"
+msgid "H:i"
+msgstr ""
