@@ -4,6 +4,11 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineExpiredGrid', {
     cls: 'devilry_student_opengroupsgrid expired',
     store: 'OpenGroupsDeadlineExpired',
 
+    titleTpl: [
+        '<div><a href="#/group/{group.id}/@@add-delivery">',
+            '{group.subject.short_name} - {group.assignment.long_name}',
+        '</a></div>'
+    ],
 
     metaTpl: [
         '<div>',
@@ -11,8 +16,8 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineExpiredGrid', {
             '<small class="divider">,&nbsp;&nbsp;</small>',
             '<small class="deadline"><em>{deadline_term}:</em> {group.active_deadline.deadline}</small>',
         '</div>',
-        '<div><span class="danger">',
+        '<div><small class="danger">',
             gettext('{deadline_term} was {offset_from_deadline} ago'),
-        '</span></div>'
+        '</small></div>'
     ],
 });
