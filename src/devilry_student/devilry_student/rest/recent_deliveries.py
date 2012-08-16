@@ -8,7 +8,7 @@ from .helpers import format_datetime
 
 
 class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):
-    fields = ('id', 'assignment', 'period', 'subject', 'time_of_delivery')
+    fields = ('id', 'group', 'assignment', 'period', 'subject', 'time_of_delivery', 'group')
     model = Delivery
 
     def assignment(self, instance):
@@ -23,6 +23,11 @@ class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):
     def time_of_delivery(self, instance):
         return format_datetime(instance.time_of_delivery)
 
+    def group(self, instance):
+        group = instance.deadline.assignment_group
+        return {'id': group.id,
+                'name': group.name}
+
 
 class RecentDeliveriesView(ListModelView):
     """
@@ -33,6 +38,7 @@ class RecentDeliveriesView(ListModelView):
     List of objects with the following attributes:
 
     - ``id`` (int): Internal Devilry ID of the delivery. Is never ``null``.
+    - ``group`` (object): Information about the group.
     - ``assignment`` (object): Information about the assignment.
     - ``period`` (object): Information about the period.
     - ``subject`` (object): Information about the subject.
