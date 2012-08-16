@@ -17,13 +17,15 @@ Ext.define('devilry_student.controller.Dashboard', {
         'dashboard.Overview',
         'dashboard.OpenGroupsDeadlineExpiredGrid',
         'dashboard.OpenGroupsDeadlineNotExpiredGrid',
-        'dashboard.RecentDeliveriesGrid'
+        'dashboard.RecentDeliveriesGrid',
+        'dashboard.RecentFeedbacksGrid'
     ],
 
     stores: [
         'OpenGroupsDeadlineNotExpired',
         'OpenGroupsDeadlineExpired',
-        'RecentDeliveries'
+        'RecentDeliveries',
+        'RecentFeedbacks'
     ],
 
     refs: [{
@@ -67,6 +69,13 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your recent deliveries. Please try to reload the page.'));
+                }
+            }
+        });
+        this.getRecentFeedbacksStore().load({
+            callback: function(records, operation) {
+                if(!operation.success) {
+                    this._handleGroupLoadError(gettext('Failed to load your recent feedbacks. Please try to reload the page.'));
                 }
             }
         });

@@ -65,7 +65,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
         xtype: 'container',
         padding: '0 0 0 40',
         columnWidth: 0.35,
-        items: {
+        items: [{
             xtype: 'container',
             itemId: 'recentDeliveries',
             items: [{
@@ -82,6 +82,24 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }, {
                 xtype: 'recentdeliveriesgrid'
             }]
-        }
+        }, {
+            xtype: 'container',
+            margin: '20 0 0 0',
+            itemId: 'recentFeedbacks',
+            items: [{
+                xtype: 'box',
+                cls: 'bootstrap',
+                tpl: [
+                    '<h4>{heading}</h4>'
+                ],
+                data: {
+                    heading: interpolate(gettext('Recent %(feedbacks_term)s'), {
+                        feedbacks_term: gettext('feedbacks')
+                    }, true)
+                }
+            }, {
+                xtype: 'recentfeedbacksgrid'
+            }]
+        }]
     }]
 });

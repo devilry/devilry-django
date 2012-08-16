@@ -1,7 +1,7 @@
-Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
+Ext.define('devilry_student.view.dashboard.RecentFeedbacksGrid', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.recentdeliveriesgrid',
-    cls: 'devilry_student_recentdeliveriesgrid',
+    alias: 'widget.recentfeedbacksgrid',
+    cls: 'devilry_student_recentfeedbacksgrid',
     requires: [
         'devilry_extjsextras.DatetimeHelpers'
     ],
@@ -9,7 +9,7 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
     frame: false,
     border: 0,
     hideHeaders: true,
-    store: 'RecentDeliveries',
+    store: 'RecentFeedbacks',
     disableSelection: true,
 
     col1Tpl: [
@@ -18,6 +18,13 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
         '</a></div>',
         '<div>',
             '<small>', gettext('Added {offset_from_now} ago'), '</small>',
+            '<small> - </small>',
+            '<tpl if="delivery.last_feedback.is_passing_grade">',
+                '<small class="success">', gettext('Passed'), '</small>',
+            '<tpl else>',
+                '<small class="danger">', gettext('Failed'), '</small>',
+            '</tpl>',
+            '<small> ({delivery.last_feedback.grade})</small>',
         '</div>'
     ],
 
@@ -32,7 +39,7 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
                 sortable: false,
                 menuDisabled: true,
                 renderer: function(value, m, recentDeliveryRecord) {
-                    var offset_from_now = recentDeliveryRecord.get('time_of_delivery').offset_from_now
+                    var offset_from_now = recentDeliveryRecord.get('last_feedback').save_offset_from_now
                     return col1TplCompiled.apply({
                         delivery: recentDeliveryRecord.data,
                         offset_from_now: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(offset_from_now)
