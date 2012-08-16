@@ -67,18 +67,25 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }]
         }]
     }, {
-        xtype: 'container',
-        layout: 'anchor',
+        xtype: 'panel',
+        border: 0,
         padding: '0 0 0 40',
         columnWidth: 0.35,
+        dockedItems: [{
+            xtype: 'toolbar',
+            dock: 'top',
+            ui: 'footer',
+            margin: 0,
+            padding: 0,
+            items: [{
+                xtype: 'dashboard_searchfield',
+                flex: 1
+            }]
+        }],
         items: [{
-            xtype: 'dashboard_searchfield',
-            anchor: '100%'
-        }, {
             xtype: 'container',
             itemId: 'recentDeliveries',
             margin: '20 0 0 0',
-            anchor: '100%',
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
