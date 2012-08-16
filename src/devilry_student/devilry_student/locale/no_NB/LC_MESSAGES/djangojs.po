@@ -287,7 +287,7 @@ msgstr ""
 #: static/devilry_student/app/view/dashboard/RecentDeliveriesGrid.js:20
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:20
 msgid "Added {offset_from_now} ago"
-msgstr "Lagt til for {offset_from_now} siden"
+msgstr "For {offset_from_now} siden"
 
 #: static/devilry_student/app/view/dashboard/SearchField.js:15
 msgid "Search your %(assignments_term)s ..."
