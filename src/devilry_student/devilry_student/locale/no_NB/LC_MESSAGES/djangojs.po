@@ -220,7 +220,7 @@ msgstr "Finn et %(subject_term)s ..."
 
 #: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineExpiredGrid.js:18
 msgid "{deadline_term} was {offset_from_deadline} ago"
-msgstr "Siste frist var for {offset_from_deadline} siden"
+msgstr "Innleveringsfristen var for {offset_from_deadline} siden"
 
 #: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:44
 #: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:33
