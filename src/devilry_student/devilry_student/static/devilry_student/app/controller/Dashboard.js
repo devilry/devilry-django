@@ -10,14 +10,16 @@ Ext.define('devilry_student.controller.Dashboard', {
         'dashboard.OpenGroupsDeadlineExpiredGrid',
         'dashboard.OpenGroupsDeadlineNotExpiredGrid',
         'dashboard.RecentDeliveriesGrid',
-        'dashboard.RecentFeedbacksGrid'
+        'dashboard.RecentFeedbacksGrid',
+        'dashboard.SearchField'
     ],
 
     stores: [
         'OpenGroupsDeadlineNotExpired',
         'OpenGroupsDeadlineExpired',
         'RecentDeliveries',
-        'RecentFeedbacks'
+        'RecentFeedbacks',
+        'FindGroups'
     ],
 
     refs: [{
@@ -30,6 +32,9 @@ Ext.define('devilry_student.controller.Dashboard', {
             'viewport dashboard': {
                 render: this._onRenderDashboard
             },
+            'viewport dashboard dashboard_searchfield': {
+                select: this._onSelectSearch
+            }
         });
     },
 
@@ -71,5 +76,11 @@ Ext.define('devilry_student.controller.Dashboard', {
                 }
             }
         });
+    },
+
+    _onSelectSearch: function(combo, records) {
+        var findGroupRecord = records[0];
+        var token = Ext.String.format('/group/{0}/', findGroupRecord.get('id'));
+        this.application.route.navigate(token);
     }
 });
