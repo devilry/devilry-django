@@ -189,19 +189,39 @@ Ext.define('devilry_student.controller.GroupInfo', {
                 deliveryFinished: this._onAddDeliveryFinished
             }
         });
-        deadlinePanel.expand();
-        deadlinePanel.hideDeliveries();
         this._setBreadcrumbs(this.groupInfoRecord, interpolate(gettext('Add %(delivery_term)s'), {
             delivery_term: gettext('delivery'),
         }, true));
+        this._focusOnAddDeliveryPanel();
     },
 
     _removeAddDeliveriesPanel: function(delivery_id) {
+        this._removeFocusFromDeliveryPanel();
+        var token = Ext.String.format('/group/{0}/{1}', this.groupInfoRecord.get('id'), delivery_id || '');
+        this.application.route.navigate(token);
+    },
+
+    _focusOnAddDeliveryPanel: function() {
+        Ext.Array.each(this.getDeadlinesContainer().query('groupinfo_deadline'), function(panel) {
+            panel.hide();
+        }, this);
+        var latest_deadline = this._getLatestDeadline();
+        var deadlinePanel = this._getDeadlinePanelById(latest_deadline.id);
+        deadlinePanel.show();
+        deadlinePanel.expand();
+        deadlinePanel.hideDeliveries();
+        this.getMetadataContainer().hide();
+    },
+
+    _removeFocusFromDeliveryPanel: function() {
+        Ext.Array.each(this.getDeadlinesContainer().query('groupinfo_deadline'), function(panel) {
+            panel.show();
+            panel.collapse();
+        }, this);
         var deadlinePanel = this._getDeadlinePanelById(this._getLatestDeadline().id)
         deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
         deadlinePanel.showDeliveries();
-        var token = Ext.String.format('/group/{0}/{1}', this.groupInfoRecord.get('id'), delivery_id || '');
-        this.application.route.navigate(token);
+        this.getMetadataContainer().show();
     },
 
     _onAddDeliveryCancel: function() {
