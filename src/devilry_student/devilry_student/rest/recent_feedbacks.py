@@ -12,7 +12,7 @@ from .helpers import format_timedelta
 
 class RecentFeedbacksResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'assignment', 'period', 'subject', 'number',
-              'number_of_feedbacks', 'last_feedback')
+              'last_feedback')
     model = Delivery
 
     def assignment(self, instance):
@@ -44,6 +44,8 @@ class RecentFeedbacksView(ListModelView):
     - ``assignment`` (object): Information about the assignment.
     - ``period`` (object): Information about the period.
     - ``subject`` (object): Information about the subject.
+    - ``number`` (int): Delivery number.
+    - ``last_feedback`` (object): Information about the last feedback on the delivery.
     """
     permissions = (IsAuthenticated,)
     resource = RecentFeedbacksResource

@@ -43,7 +43,7 @@ class RecentDeliveriesView(ListModelView):
 
     - ``id`` (int): Internal Devilry ID of the delivery. Is never ``null``.
     - ``group`` (object): Information about the group.
-    - ``number`` (object): Delivery number.
+    - ``number`` (int): Delivery number.
     - ``assignment`` (object): Information about the assignment.
     - ``period`` (object): Information about the period.
     - ``subject`` (object): Information about the subject.
