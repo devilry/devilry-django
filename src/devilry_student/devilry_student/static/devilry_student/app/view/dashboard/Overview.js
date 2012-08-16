@@ -27,17 +27,6 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                 }
             }, {
                 xtype: 'opengroups_deadline_not_expired_grid'
-            }, {
-                xtype: 'box',
-                cls: 'bootstrap',
-                margin: '10 0 0 0',
-                tpl: '<a href="#/browse/">{text}</a>',
-                data: {
-                    text: interpolate(gettext('Browse all your %(assignments_term)s, including old %(deliveries_term)s'), {
-                        assignments_term: gettext('assignments'),
-                        deliveries_term: gettext('deliveries')
-                    }, true)
-                }
             }]
         }, {
             xtype: 'container',
@@ -65,6 +54,24 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }, {
                 xtype: 'opengroups_deadline_expired_grid'
             }]
+        }, {
+            xtype: 'box',
+            cls: 'bootstrap',
+            margin: '30 0 0 0',
+            tpl: [
+                '<h3>',
+                    interpolate(gettext('Other %(assignments_term)s'), {
+                        assignments_term: gettext('assignments')
+                    }, true),
+                '</h3>',
+                '<p><a href="#/browse/">{text}</a></p>'
+            ],
+            data: {
+                text: interpolate(gettext('Browse all your %(assignments_term)s, including old %(deliveries_term)s'), {
+                    assignments_term: gettext('assignments'),
+                    deliveries_term: gettext('deliveries')
+                }, true)
+            }
         }]
     }, {
         xtype: 'panel',

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-16 06:38+0200\n"
+"POT-Creation-Date: 2012-08-16 07:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,10 +37,10 @@ msgid "Error"
 msgstr ""
 
 #: static/devilry_student/app/controller/AddDelivery.js:136
-#: static/devilry_student/app/controller/GroupInfo.js:195
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:39
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:54
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:92
+#: static/devilry_student/app/controller/GroupInfo.js:193
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:28
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:55
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:93
 #: static/devilry_student/app/view/dashboard/Overview.js:25
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:60
 msgid "delivery"
@@ -97,9 +97,9 @@ msgstr "Kan ikke legge til %(deliveries_term)s på lukkede grupper."
 #: static/devilry_student/app/controller/GroupInfo.js:167
 #: static/devilry_student/app/controller/GroupInfo.js:176
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
-#: static/devilry_student/app/view/dashboard/Overview.js:38
-#: static/devilry_student/app/view/dashboard/Overview.js:62
-#: static/devilry_student/app/view/dashboard/Overview.js:97
+#: static/devilry_student/app/view/dashboard/Overview.js:51
+#: static/devilry_student/app/view/dashboard/Overview.js:72
+#: static/devilry_student/app/view/dashboard/Overview.js:104
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:45
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:50
 msgid "deliveries"
@@ -112,12 +112,12 @@ msgstr ""
 "%(deadline_term)s."
 
 #: static/devilry_student/app/controller/GroupInfo.js:177
-#: static/devilry_student/app/view/dashboard/Overview.js:61
+#: static/devilry_student/app/view/dashboard/Overview.js:50
 msgid "deadline"
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:194
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:38
+#: static/devilry_student/app/controller/GroupInfo.js:192
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:27
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:59
 msgid "Add %(delivery_term)s"
 msgstr "Legg til %(delivery_term)s"
@@ -126,11 +126,11 @@ msgstr "Legg til %(delivery_term)s"
 msgid "Uploaded files"
 msgstr "Filer du har lastet opp"
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:27
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:32
 msgid "{added_filename} uploaded successfully"
 msgstr "{added_filename} ble lastet opp uten feil"
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:28
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:33
 msgid ""
 "Click the <em>Submit {delivery_term}</em> button to deliver these "
 "{filenameCount} files, or choose <em>Add new file</em> to upload more files."
@@ -139,23 +139,23 @@ msgstr ""
 "{filenameCount} filene, eller velg <em>Legg til ny fil</em> for å laste opp "
 "flere filer."
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:30
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:35
 msgid "Upload files for your {delivery_term}. You can upload multiple files."
 msgstr "Last opp filer til din {delivery_term}. Du kan laste opp flere filer."
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:74
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:75
 msgid "Select file..."
 msgstr "Velg fil..."
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:75
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:76
 msgid "Add new file"
 msgstr "Legg til ny fil"
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:85
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:86
 msgid "Cancel"
 msgstr ""
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:91
+#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:92
 msgid "Submit %(delivery_term)s"
 msgstr "Fullfør %(delivery_term)s"
 
@@ -198,8 +198,9 @@ msgstr ""
 "%(assignments_term)s fra gamle %(periods_term)s."
 
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
-#: static/devilry_student/app/view/dashboard/Overview.js:37
-#: static/devilry_student/app/view/dashboard/Overview.js:59
+#: static/devilry_student/app/view/dashboard/Overview.js:48
+#: static/devilry_student/app/view/dashboard/Overview.js:64
+#: static/devilry_student/app/view/dashboard/Overview.js:71
 #: static/devilry_student/app/view/dashboard/SearchField.js:16
 msgid "assignments"
 msgstr ""
@@ -233,7 +234,7 @@ msgid "Deliveries"
 msgstr ""
 
 #: static/devilry_student/app/view/dashboard/Overview.js:23
-#: static/devilry_student/app/view/dashboard/Overview.js:55
+#: static/devilry_student/app/view/dashboard/Overview.js:44
 msgid "Assignments"
 msgstr ""
 
@@ -241,21 +242,16 @@ msgstr ""
 msgid "click one to add a %(delivery_term)s"
 msgstr "klikk for å legge til en %(delivery_term)s"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:36
-msgid "Browse all your %(assignments_term)s, including old %(deliveries_term)s"
-msgstr ""
-"Bla i alle dine %(assignments_term)s, inkludert gamle %(deliveries_term)s"
-
-#: static/devilry_student/app/view/dashboard/Overview.js:54
+#: static/devilry_student/app/view/dashboard/Overview.js:43
 msgid "%(assignments_term)s with expired %(deadlines_term)s"
 msgstr "%(assignments_term)s hvor innleveringsfristen har gått ut"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:56
-#: static/devilry_student/app/view/dashboard/Overview.js:60
+#: static/devilry_student/app/view/dashboard/Overview.js:45
+#: static/devilry_student/app/view/dashboard/Overview.js:49
 msgid "deadlines"
 msgstr ""
 
-#: static/devilry_student/app/view/dashboard/Overview.js:58
+#: static/devilry_student/app/view/dashboard/Overview.js:47
 msgid ""
 "These %(assignments_term)s use soft %(deadlines_term)s, so you are allowed "
 "to add %(deliveries_term)s even though the %(deadline_term)s has expired. "
@@ -263,19 +259,28 @@ msgid ""
 "%(deadline_term)s has expired, even on %(assignments_term)s with soft "
 "deadlines."
 msgstr ""
-"Disse %(assignments_term)s bruker snille %(deadlines_term)s. Det betyr at du "
+"Følgende %(assignments_term)s bruker snille %(deadlines_term)s. Det betyr at du "
 "kan levere selv om fristen er over. Du vil vanligvis behøve gyldig grunn for "
-"å levere etter fristen selv om om snille %(deadlines_term)s benyttes."
+"å levere etter fristen selv om snille %(deadlines_term)s benyttes."
 
-#: static/devilry_student/app/view/dashboard/Overview.js:96
+#: static/devilry_student/app/view/dashboard/Overview.js:63
+msgid "Other %(assignments_term)s"
+msgstr "Andre %(assignments_term)s"
+
+#: static/devilry_student/app/view/dashboard/Overview.js:70
+msgid "Browse all your %(assignments_term)s, including old %(deliveries_term)s"
+msgstr ""
+"Bla i alle dine %(assignments_term)s, inkludert gamle %(deliveries_term)s"
+
+#: static/devilry_student/app/view/dashboard/Overview.js:103
 msgid "Recent %(deliveries_term)s"
 msgstr "Siste %(deliveries_term)s"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:115
+#: static/devilry_student/app/view/dashboard/Overview.js:122
 msgid "Recent %(feedbacks_term)s"
 msgstr "Siste %(feedbacks_term)s"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:116
+#: static/devilry_student/app/view/dashboard/Overview.js:123
 msgid "feedbacks"
 msgstr ""
 
