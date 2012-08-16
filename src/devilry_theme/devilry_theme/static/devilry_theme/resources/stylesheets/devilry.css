@@ -16446,3 +16446,19 @@ You only need something like this extjs code to make it work:
 .bootstrap .danger, .bootstrap small.danger {
   color: #dc5600;
 }
+
+/* line 1, ../sass/_spotlight.scss */
+.x-spotlight {
+  background-color: #ccc;
+  z-index: 8999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -moz-opacity: 0.5;
+  opacity: .50;
+  filter: alpha(opacity=50);
+  width: 0;
+  height: 0;
+  zoom: 1;
+  font-size: 0;
+}
