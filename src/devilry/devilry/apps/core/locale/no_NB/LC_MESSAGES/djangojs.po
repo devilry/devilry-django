@@ -242,7 +242,6 @@ msgid "Search"
 msgstr "Søk"
 
 #: static/devilry_core/terminology.js:55
-#, fuzzy
 msgid "Searching"
 msgstr "Søker"
 
