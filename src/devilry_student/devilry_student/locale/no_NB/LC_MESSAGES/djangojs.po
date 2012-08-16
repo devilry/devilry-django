@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-16 06:19+0200\n"
+"POT-Creation-Date: 2012-08-16 06:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgid "Failed to load group. Try to reload the page"
 msgstr ""
 
 #: static/devilry_student/app/controller/GroupInfo.js:107
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:93
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:96
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:51
 msgid "examiner"
 msgstr ""
@@ -99,7 +99,7 @@ msgstr "Kan ikke legge til %(deliveries_term)s på lukkede grupper."
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
 #: static/devilry_student/app/view/dashboard/Overview.js:38
 #: static/devilry_student/app/view/dashboard/Overview.js:62
-#: static/devilry_student/app/view/dashboard/Overview.js:90
+#: static/devilry_student/app/view/dashboard/Overview.js:97
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:45
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:50
 msgid "deliveries"
@@ -161,20 +161,20 @@ msgstr "Fullfør %(delivery_term)s"
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:45
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:23
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:20
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:23
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:31
 msgid "Passed"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:48
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:25
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:22
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:25
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:33
 msgid "Failed"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:63
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:56
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:59
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:28
 msgid "No feedback"
 msgstr ""
@@ -184,7 +184,7 @@ msgid "Assignment"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:120
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:17
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:20
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:25
 msgid "Grade"
 msgstr ""
@@ -267,15 +267,15 @@ msgstr ""
 "kan levere selv om fristen er over. Du vil vanligvis behøve gyldig grunn for "
 "å levere etter fristen selv om om snille deadlines benyttes."
 
-#: static/devilry_student/app/view/dashboard/Overview.js:89
+#: static/devilry_student/app/view/dashboard/Overview.js:96
 msgid "Recent %(deliveries_term)s"
 msgstr "Siste %(deliveries_term)s"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:108
+#: static/devilry_student/app/view/dashboard/Overview.js:115
 msgid "Recent %(feedbacks_term)s"
 msgstr "Siste %(feedbacks_term)s"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:109
+#: static/devilry_student/app/view/dashboard/Overview.js:116
 msgid "feedbacks"
 msgstr ""
 
@@ -296,39 +296,35 @@ msgstr ""
 msgid "Nothing matches your search"
 msgstr "Søket ditt har ingen treff"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:28
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:31
 msgid "Time of delivery"
 msgstr "Innleveringstidspunkt"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:32
-msgid ""
-"{offset.days} days, {offset.hours} hours, {offset.minutes} min and {offset."
-"seconds} seconds AFTER the deadline."
-msgstr ""
-
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:35
-msgid ""
-"{offset.days} days, {offset.hours} hours, {offset.minutes} minutes and "
-"{offset.seconds} seconds before the deadline."
-msgstr ""
+msgid "{offset} AFTER the deadline."
+msgstr "{offset} ETTER innleveringsfristen"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:40
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:38
+msgid "{offset} before the deadline."
+msgstr "{offset} før innleveringsfristen"
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:43
 msgid "Delivery made by"
 msgstr "Innleveringen ble utført av"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:43
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:46
 msgid "Files"
 msgstr ""
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:49
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:52
 msgid "Download all files"
 msgstr "Last ned alle filene"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:76
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:79
 msgid "Delivery"
 msgstr ""
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:92
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:95
 msgid "feedback"
 msgstr ""
 

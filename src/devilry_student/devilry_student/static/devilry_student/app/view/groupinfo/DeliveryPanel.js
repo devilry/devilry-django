@@ -3,6 +3,9 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     alias: 'widget.groupinfo_delivery',
     //ui: 'lookslike-parawitheader-panel',
     margin: '40 20 20 20',
+    requires: [
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
 
     /**
      * @cfg {Object} [delivery]
@@ -14,7 +17,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
 
     metaTpl: [
         '<tpl if="latest_feedback">',
-            '<h3>', gettext('Grade') ,'</h3>',
+            '<h4>', gettext('Grade') ,'</h4>',
             '<p>',
                 '<tpl if="latest_feedback.is_passing_grade">',
                     '<span class="success">', gettext('Passed') ,'</span>',
@@ -25,22 +28,22 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
             '</p>',
         '</tpl>',
 
-        '<h3>', gettext('Time of delivery'), '</h3>',
+        '<h4>', gettext('Time of delivery'), '</h4>',
         '<p>',
             '<tpl if="delivery.after_deadline">',
                 '<span class="danger">',
-                    gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} min and {offset.seconds} seconds AFTER the deadline.'),
+                    gettext('{offset} AFTER the deadline.'),
                 '</span>',
             '<tpl else>',
-                gettext('{offset.days} days, {offset.hours} hours, {offset.minutes} minutes and {offset.seconds} seconds before the deadline.'),
+                gettext('{offset} before the deadline.'),
             '</tpl>',
             '<br/><small>({delivery.time_of_delivery})</small>',
         '</p>',
 
-        '<h3>', gettext('Delivery made by'), '</h3>',
+        '<h4>', gettext('Delivery made by'), '</h4>',
         '<p>{delivery.delivered_by.user.displayname}</p>',
 
-        '<h3>', gettext('Files'), '</h3>',
+        '<h4>', gettext('Files'), '</h4>',
         '<ul>',
             '<tpl for="delivery.filemetas">',
                 '<li><a href="{download_url}" class="filename">{filename}</a> <small class="filesize">({pretty_size})</small></li>',
@@ -88,7 +91,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                     delivery: this.delivery,
                     latest_feedback: latest_feedback,
                     has_active_feedback: has_active_feedback,
-                    offset: this.delivery.offset_from_deadline,
+                    offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
                     feedback_term: gettext('feedback'),
                     examiner_term: gettext('examiner'),
                     downloadAllUrl: this._getDownloadAllUrl()
