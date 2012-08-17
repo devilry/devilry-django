@@ -43,6 +43,60 @@ good_students = [('baldr', 'God of Beauty'),
 good_students_usernames = get_usernames(good_students)
 
 
+
+
+rendered_view_good = """
+<p>Very good. Please keep the quality of your deliveries at this level for the rest of the assignments.</p>
+
+<h1>This is a heading</h1>
+<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Vestibulum id ligula porta felis euismod semper. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+<p>Cras mattis consectetur purus sit amet fermentum. Nullam quis risus eget urna mollis ornare vel eu leo. Etiam porta sem malesuada magna mollis euismod. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+
+<h2>Subheading (heading 2)</h2>
+<p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Sed posuere consectetur est at lobortis. Curabitur blandit tempus porttitor. Donec sed odio dui. Maecenas faucibus mollis interdum.</p>
+<ul>
+    <li>Item one</li>
+    <li>Item two</li>
+</ul>
+
+
+<h3>Subsubheading (heading 3)</h3>
+<p>Math example:</p>
+
+$mathblock$
+^3/_7
+$/mathblock$
+"""
+
+rendered_view_ok = """
+<p>I will let you pass this time. Next time I expect far better from you.</p>
+
+<h1>This is a heading</h1>
+<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Vestibulum id ligula porta felis euismod semper. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+<p>Cras mattis consectetur purus sit amet fermentum. Nullam quis risus eget urna mollis ornare vel eu leo. Etiam porta sem malesuada magna mollis euismod. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+
+<h2>Math example</h2>
+<p>You know that $math$2+2 = 4$/math$ right?</p>
+"""
+
+rendered_view_anothertry = """
+<p>This was bad, try again.</p>
+
+<h1>Rant about the amount of required improvements</h1>
+<p>Aenean lacinia bibendum nulla sed consectetur. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Aenean lacinia bibendum nulla sed consectetur. Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+<p>Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+"""
+
+
+rendered_view_failed = """
+<p>This was really bad.</p>
+
+<h1>Rant about how bad it was<h1>
+<p>Aenean lacinia bibendum nulla sed consectetur. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Aenean lacinia bibendum nulla sed consectetur. Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+<p>Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+"""
+
+
 def days_in_future(days):
     return datetime.now() + timedelta(days=days)
 
@@ -73,11 +127,14 @@ class Command(BaseCommand):
                                                  time_of_delivery=-1)
                     self.testhelper.add_delivery(path, {'superbad.py': ['print ', 'superbah']},
                                                  time_of_delivery=1)
-                    self.testhelper.add_feedback(path, verdict=anotherTryVerdict)
+                    self.testhelper.add_feedback(path,
+                                                 verdict=anotherTryVerdict,
+                                                 rendered_view=rendered_view_anothertry)
                     self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 13:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=failedVerdict)
+                    self.testhelper.add_feedback(path, verdict=failedVerdict,
+                                                 rendered_view=rendered_view_failed)
 
     def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict):
         for groupnum, names in enumerate(medium_students):
@@ -92,15 +149,20 @@ class Command(BaseCommand):
                                                  time_of_delivery=-1)
                     self.testhelper.add_delivery(path, {'superbad.py': ['print ', 'superbah']},
                                                  time_of_delivery=1)
-                    self.testhelper.add_feedback(path, verdict=anotherTryVerdict)
+                    self.testhelper.add_feedback(path,
+                                                 verdict=anotherTryVerdict,
+                                                 rendered_view=rendered_view_anothertry)
                     self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 15:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=anotherTryVerdict)
+                    self.testhelper.add_feedback(path,
+                                                 verdict=anotherTryVerdict,
+                                                 rendered_view=rendered_view_anothertry)
                     self.testhelper.add_to_path(path + '.d2:ends(21)')
                 if since_pubishingtime.days >= 22:
                     self.testhelper.add_delivery(path, {'ok.py': ['print ', 'ok']}, time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=okVerdict)
+                    self.testhelper.add_feedback(path, verdict=okVerdict,
+                                                 rendered_view=rendered_view_ok)
 
     def _addGoodGroups(self, periodpath, assignments, goodVerdict):
         for groupnum, names in enumerate(good_students):
@@ -113,7 +175,8 @@ class Command(BaseCommand):
                 if since_pubishingtime.days >= 8:
                     self.testhelper.add_delivery(path, {'good.py': ['print ', 'almostperfect']},
                                                  time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=goodVerdict)
+                    self.testhelper.add_feedback(path, verdict=goodVerdict,
+                                                 rendered_view=rendered_view_good)
 
     def _onlyNames(self, nameWithExtras):
         return [name.split(':')[0] for name in nameWithExtras]
