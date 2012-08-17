@@ -142,7 +142,8 @@ class TestHelper(object):
         vars(self)[prefix + 'delivery' + str(deadline_num)] = delivery
         return delivery
 
-    def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
+    def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None,
+                     rendered_view='This is a default static feedback'):
         """
         :param delivery:
             Either a Delivery object or a string path to
@@ -162,6 +163,10 @@ class TestHelper(object):
         :param timestamp:
             A datetime object for when the feedback was
             saved. Defaults to same time the delivery was made
+
+        :param rendered_view:
+            The rendered view of the feedback. Defaults to
+            ``"This is a default static feedback"``.
         """
 
         # get the delivery object
@@ -194,7 +199,7 @@ class TestHelper(object):
         # create the feedback
         feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
                                   points=verdict['points'], is_passing_grade=verdict['is_passing_grade'],
-                                  rendered_view='This is a default static feedback')
+                                  rendered_view=rendered_view)
         # and finally, save it!
         try:
             feedback.full_clean()
