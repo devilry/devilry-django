@@ -9,7 +9,7 @@ from .views import AppView
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_extjsextras', 'devilry.apps.core')
 
-urlpatterns = patterns('devilry_subjectadmin',
+urlpatterns = patterns('devilry_student',
                        url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
                            name='devilry_student'),
                        url('^rest/', include('devilry_student.rest.urls')),
