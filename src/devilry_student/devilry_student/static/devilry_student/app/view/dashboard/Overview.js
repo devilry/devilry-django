@@ -30,6 +30,24 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }]
         }, {
             xtype: 'container',
+            itemId: 'notExpiredEmpty',
+            hidden: true,
+            items: [{
+                xtype: 'box',
+                cls: 'bootstrap',
+                tpl: [
+                    '<h1>{heading}</h1>',
+                    '<p><small>{subheading}</small></p>'
+                ],
+                data: {
+                    heading: gettext('Assignments'),
+                    subheading: interpolate(gettext('You have no active %(assignments_term)s.'), {
+                        assignments_term: gettext('assignments')
+                    }, true)
+                }
+            }]
+        }, {
+            xtype: 'container',
             itemId: 'expired',
             margin: '30 0 0 0',
             items: [{

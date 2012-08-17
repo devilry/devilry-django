@@ -25,6 +25,21 @@ Ext.define('devilry_student.controller.Dashboard', {
     refs: [{
         ref: 'overview',
         selector: 'viewport dashboard'
+    }, {
+        ref: 'notExpired',
+        selector: 'viewport dashboard #notExpired'
+    }, {
+        ref: 'notExpiredEmpty',
+        selector: 'viewport dashboard #notExpiredEmpty'
+    }, {
+        ref: 'expired',
+        selector: 'viewport dashboard #expired'
+    }, {
+        ref: 'recentDeliveries',
+        selector: 'viewport dashboard #recentDeliveries'
+    }, {
+        ref: 'recentFeedbacks',
+        selector: 'viewport dashboard #recentFeedbacks'
     }],
 
     init: function() {
@@ -48,31 +63,44 @@ Ext.define('devilry_student.controller.Dashboard', {
     },
 
     _onRenderDashboard: function() {
-        this.getOpenGroupsDeadlineExpiredStore().load({
+        this.getOpenGroupsDeadlineNotExpiredStore().load({
+            scope: this,
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
+                } else if(records.length == 0) {
+                    this.getNotExpired().hide();
+                    this.getNotExpiredEmpty().show();
                 }
             }
         });
-        this.getOpenGroupsDeadlineNotExpiredStore().load({
+        this.getOpenGroupsDeadlineExpiredStore().load({
+            scope: this,
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
+                } else if(records.length == 0) {
+                    this.getExpired().hide();
                 }
             }
         });
         this.getRecentDeliveriesStore().load({
+            scope: this,
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your recent deliveries. Please try to reload the page.'));
+                } else if(records.length == 0) {
+                    this.getRecentDeliveries().hide();
                 }
             }
         });
         this.getRecentFeedbacksStore().load({
+            scope: this,
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your recent feedbacks. Please try to reload the page.'));
+                } else if(records.length == 0) {
+                    this.getRecentFeedbacks().hide();
                 }
             }
         });
