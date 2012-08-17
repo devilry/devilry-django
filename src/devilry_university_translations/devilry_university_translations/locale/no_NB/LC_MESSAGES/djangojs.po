@@ -25,6 +25,14 @@ msgstr "Department/Faculty/School"
 msgid "Nodes"
 msgstr "Departments/Faculties/Schools"
 
+#: static/devilry_core/terminology.js:8
+msgid "node"
+msgstr "department/faculty/school"
+
+#: static/devilry_core/terminology.js:8
+msgid "nodes"
+msgstr "departments/faculties/schools"
+
 #: static/devilry_core/terminology.js:9
 msgid "Period"
 msgstr "Semester"
@@ -32,3 +40,11 @@ msgstr "Semester"
 #: static/devilry_core/terminology.js:9
 msgid "Periods"
 msgstr "Semestre"
+
+#: static/devilry_core/terminology.js:14
+msgid "period"
+msgstr "semester"
+
+#: static/devilry_core/terminology.js:14
+msgid "periods"
+msgstr "semestre"
