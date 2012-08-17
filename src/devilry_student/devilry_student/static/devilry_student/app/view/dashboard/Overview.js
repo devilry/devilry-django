@@ -41,7 +41,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                 ],
                 data: {
                     heading: gettext('Assignments'),
-                    subheading: interpolate(gettext('You have no active %(assignments_term)s.'), {
+                    subheading: interpolate(gettext('You have no active electronic %(assignments_term)s.'), {
                         assignments_term: gettext('assignments')
                     }, true)
                 }
