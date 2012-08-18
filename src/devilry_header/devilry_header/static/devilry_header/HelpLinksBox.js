@@ -19,7 +19,7 @@ Ext.define('devilry_header.HelpLinksBox', {
             '</p>',
         '<tpl else>',
             '<tpl if="helpLinkRecords.length == 0">',
-                gettext('Your local Devilry system administrator(s) have not added any external help for you. If you feel anything in Devilry is unclear, contact you local Devilry system administrator(s) and ask them to add help links.'),
+                gettext('Your local Devilry system administrator(s) have not added any external help for you. If you feel anything in Devilry is unclear, contact your local Devilry system administrator(s) and ask them to add help links.'),
             '</tpl>',
             '<ul class="helplinks">',
                 '<tpl for="helpLinkRecords">',
