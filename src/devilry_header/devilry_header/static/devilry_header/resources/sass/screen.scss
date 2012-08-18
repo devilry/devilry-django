@@ -19,19 +19,22 @@ $hovermenu_bgcolor: #000;
 @import "breadcrumbs";
 
 @mixin role_link($bg) {
+    padding: 8px 28px 4px 8px;
     background-color: $bg;
-    padding: 8px 12px 4px 8px;
-    border-left: 8px solid $bg;
-    border-right: 8px solid $hovermenu_bgcolor;
+    @include border-top-right-radius(8px);
+    @include border-bottom-right-radius(8px);
+    background-image: url('../images/navarrow.png');
+    background-repeat: no-repeat;
+    background-position: 96% center;
+
+    margin-right: 8px;
+    margin-left: 0;
     &:hover {
-        border-left: 8px solid $hovermenu_bgcolor;
-        border-right: 8px solid darken($bg, 5%);
+        margin-right: 0;
+        margin-left: 8px;
         background-color: darken($bg, 5%);
-        @include border-top-right-radius(8px);
-        @include border-bottom-right-radius(8px);
-        background-image: url('../images/navarrow.png');
-        background-repeat: no-repeat;
-        background-position: 100% center;
+        text-decoration: none;
+        color: #000;
     }
 }
 

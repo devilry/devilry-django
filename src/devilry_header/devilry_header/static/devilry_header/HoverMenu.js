@@ -22,8 +22,18 @@ Ext.define('devilry_header.HoverMenu', {
             layout: 'column',
             items: [{
                 width: 300,
-                xtype: 'devilryheader_roles',
-                padding: '10 20 10 10'
+                xtype: 'container',
+                padding: '10 20 10 10',
+                items: [{
+                    xtype: 'box',
+                    html: [
+                        '<h2>',
+                            gettext('Choose your role'),
+                        '</h2>'
+                    ].join('')
+                }, {
+                    xtype: 'devilryheader_roles'
+                }]
             }, {
                 columnWidth: 1.0,
                 padding: '10 10 10 20',
