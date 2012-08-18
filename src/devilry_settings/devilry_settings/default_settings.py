@@ -10,7 +10,6 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 TIME_ZONE = 'Europe/Oslo'
-LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
@@ -80,6 +79,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'django.contrib.sessions.middleware.SessionMiddleware',
                       'django.contrib.auth.middleware.AuthenticationMiddleware',
+                      'devilry_i18n.middleware.LocaleMiddleware',
                       'django.middleware.transaction.TransactionMiddleware',
                       'django.contrib.messages.middleware.MessageMiddleware',
                       'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
@@ -155,6 +155,14 @@ DEVILRY_WRONG_USERINFO_URL = None
 #: Django apps that override the Devilry javascript translations (which is most
 #: of the Devilry user interface).
 DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
+
+#: Default language
+LANGUAGE_CODE = 'en'
+
+#: Available languages
+gettext_noop = lambda s: s
+LANGUAGES = [('en', gettext_noop('English')),
+             ('nb', gettext_noop('Norwegian Bokmal'))]
 
 
 #################################################
