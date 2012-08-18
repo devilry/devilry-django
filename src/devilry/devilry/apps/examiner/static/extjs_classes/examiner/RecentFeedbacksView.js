@@ -23,8 +23,12 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
      * @cfg {Object} [noRecordsMessage]
      */
     noRecordsMessage: {
-        title: gettext('No recent feedback'),
-        msg: gettext("You are not registered on any assignment groups with recent feedback.")
+        title: interpolate(gettext('No recent %(feedback_term)s'), {
+            feedback_term: gettext('feedback')
+        }, true),
+        msg: interpolate(gettext("You are not registered on any groups with recent %(feedback_term)s."), {
+            feedback_term: gettext('feedback')
+        }, true)
     },
 
 
