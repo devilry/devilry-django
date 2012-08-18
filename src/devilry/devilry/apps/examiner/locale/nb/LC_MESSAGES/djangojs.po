@@ -54,7 +54,7 @@ msgstr ""
 
 #: static/extjs_classes/examiner/AssignmentLayout.js:104
 msgid "Detailed overview of all students"
-msgstr ""
+msgstr "Detaljert oversikt over alle studenter"
 
 #: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:21
 msgid "Todo-list"
