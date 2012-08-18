@@ -483,13 +483,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     onGridContexMenu: function(grid, record, index, item, ev) {
-        ev.stopEvent();
         var items;
         if(this.noneSelected()) {
-            items = [{xtype: 'menuheader', html: 'Select at least one group'}];
+            //items = [{xtype: 'menuheader', html: 'Select at least one group'}];
+            return;
         } else {
             items = this.getGridContextMenuItems();
         }
+        ev.stopEvent();
         var gridContextMenu = new Ext.menu.Menu({
             plain: true,
             items: items
