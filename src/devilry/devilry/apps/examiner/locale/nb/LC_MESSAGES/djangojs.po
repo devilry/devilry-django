@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 14:40+0200\n"
+"POT-Creation-Date: 2012-08-18 22:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,100 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/extjs_classes/examiner/RecentDeliveriesView.js:128
-msgid "Recent %(deliveries)s"
-msgstr "Siste %(deliveries)s"
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:10
+msgid "No active %(assignments_term)s"
+msgstr "Ingen aktive %(assignments_term)s"
 
-#: static/extjs_classes/examiner/RecentDeliveriesView.js:129
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:11
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:14
+msgid "assignments"
+msgstr ""
+
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:13
+msgid ""
+"You are not registered on any %(assignments_term)s in an active "
+"%(period_term)s."
+msgstr ""
+"Du er ikke registert på noen %(assignments_term)s i et aktivt %(period_term)"
+"s."
+
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:15
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:94
+msgid "period"
+msgstr ""
+
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:92
+msgid "%(Assignments_term)s in an active %(period_term)s"
+msgstr "%(Assignments_term)s i et aktivt %(period_term)s"
+
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:93
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:46
+msgid "Assignments"
+msgstr ""
+
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:16
+msgid "Deliveries"
+msgstr ""
+
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:22
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:34
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:52
+msgid "View"
+msgstr "Vis"
+
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:28
+msgid "Groups"
+msgstr ""
+
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:39
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:62
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:27
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:31
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:150
 msgid "deliveries"
 msgstr ""
 
-#: static/extjs_classes/examiner/RecentFeedbacksView.js:122
-msgid "Recent %(feedbacks)s"
-msgstr "Siste %(feedbacks)s"
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:56
+msgid "Show %(groups_term)s"
+msgstr "Vis %(groups_term)s"
 
-#: static/extjs_classes/examiner/RecentFeedbacksView.js:123
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:57
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:30
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:30
+msgid "groups"
+msgstr ""
+
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:26
+msgid "No recent %(deliveries_term)s"
+msgstr "Ingen nylige %(deliveries_term)s"
+
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:29
+msgid ""
+"You are not registered on any %(groups_term)s with recent %(deliveries_term)"
+"s."
+msgstr ""
+"Du er ikke registert på noen %(groups_term)s med %(deliveries_term)s som venter på tilbakemelding."
+
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:149
+msgid "Recent %(deliveries)s"
+msgstr "Siste %(deliveries)s"
+
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:26
+msgid "No recent %(feedbacks_term)s"
+msgstr "Ingen nylige %(feedbacks_term)s"
+
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:27
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:31
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:136
 msgid "feedbacks"
 msgstr ""
+
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:29
+msgid ""
+"You are not registered on any %(groups_term)s with recent %(feedbacks_term)s."
+msgstr ""
+"Du er ikke registert på noen %(groups_term)s med %(feedbacks_term)s"
+
+#: static/extjs_classes/examiner/RecentFeedbacksView.js:135
+msgid "Recent %(feedbacks)s"
+msgstr "Siste %(feedbacks)s"

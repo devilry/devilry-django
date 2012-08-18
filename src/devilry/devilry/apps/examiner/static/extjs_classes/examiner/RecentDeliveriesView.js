@@ -23,8 +23,13 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
      * @cfg {Object} [noRecordsMessage]
      */
     noRecordsMessage: {
-        title: gettext('No recent deliveries'),
-        msg: gettext("You are not registered on any assignment groups with recent deliveries.")
+        title: interpolate(gettext('No recent %(deliveries_term)s'), {
+            deliveries_term: gettext('deliveries')
+        }, true),
+        msg: interpolate(gettext("You are not registered on any %(groups_term)s with recent %(deliveries_term)s."), {
+            groups_term: gettext('groups'),
+            deliveries_term: gettext('deliveries')
+        }, true)
     },
 
     /**
