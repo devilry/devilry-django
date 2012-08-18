@@ -19,19 +19,19 @@ msgstr ""
 
 #: static/devilry_core/terminology.js:7
 msgid "Node"
-msgstr "Institutt/Fakultet"
+msgstr "Department/Faculty/School"
 
 #: static/devilry_core/terminology.js:7
 msgid "Nodes"
-msgstr "Institutter/Fakulteter"
+msgstr "Departments/Faculties/Schools"
 
 #: static/devilry_core/terminology.js:8
 msgid "node"
-msgstr "institutt/fakultet"
+msgstr "department/faculty/school"
 
 #: static/devilry_core/terminology.js:8
 msgid "nodes"
-msgstr "institutter/fakulteter"
+msgstr "departments/faculties/schools"
 
 #: static/devilry_core/terminology.js:9
 msgid "Period"
@@ -39,7 +39,7 @@ msgstr "Semester"
 
 #: static/devilry_core/terminology.js:9
 msgid "Periods"
-msgstr "Semestre"
+msgstr "Semesters"
 
 #: static/devilry_core/terminology.js:14
 msgid "period"
@@ -47,4 +47,4 @@ msgstr "semester"
 
 #: static/devilry_core/terminology.js:14
 msgid "periods"
-msgstr "semestre"
+msgstr "semesters"
