@@ -14,6 +14,14 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         dashboard_url: undefined
     },
 
+    assignmentRowTpl: Ext.create('Ext.XTemplate',
+        '<a href="{url}">',
+            '{data.parentnode__parentnode__short_name}.',
+            '{data.parentnode__short_name} - ',
+            '{data.long_name}',
+        '</a>'
+    ),
+
     constructor: function(config) {
         this.initConfig(config);
         this.callParent([config]);
@@ -45,50 +53,32 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
         //var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
             //groupHeaderTpl: '{name}',
         //});
+        var me = this;
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
             border: false,
             sortableColumns: false,
+            disableSelection: true,
             autoScroll: true,
-            cls: 'selectable-grid',
+            cls: 'bootstrap',
             store: this.store,
             flex: 1,
+            hideHeaders: true,
             //features: [groupingFeature],
             columns: [{
-                text: 'Subject',
+                text: 'unused',
                 menuDisabled: true,
-                dataIndex: 'parentnode__parentnode__long_name',
-                flex: 20,
-            },{
-                text: 'Period',
-                menuDisabled: true,
-                dataIndex: 'parentnode__long_name',
-                flex: 10,
-            },{
-                text: 'Assignment',
-                menuDisabled: true,
-                flex: 20,
-                dataIndex: 'long_name'
-            //},{
-                //text: 'Published',
-                //menuDisabled: true,
-                //width: 150,
-                //dataIndex: 'publishing_time',
-                //renderer: function(value) {
-                    //var rowTpl = Ext.create('Ext.XTemplate',
-                        //'{.:date}'
-                    //);
-                    //return rowTpl.apply(value);
-                //}
-            }],
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = this.dashboard_url + "assignment/" + record.data.id
-                    window.location = url;
+                flex: 1,
+                dataIndex: 'long_name',
+                renderer: function(value, meta, record) {
+                    console.log(record.data);
+                    return me.assignmentRowTpl.apply({
+                        data: record.data,
+                        url: Ext.String.format('{0}assignment/{1}', me.dashboard_url, record.get('id'))
+                    });
                 }
-            }
+            }]
         });
         this.add({
             xtype: 'box',
