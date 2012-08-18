@@ -48,13 +48,21 @@ class TestLanguageSelect(TestCase):
         return self.client.rest_put(self.url, data)
 
     def test_put(self):
-        content, response = self._putas('testuser', {'languagecode': 'nb'})
+        content, response = self._putas('testuser', {'preferred': 'nb'})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['preferred'], 'nb')
         self.assertEquals(self._get_languagecode('testuser'), 'nb')
 
     def test_put_invalid(self):
-        content, response = self._putas('testuser', {'languagecode': 'invalid-code'})
+        content, response = self._putas('testuser', {'preferred': 'invalid-code'})
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['field_errors']['languagecode'],
+        self.assertEquals(content['field_errors']['preferred'],
                           [u'Invalid languagecode: invalid-code'])
+
+    def test_put_with_extradata(self):
+        content, response = self._putas('testuser', {'preferred': 'nb',
+                                                     'selected': {'ignored': 'data'},
+                                                     'available': ['ignored']})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['preferred'], 'nb')
+        self.assertEquals(self._get_languagecode('testuser'), 'nb')
