@@ -51,6 +51,9 @@
                     devilry_header.Breadcrumbs.getInBody().set([{
                         text: path,
                         url: Ext.String.format('../assignment/{0}', groupRecord.get('parentnode'))
+                    }, {
+                        text: gettext('Students'),
+                        url: Ext.String.format('../assignment/{0}#students', groupRecord.get('parentnode'))
                     }], groupIdent);
                     window.document.title = Ext.String.format('{0} - Devilry', groupIdent);
                 }
