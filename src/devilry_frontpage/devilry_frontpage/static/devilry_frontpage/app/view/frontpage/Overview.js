@@ -10,7 +10,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
 
     frame: false,
     border: 0,
-    bodyPadding: 20,
+    bodyPadding: '30 0 0 0',
     autoScroll: true,
     layout: {
         type: 'hbox',
@@ -39,21 +39,21 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
             items: [{
                 xtype: 'box',
                 width: 280,
-                padding: '0 20 0 0',
+                padding: '0 30 0 0',
                 cls: 'bootstrap',
                 tpl: [
-                    '<h2>',
+                    '<h2 style="margin-top: 0; padding-top: 0;">',
                         gettext('Choose your role'),
                     '</h2>',
                     '<p><small>',
                         gettext('Devilry handles all aspects of the electronic delivery process. Each distinct area of responsibilty, or role, has its own user interface. Choose your role from the menu on your right hand side.'),
                     '</small></p>'
                 ],
-                data: {
-                }
+                data: {}
             }, {
                 columnWidth: 1,
-                xtype: 'devilryheader_roles'
+                xtype: 'devilryheader_roles',
+                margin: '6 0 0 0'
             }]
         }]
     }, {
@@ -64,7 +64,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
         items: [{
             xtype: 'textfield',
             emptyText: 'Language: ',
-            width: 300
+            width: 260
         }, {
             xtype: 'box',
             cls: 'bootstrap',
@@ -74,7 +74,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
                 '<h3>',
                     gettext('Need help?'),
                 '</h3>',
-                '<p>',
+                '<p class="muted">',
                     gettext('Click on your name in the top right corner of the page.'),
                 '</p>'
             ].join('')
@@ -83,14 +83,17 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
             cls: 'bootstrap',
             itemId: 'improveDevilry',
             margin: '30 0 0 0',
-            html: [
+            tpl: [
                 '<h3>',
                     gettext('Improve Devilry?'),
                 '</h3>',
-                '<p>',
-                    gettext('Devilry is an open source general purpose assignment delivery system. Visit http://devilry.org and help us make it better.'),
+                '<p class="muted">',
+                    gettext('Devilry is an open source general purpose assignment delivery system. Visit <a href="{devilryurl}">{devilryurl}</a> and help us make it better.'),
                 '</p>'
-            ].join('')
+            ],
+            data: {
+                devilryurl: 'http://devilry.org'
+            }
         }]
     }, {
         xtype: 'box',
