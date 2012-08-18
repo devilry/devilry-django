@@ -18,6 +18,7 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^devilry_settings/', include('devilry_settings.urls')),
                 (r'^devilry_helplinks/', include('devilry_helplinks.urls')),
                 (r'^devilry_student/', include('devilry_student.urls')),
+                (r'^devilry_i18n/', include('devilry_i18n.urls')),
                 (r'^superuser/', include(admin.site.urls)),
                 (r'^devilry_frontpage', include('devilry_frontpage.urls')),
                 (r'^$', frontpage)

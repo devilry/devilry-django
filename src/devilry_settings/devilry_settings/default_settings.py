@@ -64,6 +64,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_helplinks',
                   'devilry_frontpage',
                   'devilry_student',
+                  'devilry_i18n',
                   'devilry_settings'
                  ]
 
