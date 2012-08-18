@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import include
 from django.contrib import admin
+from devilry_frontpage.views import frontpage
 
 admin.autodiscover()
 
@@ -18,5 +19,6 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^devilry_helplinks/', include('devilry_helplinks.urls')),
                 (r'^devilry_student/', include('devilry_student.urls')),
                 (r'^superuser/', include(admin.site.urls)),
-                (r'^', include('devilry_frontpage.urls'))
+                (r'^devilry_frontpage', include('devilry_frontpage.urls')),
+                (r'^$', frontpage)
                )

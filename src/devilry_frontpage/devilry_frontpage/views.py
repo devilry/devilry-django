@@ -1,3 +1,5 @@
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from extjs4.views import Extjs4AppView
 
@@ -8,3 +10,6 @@ class AppView(Extjs4AppView):
     appname = 'devilry_frontpage'
     css_staticpath = 'devilry_theme/resources/stylesheets/devilry.css'
     title = _('Devilry - Frontpage')
+
+
+frontpage = login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))
