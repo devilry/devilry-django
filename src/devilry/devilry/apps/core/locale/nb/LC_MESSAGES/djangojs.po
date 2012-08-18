@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-16 06:15+0200\n"
+"POT-Creation-Date: 2012-08-18 20:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,93 +162,109 @@ msgid "students"
 msgstr "studenter"
 
 #: static/devilry_core/terminology.js:34
+msgid "Superusers"
+msgstr "Superbrukere"
+
+#: static/devilry_core/terminology.js:34
+msgid "Superuser"
+msgstr "Superbruker"
+
+#: static/devilry_core/terminology.js:35
+msgid "superusers"
+msgstr "superbrukere"
+
+#: static/devilry_core/terminology.js:35
+msgid "superuser"
+msgstr "superbruker"
+
+#: static/devilry_core/terminology.js:37
 msgid "Feedback"
 msgstr "Tilbakemelding"
 
-#: static/devilry_core/terminology.js:34
+#: static/devilry_core/terminology.js:37
 msgid "Feedbacks"
 msgstr "Tilbakemeldinger"
 
-#: static/devilry_core/terminology.js:35
+#: static/devilry_core/terminology.js:38
 msgid "feedback"
 msgstr "tilbakemelding"
 
-#: static/devilry_core/terminology.js:35
+#: static/devilry_core/terminology.js:38
 msgid "feedbacks"
 msgstr "tilbakemeldinger"
 
-#: static/devilry_core/terminology.js:36
+#: static/devilry_core/terminology.js:39
 msgid "No feedback"
 msgstr "Ingen tilbakemelding"
 
-#: static/devilry_core/terminology.js:37
+#: static/devilry_core/terminology.js:40
 msgid "Passed"
 msgstr "Bestått"
 
-#: static/devilry_core/terminology.js:38
+#: static/devilry_core/terminology.js:41
 msgid "Failed"
 msgstr "Ikke bestått"
 
-#: static/devilry_core/terminology.js:39
+#: static/devilry_core/terminology.js:42
 msgid "Electronic"
 msgstr "Elektronisk"
 
-#: static/devilry_core/terminology.js:40
+#: static/devilry_core/terminology.js:43
 msgid "Non-electronic"
 msgstr "Ikke elektronisk"
 
-#: static/devilry_core/terminology.js:41
+#: static/devilry_core/terminology.js:44
 msgid "Grade"
 msgstr "Karakter"
 
-#: static/devilry_core/terminology.js:42
+#: static/devilry_core/terminology.js:45
 msgid "grade"
 msgstr "karakter"
 
-#: static/devilry_core/terminology.js:43
+#: static/devilry_core/terminology.js:46
 msgid "Open"
 msgstr "Åpen"
 
-#: static/devilry_core/terminology.js:44
+#: static/devilry_core/terminology.js:47
 msgid "Closed"
 msgstr "Lukket"
 
-#: static/devilry_core/terminology.js:48
+#: static/devilry_core/terminology.js:51
 msgid "Dashboard"
 msgstr "Forside"
 
-#: static/devilry_core/terminology.js:49
+#: static/devilry_core/terminology.js:52
 msgid "Yes"
 msgstr "Ja"
 
-#: static/devilry_core/terminology.js:50
+#: static/devilry_core/terminology.js:53
 msgid "No"
 msgstr "Nei"
 
-#: static/devilry_core/terminology.js:51
+#: static/devilry_core/terminology.js:54
 msgid "Ok"
 msgstr "Ok"
 
-#: static/devilry_core/terminology.js:52
+#: static/devilry_core/terminology.js:55
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: static/devilry_core/terminology.js:53
+#: static/devilry_core/terminology.js:56
 msgid "Error"
 msgstr "Feil"
 
-#: static/devilry_core/terminology.js:54
+#: static/devilry_core/terminology.js:57
 msgid "Search"
 msgstr "Søk"
 
-#: static/devilry_core/terminology.js:55
+#: static/devilry_core/terminology.js:58
 msgid "Searching"
 msgstr "Søker"
 
-#: static/devilry_core/terminology.js:56
+#: static/devilry_core/terminology.js:59
 msgid "Loading"
 msgstr "Laster"
 
-#: static/devilry_core/terminology.js:57
+#: static/devilry_core/terminology.js:60
 msgid "Browse"
 msgstr "Bla i alle"
