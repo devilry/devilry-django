@@ -12,7 +12,8 @@ Ext.define('devilry_header.HoverMenu', {
     requires: [
         'devilry_header.Roles',
         'devilry_header.HelpLinksBox',
-        'devilry_header.UserInfoBox'
+        'devilry_header.UserInfoBox',
+        'devilry_i18n.LanguageSelectWidget'
     ],
 
     initComponent: function() {
@@ -40,6 +41,17 @@ Ext.define('devilry_header.HoverMenu', {
                 xtype: 'container',
                 items: [{
                     xtype: 'devilryheader_userinfobox'
+                }, {
+                    xtype: 'container',
+                    margin: '30 0 0 0',
+                    items: [{
+                        xtype: 'box',
+                        html: ['<h2>', gettext('Language'), '</h2>'].join('')
+                    }, {
+                        xtype: 'devilry_i18n_languageselect',
+                        width: 250
+                    }]
+
                 }, {
                     margin: '30 0 0 0',
                     xtype: 'devilryheader_helplinksbox'
