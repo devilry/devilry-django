@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 00:04+0200\n"
+"POT-Creation-Date: 2012-08-19 01:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,12 +58,11 @@ msgstr ""
 
 #: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:21
 msgid "Todo-list"
-msgstr ""
+msgstr "Todo-liste"
 
 #: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:26
-#, fuzzy
 msgid "Download all %(deliveries_term)s"
-msgstr "Ingen nylige %(deliveries_term)s"
+msgstr "Last ned alle %(deliveries_term)s"
 
 #: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:27
 #: static/extjs_classes/examiner/ExaminerSearchWidget.js:39
