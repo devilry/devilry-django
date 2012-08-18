@@ -46,7 +46,10 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         '<h4>', gettext('Files'), '</h4>',
         '<ul>',
             '<tpl for="delivery.filemetas">',
-                '<li><a href="{download_url}" class="filename">{filename}</a> <small class="filesize">({pretty_size})</small></li>',
+                '<li>',
+                    '<a href="{download_url}" class="filename", title="{filename}">{[Ext.String.ellipsis(values.filename, 20)]}</a>',
+                    ' <small class="filesize muted">({pretty_size})</small>',
+                '</li>',
             '</tpl>',
         '</ul>',
         '<a href="{delivery.download_all_url.zip}">', gettext('Download all files'), '</a>'
