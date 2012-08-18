@@ -1,3 +1,4 @@
+{% load static %}
 <html>
     <head>
         <title>
@@ -74,6 +75,7 @@
         {% else %}
             <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/devilry_all_uncompiled.js"></script>
         {% endif %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
 
         <script type="text/javascript">
             {% block imports %}
