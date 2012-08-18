@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-18 22:51+0200\n"
+"POT-Creation-Date: 2012-08-19 00:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,24 +28,50 @@ msgstr ""
 
 #: static/extjs_classes/examiner/ActiveAssignmentsView.js:13
 msgid ""
-"You are not registered on any %(assignments_term)s in an active "
-"%(period_term)s."
+"You are not registered on any %(assignments_term)s in any active "
+"%(periods_term)s."
 msgstr ""
-"Du er ikke registert på noen %(assignments_term)s i et aktivt %(period_term)"
-"s."
+"Du er ikke registert på noen %(assignments_term)s i noen aktive "
+"%(periods_term)s"
 
 #: static/extjs_classes/examiner/ActiveAssignmentsView.js:15
-#: static/extjs_classes/examiner/ActiveAssignmentsView.js:94
-msgid "period"
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:93
+msgid "periods"
 msgstr ""
 
-#: static/extjs_classes/examiner/ActiveAssignmentsView.js:92
-msgid "%(Assignments_term)s in an active %(period_term)s"
-msgstr "%(Assignments_term)s i et aktivt %(period_term)s"
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:91
+msgid "%(Assignments_term)s in active %(periods_term)s"
+msgstr "%(Assignments_term)s i aktive %(periods_term)s"
 
-#: static/extjs_classes/examiner/ActiveAssignmentsView.js:93
+#: static/extjs_classes/examiner/ActiveAssignmentsView.js:92
 #: static/extjs_classes/examiner/ExaminerSearchWidget.js:46
 msgid "Assignments"
+msgstr ""
+
+#: static/extjs_classes/examiner/AssignmentLayout.js:86
+msgid "Students"
+msgstr ""
+
+#: static/extjs_classes/examiner/AssignmentLayout.js:104
+msgid "Detailed overview of all students"
+msgstr ""
+
+#: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:21
+msgid "Todo-list"
+msgstr ""
+
+#: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:26
+#, fuzzy
+msgid "Download all %(deliveries_term)s"
+msgstr "Ingen nylige %(deliveries_term)s"
+
+#: static/extjs_classes/examiner/AssignmentLayoutTodoList.js:27
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:39
+#: static/extjs_classes/examiner/ExaminerSearchWidget.js:62
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:27
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:31
+#: static/extjs_classes/examiner/RecentDeliveriesView.js:150
+msgid "deliveries"
 msgstr ""
 
 #: static/extjs_classes/examiner/ExaminerSearchWidget.js:16
@@ -60,14 +86,6 @@ msgstr "Vis"
 
 #: static/extjs_classes/examiner/ExaminerSearchWidget.js:28
 msgid "Groups"
-msgstr ""
-
-#: static/extjs_classes/examiner/ExaminerSearchWidget.js:39
-#: static/extjs_classes/examiner/ExaminerSearchWidget.js:62
-#: static/extjs_classes/examiner/RecentDeliveriesView.js:27
-#: static/extjs_classes/examiner/RecentDeliveriesView.js:31
-#: static/extjs_classes/examiner/RecentDeliveriesView.js:150
-msgid "deliveries"
 msgstr ""
 
 #: static/extjs_classes/examiner/ExaminerSearchWidget.js:56
@@ -89,7 +107,8 @@ msgid ""
 "You are not registered on any %(groups_term)s with recent %(deliveries_term)"
 "s."
 msgstr ""
-"Du er ikke registert på noen %(groups_term)s med %(deliveries_term)s som venter på tilbakemelding."
+"Du er ikke registert på noen %(groups_term)s med %(deliveries_term)s som "
+"venter på tilbakemelding."
 
 #: static/extjs_classes/examiner/RecentDeliveriesView.js:149
 msgid "Recent %(deliveries)s"
@@ -108,8 +127,7 @@ msgstr ""
 #: static/extjs_classes/examiner/RecentFeedbacksView.js:29
 msgid ""
 "You are not registered on any %(groups_term)s with recent %(feedbacks_term)s."
-msgstr ""
-"Du er ikke registert på noen %(groups_term)s med %(feedbacks_term)s"
+msgstr "Du er ikke registert på noen %(groups_term)s med %(feedbacks_term)s"
 
 #: static/extjs_classes/examiner/RecentFeedbacksView.js:135
 msgid "Recent %(feedbacks)s"

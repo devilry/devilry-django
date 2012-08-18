@@ -10,9 +10,9 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             title: interpolate(gettext('No active %(assignments_term)s'), {
                 assignments_term: gettext('assignments')
             }, true),
-            msg: interpolate(gettext('You are not registered on any %(assignments_term)s in an active %(period_term)s.'), {
+            msg: interpolate(gettext('You are not registered on any %(assignments_term)s in any active %(periods_term)s.'), {
                 assignments_term: gettext('assignments'),
-                period_term: gettext('period')
+                periods_term: gettext('periods')
             }, true)
         },
         pageSize: 30,
@@ -88,9 +88,9 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             xtype: 'box',
             tpl: '<div class="section"><h2>{header}</h2></div>',
             data: {
-                header: interpolate(gettext('%(Assignments_term)s in an active %(period_term)s'), {
+                header: interpolate(gettext('%(Assignments_term)s in active %(periods_term)s'), {
                     Assignments_term: gettext('Assignments'),
-                    period_term: gettext('period')
+                    periods_term: gettext('periods')
                 }, true)
             }
         });
