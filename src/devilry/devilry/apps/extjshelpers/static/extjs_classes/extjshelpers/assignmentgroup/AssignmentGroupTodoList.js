@@ -80,7 +80,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         var me = this;
         this.tbarItems = [{
             xtype: 'storesearchfield',
-            emptyText: 'Search...',
+            emptyText: gettext('Search') + ' ...',
             store: this.store,
             pageSize: this.pageSize,
             width: 300,
@@ -107,7 +107,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 sortableColumns: false,
                 autoScroll: true,
                 columns: [{
-                    header: 'Students',
+                    header: gettext('Students'),
                     dataIndex: 'id',
                     flex: 2,
                     menuDisabled: true,
@@ -122,7 +122,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                         return me.studentsColTpl.apply(data);
                     }
                 }, {
-                    text: 'Deliveries', dataIndex: 'id', width: 70, menuDisabled: true,
+                    text: gettext('Deliveries'), dataIndex: 'id', width: 100, menuDisabled: true,
                     renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
                 }],
 
