@@ -13,12 +13,13 @@ class LocaleMiddleware(object):
     """
 
     def _get_language(self, request):
-        languagecode = request.user.devilryuserprofile.languagecode
-        if languagecode:
-            languages_dict = dict(settings.LANGUAGES)
-            if languagecode in languages_dict:
-                return languagecode
-        return settings.LANGUAGE_CODE
+        if request.user.is_authenticated():
+            languagecode = request.user.devilryuserprofile.languagecode
+            if languagecode:
+                languages_dict = dict(settings.LANGUAGES)
+                if languagecode in languages_dict:
+                    return languagecode
+            return settings.LANGUAGE_CODE
 
     def process_request(self, request):
         language = self._get_language(request)
