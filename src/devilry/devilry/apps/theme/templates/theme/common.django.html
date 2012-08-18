@@ -6,16 +6,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" >
 
         {% block i18nimport %}
-        <script type="text/javascript">
-            // No-op gettext functions to make the old stuff work with the new
-            // apps that use i18n.
-            function gettext(msgid) {
-                return msgid;
-            }
-            function pgettext(context, msgid) {
-                return msgid;
-            }
-        </script>
         {% endblock %}
 
         {# TODO: Remove this when we are completely viewport/app based #}
