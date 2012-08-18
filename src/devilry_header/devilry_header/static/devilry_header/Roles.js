@@ -5,7 +5,7 @@ Ext.define('devilry_header.Roles', {
 
     tpl: [
         '<tpl if="loading">',
-            '<p>', gettext('Loading ...'), '</p>',
+            '<p>', gettext('Loading'), ' ...</p>',
         '<tpl else>',
             '<tpl if="has_any_roles">',
                 '<ul role="navigation">',
@@ -15,7 +15,9 @@ Ext.define('devilry_header.Roles', {
                                 gettext('Student'),
                             '</div>',
                             '<div class="description">',
-                                gettext('Students can make deliveres and browse their own feedback history.'),
+                                interpolate(gettext('Students can make %(deliveres_term)s and browse their own feedback history.'), {
+                                    deliveres_term: gettext('deliveries')
+                                }, true),
                             '</div>',
                         '</a></li>',
                     '</tpl>',
@@ -25,7 +27,10 @@ Ext.define('devilry_header.Roles', {
                                 gettext('Examiner'),
                             '</div>',
                             '<div class="description">',
-                                gettext('Examiners give students feedback on their deliveries.'),
+                                interpolate(gettext('Examiners give students %(feedback_term)s on their %(deliveries_term)s.'), {
+                                    feedback_term: gettext('feedback'),
+                                    deliveries_term: gettext('deliveries')
+                                }, true),
                             '</div>',
                         '</a></li>',
                     '</tpl>',
@@ -35,7 +40,12 @@ Ext.define('devilry_header.Roles', {
                                 gettext('Administrator'),
                             '</div>',
                             '<div class="description">',
-                                gettext('Administrators manage nodes, subjects, periods and assignments where they have been explicitly registered as administrator.'),
+                                interpolate(gettext('Administrators manage %(subjects_term)s, %(nodes_term)s, %(periods_term)s and %(assignments_term)s where they have been explicitly registered as administrator.'), {
+                                    subjects_term: gettext('subjects'),
+                                    nodes_term: gettext('nodes'),
+                                    periods_term: gettext('periods'),
+                                    assignments_term: gettext('assignments')
+                                }, true),
                             '</div>',
                         '</a></li>',
                     '</tpl>',
@@ -45,7 +55,9 @@ Ext.define('devilry_header.Roles', {
                                 gettext('Superuser'),
                             '</div>',
                             '<div class="description">',
-                                gettext('Superusers have complete access to all data stored in Devilry. Superusers are also automatically granted access to anything administrators have access to, so you are able to choose Administrator as well as Superuser.'),
+                                interpolate(gettext('%(Superusers_term)s have complete access to all data stored in Devilry.'), {
+                                    Superusers_term: gettext('Superusers')
+                                }, true),
                             '</div>',
                         '</a></li>',
                     '</tpl>',

@@ -15,7 +15,7 @@ Ext.define('devilry_header.FlatButton', {
     ],
 
     data: {
-        text: gettext('Loading ...')
+        text: gettext('Loading') + ' ...'
     },
 
     constructor: function(config) {

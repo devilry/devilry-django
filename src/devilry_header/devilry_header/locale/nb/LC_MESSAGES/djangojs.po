@@ -1,0 +1,175 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-18 20:19+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: static/devilry_header/FlatButton.js:18
+#: static/devilry_header/HelpLinksBox.js:15 static/devilry_header/Roles.js:8
+#: static/devilry_header/UserInfoBox.js:11
+msgid "Loading"
+msgstr ""
+
+#: static/devilry_header/Header.js:21
+msgid "Select role"
+msgstr "Velg rolle"
+
+#: static/devilry_header/Header.js:22 static/devilry_header/Roles.js:15
+msgid "Student"
+msgstr ""
+
+#: static/devilry_header/Header.js:23 static/devilry_header/Roles.js:27
+msgid "Examiner"
+msgstr ""
+
+#: static/devilry_header/Header.js:24 static/devilry_header/Roles.js:40
+msgid "Administrator"
+msgstr ""
+
+#: static/devilry_header/Header.js:25 static/devilry_header/Roles.js:55
+msgid "Superuser"
+msgstr ""
+
+#: static/devilry_header/Header.js:61
+msgid "Dashboard"
+msgstr ""
+
+#: static/devilry_header/HelpLinksBox.js:12
+msgid "Help"
+msgstr "Hjelp"
+
+#: static/devilry_header/HelpLinksBox.js:18
+msgid "Failed to load help links. Try reloading the page."
+msgstr "Lasting av hjelp-linker feilet. Prøv å laste siden på nytt."
+
+#: static/devilry_header/HelpLinksBox.js:22
+msgid ""
+"Your local Devilry system administrator(s) have not added any external help "
+"for you. If you feel anything in Devilry is unclear, contact you local "
+"Devilry system administrator(s) and ask them to add help links."
+msgstr ""
+"Din lokale Devilry system administrator har ikke lagt til noen eksterne "
+"hjelp-linker for deg. Hvis du syns noe i Devilry er vanskelig å forstå, ta "
+"kontakt med din lokale Devilry system administrator og be de om å legge til "
+"lenker til hjelp."
+
+#: static/devilry_header/HelpLinksBox.js:34
+msgid "Edit help links"
+msgstr "Rediger hjelp-linker"
+
+#: static/devilry_header/HoverMenu.js:32
+msgid "Choose your role"
+msgstr "Velg din rolle"
+
+#: static/devilry_header/HoverMenu.js:49
+msgid "Language"
+msgstr "Språk"
+
+#: static/devilry_header/Roles.js:18
+msgid ""
+"Students can make %(deliveres_term)s and browse their own feedback history."
+msgstr ""
+"Studenter kan legge til %(deliveres_term)s og bla i sin egen "
+"tilbakemeldingshistorikk."
+
+#: static/devilry_header/Roles.js:19 static/devilry_header/Roles.js.c:32
+msgid "deliveries"
+msgstr ""
+
+#: static/devilry_header/Roles.js:30
+msgid "Examiners give students %(feedback_term)s on their %(deliveries_term)s."
+msgstr "Rettere gir studenter %(feedback_term)s på innleveringer."
+
+#: static/devilry_header/Roles.js:31
+msgid "feedback"
+msgstr ""
+
+#: static/devilry_header/Roles.js:43
+msgid ""
+"Administrators manage %(subjects_term)s, %(nodes_term)s, %(periods_term)s "
+"and %(assignments_term)s where they have been explicitly registered as "
+"administrator."
+msgstr ""
+"Administratorer jobber med %(subjects_term)s, %(nodes_term)s, %(periods_term)"
+"s og %(assignments_term)s hvor de er satt som administrator."
+
+#: static/devilry_header/Roles.js:44
+msgid "subjects"
+msgstr ""
+
+#: static/devilry_header/Roles.js:45
+msgid "nodes"
+msgstr ""
+
+#: static/devilry_header/Roles.js:46
+msgid "periods"
+msgstr ""
+
+#: static/devilry_header/Roles.js:47
+msgid "assignments"
+msgstr ""
+
+#: static/devilry_header/Roles.js:58
+msgid ""
+"%(Superusers_term)s have complete access to all data stored in Devilry."
+msgstr ""
+"%(Superusers_term)s har full tilgang til all data i Devilry."
+
+#: static/devilry_header/Roles.js:59
+msgid "Superusers"
+msgstr ""
+
+#: static/devilry_header/Roles.js:66
+msgid "I should have had more roles"
+msgstr "Jeg skulle ha hatt flere roller"
+
+#: static/devilry_header/Roles.js:70
+msgid ""
+"You have no permissions on anything in Devilry. Click <a href="
+"\"{no_permissions_url}\">this link</a> to go to a page explaining how to get "
+"access to Devilry."
+msgstr ""
+
+#: static/devilry_header/UserInfoBox.js:8
+msgid "About you"
+msgstr "Om deg"
+
+#: static/devilry_header/UserInfoBox.js:14
+msgid ""
+"The table below shows the personal information registered about you in "
+"Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
+"is incorrect."
+msgstr ""
+"Tabellen nedenfor viser all personlig informasjon registrert om deg i "
+"Devilry. <a href=\"{wrong_userinfo_url}\">Klikk her</a> hvis noe av informasjonen "
+"er feil."
+
+#: static/devilry_header/UserInfoBox.js:19
+msgid "Name"
+msgstr "Navn"
+
+#: static/devilry_header/UserInfoBox.js:23
+msgid "Email"
+msgstr "Epost"
+
+#: static/devilry_header/UserInfoBox.js:27
+msgid "Username"
+msgstr "Brukernavn"
+
+#: static/devilry_header/UserInfoBox.js:33
+msgid "Log out"
+msgstr "Logg ut"

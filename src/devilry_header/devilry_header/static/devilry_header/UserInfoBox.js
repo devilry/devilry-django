@@ -8,7 +8,7 @@ Ext.define('devilry_header.UserInfoBox', {
             gettext('About you'),
         '</h2>',
         '<tpl if="loading">',
-            '<p>', gettext('Loading ...'), '</p>',
+            '<p>', gettext('Loading'), ' ...</p>',
         '<tpl else>',
             '<p class="discreet">',
                 gettext('The table below shows the personal information registered about you in Devilry. <a href="{wrong_userinfo_url}">Click here</a> if any information is incorrect.'),

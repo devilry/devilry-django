@@ -12,7 +12,7 @@ Ext.define('devilry_header.HelpLinksBox', {
             gettext('Help'),
         '</h2>',
         '<tpl if="loading">',
-            '<p>', gettext('Loading ...'), '</p>',
+            '<p>', gettext('Loading'), ' ...</p>',
         '<tpl elseif="error">',
             '<p class="error">',
                 gettext('Failed to load help links. Try reloading the page.'),
