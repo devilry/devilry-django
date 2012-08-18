@@ -373,7 +373,7 @@ msgid ""
 "%(deliveries_term)s unless an %(examiner_term)s opens the group."
 msgstr ""
 "Nåværende %(grade_term)s er avsluttende karakter. Du får ikke flere forsøk "
-"med mindre enn %(examiner_term)s åpner opp gruppen."
+"med mindre en %(examiner_term)s åpner opp gruppen."
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:52
 msgid "grade"
