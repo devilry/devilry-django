@@ -18,23 +18,19 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
 
     initComponent: function() {
         Ext.apply(this, {
-            title: 'Todo-list',
+            title: gettext('Todo-list'),
             toolbarExtra: ['->', {
-               xtype: 'button',
-               scale: 'large',
-               iconCls: 'icon-save-32',
-               text: 'Download all deliveries',
-               listeners: {
-                   scope: this,
-                   click: this.onDownload
-               }
-            }],
-            listeners: {
-                scope: this,
-                show: function() {
-                    this._loadTodoList();
+                xtype: 'button',
+                scale: 'large',
+                iconCls: 'icon-save-32',
+                text: interpolate(gettext('Download all %(deliveries_term)s'), {
+                    deliveries_term: gettext('deliveries')
+                }, true),
+                listeners: {
+                    scope: this,
+                    click: this.onDownload
                 }
-            },
+            }],
             
             helpTpl: Ext.create('Ext.XTemplate',
                 '<div class="section helpsection">',
@@ -54,6 +50,7 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
                 return '../assignmentgroup/';
             }
         });
+        this.on('show', this._loadTodoList);
         this.callParent(arguments);
         this._loadTodoList();
     },

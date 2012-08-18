@@ -5,6 +5,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry.examiner.AssignmentLayoutTodoList',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.SingleRecordView',
+        'devilry_extjsextras.Router',
         'devilry_header.Breadcrumbs'
     ],
     
@@ -24,6 +25,10 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
     
     initComponent: function() {
+        this.route = Ext.create('devilry_extjsextras.Router', this);
+        this.route.add("", 'todo_route');
+        this.route.add("students", 'students_route');
+
         var assignmentmodel = Ext.ModelManager.getModel(this.assignmentmodelname);
         assignmentmodel.load(this.assignmentid, {
             scope: this,
@@ -49,14 +54,44 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         this.callParent(arguments);
     },
 
-    _onLoadAssignmentSuccess: function(record) {
-        this.assignment_recordcontainer.setRecord(record);
+    _init: function() {
+        this.route.start();
+    },
+
+    todo_route: function() {
+        var todo = this.down('examiner-assignmentlayout-todolist');
+        if(todo != null) { // Will be null for non-electronic
+            todo.show();
+        }
+        this._setBreadcrumbsAndTitle();
+    },
+    students_route: function() {
+        this.down('studentsmanager').show();
+        this._setBreadcrumbsAndTitle(true);
+    },
+
+    _setBreadcrumbsAndTitle: function(students) {
+        var record = this.assignmentRecord;
         var path = [
             record.get('parentnode__parentnode__short_name'),
             record.get('parentnode__short_name'),
             record.get('short_name')].join('.');
-        devilry_header.Breadcrumbs.getInBody().set([], path);
+        var breadcrumbs = [];
+        var active = path;
+        if(students) {
+            breadcrumbs.push({
+                text: path,
+                url: '#'
+            });
+            active = gettext('Students')
+        }
+        devilry_header.Breadcrumbs.getInBody().set(breadcrumbs, active);
         window.document.title = Ext.String.format('{0} - Devilry', path);
+    },
+
+    _onLoadAssignmentSuccess: function(record) {
+        this.assignmentRecord = record;
+        this.assignment_recordcontainer.setRecord(record);
     },
 
     _onLoadAssignmentFailure: function() {
@@ -66,13 +101,19 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     _getStudentsManagerConfig: function() {
         return {
             xtype: 'studentsmanager',
-            title: 'Detailed overview of all students',
+            title: gettext('Detailed overview of all students'),
             assignmentgroupmodelname: this.assignmentgroupmodelname,
             assignmentid: this.assignmentid,
             assignmentrecord: this.assignment_recordcontainer.record,
             deadlinemodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDeadline'),
             gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.examiner.SimplifiedConfig'),
-            isAdministrator: false
+            isAdministrator: false,
+            listeners: {
+                scope: this,
+                activate: function() {
+                    this.route.navigate('#students');
+                }
+            }
         };
     },
 
@@ -82,7 +123,15 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             assignmentid: this.assignmentid,
             pageSize: 30,
             assignmentmodelname: this.assignmentmodelname,
-            assignmentgroupmodelname: this.assignmentgroupmodelname
+            assignmentgroupmodelname: this.assignmentgroupmodelname,
+            listeners: {
+                scope: this,
+                activate: function() {
+                    if(this.finishedLoading) {
+                        this.route.navigate('');
+                    }
+                }
+            }
         };
     },
 
@@ -106,6 +155,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         } else {
             this._electronicLayout();
         }
+        this._init();
+        this.finishedLoading = true;
         Ext.getBody().unmask();
     },
 });
