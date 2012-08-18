@@ -73,9 +73,10 @@ Ext.define('devilry_header.Header', {
                 xtype: 'box',
                 //width: 110,
                 cls: 'devilrylogo',
-                tpl: '<span class="logotext">{text}</span>',
+                tpl: '<a class="logotext" href="{rooturl}">{text}</a>',
                 data: {
-                    text: 'Devilry'
+                    text: 'Devilry',
+                    rooturl: DevilrySettings.DEVILRY_URLPATH_PREFIX
                 }
             }, {
                 xtype: 'devilryheader_flatbutton',

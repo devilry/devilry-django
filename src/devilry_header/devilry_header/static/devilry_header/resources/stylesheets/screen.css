@@ -128,66 +128,71 @@
   background-position: 10px center;
 }
 /* line 123, ../sass/screen.scss */
-.devilryheader .devilrylogo .logotext {
+.devilryheader .devilrylogo a.logotext {
   font-weight: bold;
   font-size: 15px;
   color: #aa0000;
+  text-decoration: none;
+}
+/* line 128, ../sass/screen.scss */
+.devilryheader .devilrylogo a.logotext:hover {
+  text-decoration: underline;
 }
 
-/* line 131, ../sass/screen.scss */
+/* line 135, ../sass/screen.scss */
 .devilryheader_hovermenu {
   font-size: 13px;
   background-color: black;
   color: #fff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-/* line 139, ../sass/screen.scss */
+/* line 143, ../sass/screen.scss */
 .devilryheader_hovermenu h2 {
   font-size: 20px;
   margin: 0 0 7px 0;
 }
-/* line 145, ../sass/screen.scss */
+/* line 149, ../sass/screen.scss */
 .devilryheader_hovermenu .discreet {
   font-size: 11px;
   color: #aaa;
 }
-/* line 148, ../sass/screen.scss */
+/* line 152, ../sass/screen.scss */
 .devilryheader_hovermenu .discreet a {
   color: #fff;
   text-decoration: underline;
 }
-/* line 154, ../sass/screen.scss */
+/* line 158, ../sass/screen.scss */
 .devilryheader_hovermenu a {
   text-decoration: underline;
   color: #3366FF;
 }
-/* line 159, ../sass/screen.scss */
+/* line 163, ../sass/screen.scss */
 .devilryheader_hovermenu p {
   margin: 0 0 9px;
   line-height: 18px;
 }
 
-/* line 167, ../sass/screen.scss */
+/* line 171, ../sass/screen.scss */
 .devilryheader_roles ul {
   margin: 0 0 10px 0;
 }
-/* line 169, ../sass/screen.scss */
+/* line 173, ../sass/screen.scss */
 .devilryheader_roles ul li {
   margin: 0;
   padding: 0;
 }
-/* line 172, ../sass/screen.scss */
+/* line 176, ../sass/screen.scss */
 .devilryheader_roles ul li a {
   display: block;
   text-decoration: none;
   color: #000;
   line-height: 18px;
 }
-/* line 178, ../sass/screen.scss */
+/* line 182, ../sass/screen.scss */
 .devilryheader_roles ul li a .heading {
   font-weight: bold;
 }
-/* line 183, ../sass/screen.scss */
+/* line 187, ../sass/screen.scss */
 .devilryheader_roles ul li a.student_role {
   padding: 8px 28px 4px 8px;
   background-color: #77b300;
@@ -217,7 +222,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 186, ../sass/screen.scss */
+/* line 190, ../sass/screen.scss */
 .devilryheader_roles ul li a.examiner_role {
   padding: 8px 28px 4px 8px;
   background-color: #0077b3;
@@ -247,7 +252,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 189, ../sass/screen.scss */
+/* line 193, ../sass/screen.scss */
 .devilryheader_roles ul li a.administrator_role {
   padding: 8px 28px 4px 8px;
   background-color: #ff9900;
@@ -277,7 +282,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 192, ../sass/screen.scss */
+/* line 196, ../sass/screen.scss */
 .devilryheader_roles ul li a.superuser_role {
   padding: 8px 28px 4px 8px;
   background-color: #cc3300;
@@ -308,31 +313,31 @@
   color: #000;
 }
 
-/* line 202, ../sass/screen.scss */
+/* line 206, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable th, .devilryheader_userinfobox table.userinfotable td {
   line-height: 18px;
   font-size: 13px;
 }
-/* line 206, ../sass/screen.scss */
+/* line 210, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable th {
   color: #999;
   font-weight: bold;
   padding: 4px 10px 4px 0;
 }
-/* line 211, ../sass/screen.scss */
+/* line 215, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable td {
   color: #fff;
 }
 
-/* line 220, ../sass/screen.scss */
+/* line 224, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li {
   margin: 0 0 10px 0;
 }
-/* line 223, ../sass/screen.scss */
+/* line 227, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .title a {
   font-weight: bold;
 }
-/* line 227, ../sass/screen.scss */
+/* line 231, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .description {
   font-size: 11px;
   color: #aaa;

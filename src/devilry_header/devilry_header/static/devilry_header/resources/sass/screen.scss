@@ -120,10 +120,14 @@ $hovermenu_bgcolor: #000;
         background-image: url('../images/devilrylogo_small.png');
         background-repeat: no-repeat;
         background-position: 10px center;
-        .logotext {
+        a.logotext {
             font-weight: bold;
             font-size: 15px;
             color: $logocolor;
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 }
