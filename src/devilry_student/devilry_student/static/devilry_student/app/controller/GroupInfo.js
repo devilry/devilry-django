@@ -36,6 +36,9 @@ Ext.define('devilry_student.controller.GroupInfo', {
             },
             'viewport groupinfo groupmetadata': {
                 active_feedback_link_clicked: this._onActiveFeedbackLink
+            },
+            'viewport groupinfo groupinfo_delivery #feedback': {
+                render: this._onFeedbackRender
             }
         });
     },
@@ -244,5 +247,9 @@ Ext.define('devilry_student.controller.GroupInfo', {
     _getDeadlinePanelById: function(deadline_id) {
         var selector = Ext.String.format('#deadline-{0}', deadline_id);
         return this.getOverview().down(selector);
+    },
+
+    _onFeedbackRender: function(component) {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
     }
 });

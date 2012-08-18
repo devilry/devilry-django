@@ -14,6 +14,7 @@
 
 {# formatoverrides is required by the old rest apis #}
 <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
+{% include "markup/mathjaxheader.django.html" %}
 
 <script type="text/javascript" src="{% url devilry-settings %}"></script>
 {% include "devilry_header/cssimports.django.html" %}

@@ -100,7 +100,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 xtype: 'box',
                 columnWidth: 0.7,
                 tpl: this.feedbackTpl,
-                itemid: 'feedback',
+                itemId: 'feedback',
                 cls: 'bootstrap devilry_student_groupinfo_delivery_rendered_view',
                 padding: '0 0 0 40',
                 data: {
