@@ -5,7 +5,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
 
     requires: [
         'devilry_header.Roles',
-
+        'devilry_i18n.LanguageSelectWidget'
     ],
 
     frame: false,
@@ -62,9 +62,15 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
         width: 260,
         padding: '25 0 0 50',
         items: [{
-            xtype: 'textfield',
-            emptyText: 'Language: ',
-            width: 260
+            xtype: 'container',
+            itemId: 'selectLanguage',
+            items: [{
+                xtype: 'box',
+                cls: 'bootstrap',
+                html: ['<h3>', gettext('Language'), '</h3>'].join('')
+            }, {
+                xtype: 'devilry_i18n_languageselect'
+            }]
         }, {
             xtype: 'box',
             cls: 'bootstrap',
