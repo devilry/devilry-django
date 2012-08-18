@@ -7,7 +7,10 @@
 
 {% block imports %}
     {{ block.super }}
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require([
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview',
+        'devilry_header.Breadcrumbs'
+    ]);
 {% endblock %}
 
 
@@ -54,7 +57,10 @@
                         url: '../period/' + groupRecord.get('parentnode__parentnode')
                     }, {
                         text: groupRecord.get('parentnode__short_name'),
-                        url: '../assignment/' + groupRecord.get('parentnode') + '?open_students=yes'
+                        url: '../assignment/' + groupRecord.get('parentnode')
+                    }, {
+                        text: gettext('Students'),
+                        url: '../assignment/' + groupRecord.get('parentnode') + '#students'
                     }], groupIdent);
                     window.document.title = Ext.String.format('{0} - Devilry', groupIdent);
                 }

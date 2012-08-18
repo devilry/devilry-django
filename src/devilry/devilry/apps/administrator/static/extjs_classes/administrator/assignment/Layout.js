@@ -6,6 +6,8 @@ Ext.define('devilry.administrator.assignment.Layout', {
         'devilry.administrator.assignment.PrettyView',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.Assignment',
+        'devilry_header.Breadcrumbs',
+        'devilry_extjsextras.Router',
         'devilry_header.Breadcrumbs'
     ],
 
@@ -24,7 +26,9 @@ Ext.define('devilry.administrator.assignment.Layout', {
     
     initComponent: function() {
         this.studentsLoaded = false;
-        var query = Ext.Object.fromQueryString(window.location.search);
+        this.route = Ext.create('devilry_extjsextras.Router', this);
+        this.route.add("", 'administer_route');
+        this.route.add("students", 'students_route');
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -45,9 +49,10 @@ Ext.define('devilry.administrator.assignment.Layout', {
             }), {
                 xtype: 'tabpanel',
                 flex: 1,
-                activeTab: query.open_students == 'yes'? 1: 0,
+                activeTab: window.location.hash == '#students'? 1: 0,
                 items: [this.prettyview = Ext.widget('administrator_assignmentprettyview', {
-                    title: 'Administer',
+                    title: gettext('Administer'),
+                    itemId: 'administer',
                     modelname: this.assignmentmodel_name,
                     objectid: this.assignmentid,
                     dashboardUrl: this.dashboardUrl,
@@ -57,18 +62,39 @@ Ext.define('devilry.administrator.assignment.Layout', {
                         loadmodel: this._onLoadRecord,
                         edit: this._onEdit,
                         activate: function() {
+                            this.route.navigate('');
                             if(this.prettyview.record) {
                                 this.prettyview.checkStudentsAndRefreshBody();
                             }
                         }
                     }
                 }), this.studentstab = Ext.widget('panel', {
-                    title: 'Students',
-                    layout: 'fit'
+                    title: gettext('Students'),
+                    itemId: 'students',
+                    layout: 'fit',
+                    listeners: {
+                        scope: this,
+                        activate: function() {
+                            this.route.navigate('students');
+                        }
+                    }
                 })]
             }]
         });
         this.callParent(arguments);
+    },
+
+    _init: function() {
+        this.route.start();
+    },
+
+    administer_route: function() {
+        this.down('#administer').show();
+        this._setBreadcrumbAndTitle();
+    },
+    students_route: function() {
+        this.down('#students').show();
+        this._setBreadcrumbAndTitle(true);
     },
 
     _onLoadRecord: function(assignmentRecord) {
@@ -79,22 +105,32 @@ Ext.define('devilry.administrator.assignment.Layout', {
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
         });
         this._onStudents();
-        this._setBreadcrumbAndTitle(assignmentRecord);
+        this._init();
     },
 
-    _setBreadcrumbAndTitle: function(assignmentRecord) {
+    _setBreadcrumbAndTitle: function(students) {
+        var assignmentRecord = this.assignmentRecord;
         var path = [
             assignmentRecord.get('parentnode__parentnode__short_name'),
             assignmentRecord.get('parentnode__short_name'),
             assignmentRecord.get('short_name')].join('.');
         window.document.title = Ext.String.format('{0} - Devilry', path);
-        devilry_header.Breadcrumbs.getInBody().set([{
+        var breadcrumbs = [{
             text: assignmentRecord.get('parentnode__parentnode__short_name'),
             url: '../subject/' + assignmentRecord.get('parentnode__parentnode')
         }, {
             text: assignmentRecord.get('parentnode__short_name'),
             url: '../period/' + assignmentRecord.get('parentnode')
-        }], assignmentRecord.get('short_name'));
+        }];
+        var active = assignmentRecord.get('short_name');
+        if(students) {
+            breadcrumbs.push({
+                text: assignmentRecord.get('short_name'),
+                url: '#'
+            });
+            active = gettext('Students')
+        }
+        devilry_header.Breadcrumbs.getInBody().set(breadcrumbs, active);
     },
 
     _onEdit: function(record, button) {
