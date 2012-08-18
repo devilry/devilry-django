@@ -94,7 +94,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
 
         this.giveFeedbackToSelectedArgs = {
-            text: 'Give feedback to selected',
+            text: gettext('Give feedback to selected'),
             listeners: {
                 scope: this,
                 click: this.onGiveFeedbackToSelected,
@@ -104,7 +104,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     }
                     var tip = Ext.create('Ext.tip.ToolTip', {
                         target: button.getEl(),
-                        title: 'Give feedback to selected',
+                        title: gettext('Give feedback to selected'),
                         html: this.feedbackTooltip.apply({
                             delivery_types: this.assignmentrecord.get('delivery_types'),
                             isAdministrator: this.isAdministrator
@@ -244,45 +244,45 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     getFilters: function() {
         var me = this;
         var filters = [{xtype: 'menuheader', html: 'Open/closed'}, {
-            text: 'Open',
+            text: gettext('Open'),
             handler: function() { me.setFilter('is_open:yes'); }
         }, {
-            text: 'Closed',
+            text: gettext('Closed'),
             handler: function() { me.setFilter('is_open:no'); }
-        }, {xtype: 'menuheader', html: 'Grade'}, {
-            text: 'Passing grade',
+        }, {xtype: 'menuheader', html: gettext('Grade')}, {
+            text: gettext('Passed'),
             handler: function() { me.setFilter('feedback__is_passing_grade:yes'); }
         }, {
-            text: 'Failing grade',
+            text: gettext('Failed'),
             handler: function() { me.setFilter('feedback__is_passing_grade:no'); }
-        }, {xtype: 'menuheader', html: 'Deliveries'}, {
-            text: 'Has deliveries',
+        }, {xtype: 'menuheader', html: gettext('Deliveries')}, {
+            text: interpolate(gettext('Has %(deliveries_term)s'), {deliveries_term: gettext('deliveries')}, true),
             handler: function() { me.setFilter('number_of_deliveries:>:0'); }
         }, {
-            text: 'No deliveries',
+            text: interpolate(gettext('No %(deliveries_term)s'), {deliveries_term: gettext('deliveries')}, true),
             handler: function() { me.setFilter('number_of_deliveries:0'); }
-        }, {xtype: 'menuheader', html: 'Feedback'}, {
-            text: 'Has feedback',
+        }, {xtype: 'menuheader', html: gettext('Feedback')}, {
+            text: interpolate(gettext('Has %(feedback_term)s'), {feedback_term: gettext('feedback')}, true),
             handler: function() { me.setFilter('feedback:>=:0'); }
         }, {
-            text: 'No feedback',
+            text: interpolate(gettext('No %(feedback_term)s'), {feedback_term: gettext('feedback')}, true),
             handler: function() { me.setFilter('feedback:none'); }
-        }, {xtype: 'menuheader', html: 'Delivery type'}, {
-            text: 'Electronic',
+        }, {xtype: 'menuheader', html: gettext('Delivery type')}, {
+            text: gettext('Electronic'),
             handler: function() { me.setFilter('feedback__delivery__delivery_type:0'); }
         }, {
-            text: 'Non-electronic',
+            text: gettext('Non-electronic'),
             handler: function() { me.setFilter('feedback__delivery__delivery_type:1'); }
         }, {
-            text: 'From previous period',
+            text: interpolate(gettext('From previous %(period_term)s'), {period_term: gettext('period')}, true),
             handler: function() { me.setFilter('feedback__delivery__delivery_type:2'); }
         }];
         if(this.assignmentrecord.data.anonymous) {
             filters.push({
-                xtype: 'menuheader', html: 'Candidate ID'
+                xtype: 'menuheader', html: gettext('Candidate ID')
             });
             filters.push({
-                text: 'Missing candidate ID',
+                text: gettext('Missing candidate ID'),
                 handler: function() { me.setFilter('candidates__identifier:none'); }
             });
         }
@@ -291,13 +291,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getToolbarItems: function() {
         var advanced = Ext.Array.merge(
-            [{xtype: 'menuheader', html: 'On single group'}], this.getOnSingleMenuItems(),
+            [{xtype: 'menuheader', html: gettext('On single group')}], this.getOnSingleMenuItems(),
             [{xtype: 'box', height: 12}],
-            [{xtype: 'menuheader', html: 'On one or more group'}], this.getOnManyMenuItems()
+            [{xtype: 'menuheader', html: gettext('On one or more group')}], this.getOnManyMenuItems()
         );
 
         return [{
-            text: 'Help',
+            text: gettext('Help'),
             iconCls: 'icon-help-32',
             scale: 'large',
             listeners: {
@@ -306,7 +306,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         }, '->', {
             xtype: 'button',
-            text: 'Advanced',
+            text: gettext('Advanced'),
             scale: 'large',
             menu: {
                 xtype: 'menu',
@@ -318,7 +318,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getOnSingleMenuItems: function() {
         menu = [{
-            text: 'Open in examiner interface',
+            text: gettext('Open in examiner interface'),
             listeners: {
                 scope: this,
                 click: this.onOpenExaminerInterface
@@ -327,7 +327,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
             menu.push({
-                text: 'Add non-electronic delivery',
+                text: gettext('Add non-electronic delivery'),
                 iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
@@ -341,15 +341,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     getOnManyMenuItems: function() {
         var items = [{
-            text: 'Close/open',
+            text: gettext('Close/open selected'),
             menu: [{
-                text: 'Close',
+                text: gettext('Close selected'),
                 listeners: {
                     scope: this,
                     click: this.onCloseGroups
                 }
             }, {
-                text: 'Open',
+                text: gettext('Open selected'),
                 listeners: {
                     scope: this,
                     click: this.onOpenGroups
@@ -358,7 +358,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }];
         if(this.assignmentrecord.get('delivery_types') !== this.deliveryTypes.TYPE_NON_ELECTRONIC) {
             items.push({
-                text: 'Add deadline',
+                text: interpolate(gettext('Add %(deadline_term)s'), {
+                    deadline_term: gettext('deadline')
+                }, true),
                 iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,
@@ -371,7 +373,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     onHelp: function() {
         Ext.widget('helpwindow', {
-            title: 'Help',
+            title: gettext('Help'),
             maximizable: true,
             maximized: true,
             helptpl: Ext.create('Ext.XTemplate',
