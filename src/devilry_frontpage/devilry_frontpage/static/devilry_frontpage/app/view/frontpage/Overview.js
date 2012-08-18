@@ -46,7 +46,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
                         gettext('Choose your role'),
                     '</h2>',
                     '<p><small>',
-                        gettext('Devilry handles all aspects of the electronic delivery process. Each distinct area of responsibilty, or role, has its own user interface. Choose your role from the menu on your right hand side.'),
+                        gettext('Devilry handles all aspects of the electronic delivery process, including feedback and grading. Each distinct area of responsibilty, or role, has its own user interface. Choose a role from the menu on your right hand side.'),
                     '</small></p>'
                 ],
                 data: {}
@@ -94,7 +94,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
                     gettext('Improve Devilry?'),
                 '</h3>',
                 '<p class="muted">',
-                    gettext('Devilry is an open source general purpose assignment delivery system. Visit <a href="{devilryurl}">{devilryurl}</a> and help us make it better.'),
+                    gettext('Devilry is an open source general purpose electronic assignment delivery and feedback system. Visit <a href="{devilryurl}">{devilryurl}</a> and help us make it better.'),
                 '</p>'
             ],
             data: {
