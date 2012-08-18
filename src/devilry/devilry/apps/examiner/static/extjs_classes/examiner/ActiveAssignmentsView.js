@@ -77,7 +77,6 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
                 flex: 1,
                 dataIndex: 'long_name',
                 renderer: function(value, meta, record) {
-                    console.log(record.data);
                     return me.assignmentRowTpl.apply({
                         data: record.data,
                         url: Ext.String.format('{0}assignment/{1}', me.dashboard_url, record.get('id'))
