@@ -7,7 +7,7 @@ from restful import examiner_restful
 from views import (MainView, AssignmentGroupView,
                     AssignmentView, CompressedFileDownloadView)
 
-i18n_packages = get_javascript_catalog_packages('devilry.apps.examiner', 'devilry_header', 'devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry.apps.examiner', 'devilry.apps.extjshelpers', 'devilry_header', 'devilry.apps.core')
 
 urlpatterns = patterns('devilry.apps.examiner',
                        url(r'^$', login_required(MainView.as_view()), name='examiner'),

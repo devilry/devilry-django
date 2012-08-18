@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-19 01:21+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTitle.js:11
+msgid "Group members:"
+msgstr "Gruppemedlemmer:"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:83
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:128
+msgid "Search"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:110
+msgid "Students"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:125
+msgid "Deliveries"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:88
+msgid "Add %(delivery_term)s"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:89
+msgid "delivery"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:67
+msgid "Browse"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:135
+msgid "Filter"
+msgstr "Filtrer"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:143
+msgid "All on one page"
+msgstr "Alle på en side"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:170
+msgid "Download all %(deliveries_term)s"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:171
+msgid "deliveries"
+msgstr ""

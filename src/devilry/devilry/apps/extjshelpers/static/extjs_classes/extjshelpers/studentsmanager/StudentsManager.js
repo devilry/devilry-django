@@ -125,14 +125,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         var topBarItems = [{
             xtype: 'searchfield',
             width: 400,
-            emptyText: 'Search...'
+            emptyText: gettext('Search') + ' ...'
         }, {
             xtype: 'button',
             text: 'x',
             handler: function() { me.setFilter(''); }
         }, {
             xtype: 'button',
-            text: 'Filter',
+            text: gettext('Filter'),
             menu: {
                 xtype: 'menu',
                 plain: true,
@@ -140,7 +140,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         }, {
             xtype: 'button',
-            text: 'All on one page',
+            text: gettext('All on one page'),
             enableToggle: true,
             listeners: {
                 scope: this,
@@ -167,7 +167,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         if(this.assignmentrecord.get('delivery_types') == 0) {
             topBarItems.push({
                 xtype: 'button',
-                text: 'Download all deliveries',
+                text: interpolate(gettext('Download all %(deliveries_term)s'), {
+                    deliveries_term: gettext('deliveries')
+                }, true),
                 iconCls: 'icon-save-16',
                 listeners: {
                     scope: this,

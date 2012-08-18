@@ -85,7 +85,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                     tpl: '<a href="../add-delivery/{groupId}">{text}</a>',
                     padding: '5 0 5 0',
                     data: {
-                        text: gettext('Add delivery'),
+                        text: interpolate(gettext('Add %(delivery_term)s'), {
+                            delivery_term: gettext('delivery')
+                        }),
                         groupId: groupRecord.get('id')
                     }
                 }]
