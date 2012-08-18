@@ -18,6 +18,7 @@ Ext.define('devilry_header.Header', {
 
 
     navclass_to_rolename: {
+        'no_role': gettext('Select role'),
         'student': gettext('Student'),
         'examiner': gettext('Examiner'),
         'administrator': gettext('Administrator'),

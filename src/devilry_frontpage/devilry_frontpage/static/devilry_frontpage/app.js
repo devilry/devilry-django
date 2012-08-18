@@ -43,7 +43,7 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'student',
+                navclass: 'no_role',
                 breadcrumbs: this.breadcrumbs
             }, {
                 xtype: 'container',

@@ -7,6 +7,7 @@ $baseFontSize: 13px;
 $baseLineHeight: 18px;
 $almostblack: #191919 !default;
 
+$norolecolor_bg: #555;
 $studentcolor_bg: #77B300;
 $examinercolor_bg: #0077B3;
 $administratorcolor_bg: #ff9900;
@@ -83,6 +84,9 @@ $hovermenu_bgcolor: #000;
             }
         }
         &.flatbutton_not_pressed {
+            &.no_role {
+                background-color: $norolecolor_bg;
+            }
             &.student {
                 background-color: $studentcolor_bg;
             }
