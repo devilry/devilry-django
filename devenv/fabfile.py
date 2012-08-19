@@ -7,10 +7,9 @@ from fabric.api import local, abort, task
 @task
 def setup_demo():
     """
-    Runs ``reset``, ``remove_db`` and ``autodb`` tasks.
+    Runs ``reset`` and ``autodb`` tasks.
     """
     reset()
-    remove_db()
     autodb()
 
 
@@ -83,8 +82,9 @@ def reset():
 @task
 def autodb():
     """
-    Run ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
+    Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
     """
+    remove_db()
     syncdb()
     local('bin/django_dev.py dev_autodb -v2')
 
