@@ -10,17 +10,20 @@ from django.conf import settings
 class JsFile(object):
     DEFINEPATT = re.compile(r"^Ext\.define\(.(.+?).\s*,", re.MULTILINE)
     EXTENDPATT = re.compile(r"^\s*extend\s*:\s*['\"](.+?)['\"]", re.MULTILINE|re.DOTALL)
+    MODELPATT = re.compile(r"^\s*model\s*:\s*['\"](.+?)['\"]", re.MULTILINE|re.DOTALL)
     REQUIRESPATT = re.compile(r"^\s*requires\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
     MIXINSPATT = re.compile(r"^\s*mixins\s*:\s*{(.*?)}", re.MULTILINE|re.DOTALL)
     LISTSPLITPATT = re.compile(r'[\'"](.*?)[\'"]')
 
     def __init__(self, filepath):
         self.filepath = filepath
+        print filepath
         self.filecontent = open(self.filepath, 'rb').read()
         self.match_define()
         self.match_requires() # must be before extend and mixins, since they add to self.requires
         self.match_extend()
         self.match_mixins()
+        self.match_model()
         self.requires = filter(lambda r: not r.startswith('Ext.'), self.requires)
 
     def match_define(self):
@@ -55,6 +58,12 @@ class JsFile(object):
         else:
             self.mixins = []
 
+    def match_model(self):
+        m = self.MODELPATT.search(self.filecontent)
+        if m:
+            model = m.groups()[0]
+            self.requires.append(model)
+
     def __str__(self):
         return "{0}: {1} ({2})".format(self.clsname, self.extend, ','.join(self.requires))
 
@@ -77,8 +86,8 @@ def orderJsFiles(jsfiles):
 
 
 def collect_jsfiles(jsfiles, rootdir, verbose):
-    ignorefilepatt = re.compile('^.*?(configeditor.js|drafteditor.js|formatoverrides.js|app-all.js|all-classes.js|devilry_all_uncompiled.js|django\.js)$')
-    includedirpatt = re.compile(r'(extjs_classes|extjsux)')
+    ignorefilepatt = re.compile('^.*?(configeditor.js|drafteditor.js|formatoverrides.js|app-all.js|all-classes\.js|devilry_all_uncompiled\.js|django\.js)$')
+    includedirpatt = re.compile(r'(extjs_classes|extjsux|devilry_header|devilry_extjsextras|devilry_i18n|devilry_authenticateduserinfo)')
     for root, dirs, files in walk(rootdir):
         unixstyledir = root.replace(sep, '/')
         if not includedirpatt.search(root): continue
