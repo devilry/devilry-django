@@ -276,7 +276,7 @@ class Command(BaseCommand):
         """
         periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
-                            subjects=["duck6000:ln(DUCK6000 - Make robots walk)"],
+                            subjects=["duck6000:ln(DUCK6000 - Make robots dance)"],
                             periods=periods)
         self.testhelper.duck6000_springcur.admins.add(self.testhelper.thor)
         periodnames = self._onlyNames(periods)
