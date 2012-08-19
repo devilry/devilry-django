@@ -19,7 +19,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-    title: 'Deliveries grouped by deadline',
+    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
+        Deliveries_term: gettext('Deliveries'),
+        deadline_term: gettext('deadline')
+    }, true),
 
     autoScroll: true,
 
@@ -56,7 +59,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         if(this.role !== 'student') {
             this.bbar = [{
                 xtype: 'button',
-                text: 'New deadline',
+                text: interpolate(gettext('New %(deadline_term)s'), {
+                    deadline_term: gettext('deadline')
+                }, true),
                 iconCls: 'icon-add-16',
                 listeners: {
                     scope: this,

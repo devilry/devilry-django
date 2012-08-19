@@ -8,7 +8,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
     },
 
     tooltips: {
-        canExamine: 'Click to toggle open/closed. A group should remain open until you have finished grading them. Devilry normally opens and closes groups for you automatically. You may want to manually close a group if you want to make the current grade their final grade on this assignment. A closed group can be re-opened at any time.',
+        canExamine: gettext('Click to toggle open/closed. A group should remain open until you have finished grading them. Devilry normally opens and closes groups for you automatically. You may want to manually close a group if you want to make the current grade their final grade on this assignment. A closed group can be re-opened at any time.'),
         student: 'As long as the assignment is open for more deliveries, you can add as many deliveries as you like, and your examiner(s) will normally correct your latest delivery. When an assignment is closed, the latest feedback is your final grade on this assignment. If you have not been given feedback, and you think this is wrong, you should contact your examiner or course administrator.'
     },
     layout: 'fit',
@@ -37,14 +37,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             this.add({
                 xtype: 'button',
                 scale: 'large',
-                text: this.assignmentgroup_recordcontainer.record.data.is_open? 'Open - click to close': 'Closed - click to open',
+                text: this.assignmentgroup_recordcontainer.record.data.is_open? gettext('Open - click to close'): gettext('Closed - click to open'),
                 listeners: {
                     scope: this,
                     click: this.onStatusButtonClick,
                     render: function(button) {
                         Ext.tip.QuickTipManager.register({
                             target: button.getEl(),
-                            title: 'How open/closed works',
+                            title: gettext('How open/closed works'),
                             text: this.tooltips.canExamine,
                             width: 350,
                             dismissDelay: 30000 // Hide after 30 seconds hover

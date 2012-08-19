@@ -15,9 +15,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
 
     titleTpl: Ext.create('Ext.XTemplate',
         '<span class="deadline_title">',
-        '    <span style="font-weight:bold">Deadline: ',
+        '    <span style="font-weight:bold">', gettext('Deadline'), ': ',
         '        <tpl if="assignmentgroup.parentnode__delivery_types !== 1">{deadline.deadline:date}</tpl>',
-        '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">Not defined in Devilry</tpl>',
+        '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">', gettext('Not defined in Devilry'), '</tpl>',
         '    </span>',
         //'    <div>',
         ////'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
@@ -71,7 +71,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         if(this.deliveriesStore.count() === 0) {
             this.items = {
                 xtype: 'box',
-                html: 'No deliveries on this deadline.',
+                html: interpolate(gettext('No deliveries on this %(deadline_term)s.'), {
+                    deadline_term: gettext('deadline')
+                }, true),
                 padding: 10
             };
         } else {

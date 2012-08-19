@@ -50,12 +50,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 store: this.filemetastore,
                 cls: 'selectable-grid',
                 columns: [{
-                    header: 'File name',
+                    header: gettext('File name'),
                     menuDisabled: true,
                     flex:1, 
                     dataIndex: 'filename'
                 }, {
-                    header: 'Size',
+                    header: gettext('Size'),
                     menuDisabled: true,
                     dataIndex: 'size',
                     renderer: function(value) {
