@@ -22,8 +22,7 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
 ## Nice to have this set to True while you are setting up devilry, however set
 ## it to False for production
-DEBUG = False
-
+DEBUG = True
 
 
 #############################################
@@ -50,6 +49,11 @@ DATABASES["default"] = {
 #}
 
 
+##################################################################################
+# Make Devilry speak in typical university terms (semester instead of period, ...)
+##################################################################################
+INSTALLED_APPS += ['devilry_university_translations']
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 
 
 #######################################################

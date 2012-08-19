@@ -20,17 +20,9 @@ INSTALLED_APPS += [
                    #'devilry.apps.gradeform_gradeeditor',
                    #'devilry.projects.dev.apps.test',
 
-                   'devilry_theme',
                    'devilry_subjectadmin',
-                   'devilry_extjsextras',
-                   'devilry_usersearch',
-                   'devilry_useradmin',
-                   'devilry_header',
-                   'devilry_authenticateduserinfo',
                    'seleniumhelpers',
-                   'extjs4',
                    'djangosenchatools',
-                   'devilry_university_translations',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
@@ -43,7 +35,6 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
-DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
