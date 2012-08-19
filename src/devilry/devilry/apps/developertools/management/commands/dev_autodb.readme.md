@@ -12,10 +12,17 @@ We define two subjects:
 
 ### duck1010
 A fairly traditional university-style subject with 3 obligatory assignments,
-with approved/not approved grading.
+with approved/not approved grading. ``thor`` is admin on the subject.
 
 ### duck1100
 A subject with weekly deliveries where students are graded using points.
+``thor`` is admin on the ``springcur``-period.
+
+### duck4000
+A subject with a single period and a single assignment. ``thor`` is admin on the assignment.
+
+### duck4000
+A subject with a single period. ``thor`` is admin on the period.
 
 
 ## Periods
@@ -29,7 +36,6 @@ than old).
 
 ### A user with most roles
 For a user that is student, examiner and admin, login as ``thor``.
-
 
 ### Superuser
 For a superuser, login as ``grandma``.
