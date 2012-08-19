@@ -33,7 +33,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
 
     
     getData: function(data) {
-        data.gradecls = data.is_passing_grade? 'ok-small': 'error-small';
+        data.gradecls = data.is_passing_grade? 'ok-small': 'warning-small';
         return data;
     },
 });
