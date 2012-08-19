@@ -8,7 +8,7 @@ from views import (MainView, RestfulSimplifiedView,
                    RestfulSimplifiedViewWithGradeEditors,
                    AdminCompressedFileDownloadView)
 
-i18n_packages = get_javascript_catalog_packages('devilry.apps.administrator', 'devilry.apps.extjshelpers', 'devilry_header', 'devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry.apps.administrator', 'devilry.apps.examiner', 'devilry.apps.extjshelpers', 'devilry_header', 'devilry.apps.core')
 
 urlpatterns = patterns('devilry.apps.administrator',
                        url(r'^$',

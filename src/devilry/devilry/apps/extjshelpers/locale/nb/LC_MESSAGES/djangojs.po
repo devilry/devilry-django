@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 16:43+0200\n"
+"POT-Creation-Date: 2012-08-19 17:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,20 +19,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:10
-msgid "No active periods"
-msgstr ""
+msgid "No active %(periods_term)s"
+msgstr "Ingen aktive %(periods_term)s"
 
 #: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:11
-msgid "You are not registered on any active periods."
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:83
-msgid "Active %(periods_term)s"
-msgstr "Aktive %(periods_term)s"
-
-#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:84
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:14
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:88
 msgid "periods"
 msgstr ""
+
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:13
+msgid "You are not registered on any active %(periods_term)s."
+msgstr "Du er ikke registert på noen aktive %(periods_term)s"
+
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:87
+msgid "Active %(periods_term)s"
+msgstr "Aktive %(periods_term)s"
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupOverview.js:235
 msgid "To-do list"
@@ -291,6 +293,11 @@ msgstr ""
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:256
 msgid "Failed"
 msgstr ""
+
+#: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:43
+#: static/extjs_classes/extjshelpers/searchwidget/SearchWindow.js:26
+msgid "Search for anything..."
+msgstr "Søk i alt du har tilgang til ..."
 
 #: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:67
 msgid "Browse"

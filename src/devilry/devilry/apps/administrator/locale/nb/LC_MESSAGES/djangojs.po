@@ -86,6 +86,8 @@ msgid ""
 "An %(assignment_term)s, such as an obligatory %(assignment_term)s, an "
 "anoymous home examination or a semester %(assignment_term)s."
 msgstr ""
+"En %(assignment_term)s, f.eks. en obligatorisk %(assignment_term)s, en "
+"anonym hjemmeeksamen eller en semester%(assignment_term)s."
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:132
 #: static/extjs_classes/administrator/DashboardButtonBar.js:138

@@ -7,8 +7,12 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: gettext('No active periods'),
-            msg: gettext('You are not registered on any active periods.')
+            title: interpolate(gettext('No active %(periods_term)s'), {
+                periods_term: gettext('periods')
+            }),
+            msg: interpolate(gettext('You are not registered on any active %(periods_term)s.'), {
+                periods_term: gettext('periods')
+            })
         },
         pageSize: 30,
         dashboard_url: undefined

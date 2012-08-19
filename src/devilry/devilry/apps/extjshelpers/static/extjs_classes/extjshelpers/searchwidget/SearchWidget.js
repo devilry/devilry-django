@@ -40,7 +40,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
      * @cfg {string} [emptyText]
      * Empty text of the search field.
      */
-    emptyText: 'Search for anything...',
+    emptyText: gettext('Search for anything...'),
 
     initComponent: function() {
         this.searchwindow = Ext.create('devilry.extjshelpers.searchwidget.SearchWindow', {
