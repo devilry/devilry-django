@@ -66,6 +66,19 @@ Use ``stop_servers`` and ``restart_servers`` to stop/restart the servers.
     $ bin/awsfab -E devilrydemo1 update_devilry
 
 
+## Backup/restore database
+
+    $ bin/awsfab -E devilrydemo1 backup_db
+    $ bin/awsfab -E devilrydemo1 restore_db
+
+
+## Copy local db (much faster than generating db on AWS)
+
+If you have a database in ``devenv/``, you can dump it to AWS using:
+
+    $ bin/awsfab -E devilrydemo1 load_dump_from_local_db
+
+
 ## Tip - Store settings and keys in the cloud
 If you have a cloud drive, like Google Drive or Dropbox, you may want to put
 your ``devilrydemo.pem`` and ``awsfab_settings_local.py`` on your cloud drive.
