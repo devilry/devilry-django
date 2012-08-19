@@ -57,7 +57,7 @@ Or as a user which is student, examiner and admin using:
     user: thor
     password: test
 
-**Note:** All users have ``password==test``, and you can see all usersin
+**Note:** All users have ``password==test``, and you can see all users in
 the superadmin interface. See [the demo page on the wiki](https://github.com/devilry/devilry-django/wiki/demo)
 for more info about the demo database, including recommended test users for each role.
 
