@@ -81,7 +81,7 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 # - The default config logs to the ``log/`` subdir of the directory containing
 #   _this_ file.
 ###########################################
-from devilry.defaults.log import create_logging_config
+from devilry_settings.log import create_logging_config
 logdir = join(parent_dir, 'log')
 LOGGING = create_logging_config(
                                 # Send error log messages to ADMINS on email?
