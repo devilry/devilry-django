@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-19 02:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: static/extjs_classes/administrator/assignment/Layout.js:54
+msgid "Administer"
+msgstr "Administrer"
+
+#: static/extjs_classes/administrator/assignment/Layout.js:72
+#: static/extjs_classes/administrator/assignment/Layout.js:131
+msgid "Students"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:107
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:170
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:232
+msgid "Mark as delivered in a previous %(period_term)s"
+msgstr "Marker som innlevert i et tidligere %(period_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:108
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:171
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:233
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:323
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:259
+msgid "period"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:25
+msgid "Add %(students_term)s"
+msgstr "Legg til %(students_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:26
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:32
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:195
+msgid "students"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:31
+msgid "Import %(students_term)s registered in %(syncsystem)s"
+msgstr "Importer %(students_term)s registrert i %(syncsystem)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:40
+msgid "Import from another %(assignment_term)s"
+msgstr "Importer fra en annen %(assignment_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:41
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:125
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:133
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:136
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:322
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:258
+msgid "assignment"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:48
+msgid "Manually"
+msgstr "Manuelt"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:63
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:183
+msgid "Set %(examiners_term)s"
+msgstr "Sett %(examiners_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:64
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:82
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:85
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:100
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:103
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:117
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:137
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:151
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:154
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:171
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:184
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:200
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:321
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:257
+msgid "examiners"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:74
+msgid "Replace"
+msgstr "Erstatt"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:81
+msgid "Replace %(examiners_term)s"
+msgstr "Erstatt %(examiners_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:84
+msgid ""
+"Replace %(examiners_term)s on the selected %(groups_term)s (removes current "
+"%(examiners_term)s)."
+msgstr ""
+"Erstatt %(examiners_term)s på de valgte %(groups_term)s (fjerner nåværende "
+"%(examiners_term)s)."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:86
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:104
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:118
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:138
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:155
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:172
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:256
+msgid "groups"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:92
+msgid "Add"
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:99
+msgid "Add %(examiners_term)s"
+msgstr "Legg til %(examiners_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:102
+msgid "Add %(examiners_term)s to the selected %(groups_term)s."
+msgstr "Legg til %(examiners_term)s på de valgte %(groups_term)s."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:110
+msgid "Random distribute"
+msgstr "Distribuer rettere tilfeldig"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:116
+msgid ""
+"Random distribute a list of %(examiners_term)s to the selected %(groups_term)"
+"s. Replaces current %(examiners_term)s on the selected %(groups_term)s."
+msgstr ""
+"Distribuer en liste av %(examiners_term)s til de valgte %(groups_term)s. "
+"Erstatter nåværende %(examiners_term)s på de valgte %(groups_term)s."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:124
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:132
+msgid "Copy from another %(assignment_term)s"
+msgstr "Kopier fra en annen %(assignment_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:135
+msgid ""
+"Lets you choose another %(assignment_term)s, and import %(examiners_term)s. "
+"Replaces current %(examiners_term)s on the selected %(groups_term)s."
+msgstr ""
+"Lar deg velge en annen %(assignment_term)s, og importer %(examiners_term)s "
+"fra den. Erstatter nåværende %(examiners_term)s på de valgte %(groups_term)s."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:144
+msgid "Automatically"
+msgstr "Automatisk"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:150
+msgid "Automatically set %(examiners_term)"
+msgstr "Setter opp %(examiners_term)s automatisk"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:153
+msgid ""
+"Match tagged %(examiners_term)s to equally tagged %(groups_term)s. Tags are "
+"normally imported from %(syncsystem)s."
+msgstr ""
+"Matcher taggede %(examiners_term)s med likt taggede %(groups_term)s. Tags "
+"blir normalt importert fra %(syncsystem)s."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:162
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:169
+msgid "Clear"
+msgstr "Fjern alle"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:170
+msgid "Remove all %(examiners_term)s on selected %(groups_term)s."
+msgstr "Fjern alle %(examiners_term)s fra de valgte %(groups_term)s."
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:194
+msgid "Has no %(students_term)s"
+msgstr "Har ingen %(students_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:199
+msgid "Has no %(examiners_term)s"
+msgstr "Har ingen %(examiners_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:211
+msgid "Change group members"
+msgstr "Endre gruppemedlemmer (studenter)"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:219
+msgid "Change group name"
+msgstr "Endre gruppenavn"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:241
+msgid "Delete"
+msgstr "Slett"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:250
+msgid "Import candidate IDs"
+msgstr "Importer kandidat IDer"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:320
+msgid ""
+"Import %(examiners_term)s from another %(assignment_term)s in the current "
+"%(period_term)s"
+msgstr ""
+"Importer %(examiners_term)s fra en annen %(assignment_term)s i nåværende "
+"%(period_term)s"
+
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:255
+msgid ""
+"Import %(groups_term)s from another %(assignment_term)s in the current "
+"%(period_term)s"
+msgstr ""
+"Importer %(groups_term)s fra en annen %(assignment_term)s i nåværende "
+"%(period_term)s"

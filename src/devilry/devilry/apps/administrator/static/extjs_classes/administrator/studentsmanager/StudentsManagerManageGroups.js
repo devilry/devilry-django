@@ -252,7 +252,12 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', 
     
     onImportGroupsFromAnotherAssignmentInCurrentPeriod: function() {
         Ext.widget('window', {
-            title: 'Import from another assignment in the current Period',
+            text: interpolate(gettext('Import %(groups_term)s from another %(assignment_term)s in the current %(period_term)s'), {
+                groups_term: gettext('groups'),
+                examiners_term: gettext('examiners'),
+                assignment_term: gettext('assignment'),
+                period_term: gettext('period')
+            }, true),
             layout: 'fit',
             width: 830,
             height: 600,

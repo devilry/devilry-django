@@ -317,7 +317,11 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
             return;
         }
         Ext.widget('window', {
-            title: 'Import examiners from another assignment in the current Period',
+            text: interpolate(gettext('Import %(examiners_term)s from another %(assignment_term)s in the current %(period_term)s'), {
+                examiners_term: gettext('examiners'),
+                assignment_term: gettext('assignment'),
+                period_term: gettext('period')
+            }, true),
             layout: 'fit',
             width: 830,
             height: 600,

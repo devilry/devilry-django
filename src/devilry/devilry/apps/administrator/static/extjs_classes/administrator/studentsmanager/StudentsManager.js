@@ -22,23 +22,30 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     initComponent: function() {
         this.addStudentsButton = Ext.widget('button', {
-            text: 'Add students',
+            text: interpolate(gettext('Add %(students_term)s'), {
+                students_term: gettext('students')
+            }, true),
             iconCls: 'icon-add-32',
             scale: 'large',
             menu: [{
-                text: Ext.String.format('Import students registered in {0}', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                text: interpolate(gettext('Import %(students_term)s registered in %(syncsystem)s'), {
+                    students_term: gettext('students'),
+                    syncsystem: DevilrySettings.DEVILRY_SYNCSYSTEM
+                }, true),
                 listeners: {
                     scope: this,
                     click: this.onOneGroupForEachRelatedStudent
                 }
             }, {
-                text: 'Import from another assignment',
+                text: interpolate(gettext('Import from another %(assignment_term)s'), {
+                    assignment_term: gettext('assignment')
+                }, true),
                 listeners: {
                     scope: this,
                     click: this.onImportGroupsFromAnotherAssignmentInCurrentPeriod
                 }
             }, {
-                text: 'Manually',
+                text: gettext('Manually'),
                 listeners: {
                     scope: this,
                     click: this.onManuallyCreateUsers
@@ -53,7 +60,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         var defaults = this.callParent();
         Ext.Array.insert(defaults, 2, [this.addStudentsButton, {
             xtype: 'button',
-            text: 'Set examiners',
+            text: interpolate(gettext('Set %(examiners_term)s'), {
+                examiners_term: gettext('examiners')
+            }, true),
             scale: 'large',
             menu: this.getSetExaminersMenuItems()
         }]);
@@ -62,77 +71,106 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
 
     getSetExaminersMenuItems: function() {
         return [{
-            text: 'Replace',
+            text: gettext('Replace'),
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
                 click: this.onReplaceExaminers,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Replace examiners',
-                        html: 'Replace examiners to the selected groups (removes current examiners).'
+                        title: interpolate(gettext('Replace %(examiners_term)s'), {
+                            examiners_term: gettext('examiners')
+                        }, true),
+                        html: interpolate(gettext('Replace %(examiners_term)s on the selected %(groups_term)s (removes current %(examiners_term)s).'), {
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups')
+                        }, true)
                     });
                 }
             }
         }, {
-            text: 'Add',
+            text: gettext('Add'),
             iconCls: 'icon-add-16',
             listeners: {
                 scope: this,
                 click: this.onAddExaminers,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Add examiners',
-                        html: 'Add examiners to the selected groups.'
+                        title: interpolate(gettext('Add %(examiners_term)s'), {
+                            examiners_term: gettext('examiners')
+                        }, true),
+                        html: interpolate(gettext('Add %(examiners_term)s to the selected %(groups_term)s.'), {
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups')
+                        }, true)
                     });
                 }
             }
         }, {
-            text: 'Random distribute',
+            text: gettext('Random distribute'),
             listeners: {
                 scope: this,
                 click: this.onRandomDistributeExaminers,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Random distribute',
-                        html: 'Random distribute a list of examiners to the selected groups. Replaces current examiners on the selected groups.'
+                        html: interpolate(gettext('Random distribute a list of %(examiners_term)s to the selected %(groups_term)s. Replaces current %(examiners_term)s on the selected %(groups_term)s.'), {
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups')
+                        }, true)
                     });
                 }
             }
         }, {
-            text: 'Copy from another assignment',
+            text: interpolate(gettext('Copy from another %(assignment_term)s'), {
+                assignment_term: gettext('assignment')
+            }, true),
             listeners: {
                 scope: this,
                 click: this.onImportExaminersFromAnotherAssignmentInCurrentPeriod,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Copy from another assignment',
-                        html: 'Lets you choose another assignment, and import examiners. Replaces current examiners on the selected groups.'
+                        title: interpolate(gettext('Copy from another %(assignment_term)s'), {
+                            assignment_term: gettext('assignment')
+                        }, true),
+                        html: interpolate(gettext('Lets you choose another %(assignment_term)s, and import %(examiners_term)s. Replaces current %(examiners_term)s on the selected %(groups_term)s.'), {
+                            assignment_term: gettext('assignment'),
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups')
+                        }, true)
                     });
                 }
             }
         }, {
-            text: 'Automatically',
+            text: gettext('Automatically'),
             listeners: {
                 scope: this,
                 click: this.onSetExaminersFromTags,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Automatically set examiners',
-                        html: Ext.String.format('Match tagged examiners to equally tagged groups. Tags are normally imported from {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM)
+                        title: interpolate(gettext('Automatically set %(examiners_term)'), {
+                            examiners_term: gettext('examiners')
+                        }, true),
+                        html: interpolate(gettext('Match tagged %(examiners_term)s to equally tagged %(groups_term)s. Tags are normally imported from %(syncsystem)s.'), {
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups'),
+                            syncsystem: DevilrySettings.DEVILRY_SYNCSYSTEM
+                        }, true)
                     });
                 }
             }
         }, {
-            text: 'Clear',
+            text: gettext('Clear'),
             iconCls: 'icon-delete-16',
             listeners: {
                 scope: this,
                 click: this.onClearExaminers,
                 render: function(menuitem) {
                     this._addMenuItemTooltip(menuitem, {
-                        title: 'Clear',
-                        html: 'Remove all examiners on selected groups.'
+                        title: gettext('Clear'),
+                        html: interpolate(gettext('Remove all %(examiners_term)s on selected %(groups_term)s.'), {
+                            examiners_term: gettext('examiners'),
+                            groups_term: gettext('groups')
+                        }, true)
                     });
                 }
             }
@@ -142,7 +180,9 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getContexMenuManySelectItems: function() {
         var defaultItems = this.callParent();
         return Ext.Array.merge(defaultItems, [{
-            text: 'Set examiners',
+            text: interpolate(gettext('Set %(examiners_term)s'), {
+                examiners_term: gettext('examiners')
+            }, true),
             menu: this.getSetExaminersMenuItems()
         }]);
     },
@@ -151,10 +191,14 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         var defaultFilters = this.callParent();
         var me = this;
         var adminFilters = [{xtype: 'menuheader', html: 'Missing users'}, {
-            text: 'Has no students',
+            text: interpolate(gettext('Has no %(students_term)s'), {
+                students_term: gettext('students')
+            }, true),
             handler: function() { me.setFilter('candidates__student__username:none'); }
         }, {
-            text: 'Has no examiners',
+            text: interpolate(gettext('Has no %(examiners_term)s'), {
+                examiners_term: gettext('examiners')
+            }, true),
             handler: function() { me.setFilter('examiners__user__username:none'); }
         }];
         Ext.Array.insert(adminFilters, 0, defaultFilters);
@@ -164,7 +208,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getOnSingleMenuItems: function() {
         var menu = this.callParent();
         menu.push({
-            text: 'Change group members',
+            text: gettext('Change group members'),
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
@@ -172,7 +216,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             }
         });
         menu.push({
-            text: 'Change group name',
+            text: gettext('Change group name'),
             iconCls: 'icon-edit-16',
             listeners: {
                 scope: this,
@@ -185,14 +229,16 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
     getOnManyMenuItems: function() {
         var menu = this.callParent();
         menu.push({
-            text: 'Mark as delivered in a previous period',
+            text: interpolate(gettext('Mark as delivered in a previous %(period_term)s'), {
+                period_term: gettext('period')
+            }, true),
             listeners: {
                 scope: this,
                 click: this.onPreviouslyPassed
             }
         });
         menu.push({
-            text: 'Delete',
+            text: gettext('Delete'),
             iconCls: 'icon-delete-16',
             listeners: {
                 scope: this,
@@ -201,7 +247,7 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
         });
         if(this.assignmentrecord.data.anonymous) {
             menu.push({
-                text: 'Import candidate IDs',
+                text: gettext('Import candidate IDs'),
                 listeners: {
                     scope: this,
                     click: this.onSetCandidateIdBulk

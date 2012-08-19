@@ -104,7 +104,9 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
             height: 400,
             layout: 'fit',
             modal: true,
-            title: 'Mark as delivered in a previous period',
+            title: interpolate(gettext('Mark as delivered in a previous %(period_term)s'), {
+                period_term: gettext('period')
+            }, true),
             items: {
                 'xtype': 'panel',
                 frame: false,
@@ -165,7 +167,10 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
      */
     prevPassedOnPublishFeedback: function(feedbackdraftModelName, draftstring) {
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
-        this.progressWindow.start('Mark as delivered in a previous period');
+        var msg = interpolate(gettext('Mark as delivered in a previous %(period_term)s'), {
+            period_term: gettext('period')
+        }, true);
+        this.progressWindow.start(msg);
         this._finishedSavingGroupCount = 0;
         //this.down('studentsmanager_studentsgrid').performActionOnSelected({
             //scope: this,
