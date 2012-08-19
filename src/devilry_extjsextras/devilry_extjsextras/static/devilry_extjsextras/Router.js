@@ -63,7 +63,7 @@ Ext.define('devilry_extjsextras.Router', {
             }
         }
         Ext.bind(this.handler['routeNotFound'], this.handler)(Ext.apply(routeInfo, {
-            action: 'routeNotFound',
+            action: 'routeNotFound'
         }));
     },
 
