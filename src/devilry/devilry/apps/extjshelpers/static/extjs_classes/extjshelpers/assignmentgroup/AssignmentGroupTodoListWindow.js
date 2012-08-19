@@ -1,6 +1,6 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
     extend: 'Ext.window.Window',
-    title: 'To-do list (Open groups on this assignment)',
+    title: gettext('To-do list (Open groups on this assignment)'),
     height: 370,
     width: 750,
     modal: true,

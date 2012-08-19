@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 01:59+0200\n"
+"POT-Creation-Date: 2012-08-19 04:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,35 +18,262 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupOverview.js:235
+msgid "To-do list"
+msgstr ""
+
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTitle.js:11
 msgid "Group members:"
 msgstr "Gruppemedlemmer:"
 
-#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:83
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:20
+msgid "currently selected"
+msgstr "den du er på nå"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:41
+msgid ""
+"This is your to-do list on this %(assignment_term)s. It shows all <em>open</"
+"em> %(groups_term)s. An <em>open</em> %(group_term)s is a %(group_term)s "
+"that is still waiting for %(deliveries_term)s or %(feedback_term)s."
+msgstr ""
+"Dette er din to-do liste på denne oppgaven. Den viser alle <em>åpne</em> "
+"%(groups_term)s. En <em>åpen</em> %(group_term)s er en %(group_term)s som "
+"fremdeles venter på %(deliveries_term)s eller %(feedback_term)s."
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:42
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:107
+msgid "assignment"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:43
+msgid "groups"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:44
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:291
+msgid "group"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:45
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesPanel.js:75
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:171
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:259
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:262
+msgid "deliveries"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:46
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:38
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:60
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:99
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:105
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:108
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:278
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:241
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:265
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:268
+msgid "feedback"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:93
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:128
 msgid "Search"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:110
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:120
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:187
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:210
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:217
 msgid "Students"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:125
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:135
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:23
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:287
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:258
 msgid "Deliveries"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:88
-msgid "Add %(delivery_term)s"
+#: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoListWindow.js:3
+msgid "To-do list (Open groups on this assignment)"
+msgstr "To-do liste (Åpne grupper på denne oppgaven)"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:21
+msgid "After %(deadline_term)s"
+msgstr "Etter %(deadline_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:22
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:24
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:63
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesPanel.js:76
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:286
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:279
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:362
+msgid "deadline"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:89
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:30
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:147
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
+msgid "From previous %(period_term)s"
+msgstr "Fra tidligere %(period_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:31
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:148
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
+msgid "period"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:37
+msgid "active %(feedback_term)s"
+msgstr "aktiv %(feedback_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:22
+msgid "%(Deliveries_term)s grouped by %(deadline_term)s"
+msgstr "%(Deliveries_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:62
+msgid "New %(deadline_term)s"
+msgstr "Ny %(deadline_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:93
+msgid "Add %(delivery_term)s"
+msgstr "Legg til %(delivery_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:94
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:100
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:106
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:153
 msgid "delivery"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesPanel.js:18
+msgid "Deadline"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesPanel.js:20
+msgid "Not defined in Devilry"
+msgstr "Ikke definert i Devilry"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesPanel.js:74
+msgid "No %(deliveries_term)s on this %(deadline_term)s."
+msgstr "Ingen %(deliveries_term)s på denne innleveringsfristen."
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js:53
+msgid "File name"
+msgstr "Filnavn"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js:58
+msgid "Size"
+msgstr "Størrelse"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserPanel.js:89
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js:112
+msgid "Download all files (.zip)"
+msgstr "Last ned alle filer (.zip)"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/FileMetaBrowserWindow.js:3
+msgid "Files"
+msgstr "Filer"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/IsOpen.js:11
+msgid ""
+"Click to toggle open/closed. A group should remain open until you have "
+"finished grading them. Devilry normally opens and closes groups for you "
+"automatically. You may want to manually close a group if you want to make "
+"the current grade their final grade on this assignment. A closed group can "
+"be re-opened at any time."
+msgstr ""
+"Klikk for å bytte mellom åpen og lukket. En gruppe bør forbli åpen inntil du "
+"er ferdig med å rette dem. Devilry vil vanligvis åpne og lukke grupper for "
+"deg automatisk. En mulig grunn til å lukke en gruppe manuelt er hvis du "
+"ønsker å gjøre nåværende karakter deres avsluttende karakter på denne "
+"oppgaven. En lukket gruppe kan gjenåpnes når som helst."
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/IsOpen.js:40
+msgid "Open - click to close"
+msgstr "Åpen - klikk for å lukke"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/IsOpen.js:40
+msgid "Closed - click to open"
+msgstr "Lukket - klikk for å åpne"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/IsOpen.js:47
+msgid "How open/closed works"
+msgstr "Hvordan åpen/lukket fungerer"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:59
+msgid "Create %(feedback_term)s"
+msgstr "Lag/rediger %(feedback_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:94
+msgid "Loading"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:98
+msgid "Click to give %(feedback_term)s on this %(delivery_term)s"
+msgstr "Klikk for å gi %(feedback_term)s på denne innleveringen"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:104
+msgid ""
+"You add a %(feedback_term)s to a specific %(delivery_term)s. The latest "
+"%(feedback_term)s you publish on any %(delivery_term)s on this "
+"%(assignment_term)s becomes their active %(feedback_term)s/%(grade_term)s on "
+"the %(assignment_term)s."
+msgstr ""
+"Du legger til %(feedback_term)s på en spesifikk %(delivery_term)s. Den siste "
+"tilbakemeldingen du publiserer på en %(delivery_term)s på denne "
+"%(assignment_term)s blir deres aktive %(feedback_term)s/%(grade_term)s på "
+"denne oppgaven."
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:109
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:279
+msgid "grade"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:277
+msgid "You published a %(feedback_term)s with a failing %(grade_term)s"
+msgstr ""
+"Du publiserte en %(feedback_term)s med \"Ikke bestått\" %(grade_term)s."
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:282
+msgid "Would you like to give them another try?"
+msgstr "Vil du gi de et forsøk til?"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:285
+msgid "Choose <strong>yes</strong> to create a new %(deadline_term)s"
+msgstr "Velg <strong>yes</strong> for å lage en ny %(deadline_term)s"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js:290
+msgid ""
+"Choose <strong>no</strong> to close the %(group_term)s. This fails the "
+"student(s) on this %(assignment_term)s. You can re-open the %(group_term)s "
+"at any time."
+msgstr ""
+"Velg <strong>no</strong> for å lukke gruppen. I så tilfelle blir avsluttende "
+"karakter  på denne oppgaven \"Ikke bestått\". Du kan gjenåpne gruppen når "
+"som helst"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js:97
+msgid "Browse files"
+msgstr "Bla i filer"
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackView.js:20
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:253
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:252
+msgid "Grade"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackView.js:31
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:135
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:253
+msgid "Passed"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackView.js:31
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:136
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:256
+msgid "Failed"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:67
@@ -71,16 +298,6 @@ msgstr "Ingen %(deadline_term)s"
 msgid "deadlines"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:135
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:253
-msgid "Passed"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:136
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:256
-msgid "Failed"
-msgstr ""
-
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:141
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:271
 msgid "Electronic"
@@ -89,16 +306,6 @@ msgstr ""
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:144
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:274
 msgid "Non-electronic"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:147
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
-msgid "From previous %(period_term)s"
-msgstr "Fra tidligere %(period_term)s"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:148
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
-msgid "period"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:152
@@ -124,20 +331,9 @@ msgstr "Kandidat ID"
 msgid "Latest %(feedback_term)s"
 msgstr "Siste %(feedback_term)s"
 
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:241
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:265
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:268
-msgid "feedback"
-msgstr ""
-
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:246
 msgid "Points"
 msgstr "Poeng"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:253
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:252
-msgid "Grade"
-msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:261
 msgid "Tags"
@@ -155,11 +351,6 @@ msgstr ""
 msgid "Active %(deadline_term)s"
 msgstr "Aktiv %(deadline_term)s"
 
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:279
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:362
-msgid "deadline"
-msgstr ""
-
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:97
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:107
 msgid "Give feedback to selected"
@@ -176,12 +367,6 @@ msgstr "Alle på en side"
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:170
 msgid "Download all %(deliveries_term)s"
 msgstr "Last ned alle %(deliveries_term)s"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:171
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:259
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:262
-msgid "deliveries"
-msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:259
 msgid "Has %(deliveries_term)s"

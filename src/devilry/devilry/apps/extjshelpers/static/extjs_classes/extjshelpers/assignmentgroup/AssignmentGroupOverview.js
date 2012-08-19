@@ -232,7 +232,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         items: [{
                             xtype: 'button',
                             hidden: !this.canExamine,
-                            text: 'To-do list',
+                            text: gettext('To-do list'),
                             scale: 'large',
                             flex: 6,
                             listeners: {

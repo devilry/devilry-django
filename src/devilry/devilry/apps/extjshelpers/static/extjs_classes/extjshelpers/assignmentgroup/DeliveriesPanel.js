@@ -71,7 +71,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
         if(this.deliveriesStore.count() === 0) {
             this.items = {
                 xtype: 'box',
-                html: interpolate(gettext('No deliveries on this %(deadline_term)s.'), {
+                html: interpolate(gettext('No %(deliveries_term)s on this %(deadline_term)s.'), {
+                    deliveries_term: gettext('deliveries'),
                     deadline_term: gettext('deadline')
                 }, true),
                 padding: 10

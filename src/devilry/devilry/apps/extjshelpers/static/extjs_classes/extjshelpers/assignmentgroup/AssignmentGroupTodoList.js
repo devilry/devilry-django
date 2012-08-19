@@ -17,7 +17,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                 '<tpl if="xindex < xcount">, </tpl>',
             '</tpl>',
             '<tpl if="id == current_assignment_group_id">',
-                ' &mdash; <strong>(currently selected)</strong>',
+                ' &mdash; <strong>(', gettext('currently selected'), ')</strong>',
             '</tpl>',
             '</a>',
         '</div>'
@@ -36,7 +36,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         '</div>'
     ),
 
-    todohelptext: '<p>This is your to-do list on this assignment. It shows all <em>open</em> groups. An <em>open</em> group is a group that is still waiting for deliveries or feedback.</p>',
+    todohelptext: [
+        '<p>',
+            interpolate(gettext('This is your to-do list on this %(assignment_term)s. It shows all <em>open</em> %(groups_term)s. An <em>open</em> %(group_term)s is a %(group_term)s that is still waiting for %(deliveries_term)s or %(feedback_term)s.'), {
+                assignment_term: gettext('assignment'),
+                groups_term: gettext('groups'),
+                group_term: gettext('group'),
+                deliveries_term: gettext('deliveries'),
+                feedback_term: gettext('feedback')
+            }, true),
+        '</p>'
+    ].join(''),
 
     /**
      * @cfg

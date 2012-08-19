@@ -27,13 +27,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
         '</tpl>',
         '<tpl if="delivery.delivery_type == 2">',
             '<span class="neutralInlineItem">',
-                interpolate(gettext('From previous %(period)s'), {
+                interpolate(gettext('From previous %(period_term)s'), {
                     period_term: gettext('period')
                 }, true),
             '</span>',
         '</tpl>',
         '<tpl if="hasLatestFeedback">',
-        '   <span class="neutralInlineItem">', gettext('active feedback'), '</span>',
+            ' <span class="neutralInlineItem">',
+                interpolate(gettext('active %(feedback_term)s'), {
+                    feedback_term: gettext('feedback')
+                }, true),
+            '</span>',
         '</tpl>',
         '<tpl if="feedback">',
         '   <span class="has-feedback" style="white-space:no-wrap">({feedback.grade})</span>',
