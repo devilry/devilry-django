@@ -1,6 +1,6 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
     extend: 'Ext.window.Window',
-    title: 'Files',
+    title: gettext('Files'),
     height: 400,
     width: 500,
     modal: true,
@@ -24,6 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
             items: [{
                 xtype: 'filemetabrowserpanel',
                 border: false,
+                layout: 'fit',
                 filemetastore: this.filemetastore,
                 deliveryid: this.deliveryid
             }]

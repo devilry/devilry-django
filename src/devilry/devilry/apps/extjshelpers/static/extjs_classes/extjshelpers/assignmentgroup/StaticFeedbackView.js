@@ -17,16 +17,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '</tpl>',
 
         '<div class="section {gradecls}">',
-        '   <h1>Grade</h1>',
-        '       <p>',
-        '       <tpl if="!is_passing_grade">',
-        '           The given grade, <strong>{grade}</strong>, is <strong>not</strong> a passing grade.',
-        '       </tpl>',
-        '       <tpl if="is_passing_grade">',
-        '           The given grade, <strong>{grade}</strong>, is a passing grade.',
-        '       </tpl>',
-        '       This feedback was published <em>{save_timestamp:date}</em>.',
-        '       </p>',
+            '<h1>', gettext('Grade'), '</h1>',
+            '<p>',
+                '<strong>{is_passing_grade_label}</strong> ({grade})',
+            '</p>',
         '</div>',
         '<div class="section rendered_view">{rendered_view}<div class="section">'
     ),
@@ -34,6 +28,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
     
     getData: function(data) {
         data.gradecls = data.is_passing_grade? 'ok-small': 'warning-small';
+        data.is_passing_grade_label = data.is_passing_grade? gettext('Passed'): gettext('Failed');
         return data;
     },
 });

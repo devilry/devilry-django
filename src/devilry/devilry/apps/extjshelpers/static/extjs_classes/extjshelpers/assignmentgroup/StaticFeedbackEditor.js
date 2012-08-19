@@ -56,7 +56,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
     getToolbarItems: function() {
         this.createButton = Ext.create('Ext.button.Button', {
-            text: 'Create feedback',
+            text: interpolate(gettext('Create %(feedback_term)s'), {
+                feedback_term: gettext('feedback')
+            }, true),
             iconCls: 'icon-add-32',
             hidden: false,
             scale: 'large',
@@ -89,14 +91,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         //var id = button.getEl().id
         Ext.defer(function() {
             if(!this.isReadyToEditFeedback()) {
-                button.getEl().mask('Loading...');
+                button.getEl().mask(gettext('Loading') + ' ...');
             }
         }, 100, this);
         this.editFeedbackTip = Ext.create('Ext.tip.ToolTip', {
-            title: 'Click to give feedback on this delivery',
+            title: interpolate(gettext('Click to give %(feedback_term)s on this %(delivery_term)s'), {
+                feedback_term: gettext('feedback'),
+                delivery_term: gettext('delivery')
+            }, true),
             anchor: 'top',
             target: button.getEl().id,
-            html: 'You add feedback to a specific delivery. The latest feedback you publish on any delivery on this assignment becomes their active feedback/grade on the assignment.',
+            html: interpolate(gettext('You add a %(feedback_term)s to a specific %(delivery_term)s. The latest %(feedback_term)s you publish on any %(delivery_term)s on this %(assignment_term)s becomes their active %(feedback_term)s/%(grade_term)s on the %(assignment_term)s.'), {
+                feedback_term: gettext('feedback'),
+                delivery_term: gettext('delivery'),
+                assignment_term: gettext('assignment'),
+                feedback_term: gettext('feedback'),
+                grade_term: gettext('grade')
+            }, true),
             width: 415,
             dismissDelay: 35000,
             autoHide: true
@@ -263,11 +274,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      */
     onFailingGrade: function() {
         var win = Ext.MessageBox.show({
-            title: 'You published a feedback with a failing grade',
-            msg: '<p>Would you like to give the group another try?</p><ul>' +
-                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
-                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
-                '</ul>',
+            title: interpolate(gettext('You published a %(feedback_term)s with a failing %(grade_term)s'), {
+                feedback_term: gettext('feedback'),
+                grade_term: gettext('grade')
+            }, true),
+            msg: [
+                '<p>', gettext('Would you like to give them another try?'), '</p>',
+                '<ul>',
+                    '<li>',
+                        interpolate(gettext('Choose <strong>yes</strong> to create a new %(deadline_term)s'), {
+                            deadline_term: gettext('deadline')
+                        }, true),
+                    '</li>',
+                    '<li>',
+                        interpolate(gettext('Choose <strong>no</strong> to close the %(group_term)s. This fails the student(s) on this %(assignment_term)s. You can re-open the %(group_term)s at any time.'), {
+                            group_term: gettext('group')
+                        }, true),
+                    '</li>',
+                '</ul>'
+            ].join(''),
             buttons: Ext.Msg.YESNO,
             scope: this,
             closable: false,

@@ -86,7 +86,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
             bbar: [{
                 xtype: 'button',
                 scale: 'large',
-                text: 'Download all files (.zip)',
+                text: gettext('Download all files (.zip)'),
                 listeners: {
                     scope: this,
                     click: function(view, record, item) {

@@ -94,7 +94,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             items = [{
                 xtype: 'singlerecordcontainerdepbutton',
                 singlerecordcontainer: this.delivery_recordcontainer,
-                text: 'Browse files',
+                text: gettext('Browse files'),
                 scale: 'large',
                 listeners: {
                     scope: this,
@@ -109,7 +109,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 xtype: 'singlerecordcontainerdepbutton',
                 singlerecordcontainer: this.delivery_recordcontainer,
                 scale: 'large',
-                text: 'Download all files (.zip)',
+                text: gettext('Download all files (.zip)'),
                 listeners: {
                     scope: this,
                     click: function(view, record, item) {
