@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-17 22:30+0200\n"
+"POT-Creation-Date: 2012-08-20 01:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/devilry_student/app.js:36
+#: static/devilry_student/app.js:37
 msgid "Dashboard"
 msgstr ""
 
-#: static/devilry_student/app.js:89
+#: static/devilry_student/app.js:90
 msgid "Route not found"
 msgstr ""
 
@@ -32,12 +32,12 @@ msgstr "Last opp din fil ..."
 #: static/devilry_student/app/controller/AddDelivery.js:118
 #: static/devilry_student/app/controller/BrowseHistory.js:43
 #: static/devilry_student/app/controller/Dashboard.js:58
-#: static/devilry_student/app/controller/GroupInfo.js:81
+#: static/devilry_student/app/controller/GroupInfo.js:84
 msgid "Error"
 msgstr ""
 
 #: static/devilry_student/app/controller/AddDelivery.js:136
-#: static/devilry_student/app/controller/GroupInfo.js:193
+#: static/devilry_student/app/controller/GroupInfo.js:196
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:28
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:55
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:93
@@ -57,7 +57,7 @@ msgstr ""
 #: static/devilry_student/app/controller/BrowseHistory.js:68
 #: static/devilry_student/app/controller/BrowseHistory.js:69
 #: static/devilry_student/app/controller/BrowseHistory.js:83
-#: static/devilry_student/app/controller/GroupInfo.js:140
+#: static/devilry_student/app/controller/GroupInfo.js:143
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:37
 msgid "Browse"
 msgstr ""
@@ -75,27 +75,27 @@ msgstr ""
 msgid "Failed to load your recent feedbacks. Please try to reload the page."
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:77
+#: static/devilry_student/app/controller/GroupInfo.js:80
 msgid "Failed to load group. Try to reload the page"
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:107
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:96
+#: static/devilry_student/app/controller/GroupInfo.js:110
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:99
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:51
 msgid "examiner"
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:128
+#: static/devilry_student/app/controller/GroupInfo.js:131
 #, c-format
 msgid "Invalid delivery: %s"
 msgstr "Ugyldig innlevering: %s"
 
-#: static/devilry_student/app/controller/GroupInfo.js:166
+#: static/devilry_student/app/controller/GroupInfo.js:169
 msgid "Can not add %(deliveries_term)s on closed groups."
 msgstr "Kan ikke legge til %(deliveries_term)s på lukkede grupper."
 
-#: static/devilry_student/app/controller/GroupInfo.js:167
-#: static/devilry_student/app/controller/GroupInfo.js:176
+#: static/devilry_student/app/controller/GroupInfo.js:170
+#: static/devilry_student/app/controller/GroupInfo.js:179
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
 #: static/devilry_student/app/view/dashboard/Overview.js:69
 #: static/devilry_student/app/view/dashboard/Overview.js:90
@@ -105,18 +105,18 @@ msgstr "Kan ikke legge til %(deliveries_term)s på lukkede grupper."
 msgid "deliveries"
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:175
+#: static/devilry_student/app/controller/GroupInfo.js:178
 msgid "Can not add %(deliveries_term)s on a group without a %(deadline_term)s."
 msgstr ""
 "Kan ikke legge til %(deliveries_term)s på en gruppe som ikke har "
 "%(deadline_term)s."
 
-#: static/devilry_student/app/controller/GroupInfo.js:177
+#: static/devilry_student/app/controller/GroupInfo.js:180
 #: static/devilry_student/app/view/dashboard/Overview.js:68
 msgid "deadline"
 msgstr ""
 
-#: static/devilry_student/app/controller/GroupInfo.js:192
+#: static/devilry_student/app/controller/GroupInfo.js:195
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:27
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:59
 msgid "Add %(delivery_term)s"
@@ -174,16 +174,37 @@ msgid "Failed"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:63
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:59
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:62
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:28
 msgid "No feedback"
 msgstr ""
 
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:103
+#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:92
+msgid ""
+"You are not registered on any %(assignments_term)s in %(path)s. This may not "
+"be an issue if %(path)s have no published %(assignments_term)s, or if %(path)"
+"s only uses Devilry to register final results."
+msgstr ""
+"Du er ikke registrert på noen %(assignments_term)s i %(path)s. Dette er ikke "
+"et problem hvis %(path)s ikke har publisert noen %(assignments_term)s enda, "
+"eller hvis %(path)s kun bruker Devilry for å registrere avsluttende "
+"resultater."
+
+#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:93
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
+#: static/devilry_student/app/view/dashboard/Overview.js:45
+#: static/devilry_student/app/view/dashboard/Overview.js:66
+#: static/devilry_student/app/view/dashboard/Overview.js:82
+#: static/devilry_student/app/view/dashboard/Overview.js:89
+#: static/devilry_student/app/view/dashboard/SearchField.js:16
+msgid "assignments"
+msgstr ""
+
+#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:107
 msgid "Assignment"
 msgstr ""
 
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:120
+#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:124
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:20
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:25
 msgid "Grade"
@@ -196,15 +217,6 @@ msgid ""
 msgstr ""
 "Bla i alle dine %(assignments_term)s og %(deliveries_term)s, inkludert "
 "%(assignments_term)s fra gamle %(periods_term)s."
-
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
-#: static/devilry_student/app/view/dashboard/Overview.js:45
-#: static/devilry_student/app/view/dashboard/Overview.js:66
-#: static/devilry_student/app/view/dashboard/Overview.js:82
-#: static/devilry_student/app/view/dashboard/Overview.js:89
-#: static/devilry_student/app/view/dashboard/SearchField.js:16
-msgid "assignments"
-msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:41
 msgid "periods"
@@ -327,15 +339,15 @@ msgstr "Innleveringen ble utført av"
 msgid "Files"
 msgstr ""
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:52
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:55
 msgid "Download all files"
 msgstr "Last ned alle filene"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:79
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:82
 msgid "Delivery"
 msgstr ""
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:95
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:98
 msgid "feedback"
 msgstr ""
 
