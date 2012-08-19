@@ -136,7 +136,7 @@ class Command(BaseCommand):
                     self.testhelper.add_feedback(path, verdict=failedVerdict,
                                                  rendered_view=rendered_view_failed)
 
-    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict):
+    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[]):
         for groupnum, names in enumerate(medium_students):
             username, fullname = names
             for assignment in assignments:
@@ -161,8 +161,10 @@ class Command(BaseCommand):
                     self.testhelper.add_to_path(path + '.d2:ends(21)')
                 if since_pubishingtime.days >= 22:
                     self.testhelper.add_delivery(path, {'ok.py': ['print ', 'ok']}, time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=okVerdict,
-                                                 rendered_view=rendered_view_ok)
+                    if assignment in do_not_finish:
+                        print 'Did not finish', assignment
+                        self.testhelper.add_feedback(path, verdict=okVerdict,
+                                                     rendered_view=rendered_view_ok)
 
     def _addGoodGroups(self, periodpath, assignments, goodVerdict):
         for groupnum, names in enumerate(good_students):
@@ -233,7 +235,8 @@ class Command(BaseCommand):
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
-            self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
+            self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict,
+                                  do_not_finish=['week4', 'week5'])
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
 
     def create_duck1010(self):
