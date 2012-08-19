@@ -5,7 +5,7 @@ Ext.define('devilry_header.Roles', {
 
     tpl: [
         '<tpl if="loading">',
-            '<p>', gettext('Loading'), ' ...</p>',
+            '<div class="loading">', gettext('Loading'), ' ...</div>',
         '<tpl else>',
             '<tpl if="has_any_roles">',
                 '<ul role="navigation">',
@@ -82,6 +82,7 @@ Ext.define('devilry_header.Roles', {
      * Set UserInfo record and update view.
      */
     setUserInfoRecord: function(userInfoRecord) {
+        return;
         this.update({
             userInfo: userInfoRecord.data,
             has_any_roles: userInfoRecord.hasAnyRoles(),

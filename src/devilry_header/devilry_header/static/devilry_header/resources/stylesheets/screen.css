@@ -312,32 +312,37 @@
   text-decoration: none;
   color: #000;
 }
+/* line 202, ../sass/screen.scss */
+.devilryheader_roles div.loading {
+  font-size: 36px;
+  font-weight: bold;
+}
 
-/* line 206, ../sass/screen.scss */
+/* line 210, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable th, .devilryheader_userinfobox table.userinfotable td {
   line-height: 18px;
   font-size: 13px;
 }
-/* line 210, ../sass/screen.scss */
+/* line 214, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable th {
   color: #999;
   font-weight: bold;
   padding: 4px 10px 4px 0;
 }
-/* line 215, ../sass/screen.scss */
+/* line 219, ../sass/screen.scss */
 .devilryheader_userinfobox table.userinfotable td {
   color: #fff;
 }
 
-/* line 224, ../sass/screen.scss */
+/* line 228, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li {
   margin: 0 0 10px 0;
 }
-/* line 227, ../sass/screen.scss */
+/* line 231, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .title a {
   font-weight: bold;
 }
-/* line 231, ../sass/screen.scss */
+/* line 235, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .description {
   font-size: 11px;
   color: #aaa;
