@@ -11,6 +11,7 @@ def virtualenv():
     """
     Setup a virtualenv in virtualenv/, run bootstrap in the virtualenv, and run bootstrap.
     """
+    local('rm -rf virtualenv')
     local('virtualenv virtualenv')
     local('virtualenv/bin/python ../bootstrap.py')
     local('bin/buildout')
