@@ -104,29 +104,39 @@ def noextjsdebug_server():
     local('bin/django_dev.py runserver 0.0.0.0:8001 --settings settings.noextjsdebug')
 
 @task
-def jsbuild(appname):
+def jsbuild(appname, nocompress=False):
+    """
+    Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
+    ``appname``.
+
+    :param appname: Name of an app, like ``devilry_frontpage``.
+    :param nocompress: Run with ``--nocompress``. Good for debugging.
+    """
+    if nocompress:
+        extra_args = '--nocompress'
     print
     print 'NOTE: Make sure:'
     print
     print '   bin/fab extjsbuild_server'
     print
     print 'is running in another terminal'
-    local('bin/django_dev.py senchatoolsbuild --app {appname}'.format(appname=appname))
+    local('bin/django_dev.py senchatoolsbuild {extra_args} --app {appname}'.format(appname=appname,
+                                                                                   extra_args=extra_args))
 
 @task
-def jsbuild_devilry_student():
-    jsbuild('devilry_student')
+def jsbuild_devilry_student(nocompress=False):
+    jsbuild('devilry_student', nocompress)
 
 @task
-def jsbuild_devilry_frontpage():
-    jsbuild('devilry_frontpage')
+def jsbuild_devilry_frontpage(nocompress=False):
+    jsbuild('devilry_frontpage', nocompress)
 
 @task
-def jsbuild_devilry_subjectadmin():
-    jsbuild('devilry_subjectadmin')
+def jsbuild_devilry_subjectadmin(nocompress=False):
+    jsbuild('devilry_subjectadmin', nocompress)
 
 @task
-def jsbuild_all():
-    jsbuild_devilry_student()
-    jsbuild_devilry_frontpage()
-    jsbuild_devilry_subjectadmin()
+def jsbuild_all(nocompress=False):
+    jsbuild_devilry_student(nocompress)
+    jsbuild_devilry_frontpage(nocompress)
+    jsbuild_devilry_subjectadmin(nocompress)
