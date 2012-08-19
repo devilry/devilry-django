@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 02:47+0200\n"
+"POT-Creation-Date: 2012-08-19 17:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,61 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/extjs_classes/administrator/assignment/Layout.js:54
-msgid "Administer"
-msgstr "Administrer"
-
-#: static/extjs_classes/administrator/assignment/Layout.js:72
-#: static/extjs_classes/administrator/assignment/Layout.js:131
-msgid "Students"
+#: static/extjs_classes/administrator/DashboardButtonBar.js:38
+#: static/extjs_classes/administrator/DashboardButtonBar.js:43
+#: static/extjs_classes/administrator/DashboardButtonBar.js:49
+#: static/extjs_classes/administrator/DashboardButtonBar.js:72
+#: static/extjs_classes/administrator/DashboardButtonBar.js:99
+#: static/extjs_classes/administrator/DashboardButtonBar.js:126
+msgid "Node"
 msgstr ""
 
-#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:107
-#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:170
-#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:232
-msgid "Mark as delivered in a previous %(period_term)s"
-msgstr "Marker som innlevert i et tidligere %(period_term)s"
+#: static/extjs_classes/administrator/DashboardButtonBar.js:44
+#: static/extjs_classes/administrator/DashboardButtonBar.js:73
+#: static/extjs_classes/administrator/DashboardButtonBar.js:100
+#: static/extjs_classes/administrator/DashboardButtonBar.js:127
+msgid "Subject"
+msgstr ""
 
+#: static/extjs_classes/administrator/DashboardButtonBar.js:45
+#: static/extjs_classes/administrator/DashboardButtonBar.js:74
+#: static/extjs_classes/administrator/DashboardButtonBar.js:101
+#: static/extjs_classes/administrator/DashboardButtonBar.js:128
+msgid "Period"
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:46
+#: static/extjs_classes/administrator/DashboardButtonBar.js:75
+#: static/extjs_classes/administrator/DashboardButtonBar.js:102
+#: static/extjs_classes/administrator/DashboardButtonBar.js:129
+msgid "Assignment"
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:48
+msgid "A %(Node_term)s is a place to organise top-level administrators."
+msgstr "Et %(Node_term)s er hvor du organiserer top-nivå administratorer."
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:54
+msgid "Create new %(node_term)s"
+msgstr "Lag ny %(node_term)s"
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:55
+msgid "node"
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:81
+msgid "Create new %(subject_term)s"
+msgstr "Lag ny %(subject_term)s"
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:82
+msgid "subject"
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:108
+msgid "Create new %(period_term)s"
+msgstr "Lag ny %(period_term)s"
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:109
 #: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:108
 #: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:171
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:233
@@ -40,6 +80,57 @@ msgstr "Marker som innlevert i et tidligere %(period_term)s"
 #: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:259
 msgid "period"
 msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:131
+msgid ""
+"An %(assignment_term)s, such as an obligatory %(assignment_term)s, an "
+"anoymous home examination or a semester %(assignment_term)s."
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:132
+#: static/extjs_classes/administrator/DashboardButtonBar.js:138
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:41
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:125
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:133
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:136
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:322
+#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:258
+msgid "assignment"
+msgstr ""
+
+#: static/extjs_classes/administrator/DashboardButtonBar.js:137
+#, fuzzy
+msgid "Create new %(assignment_term)s"
+msgstr "Kopier fra en annen %(assignment_term)s"
+
+#: static/extjs_classes/administrator/assignment/Layout.js:54
+msgid "Administer"
+msgstr "Administrer"
+
+#: static/extjs_classes/administrator/assignment/Layout.js:73
+#: static/extjs_classes/administrator/assignment/Layout.js:158
+msgid "Students"
+msgstr ""
+
+#: static/extjs_classes/administrator/assignment/Layout.js:119
+#: static/extjs_classes/administrator/node/Layout.js:100
+#: static/extjs_classes/administrator/period/Layout.js:119
+#: static/extjs_classes/administrator/subject/Layout.js:77
+msgid "Permission denied"
+msgstr ""
+
+#: static/extjs_classes/administrator/assignment/Layout.js:120
+#: static/extjs_classes/administrator/node/Layout.js:101
+#: static/extjs_classes/administrator/period/Layout.js:120
+#: static/extjs_classes/administrator/subject/Layout.js:78
+msgid "You are not administrator on this item or any of its parents."
+msgstr ""
+
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:107
+#: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:170
+#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:232
+msgid "Mark as delivered in a previous %(period_term)s"
+msgstr "Marker som innlevert i et tidligere %(period_term)s"
 
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:25
 msgid "Add %(students_term)s"
@@ -58,15 +149,6 @@ msgstr "Importer %(students_term)s registrert i %(syncsystem)s"
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:40
 msgid "Import from another %(assignment_term)s"
 msgstr "Importer fra en annen %(assignment_term)s"
-
-#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:41
-#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:125
-#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:133
-#: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:136
-#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageExaminers.js:322
-#: static/extjs_classes/administrator/studentsmanager/StudentsManagerManageGroups.js:258
-msgid "assignment"
-msgstr ""
 
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:48
 msgid "Manually"

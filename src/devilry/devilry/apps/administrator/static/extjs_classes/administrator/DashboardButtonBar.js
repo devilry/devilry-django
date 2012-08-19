@@ -35,16 +35,25 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
             items: [{
                 xtype: 'buttonbarbutton',
                 is_superuser: this.is_superuser,
-                text: 'Node',
+                text: gettext('Node'),
                 store: nodestore_node,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
-                    title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
-                    body: 'A Node is a place to organise top-level administrators.'
+                    title: [
+                        '<span class="tooltip-title-current-item">', gettext('Node'), '</span> &rArr; ',
+                        gettext('Subject'), ' &rArr; ',
+                        gettext('Period'), ' &rArr; ',
+                        gettext('Assignment')
+                    ].join(''),
+                    body: interpolate(gettext('A %(Node_term)s is a place to organise top-level administrators.'), {
+                        Node_term: gettext('Node')
+                    }, true)
                 },
                 handler: function() {
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new node',
+                        title: interpolate(gettext('Create new %(node_term)s'), {
+                            node_term: gettext('node')
+                        }, true),
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
                             model: me.node_modelname,
@@ -59,12 +68,19 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 store: nodestore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
-                    title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
-                    body: 'A Subject is often also called a course.'
+                    title: [
+                        gettext('Node'), ' &rArr; ',
+                        '<span class="tooltip-title-current-item">', gettext('Subject'), '</span> &rArr; ',
+                        gettext('Period'), ' &rArr; ',
+                        gettext('Assignment')
+                    ].join(''),
+                    body: ''
                 },
                 handler: function() {
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new subject',
+                        title: interpolate(gettext('Create new %(subject_term)s'), {
+                            subject_term: gettext('subject')
+                        }, true),
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
                             model: me.subject_modelname,
@@ -79,12 +95,19 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 store: subjectstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
-                    title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
-                    body: 'A Period is a limited period in time, such as a semester.'
+                    title: [
+                        gettext('Node'), ' &rArr; ',
+                        gettext('Subject'), ' &rArr; ',
+                        '<span class="tooltip-title-current-item">', gettext('Period'), '</span> &rArr; ',
+                        gettext('Assignment')
+                    ].join(''),
+                    body: ''
                 },
                 handler: function() {
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new period',
+                        title: interpolate(gettext('Create new %(period_term)s'), {
+                            period_term: gettext('period')
+                        }, true),
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
                             model: me.period_modelname,
@@ -99,12 +122,21 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 store: periodstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
-                    title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
-                    body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
+                    title: [
+                        gettext('Node'), ' &rArr; ',
+                        gettext('Subject'), ' &rArr; ',
+                        gettext('Period'), ' &rArr; ',
+                        '<span class="tooltip-title-current-item">', gettext('Assignment'), '</span>'
+                    ].join(''),
+                    body: interpolate(gettext('An %(assignment_term)s, such as an obligatory %(assignment_term)s, an anoymous home examination or a semester %(assignment_term)s.'), {
+                        assignment_term: gettext('assignment')
+                    }, true)
                 },
                 handler: function() {
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
-                        title: 'Create new assignment',
+                        title: interpolate(gettext('Create new %(assignment_term)s'), {
+                            assignment_term: gettext('assignment')
+                        }, true),
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
                             model: me.assignment_modelname,
