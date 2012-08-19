@@ -35,7 +35,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
         Ext.apply(this, {
             searchResultItems: [{
                 xtype: 'searchresults',
-                title: 'Nodes',
+                title: gettext('Nodes'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedNode'),
                 filterconfig: {
                     type: 'node'
@@ -43,13 +43,13 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.nodeRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'node/{id}'
                     }
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Subjects',
+                title: gettext('Subjects'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedSubject'),
                 filterconfig: {
                     type: 'subject'
@@ -57,13 +57,13 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.subjectRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'subject/{id}'
                     }
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Periods',
+                title: gettext('Periods'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedPeriod'),
                 filterconfig: {
                     type: 'period'
@@ -71,19 +71,19 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.periodRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'period/{id}'
                     }
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Assignments',
+                title: gettext('Assignments'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedAssignment'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
                 resultitemConfig: {
                     tpl: this.assignmentRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'assignment/{id}'
                     },
                     menuitems: [{
@@ -93,25 +93,25 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Assignment groups',
+                title: gettext('Groups'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
                     tpl: this.assignmentgroupRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
                     }
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Deliveries',
+                title: gettext('Deliveries'),
                 store: this._createStore('devilry.apps.administrator.simplified.SimplifiedDelivery'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
                     tpl: this.deliveryRowTpl,
                     defaultbutton: {
-                        text: 'View',
+                        text: gettext('View'),
                         clickLinkTpl: this.urlPrefix + 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
                     }
                 }
