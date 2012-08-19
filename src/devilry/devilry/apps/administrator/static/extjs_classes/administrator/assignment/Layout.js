@@ -84,8 +84,11 @@ Ext.define('devilry.administrator.assignment.Layout', {
         this.callParent(arguments);
     },
 
-    _init: function() {
-        this.route.start();
+    _starteRouting: function() {
+        if(!this.route_started) {
+            this.route_started = true;
+            this.route.start();
+        }
     },
 
     administer_route: function() {
@@ -105,7 +108,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
             DEVILRY_URLPATH_PREFIX: DevilrySettings.DEVILRY_URLPATH_PREFIX
         });
         this._onStudents();
-        this._init();
+        this._starteRouting();
     },
 
     _setBreadcrumbAndTitle: function(students) {
