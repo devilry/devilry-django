@@ -99,3 +99,4 @@ example-productionenv/static/
 # awsdemo
 awsdemo/bin
 awsdemo/awsfab_settings_local.py
+awsdemo/virtualenv/

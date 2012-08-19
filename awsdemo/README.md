@@ -8,8 +8,8 @@ Amazon Web Services EC2 micro instance.
 ### Get the required python packages
 You only need to do this once (or when the dependencies have updates):
 
-    $ virtualenv venv
-    $ venv/bin/python ../bootstrap.py
+    $ virtualenv virtualenv
+    $ virtualenv/bin/python ../bootstrap.py
     $ bin/buildout
 
 
