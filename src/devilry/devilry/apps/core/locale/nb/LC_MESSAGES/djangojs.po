@@ -143,7 +143,7 @@ msgstr "retter"
 
 #: static/devilry_core/terminology.js:29
 msgid "examiners"
-msgstr "Rettere"
+msgstr "rettere"
 
 #: static/devilry_core/terminology.js:31
 msgid "Student"
