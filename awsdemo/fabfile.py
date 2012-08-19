@@ -49,8 +49,10 @@ def update_devilry():
     """
     Update devilry on aws.
     """
+    stop_servers()
     with cd(prodenv_dir):
         run('fab update_devilry')
+    start_servers()
 
 
 @task
