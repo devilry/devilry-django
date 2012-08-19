@@ -14,7 +14,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
     autoScroll: true,
     layout: {
         type: 'hbox',
-        align: 'stretch'
+        align: 'stretchmax'
     },
 
     items: [{
