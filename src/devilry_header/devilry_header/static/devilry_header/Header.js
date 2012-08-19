@@ -166,5 +166,5 @@ Ext.define('devilry_header.Header', {
     _onHideHovermenu: function() {
         this._getCurrentRoleButton().setNotPressedCls();
         this._getUserButton().setNotPressedCls();
-    },
+    }
 });

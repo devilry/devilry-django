@@ -107,5 +107,5 @@ Ext.define('devilry_i18n.LanguageSelectWidget', {
     _onSaveSuccess: function(languageRecord) {
         Ext.getBody().unmask();
         window.location.reload();
-    },
+    }
 });

@@ -112,5 +112,5 @@ Ext.define('devilry_header.HoverMenu', {
 
     _onShow: function() {
         this._setSizeAndPosition();
-    },
+    }
 });
