@@ -112,6 +112,7 @@ def jsbuild(appname, nocompress=False):
     :param appname: Name of an app, like ``devilry_frontpage``.
     :param nocompress: Run with ``--nocompress``. Good for debugging.
     """
+    extra_args = ''
     if nocompress:
         extra_args = '--nocompress'
     print
