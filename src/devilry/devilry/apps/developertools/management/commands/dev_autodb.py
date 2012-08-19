@@ -162,7 +162,6 @@ class Command(BaseCommand):
                 if since_pubishingtime.days >= 22:
                     self.testhelper.add_delivery(path, {'ok.py': ['print ', 'ok']}, time_of_delivery=-1)
                     if assignment in do_not_finish:
-                        print 'Did not finish', assignment
                         self.testhelper.add_feedback(path, verdict=okVerdict,
                                                      rendered_view=rendered_view_ok)
 
