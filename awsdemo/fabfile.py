@@ -44,6 +44,14 @@ def refresh():
     with cd(prodenv_dir):
         run('fab refresh')
 
+@task
+def update_devilry():
+    """
+    Update devilry on aws.
+    """
+    with cd(prodenv_dir):
+        run('fab update_devilry')
+
 
 @task
 def setup():

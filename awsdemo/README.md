@@ -61,6 +61,11 @@ Use ``stop_servers`` and ``restart_servers`` to stop/restart the servers.
 
 
 
+## Update the demo
+
+    $ bin/awsfab -E devilrydemo1 update_devilry
+
+
 ## Tip - Store settings and keys in the cloud
 If you have a cloud drive, like Google Drive or Dropbox, you may want to put
 your ``devilrydemo.pem`` and ``awsfab_settings_local.py`` on your cloud drive.
