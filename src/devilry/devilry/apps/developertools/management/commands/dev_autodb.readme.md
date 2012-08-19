@@ -25,12 +25,27 @@ we simply call them _cur_ (currently active), _old_ (expired), and veryold (even
 than old).
 
 
-## Students
+## Users
+
+### A user with most roles
+For a user that is student, examiner and admin, login as ``thor``.
+
+
+### Superuser
+For a superuser, login as ``grandma``.
+
+### Administrators
+For a node admin, login as ``duckburghadmin`` or ``ifiadmin``.
+
+### Students
 We define 3 types of students, _bad_, _medium_ and _good_. These are defined in
 variables at the top of [dev_autodb.py](dev_autodb.py)
 
+- For bad student, login as ``johnsmith``.
+- For a medium student, login as ``dewey``.
+- For a good student, login as ``odin``.
 
-## Examiners
+### Examiners
 ``scrooge`` and ``donald`` are examiners. ``donald`` has all the good students,
 and half the bad students, while ``scrooge`` has all the ``medium`` students,
 and the other half of the bad students.
