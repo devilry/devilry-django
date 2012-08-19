@@ -26,28 +26,30 @@ Ext.define('devilry.extjshelpers.forms.administrator.Node', {
 
     items: [{
         name: "short_name",
-        fieldLabel: "Short name",
+        fieldLabel: gettext("Short name"),
         xtype: 'textfield',
-        emptyText: 'Example: mathfaculty'
+        emptyText: gettext('Example') + ': mathfaculty'
     }, {
         name: "long_name",
-        fieldLabel: "Long name",
+        fieldLabel: gettext("Long name"),
         xtype: 'textfield',
-        emptyText: 'Example: Faculty of Mathematics'
+        emptyText: gettext('Example') + ': Faculty of Mathematics'
     }, {
         name: "parentnode",
-        fieldLabel: "Parent",
+        fieldLabel: gettext("Parent"),
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedNode',
-        emptyText: 'Select a parent node, or leave blank for no parent',
+        emptyText: gettext('Select a parent, or leave blank for no parent'),
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>',
         allowEmpty: true
     }],
 
     help: [
-        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).</p>',
-        '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
-        '<strong>Parent</strong> is empty if this is a top-level node.'
+        '<strong>' + gettext('Short name') + ':</strong> ' + gettext('A short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).'),
+        '<strong>' + gettext('Long name') + ':</strong> ' + gettext('A longer descriptive name which can contain any character.'),
+        '<strong>' + gettext('Parent') + ':</strong> ' + interpolate(gettext('Organize this %(node_term)s below another %(node_term)s. May be empty.'), {
+            node_term: gettext('node')
+        }, true)
     ]
 });

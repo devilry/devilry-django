@@ -26,27 +26,28 @@ Ext.define('devilry.extjshelpers.forms.administrator.Subject', {
 
     items: [{
         name: "short_name",
-        fieldLabel: "Short name",
+        fieldLabel: gettext("Short name"),
         xtype: 'textfield',
-        emptyText: 'Example: math101'
+        emptyText: gettext('Example') + ': math101'
     }, {
         name: "long_name",
         fieldLabel: "Long name",
         xtype: 'textfield',
-        emptyText: 'Example: MATH101 - Introduction to mathematics'
+        emptyText: gettext('Example') + ': MATH101 - Introduction to mathematics'
     }, {
         name: "parentnode",
-        fieldLabel: "Parent-node",
+        fieldLabel: gettext("Node"),
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedNode',
-        emptyText: 'Select a parent-node',
+        emptyText: interpolate(gettext('Select a %(node_term)s'), {
+            node_term: gettext('node')
+        }, true),
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }],
 
     help: [
-        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).',
-        '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
-        '<strong>Parent-node</strong> is the node where this subject belongs.'
+        '<strong>' + gettext('Short name') + ':</strong> ' + gettext('A short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).'),
+        '<strong>' + gettext('Long name') + ':</strong> ' + gettext('A longer descriptive name which can contain any character.')
     ]
 });

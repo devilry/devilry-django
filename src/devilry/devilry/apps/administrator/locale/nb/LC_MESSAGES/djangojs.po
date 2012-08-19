@@ -54,7 +54,7 @@ msgstr "Et %(Node_term)s er hvor du organiserer top-nivå administratorer."
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:54
 msgid "Create new %(node_term)s"
-msgstr "Lag ny %(node_term)s"
+msgstr "Lag nytt %(node_term)s"
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:55
 msgid "node"
@@ -62,7 +62,7 @@ msgstr ""
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:81
 msgid "Create new %(subject_term)s"
-msgstr "Lag ny %(subject_term)s"
+msgstr "Lag nytt %(subject_term)s"
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:82
 msgid "subject"
@@ -70,7 +70,7 @@ msgstr ""
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:108
 msgid "Create new %(period_term)s"
-msgstr "Lag ny %(period_term)s"
+msgstr "Lag nytt %(period_term)s"
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:109
 #: static/extjs_classes/administrator/studentsmanager/AddDeliveriesMixin.js:108
@@ -101,9 +101,8 @@ msgid "assignment"
 msgstr ""
 
 #: static/extjs_classes/administrator/DashboardButtonBar.js:137
-#, fuzzy
 msgid "Create new %(assignment_term)s"
-msgstr "Kopier fra en annen %(assignment_term)s"
+msgstr "Lag ny %(assignment_term)s"
 
 #: static/extjs_classes/administrator/assignment/Layout.js:54
 msgid "Administer"

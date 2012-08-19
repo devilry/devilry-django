@@ -31,20 +31,22 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
 
     items: [{
         name: "short_name",
-        fieldLabel: "Short name",
+        fieldLabel: gettext("Short name"),
         xtype: 'textfield',
-        emptyText: 'Example: spring01'
+        emptyText: gettext('Example') + ': spring01'
     }, {
         name: "long_name",
-        fieldLabel: "Long name",
+        fieldLabel: gettext("Long name"),
         xtype: 'textfield',
-        emptyText: 'Example: Spring 2001'
+        emptyText: gettext('Example') + ': Spring 2001'
     }, {
         name: "parentnode",
-        fieldLabel: "Subject",
+        fieldLabel: gettext("Subject"),
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedSubject',
-        emptyText: 'Select a subject',
+        emptyText: interpolate(gettext('Select a %(subject_term)s'), {
+            subject_term: gettext('subject')
+        }, true),
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }, {
@@ -59,7 +61,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
 
         items: [{
             name: "start_time",
-            fieldLabel: "Start",
+            fieldLabel: gettext("Start"),
             xtype: 'devilrydatetimefield',
             flex: 1
         }, {
@@ -67,15 +69,14 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
             width: 20
         }, {
             name: "end_time",
-            fieldLabel: "End",
+            fieldLabel: gettext("End"),
             xtype: 'devilrydatetimefield',
             flex: 1
         }]
     }],
 
     help: [
-        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_)',
-        '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
-        'Choose the <strong>subject</strong> where this period belongs.'
+        '<strong>' + gettext('Short name') + ':</strong> ' + gettext('A short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).'),
+        '<strong>' + gettext('Long name') + ':</strong> ' + gettext('A longer descriptive name which can contain any character.')
     ]
 });

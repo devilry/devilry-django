@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 17:53+0200\n"
+"POT-Creation-Date: 2012-08-19 18:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,6 +137,7 @@ msgid "From previous %(period_term)s"
 msgstr "Fra tidligere %(period_term)s"
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGrid.js:31
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:48
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:148
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
 msgid "period"
@@ -294,6 +295,201 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:34
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:120
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:29
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:49
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:34
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:79
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:29
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:50
+msgid "Short name"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:36
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:41
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:31
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:36
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:36
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:41
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:31
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:36
+msgid "Example"
+msgstr "Eksempel"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:39
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:121
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:34
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:50
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:39
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:80
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:51
+msgid "Long name"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:44
+msgid "Period"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:47
+msgid "Select a %(period_term)s"
+msgstr "Velg et %(period_term)s"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:56
+msgid "Publishing time"
+msgstr "Publiseringstidspunkt"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:61
+msgid "How do students add deliveries?"
+msgstr "Hvordan leverer studentene?"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:72
+msgid "Electronically using Devilry"
+msgstr "Elektroniske innleveringer via Devilry"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:73
+msgid "Non-electronic (hand in on paper, oral examination, ...)"
+msgstr ""
+"Ikke-elektroniske innleveringer (papirinnlevering, muntlig eksamen, ...)"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:78
+msgid "How would you like to handle %(deadlines_term)s?"
+msgstr "Hvordan vil du håndtere %(deadlines_term)s?"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:79
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:37
+msgid "deadlines"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:91
+msgid ""
+"SOFT: Students can add deliveries after the deadline, but deliveries after "
+"the deadline are distinctly highlighted in the examiner and admin interfaces."
+msgstr ""
+"SNILLE: Studenter kan legge til innleveringer etter innleveringsfristen. "
+"Innleveringer etter fristen markeres tydelig for rettere og administratorer."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:92
+msgid "HARD: Students can not add deliveries after the deadline."
+msgstr "HARDE: Studenter kan ikke levere etter innleveringsfristen."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:97
+msgid "Anonymous?"
+msgstr "Anonym?"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:108
+msgid "No"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:109
+msgid "Yes"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:119
+msgid ""
+"Set up the mandatory properties of an assignment. Further customization is "
+"available after you create the assignment."
+msgstr ""
+"Sett opp de påkrevde egenskapene til en oppgave. Flere tilpasningsmuligheter "
+"er tilgjengelig når oppgaven er laget."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:120
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:49
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:79
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:50
+msgid ""
+"A short name used when the long name takes to much space. Short name can "
+"only contain english lower-case letters, numbers and underscore (_)."
+msgstr ""
+"Et kort navn som brukes når det lange navnet tar for mye plass. Kan kun "
+"inneholde små engelske bokstaver, tall og understrek (_)."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:121
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:50
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:80
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:51
+msgid "A longer descriptive name which can contain any character."
+msgstr ""
+"Et lengre beskrivende navn som kan inneholde alle tegn, inkludert norske "
+"bokstaver."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:122
+msgid ""
+"The <strong>publishing time</strong> is the time when students will be able "
+"to start adding deliveries on the assignment."
+msgstr ""
+"<strong>Publiseringstidspunktet</strong> er tidspunktet da studentene kan "
+"får opp oppgaven i sitt brukergrensesnitt, slik at de kan begynne å levere."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:123
+msgid ""
+"If you only use Devilry to give feedback, but students deliver through an "
+"alternative channel, change <strong>how students add deliveries</strong>. "
+"This can also be used if the students deliver through an alternative "
+"electronic system such as <em>email</em>."
+msgstr ""
+"Hvis du kun bruker Devilry til å gi tilbakemelding, og studentene leverer "
+"gjennom alternative kanaler, endre <strong>Hvordan leverer studenten</"
+"strong>. Dette også brukes hvis studenene levere gjennom andre elektroniske "
+"systemer, slik som epost."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:124
+msgid ""
+"If you set <strong>anonymous</strong> to <em>yes</em>, examiners see a "
+"<em>candidate-id</em> instead of a username. A candidate-id must be set for "
+"each student."
+msgstr ""
+"Hvis du setter <strong>anonym</strong> til <em>ja</em>, ser retterne en "
+"kandidat-id istedenfor navn. En kandidat-id må settes for hver student på "
+"oppgaven."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:39
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:51
+msgid "Parent"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:42
+msgid "Select a parent, or leave blank for no parent"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:51
+msgid "Organize this %(node_term)s below another %(node_term)s. May be empty."
+msgstr ""
+"Organiser dette %(node_term)s under et annet %(node_term)s. Kan være tom."
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Node.js:52
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:43
+msgid "node"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:44
+msgid "Subject"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:47
+msgid "Select a %(subject_term)s"
+msgstr "Velg et %(subject_term)s"
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:48
+msgid "subject"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:64
+msgid "Start"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Period.js:72
+msgid "End"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:39
+msgid "Node"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/forms/administrator/Subject.js:42
+msgid "Select a %(node_term)s"
+msgstr "Velg et %(node_term)s"
+
 #: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:43
 #: static/extjs_classes/extjshelpers/searchwidget/SearchWindow.js:26
 msgid "Search for anything..."
@@ -316,10 +512,6 @@ msgstr ""
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:36
 msgid "No %(deadlines_term)s"
 msgstr "Ingen %(deadline_term)s"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:37
-msgid "deadlines"
-msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:141
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:271

@@ -118,7 +118,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 }
             }, {
                 xtype: 'buttonbarbutton',
-                text: 'Assignment',
+                text: gettext('Assignment'),
                 store: periodstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
