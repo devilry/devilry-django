@@ -524,7 +524,8 @@ span.menuref {
         @if $category == ok {
             @include categoryBox(darken($goodcolor_bg, 8%), darken($goodcolor_hoverbg, 5%));
         } @else if $category == info {
-            @include categoryBox($neutralcolor_bg, $neutralcolor_hoverbg);
+            //@include categoryBox($neutralcolor_bg, $neutralcolor_hoverbg);
+            @include categoryBox(#888, #bbb);
         } @else if $category == help {
             @include categoryBox($neutralcolor_bg, $neutralcolor_hoverbg);
         } @else if $category == warning {
