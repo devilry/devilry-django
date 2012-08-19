@@ -46,6 +46,9 @@ var terms = [
     gettext_noop('Open'),
     gettext_noop('Closed'),
 
+    gettext_noop('Short name'), gettext_noop('short name'),
+    gettext_noop('Long name'), gettext_noop('long name'),
+
     // These are probably not something you want to change, however they are
     // included because they are used all over the UI
     gettext_noop('Dashboard'),

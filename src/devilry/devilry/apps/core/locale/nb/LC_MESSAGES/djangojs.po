@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-18 20:16+0200\n"
+"POT-Creation-Date: 2012-08-19 18:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -229,42 +229,58 @@ msgstr "Åpen"
 msgid "Closed"
 msgstr "Lukket"
 
-#: static/devilry_core/terminology.js:51
+#: static/devilry_core/terminology.js:49
+msgid "Short name"
+msgstr "Kort navn"
+
+#: static/devilry_core/terminology.js:49
+msgid "short name"
+msgstr "kort navn"
+
+#: static/devilry_core/terminology.js:50
+msgid "Long name"
+msgstr "Langt navn"
+
+#: static/devilry_core/terminology.js:50
+msgid "long name"
+msgstr "langt navn"
+
+#: static/devilry_core/terminology.js:54
 msgid "Dashboard"
 msgstr "Forside"
 
-#: static/devilry_core/terminology.js:52
+#: static/devilry_core/terminology.js:55
 msgid "Yes"
 msgstr "Ja"
 
-#: static/devilry_core/terminology.js:53
+#: static/devilry_core/terminology.js:56
 msgid "No"
 msgstr "Nei"
 
-#: static/devilry_core/terminology.js:54
+#: static/devilry_core/terminology.js:57
 msgid "Ok"
 msgstr "Ok"
 
-#: static/devilry_core/terminology.js:55
+#: static/devilry_core/terminology.js:58
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: static/devilry_core/terminology.js:56
+#: static/devilry_core/terminology.js:59
 msgid "Error"
 msgstr "Feil"
 
-#: static/devilry_core/terminology.js:57
+#: static/devilry_core/terminology.js:60
 msgid "Search"
 msgstr "Søk"
 
-#: static/devilry_core/terminology.js:58
+#: static/devilry_core/terminology.js:61
 msgid "Searching"
 msgstr "Søker"
 
-#: static/devilry_core/terminology.js:59
+#: static/devilry_core/terminology.js:62
 msgid "Loading"
 msgstr "Laster"
 
-#: static/devilry_core/terminology.js:60
+#: static/devilry_core/terminology.js:63
 msgid "Browse"
 msgstr "Bla i alle"
