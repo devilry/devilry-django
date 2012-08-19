@@ -68,9 +68,16 @@ SELENIUM_BROWSER = 'Firefox' # Default selenium browser
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
 
-##
-## Email
-##
+##################################################################################
+# Make Devilry speak in typical university terms (semester instead of period, ...)
+##################################################################################
+INSTALLED_APPS += ['devilry_university_translations']
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
+
+
+##################################################################################
+# Email
+##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = join(parent_dir, 'email_log')
@@ -88,10 +95,14 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'
 #EMAIL_PORT = 1025
 
 
-#
-# The if's below is just to make it easy to toggle these settings on and off during development
-#
 
+
+
+#######################################################################
+# Various developertools/settings
+#######################################################################
+
+# The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
 if profiler_middleware:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
@@ -105,18 +116,14 @@ if delay_middleware:
         'devilry.utils.delay_middleware.DelayMiddleware'
     ]
 
-
 TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + ('extjs4.context_processors.extjs4',)
-
-
-
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.apps.developertools.middleware.FakeLoginMiddleware']
 
 
-#
-# Logging
-#
 
+#######################################################################
+# Logging
+#######################################################################
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
