@@ -52,6 +52,15 @@ Go to http://localhost:8000/ and log in as a superuser using:
     user: grandma
     password: test
 
+Or as a user which is student, examiner and admin using:
+
+    user: thor
+    password: test
+
+**Note:** All users have ``password==test``, and you can see all students in
+the superadmin interface. See [the demo page on the wiki](https://github.com/devilry/devilry-django/wiki/demo)
+for more info about the demo database.
+
 
 # Why Fabric?
 
