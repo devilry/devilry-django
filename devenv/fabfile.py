@@ -112,3 +112,21 @@ def jsbuild(appname):
     print
     print 'is running in another terminal'
     local('bin/django_dev.py senchatoolsbuild --app {appname}'.format(appname=appname))
+
+@task
+def jsbuild_devilry_student():
+    jsbuild('devilry_student')
+
+@task
+def jsbuild_devilry_frontpage():
+    jsbuild('devilry_frontpage')
+
+@task
+def jsbuild_devilry_subjectadmin():
+    jsbuild('devilry_subjectadmin')
+
+@task
+def jsbuild_all():
+    jsbuild_devilry_student()
+    jsbuild_devilry_frontpage()
+    jsbuild_devilry_subjectadmin()
