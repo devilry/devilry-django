@@ -157,7 +157,7 @@ Ext.define('devilry.administrator.PrettyView', {
      * @private
      */
     onModelLoadFailure: function(record, operation) {
-        throw 'Failed to load the model';
+        this.fireEvent('loadmodelFailed', operation);
     },
 
     /**

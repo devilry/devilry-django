@@ -60,6 +60,7 @@ Ext.define('devilry.administrator.assignment.Layout', {
                     listeners: {
                         scope: this,
                         loadmodel: this._onLoadRecord,
+                        loadmodelFailed: this._onLoadRecordFailed,
                         edit: this._onEdit,
                         activate: function() {
                             this.route.navigate('');
@@ -109,6 +110,29 @@ Ext.define('devilry.administrator.assignment.Layout', {
         });
         this._onStudents();
         this._starteRouting();
+    },
+
+    _onLoadRecordFailed: function(operation) {
+        this.removeAll();
+        var title = operation.error.statusText;
+        if(operation.error.status == '403') {
+            title = gettext('Permission denied');
+            message = gettext('You are not administrator on this item or any of its parents.');
+        }
+        this.add({
+            xtype: 'box',
+            padding: 20,
+            tpl: [
+                '<div class="section warning">',
+                    '<h2>{title}</h2>',
+                    '<p>{message}</p>',
+                '</div>'
+            ],
+            data: {
+                title: title,
+                message: message
+            }
+        });
     },
 
     _setBreadcrumbAndTitle: function(students) {
