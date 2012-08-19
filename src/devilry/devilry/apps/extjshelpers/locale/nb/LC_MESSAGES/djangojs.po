@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 04:53+0200\n"
+"POT-Creation-Date: 2012-08-19 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:10
+msgid "No active periods"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:11
+msgid "You are not registered on any active periods."
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:83
+msgid "Active %(periods_term)s"
+msgstr "Aktive %(periods_term)s"
+
+#: static/extjs_classes/extjshelpers/ActivePeriodsGrid.js:84
+msgid "periods"
+msgstr ""
+
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupOverview.js:235
 msgid "To-do list"
-msgstr ""
+msgstr "To-do liste"
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTitle.js:11
 msgid "Group members:"

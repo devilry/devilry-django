@@ -7,8 +7,8 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: 'No active periods',
-            msg: 'You are not registered on any active periods.'
+            title: gettext('No active periods'),
+            msg: gettext('You are not registered on any active periods.')
         },
         pageSize: 30,
         dashboard_url: undefined
@@ -41,37 +41,49 @@ Ext.define('devilry.extjshelpers.ActivePeriodsGrid', {
     },
 
     createBody: function() {
+        var colTpl = Ext.create('Ext.XTemplate',
+            '<a href="{dashboard_url}period/{data.id}">',
+                '{data.parentnode__short_name} - {data.long_name}',
+            '</a>'
+        );
+        var me = this;
         var activePeriodsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
             frameHeader: false,
             border: false,
+            cls: 'bootstrap',
             sortableColumns: false,
             autoScroll: true,
-            cls: 'selectable-grid',
             store: this.store,
+            hideHeaders: true,
             flex: 1,
             columns: [{
-                text: 'Subject',
+                text: 'unused',
                 menuDisabled: true,
-                dataIndex: 'parentnode__long_name',
-                flex: 30,
-            },{
-                text: 'Period',
-                menuDisabled: true,
-                dataIndex: 'long_name',
-                flex: 20,
-            }],
-            listeners: {
-                scope: this,
-                itemmouseup: function(view, record) {
-                    var url = this.dashboard_url + "period/" + record.data.id
-                    window.location = url;
+                dataIndex: 'id',
+                flex: 1,
+                renderer: function(unused, unused2, periodRecord) {
+                    return colTpl.apply({
+                        data: periodRecord.data,
+                        dashboard_url: me.dashboard_url
+                    });
                 }
-            }
+            }]
+            //listeners: {
+                //scope: this,
+                //itemmouseup: function(view, record) {
+                    //var url = this.dashboard_url + "period/" + record.data.id
+                    //window.location = url;
+                //}
+            //}
         });
         this.add({
             xtype: 'box',
-            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>', 'Active periods')
+            html: Ext.String.format('<div class="section"><h2>{0}</h2></div>',
+                interpolate(gettext('Active %(periods_term)s'), {
+                    periods_term: gettext('periods')
+                }, true)
+            )
         });
         this.add(activePeriodsGrid);
     }
