@@ -205,6 +205,11 @@ class Command(BaseCommand):
         self._addRelatedStudentsFromList(period, bad_students_usernames)
 
     def create_duck1100(self):
+        """
+        Weekly assignments with points.
+
+        Thor is admin on the ``springcur`` period.
+        """
         assignments = ['week{0}:pub({1})'.format(weeknum, weeknum*7) for weeknum in xrange(1, 10)]
         periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)',
                    'springold:begins(-14):ends(6):ln(Spring Old - Example of an old period)',
@@ -213,6 +218,7 @@ class Command(BaseCommand):
                             subjects=["duck1100:ln(DUCK1100 - Getting started with python)"],
                             periods=periods,
                             assignments=assignments)
+        self.testhelper.duck1100_springcur.admins.add(self.testhelper.thor)
         anotherTryVerdict = {'grade': '5/20', 'points': 5, 'is_passing_grade': False}
         failedVerdict = {'grade': '2/20', 'points': 2, 'is_passing_grade': False}
         okVerdict = {'grade': '12/20', 'points': 12, 'is_passing_grade': True}
@@ -231,6 +237,11 @@ class Command(BaseCommand):
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
 
     def create_duck1010(self):
+        """
+        3 obligatory assignments with approved/not approved.
+
+        Thor is admin on the subject.
+        """
         assignments = ['oblig{num}:pub({pub}):ln(Obligatorisk oppgave {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
         periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)',
                    'springold:begins(-14):ends(6):ln(Spring Old - Example of an old period)']
@@ -238,6 +249,7 @@ class Command(BaseCommand):
                             subjects=["duck1010:ln(DUCK1010 - Objektorientert programmering)"],
                             periods=periods,
                             assignments=assignments)
+        self.testhelper.duck1010.admins.add(self.testhelper.thor)
         anotherTryVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
         failedVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
         okVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
@@ -255,6 +267,42 @@ class Command(BaseCommand):
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
 
+    def create_duck6000(self):
+        """
+        Created with a single period, and no assignments, where thor is admin.
+        """
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)']
+        self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
+                            subjects=["duck6000:ln(DUCK6000 - Make robots walk)"],
+                            periods=periods)
+        self.testhelper.duck6000_springcur.admins.add(self.testhelper.thor)
+        periodnames = self._onlyNames(periods)
+        for periodname in periodnames:
+            periodpath = 'duckburgh.ifi;duck6000.' + periodname
+            logging.info('Creating %s', periodpath)
+            period = self.testhelper.get_object_from_path(periodpath)
+            self._addRelatedStudents(period)
+            self._addRelatedExaminers(period)
+
+    def create_duck4000(self):
+        """
+        Created with a single period and a single assignment, where thor is admin.
+        """
+        assignments = ['oblig1:pub(40):ln(Obligatorisk oppgave 1)']
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)']
+        self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
+                            subjects=["duck4000:ln(DUCK4000 - Make robots walk)"],
+                            periods=periods,
+                            assignments=assignments)
+        self.testhelper.duck4000_springcur_oblig1.admins.add(self.testhelper.thor)
+        periodnames = self._onlyNames(periods)
+        for periodname in periodnames:
+            periodpath = 'duckburgh.ifi;duck4000.' + periodname
+            logging.info('Creating %s', periodpath)
+            period = self.testhelper.get_object_from_path(periodpath)
+            self._addRelatedStudents(period)
+            self._addRelatedExaminers(period)
+
     def create_users(self, list_of_users):
         for username, fullname in list_of_users:
             self.testhelper.create_user(username, fullname)
@@ -269,7 +317,10 @@ class Command(BaseCommand):
     def _getExaminerFor(self, username):
         for examiner, usernames in self.examiners.iteritems():
             if username in usernames:
-                return examiner
+                if examiner == 'scrooge':
+                    return examiner + ',' + 'thor' # Make thor examiner on all of the same groups as scrooge
+                else:
+                    return examiner
         raise LookupError('No examiner defined for {0}'.format(username))
 
     def _getTagsFor(self, username):
@@ -317,5 +368,7 @@ class Command(BaseCommand):
                            ('fethry', 'Fethry Duck')])
         self._distributeStudentToExaminers()
         logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
+        self.create_duck4000()
+        self.create_duck6000()
         self.create_duck1100()
         self.create_duck1010()
