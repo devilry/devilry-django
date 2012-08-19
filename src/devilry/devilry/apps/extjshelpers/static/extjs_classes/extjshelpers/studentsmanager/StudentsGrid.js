@@ -22,19 +22,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     infoColTpl: Ext.create('Ext.XTemplate', 
         '<div class="section infocolumn">',
-        '    <div>',
-        '        <tpl if="is_open">',
-        '           <span class="group_is_open">Open</span>',
-        '        </tpl>',
-        '        <tpl if="!is_open">',
-        '           <span class="group_is_closed">Closed</span>',
-        '       </tpl>',
-        '    </div>',
-        '    <div>',
-        '        <tpl if="latest_deadline_id === null">',
-        '           <span class="has_no_deadlines">No deadlines</span>',
-        '        </tpl>',
-        '    </div>',
+            '<div>',
+                '<tpl if="is_open">',
+                    '<span class="group_is_open">', gettext('Open'), '</span>',
+                '</tpl>',
+                '<tpl if="!is_open">',
+                    '<span class="group_is_closed">', gettext('Closed'), '</span>',
+                '</tpl>',
+            '</div>',
+            '<div>',
+                '<tpl if="latest_deadline_id === null">',
+                    '<span class="has_no_deadlines">',
+                        interpolate(gettext('No %(deadlines_term)s'), {
+                            deadlines_term: gettext('deadlines')
+                        }, true),
+                    '</span>',
+                '</tpl>',
+            '</div>',
         '</div>'
     ),
 
@@ -126,24 +130,36 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     gradeColTpl: Ext.create('Ext.XTemplate', 
         '<div class="section gradecolumn">',
-        '   <tpl if="feedback">',
-        '        <div class="is_passing_grade">',
-        '           <tpl if="feedback__is_passing_grade"><span class="passing_grade">Passed</span></tpl>',
-        '           <tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">Failed</span></tpl>',
-        '           : <span class="grade">{feedback__grade}</span>',
-        '        </div>',
-        '        <div class="delivery_type">',
-        '            <tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">Electronic</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">Non-electronic</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type == 2"><span class="alias">From previous period (semester)</span></tpl>',
-        '            <tpl if="feedback__delivery__delivery_type &gt; 2"><span class="unknown">Unknown delivery type</span></tpl>',
-        '       </div>',
-        '   </tpl>',
-        '    <tpl if="!feedback">',
-        '        <div class="nofeedback">',
-        '           No feedback',
-        '        </div>',
-        '    </tpl>',
+            '<tpl if="feedback">',
+                '<div class="is_passing_grade">',
+                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade">', gettext('Passed'), '</span></tpl>',
+                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade">', gettext('Failed'), '</span></tpl>',
+                    ' : <span class="grade">{feedback__grade}</span>',
+                '</div>',
+                '<div class="delivery_type">',
+                    '<tpl if="feedback__delivery__delivery_type == 0"><span class="electronic">',
+                        gettext('Electronic'),
+                    '</span></tpl>',
+                    '<tpl if="feedback__delivery__delivery_type == 1"><span class="non-electronic">',
+                        gettext('Non-electronic'),
+                    '</span></tpl>',
+                    '<tpl if="feedback__delivery__delivery_type == 2"><span class="alias">',
+                        interpolate(gettext('From previous %(period_term)s'), {
+                            period_term: gettext('period')
+                        }, true),
+                    '</span></tpl>',
+                    '<tpl if="feedback__delivery__delivery_type &gt; 2"><span class="unknown">',
+                        interpolate(gettext('Unknown %(delivery_term)s type'), {
+                            delivery_term: gettext('delivery')
+                        }, true),
+                    '</span></tpl>',
+                '</div>',
+            '</tpl>',
+            '<tpl if="!feedback">',
+                '<div class="nofeedback">',
+                    'No feedback',
+                '</div>',
+            '</tpl>',
         '</div>'
     ),
 
@@ -168,21 +184,21 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         var studentsCol;
         if(this.isAdministrator) {
             studentsCol = {
-                text: 'Students', dataIndex: 'id',
+                text: gettext('Students'), dataIndex: 'id',
                 menuDisabled: true, sortable: false,
                 columns: [{
-                    text: 'Usernames', dataIndex: 'candidates__student__username', width: 90,
+                    text: gettext('Usernames'), dataIndex: 'candidates__student__username', width: 90,
                     menuDisabled: true, sortable: true,
                     renderer: this.formatRealUsernamesCol
                 }, {
-                    text: 'Full names', dataIndex: 'candidates__student__devilryuserprofile__full_name', width: 155,
+                    text: gettext('Full names'), dataIndex: 'candidates__student__devilryuserprofile__full_name', width: 155,
                     menuDisabled: true, sortable: true,
                     renderer: this.formatRealFullnamesCol
                 }]
             };
             if(this.isAnonymous) {
                 studentsCol.columns.push({
-                    text: 'Candidate ID', dataIndex: 'candidates__identifier',
+                    text: gettext('Candidate ID'), dataIndex: 'candidates__identifier',
                     width: 90,
                     menuDisabled: true, sortable: true,
                     renderer: this.formatCandidatesCol_old
@@ -191,22 +207,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         } else {
             if(this.isAnonymous) {
                 studentsCol = {
-                    text: 'Students', dataIndex: 'candidates__identifier', flex: 4,
+                    text: gettext('Students'), dataIndex: 'candidates__identifier', flex: 4,
                     menuDisabled: true,
                     sortable: true,
                     renderer: this.formatCandidatesCol
                 };
             } else {
                 studentsCol = {
-                    text: 'Students', dataIndex: 'id',
+                    text: gettext('Students'), dataIndex: 'id',
                     menuDisabled: true, sortable: false,
                     columns: [{
-                        text: 'Usernames', dataIndex: 'candidates__identifier',
+                        text: gettext('Usernames'), dataIndex: 'candidates__identifier',
                         width: 90,
                         menuDisabled: true, sortable: true,
                         renderer: this.formatCandidatesCol
                     }, {
-                        text: 'Full names', dataIndex: 'candidates__full_name',
+                        text: gettext('Full names'), dataIndex: 'candidates__full_name',
                         width: 155,
                         menuDisabled: true, sortable: true,
                         renderer: this.formatCandFullNamesCol
@@ -221,18 +237,20 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 menuDisabled: true,
                 renderer: this.formatInfoCol
             }, studentsCol, {
-                text: 'Latest feedback',
+                text: interpolate(gettext('Latest %(feedback_term)s'), {
+                    feedback_term: gettext('feedback')
+                }, true),
                 menuDisabled: true,
                 sortable: false,
                 columns: [{
-                    text: 'Points',
+                    text: gettext('Points'),
                     dataIndex: 'feedback__points',
                     renderer: this.formatPointsCol,
                     menuDisabled: true,
                     sortable: true,
                     width: 70
                 }, {
-                    text: 'Grade',
+                    text: gettext('Grade'),
                     dataIndex: 'feedback__grade',
                     width: 150,
                     menuDisabled: true,
@@ -240,30 +258,33 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                     renderer: this.formatGradeCol
                 }]
             }, {
-                text: 'Tags', dataIndex: 'tags__tag', flex: 2,
+                text: gettext('Tags'), dataIndex: 'tags__tag', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatTagsCol
             }, {
-                text: 'Group name', dataIndex: 'name', flex: 3,
+                text: gettext('Group name'), dataIndex: 'name', flex: 3,
                 menuDisabled: true
             }]
         });
         if(this.isAdministrator) {
             Ext.Array.insert(this.columns, 3, [{
-                text: 'Examiners', dataIndex: 'examiners__user__username', flex: 3,
+                text: gettext('Examiners'), dataIndex: 'examiners__user__username', flex: 3,
                 menuDisabled: true,
                 renderer: this.formatExaminersCol
             }]);
         }
         if(this.assignmentrecord.get('delivery_types') != 1) {
             this.columns.push({
-                text: 'Active deadline', dataIndex: 'latest_deadline_deadline', width: 125,
+                text: interpolate(gettext('Active %(deadline_term)s'), {
+                    deadline_term: gettext('deadline')
+                }, true),
+                dataIndex: 'latest_deadline_deadline', width: 125,
                 menuDisabled: true,
                 renderer: this.formatActiveDeadlineCol
             });
 
             Ext.Array.insert(this.columns, 2, [{
-                text: 'Deliveries', dataIndex: 'number_of_deliveries', flex: 2,
+                text: gettext('Deliveries'), dataIndex: 'number_of_deliveries', flex: 2,
                 menuDisabled: true,
                 renderer: this.formatDeliveriesCol
             }]);

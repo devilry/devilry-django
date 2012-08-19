@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 01:43+0200\n"
+"POT-Creation-Date: 2012-08-19 01:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,10 +28,14 @@ msgid "Search"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:110
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:187
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:210
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:217
 msgid "Students"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupTodoList.js:125
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:287
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:258
 msgid "Deliveries"
 msgstr ""
@@ -41,11 +45,119 @@ msgid "Add %(delivery_term)s"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/assignmentgroup/DeliveriesGroupedByDeadline.js:89
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:153
 msgid "delivery"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/searchwidget/SearchWidget.js:67
 msgid "Browse"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:27
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:247
+msgid "Open"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:30
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:250
+msgid "Closed"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:36
+msgid "No %(deadlines_term)s"
+msgstr "Ingen %(deadline_term)s"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:37
+msgid "deadlines"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:135
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:253
+msgid "Passed"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:136
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:256
+msgid "Failed"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:141
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:271
+msgid "Electronic"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:144
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:274
+msgid "Non-electronic"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:147
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
+msgid "From previous %(period_term)s"
+msgstr "Fra tidligere %(period_term)s"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:148
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
+msgid "period"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:152
+msgid "Unknown %(delivery_term)s type"
+msgstr "Ukjent innleveringstype"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:190
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:220
+msgid "Usernames"
+msgstr "Brukernavn"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:194
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:225
+msgid "Full names"
+msgstr "Fullt navn"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:201
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:282
+msgid "Candidate ID"
+msgstr "Kandidat ID"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:240
+msgid "Latest %(feedback_term)s"
+msgstr "Siste %(feedback_term)s"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:241
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:265
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:268
+msgid "feedback"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:246
+msgid "Points"
+msgstr "Poeng"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:253
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:252
+msgid "Grade"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:261
+msgid "Tags"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:265
+msgid "Group name"
+msgstr "Gruppenavn"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:271
+msgid "Examiners"
+msgstr ""
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:278
+msgid "Active %(deadline_term)s"
+msgstr "Aktiv %(deadline_term)s"
+
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:279
+#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:362
+msgid "deadline"
 msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:97
@@ -71,26 +183,6 @@ msgstr "Last ned alle %(deliveries_term)s"
 msgid "deliveries"
 msgstr ""
 
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:247
-msgid "Open"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:250
-msgid "Closed"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:252
-msgid "Grade"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:253
-msgid "Passed"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:256
-msgid "Failed"
-msgstr ""
-
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:259
 msgid "Has %(deliveries_term)s"
 msgstr "Har %(deliveries_term)s"
@@ -107,11 +199,6 @@ msgstr ""
 msgid "Has %(feedback_term)s"
 msgstr "Har %(feedback_term)s"
 
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:265
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:268
-msgid "feedback"
-msgstr ""
-
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:268
 msgid "No %(feedback_term)s"
 msgstr "Har ingen %(feedback_term)s"
@@ -119,26 +206,6 @@ msgstr "Har ingen %(feedback_term)s"
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:270
 msgid "Delivery type"
 msgstr "Innleveringstype"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:271
-msgid "Electronic"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:274
-msgid "Non-electronic"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
-msgid "From previous %(period_term)s"
-msgstr "Fra tidligere %(period_term)s"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:277
-msgid "period"
-msgstr ""
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:282
-msgid "Candidate ID"
-msgstr "Kandidat ID"
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:285
 msgid "Missing candidate ID"
@@ -184,7 +251,3 @@ msgstr "Åpne valgte grupper"
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:361
 msgid "Add %(deadline_term)s"
 msgstr "Ny %(deadline_term)s"
-
-#: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:362
-msgid "deadline"
-msgstr ""
