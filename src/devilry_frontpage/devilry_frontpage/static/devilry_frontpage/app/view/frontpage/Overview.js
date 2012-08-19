@@ -12,14 +12,12 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
     border: 0,
     bodyPadding: '30 0 0 0',
     autoScroll: true,
-    layout: {
-        type: 'hbox',
-        align: 'stretchmax'
-    },
+    layout: 'column',
 
     items: [{
         xtype: 'box',
-        flex: 1
+        columnWidth: 0.5,
+        html: '&nbsp;' // NOTE: We need content for the column to render correctly
     }, {
         xtype: 'container',
         width: 560,
@@ -53,7 +51,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
             }, {
                 columnWidth: 1,
                 xtype: 'devilryheader_roles',
-                margin: '6 0 0 0'
+                margin: '6 0 10 0'
             }]
         }]
     }, {
@@ -103,6 +101,7 @@ Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
         }]
     }, {
         xtype: 'box',
-        flex: 1
+        columnWidth: 0.5,
+        html: '&nbsp;' // NOTE: We need content for the column to render correctly
     }]
 });
