@@ -1,0 +1,18 @@
+.x-mask-msg.information-mask {
+    padding: 20px !important;
+    background-color: transparent !important;
+    border: none !important;
+    //margin: 20px !important;
+    cursor: help;
+    width: 100% !important;
+    div {
+        background-image: none !important;
+        border-radius: 6px;
+        padding: 8px 12px 8px 12px !important;
+        border: 1px solid #bbb;
+        background-color: #fff !important;
+        cursor: help;
+        color: #333 !important;
+        font-size: 13px !important;
+    }
+}
