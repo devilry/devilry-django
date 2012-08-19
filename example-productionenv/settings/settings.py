@@ -22,7 +22,7 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
 ## Nice to have this set to True while you are setting up devilry, however set
 ## it to False for production
-DEBUG = True
+DEBUG = False
 
 
 #############################################
