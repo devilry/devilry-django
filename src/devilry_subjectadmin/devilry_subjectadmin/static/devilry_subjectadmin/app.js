@@ -36,7 +36,8 @@ Ext.application({
         'managestudents.NoGroupSelectedViewPlugin',
         'managestudents.SingleGroupSelectedViewPlugin',
         'managestudents.MultipleGroupsSelectedViewPlugin',
-        'AddGroups'
+        'AddGroups',
+        'AllWhereIsAdmin'
     ],
 
     constructor: function() {
@@ -152,6 +153,7 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         this.route.add("/allsubjects/", 'allSubjects');
+        this.route.add("/", 'allWhereIsAdmin');
         this.route.add("/subject/:subject_id/", 'showSubject');
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
@@ -248,6 +250,12 @@ Ext.application({
             assignment_id: assignment_id,
             on_save_success_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(assignment_id),
             breadcrumbtype: 'managestudents'
+        });
+    },
+
+    allWhereIsAdmin: function() {
+        this.setPrimaryContent({
+            xtype: 'allwhereisadminpanel'
         });
     }
 });
