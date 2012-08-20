@@ -14,8 +14,12 @@ def logout(request):
 class LoginForm(forms.Form):
     username = forms.CharField()
     next = forms.CharField(widget=forms.HiddenInput,
-            required=False)
+                           required=False)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    # We store the hash in this field on page load (see the template)
+    urlhash = forms.CharField(widget=forms.HiddenInput,
+                              required=False)
 
 
 def login(request):
@@ -28,9 +32,12 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    next = form.cleaned_data.get('next') or \
-                            settings.DEVILRY_URLPATH_PREFIX or '/'
-                    return http.HttpResponseRedirect(next)
+                    if 'next' in form.cleaned_data:
+                        nexturl = form.cleaned_data.get('next')
+                        nexturl += form.cleaned_data.get('urlhash')
+                    else:
+                        nexturl = settings.DEVILRY_URLPATH_PREFIX or '/'
+                    return http.HttpResponseRedirect(nexturl)
                 else:
                     return http.HttpResponseForbidden("Acount is not active")
             else:
