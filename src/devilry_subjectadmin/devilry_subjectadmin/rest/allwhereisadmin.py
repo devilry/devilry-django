@@ -31,10 +31,12 @@ class AllWhereIsAdmin(View):
         return self.request.user in basenode.admins.all()
 
     def _subject_to_dict(self, subject):
+        is_admin = self._is_admin(subject)
         return {'id': subject.id,
                 'short_name': subject.short_name,
                 'long_name': subject.long_name,
-                'is_admin': self._is_admin(subject),
+                'is_admin': is_admin,
+                'can_administer': is_admin,
                 'periods': {}}
 
     def _period_to_dict(self, period):
