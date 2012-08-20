@@ -60,7 +60,6 @@ Run:
 Use ``stop_servers`` and ``restart_servers`` to stop/restart the servers.
 
 
-
 ## Update the demo
 
     $ bin/awsfab -E devilrydemo1 update_devilry
