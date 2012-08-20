@@ -17,6 +17,9 @@ Ext.define('devilry_student.controller.BrowseHistory', {
         ref: 'periodGrid',
         selector: 'viewport browsehistory browsehistory_periodgrid'
     }, {
+        ref: 'assignmentGrid',
+        selector: 'viewport browsehistory browsehistory_assignmentgrid'
+    }, {
         ref: 'heading',
         selector: 'viewport browsehistory #heading'
     }],
@@ -67,6 +70,10 @@ Ext.define('devilry_student.controller.BrowseHistory', {
     _onLoadNoneSelected: function() {
         this.application.setTitle(gettext('Browse'));
         this.application.breadcrumbs.set([], gettext('Browse'));
+        var message = interpolate(gettext('Please select an %(assignment_term)s from the list.'), {
+            assignment_term: gettext('assignment')
+        }, true);
+        this.getAssignmentGrid().getEl().mask(message, 'information-mask');
     },
 
     _onSelectPeriod: function(selModel, periodRecord) {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-20 01:49+0200\n"
+"POT-Creation-Date: 2012-08-20 04:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgid "Uploading your file ..."
 msgstr "Last opp din fil ..."
 
 #: static/devilry_student/app/controller/AddDelivery.js:118
-#: static/devilry_student/app/controller/BrowseHistory.js:43
+#: static/devilry_student/app/controller/BrowseHistory.js:46
 #: static/devilry_student/app/controller/Dashboard.js:58
 #: static/devilry_student/app/controller/GroupInfo.js:84
 msgid "Error"
@@ -46,20 +46,28 @@ msgstr ""
 msgid "delivery"
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:44
+#: static/devilry_student/app/controller/BrowseHistory.js:47
 msgid "Invalid %(period)s ID: %(period_id)s."
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:45
+#: static/devilry_student/app/controller/BrowseHistory.js:48
 msgid "period"
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:68
-#: static/devilry_student/app/controller/BrowseHistory.js:69
-#: static/devilry_student/app/controller/BrowseHistory.js:83
+#: static/devilry_student/app/controller/BrowseHistory.js:71
+#: static/devilry_student/app/controller/BrowseHistory.js:72
+#: static/devilry_student/app/controller/BrowseHistory.js:90
 #: static/devilry_student/app/controller/GroupInfo.js:143
 #: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:37
 msgid "Browse"
+msgstr ""
+
+#: static/devilry_student/app/controller/BrowseHistory.js:73
+msgid "Please select an %(assignment_term)s from the list."
+msgstr "Velg en %(assignment_term)s fra listen."
+
+#: static/devilry_student/app/controller/BrowseHistory.js:74
+msgid "assignment"
 msgstr ""
 
 #: static/devilry_student/app/controller/Dashboard.js:70
