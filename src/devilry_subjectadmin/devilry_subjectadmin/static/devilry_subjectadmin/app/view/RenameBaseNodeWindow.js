@@ -53,12 +53,13 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                     fieldLabel: gettext('Short name'),
                     xtype: 'textfield',
                     allowBlank: false,
+                    value: this.originalShortname,
                     listeners: {
                         scope: this,
                         render: function(field) {
                             Ext.defer(function() {
                                 field.focus();
-                            }, 100);
+                            }, 300);
                         }
                     }
                 }, {
@@ -68,6 +69,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                 }, {
                     name: "long_name",
                     fieldLabel: gettext('Long name'),
+                    value: this.originalLongname,
                     xtype: 'textfield',
                     allowBlank: false,
                     margin: '10 0 0 0'
@@ -135,7 +137,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         if(this.originalShortname != newShortname || this.originalLongname != newLongname) {
             var basenodeRecord = this.basenodeRecord;
             form.updateRecord(basenodeRecord);
-            this._getMaskElement().setLoading(gettext('Saving ...'));
+            this._getMaskElement().setLoading(gettext('Saving') + ' ...');
             basenodeRecord.save({
                 scope: this,
                 success: this._onSaveSuccess

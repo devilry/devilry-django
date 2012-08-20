@@ -45,8 +45,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editpublishingtime form': {
-                render: this._onRenderForm
+            'editpublishingtime form devilry_extjsextras-datetimefield': {
+                allRendered: this._onRenderForm
             },
             'editpublishingtime savebutton': {
                 click: this._onSave

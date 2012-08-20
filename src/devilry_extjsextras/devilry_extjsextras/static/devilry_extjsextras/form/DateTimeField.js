@@ -59,11 +59,16 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
             
         me.items = me.items || [];
         
+        this.childrenRendered = 0;
         me.dateField = Ext.create('devilry_extjsextras.form.DateField', Ext.apply({
             flex:1,
             isFormField:false, //exclude from field query's
             emptyText: this.dateFieldEmptyText,
-            submitValue:false
+            submitValue:false,
+            listeners: {
+                scope: this,
+                render: this._onChildRender
+            }
         }, me.dateConfig));
         me.items.push(me.dateField);
         
@@ -71,7 +76,11 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
             flex:1,
             isFormField:false, //exclude from field query's
             emptyText: this.timeFieldEmptyText,
-            submitValue:false
+            submitValue:false,
+            listeners: {
+                scope: this,
+                render: this._onChildRender
+            }
         }, me.timeConfig));
         me.items.push(me.timeField);
         
@@ -101,6 +110,13 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
         };
         
         me.initField();
+    },
+
+    _onChildRender: function() {
+        this.childrenRendered ++;
+        if(this.childrenRendered == 2) {
+            this.fireEvent('allRendered', this);
+        }
     },
     
     focus:function(){

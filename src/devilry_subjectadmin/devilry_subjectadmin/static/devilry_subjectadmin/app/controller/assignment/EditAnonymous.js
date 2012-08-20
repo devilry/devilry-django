@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous form': {
+            'editanonymous form checkbox': {
                 render: this._onRenderForm
             },
             'editanonymous savebutton': {
@@ -106,7 +106,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onProxyError: function(proxy, response, operation) {
         this._getMaskElement().unmask();
-        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel,
+        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel(),
             response, operation);
     },
 

@@ -206,7 +206,7 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_subjectadmin_editanonymous')
 
         editanonymous_window = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous')
-        self.anonymouscheckbox = editanonymous_window.find_element_by_css_selector('input[role="checkbox"]')
+        self.anonymouscheckbox = editanonymous_window.find_element_by_css_selector('input.x-form-checkbox')
         self.savebutton = editanonymous_window.find_element_by_css_selector('.devilry_extjsextras_savebutton button')
         self.cancelbutton = editanonymous_window.find_element_by_css_selector('.devilry_extjsextras_cancelbutton')
         self.editanonymous_window = editanonymous_window

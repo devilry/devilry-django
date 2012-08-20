@@ -9,14 +9,15 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'can_delete',  type: 'bool'},
         {name: 'anonymous',  type: 'bool'},
         {name: 'etag',  type: 'string'},
-        {name: 'first_deadline',  type: 'date'},
+        {name: 'first_deadline',  type: 'date', "dateFormat": "Y-m-d\\TH:i:s"},
         {name: 'id', type: 'auto'},
         {name: 'inherited_admins',  type: 'auto'},
         {name: 'long_name',  type: 'string'},
         {name: 'parentnode', type: 'auto'},
-        {name: 'publishing_time',  type: 'date'},
+        {name: 'publishing_time',  type: 'date', "dateFormat": "Y-m-d\\TH:i:s"},
         {name: 'short_name',  type: 'string'},
         {name: 'scale_points_percent',  type: 'int'},
+        {name: 'deadline_handling',  type: 'int'},
         {name: 'delivery_types',  type: 'int'}
     ],
 
