@@ -3,6 +3,8 @@ from os import remove
 from fabric.api import local, abort, task
 
 
+DB_FILE = 'db.sqlite3'
+
 
 @task
 def setup_demo():
@@ -102,6 +104,28 @@ def noextjsdebug_server():
     Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
     """
     local('bin/django_dev.py runserver 0.0.0.0:8001 --settings settings.noextjsdebug')
+
+
+@task
+def backup_db(sqldumpfile):
+    """
+    Dumps a backup of ``db.sqlite3`` to the given ``sqldumpfile``.
+
+    :param sqldumpfile: The SQL file to write the dump to.
+    """
+    local('sqlite3 db.sqlite3 .dump > {sqldumpfile}'.format(**vars()))
+
+@task
+def restore_db(sqldumpfile):
+    """
+    Restore ``db.sqlite3`` from the given ``sqldumpfile``.
+
+    :param sqldumpfile: The SQL file to restore the database from.
+    """
+    from os.path import exists
+    if exists(DB_FILE):
+        remove(DB_FILE)
+    local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
 
 @task
 def jsbuild(appname, nocompress=False):
