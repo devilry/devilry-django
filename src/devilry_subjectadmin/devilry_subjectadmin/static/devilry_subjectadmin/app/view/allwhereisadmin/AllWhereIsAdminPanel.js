@@ -15,8 +15,7 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel' ,{
                 '{loadingtext}',
             '<tpl else>',
                 'Loaded (TODO: use update the view with a tree of available data)',
-            '</tpl>',
-            
+            '</tpl>'
         ],
         itemId: 'listOfSubjects', // itemId is like a HTML ID, however it is only unique within this container. Can be used in component queries/selectors
         data: {
