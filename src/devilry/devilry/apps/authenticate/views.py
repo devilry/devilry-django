@@ -32,11 +32,11 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    if 'next' in form.cleaned_data:
+                    if form.cleaned_data['next']:
                         nexturl = form.cleaned_data.get('next')
                         nexturl += form.cleaned_data.get('urlhash')
                     else:
-                        nexturl = settings.DEVILRY_URLPATH_PREFIX or '/'
+                        nexturl = settings.DEVILRY_URLPATH_PREFIX + '/'
                     return http.HttpResponseRedirect(nexturl)
                 else:
                     return http.HttpResponseForbidden("Acount is not active")
