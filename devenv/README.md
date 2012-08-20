@@ -4,6 +4,7 @@ See ../README.md for info about setting it up.
 
 
 ## Building the ExtJS javascript apps
+(only needed if you have made changes to their javascript sources)
 
 Run the buildserver (a Django server with a config that does not require login):
 
