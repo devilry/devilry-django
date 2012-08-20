@@ -151,7 +151,7 @@ Ext.application({
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
-        this.route.add("/", 'browse');
+        this.route.add("/allsubjects/", 'allSubjects');
         this.route.add("/subject/:subject_id/", 'showSubject');
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
@@ -178,7 +178,7 @@ Ext.application({
         });
     },
 
-    browse: function(routeInfo) {
+    allSubjects: function(routeInfo) {
         this.breadcrumbs.set([], gettext("All subjects"));
         this.setPrimaryContent({
             xtype: 'subjectlistall'
