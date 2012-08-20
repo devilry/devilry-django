@@ -15,6 +15,22 @@ def format_datetime(datetime):
 class AllWhereIsAdmin(View):
     """
     All subjects, periods and assignments where the authenticated user is admin.
+
+    **NOTE:** This API only works for subject admins, since it does not
+    recursively check for permissions on parentnodes, only up to subject.
+
+    # GET
+
+    ## Parameters
+    Use the ``only_active=yes`` parameter in the querystring to only list active periods.
+
+    ## Returns
+    A list of subjects where each subject contains a list of periods, and each
+    period contains a list of assignments. In addition to the regular metadata,
+    each item has two special attributes:
+
+    - ``is_admin``: Is admin on this item (not inherited, but exactly on the item).
+    - ``can_administer``: Is admin on this item or any parent.
     """
     permissions = (IsAuthenticated,)
 
