@@ -32,7 +32,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
                                'publishing_time', 'delivery_types',
                                'scale_points_percent', 'first_deadline',
-                               'anonymous']))
+                               'anonymous', 'deadline_handling']))
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
@@ -64,6 +64,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                             'anonymous': True,
                                             'publishing_time': isoformat_relativetime(days=2),
                                             'scale_points_percent': 100,
+                                            'deadline_handling': 0,
                                             'delivery_types': 0,
                                             'parentnode': self.testhelper.duck2000_someperiod.id})
         self.assertEquals(response.status_code, 201)
@@ -79,6 +80,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(created.delivery_types, 0)
         self.assertEquals(created.anonymous, True)
         self.assertEquals(created.scale_points_percent, 100)
+        self.assertEquals(created.deadline_handling, 0)
         self.assertEquals(created.parentnode.id, self.testhelper.duck2000_someperiod.id)
         admins = created.admins.all()
         self.assertEquals(len(admins), 0)
@@ -90,6 +92,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                             'admins': [],
                                             'publishing_time': isoformat_relativetime(days=-2),
                                             'scale_points_percent': 100,
+                                            'deadline_handling': 0,
                                             'delivery_types': 0,
                                             'parentnode': self.testhelper.duck2000_someperiod.id})
         self.assertEquals(response.status_code, 403)
@@ -103,6 +106,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                             'admins': [{'id': self.testhelper.testadmin.id}],
                                             'publishing_time': isoformat_relativetime(days=-2),
                                             'scale_points_percent': 100,
+                                            'deadline_handling': 0,
                                             'delivery_types': 0,
                                             'parentnode': self.testhelper.duck2000.id})
         self.assertEquals(response.status_code, 201)
@@ -146,14 +150,15 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['id'], self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000_someperiod_first.short_name)
         self.assertEquals(content['long_name'], self.testhelper.duck2000_someperiod_first.long_name)
+        self.assertEquals(content['deadline_handling'], self.testhelper.duck2000_someperiod_first.deadline_handling)
         self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod_first.parentnode_id)
         self.assertEquals(content['can_delete'], self.testhelper.duck2000_someperiod_first.can_delete(self.testhelper.uniadmin))
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent', 'first_deadline',
-                               'breadcrumb', 'anonymous']))
+                               'scale_points_percent', 'deadline_handling',
+                               'first_deadline', 'breadcrumb', 'anonymous']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -208,6 +213,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                 'admins': [],
                 'publishing_time': isoformat_relativetime(days=-2),
                 'scale_points_percent': 80,
+                'deadline_handling': 0,
                 'delivery_types': 0,
                 'parentnode': 1}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),
@@ -218,13 +224,14 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['long_name'], 'Updated')
         self.assertEquals(content['parentnode'], 1)
         self.assertEquals(content['scale_points_percent'], 80)
+        self.assertEquals(content['deadline_handling'], 0)
         self.assertEquals(content['delivery_types'], 0)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
-                               'scale_points_percent', 'first_deadline',
-                               'breadcrumb', 'anonymous']))
+                               'scale_points_percent', 'deadline_handling',
+                               'first_deadline', 'breadcrumb', 'anonymous']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
@@ -242,6 +249,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                            {'id': self.testhelper.user3.id}],
                 'publishing_time': isoformat_relativetime(days=-2),
                 'scale_points_percent': 80,
+                'deadline_handling': 0,
                 'delivery_types': 0,
                 'parentnode': 1}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),

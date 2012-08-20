@@ -17,6 +17,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'publishing_time',  type: 'date'},
         {name: 'short_name',  type: 'string'},
         {name: 'scale_points_percent',  type: 'int'},
+        {name: 'deadline_handling',  type: 'int'},
         {name: 'delivery_types',  type: 'int'}
     ],
 
