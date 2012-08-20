@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Q, Count
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
@@ -25,6 +26,9 @@ class AllWhereIsAdmin(View):
         qry = qry.select_related('parentnode', 'parentnode__parentnode')
         qry = qry.prefetch_related('admins', 'parentnode__admins', 'parentnode__parentnode__admins')
         qry = qry.order_by('-publishing_time')
+        if self.only_active:
+            now = datetime.now()
+            qry = qry.filter(Q(parentnode__start_time__lte=now) & Q(parentnode__end_time__gte=now))
         return qry
 
     def _is_admin(self, basenode):
@@ -89,6 +93,9 @@ class AllWhereIsAdmin(View):
         return qry
 
     def _add_subjects_without_periods(self, subjectsAggr):
+        if self.only_active:
+            # NOTE: Empty subjects can not have an active period, so they should not be included
+            return subjectsAggr
         for subject in self._subjects_without_periods():
             subjectsAggr[subject.short_name] = self._subject_to_dict(subject)
         return subjectsAggr
@@ -100,6 +107,9 @@ class AllWhereIsAdmin(View):
         qry = qry.prefetch_related('admins', 'parentnode__admins')
         qry = qry.annotate(number_of_assignments=Count('assignments'))
         qry = qry.filter(number_of_assignments=0)
+        if self.only_active:
+            now = datetime.now()
+            qry = qry.filter(Q(start_time__lte=now) & Q(end_time__gte=now))
         return qry
 
     def _add_periods_without_assignments(self, subjectsAggr):
@@ -130,6 +140,7 @@ class AllWhereIsAdmin(View):
         return subjectsAggr
 
     def get(self, request):
+        self.only_active = request.GET.get('only_active') == 'yes'
         subjectsAggr = self._aggregate_data_from_assignmentqry()
         subjectsAggr = self._add_subjects_without_periods(subjectsAggr)
         subjectsAggr = self._add_periods_without_assignments(subjectsAggr)
