@@ -106,7 +106,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onProxyError: function(proxy, response, operation) {
         this._getMaskElement().unmask();
-        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel,
+        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel(),
             response, operation);
     },
 
