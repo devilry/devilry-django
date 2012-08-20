@@ -1,19 +1,29 @@
 {% load static %}
 {% load i18n %}
 <html>
-    <title>Devilry - Log in</title>
+    <head>
+        <title>Devilry - Log in</title>
+        <script type="text/javascript">
+            function onPageLoad() {
+                document.getElementById('id_username').focus();
+                var hashField = document.getElementById('id_urlhash');
+                if(hashField.value == '') {
+                    hashField.value = window.location.hash;
+                }
+            }
+        </script>
+    </head>
 
-    <body>
+    <body onload="onPageLoad()">
         <link rel="stylesheet" type="text/css" href="{% static "authenticate/style.css" %}"/>
         
-
         <div class="hero-unit">
             <h1>Devilry &mdash; login</h1>
 
             {% if login_failed %}
                 <p class="error">{% trans "Invalid username or password." %}</p>
             {% endif %}
-            <form method="post" action="{% url login %}">
+            <form method="post" action="{% url login %}" id="loginform">
                 <ul class="formul">
                     {{ form.as_ul }}
                 </ul>
@@ -21,6 +31,6 @@
                 <input type="submit" name="login" value="Log in"/>
                 </p>
             </form>
-        </div>        
+        </div>
     </body>
 </html>
