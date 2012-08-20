@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous form': {
+            'editanonymous form checkbox': {
                 render: this._onRenderForm
             },
             'editanonymous savebutton': {
