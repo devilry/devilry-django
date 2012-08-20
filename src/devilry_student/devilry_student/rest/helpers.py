@@ -3,18 +3,8 @@ from djangorestframework.response import ErrorResponse
 from djangorestframework import status
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.utils.restformat import format_datetime, format_timedelta
 
-
-def format_datetime(datetime):
-    return datetime.strftime('%Y-%m-%d %H:%M:%S')
-
-def format_timedelta(td):
-    hours, remainder = divmod(td.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return {'days': abs(td.days),
-            'hours': hours,
-            'minutes': minutes,
-            'seconds': seconds}
 
 class GroupResourceHelpersMixin(object):
     def format_user(self, user):
