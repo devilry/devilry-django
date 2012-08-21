@@ -40,9 +40,9 @@ class TestDeadlinesBulkRest(TestCase):
         self.assertEquals(len(content), 1)
         d1 = content[0]
         self.assertEquals(set(d1.keys()),
-                          set(['deadline', 'text', 'groupcount', 'offset_from_now',
+                          set(['deadline', 'text', 'groups', 'offset_from_now',
                                'in_the_future', 'bulkdeadline_id', 'url', 'groups']))
-        self.assertEquals(d1['groupcount'], 3)
+        self.assertEquals(len(d1['groups']), 3)
         self.assertEquals(d1['in_the_future'], False)
         self.assertEquals(d1['text'], None)
 
@@ -59,9 +59,9 @@ class TestDeadlinesBulkRest(TestCase):
         g2_g3_d1 = content[0]
         g1_d1 = content[1]
         self.assertEquals(g1_d1['text'], 'Test')
-        self.assertEquals(g1_d1['groupcount'], 1)
+        self.assertEquals(len(g1_d1['groups']), 1)
         self.assertEquals(g2_g3_d1['text'], None)
-        self.assertEquals(g2_g3_d1['groupcount'], 2)
+        self.assertEquals(len(g2_g3_d1['groups']), 2)
 
     def test_get_multiple_and_order(self):
         for groupnum in xrange(3):
@@ -75,9 +75,9 @@ class TestDeadlinesBulkRest(TestCase):
         self.assertEquals(len(content), 2)
         d1 = content[1]
         d2 = content[0]
-        self.assertEquals(d1['groupcount'], 3)
+        self.assertEquals(len(d1['groups']), 3)
         self.assertEquals(d1['in_the_future'], False)
-        self.assertEquals(d2['groupcount'], 2)
+        self.assertEquals(len(d2['groups']), 2)
         self.assertEquals(d2['in_the_future'], True)
 
     def test_get_nobody(self):

@@ -52,10 +52,31 @@ def texthashmatch(texthash, text):
     else:
         return texthash == sha1hash(text)
 
+class GroupsListResource(ModelResource):
+    model = AssignmentGroup
+    fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
+              'parentnode', 'feedback', 'candidates')
+
+    def parentnode(self, instance):
+        return int(instance.parentnode_id)
+
+    def feedback(self, instance):
+        return GroupSerializer(instance).serialize_feedback()
+
+    def deadlines(self, instance):
+        return GroupSerializer(instance).serialize_deadlines()
+
+    #def tags(self, instance):
+        #return GroupSerializer(instance).serialize_tags()
+
+    #def examiners(self, instance):
+        #return GroupSerializer(instance).serialize_examiners()
+
+    def candidates(self, instance):
+        return GroupSerializer(instance).serialize_candidates()
 
 
-def create_deadlinedict(assignment_id, deadline, groups=None,
-                        groupcount=None, now=None):
+def create_deadlinedict(assignment_id, deadline, groups, now=None):
     now = now or datetime.now()
     bulkdeadline_id = encode_bulkdeadline_id(deadline)
     return {'bulkdeadline_id': bulkdeadline_id,
@@ -66,7 +87,6 @@ def create_deadlinedict(assignment_id, deadline, groups=None,
                            kwargs={'id': assignment_id,
                                    'bulkdeadline_id': bulkdeadline_id}),
             'text': deadline.text,
-            'groupcount': None,
             'groups': groups} # Only provided on instance, not in list
 
 
@@ -88,7 +108,7 @@ class DeadlinesBulkRest(View):
     # GET
     List all deadlines on an assignment with newest deadline firsts. Deadlines
     with exactly the same ``deadline`` and ``text`` are collapsed into a single
-    entry in the list, with the number of groups listed.
+    entry in the list, with the groups as an attribute of the entry.
 
     ## Response
     A list of objects with the following attributes:
@@ -99,8 +119,7 @@ class DeadlinesBulkRest(View):
     - ``offset_from_now`` (object): Delta from _now_ to the deadline.
     - ``text`` (string|null): Deadline text.
     - ``url`` (string): The url of the API for the instance.
-    - ``groupcount`` (int): Number of groups in the deadline.
-    - ``groups``: Always ``null`` in this listing. The instances include this
+    - ``groups``: List of groups in the deadline.
       field in all responses.
 
     # POST
@@ -108,25 +127,19 @@ class DeadlinesBulkRest(View):
     """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
 
-    def _serialize_deadline(self, deadline):
-        """
-        Serialize ``Deadline``-object as plain python.
-        """
-        return create_deadlinedict(assignment_id=self.assignment_id,
-                                   deadline=deadline,
-                                   now=self.now)
-
     def _get_distinct_deadlines(self, deadlines):
         distinct_deadlines = {}
         idformat = '{deadline}:{text_firstchar}'
         for deadline in deadlines:
             bulkid = encode_bulkdeadline_id(deadline)
-            if bulkid in distinct_deadlines:
-                distinct_deadlines[bulkid]['groupcount'] += 1
-            else:
-                serialized_deadline = self._serialize_deadline(deadline)
-                serialized_deadline['groupcount'] = 1
+            if not bulkid in distinct_deadlines:
+                serialized_deadline = create_deadlinedict(assignment_id=self.assignment_id,
+                                                          deadline=deadline,
+                                                          groups=[],
+                                                          now=self.now)
                 distinct_deadlines[bulkid] = serialized_deadline
+            serialized_group = GroupsListResource().serialize(deadline.assignment_group)
+            distinct_deadlines[bulkid]['groups'].append(serialized_group)
         return distinct_deadlines.values()
 
     def _deadline_cmp(self, a, b):
@@ -138,8 +151,15 @@ class DeadlinesBulkRest(View):
             return comp
 
     def _aggregate_deadlines(self):
-        deadlines = Deadline.objects.filter(assignment_group__parentnode=self.assignment_id)
-        distinct_deadlines = self._get_distinct_deadlines(deadlines)
+        qry = Deadline.objects.filter(assignment_group__parentnode=self.assignment_id)
+        qry = qry.select_related('assignment_group', 'assignment_group__feedback')
+        qry = qry.prefetch_related('assignment_group__examiners',
+                                   'assignment_group__examiners__user',
+                                   'assignment_group__examiners__user__devilryuserprofile',
+                                   'assignment_group__candidates',
+                                   'assignment_group__candidates__student',
+                                   'assignment_group__candidates__student__devilryuserprofile')
+        distinct_deadlines = self._get_distinct_deadlines(qry)
         distinct_deadlines.sort(self._deadline_cmp)
         return distinct_deadlines
 
@@ -166,30 +186,6 @@ class InstanceDeadlinesBulkRestResource(FormResource):
     form = InstanceDeadlinesBulkRestForm
 
 
-class GroupsListResource(ModelResource):
-    model = AssignmentGroup
-    fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
-              'parentnode', 'feedback', 'candidates')
-
-    def parentnode(self, instance):
-        return int(instance.parentnode_id)
-
-    def feedback(self, instance):
-        return GroupSerializer(instance).serialize_feedback()
-
-    def deadlines(self, instance):
-        return GroupSerializer(instance).serialize_deadlines()
-
-    #def tags(self, instance):
-        #return GroupSerializer(instance).serialize_tags()
-
-    #def examiners(self, instance):
-        #return GroupSerializer(instance).serialize_examiners()
-
-    def candidates(self, instance):
-        return GroupSerializer(instance).serialize_candidates()
-
-
 
 class InstanceDeadlinesBulkRest(View):
     """
@@ -204,8 +200,7 @@ class InstanceDeadlinesBulkRest(View):
     - ``offset_from_now`` (object): Delta from _now_ to the deadline.
     - ``text`` (string|null): Deadline text.
     - ``url`` (string): The url of this API.
-    - ``groupcount`` (int): Number of groups in the deadline.
-    - ``groups``: List groups in the deadline.
+    - ``groups``: List of groups in the deadline.
 
     # PUT
     Update all deadlines matching the ``bulkdeadline_id`` given as the last
@@ -269,13 +264,7 @@ class InstanceDeadlinesBulkRest(View):
         assignment_id = self.kwargs['id']
         return create_deadlinedict(assignment_id=assignment_id,
                                    deadline=deadline,
-                                   groupcount=len(groups),
                                    groups=GroupsListResource().serialize(groups))
-        #return {'bulkdeadline_id': encode_bulkdeadline_id(deadline),
-                #'deadline': deadline.deadline,
-                #'text': deadline.text,
-                #'groupcount': len(groups),
-                #'groups': GroupsListResource().serialize(groups)}
 
     #
     # GET
