@@ -6,7 +6,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     ],
 
     views: [
-        'bulkmanagedeadlines.BulkManageDeadlinesPanel'
+        'bulkmanagedeadlines.BulkManageDeadlinesPanel',
+        'bulkmanagedeadlines.DeadlinePanel'
     ],
 
     models: [
@@ -20,13 +21,16 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         ref: 'bulkManageDeadlinesPanel',
         selector: 'bulkmanagedeadlinespanel'
     }, {
+        ref: 'deadlinesContainer',
+        selector: 'bulkmanagedeadlinespanel #deadlinesContainer'
+    }, {
         ref: 'globalAlertmessagelist',
-        selector: 'bulkmanagedeadlinespanel alertmessagelist'
+        selector: 'bulkmanagedeadlinespanel #globalAlertmessagelist'
     }],
 
     init: function() {
         this.control({
-            'viewport bulkmanagedeadlinespanel alertmessagelist': {
+            'viewport bulkmanagedeadlinespanel #globalAlertmessagelist': {
                 render: this._onRender
             }
         });
@@ -50,7 +54,17 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         });
     },
 
-    _onLoadSuccess: function(records, operation) {
-        console.log('Loaded', records);
+    _onLoadSuccess: function(deadlineRecords, operation) {
+        console.log('Loaded', deadlineRecords);
+        this._populateDeadlinesContainer(deadlineRecords);
+    },
+
+    _populateDeadlinesContainer: function(deadlineRecords) {
+        Ext.Array.each(deadlineRecords, function(deadlineRecord) {
+            this.getDeadlinesContainer().add({
+                xtype: 'bulkmanagedeadlines_deadline',
+                deadlineRecord: deadlineRecord
+            });
+        }, this);
     }
 });

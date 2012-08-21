@@ -19,6 +19,14 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
 
     items: [{
         xtype: 'alertmessagelist',
-        itemId: 'globalerrors'
+        itemId: 'globalAlertmessagelist'
+    }, {
+        xtype: 'box',
+        itemId: 'header'
+    }, {
+        xtype: 'panel',
+        autoScroll: true,
+        itemId: 'deadlinesContainer',
+        cls: 'devilry_discussionview_container'
     }]
 });
