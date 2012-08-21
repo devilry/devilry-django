@@ -37,7 +37,8 @@ Ext.application({
         'managestudents.SingleGroupSelectedViewPlugin',
         'managestudents.MultipleGroupsSelectedViewPlugin',
         'AddGroups',
-        'AllWhereIsAdmin'
+        'AllWhereIsAdmin',
+        'BulkManageDeadlines'
     ],
 
     constructor: function() {
@@ -160,6 +161,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select/:group_ids", 'manageGroupsSelectGroups');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroupsAddStudents');
+        this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/", 'bulkManageDeadlines');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         this.route.start();
@@ -250,6 +252,13 @@ Ext.application({
             assignment_id: assignment_id,
             on_save_success_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(assignment_id),
             breadcrumbtype: 'managestudents'
+        });
+    },
+
+    bulkManageDeadlines: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'bulkmanagedeadlinespanel',
+            assignment_id: assignment_id
         });
     },
 
