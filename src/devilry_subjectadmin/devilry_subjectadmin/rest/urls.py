@@ -17,7 +17,7 @@ from .relateduser_assignment_ro import ListRelatedStudentsOnAssignmentRest
 from .relateduser_assignment_ro import ListRelatedExaminersOnAssignmentRest
 from .allwhereisadmin import AllWhereIsAdmin
 from .deadlinesbulk import DeadlinesBulkRest
-from .deadlinesbulk import UpdateDeadlinesBulkRest
+from .deadlinesbulk import InstanceDeadlinesBulkRest
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
@@ -38,6 +38,6 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^relatedexaminer_assignment_ro/(?P<assignment_id>\d+)/$', ListRelatedExaminersOnAssignmentRest.as_view()),
                        url(r'^allwhereisadmin/$', AllWhereIsAdmin.as_view()),
                        url(r'^deadlinesbulk/(?P<id>[^/]+)/$', DeadlinesBulkRest.as_view()),
-                       url(r'^deadlinesbulk/(?P<id>[^/]+)/(?P<bulkdeadline_id>\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}--(?:.{40})?)$', UpdateDeadlinesBulkRest.as_view(),
+                       url(r'^deadlinesbulk/(?P<id>[^/]+)/(?P<bulkdeadline_id>\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}--(?:.{40})?)$', InstanceDeadlinesBulkRest.as_view(),
                            name='devilry_subjectadmin_rest_deadlinesbulkinstance')
                       )

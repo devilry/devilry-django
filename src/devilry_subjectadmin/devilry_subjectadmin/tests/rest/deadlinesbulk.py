@@ -88,7 +88,7 @@ class TestDeadlinesBulkRest(TestCase):
 
 
 
-class TestUpdateDeadlinesBulkRest(TestCase):
+class TestInstanceDeadlinesBulkRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',

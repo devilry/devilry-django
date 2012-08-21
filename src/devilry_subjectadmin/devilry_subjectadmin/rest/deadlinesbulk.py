@@ -98,7 +98,7 @@ class DeadlinesBulkRest(View):
     - ``in_the_future`` (bool): Is this deadline in the future?
     - ``offset_from_now`` (object): Delta from _now_ to the deadline.
     - ``text`` (string|null): Deadline text.
-    - ``url`` (string): The url of this API.
+    - ``url`` (string): The url of the API for the instance.
     - ``groupcount`` (int): Number of groups in the deadline.
     - ``groups``: Always ``null`` in this listing. The instances include this
       field in all responses.
@@ -152,7 +152,7 @@ class DeadlinesBulkRest(View):
 
 
 
-class UpdateDeadlinesBulkRestForm(forms.Form):
+class InstanceDeadlinesBulkRestForm(forms.Form):
     deadline = forms.DateTimeField(required=True)
     text = forms.CharField(required=False)
     createmode = forms.TypedChoiceField(required=False,
@@ -162,8 +162,8 @@ class UpdateDeadlinesBulkRestForm(forms.Form):
                                         help_text='Only used for POST')
 
 
-class UpdateDeadlinesBulkRestResource(FormResource):
-    form = UpdateDeadlinesBulkRestForm
+class InstanceDeadlinesBulkRestResource(FormResource):
+    form = InstanceDeadlinesBulkRestForm
 
 
 class GroupsListResource(ModelResource):
@@ -191,7 +191,7 @@ class GroupsListResource(ModelResource):
 
 
 
-class UpdateDeadlinesBulkRest(View):
+class InstanceDeadlinesBulkRest(View):
     """
     # GET
 
@@ -238,7 +238,7 @@ class UpdateDeadlinesBulkRest(View):
     Same as GET.
     """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
-    resource = UpdateDeadlinesBulkRestResource
+    resource = InstanceDeadlinesBulkRestResource
 
     def _deadlineqry(self):
         assignment_id = self.kwargs['id']
