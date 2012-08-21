@@ -41,9 +41,18 @@ class TestDeadline(TestCase, TestHelper):
 
     def test_deadline_notunique(self):
         self.add_to_path('uni;sub.p1:begins(-2).a1.g1.d1:ends(5)')
+        self.add_to_path('uni;sub.p1.a1.g2.d1:ends(5)')
+
         g1 = self.sub_p1_a1_g1
         d1 = self.sub_p1_a1_g1_d1
-        d1.full_clean() # Will not fail because id matches in the validator
+        g2_d1 = self.sub_p1_a1_g2_d1
+
+        # Ensure that we are not checking outside the group (the tests below would fail if this fails)
+        self.assertEquals(d1.deadline, g2_d1.deadline)
+
+        # Will not fail because id matches in the validator
+        d1.full_clean()
+
         d2 = Deadline(assignment_group=g1, deadline=d1.deadline)
         with self.assertRaises(ValidationError):
             d2.full_clean()

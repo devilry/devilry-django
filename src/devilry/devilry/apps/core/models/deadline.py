@@ -65,7 +65,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     def _clean_deadline(self):
         self.deadline = self.deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
-        qry = Q(deadline=self.deadline)
+        qry = Q(deadline=self.deadline, assignment_group=self.assignment_group)
         if self.id:
             qry &= ~Q(id=self.id)
         if Deadline.objects.filter(qry).count() > 0:
