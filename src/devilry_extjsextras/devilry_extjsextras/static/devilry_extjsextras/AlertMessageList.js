@@ -14,14 +14,9 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     cls: 'devilry_extjsextras_alertmessagelist',
     hidden: true,
 
-    constructor: function() {
-        var config = {
-            listeners: {
-                scope: this,
-                remove: this._onRemove
-            }
-        };
-        this.callParent([config]);
+    initComponent: function() {
+        this.on('remove', this._onRemove, this);
+        this.callParent(arguments);
     },
 
     /** Create and add a ``devilry_extjsextras.AlertMessage``. The config parameter is
