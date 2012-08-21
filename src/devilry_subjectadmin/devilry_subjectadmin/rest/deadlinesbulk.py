@@ -53,14 +53,55 @@ def texthashmatch(texthash, text):
         return texthash == sha1hash(text)
 
 
+
+def create_deadlinedict(assignment_id, deadline, groups=None,
+                        groupcount=None, now=None):
+    now = now or datetime.now()
+    bulkdeadline_id = encode_bulkdeadline_id(deadline)
+    return {'bulkdeadline_id': bulkdeadline_id,
+            'deadline': format_datetime(deadline.deadline),
+            'in_the_future': deadline.deadline > now,
+            'offset_from_now': format_timedelta(now - deadline.deadline),
+            'url': reverse('devilry_subjectadmin_rest_deadlinesbulkinstance',
+                           kwargs={'id': assignment_id,
+                                   'bulkdeadline_id': bulkdeadline_id}),
+            'text': deadline.text,
+            'groupcount': None,
+            'groups': groups} # Only provided on instance, not in list
+
+
 class DeadlinesBulkRest(View):
     """
     Handle deadlines on an assignment in bulk.
+
+    # About bulkdeadline_id
+    The ``bulkdeadline_id`` is a generated string on this format:
+
+        <datetime>--<texthash>
+
+    - ``<datetime>`` is the datetime of the deadaline formatted as
+      ``YYYY-MM-DDThh_mm_ss``.
+    - ``<texthash>`` is the hexdigested SHA-1 encoded deadline text (40
+      characters). If the deadline text is ``null`` or empty string,
+      ``<texthash>`` will be an empty string.
 
     # GET
     List all deadlines on an assignment with newest deadline firsts. Deadlines
     with exactly the same ``deadline`` and ``text`` are collapsed into a single
     entry in the list, with the number of groups listed.
+
+    ## Response
+    A list of objects with the following attributes:
+
+    - ``bulkdeadline_id`` (string): See _About bulkdeadline_id_ above.
+    - ``deadline`` (string "yyyy-mm-dd hh:mm:ss"): The datetime of the deadline.
+    - ``in_the_future`` (bool): Is this deadline in the future?
+    - ``offset_from_now`` (object): Delta from _now_ to the deadline.
+    - ``text`` (string|null): Deadline text.
+    - ``url`` (string): The url of this API.
+    - ``groupcount`` (int): Number of groups in the deadline.
+    - ``groups``: Always ``null`` in this listing. The instances include this
+      field in all responses.
 
     # POST
     Create a new deadline.
@@ -71,15 +112,9 @@ class DeadlinesBulkRest(View):
         """
         Serialize ``Deadline``-object as plain python.
         """
-        bulkdeadline_id = encode_bulkdeadline_id(deadline)
-        return {'bulkdeadline_id': bulkdeadline_id,
-                'deadline': format_datetime(deadline.deadline),
-                'in_the_future': deadline.deadline > self.now,
-                'offset_from_now': format_timedelta(self.now - deadline.deadline),
-                'url': reverse('devilry_subjectadmin_rest_deadlinesbulkinstance',
-                               kwargs={'id': self.assignment_id,
-                                       'bulkdeadline_id': bulkdeadline_id}),
-                'text': deadline.text}
+        return create_deadlinedict(assignment_id=self.assignment_id,
+                                   deadline=deadline,
+                                   now=self.now)
 
     def _get_distinct_deadlines(self, deadlines):
         distinct_deadlines = {}
@@ -130,9 +165,6 @@ class UpdateDeadlinesBulkRestForm(forms.Form):
 class UpdateDeadlinesBulkRestResource(FormResource):
     form = UpdateDeadlinesBulkRestForm
 
-    def deadline(self, dct):
-        return format_datetime(dct['deadline'])
-
 
 class GroupsListResource(ModelResource):
     model = AssignmentGroup
@@ -161,22 +193,18 @@ class GroupsListResource(ModelResource):
 
 class UpdateDeadlinesBulkRest(View):
     """
-    # About bulkdeadline_id
-    The ``bulkdeadline_id`` is a generated string on this format:
-
-        <datetime>--<texthash>
-
-    - ``<datetime>`` is the datetime of the deadaline formatted as
-      ``YYYY-MM-DDThh_mm_ss``.
-    - ``<texthash>`` is the first character of
-      the deadline text. If the deadline text is ``null`` or empty string,
-      ``<texthash>`` will be an empty string.
-
     # GET
+
+    ## Returns
     An object with the following attributes:
 
-    - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
+    - ``bulkdeadline_id`` (string): See _About bulkdeadline_id_ in the [list api](./).
+    - ``deadline`` (string "yyyy-mm-dd hh:mm:ss"): The datetime of the deadline.
+    - ``in_the_future`` (bool): Is this deadline in the future?
+    - ``offset_from_now`` (object): Delta from _now_ to the deadline.
     - ``text`` (string|null): Deadline text.
+    - ``url`` (string): The url of this API.
+    - ``groupcount`` (int): Number of groups in the deadline.
     - ``groups``: List groups in the deadline.
 
     # PUT
@@ -238,10 +266,16 @@ class UpdateDeadlinesBulkRest(View):
         return map(lambda deadline: deadline.assignment_group, deadlines)
 
     def _create_response(self, deadline, groups):
-        return {'bulkdeadline_id': encode_bulkdeadline_id(deadline),
-                'deadline': deadline.deadline,
-                'text': deadline.text,
-                'groups': GroupsListResource().serialize(groups)}
+        assignment_id = self.kwargs['id']
+        return create_deadlinedict(assignment_id=assignment_id,
+                                   deadline=deadline,
+                                   groupcount=len(groups),
+                                   groups=GroupsListResource().serialize(groups))
+        #return {'bulkdeadline_id': encode_bulkdeadline_id(deadline),
+                #'deadline': deadline.deadline,
+                #'text': deadline.text,
+                #'groupcount': len(groups),
+                #'groups': GroupsListResource().serialize(groups)}
 
     #
     # GET

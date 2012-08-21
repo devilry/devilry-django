@@ -41,7 +41,7 @@ class TestDeadlinesBulkRest(TestCase):
         d1 = content[0]
         self.assertEquals(set(d1.keys()),
                           set(['deadline', 'text', 'groupcount', 'offset_from_now',
-                               'in_the_future', 'bulkdeadline_id']))
+                               'in_the_future', 'bulkdeadline_id', 'url', 'groups']))
         self.assertEquals(d1['groupcount'], 3)
         self.assertEquals(d1['in_the_future'], False)
         self.assertEquals(d1['text'], None)
