@@ -174,7 +174,7 @@ class DeadlinesBulkRest(View):
 
 class InstanceDeadlinesBulkRestForm(forms.Form):
     deadline = forms.DateTimeField(required=True)
-    text = forms.CharField(required=False)
+    text = forms.CharField(required=False, widget=forms.Textarea)
     createmode = forms.TypedChoiceField(required=False,
                                         coerce=str,
                                         choices=[('failed', 'Only add deadline for groups with failing grade'),
@@ -337,6 +337,7 @@ class InstanceDeadlinesBulkRest(View):
                     deadline.save()
                     deadlines.append(deadline)
             except ValidationError as e:
+                transaction.rollback()
                 raise ValidationErrorResponse(e)
             else:
                 transaction.commit()

@@ -168,6 +168,7 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
             try:
                 assignment = self.dao.lookup_period_create(self.user, **self.CONTENT)
             except ValidationError, e:
+                transaction.rollback()
                 raise ValidationErrorResponse(e)
             else:
                 logger.info('User=%s created Assignment with id=%s', self.user, assignment.id)
