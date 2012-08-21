@@ -12,6 +12,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
      * The ID of the assignment to load deadlines for.
      */
 
+    /**
+     * @cfg {string} [bulkdeadline_id=undefined]
+     * The deadline to open on load.
+     */
+
     frame: false,
     border: 0,
     bodyPadding: 40,

@@ -60,11 +60,36 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _populateDeadlinesContainer: function(deadlineRecords) {
+        var deadlinepanels_rendered = 0;
         Ext.Array.each(deadlineRecords, function(deadlineRecord) {
             this.getDeadlinesContainer().add({
                 xtype: 'bulkmanagedeadlines_deadline',
-                deadlineRecord: deadlineRecord
+                deadlineRecord: deadlineRecord,
+                listeners: {
+                    scope: this,
+                    single: true,
+                    render: function(panel, eOpts) {
+                        deadlinepanels_rendered ++;
+                        if(deadlinepanels_rendered == deadlineRecords.length) {
+                            this._onAllDeadlinePanelsRendered();
+                        }
+                    }
+                }
             });
         }, this);
+    },
+
+    _onAllDeadlinePanelsRendered: function() {
+        var bulkdeadline_id = this.getBulkManageDeadlinesPanel().bulkdeadline_id;
+        if(typeof bulkdeadline_id !== 'undefined') {
+            this._expandDeadlineById(bulkdeadline_id);
+        }
+    },
+
+    _expandDeadlineById: function(id) {
+        var itemid = Ext.String.format('#deadline-{0}', id);
+        var deadlinePanel = this.getDeadlinesContainer().down(itemid);
+        deadlinePanel.expand();
+        deadlinePanel.el.scrollIntoView(this.getBulkManageDeadlinesPanel().body, false, true);
     }
 });
