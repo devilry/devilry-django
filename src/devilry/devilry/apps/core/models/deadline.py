@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
@@ -63,6 +63,14 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         verbose_name_plural = 'Deadlines'
         ordering = ['-deadline']
 
+    def _clean_deadline(self):
+        self.deadline = self.deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        qry = Q(deadline=self.deadline)
+        if self.id:
+            qry &= ~Q(id=self.id)
+        if Deadline.objects.filter(qry).count() > 0:
+            raise ValidationError('Can not have more than one deadline with the same date/time on a single group.')
+
     def clean(self, *args, **kwargs):
         """Validate the deadline.
 
@@ -71,7 +79,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
         Raises ValidationError if:
 
-            - ``deadline`` is before ``Assignment.publishing_time``. 
+            - ``deadline`` is before ``Assignment.publishing_time``.
             - ``deadline`` is not before ``Period.end_time``.
         """
         if self.deadline != None:
@@ -82,6 +90,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                 raise ValidationError(
                     "Deadline must be within it's period (%(period)s)."
                       % dict(period=unicode(self.assignment_group.parentnode.parentnode)))
+            self._clean_deadline()
         super(Deadline, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):

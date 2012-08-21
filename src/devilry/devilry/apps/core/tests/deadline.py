@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.test import TestCase
 
@@ -37,3 +38,12 @@ class TestDeadline(TestCase, TestHelper):
         self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
         self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)        
         self.assertFalse(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)
+
+    def test_deadline_notunique(self):
+        self.add_to_path('uni;sub.p1:begins(-2).a1.g1.d1:ends(5)')
+        g1 = self.sub_p1_a1_g1
+        d1 = self.sub_p1_a1_g1_d1
+        d1.full_clean() # Will not fail because id matches in the validator
+        d2 = Deadline(assignment_group=g1, deadline=d1.deadline)
+        with self.assertRaises(ValidationError):
+            d2.full_clean()
