@@ -63,8 +63,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         verbose_name_plural = 'Deadlines'
         ordering = ['-deadline']
 
-    def _clean_deadline(self):
+
+    def remove_microsec(self):
         self.deadline = self.deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+
+    def _clean_deadline(self):
+        self.remove_microsec()
         qry = Q(deadline=self.deadline, assignment_group=self.assignment_group)
         if self.id:
             qry &= ~Q(id=self.id)
