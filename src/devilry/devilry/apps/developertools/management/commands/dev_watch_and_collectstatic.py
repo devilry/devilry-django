@@ -22,6 +22,7 @@ class DjangoFileSystemEventHandler(FileSystemEventHandler):
         for ignorepatt in self.ignorepatterns:
             if(fnmatch(path, ignorepatt)):
                 print('Ignored {path} because of the "{ignorepatt}" ignorepattern'.format(**vars()))
+                return
         print('Change detected in: {}'.format(path))
         management.call_command('collectstatic', interactive=False)
 
