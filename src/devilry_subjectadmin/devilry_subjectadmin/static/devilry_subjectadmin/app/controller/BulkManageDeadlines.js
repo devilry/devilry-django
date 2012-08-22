@@ -123,6 +123,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var deadlinePanel = header.up('bulkmanagedeadlines_deadline');
         var isCollapsed = deadlinePanel.getCollapsed();
         if(isCollapsed) {
+            var deadlineRecord = deadlinePanel.deadlineRecord;
+            var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
+            this.application.route.setHashWithoutEvent(hash);
             this._expandDeadlinePanel(deadlinePanel);
         } else {
             deadlinePanel.collapse();
@@ -133,9 +136,6 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _expandDeadlinePanel: function(deadlinePanel) {
         deadlinePanel.expand();
-        var deadlineRecord = deadlinePanel.deadlineRecord;
-        var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
-        this.application.route.setHashWithoutEvent(hash);
         Ext.defer(function() {
             this._scrollToDeadlinepanel(deadlinePanel);
         }, 300, this);
@@ -144,10 +144,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _onEditDeadline: function(deadlinePanel, deadlineRecord) {
         var formpanel = deadlinePanel.down('bulkmanagedeadlines_deadlineform');
+        this._expandDeadlinePanel(deadlinePanel);
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkEditSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
         this.application.route.setHashWithoutEvent(hash);
 
-        this._expandDeadlinePanel(deadlinePanel);
         formpanel.show();
         var form = formpanel.getForm();
         form.setValues({
