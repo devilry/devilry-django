@@ -41,6 +41,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         var prefix = this.bulkManageDeadlines(assignment_id);
         return Ext.String.format('{0}{1}', prefix, bulkdeadline_id);
     },
+    bulkEditSpecificDeadline: function(assignment_id, bulkdeadline_id) {
+        var prefix = this.bulkManageDeadlines(assignment_id);
+        return Ext.String.format('{0}@@edit/{1}', prefix, bulkdeadline_id);
+    },
 
     overviewByType: function(type, id) {
         if(type === 'Assignment') {

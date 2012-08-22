@@ -5,20 +5,20 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
         'Ext.Date'
     ],
 
-    idProperty: 'id',
+    idProperty: 'bulkdeadline_id',
     fields: [
         {name: 'bulkdeadline_id', type: 'string'},
         {name: 'deadline',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
-        {name: 'in_the_future',  type: 'bool'},
-        {name: 'offset_from_now',  type: 'auto'},
+        {name: 'in_the_future',  type: 'bool', persist: false},
+        {name: 'offset_from_now',  type: 'auto', persist: false},
         {name: 'text',  type: 'string'},
-        {name: 'url',  type: 'string'},
-        {name: 'groups',  type: 'auto'}
+        {name: 'url',  type: 'string', persist: false},
+        {name: 'groups',  type: 'auto', persist: false}
     ],
 
     proxy: {
         type: 'rest',
-        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/deadlinesbulk/{0}',
+        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/deadlinesbulk/{0}/',
         url: null, // We use urlpatt to dynamically generate the url
         extraParams: {
             format: 'json'

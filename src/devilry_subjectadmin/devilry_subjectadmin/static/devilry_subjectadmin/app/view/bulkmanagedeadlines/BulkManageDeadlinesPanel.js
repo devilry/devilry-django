@@ -17,6 +17,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
      * The deadline to open on load.
      */
 
+    /**
+     * @cfg {bool} [edit_deadline=false]
+     * Edit the deadline specified by ``bulkdeadline_id`` on load?
+     */
+
     frame: false,
     border: 0,
     bodyPadding: 40,

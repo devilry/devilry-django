@@ -40,6 +40,13 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline header': {
                 click: this._onDeadlineHeaderClick
             },
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline': {
+                editDeadline: this._onEditDeadline
+            },
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline bulkmanagedeadlines_deadlineform': {
+                saveDeadline: this._onSaveExistingDeadline,
+                cancel: this._onCancelEditExistingDeadline
+            }
         });
     },
 
@@ -62,7 +69,6 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onLoadSuccess: function(deadlineRecords, operation) {
-        console.log('Loaded', deadlineRecords);
         this._populateDeadlinesContainer(deadlineRecords);
     },
 
@@ -102,6 +108,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         if(deadlinePanel) {
             deadlinePanel.expand();
             this._scrollToDeadlinepanel(deadlinePanel);
+            var edit_deadline = this.getBulkManageDeadlinesPanel().edit_deadline;
+            if(edit_deadline) {
+                this._onEditDeadline(deadlinePanel, deadlinePanel.deadlineRecord);
+            }
         }
     },
 
@@ -111,19 +121,68 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _onDeadlineHeaderClick: function(header) {
         var deadlinePanel = header.up('bulkmanagedeadlines_deadline');
-        var deadlineRecord = deadlinePanel.deadlineRecord;
         var isCollapsed = deadlinePanel.getCollapsed();
         if(isCollapsed) {
-            deadlinePanel.expand();
-            var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
-            this.application.route.setHashWithoutEvent(hash);
-            Ext.defer(function() {
-                this._scrollToDeadlinepanel(deadlinePanel);
-            }, 300, this);
+            this._expandDeadlinePanel(deadlinePanel);
         } else {
             deadlinePanel.collapse();
             var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id);
             this.application.route.setHashWithoutEvent(hash);
         }
+    },
+
+    _expandDeadlinePanel: function(deadlinePanel) {
+        deadlinePanel.expand();
+        var deadlineRecord = deadlinePanel.deadlineRecord;
+        var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
+        this.application.route.setHashWithoutEvent(hash);
+        Ext.defer(function() {
+            this._scrollToDeadlinepanel(deadlinePanel);
+        }, 300, this);
+    },
+
+
+    _onEditDeadline: function(deadlinePanel, deadlineRecord) {
+        var formpanel = deadlinePanel.down('bulkmanagedeadlines_deadlineform');
+        var hash = devilry_subjectadmin.utils.UrlLookup.bulkEditSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
+        this.application.route.setHashWithoutEvent(hash);
+
+        this._expandDeadlinePanel(deadlinePanel);
+        formpanel.show();
+        var form = formpanel.getForm();
+        form.setValues({
+            deadline: deadlineRecord.get('deadline'),
+            text: deadlineRecord.get('text')
+        });
+    },
+
+    _onCancelEditExistingDeadline: function(formpanel) {
+        formpanel.hide();
+        var deadlineRecord = formpanel.up('bulkmanagedeadlines_deadline').deadlineRecord;
+        var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
+        this.application.route.setHashWithoutEvent(hash);
+    },
+
+    _onSaveExistingDeadline: function(formpanel) {
+        formpanel.setLoading(gettext('Saving') + ' ...');
+        var deadlinePanel = formpanel.up('bulkmanagedeadlines_deadline');
+        var deadlineRecord = deadlinePanel.deadlineRecord;
+        var form = formpanel.getForm();
+        var values = form.getFieldValues();
+        deadlineRecord.set('deadline', values.deadline);
+        deadlineRecord.set('text', values.text);
+        deadlineRecord.save({
+            scope: this,
+            callback: function(updatedDeadlineRecord, operation) {
+                formpanel.setLoading(false);
+                if(operation.success) {
+                    var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(
+                        this.assignment_id, updatedDeadlineRecord.get('bulkdeadline_id'));
+                    this.application.route.navigate(hash);
+                } else {
+                    console.log('save failed', operation);
+                }
+            }
+        });
     }
 });
