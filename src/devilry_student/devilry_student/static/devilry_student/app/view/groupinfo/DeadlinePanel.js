@@ -25,7 +25,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
 
     initComponent: function() {
         var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
-        var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d h:i:s');
+        var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d H:i:s');
 
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadline.id),
