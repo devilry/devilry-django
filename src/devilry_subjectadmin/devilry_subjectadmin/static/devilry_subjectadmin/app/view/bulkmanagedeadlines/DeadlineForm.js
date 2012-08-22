@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
         'devilry_extjsextras.form.DateTimeField',
         'Ext.form.field.TextArea',
         'Ext.util.KeyNav',
+        'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.AlertMessageList'
     ],
 
@@ -69,8 +70,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     click: this._onCancel
                 }
             }, {
-                xtype: 'button',
-                scale: 'medium',
+                xtype: 'primarybutton',
                 text: gettext('Save'),
                 itemId: 'saveDeadlineButton',
                 listeners: {
