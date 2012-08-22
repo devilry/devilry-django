@@ -11,7 +11,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     requires: [
         'devilry_subjectadmin.model.Group',
         'devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid',
-        'devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm'
+        'devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -100,28 +101,33 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 text_title: gettext('Deadline text'),
                 text: this.deadlineRecord.formatTextOneline(50)
             }),
-            tools: [{
-                xtype: 'button',
-                text: gettext('Edit/move'),
-                scale: 'large',
-                //ui: 'primary',
-                listeners: {
-                    scope: this,
-                    click: this._onEdit
-                }
-            }],
             items: [{
                 xtype: 'bulkmanagedeadlines_deadlineform',
                 margin: '0 40 40 40',
                 hidden: true
             }, {
-                xtype: 'box',
-                itemId: 'deadlineText',
-                cls: 'bootstrap',
-                tpl: this.deadlineTextTpl,
-                data: {
-                    text: this.deadlineRecord.get('text')
-                }
+                xtype: 'container',
+                layout: 'column',
+                items: [{
+                    xtype: 'box',
+                    itemId: 'deadlineText',
+                    cls: 'bootstrap',
+                    columnWidth: 1,
+                    tpl: this.deadlineTextTpl,
+                    data: {
+                        text: this.deadlineRecord.get('text')
+                    }
+                }, {
+                    xtype: 'primarybutton',
+                    itemId: 'editDeadlineButton',
+                    width: 150,
+                    margin: '0 0 0 40',
+                    text: gettext('Edit/move'),
+                    listeners: {
+                        scope: this,
+                        click: this._onEdit
+                    }
+                }]
             }, {
                 xtype: 'box',
                 margin: '20 0 0 0',
@@ -156,10 +162,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     },
 
     _onEdit: function(button, e) {
-        // NOTE: If this cause problems with IE 8, see:
-        // - http://stackoverflow.com/questions/387736/how-to-stop-event-propagation-with-inline-onclick-attribute
-        // - http://stackoverflow.com/questions/5963669/whats-the-difference-between-event-stoppropagation-and-event-preventdefault
-        e.stopPropagation();
         this.fireEvent('editDeadline', this, this.deadlineRecord);
     }
 });

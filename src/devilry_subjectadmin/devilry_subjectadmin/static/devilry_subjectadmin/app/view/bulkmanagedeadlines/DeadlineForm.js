@@ -66,7 +66,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 disabled: true,
                 formBind: true,
                 text: gettext('Save'),
-                itemId: 'editButton',
+                itemId: 'saveDeadlineButton',
                 listeners: {
                     scope: this,
                     click: this._onSave

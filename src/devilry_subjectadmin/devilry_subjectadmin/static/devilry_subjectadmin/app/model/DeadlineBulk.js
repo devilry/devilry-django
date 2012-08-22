@@ -42,6 +42,13 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
     },
 
 
+    updateBulkDeadlineIdFromOperation: function(operation) {
+        var responseData = Ext.JSON.decode(operation.response.responseText);
+        var bulkdeadline_id = responseData.bulkdeadline_id;
+        this.set('bulkdeadline_id', bulkdeadline_id);
+    },
+
+
     statics: {
         parseDateTime: function(datetimeString) {
             return Ext.Date.parse(datetimeString, 'Y-m-d H:i:s');
