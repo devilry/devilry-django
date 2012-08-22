@@ -7,5 +7,6 @@ Ext.define('devilry_extjsextras.PrimaryButton', {
     alias: 'widget.primarybutton',
     cls: 'devilry_primarybutton',
     scale: 'large',
+    minWidth: 150,
     ui: 'primary'
 });
