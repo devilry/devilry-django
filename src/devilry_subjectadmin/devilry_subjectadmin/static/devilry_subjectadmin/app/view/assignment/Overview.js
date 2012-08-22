@@ -46,7 +46,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                                 url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
                                 text: gettext('Manage students')
                             }, {
-                                url: devilry_subjectadmin.utils.UrlLookup.manageDeadlines(this.assignment_id),
+                                url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
                                 text: gettext('Manage deadlines')
                             }]
                         }

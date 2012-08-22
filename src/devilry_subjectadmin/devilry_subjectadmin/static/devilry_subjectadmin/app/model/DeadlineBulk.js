@@ -41,6 +41,7 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
         return Ext.String.ellipsis(text, maxlength);
     },
 
+
     statics: {
         parseDateTime: function(datetimeString) {
             return Ext.Date.parse(datetimeString, 'Y-m-d H:i:s');

@@ -4,8 +4,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     cls: 'devilry_subjectadmin_bulkmanagedeadlines_deadline',
     collapsible: true,
     collapsed: true,
-    titleCollapse: true,
     animCollapse: false,
+    hideCollapseTool: true,
     bodyPadding: 20,
 
     requires: [
@@ -72,6 +72,19 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         '</small></p>'
     ],
 
+    constructor: function(config) {
+        this.initConfig(config);
+        this.addEvents(
+            /* @event
+             * Fired when the edit deadline button is clicked.
+             * @param panel This panel
+             * @param deadlineRecod The deadline record.
+             */
+            'editDeadline'
+        );
+        this.callParent([config]);
+    },
+
     initComponent: function() {
         var deadline_dateobj = this.deadlineRecord.get('deadline');
         var deadline_formatted = Ext.Date.format(deadline_dateobj, 'Y-m-d h:i:s');
@@ -86,6 +99,16 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 text_title: gettext('Deadline text'),
                 text: this.deadlineRecord.formatTextOneline(50)
             }),
+            tools: [{
+                xtype: 'button',
+                text: gettext('Edit/move'),
+                scale: 'large',
+                //ui: 'primary',
+                listeners: {
+                    scope: this,
+                    click: this._onEdit
+                }
+            }],
             items: [{
                 xtype: 'box',
                 itemId: 'deadlineText',
@@ -125,5 +148,14 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             data: this.deadlineRecord.get('groups')
         });
         return store;
+    },
+
+    _onEdit: function(button, e) {
+        console.log('edit', this.deadlineRecord);
+        // NOTE: If this cause problems with IE 8, see:
+        // - http://stackoverflow.com/questions/387736/how-to-stop-event-propagation-with-inline-onclick-attribute
+        // - http://stackoverflow.com/questions/5963669/whats-the-difference-between-event-stoppropagation-and-event-preventdefault
+        e.stopPropagation();
+        this.fireEvent('editDeadline', this, this.deadlineRecord);
     }
 });

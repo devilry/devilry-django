@@ -10,6 +10,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid', {
     hideHeaders: true,
     frame: false,
 
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
+
     /**
      * @cfg {int} [assignment_id]
      * The ID of the assignment we are listing students in.
