@@ -295,6 +295,7 @@ class InstanceDeadlinesBulkRest(View):
                     deadline.full_clean()
                     deadline.save()
             except ValidationError as e:
+                transaction.rollback()
                 raise ValidationErrorResponse(e)
             else:
                 transaction.commit()
