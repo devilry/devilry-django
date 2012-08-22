@@ -11,9 +11,15 @@ Ext.define('devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin', {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         alertmessagelist.addMany(errorhandler.errormessages, 'error');
-        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(formpanel,
-            errorhandler.fielderrors, alertmessagelist);
-        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(formpanel,
-            errorhandler.fielderrors);
+        if(typeof formpanel !== 'undefined') {
+            devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(formpanel,
+                errorhandler.fielderrors, alertmessagelist);
+            devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(formpanel,
+                errorhandler.fielderrors);
+        }
+    },
+
+    handleProxyErrorNoForm: function(alertmessagelist, response, operation) {
+        this.handleProxyError(alertmessagelist, undefined, response, operation);
     }
 });

@@ -2,11 +2,14 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     extend: 'Ext.app.Controller',
 
     mixins: [
-        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
+        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     ],
 
     requires: [
-        'devilry_subjectadmin.utils.UrlLookup'
+        'devilry_subjectadmin.utils.UrlLookup',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_extjsextras.form.ErrorUtils'
     ],
 
     views: [
@@ -48,6 +51,11 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 cancel: this._onCancelEditExistingDeadline
             }
         });
+        
+        this.mon(this.getDeadlinesBulkStore().proxy, {
+            scope: this,
+            exception: this._onDeadlinesBulkStoreProxyError
+        });
     },
 
     _onRender: function() {
@@ -62,7 +70,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 if(operation.success) {
                     this._onLoadSuccess(records, operation);
                 } else {
-                    this.onLoadFailure(operation);
+                    // NOTE: Failure is handled in _onDeadlinesBulkStoreProxyError()
                 }
             }
         });
@@ -146,6 +154,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var formpanel = deadlinePanel.down('bulkmanagedeadlines_deadlineform');
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkEditSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
         this.application.route.setHashWithoutEvent(hash);
+        this._setActiveDeadlineFormPanel(formpanel);
 
         deadlinePanel.down('#editDeadlineButton').hide();
         formpanel.show();
@@ -157,8 +166,16 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         });
     },
 
+    _setActiveDeadlineFormPanel: function(formpanel) {
+        this.activeDeadlineFormPanel = formpanel;
+    },
+    _unsetActiveDeadlineFormPanel: function() {
+        this.activeDeadlineFormPanel = undefined;
+    },
+
     _onCancelEditExistingDeadline: function(formpanel) {
         formpanel.hide();
+        this._unsetActiveDeadlineFormPanel();
         var deadlinePanel = formpanel.up('bulkmanagedeadlines_deadline');
         var deadlineRecord = deadlinePanel.deadlineRecord;
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
@@ -187,9 +204,36 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                         this.assignment_id, updatedDeadlineRecord.get('bulkdeadline_id'));
                     this.application.route.navigate(hash);
                 } else {
-                    console.log('save failed', operation);
+                    // NOTE: Failure is handled in _onDeadlinesBulkStoreProxyError()
                 }
             }
         });
+    },
+
+    _onSaveExistingDeadlineError: function(formpanel, operation) {
+        var alertmessagelist = formpanel.down('alertmessagelist');
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        console.log(operation);
+        errorhandler.addErrors(operation.response, operation);
+        alertmessagelist.addMany(errorhandler.errormessages, 'error');
+        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(formpanel,
+            errorhandler.fielderrors, alertmessagelist);
+        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(formpanel,
+            errorhandler.fielderrors);
+    },
+
+    _onDeadlinesBulkStoreProxyError: function(proxy, response, operation) {
+        if(this.activeDeadlineFormPanel) {
+            var alertmessagelist = this.activeDeadlineFormPanel.down('alertmessagelist');
+            alertmessagelist.removeAll();
+            this.handleProxyError(alertmessagelist, this.activeDeadlineFormPanel, response, operation);
+            this._scrollTo(alertmessagelist);
+        } else {
+            // NOTE: This should only trigger on load error, since saves are
+            //       done with _setActiveDeadlineFormPanel()
+            var alertmessagelist = this.getGlobalAlertmessagelist();
+            alertmessagelist.removeAll();
+            this.handleProxyErrorNoForm(alertmessagelist, response, operation);
+        }
     }
 });

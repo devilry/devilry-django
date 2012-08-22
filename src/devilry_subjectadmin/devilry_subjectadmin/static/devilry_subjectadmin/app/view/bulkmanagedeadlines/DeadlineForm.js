@@ -5,7 +5,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
 
     requires: [
         'devilry_extjsextras.form.DateTimeField',
-        'Ext.form.field.TextArea'
+        'Ext.form.field.TextArea',
+        'devilry_extjsextras.AlertMessageList'
     ],
 
     cls: 'bootstrap',
@@ -17,6 +18,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
 
             // Deadline
             items: [{
+                xtype: 'alertmessagelist'
+            }, {
                 xtype: 'box',
                 anchor: '100%',
                 html: [
