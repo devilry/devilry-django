@@ -180,6 +180,13 @@ class TestInstanceDeadlinesBulkRest(TestCase):
         content, response = self._putas('nobody', {})
         self.assertEquals(response.status_code, 403)
 
+    def test_put_with_bulkdeadline_id(self):
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        content, response = self._putas('adm', {'deadline': format_datetime(new_deadline),
+                                                'bulkdeadline_id': 'ignored'})
+        self.assertEquals(response.status_code, 200)
+
+
 
     def _getas(self, username, **data):
         self.client.login(username=username, password='test')

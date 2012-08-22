@@ -185,6 +185,11 @@ class InstanceDeadlinesBulkRestForm(forms.Form):
 class InstanceDeadlinesBulkRestResource(FormResource):
     form = InstanceDeadlinesBulkRestForm
 
+    def validate_request(self, data, files=None):
+        if 'bulkdeadline_id' in data:
+            del data['bulkdeadline_id']
+        return super(InstanceDeadlinesBulkRestResource, self).validate_request(data, files)
+
 
 
 class InstanceDeadlinesBulkRest(View):
