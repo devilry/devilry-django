@@ -156,11 +156,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     },
 
     _onEdit: function(button, e) {
-        this.fireEvent('editDeadline', this, this.deadlineRecord);
-
         // NOTE: If this cause problems with IE 8, see:
         // - http://stackoverflow.com/questions/387736/how-to-stop-event-propagation-with-inline-onclick-attribute
         // - http://stackoverflow.com/questions/5963669/whats-the-difference-between-event-stoppropagation-and-event-preventdefault
         e.stopPropagation();
+        this.fireEvent('editDeadline', this, this.deadlineRecord);
     }
 });

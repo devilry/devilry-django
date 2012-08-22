@@ -28,6 +28,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'devilry_extjsextras-datetimefield',
                 name: 'deadline',
+                itemId: 'deadlineField',
                 width: 300
 
 
@@ -72,6 +73,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 }
             }]
         });
+        this.on('show', this._onShow, this);
         this.callParent(arguments);
     },
 
@@ -81,5 +83,9 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     },
     _onSave: function() {
         this.fireEvent('saveDeadline', this);
+    },
+
+    _onShow: function() {
+        this.down('#deadlineField').focus();
     }
 });
