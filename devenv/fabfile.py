@@ -91,14 +91,6 @@ def autodb():
     local('bin/django_dev.py dev_autodb -v2')
 
 @task
-def extjsbuild_server():
-    """
-    Run ``bin/django_dev.py runserver --settings settings.extjsbuild``
-    """
-    local('bin/django_dev.py runserver --settings settings.extjsbuild')
-
-
-@task
 def noextjsdebug_server():
     """
     Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
@@ -139,14 +131,10 @@ def jsbuild(appname, nocompress=False):
     extra_args = ''
     if nocompress:
         extra_args = '--nocompress'
-    print
-    print 'NOTE: Make sure:'
-    print
-    print '   bin/fab extjsbuild_server'
-    print
-    print 'is running in another terminal'
-    local('bin/django_dev.py senchatoolsbuild {extra_args} --app {appname}'.format(appname=appname,
-                                                                                   extra_args=extra_args))
+    local(('bin/django_dev.py senchatoolsbuild {extra_args} '
+           '--app {appname} '
+           '--settings settings.extjsbuild').format(appname=appname,
+                                                    extra_args=extra_args))
 
 @task
 def jsbuild_devilry_student(nocompress=False):
