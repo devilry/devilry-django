@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     collapsible: true,
     collapsed: true,
     animCollapse: false,
-    hideCollapseTool: true,
+    //hideCollapseTool: true,
     bodyPadding: 20,
 
     requires: [

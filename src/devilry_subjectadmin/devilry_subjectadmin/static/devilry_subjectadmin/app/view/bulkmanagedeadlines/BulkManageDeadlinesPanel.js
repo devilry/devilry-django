@@ -4,7 +4,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
     cls: 'devilry_subjectadmin_bulkmanagedeadlinespanel',
 
     requires: [
-        'devilry_extjsextras.AlertMessageList'
+        'devilry_extjsextras.AlertMessageList',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -31,8 +32,40 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
         xtype: 'alertmessagelist',
         itemId: 'globalAlertmessagelist'
     }, {
-        xtype: 'box',
-        itemId: 'header'
+        xtype: 'container',
+        items: [{
+            xtype: 'box',
+            cls: 'bootstrap',
+            html: [
+                '<h1>',
+                    interpolate(gettext('Manage %(deadlines_term)s'), {
+                        deadlines_term: gettext('deadlines')
+                    }, true),
+                '</h1>'
+            ].join('')
+        }]
+    }, {
+        xtype: 'container',
+        layout: 'column',
+        margin: '0 0 20 0',
+        items: [{
+            xtype: 'box',
+            cls: 'bootstrap',
+            columnWidth: 1,
+            margin: '0 40 0 0',
+            html: [
+                '<p class="muted">',
+                    gettext('Students are in a group even if they work alone. Each group has their own individual deadlines. In this view, we have grouped deadlines with exactly the same date/time and text to make it easy for you to change them in bulk.'),
+                '</p>'
+            ].join('')
+        }, {
+            xtype: 'primarybutton',
+            itemId: 'addDeadlineButton',
+            width: 150,
+            text: interpolate(gettext('Add %(deadline_term)s'), {
+                deadline_term: gettext('deadline')
+            }, true)
+        }]
     }, {
         xtype: 'panel',
         autoScroll: true,

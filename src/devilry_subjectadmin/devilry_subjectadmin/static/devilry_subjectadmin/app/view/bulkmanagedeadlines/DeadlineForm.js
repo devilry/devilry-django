@@ -14,6 +14,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     cls: 'bootstrap',
     bodyPadding: 20,
     layout: 'anchor',
+    autoScroll: true,
 
     initComponent: function() {
         Ext.apply(this, {
@@ -43,7 +44,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'box',
                 margin: '20 0 0 0',
-                name: 'text',
                 html: [
                     '<h2>',
                         gettext('Text'),
@@ -54,11 +54,48 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 xtype: 'textarea',
                 name: 'text',
                 anchor: '100%',
-                height: 150,
+                height: 100,
                 fieldLabel: gettext('Text'), // NOTE: we need labels for devilry_extjsextras.ErrorUtils
                 hideLabel: true,
                 resizable: true,
                 resizeHandles: 's'
+            
+            // Who to create for? - only shown on create deadline if the assignment already has at least one deadline.
+            }, {
+                xtype: 'box',
+                margin: '20 0 0 0',
+                html: [
+                    '<h2>',
+                        interpolate(gettext('Add %(deadlines_term)s on'), {
+                            deadlines_term: gettext('deadline')
+                        }, true),
+                    '</h2>'
+                ].join(''),
+            }, {
+                xtype: 'radiogroup',
+                anchor: '100%',
+                vertical: true,
+                columns: 1,
+                items: [{
+                    boxLabel: interpolate(gettext('Only add %(deadline_term)s on %(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
+                        deadline_term: gettext('deadline'),
+                        groups_term: gettext('groups'),
+                        grade_term: gettext('grade'),
+                        feedback_term: gettext('feedback')
+                    }, true),
+                    name: 'createmode',
+                    inputValue: 'failed',
+                    checked: true
+                }, {
+                    boxLabel: interpolate(gettext('Only add %(deadline_term)s on %(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
+                        deadline_term: gettext('deadline'),
+                        groups_term: gettext('groups'),
+                        grade_term: gettext('grade'),
+                        feedback_term: gettext('feedback')
+                    }, true),
+                    name: 'createmode',
+                    inputValue: 'failed-or-no-feedback'
+                }]
             }],
 
             buttons: [{
