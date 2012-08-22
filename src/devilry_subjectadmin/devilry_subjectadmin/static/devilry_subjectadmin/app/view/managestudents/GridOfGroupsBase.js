@@ -9,7 +9,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
 
     groupInfoColTemplateString: [
         '<div class="groupInfoWrapper">',
-            '<div class="name"><strong>{displayName}</strong></div>',
+            '<div class="name"><strong>',
+                '<tpl if="groupUrlPrefix">',
+                    '<a href="{groupUrlPrefix}{id}">',
+                        '{displayName}',
+                    '</a>',
+                '<tpl else>',
+                    '{displayName}',
+                '</tpl>',
+            '</strong></div>',
             '<div class="username"><small>{displayUsername}</small></div>',
             '<tpl if="hasFeedback">',
                 '<tpl if="feedback.is_passing_grade">',
@@ -73,13 +81,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     ],
 
     initComponent: function() {
-        var cssclasses = 'devilry_subjectadmin_gridofgroupsbase';
+        var cssclasses = 'devilry_subjectadmin_gridofgroupsbase bootstrap';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }
         this.cls = cssclasses;
         this.setTemplateVariables();
         this.columns = this.getColumns();
+        this.groupUrlPrefix = this.getGroupUrlPrefix();
         this.callParent(arguments);
     },
 
@@ -151,7 +160,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             displayUsername: this.getUsernameDivContent(record),
             notApprovedText: this.notApprovedText,
             hasFeedback: record.get('feedback') != null,
-            approvedText: this.approvedText
+            approvedText: this.approvedText,
+            groupUrlPrefix: this.groupUrlPrefix
         };
         Ext.apply(data, record.data);
         return this.groupInfoColTemplate.apply(data);
@@ -216,5 +226,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         }
         var firstCandidate = candidates[0];
         return firstCandidate.user.username;
+    },
+
+
+
+    /**
+     * Override this if you want the displayName to be a link.
+     */
+    getGroupUrlPrefix: function() {
+        return null;
     }
 });

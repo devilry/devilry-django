@@ -24,7 +24,11 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     },
 
     manageSpecificGroups: function(assignment_id, group_ids) {
-        return Ext.String.format('#/assignment/{0}/@@manage-students/{1}', assignment_id, group_ids.join(','));
+        var prefix = this.manageSpecificGroupsPrefix(assignment_id);
+        return Ext.String.format('{0}{1}', prefix, group_ids.join(','));
+    },
+    manageSpecificGroupsPrefix: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/@@manage-students/@@select/', assignment_id);
     },
     manageStudentsAddStudents: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@manage-students/@@add-students', assignment_id);

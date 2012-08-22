@@ -10,10 +10,19 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid', {
     hideHeaders: true,
     frame: false,
 
+    /**
+     * @cfg {int} [assignment_id]
+     * The ID of the assignment we are listing students in.
+     */
+
     getColumns: function() {
         return [
             this.getGroupInfoColConfig(),
             this.getMetadataColConfig()
         ];
+    },
+
+    getGroupUrlPrefix: function() {
+        return devilry_subjectadmin.utils.UrlLookup.manageSpecificGroupsPrefix(this.assignment_id);
     }
 });

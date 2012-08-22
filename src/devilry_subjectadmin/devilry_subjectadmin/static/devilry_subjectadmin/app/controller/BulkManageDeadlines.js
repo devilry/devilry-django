@@ -38,9 +38,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _onRender: function() {
         this.getBulkManageDeadlinesPanel().setLoading();
-        var assignment_id = this.getBulkManageDeadlinesPanel().assignment_id;
+        this.assignment_id = this.getBulkManageDeadlinesPanel().assignment_id;
         var store = this.getDeadlinesBulkStore();
-        store.proxy.setUrl(assignment_id);
+        store.proxy.setUrl(this.assignment_id);
         store.load({
             scope: this,
             callback: function(records, operation) {
@@ -65,6 +65,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             this.getDeadlinesContainer().add({
                 xtype: 'bulkmanagedeadlines_deadline',
                 deadlineRecord: deadlineRecord,
+                assignment_id: this.assignment_id,
                 listeners: {
                     scope: this,
                     single: true,

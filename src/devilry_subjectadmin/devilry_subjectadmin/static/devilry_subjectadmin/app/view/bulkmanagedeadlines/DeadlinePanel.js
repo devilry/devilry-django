@@ -17,6 +17,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
      * @cfg {Object} [deadlineRecord]
      */
 
+    /**
+     * @cfg {int} [assignment_id]
+     * The ID of the assignment of this deadline.
+     */
+
     headerTpl: [
         '<div class="linklike">',
             '<em class="deadline_label">{deadline_term}</em>: ',
@@ -35,14 +40,30 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
 
     deadlineTextTpl: [
-        '<h2>', gettext('Deadline text'), '</h2>',
-        '<p style="white-space: pre-wrap">{text}</p>'
+        '<h2>',
+            gettext('Text'),
+            ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
+        '</h2>',
+        '<tpl if="text">',
+            '<p style="white-space: pre-wrap">{text}</p>',
+        '<tpl else>',
+            '<p><small>',
+                interpolate(gettext('This %(deadline_term)s has no text. Use the edit button if you want to set a text.'), {
+                    deadline_term: gettext('deadline')
+                }, true),
+            '</small></p>',
+        '</tpl>'   
     ],
 
     groupsHeaderTpl: [
         '<h2>',
             gettext('Groups'),
-            ' <small>(', gettext('Students'), ')</small>',
+            ' <small>- ',
+                interpolate(gettext('%(Students_term)s are organized in %(groups_term)s, even when they work alone'), {
+                    Students_term: gettext('Students'),
+                    groups_term: gettext('groups')
+                }, true),
+            '</small>',
         '</h2>',
         '<p><small>',
             interpolate(gettext('Select a %(group_term)s to view and edit it.'), {
@@ -85,6 +106,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 items: [{
                     xtype: 'bulkmanagedeadlines_groupgrid',
                     width: 300,
+                    assignment_id: this.assignment_id,
                     store: this.groupsStore
                 }, {
                     xtype: 'box',
