@@ -244,7 +244,6 @@ class InstanceDeadlinesBulkRest(View):
         assignment_id = self.kwargs['id']
         bulkdeadline_id = self.kwargs['bulkdeadline_id']
         deadline_datetime, texthash = decode_bulkdeadline_id(bulkdeadline_id)
-        print deadline_datetime, type(deadline_datetime)
         qry = Deadline.objects.filter(assignment_group__parentnode=assignment_id,
                                       deadline=deadline_datetime)
         qry = qry.select_related('assignment_group', 'assignment_group__feedback')
@@ -254,14 +253,11 @@ class InstanceDeadlinesBulkRest(View):
                                    'assignment_group__candidates',
                                    'assignment_group__candidates__student',
                                    'assignment_group__candidates__student__devilryuserprofile')
-        print qry.all()
         # Filter out deadlines that do not match the texthash
         def hashmatch(deadline):
             match = texthashmatch(texthash, deadline.text)
-            print 'textmatch:', match
             return match
         deadlines = filter(hashmatch, qry)
-        print deadlines
         if len(deadlines) == 0:
             raise NotFoundError('No deadline matching: {0}'.format(bulkdeadline_id))
         return deadlines
