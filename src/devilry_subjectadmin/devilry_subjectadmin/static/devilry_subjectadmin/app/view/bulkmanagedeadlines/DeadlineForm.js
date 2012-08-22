@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     requires: [
         'devilry_extjsextras.form.DateTimeField',
         'Ext.form.field.TextArea',
+        'Ext.util.KeyNav',
         'devilry_extjsextras.AlertMessageList'
     ],
 
@@ -31,6 +32,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'devilry_extjsextras-datetimefield',
                 name: 'deadline',
+                fieldLabel: gettext('Deadline'), // NOTE: we need labels for devilry_extjsextras.ErrorUtils
+                hideLabel: true,
                 itemId: 'deadlineField',
                 width: 300
 
@@ -51,6 +54,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 name: 'text',
                 anchor: '100%',
                 height: 150,
+                fieldLabel: gettext('Text'), // NOTE: we need labels for devilry_extjsextras.ErrorUtils
+                hideLabel: true,
                 resizable: true,
                 resizeHandles: 's'
             }],
@@ -66,8 +71,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'button',
                 scale: 'medium',
-                disabled: true,
-                formBind: true,
                 text: gettext('Save'),
                 itemId: 'saveDeadlineButton',
                 listeners: {
@@ -77,6 +80,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }]
         });
         this.on('show', this._onShow, this);
+        this.on('render', this._onRender, this);
         this.callParent(arguments);
     },
 
@@ -86,6 +90,13 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     },
     _onSave: function() {
         this.fireEvent('saveDeadline', this);
+    },
+
+    _onRender: function() {
+        this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {
+            enter: this._onSave,
+            scope: this
+        });
     },
 
     _onShow: function() {
