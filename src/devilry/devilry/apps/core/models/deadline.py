@@ -135,3 +135,28 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners__user=user_obj)
+
+
+    def is_empty(self):
+        """
+        Returns ``True`` if this Deadline does not contain any deliveries.
+        """
+        return self.deliveries.count() == 0
+
+    def can_delete(self, user_obj):
+        """
+        Check if the given user is permitted to delete this object. A user is
+        permitted to delete an Deadline if the user is superadmin, or if the user
+        is admin on the assignment. Only superusers
+        are allowed to delete deadlines with any deliveries.
+
+        :return: ``True`` if the user is permitted to delete this object.
+        """
+        if self.id == None:
+            return False
+        if user_obj.is_superuser:
+            return True
+        if self.is_empty():
+            return self.assignment_group.parentnode.is_admin(user_obj)
+        else:
+            return False

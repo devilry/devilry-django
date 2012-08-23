@@ -56,3 +56,24 @@ class TestDeadline(TestCase, TestHelper):
         d2 = Deadline(assignment_group=g1, deadline=d1.deadline)
         with self.assertRaises(ValidationError):
             d2.full_clean()
+
+    def test_can_delete_superuser(self):
+        self.add_to_path('uni;sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        superuser = self.create_superuser('superuser')
+        deadline = Deadline.objects.get(id=self.sub_p1_a1_g1_d1.id)
+        self.assertTrue(deadline.can_delete(superuser))
+
+    def test_can_delete_assignmentadmin(self):
+        self.add_to_path('uni;sub.p1:begins(-2).a1:admin(a1admin).g1:candidate(stud1).d1:ends(5)')
+        deadline = Deadline.objects.get(id=self.sub_p1_a1_g1_d1.id)
+        self.assertTrue(deadline.can_delete(self.a1admin))
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        self.assertFalse(deadline.can_delete(self.a1admin))
+
+    def test_can_delete_nodeadmin(self):
+        self.add_to_path('uni:admin(uniadm);sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        deadline = Deadline.objects.get(id=self.sub_p1_a1_g1_d1.id)
+        self.assertTrue(deadline.can_delete(self.uniadm))
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        self.assertFalse(deadline.can_delete(self.uniadm))
