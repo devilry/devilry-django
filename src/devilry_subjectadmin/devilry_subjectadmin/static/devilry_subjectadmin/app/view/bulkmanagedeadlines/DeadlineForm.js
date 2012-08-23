@@ -51,7 +51,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 margin: '20 0 0 0',
                 html: [
                     '<h2>',
-                        gettext('Text'),
+                        gettext('About this deadline'),
                         ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
                     '</h2>',
                 ].join('')

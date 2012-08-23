@@ -50,8 +50,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
 
     deadlineTextTpl: [
-        '<h2>',
-            gettext('Text'),
+        '<h2 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">',
+            gettext('About this deadline'),
             ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
         '</h2>',
         '<tpl if="text">',
@@ -112,7 +112,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 deadline_formatted: deadline_formatted,
                 groups_term: gettext('Groups'),
                 groupcount: this.deadlineRecord.get('groups').length,
-                text_title: gettext('Deadline text'),
+                text_title: gettext('About this deadline'),
                 text: this.deadlineRecord.formatTextOneline(),
                 in_the_future: this.deadlineRecord.get('in_the_future'),
                 offset_from_now: this.deadlineRecord.formatOffsetFromNow()
