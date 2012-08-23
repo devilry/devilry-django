@@ -194,6 +194,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def is_empty(self):
         """
-        Returns ``True`` if this Assignment does not contain any AssignmentGroups.
+        Returns ``True`` if this Assignment does not contain any deliveries.
         """
-        return self.assignmentgroups.count() == 0
+        from .delivery import Delivery
+        return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0

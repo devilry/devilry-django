@@ -152,3 +152,34 @@ class TestAssignment(TestCase, TestHelper):
                  periods=['someperiod'],
                  assignments=['emptyassignment'])
         self.assertTrue(self.duck9000_someperiod_emptyassignment.is_empty())
+
+
+class TestAssignmentCanDelete(TestCase, TestHelper):
+    def setUp(self):
+        self.goodFile = {"good.py": "print awesome"}
+
+    def test_can_delete_superuser(self):
+        self.add_to_path('uni;sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        superuser = self.create_superuser('superuser')
+        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
+        self.assertTrue(assignment.can_delete(superuser))
+
+    def test_can_delete_assignmentadmin(self):
+        self.add_to_path('uni;sub.p1:begins(-2).a1:admin(a1admin)')
+        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
+        self.assertFalse(assignment.can_delete(self.a1admin))
+
+    def test_can_delete_periodadmin(self):
+        self.add_to_path('uni;sub.p1:begins(-2):admin(p1admin).a1.g1:candidate(stud1).d1:ends(5)')
+        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
+        self.assertTrue(assignment.can_delete(self.p1admin))
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        self.assertFalse(assignment.can_delete(self.p1admin))
+
+    def test_can_delete_nodeadmin(self):
+        self.add_to_path('uni:admin(uniadm);sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
+        self.assertTrue(assignment.can_delete(self.uniadm))
+        self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        self.assertFalse(assignment.can_delete(self.uniadm))
