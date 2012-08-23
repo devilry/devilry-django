@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-16 06:41+0200\n"
+"POT-Creation-Date: 2012-08-23 21:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,17 +26,19 @@ msgstr ""
 msgid "DELETE"
 msgstr ""
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:32
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:34
 msgid ""
 "Type {required_confirm_text} in the field below to confirm that you really "
 "intend to delete {short_description}."
-msgstr "Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du virkelig ønsker å slette {short_description}."
+msgstr ""
+"Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du "
+"virkelig ønsker å slette {short_description}."
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:47
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:52
 msgid "Write \"{something}\""
 msgstr ""
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:57
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:62
 msgid "Delete {something}?"
 msgstr ""
 
@@ -64,6 +66,14 @@ msgstr "%s minutter"
 #, c-format
 msgid "%s seconds"
 msgstr "%s sekunder"
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:18
+msgid "In %(delta)s"
+msgstr "Om %(delta)s"
+
+#: static/devilry_extjsextras/DatetimeHelpers.js:22
+msgid "%(delta)s ago"
+msgstr "For %(delta)s siden"
 
 #: static/devilry_extjsextras/DeleteButton.js:9
 msgctxt "uibutton"
