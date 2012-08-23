@@ -1,3 +1,4 @@
+from datetime import datetime
 from math import log
 from djangorestframework.views import ModelView
 from djangorestframework.mixins import InstanceMixin
@@ -77,8 +78,11 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
         return map(self.format_delivery, deadline.deliveries.filter(successful=True))
 
     def format_deadline(self, deadline):
+        now = datetime.now()
         return {'id': deadline.id,
                 'deadline': format_datetime(deadline.deadline),
+                'in_the_future': deadline.deadline > now,
+                'offset_from_now': format_timedelta(now - deadline.deadline),
                 'text': deadline.text,
                 'deliveries': self.format_deliveries(deadline)}
 

@@ -13,8 +13,8 @@ class TestRestAggregatedGroupInfo(TestCase):
                             subjects=['sub'],
                             periods=['p1:begins(-1)'],
                             assignments=['a1'])
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2).d1')
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2).d1:ends(5)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
         self.group = self.testhelper.sub_p1_a1_g1
         self.url = '/devilry_student/rest/aggregated-groupinfo/{0}'.format(self.group.id)
 
@@ -54,7 +54,8 @@ class TestRestAggregatedGroupInfo(TestCase):
         deadlines = content['deadlines']
         self.assertEquals(len(deadlines), 2)
         self.assertEquals(set(deadlines[0].keys()),
-                          set(['id', 'deadline', 'deliveries', 'text']))
+                          set(['id', 'deadline', 'deliveries', 'text',
+                               'offset_from_now', 'in_the_future']))
 
     def test_breadcrumbs(self):
         content, response = self._getas('student1')
