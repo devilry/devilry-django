@@ -130,6 +130,8 @@ class TestRestDeadlinesBulkCreate(TestCase):
     def test_post_createmode_failed(self):
         self.testhelper.add_delivery('sub.p1.a1.g1', {'bad.py': ['print ', 'bah']})
         self.testhelper.add_feedback('sub.p1.a1.g1', verdict={'grade': 'F', 'points': 30, 'is_passing_grade': False})
+        g1 = AssignmentGroup.objects.get(id=self.testhelper.sub_p1_a1_g1.id)
+        self.assertFalse(g1.is_open)
 
 
         new_deadline = datetime(2004, 12, 24, 20, 30, 40)
@@ -148,11 +150,12 @@ class TestRestDeadlinesBulkCreate(TestCase):
 
         # Check actual data
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 1)
-        g1 = self.testhelper.sub_p1_a1_g1
+        g1 = AssignmentGroup.objects.get(id=self.testhelper.sub_p1_a1_g1.id)
         deadlines = g1.deadlines.all().order_by('-deadline')
         self.assertEquals(len(deadlines), 2)
         self.assertEquals(deadlines[0].deadline, new_deadline)
         self.assertEquals(deadlines[0].text, 'Created')
+        self.assertTrue(g1.is_open) # Group was automatically opened in devilry.apps.core.models.Deadline.save()
 
     def test_post_createmode_failed_or_no_feedback(self):
         # Fail g0
