@@ -270,6 +270,7 @@ class DeadlinesBulkListOrCreate(View):
                     deadline.full_clean()
                     deadline.save()
                     deadlines.append(deadline)
+                    logger.info('User=%s created Deadline id=%s (%s)', self.user, deadline.id, deadline.deadline)
             except ValidationError as e:
                 transaction.rollback()
                 raise ValidationErrorResponse(e)
@@ -369,6 +370,7 @@ class DeadlinesBulkUpdateReadOrDelete(View):
                     deadline.text = text
                     deadline.full_clean()
                     deadline.save()
+                    logger.info('User=%s updated Deadline id=%s (%s)', self.user, deadline.id, deadline.deadline)
             except ValidationError as e:
                 transaction.rollback()
                 raise ValidationErrorResponse(e)
