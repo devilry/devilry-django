@@ -46,6 +46,11 @@ def decode_bulkdeadline_id(bulkdeadline_id):
     return deadline, texthash
 
 
+def deadlines_as_groupobjects(deadlines):
+    return map(lambda deadline: deadline.assignment_group, deadlines)
+
+
+
 def texthashmatch(texthash, text):
     if text == None or text == '':
         return bool(texthash) == False
@@ -90,7 +95,27 @@ def create_deadlinedict(assignment_id, deadline, groups, now=None):
             'groups': groups} # Only provided on instance, not in list
 
 
-class DeadlinesBulkRest(View):
+class CreateOrUpdateForm(forms.Form):
+    deadline = forms.DateTimeField(required=True)
+    text = forms.CharField(required=False, widget=forms.Textarea)
+    createmode = forms.TypedChoiceField(required=False,
+                                        coerce=str,
+                                        choices=[('failed', 'Only add deadline for groups with failing grade'),
+                                                 ('failed-or-no-feedback', 'Only add deadline for groups with failing grade or no feedback')],
+                                        help_text='Only used for POST')
+
+
+class CreateOrUpdateResource(FormResource):
+    form = CreateOrUpdateForm
+
+    def validate_request(self, data, files=None):
+        if 'bulkdeadline_id' in data:
+            del data['bulkdeadline_id']
+        return super(CreateOrUpdateResource, self).validate_request(data, files)
+
+
+
+class DeadlinesBulkListOrCreate(View):
     """
     Handle deadlines on an assignment in bulk.
 
@@ -122,10 +147,27 @@ class DeadlinesBulkRest(View):
     - ``groups``: List of groups in the deadline.
       field in all responses.
 
+
     # POST
-    Create a new deadline.
+    Create new deadline for many groups in the given assignment.
+    If a group is closed, is is opened when adding a deadline (to allow
+    students to start making deliveries).
+
+    If any of the groups are already on this deadline, we fail with a 400 error
+    code.
+
+    ## Parameters
+    - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
+    - ``text`` (string|null): Deadline text.
+    - ``createmode`` (string): One of:
+        - ``failed``: Only add deadline on groups where active feedback is failed.
+        - ``failed-or-no-feedback``: Only add deadline on groups where active feedback is failed or empty (no feedback).
+
+    ## Returns
+    Same as GET in the instance REST API.
     """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
+    resource = CreateOrUpdateResource
 
     def _get_distinct_deadlines(self, deadlines):
         distinct_deadlines = {}
@@ -170,143 +212,6 @@ class DeadlinesBulkRest(View):
         return distinct_deadlines
 
 
-
-
-class InstanceDeadlinesBulkRestForm(forms.Form):
-    deadline = forms.DateTimeField(required=True)
-    text = forms.CharField(required=False, widget=forms.Textarea)
-    createmode = forms.TypedChoiceField(required=False,
-                                        coerce=str,
-                                        choices=[('failed', 'Only add deadline for groups with failing grade'),
-                                                 ('failed-or-no-feedback', 'Only add deadline for groups with failing grade or no feedback')],
-                                        help_text='Only used for POST')
-
-
-class InstanceDeadlinesBulkRestResource(FormResource):
-    form = InstanceDeadlinesBulkRestForm
-
-    def validate_request(self, data, files=None):
-        if 'bulkdeadline_id' in data:
-            del data['bulkdeadline_id']
-        return super(InstanceDeadlinesBulkRestResource, self).validate_request(data, files)
-
-
-
-class InstanceDeadlinesBulkRest(View):
-    """
-    # GET
-
-    ## Returns
-    An object with the following attributes:
-
-    - ``bulkdeadline_id`` (string): See _About bulkdeadline_id_ in the [list api](./).
-    - ``deadline`` (string "yyyy-mm-dd hh:mm:ss"): The datetime of the deadline.
-    - ``in_the_future`` (bool): Is this deadline in the future?
-    - ``offset_from_now`` (object): Delta from _now_ to the deadline.
-    - ``text`` (string|null): Deadline text.
-    - ``url`` (string): The url of this API.
-    - ``groups``: List of groups in the deadline.
-
-    # PUT
-    Update all deadlines matching the ``bulkdeadline_id`` given as the last
-    item in the url path.
-
-    ## Parameters
-    - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
-    - ``text`` (string|null): Deadline text.
-
-    ## Returns
-    Same as GET.
-
-
-    # POST
-    Create new deadline for all groups in the given assignment.
-    If the group is closed, is is opened when adding a deadline (to allow
-    students to start making deliveries).
-
-    If any of the groups are already on this deadline, we fail with a 400 error
-    code.
-
-    ## Parameters
-    - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
-    - ``text`` (string|null): Deadline text.
-    - ``createmode`` (string): One of:
-        - ``failed``: Only add deadline on groups where active feedback is failed.
-        - ``failed-or-no-feedback``: Only add deadline on groups where active feedback is failed or empty (no feedback).
-
-    ## Returns
-    Same as GET.
-    """
-    permissions = (IsAuthenticated, IsAssignmentAdmin)
-    resource = InstanceDeadlinesBulkRestResource
-
-    def _deadlineqry(self):
-        assignment_id = self.kwargs['id']
-        bulkdeadline_id = self.kwargs['bulkdeadline_id']
-        deadline_datetime, texthash = decode_bulkdeadline_id(bulkdeadline_id)
-        qry = Deadline.objects.filter(assignment_group__parentnode=assignment_id,
-                                      deadline=deadline_datetime)
-        qry = qry.select_related('assignment_group', 'assignment_group__feedback')
-        qry = qry.prefetch_related('assignment_group__examiners',
-                                   'assignment_group__examiners__user',
-                                   'assignment_group__examiners__user__devilryuserprofile',
-                                   'assignment_group__candidates',
-                                   'assignment_group__candidates__student',
-                                   'assignment_group__candidates__student__devilryuserprofile')
-        # Filter out deadlines that do not match the texthash
-        def hashmatch(deadline):
-            match = texthashmatch(texthash, deadline.text)
-            return match
-        deadlines = filter(hashmatch, qry)
-        if len(deadlines) == 0:
-            raise NotFoundError('No deadline matching: {0}'.format(bulkdeadline_id))
-        return deadlines
-
-    def _as_groupobjects(self, deadlines):
-        return map(lambda deadline: deadline.assignment_group, deadlines)
-
-    def _create_response(self, deadline, groups):
-        assignment_id = self.kwargs['id']
-        return create_deadlinedict(assignment_id=assignment_id,
-                                   deadline=deadline,
-                                   groups=GroupsListResource().serialize(groups))
-
-    #
-    # GET
-    #
-    def get(self, request, id, bulkdeadline_id):
-        deadlines = self._deadlineqry()
-        groups = self._as_groupobjects(deadlines)
-        return self._create_response(deadlines[0], groups)
-
-
-    #
-    # PUT
-    #
-
-    def _update_deadlines(self, deadlines):
-        new_deadline = self.CONTENT['deadline']
-        text = self.CONTENT['text']
-        with transaction.commit_manually():
-            try:
-                for deadline in deadlines:
-                    deadline.deadline = new_deadline
-                    deadline.text = text
-                    deadline.full_clean()
-                    deadline.save()
-            except ValidationError as e:
-                transaction.rollback()
-                raise ValidationErrorResponse(e)
-            else:
-                transaction.commit()
-        return deadlines
-
-    def put(self, request, id, bulkdeadline_id):
-        deadlines = self._deadlineqry()
-        deadlines = self._update_deadlines(deadlines)
-        groups = self._as_groupobjects(deadlines)
-        return self._create_response(deadlines[0], groups)
-
     #
     # POST
     #
@@ -349,8 +254,110 @@ class InstanceDeadlinesBulkRest(View):
                 transaction.commit()
         return deadlines
 
-    def post(self, request, id, bulkdeadline_id):
+    def post(self, request, id):
         deadlines = self._add_deadlines()
-        groups = self._as_groupobjects(deadlines)
-        content = self._create_response(deadlines[0], groups)
+        groups = deadlines_as_groupobjects(deadlines)
+        assignment_id = self.kwargs['id']
+        content = create_deadlinedict(assignment_id=assignment_id,
+                                      deadline=deadlines[0],
+                                      groups=GroupsListResource().serialize(groups))
         return Response(status=201, content=content)
+
+
+
+
+class DeadlinesBulkUpdateReadOrDelete(View):
+    """
+    # GET
+
+    ## Returns
+    An object with the following attributes:
+
+    - ``bulkdeadline_id`` (string): See _About bulkdeadline_id_ in the [list api](./).
+    - ``deadline`` (string "yyyy-mm-dd hh:mm:ss"): The datetime of the deadline.
+    - ``in_the_future`` (bool): Is this deadline in the future?
+    - ``offset_from_now`` (object): Delta from _now_ to the deadline.
+    - ``text`` (string|null): Deadline text.
+    - ``url`` (string): The url of this API.
+    - ``groups``: List of groups in the deadline.
+
+    # PUT
+    Update all deadlines matching the ``bulkdeadline_id`` given as the last
+    item in the url path.
+
+    ## Parameters
+    - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
+    - ``text`` (string|null): Deadline text.
+
+    ## Returns
+    Same as GET.
+    """
+    permissions = (IsAuthenticated, IsAssignmentAdmin)
+    resource = CreateOrUpdateResource
+
+    def _deadlineqry(self):
+        assignment_id = self.kwargs['id']
+        bulkdeadline_id = self.kwargs['bulkdeadline_id']
+        deadline_datetime, texthash = decode_bulkdeadline_id(bulkdeadline_id)
+        qry = Deadline.objects.filter(assignment_group__parentnode=assignment_id,
+                                      deadline=deadline_datetime)
+        qry = qry.select_related('assignment_group', 'assignment_group__feedback')
+        qry = qry.prefetch_related('assignment_group__examiners',
+                                   'assignment_group__examiners__user',
+                                   'assignment_group__examiners__user__devilryuserprofile',
+                                   'assignment_group__candidates',
+                                   'assignment_group__candidates__student',
+                                   'assignment_group__candidates__student__devilryuserprofile')
+        # Filter out deadlines that do not match the texthash
+        def hashmatch(deadline):
+            match = texthashmatch(texthash, deadline.text)
+            return match
+        deadlines = filter(hashmatch, qry)
+        if len(deadlines) == 0:
+            raise NotFoundError('No deadline matching: {0}'.format(bulkdeadline_id))
+        return deadlines
+
+    def _as_groupobjects(self, deadlines):
+        return map(lambda deadline: deadline.assignment_group, deadlines)
+
+    def _create_response(self, deadline, groups):
+        assignment_id = self.kwargs['id']
+        return create_deadlinedict(assignment_id=assignment_id,
+                                   deadline=deadline,
+                                   groups=GroupsListResource().serialize(groups))
+
+    #
+    # GET
+    #
+    def get(self, request, id, bulkdeadline_id):
+        deadlines = self._deadlineqry()
+        groups = deadlines_as_groupobjects(deadlines)
+        return self._create_response(deadlines[0], groups)
+
+
+    #
+    # PUT
+    #
+
+    def _update_deadlines(self, deadlines):
+        new_deadline = self.CONTENT['deadline']
+        text = self.CONTENT['text']
+        with transaction.commit_manually():
+            try:
+                for deadline in deadlines:
+                    deadline.deadline = new_deadline
+                    deadline.text = text
+                    deadline.full_clean()
+                    deadline.save()
+            except ValidationError as e:
+                transaction.rollback()
+                raise ValidationErrorResponse(e)
+            else:
+                transaction.commit()
+        return deadlines
+
+    def put(self, request, id, bulkdeadline_id):
+        deadlines = self._deadlineqry()
+        deadlines = self._update_deadlines(deadlines)
+        groups = deadlines_as_groupobjects(deadlines)
+        return self._create_response(deadlines[0], groups)
