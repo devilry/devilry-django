@@ -189,6 +189,34 @@ class TestRestDeadlinesBulkCreate(TestCase):
         g1 = self.testhelper.sub_p1_a1_g1
         self.assertEquals(g1.deadlines.count(), 1) # We did not a deadline to g1 because they have passing grade
 
+    def test_post_createmode_no_deadlines(self):
+        self.assertEquals(self.testhelper.sub_p1_a1_g1.deadlines.count(), 1)
+        self.testhelper.add_to_path('uni;sub.p1.a1.g3')
+        self.assertEquals(self.testhelper.sub_p1_a1_g3.deadlines.count(), 0)
+
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
+        content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
+                                                 'text': 'Created',
+                                                 'createmode': 'no-deadlines'})
+
+        # Check response
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(decode_bulkdeadline_id(content['bulkdeadline_id'])[0],
+                          new_deadline)
+        self.assertEquals(len(content['groups']), 1)
+        self.assertEquals(content['text'], 'Created')
+        self.assertEquals(content['deadline'], format_datetime(new_deadline))
+
+        # Check actual data
+        self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 1)
+        g3 = AssignmentGroup.objects.get(id=self.testhelper.sub_p1_a1_g3.id)
+        deadlines = g3.deadlines.all()
+        self.assertEquals(len(deadlines), 1)
+        self.assertEquals(deadlines[0].deadline, new_deadline)
+        self.assertEquals(deadlines[0].text, 'Created')
+        self.assertTrue(g3.is_open) # Group was automatically opened in devilry.apps.core.models.Deadline.save()
+
     def test_post_nobody(self):
         self.testhelper.create_user('nobody')
         content, response = self._postas('nobody', {})

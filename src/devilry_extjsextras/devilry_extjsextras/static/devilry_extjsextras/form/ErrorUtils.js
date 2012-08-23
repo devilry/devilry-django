@@ -29,6 +29,25 @@ Ext.define('devilry_extjsextras.form.ErrorUtils', {
         }, this);
     },
 
+    _getFieldLabel: function(field, fieldname) {
+        var displayName = field.fieldLabel;
+
+        // Support label defined in radiogroup
+        if(typeof displayName == 'undefined') {
+            if(field.getXType() == 'radiofield') {
+                var group = field.up('radiogroup');
+                displayName = group.fieldLabel;
+            }
+        }
+
+        // Fall back on the fieldname (the one in the error response object)
+        if(typeof displayName == 'undefined') {
+            displayName = fieldname;
+        }
+
+        return displayName;
+    },
+
     /**
      * Add field errors to ``AlertMessageList``.
      *
@@ -44,7 +63,8 @@ Ext.define('devilry_extjsextras.form.ErrorUtils', {
             var fielderror = fielderrors.join('. ');
             var field = this._getFieldByName(formpanel, fieldname);
             if(field) {
-                var message = Ext.String.format('<strong>{0}:</strong> {1}', field.fieldLabel, fielderror)
+                var displayName = this._getFieldLabel(field, fieldname);
+                var message = Ext.String.format('<strong>{0}:</strong> {1}', displayName, fielderror)
                 alertmessagelist.add({
                     message: message,
                     type: 'error'

@@ -2,7 +2,7 @@ from datetime import datetime
 import hashlib
 from django import forms
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from djangorestframework.views import View
@@ -101,7 +101,8 @@ class CreateOrUpdateForm(forms.Form):
     createmode = forms.TypedChoiceField(required=False,
                                         coerce=str,
                                         choices=[('failed', 'Only add deadline for groups with failing grade'),
-                                                 ('failed-or-no-feedback', 'Only add deadline for groups with failing grade or no feedback')],
+                                                 ('failed-or-no-feedback', 'Only add deadline for groups with failing grade or no feedback'),
+                                                 ('no-deadlines', 'Only add deadline for groups with no deadlines.')],
                                         help_text='Only used for POST')
 
 
@@ -162,6 +163,7 @@ class DeadlinesBulkListOrCreate(View):
     - ``createmode`` (string): One of:
         - ``failed``: Only add deadline on groups where active feedback is failed.
         - ``failed-or-no-feedback``: Only add deadline on groups where active feedback is failed or empty (no feedback).
+        - ``no-deadlines``: Only add deadline on groups that have no deadlines.
 
     ## Returns
     Same as GET in the instance REST API.
@@ -226,9 +228,13 @@ class DeadlinesBulkListOrCreate(View):
             qry &= Q(Q(feedback__isnull=True) | Q(feedback__is_passing_grade=False))
         elif createmode == 'failed':
             qry &= Q(feedback__is_passing_grade=False)
+        elif createmode == 'no-deadlines':
+            qry &= Q(num_deadlines=0)
         else:
             raise ValueError('This is a bug - we have forgotten to handle one of the choices.')
-        return AssignmentGroup.objects.filter(qry)
+        groups = AssignmentGroup.objects.annotate(num_deadlines=Count('deadlines'))
+        groups = groups.filter(qry)
+        return groups
 
     def _add_deadlines(self):
         new_deadline = self.CONTENT['deadline']
@@ -250,6 +256,9 @@ class DeadlinesBulkListOrCreate(View):
             except ValidationError as e:
                 transaction.rollback()
                 raise ValidationErrorResponse(e)
+            except Exception as e:
+                transaction.rollback()
+                raise
             else:
                 transaction.commit()
         return deadlines
