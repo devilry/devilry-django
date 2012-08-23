@@ -80,7 +80,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     ],
 
     headerTpl: [
-        '<h1>{delivery_text} #{delivery.number}</h1>'
+        '<h2>{delivery_text} #{delivery.number}</h2>'
     ],
 
     initComponent: function() {

@@ -31,8 +31,35 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
                 '<span class="danger"> ({offset_from_now})</span>',
             '</tpl>',
         '</div>',
-        '<div class="metadata"><small><em>{deliveries_term}</em>: {delivery_count}</small></div>'
+        '<div class="metadata">',
+            '<small><em>{deliveries_term}</em>: {delivery_count}</small>',
+            '<tpl if="text">',
+                '&nbsp;',
+                '&nbsp;',
+                '&nbsp;',
+                '<small><em>{text_title}</em>: {text}</small>',
+            '</tpl>',
+        '</div>'
     ],
+
+    bodyPrefixTpl: [
+        '<tpl if="deadline.text">',
+            '<h2>',
+                gettext('About this deadline'),
+            '</h2>',
+            '<p style="white-space: pre-wrap">{deadline.text}</p>',
+        '</tpl>'
+    ],
+
+    _formatDeadlineTextOneline: function() {
+        var maxlength = 50;
+        var text = this.deadline.text;
+        if(text == null || text.length == 0) {
+            return null;
+        }
+        text = text.replace(/(\r\n|\n|\r)/gm, " ");
+        return Ext.String.ellipsis(text, maxlength);
+    },
 
     initComponent: function() {
         var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
@@ -48,9 +75,19 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
                 delivery_count: this.deadline.deliveries.length,
                 deliveries_term: gettext('Deliveries'),
                 offset_from_now: offset_from_now,
-                in_the_future: this.deadline.in_the_future
+                in_the_future: this.deadline.in_the_future,
+                text_title: gettext('About this deadline'),
+                text: this._formatDeadlineTextOneline()
             }),
             items: [{
+                xtype: 'box',
+                cls: 'bootstrap',
+                tpl: this.bodyPrefixTpl,
+                padding: '20',
+                data: {
+                    deadline: this.deadline
+                }
+            }, {
                 xtype: 'container',
                 itemId: 'addDeliveryPanelContainer'
             }, {
