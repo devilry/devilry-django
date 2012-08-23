@@ -30,6 +30,12 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     }, {
         ref: 'globalAlertmessagelist',
         selector: 'bulkmanagedeadlinespanel #globalAlertmessagelist'
+    }, {
+        ref: 'normalBodyContainer',
+        selector: 'bulkmanagedeadlinespanel #normalBodyContainer'
+    }, {
+        ref: 'addDeadlineBodyContainer',
+        selector: 'bulkmanagedeadlinespanel #addDeadlineBodyContainer'
     }],
 
     init: function() {
@@ -49,6 +55,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline bulkmanagedeadlines_deadlineform': {
                 saveDeadline: this._onSaveExistingDeadline,
                 cancel: this._onCancelEditExistingDeadline
+            },
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadlineform#addDeadlineForm': {
+                saveDeadline: this._onSaveNewDeadline,
+                cancel: this._onCancelAddNewDeadline
             }
         });
         
@@ -223,30 +233,25 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         }
     },
 
+
+    //
+    //
+    // Add deadline
+    //
+    //
+
     _onAddDeadline: function() {
-        Ext.widget('window', {
-            title: interpolate(gettext('Add %(deadline_term)s'), {
-                deadline_term: gettext('deadline')
-            }, true),
-            layout: 'fit',
-            closable: true,
-            width: 600,
-            height: 400,
-            items: {
-                xtype: 'bulkmanagedeadlines_deadlineform',
-                listeners: {
-                    scope: this,
-                    cancel: function(formpanel) {
-                        formpanel.up('window').close();
-                        this._unsetActiveDeadlineFormPanel();
-                    },
-                    saveDeadline: this._onAddDeadlineSave
-                }
-            }
-        }).show();
+        this.getNormalBodyContainer().hide();
+        this.getAddDeadlineBodyContainer().show();
     },
 
-    _onAddDeadlineSave: function(formpanel) {
+    _onCancelAddNewDeadline: function(formpanel) {
+        this._unsetActiveDeadlineFormPanel();
+        this.getAddDeadlineBodyContainer().hide();
+        this.getNormalBodyContainer().show();
+    },
+
+    _onSaveNewDeadline: function(formpanel) {
         this._setActiveDeadlineFormPanel(formpanel);
         formpanel.setLoading(gettext('Saving') + ' ...');
         var form = formpanel.getForm();

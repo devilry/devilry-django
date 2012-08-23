@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     cls: 'bootstrap',
     bodyPadding: 20,
     layout: 'anchor',
-    autoScroll: true,
+    //autoScroll: true,
 
     initComponent: function() {
         Ext.apply(this, {
@@ -66,8 +66,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 margin: '20 0 0 0',
                 html: [
                     '<h2>',
-                        interpolate(gettext('Add %(deadlines_term)s on'), {
-                            deadlines_term: gettext('deadline')
+                        interpolate(gettext('Add %(deadline_term)s on'), {
+                            deadline_term: gettext('deadline')
                         }, true),
                     '</h2>'
                 ].join(''),
@@ -77,8 +77,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 vertical: true,
                 columns: 1,
                 items: [{
-                    boxLabel: interpolate(gettext('Only add %(deadline_term)s on %(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
-                        deadline_term: gettext('deadline'),
+                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
                         groups_term: gettext('groups'),
                         grade_term: gettext('grade'),
                         feedback_term: gettext('feedback')
@@ -87,8 +86,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     inputValue: 'failed',
                     checked: true
                 }, {
-                    boxLabel: interpolate(gettext('Only add %(deadline_term)s on %(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
-                        deadline_term: gettext('deadline'),
+                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
                         groups_term: gettext('groups'),
                         grade_term: gettext('grade'),
                         feedback_term: gettext('feedback')
@@ -96,6 +94,15 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     name: 'createmode',
                     inputValue: 'failed-or-no-feedback'
                 }]
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap muted',
+                tpl: [
+                    'Use the <a href="{studentsmanager_url}">students manager</a> to add deadlines to individual groups or custom selections of groups.'
+                ],
+                data: {
+                    studentsmanager_url: '#'
+                }
             }],
 
             buttons: [{
