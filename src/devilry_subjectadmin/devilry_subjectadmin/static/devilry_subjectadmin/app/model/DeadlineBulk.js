@@ -8,6 +8,7 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
     idProperty: 'bulkdeadline_id',
     fields: [
         {name: 'bulkdeadline_id', type: 'string'},
+        {name: 'createmode', type: 'string'},
         {name: 'deadline',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
         {name: 'in_the_future',  type: 'bool', persist: false},
         {name: 'offset_from_now',  type: 'auto', persist: false},

@@ -196,9 +196,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             callback: function(updatedDeadlineRecord, operation) {
                 formpanel.setLoading(false);
                 if(operation.success) {
-                    console.log(updatedDeadlineRecord.get('bulkdeadline_id'));
                     updatedDeadlineRecord.updateBulkDeadlineIdFromOperation(operation);
-                    console.log('updated:', updatedDeadlineRecord.get('bulkdeadline_id'));
                     var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(
                         this.assignment_id, updatedDeadlineRecord.get('bulkdeadline_id'));
                     this.application.route.setHashWithoutEvent(hash);
@@ -208,17 +206,6 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 }
             }
         });
-    },
-
-    _onSaveExistingDeadlineError: function(formpanel, operation) {
-        var alertmessagelist = formpanel.down('alertmessagelist');
-        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
-        errorhandler.addErrors(operation.response, operation);
-        alertmessagelist.addMany(errorhandler.errormessages, 'error');
-        devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(formpanel,
-            errorhandler.fielderrors, alertmessagelist);
-        devilry_extjsextras.form.ErrorUtils.markFieldErrorsAsInvalid(formpanel,
-            errorhandler.fielderrors);
     },
 
     _onDeadlinesBulkStoreProxyError: function(proxy, response, operation) {
@@ -251,6 +238,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                     scope: this,
                     cancel: function(formpanel) {
                         formpanel.up('window').close();
+                        this._unsetActiveDeadlineFormPanel();
                     },
                     saveDeadline: this._onAddDeadlineSave
                 }
@@ -259,6 +247,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onAddDeadlineSave: function(formpanel) {
+        this._setActiveDeadlineFormPanel(formpanel);
         formpanel.setLoading(gettext('Saving') + ' ...');
         var form = formpanel.getForm();
         var values = form.getFieldValues();
@@ -266,15 +255,14 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var deadlineRecord = Ext.create('devilry_subjectadmin.model.DeadlineBulk');
         deadlineRecord.set('deadline', values.deadline);
         deadlineRecord.set('text', values.text);
+        deadlineRecord.set('createmode', values.createmode);
         console.log(deadlineRecord);
         deadlineRecord.save({
             scope: this,
             callback: function(updatedDeadlineRecord, operation) {
                 formpanel.setLoading(false);
                 if(operation.success) {
-                    console.log(updatedDeadlineRecord.get('bulkdeadline_id'));
                     updatedDeadlineRecord.updateBulkDeadlineIdFromOperation(operation);
-                    console.log('updated:', updatedDeadlineRecord.get('bulkdeadline_id'));
                     var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(
                         this.assignment_id, updatedDeadlineRecord.get('bulkdeadline_id'));
                     this.application.route.setHashWithoutEvent(hash);
