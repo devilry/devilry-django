@@ -154,8 +154,16 @@ class DeadlinesBulkListOrCreate(View):
     - ``offset_from_now`` (object): Delta from _now_ to the deadline.
     - ``text`` (string|null): Deadline text.
     - ``url`` (string): The url of the API for the instance.
-    - ``groups``: List of groups in the deadline.
-      field in all responses.
+    - ``groups``: List of groups in the deadline. Each group object has the
+      following attributes:
+
+        - ``id``
+        - ``name``
+        - ``is_open``
+        - ``num_deliveries``: Number of deliveries by the group on the deadline.
+        - ``parentnode``: The assignment ID.
+        - ``feedback``
+        - ``candidates``
 
 
     # POST
