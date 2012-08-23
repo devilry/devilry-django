@@ -5,6 +5,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
 
     requires: [
         'devilry_extjsextras.form.DateTimeField',
+        'devilry_subjectadmin.utils.UrlLookup',
         'Ext.form.field.TextArea',
         'Ext.util.KeyNav',
         'devilry_extjsextras.PrimaryButton',
@@ -14,7 +15,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     cls: 'bootstrap',
     bodyPadding: 20,
     layout: 'anchor',
-    //autoScroll: true,
+
+    /**
+     * @cfg {string} [assignment_id]
+     * Used to generate the students manager url in the createmodeContainer.
+     */
 
     initComponent: function() {
         Ext.apply(this, {
@@ -62,58 +67,61 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             
             // Who to create for? - only shown on create deadline if the assignment already has at least one deadline.
             }, {
-                xtype: 'box',
-                margin: '20 0 0 0',
-                html: [
-                    '<h2>',
-                        interpolate(gettext('Add %(deadline_term)s on'), {
-                            deadline_term: gettext('deadline')
-                        }, true),
-                    '</h2>'
-                ].join(''),
-            }, {
-                xtype: 'radiogroup',
-                anchor: '100%',
-                vertical: true,
-                columns: 1,
-                fieldLabel: interpolate(gettext('Add %(deadline_term)s on'), {
-                    deadline_term: gettext('deadline')
-                }, true),
-                hideLabel: true,
+                xtype: 'container',
+                itemId: 'createmodeContainer',
                 items: [{
-                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
-                        groups_term: gettext('groups'),
-                        grade_term: gettext('grade'),
-                        feedback_term: gettext('feedback')
-                    }, true),
-                    name: 'createmode',
-                    inputValue: 'failed',
-                    checked: true
+                    xtype: 'box',
+                    margin: '20 0 0 0',
+                    html: [
+                        '<h2>',
+                            interpolate(gettext('Add %(deadline_term)s on'), {
+                                deadline_term: gettext('deadline')
+                            }, true),
+                        '</h2>'
+                    ].join(''),
                 }, {
-                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
-                        groups_term: gettext('groups'),
-                        grade_term: gettext('grade'),
-                        feedback_term: gettext('feedback')
+                    xtype: 'radiogroup',
+                    anchor: '100%',
+                    vertical: true,
+                    columns: 1,
+                    fieldLabel: interpolate(gettext('Add %(deadline_term)s on'), {
+                        deadline_term: gettext('deadline')
                     }, true),
-                    name: 'createmode',
-                    inputValue: 'failed-or-no-feedback'
+                    hideLabel: true,
+                    items: [{
+                        boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
+                            groups_term: gettext('groups'),
+                            grade_term: gettext('grade'),
+                            feedback_term: gettext('feedback')
+                        }, true),
+                        name: 'createmode',
+                        inputValue: 'failed',
+                        checked: true
+                    }, {
+                        boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
+                            groups_term: gettext('groups'),
+                            grade_term: gettext('grade'),
+                            feedback_term: gettext('feedback')
+                        }, true),
+                        name: 'createmode',
+                        inputValue: 'failed-or-no-feedback'
+                    }, {
+                        boxLabel: interpolate(gettext('%(groups_term)s with no %(deadlines_term)s.'), {
+                            groups_term: gettext('groups'),
+                            deadlines_term: gettext('deadlines')
+                        }, true),
+                        name: 'createmode',
+                        inputValue: 'no-deadlines'
+                    }]
                 }, {
-                    boxLabel: interpolate(gettext('%(groups_term)s with no %(deadlines_term)s.'), {
-                        groups_term: gettext('groups'),
-                        deadlines_term: gettext('deadlines')
-                    }, true),
-                    name: 'createmode',
-                    inputValue: 'no-deadlines'
+                    xtype: 'box',
+                    cls: 'bootstrap muted',
+                    html: interpolate(gettext('Use the <a href="%(studentsmanager_url)s">students manager</a> to add %(deadlines_term)s to individual %(groups_term)s or custom selections of %(groups_term)s.'), {
+                        studentsmanager_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
+                        deadlines_term: gettext('deadlines'),
+                        groups_term: gettext('groups')
+                    }, true)
                 }]
-            }, {
-                xtype: 'box',
-                cls: 'bootstrap muted',
-                tpl: [
-                    'Use the <a href="{studentsmanager_url}">students manager</a> to add deadlines to individual groups or custom selections of groups.'
-                ],
-                data: {
-                    studentsmanager_url: '#'
-                }
             }],
 
             buttons: [{
