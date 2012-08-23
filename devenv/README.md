@@ -6,6 +6,12 @@ See ../README.md for info about setting it up.
 ## Building the ExtJS javascript apps
 (only needed if you have made changes to their javascript sources)
 
+
+### Dependencies
+You need to install [Sencha tools 2](http://www.sencha.com/products/sdk-tools/download/) to build the ExtJS javascript apps.
+
+### The tasks
+
 Use one of the jsbuild_* tasks. Use ``fab -l`` to list them all. Example:
 
     $ fab jsbuild_devilry_subjectadmin
