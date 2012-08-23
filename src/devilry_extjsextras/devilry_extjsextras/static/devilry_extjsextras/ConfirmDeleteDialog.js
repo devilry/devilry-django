@@ -29,7 +29,11 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
      * however it can be overridden.  Can use ``required_confirm_text`` and
      * ``short_description`` as template variables.
      */
-    helptpl: gettext('Type {required_confirm_text} in the field below to confirm that you really intend to delete {short_description}.'),
+    helptpl: [
+        '<p>',
+            gettext('Type {required_confirm_text} in the field below to confirm that you really intend to delete {short_description}.'),
+        '</p>'
+    ],
 
     _apply_template: function(tpl, data) {
         return Ext.create('Ext.XTemplate', tpl).apply(data);
@@ -40,6 +44,7 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
             /**
              * @event
              * Fired when delete is confirmed.
+             * @param dialog This confirm dialog.
              * */
             "deleteConfirmed" : true
         });
@@ -71,15 +76,16 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
                 }, {
                     xtype: 'box',
                     margin: {bottom: 5},
-                    html: this._apply_template(this.helptpl, {
+                    cls: 'bootstrap',
+                    tpl: this.helptpl,
+                    data: {
                         short_description: this.short_description,
                         required_confirm_text: this.required_confirm_text
-                    })
+                    }
                 }, {
                     name: "confirm_text",
                     xtype: 'textfield',
                     regex: new RegExp('^' + this.required_confirm_text + '$'),
-                    emptyText: short_helptext,
                     invalidText: short_helptext,
                     allowBlank: false,
                     listeners: {
@@ -133,7 +139,7 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
     _onDelete: function() {
         var form = this._getForm();
         if(form.isValid()) {
-            this.fireEvent('deleteConfirmed')
+            this.fireEvent('deleteConfirmed', this)
         }
     },
 
