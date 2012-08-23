@@ -2,10 +2,12 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.groupinfo_delivery',
     //ui: 'lookslike-parawitheader-panel',
-    margin: '40 20 20 20',
     requires: [
         'devilry_extjsextras.DatetimeHelpers'
     ],
+
+    margin: '40 20 20 20',
+    border: false,
 
     /**
      * @cfg {Object} [delivery]
@@ -64,7 +66,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     ],
 
     headerTpl: [
-        '{delivery_text}: {delivery.number}'
+        '<h1>{delivery_text}: {delivery.number}</h1>'
     ],
 
     initComponent: function() {
@@ -76,39 +78,47 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         //});
 
         Ext.apply(this, {
-            ui: has_active_feedback? 'inset-header-strong-panel': 'inset-header-panel',
+            //ui: has_active_feedback? 'inset-header-strong-panel': 'inset-header-panel',
             cls: 'devilry_student_groupinfo_delivery devilry_student_groupinfo_delivery_' + (this._hasFeedback()? 'hasfeedback': 'nofeedback'),
-            title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
-                delivery_text: gettext('Delivery'),
-                delivery: this.delivery
-            }),
             itemId: Ext.String.format('delivery-{0}', this.delivery.id),
-            layout: 'column',
             items: [{
-                columnWidth: 0.3,
                 xtype: 'box',
-                cls: 'bootstrap devilry_student_groupinfo_delivery_meta',
-                itemId: 'meta',
-                tpl: this.metaTpl,
+                cls: 'bootstrap',
+                tpl: this.headerTpl,
                 data: {
-                    delivery: this.delivery,
-                    latest_feedback: latest_feedback,
-                    has_active_feedback: has_active_feedback,
-                    offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
-                    feedback_term: gettext('feedback'),
-                    examiner_term: gettext('examiner'),
-                    downloadAllUrl: this._getDownloadAllUrl()
+                    delivery_text: gettext('Delivery'),
+                    delivery: this.delivery
                 }
             }, {
-                xtype: 'box',
-                columnWidth: 0.7,
-                tpl: this.feedbackTpl,
-                itemId: 'feedback',
-                cls: 'bootstrap devilry_student_groupinfo_delivery_rendered_view',
-                padding: '0 0 0 40',
-                data: {
-                    latest_feedback: latest_feedback
-                }
+                xtype: 'container',
+                layout: 'column',
+                margin: '10 0 0 0',
+                items: [{
+                    columnWidth: 0.3,
+                    xtype: 'box',
+                    cls: 'bootstrap devilry_student_groupinfo_delivery_meta',
+                    itemId: 'meta',
+                    tpl: this.metaTpl,
+                    data: {
+                        delivery: this.delivery,
+                        latest_feedback: latest_feedback,
+                        has_active_feedback: has_active_feedback,
+                        offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
+                        feedback_term: gettext('feedback'),
+                        examiner_term: gettext('examiner'),
+                        downloadAllUrl: this._getDownloadAllUrl()
+                    }
+                }, {
+                    xtype: 'box',
+                    columnWidth: 0.7,
+                    tpl: this.feedbackTpl,
+                    itemId: 'feedback',
+                    cls: 'bootstrap devilry_student_groupinfo_delivery_rendered_view',
+                    padding: '0 0 0 40',
+                    data: {
+                        latest_feedback: latest_feedback
+                    }
+                }]
             }]
         });
         this.callParent(arguments);
