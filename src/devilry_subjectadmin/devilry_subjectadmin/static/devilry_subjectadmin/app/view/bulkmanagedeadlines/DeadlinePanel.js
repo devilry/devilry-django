@@ -176,7 +176,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                     xtype: 'box',
                     columnWidth: 1,
                     padding: '0 0 0 30',
-                    html: 'filter groups'
+                    hidden: true
+                    //html: 'TODO: filter groups'
                 }]
             }]
         });

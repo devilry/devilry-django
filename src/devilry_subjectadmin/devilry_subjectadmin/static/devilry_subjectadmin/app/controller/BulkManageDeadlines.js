@@ -3,6 +3,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     mixins: [
         'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
+        'devilry_subjectadmin.utils.LoadAssignmentMixin',
+        'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
         'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     ],
 
@@ -16,6 +18,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     views: [
         'bulkmanagedeadlines.BulkManageDeadlinesPanel',
         'bulkmanagedeadlines.DeadlinePanel'
+    ],
+
+    models: [
+        'Assignment'
     ],
 
     stores: [
@@ -71,8 +77,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onRender: function() {
+        this.setLoadingBreadcrumb();
         this.getBulkManageDeadlinesPanel().setLoading();
         this.assignment_id = this.getBulkManageDeadlinesPanel().assignment_id;
+        this.loadAssignment(this.assignment_id);
         var store = this.getDeadlinesBulkStore();
         store.proxy.setUrl(this.assignment_id);
         store.load({
@@ -86,6 +94,20 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 }
             }
         });
+    },
+
+    _setBreadcrumb: function(subviewtext) {
+        var title = interpolate(gettext('Manage %(deadlines_term)s'), {
+            deadlines_term: gettext('deadlines')
+        }, true);
+        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], title);
+    },
+    onLoadAssignmentSuccess: function(record) {
+        this.assignmentRecord = record;
+        this._setBreadcrumb();
+    },
+    onLoadAssignmentFailure: function(operation) {
+        this.onLoadFailure(operation);
     },
 
     _onLoadSuccess: function(deadlineRecords, operation) {
