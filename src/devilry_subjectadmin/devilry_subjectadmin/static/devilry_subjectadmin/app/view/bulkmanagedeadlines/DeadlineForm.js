@@ -31,7 +31,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 xtype: 'box',
                 anchor: '100%',
                 html: [
-                    '<h2>',
+                    '<h2 class="oneline_ellipsis">',
                         gettext('Deadline'),
                         ' <small>- ', gettext('The time when the deadline expires'), '</small>',
                     '</h2>',
@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 xtype: 'box',
                 margin: '20 0 0 0',
                 html: [
-                    '<h2>',
+                    '<h2 class="oneline_ellipsis">',
                         gettext('About this deadline'),
                         ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
                     '</h2>',

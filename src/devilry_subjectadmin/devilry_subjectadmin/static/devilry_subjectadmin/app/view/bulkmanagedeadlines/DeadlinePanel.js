@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
 
     deadlineTextTpl: [
-        '<h2 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">',
+        '<h2 class="oneline_ellipsis">',
             gettext('About this deadline'),
             ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
         '</h2>',
@@ -66,7 +66,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     ],
 
     groupsHeaderTpl: [
-        '<h2>',
+        '<h2 class="oneline_ellipsis">',
             gettext('Groups'),
             ' <small>- ',
                 interpolate(gettext('%(Students_term)s are organized in %(groups_term)s, even when they work alone'), {
