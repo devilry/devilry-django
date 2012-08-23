@@ -53,18 +53,11 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                 }, true),
             '</tpl>',
         '</p>',
-        '<tpl if="groupinfo.is_open">',
-            '<p>',
-                '<a class="add_delivery_link" href="#/group/{groupinfo.id}/@@add-delivery">',
-                    interpolate(gettext('Add %(delivery_term)s'), {
-                        delivery_term: gettext('delivery'),
-                    }, true),
-                '</a>',
-            '</p>',
-        '</tpl>',
+
+
+        '<h3>', gettext('Deliveries'), '</h3>',
         '<tpl if="deliveries">',
             '<tpl if="deliveries.length &gt; 0">',
-                '<h3>', gettext('Deliveries'), '</h3>',
                 '<ul>',
                     '<tpl for="deliveries">',
                         '<li><a class="delivery_link" href="#/group/{parent.groupinfo.id}/{id}" data-deliveryid="{id}">',
@@ -73,6 +66,15 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     '</tpl>',
                 '</ul>',
             '</tpl>',
+        '</tpl>',
+        '<tpl if="groupinfo.is_open">',
+            '<p>',
+                '<a class="add_delivery_link" href="#/group/{groupinfo.id}/@@add-delivery">',
+                    interpolate(gettext('Add %(delivery_term)s'), {
+                        delivery_term: gettext('delivery'),
+                    }, true),
+                '</a>',
+            '</p>',
         '</tpl>'
     ],
 

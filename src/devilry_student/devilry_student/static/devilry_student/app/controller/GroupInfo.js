@@ -205,7 +205,6 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
     _addDelivery: function() {
         if(!this.groupInfoRecord.get('is_open')) {
-            // NOTE: We use an error message since the user do not get this through normal UI navigation
             this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on closed groups.'), {
                 deliveries_term: gettext('deliveries')
             }, true));
@@ -214,7 +213,6 @@ Ext.define('devilry_student.controller.GroupInfo', {
         var deadlines = this.groupInfoRecord.get('deadlines');
         var latest_deadline = this._getLatestDeadline();
         if(typeof latest_deadline == 'undefined') {
-            // NOTE: We use an error message since the user do not get this through normal UI navigation
             this._showLoadError(interpolate(gettext('Can not add %(deliveries_term)s on a group without a %(deadline_term)s.'), {
                 deliveries_term: gettext('deliveries'),
                 deadline_term: gettext('deadline')
