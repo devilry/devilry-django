@@ -14,5 +14,12 @@ To build without compressing the JS-sources (**for debugging**):
 
     $ fab jsbuild_devilry_subjectadmin:nocompress=true
 
+## Watch the filesystem for changes and rebuild
+
+Just call the tasks with ``watch=true``. E.g.:
+
+    $ fab jsbuild_devilry_subjectadmin:nocompress=true,watch=true
+
+
 ### Broken pipe errors
 You will most likely get a lot of broken pipe errors. This does not seem to cause any problems with the build.

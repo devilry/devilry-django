@@ -120,36 +120,39 @@ def restore_db(sqldumpfile):
     local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
 
 @task
-def jsbuild(appname, nocompress=False):
+def jsbuild(appname, nocompress=False, watch=False):
     """
     Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
     ``appname``.
 
     :param appname: Name of an app, like ``devilry_frontpage``.
     :param nocompress: Run with ``--nocompress``. Good for debugging.
+    :param watch: Run with ``--watch ../src/``. Good for development.
     """
     extra_args = ''
     if nocompress:
-        extra_args = '--nocompress'
+        extra_args += ' --nocompress'
+    if watch:
+        extra_args += ' --watch ../src/'
     local(('bin/django_dev.py senchatoolsbuild {extra_args} '
            '--app {appname} '
            '--settings settings.extjsbuild').format(appname=appname,
                                                     extra_args=extra_args))
 
 @task
-def jsbuild_devilry_student(nocompress=False):
+def jsbuild_devilry_student(nocompress=False, watch=False):
     jsbuild('devilry_student', nocompress)
 
 @task
-def jsbuild_devilry_frontpage(nocompress=False):
-    jsbuild('devilry_frontpage', nocompress)
+def jsbuild_devilry_frontpage(nocompress=False, watch=False):
+    jsbuild('devilry_frontpage', nocompress, watch)
 
 @task
-def jsbuild_devilry_subjectadmin(nocompress=False):
-    jsbuild('devilry_subjectadmin', nocompress)
+def jsbuild_devilry_subjectadmin(nocompress=False, watch=False):
+    jsbuild('devilry_subjectadmin', nocompress, watch)
 
 @task
-def jsbuild_all(nocompress=False):
-    jsbuild_devilry_student(nocompress)
-    jsbuild_devilry_frontpage(nocompress)
-    jsbuild_devilry_subjectadmin(nocompress)
+def jsbuild_all(nocompress=False, watch=False):
+    jsbuild_devilry_student(nocompress, watch)
+    jsbuild_devilry_frontpage(nocompress, watch)
+    jsbuild_devilry_subjectadmin(nocompress, watch)
