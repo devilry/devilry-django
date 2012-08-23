@@ -23,6 +23,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
      * Edit the deadline specified by ``bulkdeadline_id`` on load?
      */
 
+    /**
+     * @cfg {bool} [add_deadline=false]
+     * Add a deadline on load?
+     */
+
     frame: false,
     border: 0,
     bodyPadding: 40,

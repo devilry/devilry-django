@@ -69,6 +69,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'container',
                 itemId: 'createmodeContainer',
+                hidden: true,
                 items: [{
                     xtype: 'box',
                     margin: '20 0 0 0',

@@ -163,6 +163,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroupsAddStudents');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/", 'bulkManageDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
+        this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
         this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
         this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
@@ -257,16 +258,20 @@ Ext.application({
         });
     },
 
-    bulkManageDeadlines: function(routeInfo, assignment_id, bulkdeadline_id, edit_deadline) {
+    bulkManageDeadlines: function(routeInfo, assignment_id, bulkdeadline_id, edit_deadline, add_deadline) {
         this.setPrimaryContent({
             xtype: 'bulkmanagedeadlinespanel',
             assignment_id: assignment_id,
             bulkdeadline_id: bulkdeadline_id,
-            edit_deadline: edit_deadline
+            edit_deadline: edit_deadline,
+            add_deadline: add_deadline
         });
     },
     bulkEditDeadlines: function(routeInfo, assignment_id, bulkdeadline_id) {
         this.bulkManageDeadlines(routeInfo, assignment_id, bulkdeadline_id, true);
+    },
+    bulkAddDeadlines: function(routeInfo, assignment_id) {
+        this.bulkManageDeadlines(routeInfo, assignment_id, undefined, false, true);
     },
 
     allWhereIsAdmin: function() {

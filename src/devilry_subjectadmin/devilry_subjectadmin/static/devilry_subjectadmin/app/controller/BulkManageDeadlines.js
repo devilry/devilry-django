@@ -117,6 +117,11 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var bulkdeadline_id = this.getBulkManageDeadlinesPanel().bulkdeadline_id;
         if(typeof bulkdeadline_id !== 'undefined') {
             this._expandDeadlineById(bulkdeadline_id);
+        } else {
+            var add_deadline = this.getBulkManageDeadlinesPanel().add_deadline;
+            if(add_deadline) {
+                this._onAddDeadline();
+            }
         }
     },
 
@@ -146,9 +151,13 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             this._expandDeadlinePanel(deadlinePanel);
         } else {
             deadlinePanel.collapse();
-            var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id);
-            this.application.route.setHashWithoutEvent(hash);
+            this._setNoDeadlineSelectedHash();
         }
+    },
+
+    _setNoDeadlineSelectedHash: function() {
+        var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id);
+        this.application.route.setHashWithoutEvent(hash);
     },
 
     _expandDeadlinePanel: function(deadlinePanel) {
@@ -243,12 +252,15 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     _onAddDeadline: function() {
         this.getNormalBodyContainer().hide();
         this.getAddDeadlineBodyContainer().show();
+        var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageAddDeadlines(this.assignment_id);
+        this.application.route.setHashWithoutEvent(hash);
     },
 
     _onCancelAddNewDeadline: function(formpanel) {
         this._unsetActiveDeadlineFormPanel();
         this.getAddDeadlineBodyContainer().hide();
         this.getNormalBodyContainer().show();
+        this._setNoDeadlineSelectedHash();
     },
 
     _onSaveNewDeadline: function(formpanel) {
@@ -256,12 +268,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         formpanel.setLoading(gettext('Saving') + ' ...');
         var form = formpanel.getForm();
         var values = form.getFieldValues();
-        console.log(values);
         var deadlineRecord = Ext.create('devilry_subjectadmin.model.DeadlineBulk');
         deadlineRecord.set('deadline', values.deadline);
         deadlineRecord.set('text', values.text);
         deadlineRecord.set('createmode', values.createmode);
-        console.log(deadlineRecord);
         deadlineRecord.save({
             scope: this,
             callback: function(updatedDeadlineRecord, operation) {
