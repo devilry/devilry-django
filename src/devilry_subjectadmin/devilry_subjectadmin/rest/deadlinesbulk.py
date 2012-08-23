@@ -60,31 +60,38 @@ def texthashmatch(texthash, text):
         return texthash == sha1hash(text)
 
 class GroupsListResource(ModelResource):
-    model = AssignmentGroup
-    fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
+    model = Deadline
+    fields = ('id', 'name', 'is_open', 'num_deliveries',
               'parentnode', 'feedback', 'candidates')
 
-    def parentnode(self, instance):
-        return int(instance.parentnode_id)
+    def id(self, deadline):
+        return int(deadline.assignment_group.id)
 
-    def feedback(self, instance):
-        return GroupSerializer(instance).serialize_feedback()
+    def name(self, deadline):
+        return deadline.assignment_group.id
 
-    def deadlines(self, instance):
-        return GroupSerializer(instance).serialize_deadlines()
+    def is_open(self, deadline):
+        return deadline.assignment_group.is_open
 
-    #def tags(self, instance):
-        #return GroupSerializer(instance).serialize_tags()
+    def parentnode(self, deadline):
+        return int(deadline.assignment_group.parentnode_id)
 
-    #def examiners(self, instance):
-        #return GroupSerializer(instance).serialize_examiners()
+    def feedback(self, deadline):
+        return GroupSerializer(deadline.assignment_group).serialize_feedback()
 
-    def candidates(self, instance):
-        return GroupSerializer(instance).serialize_candidates()
+    def deadlines(self, deadline):
+        return GroupSerializer(deadline.assignment_group).serialize_deadlines()
+
+    def candidates(self, deadline):
+        return GroupSerializer(deadline.assignment_group).serialize_candidates()
 
 
-def create_deadlinedict(assignment_id, deadline, groups, now=None):
+def create_deadlinedict(assignment_id, deadlines, now=None, autoserialize_groups=True):
     now = now or datetime.now()
+    deadline = deadlines[0]
+    groups = []
+    if autoserialize_groups:
+        groups = GroupsListResource().serialize(deadlines)
     bulkdeadline_id = encode_bulkdeadline_id(deadline)
     return {'bulkdeadline_id': bulkdeadline_id,
             'deadline': format_datetime(deadline.deadline),
@@ -180,12 +187,11 @@ class DeadlinesBulkListOrCreate(View):
             bulkid = encode_bulkdeadline_id(deadline)
             if not bulkid in distinct_deadlines:
                 serialized_deadline = create_deadlinedict(assignment_id=self.assignment_id,
-                                                          deadline=deadline,
-                                                          groups=[],
+                                                          deadlines=[deadline],
+                                                          autoserialize_groups=False,
                                                           now=self.now)
                 distinct_deadlines[bulkid] = serialized_deadline
-            serialized_group = GroupsListResource().serialize(deadline.assignment_group)
-            distinct_deadlines[bulkid]['groups'].append(serialized_group)
+            distinct_deadlines[bulkid]['groups'].append(GroupsListResource().serialize(deadline))
         return distinct_deadlines.values()
 
     def _deadline_cmp(self, a, b):
@@ -199,6 +205,7 @@ class DeadlinesBulkListOrCreate(View):
     def _aggregate_deadlines(self):
         qry = Deadline.objects.filter(assignment_group__parentnode=self.assignment_id)
         qry = qry.select_related('assignment_group', 'assignment_group__feedback')
+        qry = qry.annotate(num_deliveries=Count('deliveries'))
         qry = qry.prefetch_related('assignment_group__examiners',
                                    'assignment_group__examiners__user',
                                    'assignment_group__examiners__user__devilryuserprofile',
@@ -270,8 +277,7 @@ class DeadlinesBulkListOrCreate(View):
         groups = deadlines_as_groupobjects(deadlines)
         assignment_id = self.kwargs['id']
         content = create_deadlinedict(assignment_id=assignment_id,
-                                      deadline=deadlines[0],
-                                      groups=GroupsListResource().serialize(groups))
+                                      deadlines=deadlines)
         return Response(status=201, content=content)
 
 
@@ -311,6 +317,7 @@ class DeadlinesBulkUpdateReadOrDelete(View):
         deadline_datetime, texthash = decode_bulkdeadline_id(bulkdeadline_id)
         qry = Deadline.objects.filter(assignment_group__parentnode=assignment_id,
                                       deadline=deadline_datetime)
+        qry = qry.annotate(num_deliveries=Count('deliveries'))
         qry = qry.select_related('assignment_group', 'assignment_group__feedback')
         qry = qry.prefetch_related('assignment_group__examiners',
                                    'assignment_group__examiners__user',
@@ -327,22 +334,17 @@ class DeadlinesBulkUpdateReadOrDelete(View):
             raise NotFoundError('No deadline matching: {0}'.format(bulkdeadline_id))
         return deadlines
 
-    def _as_groupobjects(self, deadlines):
-        return map(lambda deadline: deadline.assignment_group, deadlines)
-
-    def _create_response(self, deadline, groups):
+    def _create_response(self, deadlines):
         assignment_id = self.kwargs['id']
         return create_deadlinedict(assignment_id=assignment_id,
-                                   deadline=deadline,
-                                   groups=GroupsListResource().serialize(groups))
+                                   deadlines=deadlines)
 
     #
     # GET
     #
     def get(self, request, id, bulkdeadline_id):
         deadlines = self._deadlineqry()
-        groups = deadlines_as_groupobjects(deadlines)
-        return self._create_response(deadlines[0], groups)
+        return self._create_response(deadlines)
 
 
     #
@@ -369,8 +371,7 @@ class DeadlinesBulkUpdateReadOrDelete(View):
     def put(self, request, id, bulkdeadline_id):
         deadlines = self._deadlineqry()
         deadlines = self._update_deadlines(deadlines)
-        groups = deadlines_as_groupobjects(deadlines)
-        return self._create_response(deadlines[0], groups)
+        return self._create_response(deadlines)
 
 
 

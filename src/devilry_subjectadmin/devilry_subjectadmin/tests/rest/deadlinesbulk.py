@@ -125,7 +125,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
                                                  'text': 'Created',
                                                  'createmode': 'failed'})
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['detail'], 'The given parameters did not match any groups.')
+        self.assertEquals(content['field_errors']['createmode'], ['The given option did not match any groups.'])
 
     def test_post_createmode_failed(self):
         self.testhelper.add_delivery('sub.p1.a1.g1', {'bad.py': ['print ', 'bah']})
