@@ -7,6 +7,10 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
     titleCollapse: true,
     animCollapse: false,
 
+    requires: [
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
+
     /**
      * @cfg {Object} [deadline]
      */
@@ -16,9 +20,16 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
      */
 
     headerTpl: [
-        '<div class="linklike">',
-            '<em class="deadline_label">{deadline_term}</em>: ',
-            '<span class="deadline">{deadline_formatted}</span>',
+        '<div class="bootstrap">',
+            '<span class="linklike">',
+                '<em class="deadline_label">{deadline_term}</em>: ',
+                '<span class="deadline">{deadline_formatted}</span>',
+            '</span>',
+            '<tpl if="in_the_future">',
+                '<span class="success"> ({offset_from_now})</span>',
+            '<tpl else>',
+                '<span class="danger"> ({offset_from_now})</span>',
+            '</tpl>',
         '</div>',
         '<div class="metadata"><small><em>{deliveries_term}</em>: {delivery_count}</small></div>'
     ],
@@ -26,6 +37,8 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
     initComponent: function() {
         var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
         var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d H:i:s');
+        var offset_from_now = this.deadline.offset_from_now;
+        offset_from_now = devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(offset_from_now);
 
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadline.id),
@@ -33,7 +46,9 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
                 deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
                 delivery_count: this.deadline.deliveries.length,
-                deliveries_term: gettext('Deliveries')
+                deliveries_term: gettext('Deliveries'),
+                offset_from_now: offset_from_now,
+                in_the_future: this.deadline.in_the_future
             }),
             items: [{
                 xtype: 'container',
