@@ -26,9 +26,16 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
      */
 
     headerTpl: [
-        '<div class="linklike">',
-            '<em class="deadline_label">{deadline_term}</em>: ',
-            '<span class="deadline">{deadline_formatted}</span>',
+        '<div class="bootstrap">',
+            '<span class="linklike">',
+                '<em class="deadline_label">{deadline_term}</em>: ',
+                '<span class="deadline">{deadline_formatted}</span>',
+            '</span>',
+            '<tpl if="in_the_future">',
+                '<span class="success"> ({offset_from_now})</span>',
+            '<tpl else>',
+                '<span class="danger"> ({offset_from_now})</span>',
+            '</tpl>',
         '</div>',
         '<div class="metadata">',
             '<small><em>{groups_term}</em>: {groupcount}</small>',
@@ -106,7 +113,9 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 groups_term: gettext('Groups'),
                 groupcount: this.deadlineRecord.get('groups').length,
                 text_title: gettext('Deadline text'),
-                text: this.deadlineRecord.formatTextOneline(50)
+                text: this.deadlineRecord.formatTextOneline(50),
+                in_the_future: this.deadlineRecord.get('in_the_future'),
+                offset_from_now: this.deadlineRecord.formatOffsetFromNow()
             }),
             items: [{
                 xtype: 'bulkmanagedeadlines_deadlineform',

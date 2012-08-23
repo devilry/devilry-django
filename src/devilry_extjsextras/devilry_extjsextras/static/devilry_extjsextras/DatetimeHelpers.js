@@ -11,5 +11,17 @@ Ext.define('devilry_extjsextras.DatetimeHelpers', {
         } else {
             return interpolate(gettext('%s seconds'), [delta.seconds]);
         }
+    },
+
+    formatTimedeltaRelative: function(delta, in_the_future) {
+        if(in_the_future) {
+            return interpolate(gettext('In %(delta)s'), {
+                delta: this.formatTimedeltaShort(delta)
+            }, true);
+        } else {
+            return interpolate(gettext('%(delta)s ago'), {
+                delta: this.formatTimedeltaShort(delta)
+            }, true);
+        }
     }
 });

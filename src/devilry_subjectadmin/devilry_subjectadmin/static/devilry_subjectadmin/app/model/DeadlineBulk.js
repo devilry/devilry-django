@@ -2,7 +2,8 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
     extend: 'Ext.data.Model',
 
     requires: [
-        'Ext.Date'
+        'Ext.Date',
+        'devilry_extjsextras.DatetimeHelpers'
     ],
 
     idProperty: 'bulkdeadline_id',
@@ -31,6 +32,11 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
         setUrl: function(assignment_id) {
             this.url = Ext.String.format(this.urlpatt, assignment_id);
         }
+    },
+
+    formatOffsetFromNow: function() {
+        return devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
+            this.get('offset_from_now'), this.get('in_the_future'));
     },
 
     formatTextOneline: function(maxlength) {
