@@ -39,7 +39,8 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
             this.get('offset_from_now'), this.get('in_the_future'));
     },
 
-    formatTextOneline: function(maxlength) {
+    formatTextOneline: function() {
+        var maxlength = 50;
         var text = this.get('text');
         if(text == null || text.length == 0) {
             return null;

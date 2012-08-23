@@ -113,7 +113,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 groups_term: gettext('Groups'),
                 groupcount: this.deadlineRecord.get('groups').length,
                 text_title: gettext('Deadline text'),
-                text: this.deadlineRecord.formatTextOneline(50),
+                text: this.deadlineRecord.formatTextOneline(),
                 in_the_future: this.deadlineRecord.get('in_the_future'),
                 offset_from_now: this.deadlineRecord.formatOffsetFromNow()
             }),
