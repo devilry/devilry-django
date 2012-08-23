@@ -135,13 +135,13 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                     }
                 }, {
                     xtype: 'container',
-                    width: 150,
+                    width: 180,
                     itemId: 'deadlineButtonContainer',
                     margin: '0 0 0 40',
                     items: [{
                         xtype: 'primarybutton',
                         itemId: 'editDeadlineButton',
-                        width: 150,
+                        width: 180,
                         margin: '0 0 10 0',
                         text: gettext('Edit/move'),
                         listeners: {
@@ -151,7 +151,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                     }, {
                         xtype: 'deletebutton',
                         itemId: 'deleteDeadlineButton',
-                        width: 150,
+                        width: 180,
                         listeners: {
                             scope: this,
                             click: this._onDelete

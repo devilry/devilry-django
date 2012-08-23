@@ -2135,7 +2135,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app-all.js:96545
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:146
 msgid "Edit/move"
-msgstr ""
+msgstr "Rediger/flytt"
 
 #: static/devilry_subjectadmin/all-classes.js:97013
 #: static/devilry_subjectadmin/all-classes.js:97035
