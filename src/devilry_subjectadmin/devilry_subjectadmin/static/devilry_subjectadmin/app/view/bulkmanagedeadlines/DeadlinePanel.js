@@ -12,7 +12,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         'devilry_subjectadmin.model.Group',
         'devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid',
         'devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm',
-        'devilry_extjsextras.PrimaryButton'
+        'devilry_extjsextras.PrimaryButton',
+        'devilry_extjsextras.DeleteButton'
     ],
 
     /**
@@ -82,7 +83,14 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
              * @param panel This panel
              * @param deadlineRecod The deadline record.
              */
-            'editDeadline'
+            'editDeadline',
+
+            /* @event
+             * Fired when the delete deadline button is clicked.
+             * @param panel This panel
+             * @param deadlineRecod The deadline record.
+             */
+            'deleteDeadline'
         );
         this.callParent([config]);
     },
@@ -118,15 +126,29 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                         text: this.deadlineRecord.get('text')
                     }
                 }, {
-                    xtype: 'primarybutton',
-                    itemId: 'editDeadlineButton',
+                    xtype: 'container',
                     width: 150,
+                    itemId: 'deadlineButtonContainer',
                     margin: '0 0 0 40',
-                    text: gettext('Edit/move'),
-                    listeners: {
-                        scope: this,
-                        click: this._onEdit
-                    }
+                    items: [{
+                        xtype: 'primarybutton',
+                        itemId: 'editDeadlineButton',
+                        width: 150,
+                        margin: '0 0 10 0',
+                        text: gettext('Edit/move'),
+                        listeners: {
+                            scope: this,
+                            click: this._onEdit
+                        }
+                    }, {
+                        xtype: 'deletebutton',
+                        itemId: 'deleteDeadlineButton',
+                        width: 150,
+                        listeners: {
+                            scope: this,
+                            click: this._onDelete
+                        }
+                    }]
                 }]
             }, {
                 xtype: 'box',
@@ -161,7 +183,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         return store;
     },
 
-    _onEdit: function(button, e) {
+    _onEdit: function(button) {
         this.fireEvent('editDeadline', this, this.deadlineRecord);
+    },
+
+    _onDelete: function(button) {
+        this.fireEvent('deleteDeadline', this, this.deadlineRecord);
     }
 });

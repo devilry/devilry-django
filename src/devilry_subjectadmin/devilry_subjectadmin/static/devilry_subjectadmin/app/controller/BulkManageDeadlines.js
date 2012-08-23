@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     requires: [
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.form.ErrorUtils'
+        'devilry_extjsextras.form.ErrorUtils',
+        'devilry_extjsextras.ConfirmDeleteDialog'
     ],
 
     views: [
@@ -47,7 +48,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 click: this._onDeadlineHeaderClick
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline': {
-                editDeadline: this._onEditDeadline
+                editDeadline: this._onEditDeadline,
+                deleteDeadline: this._onDeleteDeadline
             },
             'viewport bulkmanagedeadlinespanel #addDeadlineButton': {
                 click: this._onAddDeadline
@@ -174,7 +176,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         this.application.route.setHashWithoutEvent(hash);
         this._setActiveDeadlineFormPanel(formpanel);
 
-        deadlinePanel.down('#editDeadlineButton').hide();
+        deadlinePanel.down('#deadlineButtonContainer').hide();
         formpanel.show();
         this._scrollTo(formpanel);
         var form = formpanel.getForm();
@@ -197,7 +199,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var deadlinePanel = formpanel.up('bulkmanagedeadlines_deadline');
         var deadlineRecord = deadlinePanel.deadlineRecord;
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
-        deadlinePanel.down('#editDeadlineButton').show();
+        deadlinePanel.down('#deadlineButtonContainer').show();
         this.application.route.setHashWithoutEvent(hash);
         this._scrollTo(deadlinePanel);
     },
@@ -240,6 +242,39 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             alertmessagelist.removeAll();
             this.handleProxyErrorNoForm(alertmessagelist, response, operation);
         }
+    },
+
+    //
+    //
+    // Delete deadline
+    //
+    //
+    
+    _onDeleteDeadline: function(deadlinePanel, deadlineRecord) {
+        console.log('delete', deadlineRecord);
+        
+        Ext.create('devilry_extjsextras.ConfirmDeleteDialog', {
+            short_description: Ext.String.format('<strong>{0}</strong>', deadlineRecord.get('bulkdeadline_id')),
+            listeners: {
+                scope: this,
+                deleteConfirmed: function(deleteDialog) {
+                    this._onConfirmDeleteDeadline(deleteDialog, deadlineRecord);
+                }
+            }
+        }).show();
+    },
+
+    _onConfirmDeleteDeadline: function(deleteDialog, deadlineRecord) {
+        deleteDialog.setLoading(gettext('Saving') + ' ...');
+        deadlineRecord.destroy({
+            scope: this,
+            // NOTE: failure is handled in _onDeadlinesBulkStoreProxyError
+            success: function() {
+                this._setNoDeadlineSelectedHash();
+                deleteDialog.close();
+                window.location.reload();
+            }
+        });
     },
 
 
