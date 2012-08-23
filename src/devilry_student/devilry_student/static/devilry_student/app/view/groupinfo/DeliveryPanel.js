@@ -94,7 +94,9 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         Ext.apply(this, {
             cls: 'devilry_student_groupinfo_delivery devilry_student_groupinfo_delivery_' + (this._hasFeedback()? 'hasfeedback': 'nofeedback'),
             itemId: Ext.String.format('delivery-{0}', this.delivery.id),
-            margin: this.index_in_deadline === 0? '20 20 20 20': '40 20 20 20',
+            padding: 0,
+            margin: 0,
+            bodyPadding: this.index_in_deadline === 0? '20 20 20 20': '40 20 20 20',
             border: false,
             items: [{
                 xtype: 'box',

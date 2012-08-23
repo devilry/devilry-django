@@ -3,7 +3,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
     requires: [
         'Ext.window.MessageBox',
-        'devilry_student.view.add_delivery.AddDeliveryPanel'
+        'devilry_student.view.add_delivery.AddDeliveryPanel',
+        'Ext.fx.Animator'
     ],
 
     views: [
@@ -145,6 +146,27 @@ Ext.define('devilry_student.controller.GroupInfo', {
             container.expand();
             //deliveryPanel.el.scrollIntoView(this.getOverview().body, false, true);
             deliveryPanel.el.scrollIntoView(this.getDeadlinesContainer().body, false, true);
+            //deliveryPanel.body.setStyle({
+                //'background-color': 'red'
+            //});
+            Ext.create('Ext.fx.Animator', {
+                target: deliveryPanel.body,
+                duration: 3000,
+                keyframes: {
+                    0: {
+                        backgroundColor: '#FFFFFF'
+                    },
+                    20: {
+                        backgroundColor: '#FBEED5'
+                    },
+                    50: {
+                        backgroundColor: '#FBEED5'
+                    },
+                    100: {
+                        backgroundColor: '#FFFFFF'
+                    }
+                }
+            });
         } else {
             this._showLoadError(interpolate(gettext('Invalid delivery: %s'), [delivery_id]));
         }
