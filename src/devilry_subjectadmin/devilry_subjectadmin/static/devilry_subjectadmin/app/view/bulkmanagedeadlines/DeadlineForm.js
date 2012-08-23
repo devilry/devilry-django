@@ -76,6 +76,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 anchor: '100%',
                 vertical: true,
                 columns: 1,
+                fieldLabel: interpolate(gettext('Add %(deadline_term)s on'), {
+                    deadline_term: gettext('deadline')
+                }, true),
+                hideLabel: true,
                 items: [{
                     boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
                         groups_term: gettext('groups'),
@@ -93,6 +97,13 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     }, true),
                     name: 'createmode',
                     inputValue: 'failed-or-no-feedback'
+                }, {
+                    boxLabel: interpolate(gettext('%(groups_term)s with no %(deadlines_term)s.'), {
+                        groups_term: gettext('groups'),
+                        deadlines_term: gettext('deadlines')
+                    }, true),
+                    name: 'createmode',
+                    inputValue: 'no-deadlines'
                 }]
             }, {
                 xtype: 'box',

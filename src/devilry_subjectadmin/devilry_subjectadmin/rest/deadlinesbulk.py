@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from datetime import datetime
 import hashlib
 from django import forms
@@ -244,8 +245,8 @@ class DeadlinesBulkListOrCreate(View):
             try:
                 groups = self._query_creategroups()
                 if len(groups) == 0:
-                    raise ErrorResponse(status.HTTP_400_BAD_REQUEST,
-                                        {'detail': 'The given parameters did not match any groups.'})
+                    raise BadRequestFieldError('createmode',
+                                               _('The given option did not match any groups.'))
                 for group in groups:
                     deadline = Deadline(assignment_group=group)
                     deadline.deadline = new_deadline
