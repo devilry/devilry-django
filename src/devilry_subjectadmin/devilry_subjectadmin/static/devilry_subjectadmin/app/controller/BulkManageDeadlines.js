@@ -251,7 +251,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _onAddDeadline: function() {
         this.getNormalBodyContainer().hide();
+        this.getAddDeadlineBodyContainer().down('alertmessagelist').removeAll(); // NOTE: We clear the error list, but we keep any values, which makes clicking cancel by mistake less bad.
         this.getAddDeadlineBodyContainer().show();
+        this.getAddDeadlineBodyContainer().down('#deadlineField').focus();
+        this.getAddDeadlineBodyContainer().down('#createmodeContainer').show();
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkManageAddDeadlines(this.assignment_id);
         this.application.route.setHashWithoutEvent(hash);
     },
