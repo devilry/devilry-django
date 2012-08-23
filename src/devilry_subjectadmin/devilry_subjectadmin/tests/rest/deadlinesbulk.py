@@ -241,8 +241,9 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
             self.testhelper.add_to_path('uni;sub.p1.a1.g{0}:candidate(cand1):examiner(exam1).d1:ends(5)'.format(groupnum))
 
 
-    def _geturl(self):
-        bulkdeadline_id = encode_bulkdeadline_id(self.testhelper.sub_p1_a1_g1_d1)
+    def _geturl(self, deadline=None):
+        deadline = deadline or self.testhelper.sub_p1_a1_g1_d1
+        bulkdeadline_id = encode_bulkdeadline_id(deadline)
         return '/devilry_subjectadmin/rest/deadlinesbulk/{0}/{1}'.format(self.testhelper.sub_p1_a1.id,
                                                                          bulkdeadline_id)
 
@@ -342,4 +343,49 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
     def test_get_nobody(self):
         self.testhelper.create_user('nobody')
         content, response = self._getas('nobody')
+        self.assertEquals(response.status_code, 403)
+
+    def _deleteas(self, username, deadline=None):
+        self.client.login(username=username, password='test')
+        return self.client.rest_delete(self._geturl(deadline))
+
+    def test_delete_sanity(self):
+        # Test that the deadline method actually does what it is supposed to do (only deletes what it should delete)
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        created_deadline = None
+        for groupnum in xrange(2):
+            group = getattr(self.testhelper, 'sub_p1_a1_g{0}'.format(groupnum))
+            self.assertEquals(1, group.deadlines.count())
+            created_deadline = group.deadlines.create(deadline=new_deadline) # NOTE: Does not matter which deadline object we user, since we only need the datetime and text to generate bulkdeadline_id
+            self.assertEquals(2, group.deadlines.count())
+        self.testhelper.sub_p1_a1_g2.deadlines.create(deadline=datetime(2006, 12, 24, 20, 30, 40))
+
+        self.testhelper.create_superuser('superuser')
+        content, response = self._deleteas('superuser', deadline=created_deadline)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content['deleted_deadline_ids']), 2)
+        self.assertEquals(1, self.testhelper.sub_p1_a1_g0.deadlines.count())
+        self.assertEquals(1, self.testhelper.sub_p1_a1_g1.deadlines.count())
+        self.assertEquals(2, self.testhelper.sub_p1_a1_g2.deadlines.count())
+
+    def test_delete_with_content_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
+        self.testhelper.add_delivery('sub.p1.a1.g1', {'bad.py': ['print ', 'bah']})
+        self.testhelper.add_feedback('sub.p1.a1.g1', verdict={'grade': 'F', 'points': 30, 'is_passing_grade': False})
+        content, response = self._deleteas('superuser')
+        self.assertEquals(response.status_code, 200)
+
+    def test_delete_with_content_as_assignmentadm(self):
+        self.testhelper.add_delivery('sub.p1.a1.g1', {'bad.py': ['print ', 'bah']})
+        self.testhelper.add_feedback('sub.p1.a1.g1', verdict={'grade': 'F', 'points': 30, 'is_passing_grade': False})
+        content, response = self._deleteas('adm')
+        self.assertEquals(response.status_code, 403)
+
+    def test_delete_without_content_as_assignmentadm(self):
+        content, response = self._deleteas('adm')
+        self.assertEquals(response.status_code, 200)
+
+    def test_delete_as_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._deleteas('nobody')
         self.assertEquals(response.status_code, 403)

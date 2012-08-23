@@ -21,8 +21,9 @@ from .group import GroupSerializer
 from .errors import NotFoundError
 from .errors import ValidationErrorResponse
 from .errors import BadRequestFieldError
+from .errors import PermissionDeniedError
 from .auth import IsAssignmentAdmin
-#from .log import logger
+from .log import logger
 
 
 ID_DATETIME_FORMAT = '%Y-%m-%dT%H_%M_%S'
@@ -275,7 +276,6 @@ class DeadlinesBulkListOrCreate(View):
 
 
 
-
 class DeadlinesBulkUpdateReadOrDelete(View):
     """
     # GET
@@ -371,3 +371,44 @@ class DeadlinesBulkUpdateReadOrDelete(View):
         deadlines = self._update_deadlines(deadlines)
         groups = deadlines_as_groupobjects(deadlines)
         return self._create_response(deadlines[0], groups)
+
+
+
+    #
+    #
+    # DELETE
+    #
+    #
+    def _delete_deadline(self, deadline):
+        deadlineid = deadline.id
+        deadlineident = unicode(deadline)
+        if deadline.can_delete(self.user):
+            deadline.delete()
+            logger.info('User=%s deleted Deadline id=%s (%s)', self.user, deadlineid, deadlineident)
+            return deadlineid
+        else:
+            logger.warn(('User=%s tried to delete Deadline id=%s (%s). They where rejected '
+                         'because of lacking permissions. Since the user-interface '
+                         'should make it hard to perform this action (have to delete deadline '
+                         'while a user adds a delivery), huge amounts of '
+                         'such attempts by this user may be an attempt at trying '
+                         'to delete things that they should not attempt to delete.'),
+                        self.user, deadlineid, deadlineident)
+            msg = ('Not permitted to delete Deadline with id={deadlineid}. '
+                   'Only superusers can delete deadlines with deliveries.')
+            raise PermissionDeniedError(msg.format(deadlineid=deadlineid))
+
+    def delete(self, request, id, bulkdeadline_id):
+        deadlines = self._deadlineqry()
+        deadline_ids = []
+        with transaction.commit_manually():
+            try:
+                for deadline in deadlines:
+                    deadline_ids.append(self._delete_deadline(deadline))
+            except PermissionDeniedError, e:
+                transaction.rollback()
+                raise
+            else:
+                transaction.commit()
+        return {'success': True,
+                'deleted_deadline_ids': deadline_ids}
