@@ -35,7 +35,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
                 render: this._onRender
             },
             'viewport groupinfo groupmetadata': {
-                active_feedback_link_clicked: this._onActiveFeedbackLink
+                active_feedback_link_clicked: this._onActiveFeedbackLink,
+                delivery_link_clicked: this._onDeliveryLink
             },
             'viewport groupinfo groupinfo_delivery #feedback': {
                 render: this._onFeedbackRender
@@ -101,22 +102,39 @@ Ext.define('devilry_student.controller.GroupInfo', {
         });
     },
 
+    _deliveriesAsFlatArray: function(groupInfoRecord) {
+        var deliveries = [];
+        Ext.Array.each(groupInfoRecord.get('deadlines'), function(deadline) {
+            deliveries = deliveries.concat(deadline.deliveries);
+        }, this);
+        return deliveries;
+    },
+
     _populateMetadata: function(groupInfoRecord) {
         this.getMetadataContainer().removeAll();
         this.getMetadataContainer().add({
             xtype: 'groupmetadata',
             data: {
                 groupinfo: groupInfoRecord.data,
-                examiner_term: gettext('examiner')
+                examiner_term: gettext('examiner'),
+                deliveries: this._deliveriesAsFlatArray(groupInfoRecord)
             }
         });
     },
 
-    _onActiveFeedbackLink: function() {
-        var group_id = this.groupInfoRecord.get('id');
-        var delivery_id = this.groupInfoRecord.get('active_feedback').delivery_id;
+    _selectDelivery: function(delivery_id) {
         this._hightlightSelectedDelivery(delivery_id);
+        var group_id = this.groupInfoRecord.get('id');
         this.application.route.setHashWithoutEvent(Ext.String.format('/group/{0}/{1}', group_id, delivery_id));
+    },
+
+    _onActiveFeedbackLink: function() {
+        var delivery_id = this.groupInfoRecord.get('active_feedback').delivery_id;
+        this._selectDelivery(delivery_id);
+    },
+
+    _onDeliveryLink: function(delivery_id) {
+        this._selectDelivery(delivery_id);
     },
 
     _hightlightSelectedDelivery: function(delivery_id) {

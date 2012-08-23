@@ -61,21 +61,39 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     }, true),
                 '</a>',
             '</p>',
+        '</tpl>',
+        '<tpl if="deliveries">',
+            '<tpl if="deliveries.length &gt; 0">',
+                '<h3>', gettext('Deliveries'), '</h3>',
+                '<ul>',
+                    '<tpl for="deliveries">',
+                        '<li><a class="delivery_link" href="#/group/{parent.groupinfo.id}/{id}" data-deliveryid="{id}">',
+                            gettext('Delivery'), ' #{number}',
+                        '</a></li>',
+                    '</tpl>',
+                '</ul>',
+            '</tpl>',
         '</tpl>'
     ],
 
 
     initComponent: function() {
-        Ext.apply(this, {
-            
-        });
-
         this.addListener({
             element: 'el',
             delegate: 'a.active_feedback_link',
             scope: this,
             click: function(e) {
                 this.fireEvent('active_feedback_link_clicked');
+                e.preventDefault();
+            }
+        });
+        this.addListener({
+            element: 'el',
+            delegate: 'a.delivery_link',
+            scope: this,
+            click: function(e) {
+                var element = Ext.dom.Element(e.target);
+                this.fireEvent('delivery_link_clicked', element.getAttribute('data-deliveryid'));
                 e.preventDefault();
             }
         });

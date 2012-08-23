@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-20 04:38+0200\n"
+"POT-Creation-Date: 2012-08-23 22:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,7 @@ msgid "Please select an %(assignment_term)s from the list."
 msgstr "Velg en %(assignment_term)s fra listen."
 
 #: static/devilry_student/app/controller/BrowseHistory.js:74
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:40
 msgid "assignment"
 msgstr ""
 
@@ -88,7 +89,8 @@ msgid "Failed to load group. Try to reload the page"
 msgstr ""
 
 #: static/devilry_student/app/controller/GroupInfo.js:110
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:99
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:38
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:123
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:51
 msgid "examiner"
 msgstr ""
@@ -169,20 +171,20 @@ msgstr "Fullfør %(delivery_term)s"
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:45
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:23
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:23
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:26
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:31
 msgid "Passed"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:48
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:25
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:25
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:28
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:33
 msgid "Failed"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:63
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:62
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:78
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:28
 msgid "No feedback"
 msgstr ""
@@ -213,7 +215,7 @@ msgid "Assignment"
 msgstr ""
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:124
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:20
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:23
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:25
 msgid "Grade"
 msgstr ""
@@ -245,12 +247,12 @@ msgid "{deadline_term} was {offset_from_deadline} ago"
 msgstr "Innleveringsfristen var for {offset_from_deadline} siden"
 
 #: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:44
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:33
+#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:46
 msgid "Deadline"
 msgstr ""
 
 #: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:45
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:36
+#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:49
 msgid "Deliveries"
 msgstr ""
 
@@ -327,36 +329,56 @@ msgstr ""
 msgid "Nothing matches your search"
 msgstr "Søket ditt har ingen treff"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:31
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:34
+msgid "Aktiv tilbakemelding"
+msgstr ""
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:36
+msgid ""
+"This is your active %(feedback_term)s on this %(assignment_term)s. Unless an "
+"%(examiner_term)s gives you a new %(feedback_term)s, this will be you final "
+"%(grade_term)s on this %(assignment_term)s."
+msgstr ""
+"Dette er din aktive %(feedback_term)s på denne oppgaven. Med mindre en "
+"%(examiner_term)s gir deg en ny %(feedback_term)s, vil dette stå som din "
+"avsluttende %(grade_term)s på oppgaven."
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:37
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:122
+msgid "feedback"
+msgstr ""
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:39
+#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:52
+msgid "grade"
+msgstr ""
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:45
 msgid "Time of delivery"
 msgstr "Innleveringstidspunkt"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:35
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:49
 msgid "{offset} AFTER the deadline."
 msgstr "{offset} ETTER innleveringsfristen"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:38
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:53
 msgid "{offset} before the deadline."
 msgstr "{offset} før innleveringsfristen"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:43
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:59
 msgid "Delivery made by"
 msgstr "Innleveringen ble utført av"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:46
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:62
 msgid "Files"
 msgstr ""
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:55
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:71
 msgid "Download all files"
 msgstr "Last ned alle filene"
 
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:82
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:104
 msgid "Delivery"
-msgstr ""
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:98
-msgid "feedback"
 msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:8
@@ -369,7 +391,7 @@ msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:36
 msgid "Details"
-msgstr ""
+msgstr "Detaljer"
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:40
 msgid "Status"
@@ -394,10 +416,6 @@ msgid ""
 msgstr ""
 "Nåværende %(grade_term)s er avsluttende karakter. Du får ikke flere forsøk "
 "med mindre en %(examiner_term)s åpner opp gruppen."
-
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:52
-msgid "grade"
-msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/Overview.js:42
 msgid "Loading"

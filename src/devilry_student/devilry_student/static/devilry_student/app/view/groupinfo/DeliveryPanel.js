@@ -6,15 +6,16 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         'devilry_extjsextras.DatetimeHelpers'
     ],
 
-    margin: '40 20 20 20',
-    border: false,
-
     /**
      * @cfg {Object} [delivery]
      */
 
     /**
      * @cfg {Object} [active_feedback]
+     */
+
+    /**
+     * @cfg {int} [index_in_deadline]
      */
 
     metaTpl: [
@@ -29,6 +30,17 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                 ' <small>({latest_feedback.grade})</small>',
             '</p>',
         '</tpl>',
+        '<tpl if="has_active_feedback">',
+            '<h4>', gettext('Aktiv tilbakemelding'), '</h4>',
+            '<p><small>',
+                interpolate(gettext('This is your active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s gives you a new %(feedback_term)s, this will be you final %(grade_term)s on this %(assignment_term)s.'), {
+                    feedback_term: gettext('feedback'),
+                    examiner_term: gettext('examiner'),
+                    grade_term: gettext('grade'),
+                    assignment_term: gettext('assignment')
+                }, true),
+            '</small></p>',
+        '</tpl>',
 
         '<h4>', gettext('Time of delivery'), '</h4>',
         '<p>',
@@ -37,7 +49,9 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                     gettext('{offset} AFTER the deadline.'),
                 '</span>',
             '<tpl else>',
-                gettext('{offset} before the deadline.'),
+                '<small>',
+                    gettext('{offset} before the deadline.'),
+                '</small>',
             '</tpl>',
             '<br/><small>({delivery.time_of_delivery})</small>',
         '</p>',
@@ -66,7 +80,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     ],
 
     headerTpl: [
-        '<h1>{delivery_text}: {delivery.number}</h1>'
+        '<h1>{delivery_text} #{delivery.number}</h1>'
     ],
 
     initComponent: function() {
@@ -78,9 +92,10 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         //});
 
         Ext.apply(this, {
-            //ui: has_active_feedback? 'inset-header-strong-panel': 'inset-header-panel',
             cls: 'devilry_student_groupinfo_delivery devilry_student_groupinfo_delivery_' + (this._hasFeedback()? 'hasfeedback': 'nofeedback'),
             itemId: Ext.String.format('delivery-{0}', this.delivery.id),
+            margin: this.index_in_deadline === 0? '20 20 20 20': '40 20 20 20',
+            border: false,
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',

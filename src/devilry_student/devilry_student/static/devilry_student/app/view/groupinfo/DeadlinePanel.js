@@ -64,10 +64,11 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
 
     _getDeliveryPanelConfigs: function() {
         var configs = [];
-        Ext.Array.each(this.deadline.deliveries, function(delivery) {
+        Ext.Array.each(this.deadline.deliveries, function(delivery, index_in_deadline) {
             configs.push({
                 xtype: 'groupinfo_delivery',
                 delivery: delivery,
+                index_in_deadline: index_in_deadline,
                 active_feedback: this.active_feedback
             });
         }, this);
