@@ -398,12 +398,8 @@ class DeadlinesBulkUpdateReadOrDelete(View):
             logger.info('User=%s deleted Deadline id=%s (%s)', self.user, deadlineid, deadlineident)
             return deadlineid
         else:
-            logger.warn(('User=%s tried to delete Deadline id=%s (%s). They where rejected '
-                         'because of lacking permissions. Since the user-interface '
-                         'should make it hard to perform this action (have to delete deadline '
-                         'while a user adds a delivery), huge amounts of '
-                         'such attempts by this user may be an attempt at trying '
-                         'to delete things that they should not attempt to delete.'),
+            logger.info(('User=%s tried to delete Deadline id=%s (%s). They where rejected '
+                         'because of lacking permissions.'),
                         self.user, deadlineid, deadlineident)
             msg = ('Not permitted to delete Deadline with id={deadlineid}. '
                    'Only superusers can delete deadlines with deliveries.')

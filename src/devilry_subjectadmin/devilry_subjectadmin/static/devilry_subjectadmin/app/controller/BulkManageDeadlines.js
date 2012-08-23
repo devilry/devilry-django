@@ -172,6 +172,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     _onEditDeadline: function(deadlinePanel, deadlineRecord) {
         var formpanel = deadlinePanel.down('bulkmanagedeadlines_deadlineform');
+        formpanel.down('alertmessagelist').removeAll(); // NOTE: Remove any error lingering from pressing cancel previously.
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkEditSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
         this.application.route.setHashWithoutEvent(hash);
         this._setActiveDeadlineFormPanel(formpanel);
@@ -184,13 +185,6 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             deadline: deadlineRecord.get('deadline'),
             text: deadlineRecord.get('text')
         });
-    },
-
-    _setActiveDeadlineFormPanel: function(formpanel) {
-        this.activeDeadlineFormPanel = formpanel;
-    },
-    _unsetActiveDeadlineFormPanel: function() {
-        this.activeDeadlineFormPanel = undefined;
     },
 
     _onCancelEditExistingDeadline: function(formpanel) {
@@ -229,6 +223,27 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         });
     },
 
+
+    //
+    //
+    // Handle proxy errors
+    //
+    //
+
+    _setShowNextProxyErrorInWindow: function() {
+        this.showNextProxyErrorInWindow = true;
+    },
+    _unsetShowNextProxyErrorInWindow: function() {
+        this.showNextProxyErrorInWindow = false;
+    },
+
+    _setActiveDeadlineFormPanel: function(formpanel) {
+        this.activeDeadlineFormPanel = formpanel;
+    },
+    _unsetActiveDeadlineFormPanel: function() {
+        this.activeDeadlineFormPanel = undefined;
+    },
+
     _onDeadlinesBulkStoreProxyError: function(proxy, response, operation) {
         if(this.activeDeadlineFormPanel) {
             var alertmessagelist = this.activeDeadlineFormPanel.down('alertmessagelist');
@@ -236,13 +251,20 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             this.handleProxyError(alertmessagelist, this.activeDeadlineFormPanel, response, operation);
             this._scrollTo(alertmessagelist);
         } else {
-            // NOTE: This should only trigger on load error, since saves are
+            // NOTE: This should only trigger on load and DELETE error, since saves are
             //       done with _setActiveDeadlineFormPanel()
             var alertmessagelist = this.getGlobalAlertmessagelist();
             alertmessagelist.removeAll();
-            this.handleProxyErrorNoForm(alertmessagelist, response, operation);
+            if(this.showNextProxyErrorInWindow) {
+                this._unsetShowNextProxyErrorInWindow();
+                this.handleProxyUsingHtmlErrorDialog(response, operation);
+            } else {
+                this.handleProxyErrorNoForm(alertmessagelist, response, operation);
+            }
         }
     },
+
+
 
     //
     //
@@ -251,10 +273,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     //
     
     _onDeleteDeadline: function(deadlinePanel, deadlineRecord) {
-        console.log('delete', deadlineRecord);
-        
         Ext.create('devilry_extjsextras.ConfirmDeleteDialog', {
-            short_description: Ext.String.format('<strong>{0}</strong>', deadlineRecord.get('bulkdeadline_id')),
+            short_description: Ext.String.format('<strong>{0}</strong>', deadlineRecord.formatDeadline()),
             listeners: {
                 scope: this,
                 deleteConfirmed: function(deleteDialog) {
@@ -265,11 +285,17 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onConfirmDeleteDeadline: function(deleteDialog, deadlineRecord) {
-        deleteDialog.setLoading(gettext('Saving') + ' ...');
+        this.getBulkManageDeadlinesPanel().setLoading(gettext('Saving') + ' ...');
+        deleteDialog.close();
+        this._setShowNextProxyErrorInWindow();
         deadlineRecord.destroy({
             scope: this,
-            // NOTE: failure is handled in _onDeadlinesBulkStoreProxyError
+            failure: function() {
+                this.getBulkManageDeadlinesPanel().setLoading(false);
+                // NOTE: showing the error message is handled in _onDeadlinesBulkStoreProxyError
+            },
             success: function() {
+                this._unsetShowNextProxyErrorInWindow();
                 this._setNoDeadlineSelectedHash();
                 deleteDialog.close();
                 window.location.reload();

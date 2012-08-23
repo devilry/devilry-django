@@ -42,6 +42,9 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
         return Ext.String.ellipsis(text, maxlength);
     },
 
+    formatDeadline: function() {
+        return Ext.Date.format(this.get('deadline'), 'Y-m-d H:i:s');
+    },
 
     updateBulkDeadlineIdFromOperation: function(operation) {
         var responseData = Ext.JSON.decode(operation.response.responseText);

@@ -96,8 +96,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     },
 
     initComponent: function() {
-        var deadline_dateobj = this.deadlineRecord.get('deadline');
-        var deadline_formatted = Ext.Date.format(deadline_dateobj, 'Y-m-d H:i:s');
+        var deadline_formatted = this.deadlineRecord.formatDeadline();
         this.groupsStore = this._createGroupStore();
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadlineRecord.get('bulkdeadline_id')),
