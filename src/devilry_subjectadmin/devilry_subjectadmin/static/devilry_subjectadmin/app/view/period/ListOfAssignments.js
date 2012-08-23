@@ -16,5 +16,5 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
             '</tpl>',
         '<ul>'
     ],
-    itemSelector: 'li.devilry_assignment',
+    itemSelector: 'li.devilry_assignment'
 });

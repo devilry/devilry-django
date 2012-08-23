@@ -112,7 +112,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                     }]
                 }, {
                     xtype: 'panel',
-                    autoScroll: true,
+                    //autoScroll: true,
                     itemId: 'deadlinesContainer',
                     cls: 'devilry_discussionview_container'
                 }]

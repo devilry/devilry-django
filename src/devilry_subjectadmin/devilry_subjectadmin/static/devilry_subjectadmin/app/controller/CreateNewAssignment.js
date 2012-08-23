@@ -67,7 +67,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.control({
             // Page one
             'viewport createnewassignmentform': {
-                render: this._onRenderCreateNewAssignmentForm,
+                render: this._onRenderCreateNewAssignmentForm
             },
             'viewport createnewassignmentform textfield[name=long_name]': {
                 render: this._onRenderLongName,
@@ -77,13 +77,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 blur: this._onShortNameBlur
             },
             'viewport createnewassignmentform #createButton': {
-                click: this._onCreate,
+                click: this._onCreate
             },
             'viewport createnewassignmentform #nextButton': {
-                click: this._onNext,
+                click: this._onNext
             },
             'viewport createnewassignmentform #backButton': {
-                click: this._onBack,
+                click: this._onBack
             },
             'viewport createnewassignmentform radiogroup radio': {
                 change: this._onDeliveryTypesSelect
@@ -95,7 +95,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             // Success page
             'viewport createnewassignment-successpanel': {
                 render: this._onRenderSuccesspanel
-            },
+            }
         });
     },
 

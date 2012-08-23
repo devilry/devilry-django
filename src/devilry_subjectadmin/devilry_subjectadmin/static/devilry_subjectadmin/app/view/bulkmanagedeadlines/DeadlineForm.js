@@ -35,7 +35,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                         gettext('Deadline'),
                         ' <small>- ', gettext('The time when the deadline expires'), '</small>',
                     '</h2>',
-                ].join(''),
+                ].join('')
             }, {
                 xtype: 'devilry_extjsextras-datetimefield',
                 name: 'deadline',
@@ -54,7 +54,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                         gettext('Text'),
                         ' <small>- ', gettext('Students see this when they add deliveries'), '</small>',
                     '</h2>',
-                ].join(''),
+                ].join('')
             }, {
                 xtype: 'textarea',
                 name: 'text',
@@ -79,7 +79,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                                 deadline_term: gettext('deadline')
                             }, true),
                         '</h2>'
-                    ].join(''),
+                    ].join('')
                 }, {
                     xtype: 'radiogroup',
                     anchor: '100%',

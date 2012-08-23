@@ -322,5 +322,5 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         this.getOverview().setLoading(false);
         this._unmaskListOfGroups();
         console.log('failure', batch, options);
-    },
+    }
 });

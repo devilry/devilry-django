@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
                     itemSelector: 'li.devilry_subject',
                     store: this.store
                 }]
-            },
+            }
         });
         this.callParent(arguments);
     }

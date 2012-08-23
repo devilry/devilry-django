@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
             }, {
                 xtype: 'button',
                 margin: '0 0 0 3',
-                icon: devilry_theme.Icons.HELP_SMALL,
+                icon: devilry_theme.Icons.HELP_SMALL
             }],
             columns: [{
                 header: 'Tag',
@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
                     tooltip: gettext('Remove tag'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
-                    },
+                    }
                 }]
             }]
         });

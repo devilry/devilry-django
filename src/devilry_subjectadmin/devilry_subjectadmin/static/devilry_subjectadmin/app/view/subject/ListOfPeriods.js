@@ -16,5 +16,5 @@ Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
             '</tpl>',
         '<ul>'
     ],
-    itemSelector: 'li.period',
+    itemSelector: 'li.period'
 });

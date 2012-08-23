@@ -78,7 +78,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     columnWidth: .35,
                     margin: '0 0 0 40',
                     defaults: {
-                        margin: '20 0 0 0',
+                        margin: '20 0 0 0'
                     },
                     items: [{
                         xtype: 'adminsbox',
@@ -86,7 +86,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     }, {
                         xtype: 'basenodehierlocation'
                     }]
-                }],
+                }]
             }]
         });
         this.callParent(arguments);

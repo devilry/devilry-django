@@ -60,7 +60,7 @@ Ext.define('devilry_subjectadmin.controller.Shortcuts', {
 
     _onActiveAssignmentsStoreLoad: function() {
         this.getShortcutList().update({
-            items: this._postProcessActiveAssignmentsData(),
+            items: this._postProcessActiveAssignmentsData()
         });
     }
 });

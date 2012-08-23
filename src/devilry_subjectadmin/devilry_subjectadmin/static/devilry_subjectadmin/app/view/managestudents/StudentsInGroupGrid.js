@@ -40,7 +40,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                     tooltip: gettext('Remove student from project group'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
-                    },
+                    }
                 }]
             }]
         });

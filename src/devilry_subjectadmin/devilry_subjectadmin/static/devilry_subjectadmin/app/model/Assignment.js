@@ -46,5 +46,5 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
             short_name: periodBreadcrumb.short_name,
             path: periodpath
         };
-    },
+    }
 });

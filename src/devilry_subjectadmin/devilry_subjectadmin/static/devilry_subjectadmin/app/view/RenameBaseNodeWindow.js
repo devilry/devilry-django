@@ -44,7 +44,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                 border: 0,
                 layout: 'anchor',
                 defaults: {
-                    anchor: '100%',
+                    anchor: '100%'
                 },
                 items: [{
                     xtype: 'alertmessagelist'

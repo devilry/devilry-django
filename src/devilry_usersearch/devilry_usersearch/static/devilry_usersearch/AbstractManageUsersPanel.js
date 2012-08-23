@@ -135,7 +135,7 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
                     scope: this,
                     change: this._onSearchChange
                 }
-            }],
+            }]
         });
         this.callParent(arguments);
     },

@@ -80,7 +80,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 ui: 'footer',
                 dock: 'bottom',
                 defaults: {
-                    scale: 'medium',
+                    scale: 'medium'
                 },
                 items: [{
                     xtype: 'button',
@@ -118,7 +118,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                     iconCls: 'icon-add-24',
                     text: gettext('Add students')
                 }]
-            }],
+            }]
         });
         this.callParent(arguments);
     },

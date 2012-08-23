@@ -69,7 +69,7 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
                 border: 0,
                 layout: 'anchor',
                 defaults: {
-                    anchor: '100%',
+                    anchor: '100%'
                 },
                 items: [{
                     xtype: 'alertmessagelist'

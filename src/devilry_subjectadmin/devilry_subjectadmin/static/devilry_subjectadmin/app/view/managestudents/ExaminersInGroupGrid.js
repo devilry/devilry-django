@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                     tooltip: gettext('Remove examiner'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
-                    },
+                    }
                 }]
             }]
         });

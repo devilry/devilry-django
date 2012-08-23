@@ -12,5 +12,5 @@ Ext.define('devilry_subjectadmin.store.SearchForGroups', {
         reader: {
             type: 'json'
         }
-    },
+    }
 });

@@ -33,5 +33,5 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
         return tpl.apply({
             groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
         });
-    },
+    }
 });
