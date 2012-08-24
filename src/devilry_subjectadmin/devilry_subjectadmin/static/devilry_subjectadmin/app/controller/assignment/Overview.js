@@ -26,8 +26,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         ref: 'gradeEditorSidebarBox',
         selector: 'assignmentoverview editablesidebarbox[itemId=gradeeditor]'
     }, {
-        ref: 'actions',
-        selector: 'assignmentoverview #actions'
+        ref: 'header',
+        selector: 'assignmentoverview #header'
     }, {
         ref: 'assignmentOverview',
         selector: 'assignmentoverview'
@@ -69,7 +69,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         this.assignmentRecord = record;
         this.application.setTitle(this._getPath());
         this.setBreadcrumb(this.assignmentRecord);
-        this.getActions().setTitle(record.get('long_name'));
+        this.getHeader().update({
+            heading: record.get('long_name')
+        });
         this._setDangerousActionsLabels();
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
     },

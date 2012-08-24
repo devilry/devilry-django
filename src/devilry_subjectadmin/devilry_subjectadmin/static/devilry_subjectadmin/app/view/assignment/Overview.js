@@ -34,12 +34,18 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 layout: 'column',
                 items: [{
                     xtype: 'container',
-                    columnWidth: .65,
+                    columnWidth: 1,
                     items: [{
-                        xtype: 'panel',
-                        itemId: 'actions',
-                        ui: 'inset-header-strong-panel',
-                        title: gettext('Loading ...'),
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        itemId: 'header',
+                        tpl: '<h1>{heading}</h1>',
+                        data: {
+                            heading: gettext('Loading') + ' ...'
+                        }
+                    }, {
+                        xtype: 'container',
+                        margin: '20 0 0 0',
                         items: {
                             xtype: 'actionlist',
                             links: [{
@@ -50,26 +56,26 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                                 text: gettext('Manage deadlines')
                             }]
                         }
-                    }, {
-                        xtype: 'panel',
-                        ui: 'transparentpanel-overflowvisible',
-                        margin: '40 0 0 0',
-                        layout: 'column',
-                        items: [{
-                            xtype: 'panel',
-                            ui: 'inset-header-panel',
-                            margin: '0 20 0 0',
-                            columnWidth: .5,
-                            title: gettext('Upcoming deadlines'),
-                            html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
-                        }, {
-                            xtype: 'panel',
-                            ui: 'inset-header-panel',
-                            title: gettext('Waiting for feedback'),
-                            columnWidth: .5,
-                            margin: '0 0 0 20',
-                            html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
-                        }]
+                    //}, {
+                        //xtype: 'panel',
+                        //ui: 'transparentpanel-overflowvisible',
+                        //margin: '40 0 0 0',
+                        //layout: 'column',
+                        //items: [{
+                            //xtype: 'panel',
+                            //ui: 'inset-header-panel',
+                            //margin: '0 20 0 0',
+                            //columnWidth: .5,
+                            //title: gettext('Upcoming deadlines'),
+                            //html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
+                        //}, {
+                            //xtype: 'panel',
+                            //ui: 'inset-header-panel',
+                            //title: gettext('Waiting for feedback'),
+                            //columnWidth: .5,
+                            //margin: '0 0 0 20',
+                            //html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
+                        //}]
                     }, {
                         xtype: 'panel',
                         margin: '40 0 0 0',
@@ -87,6 +93,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             itemId: 'renameButton',
                             id: 'assignmentRenameButton',
                             titleText: gettext('Loading ...'),
+                            bodyTpl: '<p class="muted">{html}</p>',
                             bodyHtml: gettext('Renaming an assignment should not done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                             buttonText: gettext('Rename') + ' ...'
                         }, {
@@ -94,6 +101,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             itemId: 'deleteButton',
                             id: 'assignmentDeleteButton',
                             titleText: gettext('Loading ...'),
+                            bodyTpl: '<p class="muted">{html}</p>',
                             bodyHtml: gettext('Once you delete an assignment, there is no going back. Only superusers can delete an assignment with deliveries.'),
                             buttonText: gettext('Delete') + ' ...'
                         }]
@@ -101,7 +109,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 }, {
                     xtype: 'container',
                     border: false,
-                    columnWidth: .35,
+                    width: 250,
                     margin: '0 0 0 40',
                     defaults: {
                         margin: '10 0 0 0'
