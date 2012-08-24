@@ -13,20 +13,20 @@
 }
 
 // Hover state
-.label:hover {
-  color: $white;
-  text-decoration: none;
-}
+//.label:hover {
+  //color: $white;
+  //text-decoration: none;
+//}
 
 // Colors
 .label-important        { background-color: $errorText; }
-.label-important:hover  { background-color: darken($errorText, 10%); }
+//.label-important:hover  { background-color: darken($errorText, 10%); }
 
 .label-warning          { background-color: $orange; }
-.label-warning:hover    { background-color: darken($orange, 10%); }
+//.label-warning:hover    { background-color: darken($orange, 10%); }
 
 .label-success          { background-color: $successText; }
-.label-success:hover    { background-color: darken($successText, 10%); }
+//.label-success:hover    { background-color: darken($successText, 10%); }
 
 .label-info             { background-color: $infoText; }
-.label-info:hover       { background-color: darken($infoText, 10%); }
+//.label-info:hover       { background-color: darken($infoText, 10%); }

@@ -12185,20 +12185,9 @@ input[type="submit"].btn.small {
   border-radius: 3px;
 }
 
-/* line 16, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
-.label:hover {
-  color: white;
-  text-decoration: none;
-}
-
 /* line 22, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
 .label-important {
   background-color: #b94a48;
-}
-
-/* line 23, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
-.label-important:hover {
-  background-color: #953b39;
 }
 
 /* line 25, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
@@ -12206,29 +12195,14 @@ input[type="submit"].btn.small {
   background-color: #f89406;
 }
 
-/* line 26, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
-.label-warning:hover {
-  background-color: #c67605;
-}
-
 /* line 28, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
 .label-success {
   background-color: #468847;
 }
 
-/* line 29, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
-.label-success:hover {
-  background-color: #356635;
-}
-
 /* line 31, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
 .label-info {
   background-color: #3a87ad;
-}
-
-/* line 32, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_labels.scss */
-.label-info:hover {
-  background-color: #2d6987;
 }
 
 /* line 637, /Users/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
