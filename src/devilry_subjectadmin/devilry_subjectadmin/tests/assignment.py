@@ -120,7 +120,8 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
 
     def test_delete_not_empty(self):
-        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(goodStud1)')
+        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(goodStud1):examiner(exam1).d1')
+        self.testhelper.add_delivery('sub.period1.week1.g1', {'bad.py': ['print ', 'bah']})
         self.login('uniadmin')
         self._browseToAssignment(self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
