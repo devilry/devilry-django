@@ -104,11 +104,17 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                 click: this._onEdit
             }
         }, {
-            xtype: 'panel',
+            xtype: 'container',
             margin: '10 0 0 0',
-            ui: 'lookslike-parawitheader-panel',
-            title: gettext('Inherited administrators'),
+            cls: 'bootstrap',
             items: [{
+                xtype: 'box',
+                itemId: 'title',
+                tpl: '<h4>{title}</h4>',
+                data: {
+                    title: gettext('Inherited administrators'),
+                }
+            }, {
                 xtype: 'box',
                 tpl: this.inheritedAdminsTpl,
                 data: {

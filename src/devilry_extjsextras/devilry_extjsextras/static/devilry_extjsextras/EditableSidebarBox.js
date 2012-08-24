@@ -1,9 +1,7 @@
 Ext.define('devilry_extjsextras.EditableSidebarBox', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.editablesidebarbox',
 
-    ui: 'lookslike-parawitheader-panel',
-    layout: 'column',
 
     /**
      * @cfg {String} title
@@ -41,21 +39,31 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
         }
         this.cls = cssclasses;
         Ext.apply(this, {
-            title: this.title,
             items: [{
                 xtype: 'box',
-                itemId: 'body',
+                itemId: 'title',
                 cls: 'bootstrap',
-                padding: {top: 3},
-                columnWidth: 1,
-                html: ''
+                tpl: '<h4>{title}</h4>',
+                data: {
+                    title: this.title
+                }
             }, {
-                xtype: 'button',
-                scale: 'medium',
-                margin: {left: 15},
-                width: 70,
-                listeners: this.buttonListeners,
-                text: this.buttonText
+                xtype: 'container',
+                layout: 'column',
+                cls: 'bootstrap',
+                items: [{
+                    xtype: 'box',
+                    itemId: 'body',
+                    padding: '0 15 0 0',
+                    columnWidth: 1,
+                    html: ''
+                }, {
+                    xtype: 'button',
+                    scale: 'medium',
+                    width: 70,
+                    listeners: this.buttonListeners,
+                    text: this.buttonText
+                }]
             }]
         });
         this.callParent(arguments);
@@ -65,7 +73,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     updateBody: function(bodyTpl, data) {
         var data = data || {};
         var tpl = Ext.create('Ext.XTemplate', Ext.Array.from(bodyTpl))
-        this.getComponent('body').update(tpl.apply(data));
+        this.down('#body').update(tpl.apply(data));
     },
 
     updateTitle: function(title) {
