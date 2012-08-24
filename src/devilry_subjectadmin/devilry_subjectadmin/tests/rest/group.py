@@ -583,8 +583,8 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         return self.client.rest_get(self._geturl(assignment_id, group_id))
 
     def _test_get_as(self, username):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(candidate1):examiner(examiner1).d1')
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(candidate1):examiner(examiner1).d1:ends(5)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
         group = self.testhelper.sub_p1_a1_g1
         content, response = self._getas(username, self.a1id, group.id)
         #from pprint import pprint
