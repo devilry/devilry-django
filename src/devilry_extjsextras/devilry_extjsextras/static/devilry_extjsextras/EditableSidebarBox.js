@@ -26,14 +26,21 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
      */
     buttonText: pgettext('uibutton', 'Edit'),
 
-    /**
-     * @cfg {object} buttonListeners
-     * Listeners for the button.
-     */
-    buttonListeners: {},
+    constructor: function(config) {
+        this.mixins.observable.constructor.call(this, config);
+        this.addEvents(
+            /**
+             * @event
+             * Fired when the edit-button is clicked.
+             * @param box This EditableSidebarBox.
+             */
+            'edit'
+        );
+        this.callParent([config]);
+    },
 
     initComponent: function() {
-        var cssclasses = 'editablesidebarbox';
+        var cssclasses = 'editablesidebarbox bootstrap';
         if(this.cls) {
             cssclasses += ' ' + this.cls;
         }
@@ -42,29 +49,34 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
             items: [{
                 xtype: 'box',
                 itemId: 'title',
-                cls: 'bootstrap',
-                tpl: '<h4>{title}</h4>',
+                tpl: [
+                    '<h4>',
+                        '{title}',
+                        '&nbsp;',
+                        '&nbsp;',
+                        '<a class="edit_link" href="#">(',
+                            this.buttonText,
+                        ')</a>',
+                    '</h4>'
+                ],
                 data: {
                     title: this.title
                 }
             }, {
-                xtype: 'container',
-                layout: 'column',
-                cls: 'bootstrap',
-                items: [{
-                    xtype: 'box',
-                    itemId: 'body',
-                    padding: '0 15 0 0',
-                    columnWidth: 1,
-                    html: ''
-                }, {
-                    xtype: 'button',
-                    scale: 'medium',
-                    width: 70,
-                    listeners: this.buttonListeners,
-                    text: this.buttonText
-                }]
-            }]
+                xtype: 'box',
+                itemId: 'body',
+                padding: '0',
+                html: ''
+            }],
+            listeners: {
+                scope: this,
+                element: 'el',
+                delegate: 'a.edit_link',
+                click: function(e) {
+                    this.fireEvent('edit', this);
+                    e.preventDefault();
+                }
+            }
         });
         this.callParent(arguments);
         this.updateBody(this.bodyTpl, this.data);
