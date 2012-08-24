@@ -96,7 +96,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             xtype: 'editablesidebarbox',
             title: gettext('Administrators'),
             bodyTpl: this.adminsTpl,
-            data: {
+            bodyData: {
                 admins: sorted_admins
             },
             listeners: {
