@@ -39,6 +39,11 @@
 }
 
 /* line 41, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_navigation strong {
+  font-size: 15px;
+}
+
+/* line 47, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions h2 {
   color: #900;
 }

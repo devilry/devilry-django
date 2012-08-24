@@ -37,24 +37,19 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     xtype: 'container',
                     columnWidth: .65,
                     items: [{
-                        xtype: 'panel',
-                        itemId: 'actions',
-                        ui: 'inset-header-strong-panel',
-                        layout: 'fit',
-                        items: {
-                            xtype: 'listofperiods'
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        margin: '0 0 20 0',
+                        itemId: 'header',
+                        tpl: '<h1>{heading}</h1>',
+                        data: {
+                            heading: gettext('Loading') + ' ...'
                         }
                     }, {
-                        xtype: 'panel',
-                        margin: '40 0 0 0',
-                        itemId: 'dangerousactions',
-                        ui: 'inset-header-danger-panel',
-                        title: gettext('Dangerous actions'),
-                        layout: 'anchor',
-                        defaults: {
-                            anchor: '100%',
-                            margin: '10 0 0 0'
-                        },
+                        xtype: 'listofperiods'
+                    }, {
+                        xtype: 'dangerousactions',
+                        margin: '20 0 0 0',
                         items: [{
                             xtype: 'singleactionbox',
                             margin: '0 0 0 0',

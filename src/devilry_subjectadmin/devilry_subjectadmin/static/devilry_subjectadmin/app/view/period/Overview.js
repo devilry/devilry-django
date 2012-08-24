@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         }
                     }, {
                         xtype: 'box',
-                        cls: 'bootstrap',
+                        cls: 'bootstrap devilry_subjectadmin_navigation',
                         tpl: [
                             '<p><strong><a href="{url}">{text}</a></strong></p>'
                         ],

@@ -33,8 +33,8 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         ref: 'renameButton',
         selector: 'subjectoverview #renameButton'
     }, {
-        ref: 'actions',
-        selector: 'subjectoverview #actions'
+        ref: 'header',
+        selector: 'subjectoverview #header'
     }, {
         ref: 'subjectOverview',
         selector: 'subjectoverview'
@@ -112,7 +112,9 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     _onLoadSubjectSuccess: function(record) {
         this.subjectRecord = record;
         this.application.setTitle(this.subjectRecord.get('short_name'));
-        this.getActions().setTitle(record.get('long_name'));
+        this.getHeader().update({
+            heading: record.get('long_name')
+        });
         this.setBreadcrumb(this.subjectRecord);
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord);
         this.getBasenodehierlocation().setLocation(this.subjectRecord);

@@ -25,7 +25,8 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%',
-                    margin: '10 0 0 0'
+                    margin: '10 0 0 0',
+                    bodyTpl: '<p class="muted">{html}</p>'
                 },
                 items: this.items
             }]

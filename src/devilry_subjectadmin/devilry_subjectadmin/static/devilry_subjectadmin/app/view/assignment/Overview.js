@@ -82,7 +82,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             itemId: 'renameButton',
                             id: 'assignmentRenameButton',
                             titleText: gettext('Loading ...'),
-                            bodyTpl: '<p class="muted">{html}</p>',
                             bodyHtml: gettext('Renaming an assignment should not done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                             buttonText: gettext('Rename') + ' ...'
                         }, {
@@ -90,7 +89,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             itemId: 'deleteButton',
                             id: 'assignmentDeleteButton',
                             titleText: gettext('Loading ...'),
-                            bodyTpl: '<p class="muted">{html}</p>',
                             bodyHtml: gettext('Once you delete an assignment, there is no going back. Only superusers can delete an assignment with deliveries.'),
                             buttonText: gettext('Delete') + ' ...'
                         }]
