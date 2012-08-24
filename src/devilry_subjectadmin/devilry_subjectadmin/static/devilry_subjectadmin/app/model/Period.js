@@ -12,8 +12,8 @@ Ext.define('devilry_subjectadmin.model.Period', {
         {name: 'etag',  type: 'string'},
         {name: 'admins',  type: 'auto'},
         {name: 'inherited_admins',  type: 'auto'},
-        {name: 'start_time',  type: 'date', "dateFormat": "Y-m-d\\TH:i:s"},
-        {name: 'end_time',  type: 'date', "dateFormat": "Y-m-d\\TH:i:s"},
+        {name: 'start_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
+        {name: 'end_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
         {name: 'breadcrumb',  type: 'auto'}
     ],
 
