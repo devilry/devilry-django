@@ -42,7 +42,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
         '</div>'
     ],
 
-    bodyPrefixTpl: [
+    deadlineTextTpl: [
         '<tpl if="deadline.text">',
             '<h2>',
                 gettext('About this deadline'),
@@ -82,7 +82,8 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
-                tpl: this.bodyPrefixTpl,
+                tpl: this.deadlineTextTpl,
+                hidden: Ext.isEmpty(this.deadline.text),
                 padding: '20',
                 data: {
                     deadline: this.deadline
