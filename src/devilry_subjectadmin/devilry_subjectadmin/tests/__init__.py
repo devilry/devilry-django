@@ -1,4 +1,4 @@
-from dashboard import *
+#from dashboard import *
 from subject import *
 from period import *
 from assignment import *
