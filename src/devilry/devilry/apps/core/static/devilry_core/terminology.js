@@ -21,6 +21,7 @@ var terms = [
 
     gettext_noop('Deadline'), gettext_noop('Deadlines'),
     gettext_noop('deadline'), gettext_noop('deadlines'),
+    gettext_noop('First deadline'),
 
     gettext_noop('Delivery'), gettext_noop('Deliveries'),
     gettext_noop('delivery'), gettext_noop('deliveries'),
