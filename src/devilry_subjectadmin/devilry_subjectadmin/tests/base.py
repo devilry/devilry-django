@@ -23,12 +23,16 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
         return '{live_server_url}/devilry_subjectadmin/#{path}'.format(live_server_url=self.live_server_url,
                                                                        path=path)
     def get_breadcrumbstring(self, expected_contains):
-        self.waitForCssSelector('.devilry_extjsextras_breadcrumb')
+        self.waitForCssSelector('.devilry_header_breadcrumb')
         def breadcrumbLoaded(breadcrumb):
             return expected_contains in breadcrumb.text
-        breadcrumb = self.selenium.find_element_by_css_selector('.devilry_extjsextras_breadcrumb')
+        breadcrumb = self.selenium.find_element_by_css_selector('.devilry_header_breadcrumb')
         self.waitFor(breadcrumb, breadcrumbLoaded)
-        return re.split('\s*\/\s*', breadcrumb.text)
+        default_breadcrumb = 'Dashboard'
+        breadcrumbtext = breadcrumb.text
+        if breadcrumb.text.startswith(default_breadcrumb):
+            breadcrumbtext = breadcrumbtext[len(default_breadcrumb)+1:]
+        return re.split('\s*\/\s*', breadcrumbtext)
 
 
 class RenameBasenodeTestMixin(object):
