@@ -10,7 +10,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     /**
      * @cfg {Array|Ext.XTemplate} bodyTpl
      */
-    bodyTpl: ['{text}'],
+    bodyTpl: ['<p>{text}</p>'],
 
     /**
      * @cfg {Object} [bodyData]
