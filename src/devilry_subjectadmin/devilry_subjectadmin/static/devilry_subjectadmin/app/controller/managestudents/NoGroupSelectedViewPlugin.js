@@ -29,9 +29,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', gettext('No {groupunit_plural} selected. Choose one or more {groupunit_plural} to gain access to settings, such as examiners and tags.'));
-        return tpl.apply({
-            groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
-        });
+        return interpolate(gettext('%(Students_term)s are is a group even when they work alone. No %(groups_term)s selected. Choose one or more %(groups_term)s to gain access to settings, such as %(examiners_term)s and %(tags_term)s.'), {
+            Students_term: gettext('Students'),
+            groups_term: gettext('groups'),
+            examiners_term: gettext('examiners'),
+            tags_term: gettext('tags')
+        }, true);
     }
 });

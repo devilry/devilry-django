@@ -443,11 +443,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         if(Ext.isMac) {
             shortcutkey = 'CMD';
         }
-        var tpl = Ext.create('Ext.XTemplate', gettext('Hold down <strong>{shortcutkey}</strong> to select more {groupunit_plural}.'));
-        return tpl.apply({
+        return interpolate(gettext('Hold down <strong>%(shortcutkey)s</strong> to select more %(groups_term)s.'), {
             shortcutkey: shortcutkey,
-            groupunit_plural: this.getTranslatedGroupUnit(true)
-        });
+            groups_term: gettext('groups')
+        }, true);
     },
 
     /**

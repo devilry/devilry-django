@@ -120,12 +120,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _createTopMessage: function() {
-        var tpl = Ext.create('Ext.XTemplate', gettext('{numselected}/{total} {groupunit_plural} selected.'));
-        return tpl.apply({
+        return interpolate(gettext('%(numselected)s/%(total)s %(groups_term)s selected.'), {
             numselected: this.groupRecords.length,
             total: this.manageStudentsController.getTotalGroupsCount(),
-            groupunit_plural: this.manageStudentsController.getTranslatedGroupUnit(true)
-        });
+            groups_term: gettext('groups')
+        }, true);
     },
 
 
