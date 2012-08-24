@@ -29,8 +29,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
             items: [{
                 xtype: 'alertmessagelist'
             }, {
-                xtype: 'panel',
-                ui: 'transparentpanel-overflowvisible',
+                xtype: 'container',
                 layout: 'column',
                 items: [{
                     xtype: 'container',
@@ -38,24 +37,21 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     items: [{
                         xtype: 'box',
                         cls: 'bootstrap',
+                        margin: '0 0 20 0',
                         itemId: 'header',
                         tpl: '<h1>{heading}</h1>',
                         data: {
                             heading: gettext('Loading') + ' ...'
                         }
                     }, {
-                        xtype: 'container',
-                        margin: '20 0 0 0',
-                        items: {
-                            xtype: 'actionlist',
-                            links: [{
-                                url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
-                                text: gettext('Manage students')
-                            }, {
-                                url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
-                                text: gettext('Manage deadlines')
-                            }]
-                        }
+                        xtype: 'actionlist',
+                        links: [{
+                            url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
+                            text: gettext('Manage students')
+                        }, {
+                            url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
+                            text: gettext('Manage deadlines')
+                        }]
                     //}, {
                         //xtype: 'panel',
                         //ui: 'transparentpanel-overflowvisible',

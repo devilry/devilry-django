@@ -25,8 +25,8 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         ref: 'globalAlertmessagelist',
         selector: 'periodoverview>alertmessagelist'
     }, {
-        ref: 'actions',
-        selector: 'periodoverview #actions'
+        ref: 'header',
+        selector: 'periodoverview #header'
     }, {
         ref: 'periodOverview',
         selector: 'periodoverview'
@@ -145,7 +145,9 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.periodRecord = record;
         //this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.application.setTitle(this._getPath());
-        this.getActions().setTitle(record.get('long_name'));
+        this.getHeader().update({
+            heading: record.get('long_name')
+        });
         this.setBreadcrumb(this.periodRecord);
         this._setMenuLabels();
         this.getAdminsbox().setBasenodeRecord(this.periodRecord);

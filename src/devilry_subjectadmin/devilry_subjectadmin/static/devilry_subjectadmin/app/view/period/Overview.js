@@ -40,23 +40,29 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     xtype: 'container',
                     columnWidth: .65,
                     items: [{
-                        xtype: 'panel',
-                        itemId: 'actions',
-                        ui: 'inset-header-strong-panel',
-                        layout: 'fit',
-                        items: {
-                            xtype: 'listofassignments'
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        margin: '0 0 20 0',
+                        itemId: 'header',
+                        tpl: '<h1>{heading}</h1>',
+                        data: {
+                            heading: gettext('Loading') + ' ...'
                         }
                     }, {
-                        xtype: 'panel',
-                        itemId: 'relatedusers',
+                        xtype: 'listofassignments'
+                    }, {
+                        xtype: 'box',
+                        cls: 'bootstrap',
                         margin: '40 0 0 0',
-                        ui: 'inset-header-panel',
-                        title: gettext('Students and examiners on this period'),
-                        layout: 'fit',
-                        items: {
-                            xtype: 'overviewofrelatedusers'
+                        tpl: '<h2>{heading}</h2>',
+                        data: {
+                            heading: interpolate(gettext('Students and examiners'), {
+                                Students_term: gettext('Students'),
+                                examiners_term: gettext('examiners')
+                            }, true)
                         }
+                    }, {
+                        xtype: 'overviewofrelatedusers'
                     }, {
                         xtype: 'panel',
                         itemId: 'dangerousactions',
