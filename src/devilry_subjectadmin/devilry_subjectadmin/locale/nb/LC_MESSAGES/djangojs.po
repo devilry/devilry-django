@@ -792,7 +792,7 @@ msgid ""
 "anonymous, %(examiners_term)s see candidate-id instead of any personal "
 "information about the %(students_term)s."
 msgstr ""
-"For eksamener er dette et naturlig valg. Nå en %(assignment_term)s er "
+"På eksamensoppgaver er dette et naturlig valg. Nå en %(assignment_term)s er "
 "anonym, ser retterne kandidat-ID istedenfor personlig informasjon om "
 "studentene."
 
