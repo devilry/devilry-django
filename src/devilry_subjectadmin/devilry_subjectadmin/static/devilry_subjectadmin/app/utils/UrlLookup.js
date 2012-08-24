@@ -8,6 +8,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     periodOverview: function(period_id) {
         return Ext.String.format('#/period/{0}/', period_id);
     },
+    createNewAssignment: function(period_id) {
+        return Ext.String.format('#/period/{0}/@@create-new-assignment/', period_id);
+    },
     manageRelatedStudents: function(period_id) {
         return Ext.String.format('#/period/{0}/@@manage-related-students', period_id);
     },

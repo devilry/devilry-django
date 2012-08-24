@@ -102,7 +102,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setLoadingBreadcrumb();
         this.period_id = this.getPeriodOverview().period_id;
         this._loadPeriod(this.period_id);
-        this._loadRelatedUsers(this.period_id);
+        //this._loadRelatedUsers(this.period_id);
         this._loadAssignments(this.period_id);
     },
 

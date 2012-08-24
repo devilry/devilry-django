@@ -12,7 +12,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
-        'devilry_subjectadmin.view.ActionList'
+        'devilry_subjectadmin.view.ActionList',
+        'devilry_subjectadmin.view.DangerousActions'
     ],
 
     /**
@@ -73,16 +74,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             //html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
                         //}]
                     }, {
-                        xtype: 'panel',
-                        margin: '40 0 0 0',
-                        itemId: 'dangerousactions',
-                        ui: 'inset-header-danger-panel',
-                        title: gettext('Dangerous actions'),
-                        layout: 'anchor',
-                        defaults: {
-                            anchor: '100%',
-                            margin: '10 0 0 0'
-                        },
+                        xtype: 'dangerousactions',
+                        margin: '20 0 0 0',
                         items: [{
                             xtype: 'singleactionbox',
                             margin: 0,

@@ -49,31 +49,30 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                             heading: gettext('Loading') + ' ...'
                         }
                     }, {
-                        xtype: 'listofassignments'
-                    }, {
                         xtype: 'box',
                         cls: 'bootstrap',
-                        margin: '40 0 0 0',
-                        tpl: '<h2>{heading}</h2>',
+                        tpl: [
+                            '<p><strong><a href="{url}">{text}</a></strong></p>'
+                        ],
                         data: {
-                            heading: interpolate(gettext('Students and examiners'), {
-                                Students_term: gettext('Students'),
-                                examiners_term: gettext('examiners')
-                            }, true)
+                            url: devilry_subjectadmin.utils.UrlLookup.createNewAssignment(this.period_id),
+                            text: gettext('Create new assignment')
                         }
+                    //}, {
+                        //xtype: 'box',
+                        //cls: 'bootstrap',
+                        //margin: '20 0 0 0',
+                        //tpl: '<h2>{heading}</h2>',
+                        //data: {
+                            //heading: gettext('Assignments')
+                        //}
                     }, {
-                        xtype: 'overviewofrelatedusers'
+                        xtype: 'listofassignments'
+                    //}, {
+                        //xtype: 'overviewofrelatedusers'
                     }, {
-                        xtype: 'panel',
-                        itemId: 'dangerousactions',
-                        margin: '40 0 0 0',
-                        ui: 'inset-header-danger-panel',
-                        title: gettext('Dangerous actions'),
-                        layout: 'anchor',
-                        defaults: {
-                            anchor: '100%',
-                            margin: '10 0 0 0'
-                        },
+                        xtype: 'dangerousactions',
+                        margin: '20 0 0 0',
                         items: [{
                             xtype: 'singleactionbox',
                             margin: '0 0 0 0',
