@@ -201,8 +201,8 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.week1 = self.testhelper.sub_period1_week1
 
         self.browseTo('/assignment/{0}/'.format(self.testhelper.sub_period1_week1.id))
-        self.waitForCssSelector('.devilry_subjectadmin_editanonymous_widget button')
-        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous_widget button')
+        self.waitForCssSelector('.devilry_subjectadmin_editanonymous_widget .edit_link')
+        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous_widget .edit_link')
         button.click()
         self.waitForCssSelector('.devilry_subjectadmin_editanonymous')
 

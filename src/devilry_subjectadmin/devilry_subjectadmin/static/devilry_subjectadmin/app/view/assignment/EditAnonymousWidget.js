@@ -5,5 +5,6 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousWidget', {
     extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.editanonymous-widget',
-    cls: 'devilry_subjectadmin_editanonymous_widget'
+    cls: 'devilry_subjectadmin_editanonymous_widget',
+    bodyTpl: '<p><small>{text}</small></p>'
 });

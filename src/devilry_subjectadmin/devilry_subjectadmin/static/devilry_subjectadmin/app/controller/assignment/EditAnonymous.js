@@ -51,8 +51,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             'editanonymous cancelbutton': {
                 click: this._close
             },
-            'editanonymous-widget button': {
-                click: this._onEdit
+            'editanonymous-widget': {
+                edit: this._onEdit
             }
         });
     },
@@ -129,6 +129,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         }
         var anonymous = this.assignmentRecord.get('anonymous');
         this.getAnonymousWidget().updateTitle(title);
-        this.getAnonymousWidget().updateBody(body);
+        this.getAnonymousWidget().updateText(body);
     }
 });
