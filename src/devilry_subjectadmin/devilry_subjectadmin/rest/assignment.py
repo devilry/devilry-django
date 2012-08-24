@@ -5,15 +5,27 @@ from .auth import IsAssignmentAdmin
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
+from devilry.utils.restformat import format_datetime
 
 
-class AssignmentResource(BaseNodeInstanceResource):
+
+class AssignmentResourceMixin(object):
+    def publishing_time(self, instance):
+        if isinstance(instance, self.model):
+            return format_datetime(instance.publishing_time)
+
+    def first_deadline(self, instance):
+        if isinstance(instance, self.model) and instance.first_deadline:
+            return format_datetime(instance.first_deadline)
+
+
+class AssignmentResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
     fields = ('id', 'parentnode', 'short_name', 'long_name', 'etag',
               'publishing_time', 'delivery_types', 'scale_points_percent',
               'first_deadline', 'anonymous', 'deadline_handling')
 
-class AssignmentInstanceResource(BaseNodeInstanceResource):
+class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb')
