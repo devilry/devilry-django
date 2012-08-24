@@ -46,6 +46,18 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                             heading: gettext('Loading') + ' ...'
                         }
                     }, {
+                        xtype: 'box',
+                        cls: 'bootstrap devilry_subjectadmin_navigation',
+                        tpl: [
+                            '<p><strong><a href="{url}">{text}</a></strong></p>'
+                        ],
+                        data: {
+                            url: devilry_subjectadmin.utils.UrlLookup.createNewPeriod(this.subject_id),
+                            text: interpolate(gettext('Create new %(period_term)s'), {
+                                period_term: gettext('period')
+                            }, true)
+                        }
+                    }, {
                         xtype: 'listofperiods'
                     }, {
                         xtype: 'dangerousactions',
