@@ -77,6 +77,8 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     },
 
     updateTitle: function(title) {
-        this.setTitle(title);
+        this.down('#title').update({
+            title: title
+        });
     }
 });

@@ -2,21 +2,20 @@
  * Defines a box that lists the location of a basenode in the node hierarchy.
  * */
 Ext.define('devilry_subjectadmin.view.BaseNodeHierLocation', {
-    extend: 'Ext.Panel',
+    extend: 'Ext.Component',
     alias: 'widget.basenodehierlocation',
-    bodyCls: 'devilry_basenodehierlocation bootstrap',
-    title: gettext('Location in hierarchy'),
-    ui: 'lookslike-parawitheader-panel',
+    cls: 'devilry_basenodehierlocation bootstrap',
     requires: ['devilry_subjectadmin.utils.UrlLookup'],
 
-    listingTpl: [
+    tpl: [
+        '<h4>', gettext('Location in hierarchy'), '</h4>',
         '<ul>',
             '<tpl for="breadcrumb">',
                 '<li>',
                     '<a href="{url}">{text}</a>',
                 '</li>',
             '</tpl>',
-            '<li class="current">{short_name}</li>',
+            '<li class="current"><strong>{short_name}</strong></li>',
         '</ul>'
     ],
 
@@ -37,9 +36,9 @@ Ext.define('devilry_subjectadmin.view.BaseNodeHierLocation', {
      * A basenode record with a ``breadcrumb`` field.
      */
     setLocation: function(basenodeRecord) {
-        this.update(Ext.create('Ext.XTemplate', this.listingTpl).apply({
+        this.update({
             breadcrumb: this._get_data(basenodeRecord),
             short_name: basenodeRecord.get('short_name')
-        }));
+        });
     }
 });
