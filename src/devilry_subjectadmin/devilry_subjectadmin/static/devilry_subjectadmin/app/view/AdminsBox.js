@@ -99,9 +99,9 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             data: {
                 admins: sorted_admins
             },
-            buttonListeners: {
+            listeners: {
                 scope: this,
-                click: this._onEdit
+                edit: this._onEdit
             }
         }, {
             xtype: 'container',
