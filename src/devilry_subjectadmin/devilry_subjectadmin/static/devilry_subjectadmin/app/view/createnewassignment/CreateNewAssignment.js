@@ -14,9 +14,21 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
     autoScroll: true,
 
     items: [{
-        xtype: 'panel',
-        ui: 'inset-header-strong-panel',
-        title: gettext('Create new assignment'),
+        xtype: 'box',
+        cls: 'bootstrap',
+        tpl: [
+            '<h1>{heading}</h1>',
+            '<tpl if="subheading">',
+                ' <small> - {subheading}</small>',
+            '</tpl>'
+        ],
+        data: {
+            heading: gettext('Create new assignment'),
+            subheading: undefined
+        }
+    }, {
+        margin: '10 0 0 0',
+        xtype: 'container',
         items: { // Note: We wrap this in an extra container to avoid that the create button ends up at the bottom of the screen
             xtype: 'createnewassignmentform'
         }
