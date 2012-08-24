@@ -18,9 +18,13 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.login('periodoneadmin')
         self.period_id = self.testhelper.duck1100_periodone.id
 
-    def test_form_render(self):
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
+    def _load(self, period_id=None):
+        period_id = period_id or self.period_id
+        self.browseTo('/period/{0}/@@create-new-assignment/'.format(period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
+
+    def test_form_render(self):
+        self._load()
 
         self.assertTrue('Create new assignment' in self.selenium.page_source)
 
@@ -32,13 +36,12 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertTrue('How do students add deliveries?' in self.selenium.page_source)
 
     def test_invalid_period(self):
-        self.browseTo('/@@create-new-assignment/1001')
+        self._load('1001666')
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
-        self.assertTrue('Period 1001 could not be loaded.' in self.selenium.page_source)
+        self.assertTrue('Period 1001666 could not be loaded.' in self.selenium.page_source)
 
     def test_form_render_advanced_fieldset(self):
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
+        self._load()
         self.assertTrue('Advanced options' in self.selenium.page_source)
 
         fieldsetbutton = self.selenium.find_element_by_css_selector('#advancedOptionsPanel .x-panel-header')
@@ -71,8 +74,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_datetime_value('first_deadline', 'time', time)
 
     def test_form_nextbutton(self):
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
+        self._load()
 
         nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
         self.assertFalse(nextbutton.is_enabled())
@@ -100,8 +102,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
     def test_duplicate(self):
         self.testhelper.add_to_path('uni;duck1100.periodone.a1')
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
+        self._load()
         self._set_names('a1', 'A1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self._save_directly_from_pageone()
@@ -109,8 +110,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
 
     def test_success(self):
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
-        self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
+        self._load()
 
         self._set_names('sometest', 'Test')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
@@ -155,6 +155,6 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().minute, 0)
 
     def test_breadcrumb(self):
-        self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
+        self._load()
         breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
         self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100', 'periodone', 'Create new assignment'])

@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                 xtype: 'container',
                 layout: 'column',
                 items: [{
-                    columnWidth: 0.7,
+                    columnWidth: 1,
                     name: "long_name",
                     fieldLabel: gettext('Long name'),
                     xtype: 'textfield',
@@ -45,7 +45,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     padding: '0 20 0 0'
                 }, {
                     name: "short_name",
-                    columnWidth: 0.3,
+                    width: 300,
                     fieldLabel: gettext('Short name'),
                     xtype: 'textfield',
                     allowBlank: false,
@@ -67,7 +67,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     // How do students add deliveries
                     xtype: 'container',
                     columnWidth: 1,
-                    padding: '0 20 20 0',
+                    padding: '0 40 20 0',
                     items: [{
                         xtype: 'radiogroup',
                         fieldLabel: gettext('How do students add deliveries?'),
@@ -95,7 +95,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     // First deadline
                     xtype: 'container',
                     //columnWidth: 0.5,
-                    width: 350,
+                    width: 300,
                     items: [{
                         xtype: 'devilry_extjsextras-datetimefield',
                         cls: 'first_deadline',

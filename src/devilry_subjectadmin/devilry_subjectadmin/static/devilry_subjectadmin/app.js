@@ -157,6 +157,7 @@ Ext.application({
         this.route.add("/", 'allWhereIsAdmin');
         this.route.add("/subject/:subject_id/", 'showSubject');
         this.route.add("/period/:period_id/", 'showPeriod');
+        this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select/:group_ids", 'manageGroupsSelectGroups');
@@ -165,8 +166,6 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
-        this.route.add("/@@create-new-assignment/@@success", 'createNewAssignmentSuccess');
-        this.route.add("/@@create-new-assignment/:period", 'createNewAssignment'); // Must come after @@success (if not, it will match @@success)
         this.route.start();
     },
     
@@ -207,17 +206,9 @@ Ext.application({
     },
 
     createNewAssignment: function(routeInfo, period_id) {
-        this.breadcrumbs.set([], gettext('Create new assignment'));
         this.setPrimaryContent({
             xtype: 'createnewassignment',
             period_id: period_id
-        });
-    },
-
-    createNewAssignmentSuccess: function(routeInfo) {
-        this.breadcrumbs.set([], gettext('Create new assignment'));
-        this.setPrimaryContent({
-            xtype: 'createnewassignment-successpanel'
         });
     },
 
