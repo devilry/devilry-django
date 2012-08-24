@@ -231,7 +231,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
             }
         });
         this._setBreadcrumbs(this.groupInfoRecord, interpolate(gettext('Add %(delivery_term)s'), {
-            delivery_term: gettext('delivery'),
+            delivery_term: gettext('delivery')
         }, true));
         this._focusOnAddDeliveryPanel();
     },

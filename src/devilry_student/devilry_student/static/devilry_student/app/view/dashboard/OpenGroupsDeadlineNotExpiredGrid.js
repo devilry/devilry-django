@@ -49,5 +49,5 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid', {
             }]
         });
         this.callParent(arguments);
-    },
+    }
 });

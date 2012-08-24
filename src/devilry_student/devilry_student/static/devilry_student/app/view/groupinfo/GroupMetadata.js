@@ -71,7 +71,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
             '<p>',
                 '<a class="add_delivery_link" href="#/group/{groupinfo.id}/@@add-delivery">',
                     interpolate(gettext('Add %(delivery_term)s'), {
-                        delivery_term: gettext('delivery'),
+                        delivery_term: gettext('delivery')
                     }, true),
                 '</a>',
             '</p>',
