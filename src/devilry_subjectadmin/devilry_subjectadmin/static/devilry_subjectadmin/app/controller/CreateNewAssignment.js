@@ -156,6 +156,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onNext: function() {
+        this.getGlobalAlertmessagelist().removeAll(); // NOTE: If we fail validation, we redirect to page one. If users fix errors there, it would seem strange when they continue to display on page2.
         this.getCardPanel().getLayout().setActiveItem(1);
     },
     _onBack: function() {
