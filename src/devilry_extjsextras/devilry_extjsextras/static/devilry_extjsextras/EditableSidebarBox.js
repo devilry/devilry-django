@@ -73,7 +73,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 itemId: 'body',
                 padding: '0',
                 cls: this.bodyCls,
-                html: ''
+                tpl: this.bodyTpl
             }],
             listeners: {
                 scope: this,
@@ -93,6 +93,12 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
         var data = data || {};
         var tpl = Ext.create('Ext.XTemplate', Ext.Array.from(bodyTpl))
         this.down('#body').update(tpl.apply(data));
+    },
+
+    updateText: function(text) {
+        this.down('#body').update({
+            text: text
+        });
     },
 
     updateTitle: function(title) {
