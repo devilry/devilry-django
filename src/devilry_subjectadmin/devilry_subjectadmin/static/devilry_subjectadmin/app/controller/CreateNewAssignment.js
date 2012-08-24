@@ -205,10 +205,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var is_electronic = radio.getGroupValue() === 0;
         if(is_electronic) {
             this.getFirstDeadlineField().show();
-            this.getFirstDeadlineHelp().show();
         } else {
             this.getFirstDeadlineField().hide();
-            this.getFirstDeadlineHelp().hide();
         }
     },
 
