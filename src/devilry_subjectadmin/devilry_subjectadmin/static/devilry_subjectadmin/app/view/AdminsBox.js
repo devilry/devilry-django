@@ -69,7 +69,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         this.callParent(arguments);
         this.add({
             xtype: 'box',
-            html: gettext('Loading ...')
+            html: gettext('Loading') + ' ...'
         });
     },
 

@@ -13,11 +13,11 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     bodyTpl: ['{text}'],
 
     /**
-     * @cfg {Object} data
+     * @cfg {Object} [bodyData]
      * Initial data for the ``bodyTpl``.
      */
-    data: {
-        text: gettext('Loading...')
+    bodyData: {
+        text: gettext('Loading') + '...'
     },
 
     /**
@@ -73,7 +73,8 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 itemId: 'body',
                 padding: '0',
                 cls: this.bodyCls,
-                tpl: this.bodyTpl
+                tpl: this.bodyTpl,
+                data: this.bodyData
             }],
             listeners: {
                 scope: this,
@@ -86,13 +87,11 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
             }
         });
         this.callParent(arguments);
-        this.updateBody(this.bodyTpl, this.data);
+        //this.updateBody(this.bodyTpl, this.data);
     },
 
-    updateBody: function(bodyTpl, data) {
-        var data = data || {};
-        var tpl = Ext.create('Ext.XTemplate', Ext.Array.from(bodyTpl))
-        this.down('#body').update(tpl.apply(data));
+    updateBody: function(data) {
+        this.down('#body').update(data);
     },
 
     updateText: function(text) {

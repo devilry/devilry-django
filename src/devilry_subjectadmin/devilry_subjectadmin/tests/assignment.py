@@ -139,8 +139,8 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self.login('week1admin')
 
         self.browseTo('/assignment/1/')
-        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget button')
-        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime_widget button')
+        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .edit_link')
+        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime_widget .edit_link')
         button.click()
         self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime')
 
@@ -158,13 +158,13 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self.timefield.send_keys(time)
 
     def test_editpublishingtime(self):
-        self.assertTrue('Published' in self.selenium.page_source)
+        self.assertTrue('Publishing time' in self.selenium.page_source)
         self.assertTrue('Choose a time when time when students will be able to start adding deliveries on the assignment' in self.selenium.page_source)
         yesterday = datetime.now() - timedelta(days=1)
         isoday_yesterday = yesterday.date().isoformat()
         self._set_datetime(isoday_yesterday, '12:00')
         self.savebutton.click()
-        self.waitForText('Publishing time was {isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
+        self.waitForText('{isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
         week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
         self.assertEquals(week1.publishing_time.date(), yesterday.date())
 
@@ -173,7 +173,7 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         isoday_tomorrow = tomorrow.date().isoformat()
         self._set_datetime(isoday_tomorrow, '12:00')
         self.savebutton.click()
-        self.waitForText('Will be published {isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
+        self.waitForText('{isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
         week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
         self.assertEquals(week1.publishing_time.date(), tomorrow.date())
 

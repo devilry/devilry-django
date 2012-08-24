@@ -6,5 +6,19 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
     extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.editpublishingtime-widget',
-    cls: 'devilry_subjectadmin_editpublishingtime_widget'
+    cls: 'devilry_subjectadmin_editpublishingtime_widget',
+    bodyTpl: [
+        '<p>',
+            '<tpl if="text">',
+                '<small>{text}</small>',
+            '<tpl else>',
+                '<tpl if="is_published">',
+                    '<span class="success">{offset_from_now}</span>',
+                '<tpl else>',
+                    '<span class="danger">{offset_from_now}</span>',
+                '</tpl>',
+                ' <small>({publishing_time})</small>',
+            '</tpl>',
+        '</p>'
+    ]
 });

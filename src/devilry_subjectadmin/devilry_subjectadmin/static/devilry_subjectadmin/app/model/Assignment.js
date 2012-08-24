@@ -2,6 +2,11 @@
 Ext.define('devilry_subjectadmin.model.Assignment', {
     extend: 'Ext.data.Model',
 
+    requires: [
+        'Ext.Date',
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
+
     idProperty: 'id',
     fields: [
         {name: 'admins',  type: 'auto'},
@@ -32,6 +37,15 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         reader: {
             type: 'json'
         }
+    },
+
+    formatPublishOffsetFromNow: function() {
+        return devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
+            this.get('publishing_time_offset_from_now'), !this.get('is_published'));
+    },
+
+    formatPublishingTime: function() {
+        return Ext.Date.format(this.get('publishing_time'), 'Y-m-d H:i');
     },
 
 

@@ -13,7 +13,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     ],
 
     requires: [
-        'Ext.util.KeyNav'
+        'Ext.util.KeyNav',
+        'devilry_extjsextras.DatetimeHelpers'
     ],
 
     models: ['Assignment'],
@@ -54,8 +55,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             'editpublishingtime cancelbutton': {
                 click: this._close
             },
-            'editpublishingtime-widget button': {
-                click: this._onEdit
+            'editpublishingtime-widget': {
+                edit: this._onEdit
             }
         });
     },
@@ -119,20 +120,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     },
 
     _updatePublishingTimeWidget: function() {
-        var published = this.assignmentRecord.get('publishing_time') < Ext.Date.now();
-        var title, tpl;
-
-        if(published) {
-            title = gettext('Published');
-            tpl = gettext('Publishing time was {publishing_time}.');
-        } else {
-            title = gettext('Not published');
-            tpl = gettext('Will be published {publishing_time}.');
-        }
-        var publishing_time = this.assignmentRecord.get('publishing_time');
-        this.getPublishingTimeWidget().updateTitle(title);
-        this.getPublishingTimeWidget().updateBody([tpl], {
-            publishing_time: Ext.Date.format(publishing_time, 'Y-m-d H:i')
+        var offset_from_now = this.assignmentRecord.formatPublishOffsetFromNow();
+        var is_published = this.assignmentRecord.get('is_published');
+        this.getPublishingTimeWidget().updateTitle(gettext('Publishing time'));
+        this.getPublishingTimeWidget().updateBody({
+            publishing_time: this.assignmentRecord.formatPublishingTime(),
+            offset_from_now: offset_from_now,
+            is_published: is_published
         });
     }
 });

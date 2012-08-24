@@ -104,7 +104,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     columnWidth: .35,
                     margin: '0 0 0 40',
                     defaults: {
-                        margin: '20 0 0 0'
+                        margin: '10 0 0 0'
                     },
                     items: [{
                         xtype: 'editablesidebarbox',
