@@ -160,7 +160,8 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
     def test_editpublishingtime(self):
         self.assertTrue('Publishing time' in self.selenium.page_source)
         self.assertTrue('Choose a time when time when students will be able to start adding deliveries on the assignment' in self.selenium.page_source)
-        yesterday = datetime.now() - timedelta(days=1)
+        now = datetime.now()
+        yesterday = now - timedelta(days=1)
         isoday_yesterday = yesterday.date().isoformat()
         self._set_datetime(isoday_yesterday, '12:00')
         self.savebutton.click()

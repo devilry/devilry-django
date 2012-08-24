@@ -22,7 +22,7 @@ class AssignmentResourceMixin(object):
 
     def is_published(self, instance):
         if isinstance(instance, self.model):
-            return instance.publishing_time > datetime.now()
+            return instance.publishing_time < datetime.now()
 
     def first_deadline(self, instance):
         if isinstance(instance, self.model) and instance.first_deadline:
