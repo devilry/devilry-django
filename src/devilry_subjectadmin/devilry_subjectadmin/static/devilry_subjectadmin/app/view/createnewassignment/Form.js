@@ -29,19 +29,13 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         items: [{
             xtype: 'panel',
             itemId: 'pageOne',
-            border: 0,
+            bodyPadding: 20,
             defaults: {
                 margin: '20 0 0 0'
             },
             items: [{
-                margin: 0,
-                xtype: 'box',
-                cls: 'metainfo bootstrap',
-                itemId: 'metainfo',
-                html: ''
 
                 // Long name
-            }, {
                 xtype: 'container',
                 layout: 'column',
                 items: [{
@@ -182,7 +176,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         }, {
             xtype: 'panel',
             itemId: 'pageTwo',
-            border: 0,
+            bodyPadding: 20,
             defaults: {
                 margin: '20 0 0 0'
             },
@@ -191,7 +185,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                 xtype: 'box',
                 cls: 'metainfo bootstrap',
                 itemId: 'metainfo',
-                html: gettext('Setup students and examiners. If none of the options below suites your needs, uncheck all the checkboxes, and set up students and examiners manually later.')
+                html: gettext('Setup students and examiners? If none of the options below suite your needs, uncheck all the checkboxes, and set up students and examiners manually later.')
             }, {
                 // Add all related students
                 xtype: 'checkboxfield',
@@ -216,7 +210,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             }, {
                 xtype: 'formhelp',
                 itemId: 'autosetup_examiners-help',
-                margin: '5 0 20 0',
+                margin: '5 0 0 0',
                 html: gettext('Automatically setup examiners on this assignment by matching tags on examiners and students registered on the period.')
             }],
             fbar: [{

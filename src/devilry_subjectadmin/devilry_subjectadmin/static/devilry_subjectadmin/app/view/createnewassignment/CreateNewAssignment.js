@@ -16,11 +16,14 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
     items: [{
         xtype: 'box',
         cls: 'bootstrap',
+        itemId: 'pageHeading',
         tpl: [
-            '<h1>{heading}</h1>',
-            '<tpl if="subheading">',
-                ' <small> - {subheading}</small>',
-            '</tpl>'
+            '<h1>',
+                '{heading}',
+                '<tpl if="subheading">',
+                    ' <small> - {subheading}</small>',
+                '</tpl>',
+            '</h1>'
         ],
         data: {
             heading: gettext('Create new assignment'),

@@ -38,8 +38,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'globalAlertmessagelist',
         selector: 'createnewassignment alertmessagelist'
     }, {
-        ref: 'metainfo',
-        selector: 'createnewassignmentform #metainfo'
+        ref: 'pageHeading',
+        selector: 'createnewassignment #pageHeading'
     }, {
         ref: 'shortNameField',
         selector: 'createnewassignmentform textfield[name=short_name]'
@@ -178,7 +178,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
         this.periodpath = this.getPathFromBreadcrumb(this.periodRecord);
-        this._setMetadata();
+        this._updateHeader();
+        this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], gettext('Create new assignment'));
     },
     _onLoadPeriodFailure: function(operation) {
         var message = Ext.create('Ext.XTemplate',
@@ -191,14 +192,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _setMetadata: function() {
+    _updateHeader: function() {
         var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
-        var metatext = Ext.create('Ext.XTemplate',
-            gettext('Create new assignment in <em>{period}</em>.')
-        ).apply({
-            period: periodpath
+        this.getPageHeading().update({
+            heading: gettext('Create new assignment'),
+            subheading: periodpath
         });
-        this.getMetainfo().update(metatext);
     },
 
     _onDeliveryTypesSelect: function(radio, records) {
