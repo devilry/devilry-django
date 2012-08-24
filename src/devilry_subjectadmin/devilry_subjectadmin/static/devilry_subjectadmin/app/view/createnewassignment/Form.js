@@ -30,9 +30,6 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             xtype: 'panel',
             itemId: 'pageOne',
             bodyPadding: 20,
-            defaults: {
-                margin: '20 0 0 0'
-            },
             items: [{
 
                 // Long name
@@ -64,6 +61,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
             }, {
                 xtype: 'container',
+                margin: '20 0 0 0',
                 layout: 'column',
                 items: [{
                     // How do students add deliveries
@@ -168,6 +166,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
             fbar: [{
                 xtype: 'button',
                 itemId: 'nextButton',
+                cls: 'createnewassignmentform_nextbutton',
                 text: gettext('Next'),
                 scale: 'large',
                 formBind: true, //only enabled once the form is valid

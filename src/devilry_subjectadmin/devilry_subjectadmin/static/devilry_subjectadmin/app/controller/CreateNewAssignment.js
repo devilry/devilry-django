@@ -130,6 +130,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _onRenderCreateNewAssignmentForm: function() {
+        this.setLoadingBreadcrumb();
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
             enter: this._onHitEnter,
             scope: this

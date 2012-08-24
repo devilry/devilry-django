@@ -7,10 +7,17 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from views import AppView
 
 
+@login_required
+def emptyview(request):
+    from django.http import HttpResponse
+    return HttpResponse('Logged in')
+
+
 i18n_packages = get_javascript_catalog_packages('devilry_subjectadmin', 'devilry_extjsextras', 'devilry.apps.core')
 
 urlpatterns = patterns('devilry_subjectadmin',
                        url('^rest/', include('devilry_subjectadmin.rest.urls')),
                        url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
+                       url('^emptytestview', emptyview), # NOTE: Only used for testing
                        url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
                            name='devilry_subjectadmin_i18n'))

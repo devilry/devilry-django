@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Assignment, AssignmentGroup
+from selenium.webdriver.common.keys import Keys
 
 from .base import SubjectAdminSeleniumTestCase
 
@@ -25,11 +26,9 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
         self.assertTrue('Long name' in self.selenium.page_source)
         self.assertTrue('Example: Obligatory assignment one' in self.selenium.page_source)
-        self.assertTrue('Choose a descriptive name for your assignment' in self.selenium.page_source)
-
         self.assertTrue('Short name' in self.selenium.page_source)
         self.assertTrue('Example: oblig-1' in self.selenium.page_source)
-        self.assertTrue('Choose a short name with at most 20 letters for your assignment' in self.selenium.page_source)
+        self.assertTrue('Choose a long and a short name' in self.selenium.page_source)
         self.assertTrue('How do students add deliveries?' in self.selenium.page_source)
 
     def test_invalid_period(self):
@@ -42,61 +41,70 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
         self.assertTrue('Advanced options' in self.selenium.page_source)
 
-        self.assertFalse('Anonymous?' in self.selenium.page_source)
-        self.assertFalse('Publishing time' in self.selenium.page_source)
-        self.assertFalse('Add all students to this assignment?' in self.selenium.page_source)
-        self.assertFalse('Automatically setup examiners?' in self.selenium.page_source)
-
-        fieldsetbutton = self.selenium.find_element_by_css_selector('.advanced_options_fieldset legend .x-tool img')
+        fieldsetbutton = self.selenium.find_element_by_css_selector('#advancedOptionsPanel .x-panel-header')
         fieldsetbutton.click()
 
         self.assertTrue('Anonymous?' in self.selenium.page_source)
         self.assertTrue('If an assignment is anonymous, examiners see' in self.selenium.page_source)
         self.assertTrue('Publishing time' in self.selenium.page_source)
-        self.assertTrue('Add all students to this assignment?' in self.selenium.page_source)
-        self.assertTrue('Automatically setup examiners?' in self.selenium.page_source)
 
 
     def _set_value(self, fieldname, value):
         field = self.selenium.find_element_by_css_selector('input[name={0}]'.format(fieldname))
+        field.clear()
         field.send_keys(value)
+        #field.send_keys(Keys.TAB)
+
+    def _set_names(self, short_name, long_name):
+        self._set_value('short_name', 'temp') # NOTE: prevent long_name from automatically set shortname
+        self._set_value('long_name', long_name)
+        self._set_value('short_name', short_name)
 
     def _set_datetime_value(self, fieldclass, field, value):
         field = self.selenium.find_element_by_css_selector('.{fieldclass} .devilry_extjsextras_{field}field input[type=text]'.format(fieldclass=fieldclass,
                                                                                                                           field=field))
         field.send_keys(value)
+        field.send_keys(Keys.TAB)
 
     def _set_first_deadline(self, date, time):
         self._set_datetime_value('first_deadline', 'date', date)
         self._set_datetime_value('first_deadline', 'time', time)
 
-    def test_form_createbutton(self):
+    def test_form_nextbutton(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
-        createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
-        self.assertFalse(createbutton.is_enabled())
+        nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
+        self.assertFalse(nextbutton.is_enabled())
 
-        # Make sure the create button is clickable after both short and long names are entered.
-        self._set_value('long_name', 'Test')
-        self.assertFalse(createbutton.is_enabled())
+        # Make sure the next button is clickable after both short and long names are entered.
+        self._set_names('', 'Test')
+        self.assertFalse(nextbutton.is_enabled())
 
         self._set_value('short_name', 'test')
-        self.waitForEnabled(createbutton)
+        self.waitForEnabled(nextbutton)
 
     def _click_createbutton(self):
         createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
         self.waitForEnabled(createbutton)
         createbutton.click()
 
+    def _click_nextbutton(self):
+        nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
+        self.waitForEnabled(nextbutton)
+        nextbutton.click()
+
+    def _save_directly_from_pageone(self):
+        self._click_nextbutton()
+        self._click_createbutton()
+
     def test_duplicate(self):
         self.testhelper.add_to_path('uni;duck1100.periodone.a1')
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
-        self._set_value('long_name', 'A1')
-        self._set_value('short_name', 'a1')
+        self._set_names('a1', 'A1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
-        self._click_createbutton()
+        self._save_directly_from_pageone()
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
 
@@ -104,18 +112,13 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
-        self._set_value('long_name', 'Test')
-        self._set_value('short_name', 'sometest')
+        self._set_names('sometest', 'Test')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
-        self._click_createbutton()
+        self._save_directly_from_pageone()
 
-        self.waitForCssSelector('.devilry_subjectadmin_createnewassignment_successpanel')
-        links = self.selenium.find_elements_by_css_selector('.actionlist a')
-        self.assertEquals(len(links), 2)
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.long_name, 'Test')
-        self.assertEquals(links[0].get_attribute('href'), 'http://localhost:8081/devilry_subjectadmin/#/assignment/{0}/'.format(created.id))
-        self.assertEquals(links[1].get_attribute('href'), u'http://localhost:8081/devilry_subjectadmin/#/@@create-new-assignment/{0}'.format(self.period_id))
         return created
 
 
@@ -151,12 +154,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().hour, 15)
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().minute, 0)
 
-    def test_success_direct(self):
-        self.browseTo('/@@create-new-assignment/@@success')
-        self.waitForCssSelector('.x-message-box')
-        self.assertTrue('This page is only available after creating a new assignment.' in self.selenium.page_source)
-
     def test_breadcrumb(self):
         self.browseTo('/@@create-new-assignment/{0}'.format(self.period_id))
         breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
-        self.assertEquals(breadcrumbtext, ['Create new assignment'])
+        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100', 'periodone', 'Create new assignment'])
