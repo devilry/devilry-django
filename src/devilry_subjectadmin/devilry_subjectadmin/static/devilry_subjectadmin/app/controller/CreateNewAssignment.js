@@ -50,8 +50,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'firstDeadlineField',
         selector: 'createnewassignmentform devilry_extjsextras-datetimefield[name=first_deadline]'
     }, {
-        ref: 'firstDeadlineHelp',
-        selector: 'createnewassignmentform #first_deadline-help'
+        ref: 'publishingTimeField',
+        selector: 'createnewassignmentform devilry_extjsextras-datetimefield[name=publishing_time]'
+    }, {
+        ref: 'publishingTimeHelp',
+        selector: 'createnewassignmentform #publishingTimeHelp'
     }, {
         ref: 'autoSetupExaminersField',
         selector: 'createnewassignmentform checkboxfield[name=autosetup_examiners]'
@@ -205,8 +208,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var is_electronic = radio.getGroupValue() === 0;
         if(is_electronic) {
             this.getFirstDeadlineField().show();
+            this.getPublishingTimeField().show();
+            this.getPublishingTimeHelp().show();
         } else {
             this.getFirstDeadlineField().hide();
+            this.getPublishingTimeField().hide();
+            this.getPublishingTimeHelp().hide();
         }
     },
 
