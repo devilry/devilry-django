@@ -21,6 +21,12 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     },
 
     /**
+     * @cfg {String} [bodyCls='']
+     * The css class of the body box.
+     */
+    bodyCls: '',
+
+    /**
      * @cfg {String} buttontext (optional)
      * Button text. Defaults to "Edit" (translated).
      */
@@ -66,6 +72,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 xtype: 'box',
                 itemId: 'body',
                 padding: '0',
+                cls: this.bodyCls,
                 html: ''
             }],
             listeners: {
