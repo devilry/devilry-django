@@ -31,6 +31,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
                                'publishing_time', 'delivery_types',
+                               'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'first_deadline',
                                'anonymous', 'deadline_handling']))
 
@@ -157,6 +158,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
+                               'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous']))
 
@@ -230,6 +232,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
+                               'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
