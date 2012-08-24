@@ -18,5 +18,5 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineExpiredGrid', {
                 gettext('{deadline_term} was {offset_from_deadline} ago'),
             '</small>',
         '</div>'
-    ],
+    ]
 });

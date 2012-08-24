@@ -4,7 +4,8 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     margin: '20 20 20 20',
 
     requires: [
-        'Ext.util.Cookies'
+        'Ext.util.Cookies',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -25,7 +26,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     helptextTpl: [
         '<h2>',
             interpolate(gettext('Add %(delivery_term)s'), {
-                delivery_term: gettext('delivery'),
+                delivery_term: gettext('delivery')
             }, true),
         '</h2>',
         '<tpl if="added_filename">',
@@ -85,9 +86,10 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                         itemId: 'cancelbutton',
                         text: gettext('Cancel')
                     }, '->', {
-                        xtype: 'button',
+                        xtype: 'primarybutton',
                         itemId: 'deliverbutton',
-                        scale: 'large',
+                        //scale: 'large',
+                        minWidth: 200,
                         disabled: true,
                         text: interpolate(gettext('Submit %(delivery_term)s'), {
                             delivery_term: gettext('delivery')

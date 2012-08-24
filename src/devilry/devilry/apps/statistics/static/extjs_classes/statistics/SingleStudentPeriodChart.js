@@ -39,7 +39,7 @@ Ext.define('devilry.statistics.SingleStudentPeriodChart', {
                     renderer: function(data) {
                         return me.groupTpl.apply({candidates: data});
                     }
-                },
+                }
             }],
             series: [{
                 type: 'column',

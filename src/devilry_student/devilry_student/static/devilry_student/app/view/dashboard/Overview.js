@@ -67,7 +67,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                         deadlines_term: gettext('deadlines'),
                         deadline_term: gettext('deadline'),
                         deliveries_term: gettext('deliveries')
-                    }, true),
+                    }, true)
                 }
             }, {
                 xtype: 'opengroups_deadline_expired_grid'

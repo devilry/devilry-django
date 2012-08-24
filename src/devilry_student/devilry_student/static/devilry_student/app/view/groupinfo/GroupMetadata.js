@@ -49,7 +49,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                 interpolate(gettext('The current %(grade_term)s is the final grade. You can not add more %(deliveries_term)s unless an %(examiner_term)s opens the group.'), {
                     deliveries_term: gettext('deliveries'),
                     examiner_term: gettext('examiner'),
-                    grade_term: gettext('grade'),
+                    grade_term: gettext('grade')
                 }, true),
             '</tpl>',
         '</p>',

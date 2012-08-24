@@ -109,7 +109,7 @@ Ext.define('devilry.statistics.OverviewOfSingleStudent', {
             }]
         });
         this.callParent(arguments);
-    },
+    }
 
     //_loadAssignmentGroups: function() {
         //this.candidate_store = Ext.create('Ext.data.Store', {
