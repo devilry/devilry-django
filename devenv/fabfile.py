@@ -141,7 +141,7 @@ def jsbuild(appname, nocompress=False, watch=False):
 
 @task
 def jsbuild_devilry_student(nocompress=False, watch=False):
-    jsbuild('devilry_student', nocompress)
+    jsbuild('devilry_student', nocompress, watch)
 
 @task
 def jsbuild_devilry_frontpage(nocompress=False, watch=False):
