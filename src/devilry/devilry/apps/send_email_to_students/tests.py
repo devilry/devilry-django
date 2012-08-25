@@ -31,7 +31,7 @@ class TestEmailSendingDebugView(TestCase):
         self.client.login(username='superuser', password='test')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.content, 'User "targetuser" does not exist')
+        self.assertEqual(response.content, 'ERROR: User "targetuser" does not exist')
 
     def test_email_sending_debug_noemail(self):
         targetuser = self.testhelper.create_user('targetuser')
@@ -40,4 +40,14 @@ class TestEmailSendingDebugView(TestCase):
         self.client.login(username='superuser', password='test')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'User "targetuser" has no email address')
+        self.assertEqual(response.content, 'ERROR: User "targetuser" has no email address')
+
+    def test_email_sending_debug_superuser_noemail(self):
+        targetuser = self.testhelper.create_user('targetuser')
+        superuser = self.testhelper.superuser
+        superuser.email = ''
+        superuser.save()
+        self.client.login(username='superuser', password='test')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, 'ERROR: YOU (superuser) have no email address')

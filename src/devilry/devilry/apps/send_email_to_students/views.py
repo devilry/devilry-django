@@ -10,11 +10,16 @@ from devilry.utils.devilry_email import send_email
 
 
 emailbodytpl = """This was sent by the superuser with username="{username}"
-to test that email sending to you user works, and that
-email-sending in Devilry uses the correct dataset.
+to test that email sending to your user works.
 
-Url of the Devilry frontpage:
+## Url of the Devilry frontpage:
 {frontpageurl}
+If the frontpage URL is not an absolute URL, or if it is incorrect, Devilry is
+not configured correctly.
+
+## Please confirm
+Please send an email to {superuseremail} and inform them that you got this
+email, and if the frontpage URL is correct.
 """
 
 class EmailSendingDebug(View):
@@ -24,14 +29,17 @@ class EmailSendingDebug(View):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            return HttpResponseNotFound('User "{username}" does not exist'.format(**vars()))
+            return HttpResponseNotFound('ERROR: User "{username}" does not exist'.format(**vars()))
 
+        if not request.user.email:
+            return HttpResponseBadRequest('ERROR: YOU ({username}) have no email address'.format(username=request.user.username))
         if not user.email:
-            return HttpResponseBadRequest('User "{username}" has no email address'.format(**vars()))
+            return HttpResponseBadRequest('ERROR: User "{username}" has no email address'.format(**vars()))
 
         subject = 'Test email from Devilry.'
         body = emailbodytpl.format(username=request.user.username,
-                                   frontpageurl=reverse('devilry_frontpage'))
+                                   frontpageurl=reverse('devilry_frontpage'),
+                                   superuseremail=request.user.email)
 
         send_email([user], subject, body)
         return render(request, 'send_email_to_users/email_sending_debug.django.html',
