@@ -22,7 +22,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         #self.browseTo('/group/{groupid}/{deliveryid}'.format(groupid=groupid,
                                                              #deliveryid=deliveryid))
 
-    def _browseToAddDelivery(self, groupid, deliveryid):
+    def _browseToAddDelivery(self, groupid):
         self.browseTo('/group/{groupid}/@@add-delivery'.format(groupid=groupid))
 
     def test_doesnotexists(self):
@@ -224,8 +224,47 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         self.assertEquals(deadlinepanel.find_element_by_css_selector('.deadlinetext').text.strip(), '')
 
-    #def test_add_delivery(self):
-        #self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
-        #self.login('student1')
-        #self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
-        #self.waitForCssSelector('.devilry_student_groupmetadata')
+    def test_add_delivery(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        deadline = self.testhelper.sub_p1_a1_g1_d1
+        deadline.deadline = datetime.now() + timedelta(days=2)
+        deadline.save()
+        self.login('student1')
+        self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupinfo_add_delivery')
+        widget = self.selenium.find_element_by_css_selector('.devilry_student_groupinfo_add_delivery')
+        help = widget.find_element_by_css_selector('.add_delivery_help')
+        self.assertEquals(help.find_element_by_css_selector('h2').text.strip(),
+                          'Add delivery')
+        self.assertEquals(help.find_element_by_css_selector('.initial_text').text.strip(),
+                          'Upload files for your delivery. You can upload multiple files.')
+        self.assertEquals(len(widget.find_elements_by_css_selector('.devilry_student_confirm_delivery_after_deadline')), 0)
+
+    def test_add_delivery_after_deadline(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        deadline = self.testhelper.sub_p1_a1_g1_d1
+        deadline.deadline = datetime.now() - timedelta(days=2)
+        deadline.save()
+        self.login('student1')
+        self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupinfo_add_delivery')
+        widget = self.selenium.find_element_by_css_selector('.devilry_student_groupinfo_add_delivery')
+        self.assertEquals(len(widget.find_elements_by_css_selector('.devilry_student_confirm_delivery_after_deadline')), 1)
+
+    def test_add_delivery_closed_group(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.testhelper.sub_p1_a1_g1.is_open = False
+        self.testhelper.sub_p1_a1_g1.save()
+        self.login('student1')
+        self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_extjsextras_alertmessage')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.devilry_extjsextras_alertmessage').text.strip(),
+                          'Error\nCan not add deliveries on closed groups.')
+
+    def test_add_delivery_no_deadline(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.login('student1')
+        self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_extjsextras_alertmessage')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.devilry_extjsextras_alertmessage').text.strip(),
+                          'Error\nCan not add deliveries on a group without a deadline.')

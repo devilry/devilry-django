@@ -5,7 +5,8 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
 
     requires: [
         'Ext.util.Cookies',
-        'devilry_extjsextras.PrimaryButton'
+        'devilry_extjsextras.PrimaryButton',
+        'devilry_student.view.add_delivery.ConfirmAfterDeadline'
     ],
 
     /**
@@ -33,11 +34,21 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
             '<p><strong>', gettext('{added_filename} uploaded successfully'), '</strong></p>',
             '<p>', gettext('Click the <em>Submit {delivery_term}</em> button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
         '<tpl else>',
-            '<p>', gettext('Upload files for your {delivery_term}. You can upload multiple files.'), '</p>',
+            '<p class="initial_text">', gettext('Upload files for your {delivery_term}. You can upload multiple files.'), '</p>',
         '</tpl>'
     ],
 
     initComponent: function() {
+        var confirm_after_deadline = {
+            xtype: 'box',
+            cls: 'devilry_student_delivery_before_deadline',
+            html: ''
+        };
+        if(this.groupInfoRecord.deadline_expired()) {
+            confirm_after_deadline = {
+                xtype: 'confirm_after_deadline'
+            }
+        }
         Ext.apply(this, {
             cls: 'devilry_student_groupinfo_add_delivery',
             layout: 'column',
@@ -51,7 +62,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     tpl: this.helptextTpl,
                     itemId: 'help',
                     anchor: '100%', // anchor width by percentage
-                    cls: 'bootstrap devilry_student_groupinfo_add_delivery_help',
+                    cls: 'bootstrap add_delivery_help',
                     data: {
                         delivery_term: gettext('delivery')
                     }
@@ -75,7 +86,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     anchor: '100%', // anchor width by percentage
                     emptyText: gettext('Select file...'),
                     buttonText: gettext('Add new file')
-                }],
+                }, confirm_after_deadline],
                 dockedItems: [{
                     xtype: 'toolbar',
                     margin: '20 0 0 0',

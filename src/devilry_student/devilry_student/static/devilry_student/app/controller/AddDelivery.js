@@ -31,6 +31,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
             'viewport add_delivery': {
                 render: this._onRender
             },
+            'viewport add_delivery confirm_after_deadline checkbox': {
+                change: this._onConfirmAfterDeadlineChange
+            },
             'viewport add_delivery fileuploadfield': {
                 change: this._onChooseFile
             },
@@ -109,10 +112,30 @@ Ext.define('devilry_student.controller.AddDelivery', {
         }
         this._updateMeta();
         this._updateHelp(result);
-        this.getDeliverButton().enable();
+        this._enableDeliveryIfValid();
         if(result.finished) {
             this._onFinished(result.delivery_id);
         }
+    },
+
+    _onConfirmAfterDeadlineChange: function(field, newValue) {
+        this.afterDeadlineConfirmed = newValue;
+        this._enableDeliveryIfValid();
+    },
+
+    _enableDeliveryIfValid: function() {
+        if(this.uploadedfiles.length > 0) {
+            if(this.groupInfoRecord.deadline_expired()) {
+                if(this.afterDeadlineConfirmed) {
+                    this.getDeliverButton().enable();
+                    return;
+                }
+            } else {
+                this.getDeliverButton().enable();
+                return;
+            }
+        }
+        this.getDeliverButton().disable();
     },
 
     _onSubmitFormFailure: function(form, action) {

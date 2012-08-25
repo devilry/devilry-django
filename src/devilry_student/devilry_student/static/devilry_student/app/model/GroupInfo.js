@@ -27,11 +27,16 @@ Ext.define('devilry_student.model.GroupInfo', {
     },
 
     hard_deadline_expired: function() {
-        if(!this.has_any_deadlines()) {
+        var hard_deadlines = this.get('deadline_handling') === 1;
+        return this.deadline_expired() && hard_deadlines;
+    },
+
+    deadline_expired: function() {
+        if(this.has_any_deadlines()) {
+            return !this.get('deadlines')[0].in_the_future;
+        } else {
             return false;
         }
-        var hard_deadlines = this.get('deadline_handling') === 1;
-        return hard_deadlines && !this.get('deadlines')[0].in_the_future;
     },
 
     has_any_deadlines: function() {
