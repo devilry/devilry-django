@@ -181,15 +181,10 @@ LOGGING = {
             'filename': join(logdir, 'exception.devilry.log')
         },
         'emailfile': {
-            'level': 'ERROR',
+            'level': 'DEBUG', # Use DEBUG to log all messages, and ERROR to log missing email and SMTP errors
             'formatter': 'verbose',
             'class': 'logging.FileHandler',
             'filename': join(logdir, 'email.devilry.log')
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True # The traceback email includes an HTML attachment containing the full content of the debug Web page that would have been produced if DEBUG were True. 
         }
     },
     'loggers': {
@@ -200,22 +195,23 @@ LOGGING = {
         },
         'django.request': {
             'handlers': ['allButExceptionTracebacks',
-                         'requestfile', 'mail_admins'],
+                         'requestfile'],
             'level': 'ERROR',
             'propagate': False
         },
         'django.db.backends': {
             'handlers': ['allButExceptionTracebacks',
                          'dbfile',
-                         'dbdebugfile', # Not useful for production since SQL statement logging is disabled when DEBUG=False.
-                         'mail_admins'],
+                         'dbdebugfile' # Not useful for production since SQL statement logging is disabled when DEBUG=False.
+                        ],
             'level': 'DEBUG',
             'propagate': False
         },
         'devilry.utils.devilry_email': {
             'handlers': ['allButExceptionTracebacks',
-                         # 'console', # Uncomment this if you want to see every email sent in the console
-                         'mail_admins'],
+                         'emailfile',
+                         #'console', # Uncomment this if you want to see every email sent in the console, however it is probably more useful to use emailfile
+                        ],
             'level': 'DEBUG',
             'propagate': False
         },
