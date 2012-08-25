@@ -227,7 +227,9 @@ class DevilryUserAdmin(UserAdmin):
                         return self._show_confirm_view(request, obj, changed_dangerous_attributes)
                 except ValidationError:
                     pass # Ignore errors, since they are handled in super.change_view()
-        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE', '')}
+        user_obj = self.get_object(request, unquote(object_id))
+        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE', ''),
+                               'user_obj': user_obj}
         if extra_context:
             extra_extra_context.update(extra_context)
         return super(UserAdmin, self).change_view(request, object_id, form_url, extra_extra_context)
