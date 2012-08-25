@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -15,6 +16,7 @@ class AppView(Extjs4AppView):
 
 
 
+@login_required
 def show_delivery(request, delivery_id):
     try:
         delivery = Delivery.objects.select_related('deadline').get(id=delivery_id)
