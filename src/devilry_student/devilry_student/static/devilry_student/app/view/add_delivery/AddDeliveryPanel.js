@@ -14,14 +14,16 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
      */
 
     metaTpl: [
-        '<tpl if="uploadedfiles">',
-            '<h3>', gettext('Uploaded files'), '</h3>',
-            '<ul>',
-                '<tpl for="uploadedfiles">',
-                    '<li>{filename}</li>',
-                '</tpl>',
-            '</ul>',
-        '</tpl>'
+        '<div class="uploadedfilesbox">',
+            '<tpl if="uploadedfiles">',
+                '<h3>', gettext('Uploaded files'), '</h3>',
+                '<ul>',
+                    '<tpl for="uploadedfiles">',
+                        '<li>{filename}</li>',
+                    '</tpl>',
+                '</ul>',
+            '</tpl>',
+        '</div>'
     ],
 
     helptextTpl: [

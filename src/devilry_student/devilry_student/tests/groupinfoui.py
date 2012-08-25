@@ -1,8 +1,12 @@
-#from devilry.apps.core.models import 
+from os.path import join, dirname, abspath
 from datetime import datetime, timedelta
-from devilry.apps.core.testhelper import TestHelper
+from selenium.webdriver.common.keys import Keys
 
+from devilry.apps.core.testhelper import TestHelper
 from .base import StudentSeleniumTestCase
+
+
+this_dir = abspath(dirname(__file__))
 
 
 class TestGroupInfoUI(StudentSeleniumTestCase):
@@ -17,10 +21,6 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
 
     def _browseToGroup(self, groupid):
         self.browseTo('/group/{groupid}/'.format(groupid=groupid))
-
-    #def _browseToDelivery(self, groupid, deliveryid):
-        #self.browseTo('/group/{groupid}/{deliveryid}'.format(groupid=groupid,
-                                                             #deliveryid=deliveryid))
 
     def _browseToAddDelivery(self, groupid):
         self.browseTo('/group/{groupid}/@@add-delivery'.format(groupid=groupid))
@@ -224,6 +224,27 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         self.assertEquals(deadlinepanel.find_element_by_css_selector('.deadlinetext').text.strip(), '')
 
+
+
+class TestAddDeliveryUI(StudentSeleniumTestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.create_user('student1')
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:begins(-3):ends(10)'],
+                            assignments=['a1:pub(1):ln(Assignment One)'])
+        self.tstfile1 = join(this_dir, 'upload_testfile1.txt')
+
+    def _browseToAddDelivery(self, groupid):
+        self.browseTo('/group/{groupid}/@@add-delivery'.format(groupid=groupid))
+
+
+    #def _add_file(self, path):
+        #filefield = self.selenium.find_element_by_css_selector('.devilry_student_groupinfo_add_delivery input[type=file]')
+        #filefield.send_keys(path)
+        #filefield.send_keys(Keys.TAB)
+
     def test_add_delivery(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         deadline = self.testhelper.sub_p1_a1_g1_d1
@@ -239,6 +260,11 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(help.find_element_by_css_selector('.initial_text').text.strip(),
                           'Upload files for your delivery. You can upload multiple files.')
         self.assertEquals(len(widget.find_elements_by_css_selector('.devilry_student_confirm_delivery_after_deadline')), 0)
+        self.assertEquals(len(widget.find_elements_by_css_selector('.uploadedfilesbox li')), 0)
+        #filefield = widget.find_element_by_css_selector('input[type=file]')
+        #self._add_file(self.tstfile1)
+        #self.waitFor(widget, lambda w: len(widget.find_elements_by_css_selector('.uploadedfilesbox li')) == 1)
+
 
     def test_add_delivery_after_deadline(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
