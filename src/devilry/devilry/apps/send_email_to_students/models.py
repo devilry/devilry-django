@@ -5,8 +5,22 @@ from django.template.defaultfilters import filesizeformat
 
 from devilry.apps.core.models import StaticFeedback
 from devilry.utils.devilry_email import send_email
-from devilry.apps.student.simplified import successful_delivery_signal
+from devilry_student.rest.add_delivery import successful_delivery_signal
 from devilry.defaults.encoding import CHARSET
+
+
+def create_absolute_show_delivery_url(delivery):
+    url = reverse('devilry_student_show_delivery',
+                      kwargs={'delivery_id': delivery.id})
+    # See
+    #   - https://code.djangoproject.com/ticket/16734
+    #   - http://stackoverflow.com/questions/9814951/why-does-reverse-prepend-a-server-path
+    #   - http://albertoconnor.ca/blog/2011/Sep/15/hosting-django-under-different-locations
+    # for why reverse includes the full url
+    #url = '{domain}{prefix}{path}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
+                                          #prefix = settings.DEVILRY_URLPATH_PREFIX,
+                                          #path = url)
+    return url
 
 
 def on_new_staticfeedback(sender, **kwargs):
@@ -21,12 +35,7 @@ def on_new_staticfeedback(sender, **kwargs):
     user_list = [candidate.student \
             for candidate in assignment_group.candidates.all()]
 
-
-    urlpath = reverse('student-show-assignmentgroup', kwargs=dict(assignmentgroupid=assignment_group.id))
-    url = '{domain}{prefix}{path}?deliveryid={deliveryid}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                                                  prefix = settings.DEVILRY_URLPATH_PREFIX,
-                                                                  path = urlpath,
-                                                                  deliveryid = delivery.id)
+    url = create_absolute_show_delivery_url(delivery)
     email_subject = 'New feedback - {0}'.format(assignment.get_path())
 
     # Make sure the values that may contain non-ascii characters are utf-8
@@ -62,11 +71,7 @@ def on_new_successful_delivery(sender, delivery, **kwargs):
     subject = period.parentnode
     user_list = [candidate.student \
             for candidate in assignment_group.candidates.all()]
-    urlpath = reverse('student-show-assignmentgroup', kwargs=dict(assignmentgroupid=assignment_group.id))
-    url = '{domain}{prefix}{path}?deliveryid={deliveryid}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                                                  prefix = settings.DEVILRY_URLPATH_PREFIX,
-                                                                  path = urlpath,
-                                                                  deliveryid = delivery.id)
+    url = create_absolute_show_delivery_url(delivery)
 
     files = ''
     for fm in delivery.filemetas.all():
