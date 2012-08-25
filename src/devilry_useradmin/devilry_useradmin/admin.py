@@ -19,26 +19,23 @@ from devilry.apps.core.models import DevilryUserProfile
 
 from .forms import CustomUserCreationForm
 from .forms import CustomUserChangeForm
+from .forms import get_setting
 
 
 
 csrf_protect_m = method_decorator(csrf_protect)
 
 
-def _get_setting(attrname, default=None):
-    return getattr(settings, attrname, default)
-
-
 def _get_permissions_fields():
     fields = ('is_active', 'is_staff', 'is_superuser')
-    if _get_setting('DEVILRY_USERADMIN_USER_INCLUDE_PERMISSIONFRAMEWORK'):
+    if get_setting('DEVILRY_USERADMIN_USER_INCLUDE_PERMISSIONFRAMEWORK'):
         fields += ('groups', 'user_permissions')
     return fields
 
 
 class InlineDevilryUserProfile(admin.StackedInline):
     model = DevilryUserProfile
-    readonly_fields = tuple(_get_setting('DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS',
+    readonly_fields = tuple(get_setting('DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS',
                                          default=['languagecode']))
     max_num = 1
     can_delete = False
@@ -122,7 +119,7 @@ class DevilryUserAdmin(UserAdmin):
     # Customize the edit/add forms
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
-    readonly_fields = ('last_login', 'date_joined') + tuple(_get_setting('DEVILRY_USERADMIN_USER_READONLY_FIELDS', default=[]))
+    readonly_fields = ('last_login', 'date_joined') + tuple(get_setting('DEVILRY_USERADMIN_USER_READONLY_FIELDS', default=[]))
     fieldsets = (
         (None, {'fields': ('username', 'password', 'email')}),
         #(_('Not used by devilry'), {'fields': ('first_name', 'last_name')}),
@@ -160,7 +157,7 @@ class DevilryUserAdmin(UserAdmin):
         Do not show InlineDevilryUserProfile on the add form.
         """
         self.inlines = []
-        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE', '')}
+        extra_extra_context = {'sysadmin_message': get_setting('DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE', '')}
         if extra_context:
             extra_extra_context.update(extra_context)
         return super(DevilryUserAdmin, self).add_view(request, form_url, extra_extra_context)
@@ -228,7 +225,7 @@ class DevilryUserAdmin(UserAdmin):
                 except ValidationError:
                     pass # Ignore errors, since they are handled in super.change_view()
         user_obj = self.get_object(request, unquote(object_id))
-        extra_extra_context = {'sysadmin_message': _get_setting('DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE', ''),
+        extra_extra_context = {'sysadmin_message': get_setting('DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE', ''),
                                'user_obj': user_obj}
         if extra_context:
             extra_extra_context.update(extra_context)
@@ -236,6 +233,6 @@ class DevilryUserAdmin(UserAdmin):
 
 
 admin.site.unregister(User)
-if not _get_setting('DEVILRY_USERADMIN_USER_INCLUDE_PERMISSIONFRAMEWORK'):
+if not get_setting('DEVILRY_USERADMIN_USER_INCLUDE_PERMISSIONFRAMEWORK'):
     admin.site.unregister(Group)
 admin.site.register(User, DevilryUserAdmin)
