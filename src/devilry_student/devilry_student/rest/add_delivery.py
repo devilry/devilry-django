@@ -16,6 +16,7 @@ from .errors import BadRequestError
 class AddDeliveryForm(forms.Form):
     delivery_id = forms.IntegerField(required=False)
     finish = forms.BooleanField(required=False)
+    respond_with_html_contenttype = forms.BooleanField(required=False)
 
 
 class AddDeliveryResource(FormResource):
@@ -25,7 +26,6 @@ class AddDeliveryResource(FormResource):
         if 'file_to_add' in data:
             del data['file_to_add']
         return super(AddDeliveryResource, self).validate_request(data, files)
-
 
 
 class AddDeliveryView(View):
@@ -96,7 +96,16 @@ class AddDeliveryView(View):
                   'created_delivery': created_delivery,
                   'finished': finished,
                   'success': True} # NOTE: ``success`` is included for ExtJS compatibility
-        return result
+        return self._create_response(result)
+
+    def _create_response(self, result):
+        if self.CONTENT['respond_with_html_contenttype']:
+            from django.http import HttpResponse
+            import json
+            content = json.dumps(result)
+            return HttpResponse(content, mimetype='text/html', status=200)
+        else:
+            return result
 
     def _get_or_notfounderror(self, modelcls, id):
         try:
