@@ -84,6 +84,10 @@ Ext.define('devilry_student.controller.AddDelivery', {
             this._setLoading(gettext('Uploading your file ...'));
             form.submit({
                 url: url,
+                method: 'post',
+                params: {
+                    respond_with_html_contenttype: true
+                },
                 scope: this,
                 success: this._onSubmitFormSuccess,
                 failure: this._onSubmitFormFailure
