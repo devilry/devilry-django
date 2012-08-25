@@ -100,14 +100,29 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
-        this.getDeadlinesContainer().removeAll();
-        Ext.Array.each(deadlines, function(deadline) {
-            this.getDeadlinesContainer().add({
-                xtype: 'groupinfo_deadline',
-                deadline: deadline,
-                active_feedback: active_feedback
+        var container = this.getDeadlinesContainer();
+        container.removeAll();
+        if(deadlines.length == 0) {
+            container.add({
+                xtype: 'alertmessage',
+                type: 'error',
+                title: interpolate(gettext('No %(deadlines_term)s'), {
+                    deadlines_term: gettext('deadlines')
+                }, true),
+                message: interpolate(gettext('You have no %(deadlines_term)s, so you can not add any %(deliveries_term)s.'), {
+                    deadlines_term: gettext('deadlines'),
+                    deliveries_term: gettext('deliveries')
+                }, true)
             });
-        }, this);
+        } else {
+            Ext.Array.each(deadlines, function(deadline) {
+                container.add({
+                    xtype: 'groupinfo_deadline',
+                    deadline: deadline,
+                    active_feedback: active_feedback
+                });
+            }, this);
+        }
     },
 
     _populateTitleBox: function(groupInfoRecord) {

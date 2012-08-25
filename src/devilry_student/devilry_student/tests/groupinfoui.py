@@ -63,6 +63,13 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.waitForCssSelector('.devilry_student_groupmetadata')
         self.assertEquals(self.selenium.find_element_by_css_selector('.groupnameblock').text.strip(), '')
 
+    def test_no_deadlines(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_extjsextras_alertmessage')
+        self.assertTrue(self.selenium.find_element_by_css_selector('.devilry_extjsextras_alertmessage').text.strip().startswith('No deadlines'))
+
     def test_userlists(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2):examiner(examiner1,examiner2)')
         self.testhelper.student1.devilryuserprofile.full_name = 'Student One'

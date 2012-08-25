@@ -27,25 +27,28 @@ Ext.define('devilry_student.model.GroupInfo', {
     },
 
     hard_deadline_expired: function() {
-        var deadlines = this.get('deadlines');
-        if(deadlines.length === 0) {
+        if(!this.has_any_deadlines()) {
             return false;
         }
         var hard_deadlines = this.get('deadline_handling') === 1;
-        return hard_deadlines && !deadlines[0].in_the_future;
+        return hard_deadlines && !this.get('deadlines')[0].in_the_future;
+    },
+
+    has_any_deadlines: function() {
+        var deadlines = this.get('deadlines');
+        return deadlines.length > 0;
     },
 
     can_add_deliveries: function() {
         if(!this.get('is_open')) {
             return false;
         }
-        var deadlines = this.get('deadlines');
-        if(deadlines.length === 0) {
+        if(!this.has_any_deadlines()) {
             return false;
         }
         var hard_deadlines = this.get('deadline_handling') === 1;
         if(hard_deadlines) {
-            return deadlines[0].in_the_future;
+            return this.get('deadlines')[0].in_the_future;
         } else {
             return true;
         }
