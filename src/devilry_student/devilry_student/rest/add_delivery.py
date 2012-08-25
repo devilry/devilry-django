@@ -1,3 +1,5 @@
+import json
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django import forms
 from django.db import IntegrityError
@@ -100,8 +102,6 @@ class AddDeliveryView(View):
 
     def _create_response(self, result):
         if self.CONTENT['respond_with_html_contenttype']:
-            from django.http import HttpResponse
-            import json
             content = json.dumps(result)
             return HttpResponse(content, mimetype='text/html', status=200)
         else:
