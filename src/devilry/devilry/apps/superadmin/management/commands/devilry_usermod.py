@@ -66,8 +66,10 @@ class Command(UserModCommand):
                 kw[attrname] = value
         if options['superuser']:
             kw['is_superuser'] = True
+            kw['is_staff'] = True
         if options['normaluser']:
             kw['is_superuser'] = False
+            kw['is_staff'] = False
 
         try:
             user = User.objects.get(username=username)

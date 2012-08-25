@@ -36,6 +36,8 @@ class Command(UserModCommand):
         kw = {}
         for attrname in ('email', 'is_superuser'):
             kw[attrname] = options[attrname]
+        if options['is_superuser']:
+            kw['is_staff'] = True
 
         if User.objects.filter(username=username).count() == 0:
             user = User(username=username, **kw)
