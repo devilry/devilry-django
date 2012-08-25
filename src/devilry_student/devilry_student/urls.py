@@ -14,4 +14,7 @@ urlpatterns = patterns('devilry_student',
                            name='devilry_student'),
                        url('^rest/', include('devilry_student.rest.urls')),
                        url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
-                           name='devilry_student_i18n'))
+                           name='devilry_student_i18n'),
+                       url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery',
+                           name='devilry_student_show_delivery')
+                      )
