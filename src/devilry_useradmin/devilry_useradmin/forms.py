@@ -54,6 +54,11 @@ class CustomUserChangeForm(UserChangeForm):
     """
     password = ReadOnlyPasswordHashField(label=_("Password"),
                                          help_text=password_helptext)
+    is_staff = forms.BooleanField(label=_("Staff status"), required=False,
+                                  help_text=_('Should the user have access to this admin site? Unless you make the user superuser as well, they will only get an empty page until you give them permissions using the Groups and Permissions fields below.'))
+    is_superuser = forms.BooleanField(label=_("Superuser status"), required=False,
+                                      help_text=_('Should the user have access to all data in Devilry? You normally want superusers to be Staff users as well, however if they are not staff, they simply have access to everything in the regular administrator panel in Devilry, but not to this admin site.'))
+
 
     def clean_username(self):
         username = self.cleaned_data["username"]
