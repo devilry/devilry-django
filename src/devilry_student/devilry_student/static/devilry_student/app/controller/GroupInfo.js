@@ -4,7 +4,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
     requires: [
         'Ext.window.MessageBox',
         'devilry_student.view.add_delivery.AddDeliveryPanel',
-        'Ext.fx.Animator'
+        'Ext.fx.Animator',
+        'devilry_extjsextras.AlertMessage'
     ],
 
     views: [
@@ -77,13 +78,25 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this.getOverview().setLoading(false);
     },
 
-    _onGroupInfoLoadFailure: function() {
-        this.setLoading(false);
-        this._showLoadError(gettext('Failed to load group. Try to reload the page'));
+    _onGroupInfoLoadFailure: function(record, operation) {
+        var message = gettext('Failed to load group. Try to reload the page');
+        if(operation.error.status === 403) {
+            message = gettext('Permission denied.');
+        }
+        this.getOverview().setLoading(false);
+        this._showLoadError(message);
     },
 
     _showLoadError: function(message) {
-        Ext.MessageBox.alert(gettext('Error'), message);
+        //Ext.MessageBox.alert(gettext('Error'), message);
+        this.getOverview().removeAll();
+        this.getOverview().add({
+            xtype: 'alertmessage',
+            margin: 40,
+            type: 'error',
+            title: gettext('Error'),
+            message: message
+        });
     },
 
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
