@@ -47,7 +47,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
             '<h2>',
                 gettext('About this deadline'),
             '</h2>',
-            '<p style="white-space: pre-wrap">{deadline.text}</p>',
+            '<p style="white-space: pre-wrap;">{deadline.text}</p>',
         '</tpl>'
     ],
 
@@ -69,6 +69,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
 
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadline.id),
+            id: Ext.String.format('deadlinepanel-{0}', this.deadline.id),
             title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
                 deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
@@ -81,7 +82,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
             }),
             items: [{
                 xtype: 'box',
-                cls: 'bootstrap',
+                cls: 'bootstrap deadlinetext',
                 tpl: this.deadlineTextTpl,
                 hidden: Ext.isEmpty(this.deadline.text),
                 padding: '20',
