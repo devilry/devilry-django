@@ -45,15 +45,32 @@ class TestDelivery(TestCase, TestHelper):
         assignmentgroup = self.inf1100_period1_assignment1_g3
         d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
         self.assertEquals(d.deadline.assignment_group, assignmentgroup)
-        #self.assertEquals(d.assignment_group, assignmentgroup)
-        #self.assertTrue(d.successful)
-        #self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 2)
 
         # TODO find a graceful way to handle this error:
         d.number = 1
         self.assertRaises(IntegrityError, d.save())
+
+
+    def test_delivery_numbering(self):
+        deadline = self.inf1100_period1_assignment1_g1_d1
+        self.assertEquals(deadline.deliveries.count(), 1)
+        self.assertEquals(deadline.deliveries.all()[0].number, 1)
+        d2 = Delivery(deadline=deadline,
+                     delivered_by=deadline.assignment_group.candidates.all()[0])
+        d2.save()
+        d3 = Delivery(deadline=deadline,
+                     delivered_by=deadline.assignment_group.candidates.all()[0])
+        d3.save()
+        self.assertEquals(d2.number, 0)
+        self.assertEquals(d3.number, 0)
+        d3.successful = True
+        d3.save()
+        self.assertEquals(d3.number, 2)
+        d2.successful = True
+        d2.save()
+        self.assertEquals(d2.number, 3)
 
     def test_published_where_is_candidate(self):
         # Add 2 on g1
