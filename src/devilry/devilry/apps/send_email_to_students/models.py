@@ -1,26 +1,20 @@
 from django.db.models.signals import post_save
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.template.defaultfilters import filesizeformat
+#from django.conf import settings
+#from urlparse import urlparse
 
 from devilry.apps.core.models import StaticFeedback
 from devilry.utils.devilry_email import send_email
 from devilry_student.rest.add_delivery import successful_delivery_signal
 from devilry.defaults.encoding import CHARSET
+from devilry.utils.create_absolute_url import create_absolute_url
 
 
 def create_absolute_show_delivery_url(delivery):
-    url = reverse('devilry_student_show_delivery',
-                      kwargs={'delivery_id': delivery.id})
-    # See
-    #   - https://code.djangoproject.com/ticket/16734
-    #   - http://stackoverflow.com/questions/9814951/why-does-reverse-prepend-a-server-path
-    #   - http://albertoconnor.ca/blog/2011/Sep/15/hosting-django-under-different-locations
-    # for why reverse includes the full url
-    #url = '{domain}{prefix}{path}'.format(domain = settings.DEVILRY_SCHEME_AND_DOMAIN,
-                                          #prefix = settings.DEVILRY_URLPATH_PREFIX,
-                                          #path = url)
-    return url
+    path = reverse('devilry_student_show_delivery',
+                  kwargs={'delivery_id': delivery.id})
+    return create_absolute_url(path)
 
 
 def on_new_staticfeedback(sender, **kwargs):

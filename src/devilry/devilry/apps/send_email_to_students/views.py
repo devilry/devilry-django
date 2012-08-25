@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic import View
 
 from devilry.utils.devilry_email import send_email
+from devilry.utils.create_absolute_url import create_absolute_url
 
 
 emailbodytpl = """This was sent by the superuser with username="{username}"
@@ -21,6 +22,7 @@ not configured correctly.
 Please send an email to {superuseremail} and inform them that you got this
 email, and if the frontpage URL is correct.
 """
+
 
 class EmailSendingDebug(View):
     def get(self, request, username):
@@ -38,7 +40,7 @@ class EmailSendingDebug(View):
 
         subject = 'Test email from Devilry.'
         body = emailbodytpl.format(username=request.user.username,
-                                   frontpageurl=reverse('devilry_frontpage'),
+                                   frontpageurl=create_absolute_url(reverse('devilry_frontpage')),
                                    superuseremail=request.user.email)
 
         send_email([user], subject, body)
