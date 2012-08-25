@@ -5,7 +5,7 @@ an action. Particularly useful for forms.
 Ext.define('devilry_extjsextras.AlertMessage', {
     extend: 'Ext.Component',
     alias: 'widget.alertmessage',
-    cls: 'bootstrap',
+    cls: 'bootstrap devilry_extjsextras_alertmessage',
     
     tpl: [
         '<div class="alert alert-{type}">',
