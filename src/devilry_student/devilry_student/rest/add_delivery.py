@@ -1,4 +1,5 @@
 import json
+import django.dispatch
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django import forms
@@ -13,6 +14,11 @@ from devilry.apps.core.models import Candidate
 from .helpers import IsPublishedAndCandidate
 from .errors import NotFoundError
 from .errors import BadRequestError
+
+
+#: Signal used to signal that a delivery has been successfully completed
+successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
+
 
 
 class AddDeliveryForm(forms.Form):
@@ -118,6 +124,7 @@ class AddDeliveryView(View):
         self.delivery.delivered_by = self._get_canidate()
         self.delivery.full_clean()
         self.delivery.save()
+        successful_delivery_signal.send_robust(sender=self.delivery, delivery=self.delivery)
 
     def _get_canidate(self):
         try:
