@@ -13,7 +13,7 @@ class TestRestAggregatedGroupInfo(TestCase):
                             subjects=['sub'],
                             periods=['p1:begins(-1)'],
                             assignments=['a1'])
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2).d1:ends(5)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2):examiner(examiner1).d1:ends(5)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
         self.group = self.testhelper.sub_p1_a1_g1
         self.url = '/devilry_student/rest/aggregated-groupinfo/{0}'.format(self.group.id)
@@ -31,7 +31,7 @@ class TestRestAggregatedGroupInfo(TestCase):
         content, response = self._getas('student1')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
-                          set(['id', 'name', 'is_open', 'candidates',
+                          set(['id', 'name', 'is_open', 'candidates', 'examiners',
                                'deadlines', 'active_feedback',
                                'deadline_handling', 'breadcrumbs']))
         self.assertEquals(content['id'], self.group.id)
@@ -48,6 +48,23 @@ class TestRestAggregatedGroupInfo(TestCase):
                           set(['id', 'candidate_id', 'identifier', 'user']))
         self.assertEquals(set(candidates[0]['user'].keys()),
                           set(['id', 'username', 'email', 'full_name', 'displayname']))
+
+    def test_examiners(self):
+        content, response = self._getas('student1')
+        examiners = content['examiners']
+        self.assertEquals(len(examiners), 1)
+        self.assertEquals(set(examiners[0].keys()),
+                          set(['id', 'user']))
+        self.assertEquals(set(examiners[0]['user'].keys()),
+                          set(['id', 'username', 'email', 'full_name', 'displayname']))
+        self.assertEquals(examiners[0]['user']['username'], 'examiner1')
+
+    def test_examiners_anonymous(self):
+        self.group.parentnode.anonymous = True
+        self.group.parentnode.save()
+        content, response = self._getas('student1')
+        examiners = content['examiners']
+        self.assertEquals(examiners, None)
 
     def test_deadlines(self):
         content, response = self._getas('student1')

@@ -34,7 +34,7 @@ def pretty_filesize(num):
 
 class GroupResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
-              'deadline_handling', 'breadcrumbs')
+              'deadline_handling', 'breadcrumbs', 'examiners')
     model = AssignmentGroup
 
 
@@ -109,6 +109,13 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
                 'subject': self.format_basenode(instance.parentnode.parentnode.parentnode)}
 
 
+    def examiners(self, instance):
+        if instance.parentnode.anonymous:
+            return None
+        else:
+            return map(self.format_examiner, instance.examiners.all())
+
+
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
     """
     Provides an API that aggregates a lot of information about a group.
@@ -137,6 +144,8 @@ class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
                                    'deadlines__deliveries',
                                    'deadlines__deliveries__feedbacks',
                                    'deadlines__deliveries__filemetas',
+                                   'examiners', 'examiners__user',
+                                   'examiners__user__devilryuserprofile',
                                    'candidates', 'candidates__student',
                                    'candidates__student__devilryuserprofile')
         return qry

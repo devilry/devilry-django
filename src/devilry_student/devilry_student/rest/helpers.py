@@ -21,6 +21,11 @@ class GroupResourceHelpersMixin(object):
                 'identifier': candidate.identifier}
         return cand
 
+    def format_examiner(self, examiner):
+        cand = {'id': examiner.id,
+                'user': self.format_user(examiner.user)}
+        return cand
+
     def format_basenode(self, basenode):
         return {'id': basenode.id,
                 'short_name': basenode.short_name,
