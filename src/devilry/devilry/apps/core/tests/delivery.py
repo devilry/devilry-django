@@ -27,6 +27,19 @@ class TestDelivery(TestCase, TestHelper):
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
         self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
+        delivery0 = self.inf1100_period1_assignment1_g1_d1.deliveries.all()[0]
+        delivery0.successful = False
+        delivery0.save()
+        self.assertEquals(Delivery.where_is_admin(teacher1).count(), 2)
+
+    def test_published_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        deliveries = Delivery.published_where_is_examiner(examiner1)
+        self.assertEquals(deliveries.count(), 2)
+        delivery0 = deliveries.all()[0]
+        delivery0.successful = False
+        delivery0.save()
+        self.assertEquals(Delivery.published_where_is_examiner(examiner1).count(), 1)
 
     def test_delivery(self):
         assignmentgroup = self.inf1100_period1_assignment1_g3
@@ -58,6 +71,11 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(Delivery.published_where_is_candidate(self.student2).count(), 7)
         self.assertEquals(Delivery.published_where_is_candidate(self.student3).count(), 3)
         self.assertEquals(Delivery.published_where_is_candidate(self.student4).count(), 0)
+
+        delivery = Delivery.published_where_is_candidate(self.student3)[0]
+        delivery.successful = False
+        delivery.save()
+        self.assertEquals(Delivery.published_where_is_candidate(self.student3).count(), 2)
 
 
     def test_hard_deadline(self):
