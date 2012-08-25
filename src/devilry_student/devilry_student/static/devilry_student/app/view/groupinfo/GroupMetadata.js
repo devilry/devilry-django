@@ -83,10 +83,20 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
             '<h3>', gettext('Status'), '</h3>',
             '<p class="statuspara">',
                 '<tpl if="groupinfo.is_open">',
-                    '<span class="label label-success">', gettext('Open'), '</span> ',
-                    interpolate(gettext('You can add more %(deliveries_term)s.'), {
-                        deliveries_term: gettext('deliveries')
-                    }, true),
+                    '<tpl if="hard_deadline_expired">',
+                        '<span class="label label-important">', gettext('Deadline expired'), '</span> ',
+                        interpolate(gettext('Your %(deadline_term)s has expired. This %(assignment_term)s uses hard %(deadlines_term)s, so you can not add more %(deliveries_term)s.'), {
+                            deadline_term: gettext('deadline'),
+                            assignment_term: gettext('assignment'),
+                            deadline_term: gettext('deadlines'),
+                            deliveries_term: gettext('deliveries')
+                        }, true),
+                    '<tpl else>',
+                        '<span class="label label-success">', gettext('Open'), '</span> ',
+                        interpolate(gettext('You can add more %(deliveries_term)s.'), {
+                            deliveries_term: gettext('deliveries')
+                        }, true),
+                    '</tpl>',
                 '<tpl else>',
                     '<span class="label label-warning">', gettext('Closed'), '</span> ',
                     interpolate(gettext('The current %(grade_term)s is the final grade. You can not add more %(deliveries_term)s unless an %(examiner_term)s opens the group.'), {
@@ -115,7 +125,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
         '</div>',
 
         '<div class="adddeliveryblock">',
-            '<tpl if="groupinfo.is_open">',
+            '<tpl if="can_add_deliveries">',
                 '<p>',
                     '<strong><a class="add_delivery_link" href="#/group/{groupinfo.id}/@@add-delivery">',
                         interpolate(gettext('Add %(delivery_term)s'), {

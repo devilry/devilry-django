@@ -130,6 +130,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
             xtype: 'groupmetadata',
             data: {
                 groupinfo: groupInfoRecord.data,
+                can_add_deliveries: groupInfoRecord.can_add_deliveries(),
+                hard_deadline_expired: groupInfoRecord.hard_deadline_expired(),
                 examiner_term: gettext('examiner'),
                 deliveries: this._deliveriesAsFlatArray(groupInfoRecord)
             }

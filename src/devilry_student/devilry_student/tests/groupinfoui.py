@@ -1,4 +1,5 @@
 #from devilry.apps.core.models import 
+from datetime import datetime, timedelta
 from devilry.apps.core.testhelper import TestHelper
 
 from .base import StudentSeleniumTestCase
@@ -10,16 +11,19 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.testhelper.create_user('student1')
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
-                            periods=['p1:begins(-1)'],
-                            assignments=['a1:ln(Assignment One)'])
+                            periods=['p1:begins(-3):ends(10)'],
+                            assignments=['a1:pub(1):ln(Assignment One)'])
         self.fileinfo = {'ok.py': ['print ', 'meh']}
 
     def _browseToGroup(self, groupid):
         self.browseTo('/group/{groupid}/'.format(groupid=groupid))
 
-    def _browseToDelivery(self, groupid, deliveryid):
-        self.browseTo('/group/{groupid}/{deliveryid}'.format(groupid=groupid,
-                                                             deliveryid=deliveryid))
+    #def _browseToDelivery(self, groupid, deliveryid):
+        #self.browseTo('/group/{groupid}/{deliveryid}'.format(groupid=groupid,
+                                                             #deliveryid=deliveryid))
+
+    def _browseToAddDelivery(self, groupid, deliveryid):
+        self.browseTo('/group/{groupid}/@@add-delivery'.format(groupid=groupid))
 
     def test_doesnotexists(self):
         self.login('student1')
@@ -48,7 +52,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
         self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-success').text.strip(), 'Open')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 0)
-        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock .add_delivery_link').text.strip(), 'Add delivery')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock').text.strip(), '')
 
     def test_no_groupname(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
@@ -58,7 +62,6 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
         self.assertEquals(self.selenium.find_element_by_css_selector('.groupnameblock').text.strip(), '')
-
 
     def test_userlists(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2):examiner(examiner1,examiner2)')
@@ -81,13 +84,38 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(set(names), set(['examiner1', 'examiner2']))
 
     def test_anonymous(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2):examiner(examiner1,examiner2)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
         self.testhelper.sub_p1_a1.anonymous = True
         self.testhelper.sub_p1_a1.save()
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
         self.assertEquals(self.selenium.find_element_by_css_selector('.examinersblock').text.strip(), '')
+
+    def test_hard_deadline_expired(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
+        self.testhelper.sub_p1_a1.deadline_handling = 1 # Hard deadlines
+        self.testhelper.sub_p1_a1.save()
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-important').text.strip(), 'Deadline expired')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock').text.strip(), '')
+
+    def test_hard_deadline_not_expired(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
+        self.testhelper.sub_p1_a1.deadline_handling = 1 # Hard deadlines
+        self.testhelper.sub_p1_a1.save()
+        deadline = self.testhelper.sub_p1_a1_g1_d1
+        deadline.deadline = datetime.now() + timedelta(days=2)
+        deadline.save()
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-success').text.strip(), 'Open')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock .add_delivery_link').text.strip(), 'Add delivery')
 
     def _expand_deadline(self, deadline):
         clickable = self.selenium.find_element_by_css_selector('#deadlinepanel-{0} .x-panel-header'.format(deadline.id))
@@ -183,12 +211,14 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
     def test_no_deadlinetext(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1')
-        deadline = self.testhelper.sub_p1_a1_g1_d1
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         self.assertEquals(deadlinepanel.find_element_by_css_selector('.deadlinetext').text.strip(), '')
 
-    #def test_hard_deadlines(self):
-    #def test_deadline_expired(self):
+    #def test_add_delivery(self):
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        #self.login('student1')
+        #self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
+        #self.waitForCssSelector('.devilry_student_groupmetadata')
