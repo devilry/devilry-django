@@ -7,6 +7,7 @@ Ext.define('devilry_student.model.GroupInfo', {
         {name: 'name', type: 'string'},
         {name: 'is_open', type: 'bool'},
         {name: 'candidates', type: 'auto'},
+        {name: 'examiners', type: 'auto'},
         {name: 'deadlines', type: 'auto'},
         {name: 'breadcrumbs', type: 'auto'},
         {name: 'add_delivery_url', type: 'string'},
