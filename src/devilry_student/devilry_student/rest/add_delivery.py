@@ -116,6 +116,7 @@ class AddDeliveryView(View):
     def _finish(self):
         self.delivery.successful = True
         self.delivery.delivered_by = self._get_canidate()
+        self.delivery.full_clean()
         self.delivery.save()
 
     def _get_canidate(self):
