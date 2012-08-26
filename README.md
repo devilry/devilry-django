@@ -32,13 +32,9 @@ semi-stable development version. The latest stable version is in the
     $ sudo apt-get install fabric build-essential python-dev python-virtualenv
 
 
-## 3 - Run buildout (get all dependencies)
+## 3 - Setup a buildout cache (optional)
 
-**note**: You should setup your [buildout cache](https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-config-to-speed-up-bin-buildout) if you plan to do any development.
-
-    $ cd devenv/
-    $ python ../bootstrap.py
-    $ bin/buildout
+You should setup your [buildout cache](https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-config-to-speed-up-bin-buildout) if you plan to do any development. This will make any up re-run of buildout (the dependency/build system we use).
 
 
 ## 4 - Create a demo database
@@ -51,7 +47,8 @@ script does).
 
 
 ### Alternative step 4 - Setup an empty databse
-If you just want to setup an empty database, run ``fab autogen_extjsmodels syncdb``.
+
+    $ fab reset syncdb
 
 
 ### Alternative step 4 - From database dump
@@ -59,6 +56,22 @@ Creating the demo database takes a lot of time (12mins on a macbook air with SSD
 
     $ fab reset
     $ fab restore_db:/path/to/dbdump.sql
+
+
+### Alternative step 4 - Manually (without fabric)
+
+Create a clean development environment with an empty database:
+
+    $ cd devenv/
+    $ virtualenv virtualenv
+    $ virtualenv/bin/python ../bootstrap.py
+    $ bin/buildout
+    $ bin/django_dev.py dev_autogen_extjsmodels
+    $ bin/django_dev.py syncdb
+
+Autocreate the demo-db:
+
+    $ bin/django_dev.py dev_autodb -v2
 
 
 ## 5 - Run the development server
