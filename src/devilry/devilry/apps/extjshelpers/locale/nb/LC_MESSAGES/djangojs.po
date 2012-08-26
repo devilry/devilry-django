@@ -418,7 +418,7 @@ msgid ""
 "The <strong>publishing time</strong> is the time when students will be able "
 "to start adding deliveries on the assignment."
 msgstr ""
-"<strong>Publiseringstidspunktet</strong> er tidspunktet da studentene kan "
+"<strong>Publiseringstidspunktet</strong> er tidspunktet da studentene "
 "får opp oppgaven i sitt brukergrensesnitt, slik at de kan begynne å levere."
 
 #: static/extjs_classes/extjshelpers/forms/administrator/Assignment.js:123
