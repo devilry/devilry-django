@@ -25,10 +25,6 @@ def get_extjs_sourceroot_from_appname(appname):
     else:
         return appdir
 
-def get_extjs_appfile_from_appname(appname):
-    return join(get_staticdir_from_appname(appname), 'app.js')
-
-
 def classpath_to_ospath(unixpath):
     from os import sep
     return unixpath.replace('.', sep) + '.js'
@@ -38,6 +34,7 @@ class SimpleJsFile(object):
     def __init__(self, filepath):
         self.filepath = filepath
         self.filecontent = open(self.filepath, 'rb').read()
+        self.requires = []
 
     def __str__(self):
         return 'SIMPLE: {filepath}'.format(**self.__dict__)
@@ -305,18 +302,18 @@ def orderJsFiles(jsfiles):
                 del jsfiles[clsname]
     return ordered
 
-def find_all_jsfiles_in_dir(jsfiles, rootdir, verbose):
-    for root, dirs, files in walk(rootdir):
-        for filename in files:
-            if filename.endswith('.js'):
-                filepath = join(root, filename)
-                try:
-                    jsfile = JsFile(filepath)
-                except ValueError, e:
-                    if verbose:
-                        print str(e)
-                else:
-                    jsfiles[jsfile.clsname] = jsfile
+#def find_all_jsfiles_in_dir(jsfiles, rootdir, verbose):
+    #for root, dirs, files in walk(rootdir):
+        #for filename in files:
+            #if filename.endswith('.js'):
+                #filepath = join(root, filename)
+                #try:
+                    #jsfile = JsFile(filepath)
+                #except ValueError, e:
+                    #if verbose:
+                        #print str(e)
+                #else:
+                    #jsfiles[jsfile.clsname] = jsfile
 
 
 #def collect_jsfiles_in_installedapps(jsfiles, verbose):
@@ -337,14 +334,13 @@ class Command(BaseCommand):
         if len(args) != 1:
             raise CommandError('Requires an <appname>.')
         appname = args[0]
-        appfile = get_extjs_appfile_from_appname(appname)
+        appdir = get_staticdir_from_appname(appname)
+        appfile = join(appdir, 'app.js')
+
         jsfile = AppFile(appfile, appname)
         jsfile.prettyprint()
-        jsfile.get_all_jsfiles()
+        jsfiles = jsfile.get_all_jsfiles()
+        ordered = orderJsFiles(jsfiles)
 
-        #extjshelpers_dir =  dirname(import_module('devilry.apps.extjshelpers').__file__)
-        #outfile = join(extjshelpers_dir, 'static', 'devilry_all_uncompiled.js')
-        #jsfiles = {}
-        #collect_jsfiles_in_installedapps(jsfiles, verbose=verbosity>1)
-        #ordered = orderJsFiles(jsfiles)
-        #open(outfile, 'wb').write('\n\n'.join([j.filecontent for j in ordered]))
+        outfile = join(appdir, 'app-all.js')
+        open(outfile, 'wb').write('\n\n'.join([j.filecontent for j in ordered]))
