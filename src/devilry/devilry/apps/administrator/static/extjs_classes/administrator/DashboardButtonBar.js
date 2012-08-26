@@ -64,7 +64,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 }
             }, {
                 xtype: 'buttonbarbutton',
-                text: 'Subject',
+                text: gettext('Subject'),
                 store: nodestore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
@@ -91,7 +91,7 @@ Ext.define('devilry.administrator.DashboardButtonBar', {
                 }
             }, {
                 xtype: 'buttonbarbutton',
-                text: 'Period/Semester',
+                text: gettext('Period'),
                 store: subjectstore,
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
