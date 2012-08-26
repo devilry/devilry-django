@@ -10,7 +10,7 @@ If you plan to develop devilry, you should fork the devilry-django repo,
 changes to your own repo and request inclusion to the master repo using github
 pull requests. If you are just trying out devilry, use:
 
-    $ git checkout https://github.com/devilry/devilry-django.git
+    $ git clone https://github.com/devilry/devilry-django.git
 
 The ``master`` branch, which git checks out by default, is usually the latest
 semi-stable development version. The latest stable version is in the
