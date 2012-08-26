@@ -6,3 +6,4 @@ from .rest.recent_feedbacks import TestRestRecentFeedbacks
 from .rest.find_groups import TestRestFindGroups
 from .groupinfoui import TestGroupInfoUI
 from .groupinfoui import TestAddDeliveryUI
+from .dashboardui import TestDashboardUI

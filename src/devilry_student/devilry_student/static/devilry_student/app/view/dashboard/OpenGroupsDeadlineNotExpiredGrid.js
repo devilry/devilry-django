@@ -13,16 +13,22 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid', {
     disableSelection: true,
 
     titleTpl: [
-        '<div><strong><a href="#/group/{group.id}/@@add-delivery">',
+        '<div class="ident"><strong><a href="#/group/{group.id}/@@add-delivery">',
             '{group.subject.short_name} - {group.assignment.long_name}',
         '</a></strong></div>'
     ],
 
     metaTpl: [
-        '<div>',
+        '<div class="metainfo">',
             '<small class="deliveries"><em>{deliveries_term}:</em> {group.deliveries}</small>',
             '<small class="divider">,&nbsp;&nbsp;</small>',
             '<small class="deadline"><em>{deadline_term}:</em> {group.active_deadline.deadline}</small>',
+            ' ',
+            '<tpl if="deadline_expired">',
+                '<small class="deadlinedelta danger">({offset_from_deadline})</small>',
+            '<tpl else>',
+                '<small class="deadlinedelta success">({offset_from_deadline})</small>',
+            '</tpl>',
         '</div>'
     ],
 
@@ -38,12 +44,15 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid', {
                 sortable: false,
                 menuDisabled: true,
                 renderer: function(value, m, openGroupRecord) {
-                    var offset_from_deadline = openGroupRecord.get('active_deadline').offset_from_deadline;
+                    var deadline = openGroupRecord.get('active_deadline');
                     return col1TplCompiled.apply({
                         group: openGroupRecord.data,
                         deadline_term: gettext('Deadline'),
                         deliveries_term: gettext('Deliveries'),
-                        offset_from_deadline: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(offset_from_deadline)
+                        deadline_expired: deadline.deadline_expired,
+                        offset_from_deadline: devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
+                            deadline.offset_from_deadline,
+                            !deadline.deadline_expired)
                     });
                 }
             }]

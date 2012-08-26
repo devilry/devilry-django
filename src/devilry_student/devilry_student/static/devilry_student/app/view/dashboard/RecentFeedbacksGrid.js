@@ -13,18 +13,18 @@ Ext.define('devilry_student.view.dashboard.RecentFeedbacksGrid', {
     disableSelection: true,
 
     col1Tpl: [
-        '<div><a href="#/group/{delivery.group.id}/{delivery.id}">',
+        '<div class="ident"><a href="#/group/{delivery.group.id}/{delivery.id}">',
             '{delivery.subject.short_name} - {delivery.assignment.short_name} - #{delivery.number}',
         '</a></div>',
-        '<div>',
-            '<small>', gettext('Added {offset_from_now} ago'), '</small>',
+        '<div class="metainfo">',
+            '<small class="offset_from_now">', gettext('Added {offset_from_now} ago'), '</small>',
             '<small> - </small>',
             '<tpl if="delivery.last_feedback.is_passing_grade">',
-                '<small class="success">', gettext('Passed'), '</small>',
+                '<small class="passing_grade success">', gettext('Passed'), '</small>',
             '<tpl else>',
-                '<small class="danger">', gettext('Failed'), '</small>',
+                '<small class="failing_grade danger">', gettext('Failed'), '</small>',
             '</tpl>',
-            '<small> ({delivery.last_feedback.grade})</small>',
+            '<small class="grade"> ({delivery.last_feedback.grade})</small>',
         '</div>'
     ],
 

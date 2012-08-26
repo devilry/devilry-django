@@ -13,11 +13,11 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
     disableSelection: true,
 
     col1Tpl: [
-        '<div><a href="#/group/{delivery.group.id}/{delivery.id}">',
+        '<div class="ident"><a href="#/group/{delivery.group.id}/{delivery.id}">',
             '{delivery.subject.short_name} - {delivery.assignment.short_name} - #{delivery.number}',
         '</a></div>',
-        '<div>',
-            '<small>', gettext('Added {offset_from_now} ago'), '</small>',
+        '<div class="metainfo">',
+            '<small class="offset_from_now">', gettext('Added {offset_from_now} ago'), '</small>',
         '</div>'
     ],
 
