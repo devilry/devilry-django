@@ -8,7 +8,11 @@ See ../README.md for info about setting it up.
 
 
 ### Dependencies
+
 You need to install [Sencha tools 2](http://www.sencha.com/products/sdk-tools/download/) to build the ExtJS javascript apps.
+
+NOTE: Sencha tools requires a Oracle Java Runtime Environment.
+
 
 ### The tasks
 
@@ -22,7 +26,11 @@ To build without compressing the JS-sources (**for debugging**):
 
 ## Watch the filesystem for changes and rebuild
 
-Just call the tasks with ``watch=true``. E.g.:
+Install watchdog:
+
+    $ virtualenv/bin/easy_install watchdog
+
+Call the tasks with ``watch=true``. E.g.:
 
     $ fab jsbuild_devilry_subjectadmin:nocompress=true,watch=true
 
