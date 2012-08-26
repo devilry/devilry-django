@@ -17,12 +17,22 @@ semi-stable development version. The latest stable version is in the
 ``latest-stable`` branch.
 
 
-## 2 - Install Fabric
+## 2 - Install dependencies/requirements
+
+### Mac OSX
+You will need to install XCode (from app store), and Fabric with the following command:
 
     $ sudo easy_install fabric
 
 
+### Ubuntu Linux
+
+    $ sudo apt-get install fabric build-essential python-dev
+
+
 ## 3 - Run buildout (get all dependencies)
+
+**note**: You should setup your [buildout cache](https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-config-to-speed-up-bin-buildout) if you plan to do any development.
 
     $ cd devenv/
     $ python ../bootstrap.py
