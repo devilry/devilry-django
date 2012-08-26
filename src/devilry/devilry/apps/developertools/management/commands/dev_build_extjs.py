@@ -385,4 +385,6 @@ class Command(BaseCommand):
         ordered = orderJsFiles(jsfiles)
 
         outfile = join(appdir, 'app-all.js')
-        open(outfile, 'wb').write('\n\n'.join([j.filecontent for j in ordered]))
+        content = '\n\n'.join([j.filecontent for j in ordered])
+        content += '\n\n' + jsfile.filecontent
+        open(outfile, 'wb').write(content)
