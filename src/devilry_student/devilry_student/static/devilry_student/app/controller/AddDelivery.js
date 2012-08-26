@@ -109,9 +109,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
             this.uploadedfiles.push({
                 filename: result.added_filename
             });
+            this._updateMeta();
+            this._updateHelp(result);
         }
-        this._updateMeta();
-        this._updateHelp(result);
         this._enableDeliveryIfValid();
         if(result.finished) {
             this._onFinished(result.delivery_id);
