@@ -24,7 +24,7 @@ semi-stable development version. The latest stable version is in the
 1. Install **XCode** (from app store)
 2. Install other dependencies/requirements:
 
-    $ sudo easy_install fabric virtualenv
+        $ sudo easy_install fabric virtualenv
 
 
 ### Ubuntu Linux
