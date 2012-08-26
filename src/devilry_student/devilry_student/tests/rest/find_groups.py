@@ -33,7 +33,7 @@ class TestRestFindGroups(TestCase):
 
         # Add to the active period (show show up)
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
-        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1,student2).d1')
 
         # Add to the future period (should not show up)
         self.testhelper.add_to_path('uni;sub.p2.a1.gFut:candidate(student1).d1')
@@ -49,3 +49,8 @@ class TestRestFindGroups(TestCase):
         content, response = self._getas('student1', query='old')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 1)
+
+        content, response = self._getas('student1', query='p1 g2')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        self.assertEquals(content[0]['name'], 'g2')

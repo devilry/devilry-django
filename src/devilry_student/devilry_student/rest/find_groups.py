@@ -55,23 +55,32 @@ class FindGroupsView(ListModelView):
     permissions = (IsAuthenticated,)
     resource = FindGroupsResource
 
+
     def get_queryset(self):
         querystring = self.request.GET.get('query', '').strip()
         if not querystring:
             return EmptyQuerySet()
-        qry = AssignmentGroup.published_where_is_candidate(self.request.user)
-        qry = qry.filter(Q(name__icontains=querystring) |
-                         # Assignment
-                         Q(parentnode__short_name__icontains=querystring) |
-                         Q(parentnode__long_name__icontains=querystring) |
-                         # Period
-                         Q(parentnode__parentnode__short_name__icontains=querystring) |
-                         Q(parentnode__parentnode__long_name__icontains=querystring) |
-                         # Subject
-                         Q(parentnode__parentnode__parentnode__short_name__icontains=querystring) |
-                         Q(parentnode__parentnode__parentnode__long_name__icontains=querystring))
-        qry = qry.select_related('parentnode',
-                                 'parentnode__parentnode',
-                                 'parentnode__parentnode__parentnode')
-        qry = qry.order_by('-parentnode__publishing_time')
-        return qry[:50]
+
+        qry = None
+        for word in querystring.split():
+            wordqry = Q(Q(name__icontains=word) |
+                        # Assignment
+                        Q(parentnode__short_name__icontains=word) |
+                        Q(parentnode__long_name__icontains=word) |
+                        # Period
+                        Q(parentnode__parentnode__short_name__icontains=word) |
+                        Q(parentnode__parentnode__long_name__icontains=word) |
+                        # Subject
+                        Q(parentnode__parentnode__parentnode__short_name__icontains=word) |
+                        Q(parentnode__parentnode__parentnode__long_name__icontains=word))
+            if qry:
+                qry &= wordqry
+            else:
+                qry = wordqry
+        assignments = AssignmentGroup.published_where_is_candidate(self.request.user)
+        assignments = assignments.filter(qry)
+        assignments = assignments.select_related('parentnode',
+                                                 'parentnode__parentnode',
+                                                 'parentnode__parentnode__parentnode')
+        assignments = assignments.order_by('-parentnode__publishing_time')
+        return assignments[:50]
