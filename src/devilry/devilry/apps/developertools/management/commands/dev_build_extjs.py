@@ -72,6 +72,10 @@ class JsFile(SimpleJsFile):
     OBJECTMIXINSPATT = re.compile(r"^\s*mixins\s*:\s*{(.*?)}", re.MULTILINE|re.DOTALL)
     LISTSPLITPATT = re.compile(r'[\'"](.*?)[\'"]')
     STRINGOBJECT_VALUES_PATT = re.compile(r'[\'"]?.*?[\'"]?\s*:\s*[\'"](.*?)[\'"]')
+    CONTROLLERS_PATT = re.compile(r"^\s*controllers\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
+    VIEWS_PATT = re.compile(r"^\s*views\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
+    MODELS_PATT = re.compile(r"^\s*models\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
+    STORES_PATT = re.compile(r"^\s*stores\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
     EXTJS_ALTERNATE_NAMES = {
                              # Alternative names
                              'Ext.Element': 'Ext.dom.Element',
@@ -92,8 +96,12 @@ class JsFile(SimpleJsFile):
 
     def __init__(self, classname, filepath):
         super(JsFile, self).__init__(classname, filepath)
+        self.appname = self.get_appname()
         self.extend = None
         self.parse()
+
+    def get_appname(self):
+        return get_appname_from_classpath(self.classname)
 
     def parse(self):
         self.match_define()
@@ -102,6 +110,11 @@ class JsFile(SimpleJsFile):
         self.match_mixins()
         self.match_model()
         #self.requires = filter(lambda r: not r.startswith('Ext.'), self.requires)
+        if self.is_controller():
+            self.match_controllers()
+            self.match_models()
+            self.match_stores()
+            self.match_views()
 
     def match_define(self):
         m = self.DEFINEPATT.search(self.filecontent)
@@ -147,84 +160,8 @@ class JsFile(SimpleJsFile):
             model = m.groups()[0]
             self.requires.append(model)
 
-
-    def create_jsfile_for_extjsclass(self, classname):
-        """
-        ``create_jsfile_for_class``, but with all of the hacks required to
-        handle finding stuff in the extjs sources.
-        """
-        if classname in self.EXTJS_ALTERNATE_NAMES:
-            return self.create_jsfile_for_extjsclass(self.EXTJS_ALTERNATE_NAMES[classname])
-        from os import sep
-        appdir = get_staticdir_from_appname('extjs4')
-        relativepath = sep.join(classname.split('.')[1:]) + '.js'
-        app_path = None
-        for dirname in self.EXTJS_CLASSPATH:
-            path = join(appdir, dirname, relativepath)
-            if exists(path):
-                app_path = path
-                break
-        if not app_path:
-            raise ValueError('Could not find any file for: {0}'.format(classname))
-        try:
-            return JsFile(classname, app_path)
-        except ValueError:
-            return SimpleJsFile(classname, app_path)
-
-    def create_jsfile_for_class(self, classname):
-        django_appname = get_appname_from_classpath(classname)
-        if django_appname == 'extjs4':
-            return self.create_jsfile_for_extjsclass(classname)
-        from os import sep
-        appdir = get_extjs_sourceroot_from_appname(django_appname)
-        relativepath = sep.join(classname.split('.')[1:]) + '.js'
-        app_path = join(appdir, relativepath)
-        return JsFile(classname, app_path)
-
-
-    def __str__(self):
-        return "{0}: {1} ({2})".format(self.clsname, self.extend, ','.join(self.requires))
-
-    def prettyprint(self):
-        print('#################################')
-        print('# {0}'.format(self))
-        print('#################################')
-        print('## Extend:')
-        print(self.extend)
-        print('## Requires:')
-        pprint(self.requires)
-        print('## Mixins:')
-        pprint(self.mixins)
-
-    def collect_jsfiles(self, collected_jsfiles_map):
-        logging.debug('Collecting deps of {0}'.format(self.filepath))
-        for classname in self.requires:
-            jsfile = self.create_jsfile_for_class(classname)
-            if not jsfile.classname in collected_jsfiles_map:
-                collected_jsfiles_map[jsfile.classname] = jsfile
-                jsfile.collect_jsfiles(collected_jsfiles_map)
-
-
-class ControllerFile(JsFile):
-    CONTROLLERS_PATT = re.compile(r"^\s*controllers\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
-    VIEWS_PATT = re.compile(r"^\s*views\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
-    MODELS_PATT = re.compile(r"^\s*models\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
-    STORES_PATT = re.compile(r"^\s*stores\s*:\s*\[(.*?)\]", re.MULTILINE|re.DOTALL)
-
-    def __init__(self, classname, filepath, appname):
-        self.appdir = join(get_staticdir_from_appname(appname), 'app')
-        self.appname = appname
-        super(ControllerFile, self).__init__(classname, filepath)
-
     def get_classname_for_internalname(self, context, name):
         return '{0}.{1}.{2}'.format(self.appname, context, name)
-
-    def parse(self):
-        super(ControllerFile, self).parse()
-        self.match_controllers()
-        self.match_models()
-        self.match_stores()
-        self.match_views()
 
     def merge_internalnames_with_requires(self, context, internalnames):
         classnames = [self.get_classname_for_internalname(context, name)
@@ -268,26 +205,86 @@ class ControllerFile(JsFile):
         else:
             self.stores = []
 
+    def create_jsfile_for_extjsclass(self, classname):
+        """
+        ``create_jsfile_for_class``, but with all of the hacks required to
+        handle finding stuff in the extjs sources.
+        """
+        if classname in self.EXTJS_ALTERNATE_NAMES:
+            return self.create_jsfile_for_extjsclass(self.EXTJS_ALTERNATE_NAMES[classname])
+        from os import sep
+        appdir = get_staticdir_from_appname('extjs4')
+        relativepath = sep.join(classname.split('.')[1:]) + '.js'
+        app_path = None
+        for dirname in self.EXTJS_CLASSPATH:
+            path = join(appdir, dirname, relativepath)
+            if exists(path):
+                app_path = path
+                break
+        if not app_path:
+            raise ValueError('Could not find any file for: {0}'.format(classname))
+        try:
+            return JsFile(classname, app_path)
+        except ValueError:
+            return SimpleJsFile(classname, app_path)
+
+    def create_jsfile_for_class(self, classname):
+        django_appname = get_appname_from_classpath(classname)
+        if django_appname == 'extjs4':
+            return self.create_jsfile_for_extjsclass(classname)
+        from os import sep
+        appdir = get_extjs_sourceroot_from_appname(django_appname)
+        relativepath = sep.join(classname.split('.')[1:]) + '.js'
+        app_path = join(appdir, relativepath)
+        return JsFile(classname, app_path)
+
+
+    def __str__(self):
+        return "{0}: {1} ({2})".format(self.clsname, self.extend, ','.join(self.requires))
+
+    def is_controller(self):
+        return self.extend == 'Ext.app.Controller'
+
     def prettyprint(self):
-        super(ControllerFile, self).prettyprint()
-        print('## Controllers:')
-        pprint(self.controllers)
-        print('## Models:')
-        pprint(self.models)
-        print('## Stores:')
-        pprint(self.stores)
-        print('## Views:')
-        pprint(self.views)
+        print('#################################')
+        print('# {0}'.format(self))
+        print('#################################')
+        print('## Extend:')
+        print(self.extend)
+        print('## Requires:')
+        pprint(self.requires)
+        print('## Mixins:')
+        pprint(self.mixins)
+        if self.is_controller():
+            print('## Controllers:')
+            pprint(self.controllers)
+            print('## Models:')
+            pprint(self.models)
+            print('## Stores:')
+            pprint(self.stores)
+            print('## Views:')
+            pprint(self.views)
+
+    def collect_jsfiles(self, collected_jsfiles_map):
+        logging.debug('Collecting deps of {0}'.format(self.filepath))
+        for classname in self.requires:
+            jsfile = self.create_jsfile_for_class(classname)
+            if not jsfile.classname in collected_jsfiles_map:
+                collected_jsfiles_map[jsfile.classname] = jsfile
+                jsfile.collect_jsfiles(collected_jsfiles_map)
 
 
-class AppFile(ControllerFile):
+class AppFile(JsFile):
     def __init__(self, appfile, appname):
+        self.appname = appname
         super(AppFile, self).__init__(classname=None,
-                                      filepath=appfile,
-                                      appname=appname)
+                                      filepath=appfile)
 
     def match_define(self):
         pass
+
+    def get_appname(self):
+        return self.appname
 
     def __str__(self):
         return "APP {appname}".format(**self.__dict__)
