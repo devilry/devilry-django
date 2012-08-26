@@ -20,7 +20,7 @@ semi-stable development version. The latest stable version is in the
 ## 2 - Install dependencies/requirements
 
 ### Mac OSX
-You will need to install XCode (from app store), and Fabric with the following command:
+You will need to install **XCode** (from app store), and Fabric with the following command:
 
     $ sudo easy_install fabric
 
