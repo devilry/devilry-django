@@ -20,14 +20,16 @@ semi-stable development version. The latest stable version is in the
 ## 2 - Install dependencies/requirements
 
 ### Mac OSX
-You will need to install **XCode** (from app store), and Fabric with the following command:
 
-    $ sudo easy_install fabric
+1. Install **XCode** (from app store)
+2. Install other dependencies/requirements:
+
+    $ sudo easy_install fabric virtualenv
 
 
 ### Ubuntu Linux
 
-    $ sudo apt-get install fabric build-essential python-dev
+    $ sudo apt-get install fabric build-essential python-dev python-virtualenv
 
 
 ## 3 - Run buildout (get all dependencies)
