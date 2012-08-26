@@ -26,6 +26,10 @@ To build without compressing the JS-sources (**for debugging**):
 
 ## Watch the filesystem for changes and rebuild
 
+Install watchdog:
+
+    $ virtualenv/bin/easy_install watchdog
+
 Call the tasks with ``watch=true``. E.g.:
 
     $ fab jsbuild_devilry_subjectadmin:nocompress=true,watch=true
