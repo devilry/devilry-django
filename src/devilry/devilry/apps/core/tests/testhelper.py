@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 from ..models import Node, Subject, Period, Assignment, AssignmentGroup, Deadline, Delivery, StaticFeedback
@@ -302,7 +303,7 @@ class TestTestHelper(TestCase):
 
         # add a new deadline for g1. This should overwrite the
         # previous d1 deadline
-        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d1:text(Third deadline)')
+        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d1:ends(20):text(Third deadline)')
         # assert that the texts are set correctly
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, 'Third deadline')
         self.assertEquals(Deadline.objects.all().count(), 9)
@@ -518,9 +519,13 @@ class TestTestHelper(TestCase):
                           self.ti.inf1000_first_oblig1_g1_deadline1)
 
         # add a new deadline and check that a new variable is created
-        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d2')
+        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d2:ends(20)')
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_deadlines[1],
                           self.ti.inf1000_first_oblig1_g1_deadline2)
+
+        # add a new deadline with the same datetime, and check that it fails
+        with self.assertRaises(ValidationError):
+            self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d2:ends(20)')
 
     def test_new_delivery_variables(self):
         self.ti.add(nodes='uio.ifi',
