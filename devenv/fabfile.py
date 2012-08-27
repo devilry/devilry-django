@@ -36,6 +36,14 @@ def bootstrap():
     local('virtualenv/bin/python ../bootstrap.py')
 
 @task
+def refreshstatic():
+    """
+    Refresh static files
+    """
+    local('bin/django_dev.py devilry_extjs_jsmerge')
+    local('bin/django_dev.py collectstatic --noinput')
+
+@task
 def buildout():
     """
     Run bin/buildout.
