@@ -12,6 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
+        'devilry_subjectadmin.view.assignment.GradeEditorSelectWidget',
         'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.DangerousActions'
     ],
@@ -102,10 +103,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         margin: '10 0 0 0'
                     },
                     items: [{
-                        xtype: 'editablesidebarbox',
-                        itemId: 'gradeeditor',
-                        margin: 0,
-                        title: gettext('Grade editor')
+                        xtype: 'gradeeditorselect-widget',
+                        disabled: true
                     }, {
                         xtype: 'editpublishingtime-widget',
                         disabled: true
