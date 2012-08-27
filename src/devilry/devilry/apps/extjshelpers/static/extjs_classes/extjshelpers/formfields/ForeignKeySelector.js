@@ -74,10 +74,23 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
                 foreignkeyselector: this,
                 allowEmpty: this.allowEmpty,
                 tpl: this.dropdownTpl
+            },
+            listeners: {
+                scope: this,
+                show: this._onShowWindow
             }
         });
         win.show();
-        win.alignTo(this, 'bl', [0, 0]);
+    },
+
+    _onShowWindow: function(win) {
+        try {
+            win.alignTo(this, 'bl', [0, 0]);
+        } catch(e) {
+            Ext.defer(function() {
+                win.alignTo(this, 'bl', [0, 0]);
+            }, 300, this)
+        }
     },
     
     setValue: function(value) {

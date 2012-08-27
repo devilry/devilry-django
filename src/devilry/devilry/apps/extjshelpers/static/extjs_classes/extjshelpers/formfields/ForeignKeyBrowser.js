@@ -8,17 +8,28 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
     hideHeaders: true,
     border: false,
 
-    config: {
-        tpl: '{id}',
-        model: undefined,
-        foreignkeyselector: undefined,
-        allowEmpty: false
-    },
+    /**
+     * @cfg {string} [tpl]
+     */
+    tpl: '{id}',
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg {Ext.data.Model} [model]
+     */
+    model: undefined,
+
+    /**
+     * @cfg {Object} [foreignkeyselector]
+     * The form field that the value ends up in.
+     */
+    foreignkeyselector: undefined,
+
+    /**
+     * @cfg {Boolean} [allowEmpty]
+     * Allow empty field?
+     */
+    allowEmpty: false,
+
 
     initComponent: function() {
         var me = this;
@@ -33,7 +44,17 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
         var toolbarItems = [{
             xtype: 'storesearchfield',
             emptyText: 'Search...',
-            store: this.store
+            store: this.store,
+            autoLoadStore: false,
+            listeners: {
+                scope: this,
+                render: function() {
+                    var field = this.down('storesearchfield')
+                    Ext.defer(function() {
+                        field.focus();
+                    }, 500, this);
+                }
+            }
         }];
         if(this.allowEmpty) {
             toolbarItems.push('->');
@@ -43,10 +64,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
                 scale: 'large',
                 listeners: {
                     scope: this,
-                    click: this.onClearValue,
-                    render: function() {
-                        this.down('storesearchfield').focus();
-                    }
+                    click: this.onClearValue
                 }
             });
         }

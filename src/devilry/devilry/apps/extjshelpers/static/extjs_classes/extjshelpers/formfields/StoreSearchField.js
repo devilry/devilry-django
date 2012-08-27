@@ -5,36 +5,42 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
         'devilry.extjshelpers.SearchStringParser'
     ],
 
-    config: {
-        /**
-         * @cfg
-         * An ``Ext.dat.Store``.
-         */
-        store: undefined,
+    /**
+     * @cfg
+     * An ``Ext.dat.Store``.
+     */
+    store: undefined,
 
-        /**
-         * @cfg
-         * Forwarded to {@link devilry.extjshelpers.SearchStringParser#applyToExtraParams}.
-         */
-        shortcuts: undefined,
+    /**
+     * @cfg
+     * Forwarded to {@link devilry.extjshelpers.SearchStringParser#applyToExtraParams}.
+     */
+    shortcuts: undefined,
 
-        /**
-         * @cfg
-         * Forwarded to SearchStringParser.
-         */
-        alwaysAppliedFilters: undefined,
+    /**
+     * @cfg
+     * Forwarded to SearchStringParser.
+     */
+    alwaysAppliedFilters: undefined,
 
-        autoLoadStore: true,
+    /**
+     * @cfg {bool} [autoLoadStore]
+     */
+    autoLoadStore: true,
 
-        pageSize: 10
-    },
+    /**
+     * @cfg {int} [pageSize]
+     */
+    pageSize: 10,
 
     constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
+        this.callParent(arguments);
+    },
+
+    initComponent: function() {
         this.addListener('newSearchValue', this.onNewSearchValue, this);
         this.addListener('emptyInput', this.onEmptyInput, this);
-
+        this.callParent(arguments);
         if(this.autoLoadStore) {
             this.onEmptyInput();
         };
