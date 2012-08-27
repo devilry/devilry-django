@@ -1,5 +1,6 @@
 Ext.define('devilry.extjshelpers.AutoSizedWindow', {
     extend: 'Ext.window.Window',
+    alias: 'widget.devilry_autosizedwindow',
     maximizable: false,
     windowPadding: 20,
 
@@ -40,5 +41,12 @@ Ext.define('devilry.extjshelpers.AutoSizedWindow', {
             });
             this.center();
         }
+    },
+
+    getPreferredHeight: function() {
+        return this._preferredHeight;
+    },
+    getPreferredWidth: function() {
+        return this._preferredWidth;
     }
 });
