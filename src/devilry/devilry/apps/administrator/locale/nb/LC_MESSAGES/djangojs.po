@@ -205,7 +205,7 @@ msgstr ""
 
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:92
 msgid "Add"
-msgstr ""
+msgstr "Legg til"
 
 #: static/extjs_classes/administrator/studentsmanager/StudentsManager.js:99
 msgid "Add %(examiners_term)s"
