@@ -2,18 +2,19 @@
 Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageGroups', {
     requires: [
         'devilry.administrator.studentsmanager.ManuallyCreateUsers',
-        'devilry.extjshelpers.RestProxy'
+        'devilry.extjshelpers.RestProxy',
+        'devilry.extjshelpers.AutoSizedWindow'
     ],
 
     /**
      * @private
      */
     showCreateGroupsInBulkWindow: function(initialLines, currentGroupRecords) {
-        var win = Ext.widget('window', {
+        var win = Ext.widget('devilry_autosizedwindow', {
             title: 'Create assignment groups',
             modal: true,
-            width: 830,
-            height: 600,
+            width: 1400, // NOTE: This is autosized to fit the body if the body is smaller.
+            height: 1000,
             maximizable: true,
             layout: 'fit',
             items: {
