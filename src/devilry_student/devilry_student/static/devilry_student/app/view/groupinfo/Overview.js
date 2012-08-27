@@ -54,6 +54,10 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
         region: 'center',
         bodyPadding: 20,
         autoScroll: true,
+        layout: 'anchor',
+        defaults: {
+            anchor: '100%'
+        },
         itemId: 'deadlinesContainer',
         cls: 'devilry_discussionview_container'
     }]
