@@ -23,9 +23,11 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
             autoSync: true
         });
         this.addListener('render', function() {
-            if(!this.loadingFinished) {
-                this.getEl().mask('Loading');
-            }
+            Ext.defer(function() {
+                if(!this.loadingFinished) {
+                    this.setLoading(gettext('Loading'));
+                }
+            }, 300, this);
         }, this);
         this.callParent(arguments);
         this.store.load({
@@ -44,11 +46,17 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
         this.setValue(this.value);
         this.loadingFinished = true;
         if(this.rendered) {
-            this.getEl().unmask();
+            this.setLoading(false);
         }
     },
 
     onLoadFailure: function() {
-        console.error('Failed to load records');
+        Ext.MessageBox.show({
+            title: gettext('Error'),
+            msg: 'Failed to load records',
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            closable: false
+        });
     }
 });
