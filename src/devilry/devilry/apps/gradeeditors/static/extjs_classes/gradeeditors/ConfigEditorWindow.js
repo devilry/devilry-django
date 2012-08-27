@@ -1,6 +1,6 @@
 /** Config editor window. */
 Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
-    extend: 'Ext.window.Window',
+    extend: 'devilry.extjshelpers.AutoSizedWindow',
     alias: 'widget.gradeconfigeditormainwin',
     title: 'Edit grade editor config',
     width: 800,
@@ -12,27 +12,21 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
         'devilry.extjshelpers.HelpWindow'
     ],
 
-    config: {
-        /**
-         * @cfg
-         * The data attribute of the record returned when loading the
-         * grade-editor registry item. (Required).
-         */
-        registryitem: undefined,
+    /**
+     * @cfg
+     * The data attribute of the record returned when loading the
+     * grade-editor registry item. (Required).
+     */
+    registryitem: undefined,
 
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for the grade
-         * editor config. (Required).
-         */
-        gradeeditorconfig_recordcontainer: undefined
-    },
+    /**
+     * @cfg
+     * A {@link devilry.extjshelpers.SingleRecordContainer} for the grade
+     * editor config. (Required).
+     */
+    gradeeditorconfig_recordcontainer: undefined,
 
-    constructor: function(config) {
-        this.callParent([config]);
-        this.initConfig(config);
-    },
 
     initComponent: function() {
         this.buttonBar = Ext.widget('toolbar', {
@@ -69,6 +63,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
                 }
             }
         });
+
         this.callParent(arguments);
     },
 
@@ -168,8 +163,9 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     },
 
     /**
-     * Change the size of the window. Useful when the default size is
-     * suboptimal for an editor.
+     * Change the preferred size of the window. Useful when the default size is
+     * suboptimal for an editor. Note that the window may still be resized
+     * smaller by the user.
      *
      * @param width New width.
      * @param height Ne height.
@@ -177,6 +173,6 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     changeSize: function(width, height) {
         this.setWidth(width);
         this.setHeight(height);
-        this.center();
+        this.setSizeAndPosition();
     }
 });
