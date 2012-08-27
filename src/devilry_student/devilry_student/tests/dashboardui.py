@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-
+from datetime import datetime
 from devilry.apps.core.testhelper import TestHelper
 from .base import StudentSeleniumTestCase
 
@@ -149,6 +148,39 @@ class TestDashboardUI(StudentSeleniumTestCase):
         self.assertEquals(rows[0].find_element_by_css_selector('.ident').text.strip(), 'sub - A1')
         self.assertEquals(rows[0].find_element_by_css_selector('.deliveries').text.strip(), 'Deliveries: 3')
 
+
+    #
+    #
+    # Hard deadlines
+    #
+    #
+    def test_hard_deadlines(self):
+        # Test that hard deadlines actually show up before they expire, but not after
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 10 days after a1 published (in the past)
+        self.testhelper.add_to_path('uni;sub.p1.a2.g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a2.g1.d1:ends(110)') # 110 days after a1 published (in the future)
+        self.assertTrue(self.testhelper.sub_p1_a1_g1_d1.deadline < datetime.now())
+        self.assertTrue(self.testhelper.sub_p1_a2_g1_d1.deadline > datetime.now())
+
+        # Hard deadlines
+        for assignment in (self.testhelper.sub_p1_a1, self.testhelper.sub_p1_a2):
+            assignment.deadline_handling = 1
+            assignment.save()
+
+        self.login('student1')
+        self._browseToDashboard()
+        self.waitForCssSelector('.devilry_student_dashboard')
+        self.waitForCssSelector('.devilry_student_opengroupsgrid.not_expired')
+        grid = self.selenium.find_element_by_css_selector('.devilry_student_opengroupsgrid.not_expired')
+        rows = grid.find_elements_by_css_selector('.x-grid-row')
+        self.assertEquals(len(rows), 1)
+        self.assertEquals(rows[0].find_element_by_css_selector('.ident').text.strip(), 'sub - A2')
+
+        # Make sure A1 does not end up in the expired SOFT deadlines grid
+        expiredgrid = self.selenium.find_element_by_css_selector('.devilry_student_opengroupsgrid.expired')
+        expiredrows = expiredgrid.find_elements_by_css_selector('.x-grid-row')
+        self.assertEquals(len(expiredrows), 0)
 
 
     #

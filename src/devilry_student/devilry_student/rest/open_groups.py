@@ -77,8 +77,11 @@ class OpenGroupsView(ListModelView):
         qry = qry.annotate(deadline_count=Count('deadlines__deadline'))
         qry = qry.filter(deadline_count__gt=0)
 
-        # Only include assignments with SOFT deadline handling where deadline has expired
-        qry = qry.filter(Q(newest_deadline__lt=datetime.now()) | Q(parentnode__deadline_handling=0))
+        # Only include assignments with one of:
+        #   - SOFT deadline handling
+        #   - deadline has NOT expired
+        qry = qry.filter(Q(parentnode__deadline_handling=0) |
+                         Q(newest_deadline__gt=datetime.now()))
 
         only = self.request.GET.get('only', '')
         if only:
