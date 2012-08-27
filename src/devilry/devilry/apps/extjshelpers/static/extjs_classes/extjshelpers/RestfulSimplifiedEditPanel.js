@@ -7,14 +7,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         'devilry.extjshelpers.NotificationManager'
     ],
 
-    config: {
-        saveSuccessMessage: undefined
-    },
-
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
+    /**
+     * @cfg {String} [saveSuccessMessage]
+     * help
+     */
+    saveSuccessMessage: undefined,
 
     onSave: function() {
         this.errorlist.clearErrors();
@@ -27,14 +24,17 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     doSave: function() {
         var me = this;
+        this.setLoading(gettext('Saving') + ' ...');
         this.editform.getForm().doAction('devilryrestsubmit', {
             submitEmptyText: true,
-            waitMsg: 'Saving item...',
             model: this.model,
+            scope: this,
             success: function(form, action) {
+                this.setLoading(false);
                 me.onSaveSuccess(form, action);
             },
             failure: function(form, action) {
+                this.setLoading(false);
                 me.onSaveFailure(form, action);
             }
         });
