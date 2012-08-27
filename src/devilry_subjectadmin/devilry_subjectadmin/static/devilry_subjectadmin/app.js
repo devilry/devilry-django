@@ -31,6 +31,7 @@ Ext.application({
         'assignment.Overview',
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
+        'assignment.EditGradeEditor',
         'managestudents.Overview',
         'managestudents.Select',
         'managestudents.NoGroupSelectedViewPlugin',
