@@ -5,7 +5,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     border: false,
 
     requires: [
-        'devilry.extjshelpers.AsyncActionPool'
+        'devilry.extjshelpers.AsyncActionPool',
+        'devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow'
     ],
 
     layout: {
@@ -495,8 +496,8 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
     selectDeadline: function(parsedArray) {
         var me = this;
         var createDeadlineWindow = Ext.widget('multicreatenewdeadlinewindow', {
-            width: this.up('window').getWidth(),
-            height: this.up('window').getHeight(),
+            width: this.up('window').getPreferredWidth(),
+            height: this.up('window').getPreferredHeight(),
             deadlinemodel: this.deadlinemodel,
             suggestedDeadline: this.suggestedDeadline,
             deadlineRecord: this.deadlineRecord,
