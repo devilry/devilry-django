@@ -8,7 +8,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
     ],
 
     suggested_windowsize: {
-        width: 600,
+        width: 700,
         height: 500
     },
 
