@@ -36,6 +36,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
 
     initComponent: function() {
         Ext.apply(this, {
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
             items: [{
                 xtype: 'alertmessagelist',
                 itemId: 'globalAlertmessagelist'
@@ -78,6 +82,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
             }, {
                 xtype: 'container',
                 itemId: 'normalBodyContainer',
+                layout: 'anchor',
+                defaults: {
+                    anchor: '100%'
+                },
                 items: [{
                     xtype: 'box',
                     cls: 'bootstrap',
@@ -112,8 +120,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                     }]
                 }, {
                     xtype: 'panel',
-                    //autoScroll: true,
                     itemId: 'deadlinesContainer',
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%'
+                    },
                     cls: 'devilry_discussionview_container'
                 }]
             }]
