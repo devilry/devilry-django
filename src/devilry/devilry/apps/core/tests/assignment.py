@@ -146,12 +146,14 @@ class TestAssignment(TestCase, TestHelper):
         self.assertEquals(self.inf1100_looong_assignment1.get_path(), 'inf1100.looong.assignment1')
 
     def test_is_empty(self):
-        self.assertFalse(self.inf1100_old_assignment1.is_empty())
         self.add(nodes="uio.ifi",
                  subjects=['duck9000'],
-                 periods=['someperiod'],
-                 assignments=['emptyassignment'])
-        self.assertTrue(self.duck9000_someperiod_emptyassignment.is_empty())
+                 periods=['someperiod:begins(-2)'],
+                 assignments=['a1'])
+        self.assertTrue(self.duck9000_someperiod_a1.is_empty())
+        self.add_to_path('uni.ifi;duck9000.someperiod.a1.g1:candidate(stud1).d1:ends(5)')
+        self.add_delivery("duck9000.someperiod.a1.g1", {"good.py": "print awesome"})
+        self.assertFalse(self.duck9000_someperiod_a1.is_empty())
 
 
 class TestAssignmentCanDelete(TestCase, TestHelper):
