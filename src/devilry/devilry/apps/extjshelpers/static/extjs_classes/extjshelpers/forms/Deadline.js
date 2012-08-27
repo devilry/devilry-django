@@ -29,6 +29,7 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
         name: "text",
         fieldLabel: "Text",
         flex: 1,
+        height: 250,
         xtype: 'textarea'
     }],
 
