@@ -435,7 +435,7 @@ Ext.define('devilry.administrator.studentsmanager.ManuallyCreateUsers', {
             '   </tpl></li>',
             '</ul></div>'
         ).apply({diff: diff});
-        Ext.widget('window', {
+        Ext.widget('devilry_autosizedwindow', {
             width: 500,
             height: 400,
             modal: true,
