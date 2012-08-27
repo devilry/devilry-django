@@ -547,8 +547,6 @@ class TestHelper(object):
 #######
     def _create_or_add_deadline(self, deadline_name, parentnode, extras):
         deadline = Deadline(assignment_group=parentnode, deadline=parentnode.parentnode.publishing_time + timedelta(days=10))
-        deadline.full_clean()
-        deadline.save()
 
         if extras['ends']:
             deadline.deadline = parentnode.parentnode.publishing_time + timedelta(int(extras['ends'][0]))
