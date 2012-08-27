@@ -4,7 +4,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
     //width: 800,
     //height: 600,
     layout: 'fit',
-    maximizable: true,
     modal: true,
 
     /**
@@ -21,6 +20,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             this.width = form.suggested_windowsize.width,
             this.height = form.suggested_windowsize.height
         }
+        this.maximizable = false; // Mazimize does not work with autosizing.
 
         this.editpanel.addListener('saveSucess', function(record) {
             me.onSaveSuccess(record);
