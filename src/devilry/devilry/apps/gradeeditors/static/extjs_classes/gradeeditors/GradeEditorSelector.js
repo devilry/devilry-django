@@ -17,19 +17,27 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
 
 
     initComponent: function() {
-        this.loadingFinished = false;
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry.gradeeditors.GradeEditorModel',
             autoSync: true
         });
-        this.addListener('render', function() {
-            Ext.defer(function() {
-                if(!this.loadingFinished) {
-                    this.setLoading(gettext('Loading'));
-                }
-            }, 300, this);
-        }, this);
+        this.addListener('render', this._onRender, this);
         this.callParent(arguments);
+    },
+
+    _onRender: function() {
+        try {
+            this.setLoading(gettext('Loading'));
+            this._loadStore();
+        } catch(e) {
+            Ext.defer(function() {
+                this.setLoading(gettext('Loading'));
+                this._loadStore();
+            }, 500, this)
+        }
+    },
+
+    _loadStore: function() {
         this.store.load({
             scope: this,
             callback: function(records, op, success) {
@@ -43,14 +51,12 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
     },
 
     onLoadSuccess: function(records) {
+        this.setLoading(false);
         this.setValue(this.value);
-        this.loadingFinished = true;
-        if(this.rendered) {
-            this.setLoading(false);
-        }
     },
 
     onLoadFailure: function() {
+        this.setLoading(false);
         Ext.MessageBox.show({
             title: gettext('Error'),
             msg: 'Failed to load records',
