@@ -37,7 +37,7 @@ Ext.define('devilry.extjshelpers.AutoSizedWindow', {
             }
             this.setSize({
                 width: width,
-                height: height,
+                height: height
             });
             this.center();
         }
