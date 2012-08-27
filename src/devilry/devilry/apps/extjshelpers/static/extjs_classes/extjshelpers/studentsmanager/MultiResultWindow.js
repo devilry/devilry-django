@@ -1,5 +1,5 @@
 Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
-    extend: 'Ext.window.Window',
+    extend: 'devilry.extjshelpers.AutoSizedWindow',
     layout: 'fit',
     closeAction: 'hide',
     closable: false,
