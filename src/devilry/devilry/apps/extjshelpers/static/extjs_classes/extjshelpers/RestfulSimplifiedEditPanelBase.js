@@ -3,43 +3,46 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
     alias: 'widget.restfulsimplified_editpanel_base',
     requires: ['devilry.extjshelpers.RestSubmit'],
 
-    config: {
-        /**
-         * @cfg
-         * The model we are editing.
-         */
-        model: undefined,
+    /**
+     * @cfg
+     * The model we are editing.
+     */
+    model: undefined,
 
-        /**
-         * @cfg
-         * A instance of the ``Ext.data.Model`` which should be loaded into the
-         * form.
-         */
-        record: undefined,
+    /**
+     * @cfg
+     * A instance of the ``Ext.data.Model`` which should be loaded into the
+     * form.
+     */
+    record: undefined,
 
-        /**
-         * @cfg
-         * Show the extra-bar (sidebar) at the bottom? Defaults to ``false``,
-         * which means that it will be at the right hand side. This bar contains
-         * help and error messages.
-         */
-        extrabaronbottom: false
-    },
+    /**
+     * @cfg
+     * Show the extra-bar (sidebar) at the bottom? Defaults to ``false``,
+     * which means that it will be at the right hand side. This bar contains
+     * help and error messages.
+     */
+    extrabaronbottom: false,
+
+
+    autoScroll: true,
+
+
     cls: 'editform',
     bodyCls: 'editform-body',
 
     constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-
         this.addEvents(
-        /**
-         * Fired when save is clicked. This may be when the record have been
-         * saved successfully, or when the save button has been clicked
-         * depending on the subclass.  By default this is fired when the save
-         * button in clicked.
-         */
-        'saveSuccess');
+            /**
+             * Fired when save is clicked. This may be when the record have been
+             * saved successfully, or when the save button has been clicked
+             * depending on the subclass.  By default this is fired when the save
+             * button in clicked.
+             */
+            'saveSuccess'
+        );
+
+        this.callParent(arguments);
     },
 
     initComponent: function() {
@@ -53,19 +56,19 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         this.editform.border = 0;
 
         var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
-        Ext.apply(this, {
-            layout: {
-                type: (this.extrabaronbottom? 'vbox': 'hbox'),
-                align: 'stretch'
-            },
+        if(!this.extrabaronbottom) {
+            this.layout = 'column';
+        }
 
+        this.editform.columnWidth = 1;
+        Ext.apply(this, {
             items: [this.editform, {
                 xtype: 'panel',
                 frame: false,
-                autoScroll: true,
+                //autoScroll: true,
                 border: false,
+                width: 300,
                 bodyCls: 'editform-sidebar ' + extrabarCssCls,
-                flex: 5,
                 items: [this.errorlist, {
                     xtype: 'box',
                     html: this.parseHelp()
