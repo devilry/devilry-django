@@ -56,8 +56,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         this.editform.border = 0;
 
         var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
+        var helpwidth = undefined;
         if(!this.extrabaronbottom) {
             this.layout = 'column';
+            helpwidth = 300;
         }
 
         this.editform.columnWidth = 1;
@@ -67,7 +69,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
                 frame: false,
                 //autoScroll: true,
                 border: false,
-                width: 300,
+                width: helpwidth,
                 bodyCls: 'editform-sidebar ' + extrabarCssCls,
                 items: [this.errorlist, {
                     xtype: 'box',
