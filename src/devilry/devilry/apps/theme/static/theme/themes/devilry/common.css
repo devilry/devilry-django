@@ -685,7 +685,7 @@ a.warning-button {
 .editform .editform-body {
   padding: 15px; }
   .editform .editform-body .extrabaronright {
-    margin-left: 30px; }
+    padding-left: 20px; }
 
 .helpbox {
   background-color: #fff !important; }
