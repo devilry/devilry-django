@@ -72,7 +72,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         qry = Q(deadline=self.deadline, assignment_group=self.assignment_group)
         if self.id:
             qry &= ~Q(id=self.id)
-        if Deadline.objects.filter(qry).count() > 0:
+        deadlines = Deadline.objects.filter(qry)
+        if deadlines.count() > 0:
             raise ValidationError('Can not have more than one deadline with the same date/time on a single group.')
 
     def clean(self, *args, **kwargs):
@@ -105,6 +106,9 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     def __unicode__(self):
         return unicode(self.deadline)
+
+    def __repr__(self):
+        return 'Deadline(id={id}, deadline={deadline})'.format(**self.__dict__)
 
     #TODO delete this?
     #def is_old(self):
