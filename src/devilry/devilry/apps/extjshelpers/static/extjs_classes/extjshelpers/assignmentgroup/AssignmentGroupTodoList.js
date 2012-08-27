@@ -136,10 +136,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
                     renderer: function(v, p, record) { return me.deliveriesColTpl.apply(record.data); }
                 }],
 
-                //listeners: {
-                    //scope: this,
-                    //itemmouseup: this.onSelectGroup
-                //}
+                listeners: {
+                    scope: this,
+                    render: this._onRenderGrid
+                }
             }, {
                 xtype: 'box',
                 width: 300,
@@ -163,12 +163,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
 
         this.callParent(arguments);
 
-        if(this.assignmentgroup_recordcontainer) {
-            if(this.assignmentgroup_recordcontainer.record) {
-                this.onSetAssignmentGroup();
+    },
+
+    _onRenderGrid: function() {
+        Ext.defer(function() {
+            if(this.assignmentgroup_recordcontainer) {
+                if(this.assignmentgroup_recordcontainer.record) {
+                    this.onSetAssignmentGroup();
+                }
+                this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
             }
-            this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
-        }
+            this.down('searchfield').focus();
+        }, 300, this);
     },
 
     _createStore: function() {
@@ -180,10 +186,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             proxy: model.proxy.copy()
         });
     },
-
-    //onSelectGroup: function(grid, assignmentgroupRecord) {
-        //window.location.href = assignmentgroupRecord.data.id.toString();
-    //},
 
     getGroupUrlPrefix: function() {
         return '';
