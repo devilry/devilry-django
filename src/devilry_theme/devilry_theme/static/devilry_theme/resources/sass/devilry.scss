@@ -49,3 +49,5 @@ $font-size: $baseFontSize;
 // or a string, of where the path is
 //$relative-image-path-for-uis: true; // defaults to "../images/" when true
 $relative-image-path-for-uis: 'images/'; // defaults to "../images/" when true
+
+@import "pygments/tango";
