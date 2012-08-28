@@ -95,13 +95,17 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         jsmodelfields = '\n    '.join(json.dumps(modelfields, indent=4).split('\n'))
     else:
         jsmodelfields = json.dumps(modelfields)
-    return """Ext.define('{modelname}', {{
+    return """Ext.syncRequire('devilry.extjshelpers.RestProxy');
+Ext.define('{modelname}', {{
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
     fields: {jsmodelfields},
     idProperty: '{idprop}',
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
         url: '{resturl}',
+        headers: {{
+            'X_DEVILRY_USE_EXTJS': true
+        }},
         extraParams: {{
             getdata_in_qrystring: true,
             result_fieldgroups: '{js_result_fieldgroups}'
