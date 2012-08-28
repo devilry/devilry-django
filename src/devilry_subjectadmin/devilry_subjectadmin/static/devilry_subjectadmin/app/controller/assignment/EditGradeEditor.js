@@ -19,6 +19,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         ref: 'gradeEditorSelectWindow',
         selector: 'gradeeditorselectwindow'
     }, {
+        ref: 'gradeEditorSelectCombobox',
+        selector: 'gradeeditorselectwindow gradeeditorselector'
+    }, {
+        ref: 'gradeEditorSelectSaveButton',
+        selector: 'gradeeditorselectwindow savebutton'
+    }, {
         ref: 'gradeEditorSelectWidget',
         selector: 'gradeeditorselect-widget'
     }],
@@ -30,10 +36,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         });
         this.control({
             'gradeeditorselectwindow savebutton': {
-                click: this._onSave
+                click: this._onSaveGradeEditorSelection
             },
             'gradeeditorselectwindow cancelbutton': {
                 click: this._closeSelectWindow
+            },
+            'gradeeditorselectwindow gradeeditorselector': {
+                change: this._onGradeEditorSelectorChange
             },
             'gradeeditorselect-widget': {
                 edit: this._onEdit
@@ -63,9 +72,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         });
     },
 
-    _onLoadGradeEditorConfigSuccess: function(gradeEditorConfigRecord, op) {
+    _onLoadGradeEditorConfigSuccess: function(gradeEditorConfigRecord) {
         this.gradeEditorConfigRecord = gradeEditorConfigRecord;
-        console.log('GradeEditorConfig:', gradeEditorConfigRecord.data);
         this._loadGradeEditorRegistryItem(gradeEditorConfigRecord.get('gradeeditorid'));
     },
 
@@ -93,25 +101,44 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     //
 
     _onEdit: function() {
-        Ext.widget('gradeeditorselectwindow').show();
+        Ext.widget('gradeeditorselectwindow', {
+            gradeeditorid: this.gradeEditorConfigRecord.get('gradeeditorid')
+        }).show();
     },
 
     _closeSelectWindow: function() {
         this.getGradeEditorSelectWindow().close();
     },
 
-    _onSave: function() {
-        console.log('Save');
+    _onSaveGradeEditorSelection: function() {
+        this.getGradeEditorSelectWindow().setLoading('Saving') + ' ...';
+        var combobox = this.getGradeEditorSelectCombobox();
+        var value = combobox.getValue();
+        this.gradeEditorConfigRecord.set('gradeeditorid', value);
+        this.gradeEditorConfigRecord.set('config', '');
+        this.gradeEditorConfigRecord.save({
+            scope: this,
+            success: this._onSaveGradeEditorConfigSuccess,
+            failure: function(unused, op) {
+                console.log('save error', op);
+            }
+        });
     },
 
-    _getMaskElement: function() {
-        return this.getGradeEditorSelectWindow().getEl();
+    _onSaveGradeEditorConfigSuccess: function(gradeEditorConfigRecord) {
+        console.log('GradeEditorConfig saved', gradeEditorConfigRecord);
+        this.getGradeEditorSelectWindow().close();
+        this._onLoadGradeEditorConfigSuccess(gradeEditorConfigRecord);
     },
 
-    _onSaveSuccess: function() {
-        this._getMaskElement().unmask();
-        this._closeSelectWindow();
-        this._updateWidget();
+    _onGradeEditorSelectorChange: function(combo, newValue) {
+        var currentValue = this.gradeEditorConfigRecord.get('gradeeditorid');
+        console.log('change', currentValue, newValue);
+        if(newValue !== currentValue) {
+            this.getGradeEditorSelectSaveButton().enable();
+        } else {
+            this.getGradeEditorSelectSaveButton().disable();
+        }
     },
 
 
@@ -128,18 +155,14 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     },
 
     _updateWidget: function() {
-        console.log('update');
         var title, body;
-
-        this.getGradeEditorSelectWidget().updateTitle([
-            gettext('Grade editor'), ': ',
-            '<em>',
-                Ext.String.ellipsis(this.gradeEditorRegistryItemRecord.get('title'), 20),
-            '</em>'
-        ].join(''));
+        this.getGradeEditorSelectWidget().updateTitle(gettext('Grade editor'));
+        var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
         this.getGradeEditorSelectWidget().updateBody({
-            description: this.gradeEditorRegistryItemRecord.get('description'),
-            isMissingConfig: this._isMissingGradeEditorConfig()
+            title: this.gradeEditorRegistryItemRecord.get('title'),
+            //description: this.gradeEditorRegistryItemRecord.get('description'),
+            isMissingConfig: this._isMissingGradeEditorConfig(),
+            configurable: !Ext.isEmpty(config_editor_url)
         });
     }
 });

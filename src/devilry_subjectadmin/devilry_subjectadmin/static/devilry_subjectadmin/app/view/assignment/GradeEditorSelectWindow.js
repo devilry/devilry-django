@@ -7,6 +7,11 @@ Ext.define('devilry_subjectadmin.view.assignment.GradeEditorSelectWindow', {
         'devilry.gradeeditors.GradeEditorSelector'
     ],
 
+    /**
+     * @cfg {string} [gradeeditorid]
+     * The current grade editor ID.
+     */
+
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
@@ -29,13 +34,16 @@ Ext.define('devilry_subjectadmin.view.assignment.GradeEditorSelectWindow', {
                     fieldLabel: gettext("Select a grade editor"),
                     labelAlign: 'top',
                     labelWidth: 200,
+                    value: this.gradeeditorid,
                     labelStyle: 'font-weight:bold',
                     xtype: 'gradeeditorselector',
                     listConfig: {
-                        getInnerTpl: function() {
+                        getInnerTpl: function(a, b, c) {
                             return [
                                 '<div class="bootstrap gradeeditorselector">',
-                                    '<div class="title"><strong>{title}</strong></div>',
+                                    '<div class="title">',
+                                        '<strong>{title}</strong>',
+                                    '</div>',
                                     '<div class="description">{description}</div>',
                                 '</div>'
                             ].join('');
@@ -71,7 +79,8 @@ Ext.define('devilry_subjectadmin.view.assignment.GradeEditorSelectWindow', {
                 buttons: ['->', {
                     xtype: 'cancelbutton'
                 }, {
-                    xtype: 'savebutton'
+                    xtype: 'savebutton',
+                    disabled: true
                 }]
             }
         });
