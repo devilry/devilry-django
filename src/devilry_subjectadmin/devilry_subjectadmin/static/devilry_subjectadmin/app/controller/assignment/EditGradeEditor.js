@@ -1,6 +1,11 @@
 Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'devilry.gradeeditors.ConfigEditorWindow',
+        'Ext.window.MessageBox'
+    ],
+
     views: [
         'assignment.GradeEditorSelectWindow',
         'assignment.GradeEditorSelectWidget'
@@ -50,11 +55,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         });
     },
 
-    _onLoadAssignment: function(assignmentRecord) {
+    _onLoadAssignment: function(assignmentRecord, onLoadAction) {
         this.assignmentRecord = assignmentRecord;
+        this.onLoadAction = onLoadAction;
         this._loadGradeEditorConfig();
     },
-
 
     //
     //
@@ -88,9 +93,18 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     },
     _onLoadGradeEditorRegistryItemSuccess: function(gradeEditorRegistryItemRecord, op) {
         this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-        console.log('GradeEditorRegistryItem:', gradeEditorRegistryItemRecord.data);
+        this._onAllLoaded();
+    },
+
+    _onAllLoaded: function() {
         this.getGradeEditorSelectWidget().enable();
         this._updateWidget();
+        console.log(this.onLoadAction);
+        if(this.onLoadAction === 'gradeeditor-edit') {
+            this._onEdit();
+        } else if(this.onLoadAction === 'gradeeditor-configure') {
+            this._onConfigureGradeEditor();
+        }
     },
 
 
@@ -141,6 +155,33 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         }
     },
 
+    
+    //
+    //
+    // Config editor window
+    //
+    //
+    _onConfigureGradeEditor: function() {
+        if(!this._isConfigurable()) {
+            // NOTE: No translations because you do not get here through normal UI navigation.
+            Ext.MessageBox.alert('Invalid action',
+                Ext.String.format('"{0}" is not configurable.',
+                    this.gradeEditorRegistryItemRecord.get('title'))
+            );
+            return;
+        }
+        Ext.widget('gradeconfigeditormainwin', {
+            registryitem: this.gradeEditorRegistryItemRecord.data,
+            gradeEditorConfigRecord: this.gradeEditorConfigRecord,
+            listeners: {
+                scope: this,
+                saveSuccess: function(win, configrecord) {
+                    console.log('success', configrecord);
+                }
+            }
+        }).show();
+    },
+
 
     //
     //
@@ -148,10 +189,14 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     //
     //
 
+    _isConfigurable: function () {
+        var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
+        return !Ext.isEmpty(config_editor_url);
+    },
+
     _isMissingGradeEditorConfig: function() {
         var config = this.gradeEditorConfigRecord.get('config');
-        var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
-        return Ext.isEmpty(config) && !Ext.isEmpty(config_editor_url);
+        return Ext.isEmpty(config) && this._isConfigurable();
     },
 
     _updateWidget: function() {
@@ -162,7 +207,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
             title: this.gradeEditorRegistryItemRecord.get('title'),
             //description: this.gradeEditorRegistryItemRecord.get('description'),
             isMissingConfig: this._isMissingGradeEditorConfig(),
-            configurable: !Ext.isEmpty(config_editor_url)
+            configurable: this._isConfigurable()
         });
     }
 });
