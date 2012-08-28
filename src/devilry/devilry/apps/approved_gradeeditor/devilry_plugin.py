@@ -13,7 +13,7 @@ class Approved(JsonRegistryItem):
     editor for use in test cases.
     """
     gradeeditorid = 'approved'
-    title = 'Approved'
+    title = 'Approved/not approved'
     description = 'A simple gradeeditor that allows examiners to select if delivery is approved or not approved, and give a feedback text.'
     config_editor_url = None
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/approved_gradeeditor/drafteditor.js'
