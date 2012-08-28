@@ -167,6 +167,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
+        this.route.add("/assignment/:assignment_id/@@:onLoadAction", 'showAssignment'); // NOTE: Must come after the actions with proper routes!
         this.route.start();
     },
     
@@ -213,11 +214,12 @@ Ext.application({
         });
     },
 
-    showAssignment: function(routeInfo, assignment_id) {
+    showAssignment: function(routeInfo, assignment_id, onLoadAction) {
         this.setPrimaryContent({
             xtype: 'assignmentoverview',
             url: routeInfo.url,
-            assignment_id: assignment_id
+            assignment_id: assignment_id,
+            onLoadAction: onLoadAction
         });
     },
 

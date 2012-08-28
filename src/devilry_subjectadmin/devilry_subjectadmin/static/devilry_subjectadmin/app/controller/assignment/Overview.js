@@ -73,7 +73,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
             heading: record.get('long_name')
         });
         this._setDangerousActionsLabels();
-        this.application.fireEvent('assignmentSuccessfullyLoaded', record);
+        var onLoadAction = this.getAssignmentOverview().onLoadAction;
+        this.application.fireEvent('assignmentSuccessfullyLoaded', record, onLoadAction);
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);

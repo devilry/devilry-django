@@ -21,6 +21,12 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
      * @cfg {String} assignment_id (required)
      */
 
+    /**
+     * @cfg {String} [onLoadAction]
+     * An action to perform on load. Used by the plugins/widgets to enable
+     * proper linking directly to actions (like link to edit publishing time).
+     */
+
     initComponent: function() {
         Ext.apply(this, {
             frame: false,
