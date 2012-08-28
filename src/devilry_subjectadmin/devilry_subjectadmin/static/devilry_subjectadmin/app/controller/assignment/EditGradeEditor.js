@@ -10,7 +10,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         'assignment.Overview'
     ],
 
-    models: ['Assignment'],
+    models: [
+        'GradeEditorConfig',
+        'GradeEditorRegistryItem'
+    ],
 
     refs: [{
         ref: 'gradeEditorSelectWindow',
@@ -40,8 +43,57 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
+        this._loadGradeEditorConfig();
+    },
+
+
+    //
+    //
+    // Load the editor and the registry item
+    //
+    //
+
+    _loadGradeEditorConfig: function() {
+        this.getGradeEditorConfigModel().load(this.assignmentRecord.get('id'), {
+            scope: this,
+            success: this._onLoadGradeEditorConfigSuccess,
+            failure: function() {
+                console.log('failed');
+            }
+        });
+    },
+
+    _onLoadGradeEditorConfigSuccess: function(gradeEditorConfigRecord, op) {
+        this.gradeEditorConfigRecord = gradeEditorConfigRecord;
+        console.log('GradeEditorConfig:', gradeEditorConfigRecord.data);
+        this._loadGradeEditorRegistryItem(gradeEditorConfigRecord.get('gradeeditorid'));
+    },
+
+    _loadGradeEditorRegistryItem: function(gradeeditorid) {
+        this.getGradeEditorRegistryItemModel().load(gradeeditorid, {
+            scope: this,
+            success: this._onLoadGradeEditorRegistryItemSuccess,
+            failure: function() {
+                console.log('failed GradeEditorRegistryItem');
+            }
+        });
+    },
+    _onLoadGradeEditorRegistryItemSuccess: function(gradeEditorRegistryItemRecord, op) {
+        this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
+        console.log('GradeEditorRegistryItem:', gradeEditorRegistryItemRecord.data);
         this.getGradeEditorSelectWidget().enable();
         this._updateWidget();
+    },
+
+
+    //
+    //
+    // The GradeEditorSelectWindow
+    //
+    //
+
+    _onEdit: function() {
+        Ext.widget('gradeeditorselectwindow').show();
     },
 
     _closeSelectWindow: function() {
@@ -49,6 +101,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     },
 
     _onSave: function() {
+        console.log('Save');
     },
 
     _getMaskElement: function() {
@@ -61,29 +114,32 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         this._updateWidget();
     },
 
-    _onProxyError: function(proxy, response, operation) {
-        this._getMaskElement().unmask();
-        alert('Save error');
-    },
 
-    _onEdit: function() {
-        Ext.widget('gradeeditorselectwindow').show();
+    //
+    //
+    // The widget
+    //
+    //
+
+    _isMissingGradeEditorConfig: function() {
+        var config = this.gradeEditorConfigRecord.get('config');
+        var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
+        return Ext.isEmpty(config) && !Ext.isEmpty(config_editor_url);
     },
 
     _updateWidget: function() {
         console.log('update');
-        //var anonymous = this.assignmentRecord.get('anonymous');
-        //var title, body;
+        var title, body;
 
-        //if(anonymous) {
-            //title = gettext('Anonymous');
-            //body = gettext('Examiners and students can not see each other and they can not communicate.');
-        //} else {
-            //title = gettext('Not anonymous');
-            //body = gettext('Examiners and students can see each other and communicate.');
-        //}
-        //var anonymous = this.assignmentRecord.get('anonymous');
-        //this.getAnonymousWidget().updateTitle(title);
-        //this.getAnonymousWidget().updateText(body);
+        this.getGradeEditorSelectWidget().updateTitle([
+            gettext('Grade editor'), ': ',
+            '<em>',
+                Ext.String.ellipsis(this.gradeEditorRegistryItemRecord.get('title'), 20),
+            '</em>'
+        ].join(''));
+        this.getGradeEditorSelectWidget().updateBody({
+            description: this.gradeEditorRegistryItemRecord.get('description'),
+            isMissingConfig: this._isMissingGradeEditorConfig()
+        });
     }
 });
