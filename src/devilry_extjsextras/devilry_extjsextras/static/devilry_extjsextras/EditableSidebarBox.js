@@ -67,6 +67,15 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 ],
                 data: {
                     title: this.title
+                },
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: 'a.edit_link',
+                    click: function(e) {
+                        this.fireEvent('edit', this);
+                        e.preventDefault();
+                    }
                 }
             }, {
                 xtype: 'box',
@@ -74,17 +83,17 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                 padding: '0',
                 cls: this.bodyCls,
                 tpl: this.bodyTpl,
-                data: this.bodyData
-            }],
-            listeners: {
-                scope: this,
-                element: 'el',
-                delegate: 'a.edit_link',
-                click: function(e) {
-                    this.fireEvent('edit', this);
-                    e.preventDefault();
+                data: this.bodyData,
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: 'a',
+                    click: function(e) {
+                        this.fireEvent('bodyLinkClicked', this, e);
+                        e.preventDefault();
+                    }
                 }
-            }
+            }]
         });
         this.callParent(arguments);
         //this.updateBody(this.bodyTpl, this.data);
