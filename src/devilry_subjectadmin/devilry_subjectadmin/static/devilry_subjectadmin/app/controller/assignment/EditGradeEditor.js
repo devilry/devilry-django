@@ -50,7 +50,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
                 change: this._onGradeEditorSelectorChange
             },
             'gradeeditorselect-widget': {
-                edit: this._onEdit
+                edit: this._onEdit,
+                bodyLinkClicked: this._onConfigureGradeEditor
             }
         });
     },
@@ -140,14 +141,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     },
 
     _onSaveGradeEditorConfigSuccess: function(gradeEditorConfigRecord) {
-        console.log('GradeEditorConfig saved', gradeEditorConfigRecord);
         this.getGradeEditorSelectWindow().close();
         this._onLoadGradeEditorConfigSuccess(gradeEditorConfigRecord);
     },
 
     _onGradeEditorSelectorChange: function(combo, newValue) {
         var currentValue = this.gradeEditorConfigRecord.get('gradeeditorid');
-        console.log('change', currentValue, newValue);
         if(newValue !== currentValue) {
             this.getGradeEditorSelectSaveButton().enable();
         } else {
@@ -175,8 +174,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
             gradeEditorConfigRecord: this.gradeEditorConfigRecord,
             listeners: {
                 scope: this,
-                saveSuccess: function(win, configrecord) {
-                    console.log('success', configrecord);
+                saveSuccess: function(win, gradeEditorConfigRecord) {
+                    win.close();
+                    this._onLoadGradeEditorConfigSuccess(gradeEditorConfigRecord)
                 }
             }
         }).show();
