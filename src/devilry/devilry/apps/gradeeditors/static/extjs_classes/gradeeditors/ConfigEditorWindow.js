@@ -13,19 +13,16 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     ],
 
     /**
-     * @cfg
+     * @cfg {Object} [registryitem]
      * The data attribute of the record returned when loading the
      * grade-editor registry item. (Required).
      */
-    registryitem: undefined,
 
 
     /**
-     * @cfg
-     * A {@link devilry.extjshelpers.SingleRecordContainer} for the grade
-     * editor config. (Required).
+     * @cfg {Object} [gradeEditorConfigRecord]
+     * The grade editor config record (Required).
      */
-    gradeeditorconfig_recordcontainer: undefined,
 
 
     initComponent: function() {
@@ -120,7 +117,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
             });
         }
 
-        this.getConfigEditor().initializeEditor(this.gradeeditorconfig_recordcontainer.record.data);
+        this.getConfigEditor().initializeEditor(this.gradeEditorConfigRecord.data);
     },
 
 
@@ -149,14 +146,13 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
         var me = this;
         var configrecord = Ext.create(this.getConfigModelName(), {
             config: configstring,
-            gradeeditorid: this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid,
-            assignment: this.gradeeditorconfig_recordcontainer.record.data.assignment
+            gradeeditorid: this.gradeEditorConfigRecord.get('gradeeditorid'),
+            assignment: this.gradeEditorConfigRecord.get('assignment')
         });
         configrecord.save({
             scope: this.getConfigEditor(),
             success: function(response) {
-                me.gradeeditorconfig_recordcontainer.setRecord(configrecord);
-                me.close();
+                me.fireEvent('saveSuccess', me, configrecord);
             },
             failure: onFailure
         });

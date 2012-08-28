@@ -334,7 +334,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     onConfigureGradeEditorBtn: function(button) {
         Ext.widget('gradeconfigeditormainwin', {
             registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
-            gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
+            gradeEditorConfigRecord: this.gradeeditorconfig_recordcontainer.record,
+            listeners: {
+                scope: this,
+                saveSuccess: function(win, configrecord) {
+                    this.gradeeditorconfig_recordcontainer.setRecord(configrecord);
+                    win.close();
+                    window.location.href = window.location.href;
+                }
+            }
         }).show();
     },
 
