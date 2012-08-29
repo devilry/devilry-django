@@ -16487,3 +16487,450 @@ You only need something like this extjs code to make it work:
   color: #333 !important;
   font-size: 13px !important;
 }
+
+/* line 1, ../sass/pygments/_tango.scss */
+.codehilite .hll {
+  background-color: #ffffcc;
+}
+
+/* line 2, ../sass/pygments/_tango.scss */
+.codehilite .c {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Comment */
+/* line 3, ../sass/pygments/_tango.scss */
+.codehilite .err {
+  color: #a40000;
+  border: 1px solid #ef2929;
+}
+
+/* Error */
+/* line 4, ../sass/pygments/_tango.scss */
+.codehilite .g {
+  color: #000000;
+}
+
+/* Generic */
+/* line 5, ../sass/pygments/_tango.scss */
+.codehilite .k {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword */
+/* line 6, ../sass/pygments/_tango.scss */
+.codehilite .l {
+  color: #000000;
+}
+
+/* Literal */
+/* line 7, ../sass/pygments/_tango.scss */
+.codehilite .n {
+  color: #000000;
+}
+
+/* Name */
+/* line 8, ../sass/pygments/_tango.scss */
+.codehilite .o {
+  color: #ce5c00;
+  font-weight: bold;
+}
+
+/* Operator */
+/* line 9, ../sass/pygments/_tango.scss */
+.codehilite .x {
+  color: #000000;
+}
+
+/* Other */
+/* line 10, ../sass/pygments/_tango.scss */
+.codehilite .p {
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Punctuation */
+/* line 11, ../sass/pygments/_tango.scss */
+.codehilite .cm {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Comment.Multiline */
+/* line 12, ../sass/pygments/_tango.scss */
+.codehilite .cp {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Comment.Preproc */
+/* line 13, ../sass/pygments/_tango.scss */
+.codehilite .c1 {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Comment.Single */
+/* line 14, ../sass/pygments/_tango.scss */
+.codehilite .cs {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Comment.Special */
+/* line 15, ../sass/pygments/_tango.scss */
+.codehilite .gd {
+  color: #a40000;
+}
+
+/* Generic.Deleted */
+/* line 16, ../sass/pygments/_tango.scss */
+.codehilite .ge {
+  color: #000000;
+  font-style: italic;
+}
+
+/* Generic.Emph */
+/* line 17, ../sass/pygments/_tango.scss */
+.codehilite .gr {
+  color: #ef2929;
+}
+
+/* Generic.Error */
+/* line 18, ../sass/pygments/_tango.scss */
+.codehilite .gh {
+  color: #000080;
+  font-weight: bold;
+}
+
+/* Generic.Heading */
+/* line 19, ../sass/pygments/_tango.scss */
+.codehilite .gi {
+  color: #00A000;
+}
+
+/* Generic.Inserted */
+/* line 20, ../sass/pygments/_tango.scss */
+.codehilite .go {
+  color: #000000;
+  font-style: italic;
+}
+
+/* Generic.Output */
+/* line 21, ../sass/pygments/_tango.scss */
+.codehilite .gp {
+  color: #8f5902;
+}
+
+/* Generic.Prompt */
+/* line 22, ../sass/pygments/_tango.scss */
+.codehilite .gs {
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Generic.Strong */
+/* line 23, ../sass/pygments/_tango.scss */
+.codehilite .gu {
+  color: #800080;
+  font-weight: bold;
+}
+
+/* Generic.Subheading */
+/* line 24, ../sass/pygments/_tango.scss */
+.codehilite .gt {
+  color: #a40000;
+  font-weight: bold;
+}
+
+/* Generic.Traceback */
+/* line 25, ../sass/pygments/_tango.scss */
+.codehilite .kc {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Constant */
+/* line 26, ../sass/pygments/_tango.scss */
+.codehilite .kd {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Declaration */
+/* line 27, ../sass/pygments/_tango.scss */
+.codehilite .kn {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Namespace */
+/* line 28, ../sass/pygments/_tango.scss */
+.codehilite .kp {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Pseudo */
+/* line 29, ../sass/pygments/_tango.scss */
+.codehilite .kr {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Reserved */
+/* line 30, ../sass/pygments/_tango.scss */
+.codehilite .kt {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Keyword.Type */
+/* line 31, ../sass/pygments/_tango.scss */
+.codehilite .ld {
+  color: #000000;
+}
+
+/* Literal.Date */
+/* line 32, ../sass/pygments/_tango.scss */
+.codehilite .m {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number */
+/* line 33, ../sass/pygments/_tango.scss */
+.codehilite .s {
+  color: #4e9a06;
+}
+
+/* Literal.String */
+/* line 34, ../sass/pygments/_tango.scss */
+.codehilite .na {
+  color: #c4a000;
+}
+
+/* Name.Attribute */
+/* line 35, ../sass/pygments/_tango.scss */
+.codehilite .nb {
+  color: #204a87;
+}
+
+/* Name.Builtin */
+/* line 36, ../sass/pygments/_tango.scss */
+.codehilite .nc {
+  color: #000000;
+}
+
+/* Name.Class */
+/* line 37, ../sass/pygments/_tango.scss */
+.codehilite .no {
+  color: #000000;
+}
+
+/* Name.Constant */
+/* line 38, ../sass/pygments/_tango.scss */
+.codehilite .nd {
+  color: #5c35cc;
+  font-weight: bold;
+}
+
+/* Name.Decorator */
+/* line 39, ../sass/pygments/_tango.scss */
+.codehilite .ni {
+  color: #ce5c00;
+}
+
+/* Name.Entity */
+/* line 40, ../sass/pygments/_tango.scss */
+.codehilite .ne {
+  color: #cc0000;
+  font-weight: bold;
+}
+
+/* Name.Exception */
+/* line 41, ../sass/pygments/_tango.scss */
+.codehilite .nf {
+  color: #000000;
+}
+
+/* Name.Function */
+/* line 42, ../sass/pygments/_tango.scss */
+.codehilite .nl {
+  color: #f57900;
+}
+
+/* Name.Label */
+/* line 43, ../sass/pygments/_tango.scss */
+.codehilite .nn {
+  color: #000000;
+}
+
+/* Name.Namespace */
+/* line 44, ../sass/pygments/_tango.scss */
+.codehilite .nx {
+  color: #000000;
+}
+
+/* Name.Other */
+/* line 45, ../sass/pygments/_tango.scss */
+.codehilite .py {
+  color: #000000;
+}
+
+/* Name.Property */
+/* line 46, ../sass/pygments/_tango.scss */
+.codehilite .nt {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Name.Tag */
+/* line 47, ../sass/pygments/_tango.scss */
+.codehilite .nv {
+  color: #000000;
+}
+
+/* Name.Variable */
+/* line 48, ../sass/pygments/_tango.scss */
+.codehilite .ow {
+  color: #204a87;
+  font-weight: bold;
+}
+
+/* Operator.Word */
+/* line 49, ../sass/pygments/_tango.scss */
+.codehilite .w {
+  color: #f8f8f8;
+  text-decoration: underline;
+}
+
+/* Text.Whitespace */
+/* line 50, ../sass/pygments/_tango.scss */
+.codehilite .mf {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number.Float */
+/* line 51, ../sass/pygments/_tango.scss */
+.codehilite .mh {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number.Hex */
+/* line 52, ../sass/pygments/_tango.scss */
+.codehilite .mi {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number.Integer */
+/* line 53, ../sass/pygments/_tango.scss */
+.codehilite .mo {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number.Oct */
+/* line 54, ../sass/pygments/_tango.scss */
+.codehilite .sb {
+  color: #4e9a06;
+}
+
+/* Literal.String.Backtick */
+/* line 55, ../sass/pygments/_tango.scss */
+.codehilite .sc {
+  color: #4e9a06;
+}
+
+/* Literal.String.Char */
+/* line 56, ../sass/pygments/_tango.scss */
+.codehilite .sd {
+  color: #8f5902;
+  font-style: italic;
+}
+
+/* Literal.String.Doc */
+/* line 57, ../sass/pygments/_tango.scss */
+.codehilite .s2 {
+  color: #4e9a06;
+}
+
+/* Literal.String.Double */
+/* line 58, ../sass/pygments/_tango.scss */
+.codehilite .se {
+  color: #4e9a06;
+}
+
+/* Literal.String.Escape */
+/* line 59, ../sass/pygments/_tango.scss */
+.codehilite .sh {
+  color: #4e9a06;
+}
+
+/* Literal.String.Heredoc */
+/* line 60, ../sass/pygments/_tango.scss */
+.codehilite .si {
+  color: #4e9a06;
+}
+
+/* Literal.String.Interpol */
+/* line 61, ../sass/pygments/_tango.scss */
+.codehilite .sx {
+  color: #4e9a06;
+}
+
+/* Literal.String.Other */
+/* line 62, ../sass/pygments/_tango.scss */
+.codehilite .sr {
+  color: #4e9a06;
+}
+
+/* Literal.String.Regex */
+/* line 63, ../sass/pygments/_tango.scss */
+.codehilite .s1 {
+  color: #4e9a06;
+}
+
+/* Literal.String.Single */
+/* line 64, ../sass/pygments/_tango.scss */
+.codehilite .ss {
+  color: #4e9a06;
+}
+
+/* Literal.String.Symbol */
+/* line 65, ../sass/pygments/_tango.scss */
+.codehilite .bp {
+  color: #3465a4;
+}
+
+/* Name.Builtin.Pseudo */
+/* line 66, ../sass/pygments/_tango.scss */
+.codehilite .vc {
+  color: #000000;
+}
+
+/* Name.Variable.Class */
+/* line 67, ../sass/pygments/_tango.scss */
+.codehilite .vg {
+  color: #000000;
+}
+
+/* Name.Variable.Global */
+/* line 68, ../sass/pygments/_tango.scss */
+.codehilite .vi {
+  color: #000000;
+}
+
+/* Name.Variable.Instance */
+/* line 69, ../sass/pygments/_tango.scss */
+.codehilite .il {
+  color: #0000cf;
+  font-weight: bold;
+}
+
+/* Literal.Number.Integer.Long */
