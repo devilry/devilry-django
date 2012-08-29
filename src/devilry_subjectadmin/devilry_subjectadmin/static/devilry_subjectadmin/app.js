@@ -22,7 +22,6 @@ Ext.application({
     ],
 
     controllers: [
-        'Shortcuts',
         'Dashboard',
         'CreateNewAssignment',
         'subject.ListAll',

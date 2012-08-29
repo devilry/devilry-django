@@ -3,6 +3,10 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     alias: 'widget.dashboard',
     cls: 'dashboard',
 
+    requires: [
+        'devilry_subjectadmin.view.AllWhereIsAdminList'
+    ],
+
     layout: 'column',
     frame: false,
     border: 0,
@@ -13,12 +17,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         xtype: 'container',
         columnWidth: .65,
         items: [{
-            xtype: 'panel',
-            title: pgettext('subjectadmin dashboard', 'Active subjects'),
-            ui: 'inset-header-strong-panel',
-            items: {
-                xtype: 'shortcutlist'
-            }
+            xtype: 'allwhereisadminlist'
         }]
     }, {
         xtype: 'container',
@@ -26,17 +25,8 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         margin: '0 0 0 40',
         border: false,
         items: [{
-            xtype: 'panel',
-            title: pgettext('subjectadmin dashboard', 'Messages'),
-            ui: 'lookslike-parawitheader-panel',
-            cls: 'bootstrap',
-            html: [
-                '<p>Please use the help-tab to access guides and tips. Contact ',
-                'drift@example.com if anything is unclear.</p>',
-                '<p><strong>Note:</strong> Devilry will be taken down for scheduled maintainance at ',
-                '24. may from  16:00 to 18:00. Please let us know if this is a ',
-                'bad time, and we will consider re-scheduling the maintainance.',
-            ].join('')
+            xtype: 'box',
+            html: '&nbsp;'
         }]
     }]
 });
