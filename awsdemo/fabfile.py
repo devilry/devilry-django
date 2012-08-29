@@ -48,6 +48,18 @@ def refresh():
     with cd(prodenv_dir):
         run('fab refresh')
 
+
+@task
+def fast_update():
+    """
+    Run ``fab refreshstatic`` in prodenv.
+    """
+    stop_servers()
+    with cd(prodenv_dir):
+        run('git pull')
+        run('fab refreshstatic')
+    start_servers()
+
 @task
 def update_devilry():
     """
