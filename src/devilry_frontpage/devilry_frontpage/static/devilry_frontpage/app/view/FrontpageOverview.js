@@ -1,6 +1,6 @@
-Ext.define('devilry_frontpage.view.frontpage.Overview' ,{
+Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
     extend: 'Ext.panel.Panel',
-    alias: 'widget.overview',
+    alias: 'widget.frontpage_overview',
     cls: 'devilry_frontpage_overview',
 
     requires: [

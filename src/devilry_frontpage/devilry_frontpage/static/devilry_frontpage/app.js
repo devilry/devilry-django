@@ -11,6 +11,24 @@ Ext.application({
 
     requires: [
         'Ext.container.Viewport',
+        'Ext.layout.container.Border',
+        'Ext.resizer.Splitter',
+        'Ext.resizer.SplitterTracker',
+        'Ext.resizer.BorderSplitterTracker',
+
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Picker',
+        'Ext.form.field.Trigger',
+        'Ext.layout.component.field.Trigger',
+        'Ext.view.View',
+        'Ext.selection.DataViewModel',
+        'Ext.selection.Model',
+        'Ext.layout.component.BoundList',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.TextItem',
+        'Ext.form.field.Number',
+        'Ext.layout.container.Column',
+
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_header.Header',
@@ -81,7 +99,7 @@ Ext.application({
     frontpage: function() {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'overview'
+            xtype: 'frontpage_overview'
         });
     }
 });
