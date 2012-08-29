@@ -52,7 +52,7 @@ def refresh():
 @task
 def fast_update():
     """
-    Run ``fab refreshstatic`` in prodenv.
+    Run ``git pull` and ``fab refreshstatic`` in prodenv.
     """
     stop_servers()
     with cd(prodenv_dir):
@@ -149,6 +149,13 @@ def load_dump_from_local_db(dbpath='../devenv/db.sqlite3'):
     finally:
         rmtree(tempdir)
     start_servers()
+
+
+@task
+def upload_file(relpath):
+    with cd(prodenv_dir):
+        put(relpath, relpath)
+        run('fab refreshstatic')
 
 
 #####################
