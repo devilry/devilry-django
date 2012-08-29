@@ -65,7 +65,8 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
         var deadline_datetime = devilry_student.model.GroupInfo.parseDateTime(this.deadline.deadline);
         var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d H:i:s');
         var offset_from_now = this.deadline.offset_from_now;
-        offset_from_now = devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(offset_from_now);
+        offset_from_now = devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
+            offset_from_now, this.deadline.in_the_future);
 
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadline.id),
