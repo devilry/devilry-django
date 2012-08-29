@@ -29,7 +29,6 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
     },
 
     _onRenderAllWhereIsAdminList: function() {
-        console.log('Rendered');
         // TODO: load the model and move the code below into the load-success handler
 
         this.getAllActivesWhereIsAdminStore().load({
@@ -45,7 +44,6 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
     },
 
     _onLoadSuccess: function(records) {
-        console.log(records);
         this.getAllWhereIsAdminList().update({
             loadingtext: null,
             subjects: records

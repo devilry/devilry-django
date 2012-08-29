@@ -4,41 +4,50 @@ Ext.define('devilry_subjectadmin.view.AllWhereIsAdminList' ,{
     cls: 'devilry_subjectadmin_allwhereisadminlist bootstrap',
     tpl: [
         '<tpl if="loadingtext">',
-            '{loadingtext}',
+            '<h2>{loadingtext}</h2>',
         '<tpl else>',
             '<h2>',
                 interpolate(gettext('Active %(subjects_term)s'), {
-                    subjects_term: gettext('subjects'),
-                    periods_term: gettext('periods'),
-                    assignments_term: gettext('assignments')
+                    subjects_term: gettext('subjects')
                 }, true),
             '</h2>',
             '<p><small>',
-                interpolate(gettext('These are your %(subjects_term)s with an active %(period_term)s. Choose a %(periods_term)s to manage students and create new %(assignments_term)s, or choose an %(assignment_term)s to manage deadlines and students on that %(assignment_term)s.'), {
+                interpolate(gettext('These are your %(subjects_term)s with an active %(period_term)s. Choose a %(period_term)s to manage students and create new %(assignments_term)s, or choose an %(assignment_term)s to manage deadlines and students on that %(assignment_term)s.'), {
                     subjects_term: gettext('subjects'),
                     period_term: gettext('periods'),
-                    periods_term: gettext('periods'),
                     assignments_term: gettext('assignments'),
                     assignment_term: gettext('assignment')
                 }, true),
             '</small></p>',
             '<tpl for="subjects">',
                 '<h3>',
-                    '{[Ext.String.ellipsis(values.data.long_name, 40)]}',
                     '<tpl if="data.can_administer">',
-                        ' <small><a href="#/subject/{data.id}/">(',
-                            gettext('View/edit'),
-                        ')</a></small>',
+                        '<a href="#/subject/{data.id}/">',
+                            '{[Ext.String.ellipsis(values.data.long_name, 40)]}',
+                        '</a>',
+                    '<tpl else>',
+                        '{[Ext.String.ellipsis(values.data.long_name, 40)]}',
                     '</tpl>',
+                    //'<tpl if="data.can_administer">',
+                        //' <small><a href="#/subject/{data.id}/">(',
+                            //gettext('View/edit'),
+                        //')</a></small>',
+                    //'</tpl>',
                 '</h3>',
                 '<tpl for="data.periods">',
                     '<h4>',
-                        '{[Ext.String.ellipsis(values.long_name, 40)]}',
                         '<tpl if="can_administer">',
-                            ' <small><a href="#/period/{id}/">(',
-                                gettext('View/edit'),
-                            ')</a></small>',
+                            '<a href="#/period/{id}/">',
+                                '{[Ext.String.ellipsis(values.long_name, 40)]}',
+                            '</a>',
+                        '<tpl else>',
+                            '{[Ext.String.ellipsis(values.long_name, 40)]}',
                         '</tpl>',
+                        //'<tpl if="can_administer">',
+                            //' <small><a href="#/period/{id}/">(',
+                                //gettext('View/edit'),
+                            //')</a></small>',
+                        //'</tpl>',
                     '</h4>',
                     '<ul style="margin-top: 10px;">',
                         '<tpl for="assignments">',
@@ -50,5 +59,9 @@ Ext.define('devilry_subjectadmin.view.AllWhereIsAdminList' ,{
                 '</tpl>',
             '</tpl>',
         '</tpl>'
-    ]
+    ],
+
+    data: {
+        loadingtext: gettext('Loading') + ' ...'
+    }
 });
