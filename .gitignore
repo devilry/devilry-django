@@ -90,6 +90,7 @@ src/django_extjs4/
 
 # Generated ExtJS apps
 all-classes.js
+app.jsb3
 
 # example-productionenv/
 example-productionenv/bin/
@@ -100,3 +101,8 @@ example-productionenv/static/
 awsdemo/bin
 awsdemo/awsfab_settings_local.py
 awsdemo/virtualenv/
+
+
+# Git repos - we sometimes check these out for development, and we do not want them as subrepos!
+src/django_seleniumhelpers/
+src/djangosenchatools/
