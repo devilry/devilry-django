@@ -18,6 +18,22 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         columnWidth: .65,
         items: [{
             xtype: 'allwhereisadminlist'
+        }, {
+            xtype: 'box',
+            cls: 'bootstrap',
+            margin: '40 0 0 0',
+            html: [
+                '<h2>',
+                    interpolate(gettext('Inactive %(subjects_term)s and old data'), {
+                        subjects_term: gettext('subjects')
+                    }, true),
+                '</h2>',
+                '<p>',
+                    '<a href="#/doesnotexist">',
+                        gettext('Browse everything where you are administrator'),
+                    '</a>',
+                '</p>'
+            ].join('')
         }]
     }, {
         xtype: 'container',

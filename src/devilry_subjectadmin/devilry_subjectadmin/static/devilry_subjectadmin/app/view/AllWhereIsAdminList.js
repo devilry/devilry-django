@@ -6,11 +6,11 @@ Ext.define('devilry_subjectadmin.view.AllWhereIsAdminList' ,{
         '<tpl if="loadingtext">',
             '<h2>{loadingtext}</h2>',
         '<tpl else>',
-            '<h2>',
+            '<h1>',
                 interpolate(gettext('Active %(subjects_term)s'), {
                     subjects_term: gettext('subjects')
                 }, true),
-            '</h2>',
+            '</h1>',
             '<p><small>',
                 interpolate(gettext('These are your %(subjects_term)s with an active %(period_term)s. Choose a %(period_term)s to manage students and create new %(assignments_term)s, or choose an %(assignment_term)s to manage deadlines and students on that %(assignment_term)s.'), {
                     subjects_term: gettext('subjects'),
