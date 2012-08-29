@@ -41,65 +41,19 @@ Ext.application({
 
     launch: function() {
         this._createViewport();
-        this._setupRoutes();
     },
 
     _createViewport: function() {
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Frontpage"),
-                url: '#'
-            }]
-        });
-
-        this.primaryContentContainer = Ext.widget('container', {
-            region: 'center',
-            layout: 'fit'
-        });
         this.viewport = Ext.create('Ext.container.Viewport', {
-            xtype: 'container',
             layout: 'border',
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'no_role',
-                breadcrumbs: this.breadcrumbs
+                navclass: 'no_role'
             }, {
-                xtype: 'container',
-                region: 'center',
-                layout: 'border',
-                items: [this.primaryContentContainer]
+                xtype: 'frontpage_overview',
+                region: 'center'
             }]
-        });
-    },
-
-    setPrimaryContent: function(component) {
-        this.primaryContentContainer.removeAll();
-        this.primaryContentContainer.add(component);
-    },
-
-    /*********************************************
-     * Routing
-     ********************************************/
-
-    _setupRoutes: function() {
-        this.route = Ext.create('devilry_extjsextras.Router', this);
-        this.route.add("", 'frontpage');
-        this.route.start();
-    },
-    
-    routeNotFound: function(routeInfo) {
-        this.breadcrumbs.set([], gettext('Route not found'));
-        this.setPrimaryContent({
-            xtype: 'routenotfound',
-            route: routeInfo.token
-        });
-    },
-
-    frontpage: function() {
-        this.breadcrumbs.setHome();
-        this.setPrimaryContent({
-            xtype: 'frontpage_overview'
         });
     }
 });
