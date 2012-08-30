@@ -26,7 +26,7 @@ Ext.application({
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_header.Header',
-        'devilry_header.Breadcrumbs',
+        'devilry_header.Breadcrumbs'
     ],
 
     controllers: [
