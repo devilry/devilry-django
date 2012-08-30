@@ -51,9 +51,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
             'viewport subjectoverview': {
                 render: this._onSubjectViewRender
             },
-            'viewport subjectoverview editablesidebarbox[itemId=gradeeditor] button': {
-                click: this._onEditGradeEditor
-            },
             'viewport subjectoverview #deleteButton': {
                 click: this._onDelete
             },
