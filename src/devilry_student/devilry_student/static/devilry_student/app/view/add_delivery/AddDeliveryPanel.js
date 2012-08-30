@@ -6,7 +6,8 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     requires: [
         'Ext.util.Cookies',
         'devilry_extjsextras.PrimaryButton',
-        'devilry_student.view.add_delivery.ConfirmAfterDeadline'
+        'devilry_student.view.add_delivery.ConfirmAfterDeadline',
+        'devilry_student.view.add_delivery.NativeFileUpload'
     ],
 
     /**
@@ -91,14 +92,18 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                             'See <a href="https://github.com/devilry/devilry-django/issues/293" target="_blank">issue #293</a> for more info.',
                         '</p>'
                     ].join('')
+                //}, {
+                    //xtype: 'fileuploadfield',
+                    //name: 'file_to_add',
+                    //hideLabel: true,
+                    //allowBlank: true,
+                    //anchor: '100%', // anchor width by percentage
+                    //emptyText: gettext('Select file...'),
+                    //buttonText: gettext('Add new file')
                 }, {
-                    xtype: 'fileuploadfield',
+                    xtype: 'native_file_upload',
                     name: 'file_to_add',
-                    hideLabel: true,
-                    allowBlank: true,
-                    anchor: '100%', // anchor width by percentage
-                    emptyText: gettext('Select file...'),
-                    buttonText: gettext('Add new file')
+                    allowBlank: true
                 }, confirm_after_deadline],
                 dockedItems: [{
                     xtype: 'toolbar',

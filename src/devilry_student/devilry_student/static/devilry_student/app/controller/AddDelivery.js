@@ -24,6 +24,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
     }, {
         ref: 'deliverButton',
         selector: 'viewport add_delivery #deliverbutton'
+    }, {
+        ref: 'nativeFileUpload',
+        selector: 'viewport add_delivery native_file_upload'
     }],
 
     init: function() {
@@ -34,8 +37,8 @@ Ext.define('devilry_student.controller.AddDelivery', {
             'viewport add_delivery confirm_after_deadline checkbox': {
                 change: this._onConfirmAfterDeadlineChange
             },
-            'viewport add_delivery fileuploadfield': {
-                change: this._onChooseFile
+            'viewport add_delivery native_file_upload': {
+                change: this._onNativeChooseFile
             },
             'viewport add_delivery #cancelbutton': {
                 click: this._onCancel
@@ -51,8 +54,11 @@ Ext.define('devilry_student.controller.AddDelivery', {
         this.uploadedfiles = [];
     },
 
-    _onChooseFile: function() {
-        this._submitForm();
+
+    _onNativeChooseFile: function(field) {
+        if(!Ext.isEmpty(field.getValue())) {
+            this._submitForm();
+        }
     },
 
     _onCancel: function() {
@@ -140,6 +146,9 @@ Ext.define('devilry_student.controller.AddDelivery', {
 
     _onSubmitFormFailure: function(form, action) {
         this._setLoading(false);
+        this._setFormValues({
+            file_to_add: '' // Reset file input field to make "Finish delivery" not use the file with error
+        });
         var result = action.result;
         Ext.MessageBox.show({
             title: gettext('Error'),
