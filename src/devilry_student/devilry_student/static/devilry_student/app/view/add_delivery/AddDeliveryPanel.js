@@ -86,25 +86,6 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     name: 'csrfmiddlewaretoken',
                     value: Ext.util.Cookies.get('csrftoken')
                 }, {
-                    xtype: 'box',
-                    hidden: !this._isLinuxFirefox14(),
-                    cls: 'alert alert-warn',
-                    html: [
-                        '<h3>Known issue with your browser</h3>',
-                        '<p>',
-                            'The Firefox version running on UiO linux machines, has a problem with the file upload button below. You should be able to press the lower 3 or 4 pixels of the button. If not, please use another machine and operating system to make your deliveries while we fix this issue. ',
-                            'See <a href="https://github.com/devilry/devilry-django/issues/293" target="_blank">issue #293</a> for more info.',
-                        '</p>'
-                    ].join('')
-                //}, {
-                    //xtype: 'fileuploadfield',
-                    //name: 'file_to_add',
-                    //hideLabel: true,
-                    //allowBlank: true,
-                    //anchor: '100%', // anchor width by percentage
-                    //emptyText: gettext('Select file...'),
-                    //buttonText: gettext('Add new file')
-                }, {
                     xtype: 'native_file_upload',
                     name: 'file_to_add',
                     allowBlank: true
@@ -141,9 +122,5 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
             }]
         });
         this.callParent(arguments);
-    },
-
-    _isLinuxFirefox14: function() {
-        return Ext.is.Linux && Ext.firefoxVersion >= 10;
     }
 });
