@@ -9,6 +9,7 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
     ],
     renderTpl: [
         '<input id="{id}-fileInputEl" type="file" class="native-fileupload-filefield" ',
+            // NOTE: We put the onchange event handler here instead of in a delegate to make IE8 work
             'onchange="Ext.getCmp(\'{id}\').onFileChange(this)"/>'
     ],
     childEls: ['fileInputEl'],
