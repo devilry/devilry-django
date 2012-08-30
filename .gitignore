@@ -90,6 +90,7 @@ src/django_extjs4/
 
 # Generated ExtJS apps
 all-classes.js
+app.jsb3
 
 # example-productionenv/
 example-productionenv/bin/
