@@ -104,14 +104,13 @@ class AddDeliveryView(View):
                   'created_delivery': created_delivery,
                   'finished': finished,
                   'success': True} # NOTE: ``success`` is included for ExtJS compatibility
-        return self._create_response(result)
+        return result
 
-    def _create_response(self, result):
+    def render(self, response):
+        httpresponse = super(AddDeliveryView, self).render(response)
         if self.CONTENT['respond_with_html_contenttype']:
-            content = json.dumps(result)
-            return HttpResponse(content, mimetype='text/html', status=200)
-        else:
-            return result
+            httpresponse['content-type'] = 'text/html'
+        return httpresponse
 
     def _get_or_notfounderror(self, modelcls, id):
         try:
