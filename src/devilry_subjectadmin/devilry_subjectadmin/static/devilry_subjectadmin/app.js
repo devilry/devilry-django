@@ -13,6 +13,7 @@ Ext.application({
 
     requires: [
         'Ext.container.Viewport',
+        'Ext.layout.container.Border',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',

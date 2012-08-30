@@ -1,3 +1,7 @@
+Ext.require([
+    'Ext.layout.container.Column',
+    'Ext.form.field.Hidden'
+]);
 Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.add_delivery',
@@ -6,7 +10,8 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     requires: [
         'Ext.util.Cookies',
         'devilry_extjsextras.PrimaryButton',
-        'devilry_student.view.add_delivery.ConfirmAfterDeadline'
+        'devilry_student.view.add_delivery.ConfirmAfterDeadline',
+        'devilry_student.view.add_delivery.NativeFileUpload'
     ],
 
     /**
@@ -34,7 +39,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
         '</h2>',
         '<tpl if="added_filename">',
             '<p><strong>', gettext('{added_filename} uploaded successfully'), '</strong></p>',
-            '<p>', gettext('Click the <em>Submit {delivery_term}</em> button to deliver these {filenameCount} files, or choose <em>Add new file</em> to upload more files.'), '</p>',
+            '<p>', gettext('Click the <em>Submit {delivery_term}</em> button to deliver these {filenameCount} files, or upload more files.'), '</p>',
         '<tpl else>',
             '<p class="initial_text">', gettext('Upload files for your {delivery_term}. You can upload multiple files.'), '</p>',
         '</tpl>'
@@ -81,13 +86,9 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
                     name: 'csrfmiddlewaretoken',
                     value: Ext.util.Cookies.get('csrftoken')
                 }, {
-                    xtype: 'fileuploadfield',
+                    xtype: 'native_file_upload',
                     name: 'file_to_add',
-                    hideLabel: true,
-                    allowBlank: true,
-                    anchor: '100%', // anchor width by percentage
-                    emptyText: gettext('Select file...'),
-                    buttonText: gettext('Add new file')
+                    allowBlank: true
                 }, confirm_after_deadline],
                 dockedItems: [{
                     xtype: 'toolbar',

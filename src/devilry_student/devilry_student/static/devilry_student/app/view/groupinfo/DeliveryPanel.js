@@ -1,7 +1,6 @@
 Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.groupinfo_delivery',
-    //ui: 'lookslike-parawitheader-panel',
     requires: [
         'devilry_extjsextras.DatetimeHelpers'
     ],

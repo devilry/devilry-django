@@ -7,13 +7,12 @@ from django.db import IntegrityError
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
+from djangorestframework.response import ErrorResponse
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from .helpers import IsPublishedAndCandidate
-from .errors import NotFoundError
-from .errors import BadRequestError
 
 
 #: Signal used to signal that a delivery has been successfully completed
@@ -25,6 +24,7 @@ class AddDeliveryForm(forms.Form):
     delivery_id = forms.IntegerField(required=False)
     finish = forms.BooleanField(required=False)
     respond_with_html_contenttype = forms.BooleanField(required=False)
+    respond_with_200_status_on_error = forms.BooleanField(required=False)
 
 
 class AddDeliveryResource(FormResource):
@@ -83,7 +83,7 @@ class AddDeliveryView(View):
         self.group = self._get_or_notfounderror(AssignmentGroup, group_id)
 
         if not self.group.is_open:
-            raise BadRequestError('Can not add deliveries on closed groups.')
+            raise self._raise_error_response(400, 'Can not add deliveries on closed groups.')
 
         self.deadline = self.group.get_active_deadline()
         self.delivery, created_delivery = self._create_or_get_delivery()
@@ -104,20 +104,19 @@ class AddDeliveryView(View):
                   'created_delivery': created_delivery,
                   'finished': finished,
                   'success': True} # NOTE: ``success`` is included for ExtJS compatibility
-        return self._create_response(result)
+        return result
 
-    def _create_response(self, result):
+    def render(self, response):
+        httpresponse = super(AddDeliveryView, self).render(response)
         if self.CONTENT['respond_with_html_contenttype']:
-            content = json.dumps(result)
-            return HttpResponse(content, mimetype='text/html', status=200)
-        else:
-            return result
+            httpresponse['content-type'] = 'text/html'
+        return httpresponse
 
     def _get_or_notfounderror(self, modelcls, id):
         try:
             return modelcls.objects.get(id=id)
         except modelcls.DoesNotExist:
-            raise NotFoundError('No {0} with ID={1}'.format(modelcls.__name__, id))
+            self._raise_error_response(403, 'No {0} with ID={1}'.format(modelcls.__name__, id))
 
     def _finish(self):
         self.delivery.successful = True
@@ -139,7 +138,7 @@ class AddDeliveryView(View):
         else:
             delivery = self._get_or_notfounderror(Delivery, delivery_id)
             if delivery.successful:
-                raise BadRequestError('Can not change finished deliveries.')
+                raise self._raise_error_response(400, 'Can not change finished deliveries.')
             return delivery, False
 
     def _create_delivery(self):
@@ -154,7 +153,13 @@ class AddDeliveryView(View):
         try:
             self.delivery.add_file(filename, file_to_add.chunks())
         except IntegrityError, e:
-            raise BadRequestError(_('Filename must be unique'))
+            self._raise_error_response(400, _('Filename must be unique'))
         self.delivery.full_clean()
         self.delivery.save()
         return filename
+
+    def _raise_error_response(self, statuscode, message):
+        if self.CONTENT['respond_with_200_status_on_error']:
+            statuscode = 200 # This is required for IE
+        raise ErrorResponse(statuscode, {'detail': message,
+                                         'success': False})

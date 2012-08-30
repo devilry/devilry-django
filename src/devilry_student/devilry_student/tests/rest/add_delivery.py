@@ -136,3 +136,17 @@ class TestRestAddDeliveryView(TestCase):
         self.assertEquals(response['content-type'], 'text/html')
         self.assertEquals(content['success'], True)
         self.assertEquals(content['added_filename'], 'hello.txt')
+
+    def test_error_response_html_content_type(self):
+        fp = FakeFile('hello.txt', 'Hello world')
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 200)
+        deadline = self.group.get_active_deadline()
+        delivery = deadline.deliveries.all()[0]
+
+        response, content = self._postas('student1', {'delivery_id': delivery.id,
+                                                      'file_to_add': fp,
+                                                      'respond_with_html_contenttype': True})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response['content-type'], 'text/html')
+        self.assertEquals(content['detail'], 'Filename must be unique')

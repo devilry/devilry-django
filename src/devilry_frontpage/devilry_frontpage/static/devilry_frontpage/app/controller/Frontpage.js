@@ -7,20 +7,20 @@ Ext.define('devilry_frontpage.controller.Frontpage', {
     ],
 
     views: [
-        'frontpage.Overview'
+        'FrontpageOverview'
     ],
 
     refs: [{
-        ref: 'overview',
-        selector: 'viewport overview'
+        ref: 'frontpage_overview',
+        selector: 'viewport frontpage_overview'
     }, {
         ref: 'roles',
-        selector: 'viewport overview devilryheader_roles'
+        selector: 'viewport frontpage_overview devilryheader_roles'
     }],
 
     init: function() {
         this.control({
-            'viewport overview devilryheader_roles': {
+            'viewport frontpage_overview devilryheader_roles': {
                 render: this._onRenderRoles
             }
         });
