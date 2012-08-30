@@ -95,7 +95,8 @@ Ext.define('devilry_student.controller.AddDelivery', {
                 url: url,
                 method: 'post',
                 params: {
-                    respond_with_html_contenttype: true
+                    respond_with_html_contenttype: true,
+                    respond_with_200_status_on_error: Ext.isIE // NOTE: IE does not seem to handle HTTP status codes other than 200 (at least not 8 or 9). Since ExtJS checks the "success" attribute of the response, using 200 status codes works
                 },
                 scope: this,
                 success: this._onSubmitFormSuccess,
