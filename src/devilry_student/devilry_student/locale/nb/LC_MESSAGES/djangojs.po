@@ -174,7 +174,6 @@ msgid "{added_filename} uploaded successfully"
 msgstr "{added_filename} ble lastet opp uten feil"
 
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:42
-#, fuzzy
 msgid ""
 "Click the <em>Submit {delivery_term}</em> button to deliver these "
 "{filenameCount} files, or upload more files."
