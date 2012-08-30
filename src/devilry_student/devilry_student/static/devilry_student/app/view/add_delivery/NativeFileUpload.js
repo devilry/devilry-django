@@ -8,18 +8,13 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
         'Ext.form.field.Field'
     ],
     renderTpl: [
-        '<input id="{id}-fileInputEl" type="file" class="native-fileupload-filefield"/>',
+        '<input id="{id}-fileInputEl" type="file" class="native-fileupload-filefield" ',
+            'onchange="Ext.getCmp(\'{id}\').onFileChange(this)"/>'
     ],
     childEls: ['fileInputEl'],
 
     initComponent: function() {
-        this.addListener({
-            element: 'el',
-            delegate: '.native-fileupload-filefield',
-            scope: this,
-            change: this._onFileChange
-        });
-
+        
         this.callParent(arguments);
         this.on('render', this._onRender, this);
     },
@@ -36,6 +31,13 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
 
     isFileUpload: function() {
         return true;
+    },
+
+    onFileChange: function(domelement) {
+        var element = Ext.dom.Element(domelement);
+        this.lastValue = null; // force change event to get fired even if the user selects a file with the same name                
+        this.value = element.value;
+        this.checkChange();
     },
 
     extractFileInput: function() {
