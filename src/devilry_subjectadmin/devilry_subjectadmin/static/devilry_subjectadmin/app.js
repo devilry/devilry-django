@@ -14,6 +14,7 @@ Ext.application({
     requires: [
         'Ext.container.Viewport',
         'Ext.layout.container.Border',
+        'Ext.layout.container.Column',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
