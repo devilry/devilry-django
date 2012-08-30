@@ -1,3 +1,7 @@
+Ext.require([
+    'Ext.layout.container.Column',
+    'Ext.form.field.Hidden'
+]);
 Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.add_delivery',

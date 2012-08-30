@@ -12,6 +12,17 @@ Ext.application({
 
     requires: [
         'Ext.container.Viewport',
+        'Ext.layout.container.Border',
+        'Ext.layout.container.Column',
+        'Ext.form.Panel',
+        'Ext.form.Basic',
+        'Ext.form.action.Load',
+        'Ext.form.action.Action',
+        'Ext.form.action.Submit',
+        'Ext.form.field.Hidden',
+        'Ext.resizer.BorderSplitter',
+        'Ext.resizer.Splitter',
+        'Ext.resizer.SplitterTracker',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_header.Header',

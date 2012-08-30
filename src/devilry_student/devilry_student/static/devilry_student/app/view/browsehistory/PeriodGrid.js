@@ -1,4 +1,9 @@
 // NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
+
+Ext.require([
+    'Ext.grid.feature.Feature',
+    'Ext.grid.feature.Grouping'
+]);
 Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.browsehistory_periodgrid',
