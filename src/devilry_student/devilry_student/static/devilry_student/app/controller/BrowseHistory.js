@@ -1,8 +1,10 @@
+Ext.require([
+    'Ext.window.MessageBox'
+]);
 Ext.define('devilry_student.controller.BrowseHistory', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'Ext.window.MessageBox',
         'devilry_student.view.browsehistory.BrowsePeriods'
     ],
 

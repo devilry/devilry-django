@@ -4,8 +4,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
     alias: 'widget.student-browseperiods',
     requires: [
         'devilry_student.view.browsehistory.PeriodGrid',
-        'devilry_student.view.browsehistory.AssignmentGrid',
-        'devilry.statistics.OverviewOfSingleStudent'
+        'devilry_student.view.browsehistory.AssignmentGrid'
     ],
 
     /**

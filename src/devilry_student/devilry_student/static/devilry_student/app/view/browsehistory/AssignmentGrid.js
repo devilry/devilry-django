@@ -1,11 +1,11 @@
 // NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
+
+Ext.syncRequire([
+    'devilry.apps.student.simplified.SimplifiedAssignmentGroup'
+]);
 Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.browsehistory_assignmentgrid',
-
-    requires: [
-        'devilry.apps.student.simplified.SimplifiedAssignmentGroup'
-    ],
 
     /**
      * @cfg {Function} [urlCreateFn]

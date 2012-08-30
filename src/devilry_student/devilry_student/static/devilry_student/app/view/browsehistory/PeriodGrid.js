@@ -1,18 +1,17 @@
 // NOTE: This was ported from the old devilry.apps.student, so it does not follow the MVC architecture
 
+Ext.syncRequire([
+    'devilry.apps.student.simplified.SimplifiedPeriod',
+    'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
+]);
 Ext.require([
+    'Ext.window.MessageBox',
     'Ext.grid.feature.Feature',
-    'Ext.grid.feature.Grouping'
+    'Ext.grid.feature.Grouping',
 ]);
 Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.browsehistory_periodgrid',
-
-    requires: [
-        'Ext.window.MessageBox',
-        'devilry.apps.student.simplified.SimplifiedPeriod',
-        'devilry.apps.student.simplified.SimplifiedRelatedStudentKeyValue'
-    ],
 
     col1Tpl: [
         '<div><strong>{period.parentnode__long_name}</strong></div>',
