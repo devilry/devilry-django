@@ -156,19 +156,5 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
             },
             failure: onFailure
         });
-    },
-
-    /**
-     * Change the preferred size of the window. Useful when the default size is
-     * suboptimal for an editor. Note that the window may still be resized
-     * smaller by the user.
-     *
-     * @param width New width.
-     * @param height Ne height.
-     * */
-    changeSize: function(width, height) {
-        this.setWidth(width);
-        this.setHeight(height);
-        this.setSizeAndPosition();
     }
 });

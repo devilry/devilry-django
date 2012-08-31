@@ -11,7 +11,6 @@
      *      current assignment.
      */
     initializeEditor: function(config) {
-        this.getMainWin().changeSize(400, 200); // Change window size to a more appropritate size for so little content.
 
         // Load configuration, and fall back on defaults
         var configobj = {
