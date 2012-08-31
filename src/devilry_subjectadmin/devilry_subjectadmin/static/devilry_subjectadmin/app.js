@@ -31,7 +31,9 @@ Ext.application({
         'devilry_extjsextras.AlertMessage',
         'devilry_header.Header',
         'devilry_header.Breadcrumbs',
-        'devilry_subjectadmin.utils.UrlLookup'
+        'devilry_subjectadmin.utils.UrlLookup',
+        'devilry_extjsextras.form.DateField',
+        'devilry_extjsextras.form.TimeField'
     ],
 
     controllers: [
