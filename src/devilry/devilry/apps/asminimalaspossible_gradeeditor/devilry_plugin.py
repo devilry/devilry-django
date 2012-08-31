@@ -14,7 +14,7 @@ class AsMinimalAsPossible(JsonRegistryItem):
     """
     gradeeditorid = 'asminimalaspossible'
     title = 'Minimal'
-    description = 'A minimal grade editor for testing. Allows examiners to select if delivery is approved or not approved.'
+    description = '<p>A minimal grade editor for testing. Allows examiners to select if delivery is approved or not approved.</p>'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/asminimalaspossible_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/asminimalaspossible_gradeeditor/drafteditor.js'
 

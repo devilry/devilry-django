@@ -14,7 +14,7 @@ class Approved(JsonRegistryItem):
     """
     gradeeditorid = 'approved'
     title = 'Approved/not approved'
-    description = 'A simple gradeeditor that allows examiners to select if delivery is approved or not approved, and give a feedback text.'
+    description = '<p>A simple gradeeditor that allows examiners to select if delivery is approved or not approved, and give a feedback text.</p>'
     config_editor_url = None
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/approved_gradeeditor/drafteditor.js'
 

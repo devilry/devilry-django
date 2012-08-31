@@ -14,7 +14,7 @@ class Autograde(JsonRegistryItem):
     """
     gradeeditorid = 'autograde'
     title = 'Automatic grading'
-    description = 'You define a range of grades, (I.E.: <em>F-A</em> or <em>0-6</em>), and the points required to get each grade.</p><p>Examiners only fill in the number of points and an optional feedback text. The grade is calculated from your definition.</p>'
+    description = '<p>You define a range of grades, (I.E.: <em>F-A</em> or <em>0-6</em>), and the points required to get each grade. Examiners only fill in the number of points and an optional feedback text. The grade is calculated from your definition.</p>'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/autograde_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/autograde_gradeeditor/drafteditor.js'
 

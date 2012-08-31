@@ -13,7 +13,7 @@ class Manual(JsonRegistryItem):
     """
     gradeeditorid = 'gradeform'
     title = 'Gradeform Editor'
-    description = 'A gradeeditor where administrators can define their own form for grading and feedback.'
+    description = '<p>A gradeeditor where administrators can define their own form for grading and feedback.</p>'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/gradeform_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/gradeform_gradeeditor/drafteditor.js'
 
