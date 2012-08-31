@@ -4,12 +4,13 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     alias: 'widget.administrator_assignmentprettyview',
     requires: [
         'devilry.administrator.studentsmanager.StudentsManager',
+        'devilry.extjshelpers.AutoSizedWindow',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.MaximizableWindow',
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.RestfulRegistryItem',
-        'devilry.gradeeditors.ConfigEditorWindow',
+        'devilry.gradeeditors.ConfigEditorWidget',
         'devilry.gradeeditors.GradeEditorSelectForm',
         'devilry.extjshelpers.NotificationManager'
     ],
@@ -332,17 +333,25 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onConfigureGradeEditorBtn: function(button) {
-        Ext.widget('gradeconfigeditor', {
-            registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
-            gradeEditorConfigRecord: this.gradeeditorconfig_recordcontainer.record,
-            listeners: {
-                scope: this,
-                saveSuccess: function(win, configrecord) {
-                    this.gradeeditorconfig_recordcontainer.setRecord(configrecord);
-                    win.close();
-                    window.location.href = window.location.href;
+        Ext.widget('devilry_autosizedwindow', {
+            width: 2000, // NOTE: this is autosized to fit the viewport.
+            height: 1200,
+            title: 'Edit grade editor config',
+            layout: 'fit',
+            modal: true,
+            items: [{
+                xtype: 'gradeconfigeditor',
+                registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
+                gradeEditorConfigRecord: this.gradeeditorconfig_recordcontainer.record,
+                listeners: {
+                    scope: this,
+                    saveSuccess: function(win, configrecord) {
+                        this.gradeeditorconfig_recordcontainer.setRecord(configrecord);
+                        win.close();
+                        window.location.href = window.location.href;
+                    }
                 }
-            }
+            }]
         }).show();
     },
 
