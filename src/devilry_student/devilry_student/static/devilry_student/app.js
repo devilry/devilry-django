@@ -1,3 +1,12 @@
+Ext.Loader.setConfig({
+    enabled: true,
+    paths: {
+        'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
+    }
+});
+Ext.syncRequire('devilry.extjshelpers.RestProxy');
+
+
 Ext.application({
     name: 'devilry_student',
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_student/app',
