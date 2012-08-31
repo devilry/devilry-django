@@ -95,13 +95,25 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         jsmodelfields = '\n    '.join(json.dumps(modelfields, indent=4).split('\n'))
     else:
         jsmodelfields = json.dumps(modelfields)
-    return """Ext.syncRequire('devilry.extjshelpers.RestProxy');
+    return """
+/*******************************************************************************
+ * NOTE: You will need to add the following before your application code:
+ *
+ *    Ext.Loader.setConfig({{
+ *        enabled: true,
+ *        paths: {{
+ *            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
+ *        }}
+ *    }});
+ *    Ext.syncRequire('devilry.extjshelpers.RestProxy');
+ ******************************************************************************/
 Ext.define('{modelname}', {{
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
     fields: {jsmodelfields},
     idProperty: '{idprop}',
-    proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
+    proxy: {{
+        type: 'devilryrestproxy',
         url: '{resturl}',
         headers: {{
             'X_DEVILRY_USE_EXTJS': true
@@ -118,7 +130,7 @@ Ext.define('{modelname}', {{
         writer: {{
             type: 'json'
         }}
-    }})
+    }}
 }})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
               jsmodelfields = jsmodelfields,
               idprop = modelmeta.pk.name,
