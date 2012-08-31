@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     ],
 
     requires: [
-        'devilry.gradeeditors.ConfigEditorWidget'
+        'devilry.gradeeditors.ConfigEditorWidget',
+        'devilry_extjsextras.SaveButton'
     ],
 
     views: [
@@ -28,6 +29,12 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     }, {
         ref: 'globalAlertmessagelist',
         selector: 'gradeeditoroverview #globalAlertmessagelist'
+    }, {
+        ref: 'about',
+        selector: 'gradeeditoroverview #about'
+    }, {
+        ref: 'configContainer',
+        selector: 'gradeeditoroverview #configContainer'
     }, {
         ref: 'gradeConfigEditor',
         selector: 'gradeeditoroverview gradeconfigeditor'
@@ -49,7 +56,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     },
 
     _setBreadcrumb: function(subviewtext) {
-        var title = gettext('Grade editor');
+        var title = gettext('Edit grade editor');
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], title);
     },
     onLoadAssignmentSuccess: function(assignmentRecord) {
@@ -65,28 +72,96 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         this.getOverview().setLoading(false);
         this.gradeEditorConfigRecord = gradeEditorConfigRecord;
         this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
+        console.log(this.gradeEditorConfigRecord.data);
+        console.log(this.gradeEditorRegistryItemRecord.data);
+
+        this.getAbout().update({
+            registryitem: this.gradeEditorRegistryItemRecord.data
+        });
         if(this.gradeEditorRegistryItemRecord.isConfigurable()) {
             this._addConfigWidget();
         }
-        console.log(this.gradeEditorConfigRecord.data);
-        console.log(this.gradeEditorRegistryItemRecord.data);
+    },
+
+    _isMissingGradeEditorConfig: function() {
+        var config = this.gradeEditorConfigRecord.get('config');
+        return Ext.isEmpty(config) && this._isConfigurable();
     },
 
     _addConfigWidget: function() {
-        var currentConfigEditor = this.getGradeConfigEditor();
-        if(currentConfigEditor) {
-            currentConfigEditor.remove();
-        }
-        this.getOverview().add({
-            xtype: 'gradeconfigeditor',
-            registryitem: this.gradeEditorRegistryItemRecord.data,
-            gradeEditorConfigRecord: this.gradeEditorConfigRecord,
-            listeners: {
-                scope: this,
-                saveSuccess: function(configeditor, gradeEditorConfigRecord) {
-                    console.log('Saved', gradeEditorConfigRecord);
-                }
+        this.getConfigContainer().removeAll();
+        this.getConfigContainer().add([{
+            xtype: 'box',
+            cls: 'bootstrap',
+            tpl: [
+                '<h2>',
+                    gettext('Configure grade editor'),
+                '</h2>',
+                '<tpl if="isMissingConfig">',
+                    '<div class="alert alert-error">',
+                            gettext('This grade editor requires configuration. Examiners can not provide feedback to students until you have provided configuration. Use the form below if to configure the grade editor.'),
+                    '</div>',
+                '<tpl else>',
+                    '<p><small>',
+                        gettext('This grade editor requires configuration, and configuration has already been provided by you or another administrator. Use the form below if you wish to change the configuration.'),
+                    '</small></p>',
+                '</tpl>',
+                '</div>'
+            ],
+            data: {
+                isMissingConfig: this._isMissingGradeEditorConfig()
             }
-        });
+        }, {
+            xtype: 'panel',
+            //border: false,
+            bodyPadding: 10,
+            items: [{
+                xtype: 'gradeconfigeditor',
+                registryitem: this.gradeEditorRegistryItemRecord.data,
+                gradeEditorConfigRecord: this.gradeEditorConfigRecord,
+                listeners: {
+                    scope: this,
+                    saveSuccess: this._onSaveConfigSuccess,
+                    saveFailed: this._onSaveConfigFailure
+                }
+            }],
+            dockedItems: [{
+                dock: 'bottom',
+                xtype: 'toolbar',
+                ui: 'footer',
+                items: ['->', {
+                    xtype: 'button',
+                    text: gettext('Save and continue editing'),
+                    listeners: {
+                        scope: this,
+                        click: this._onSaveConfigAndContinueEditing
+                    }
+                }, {
+                    xtype: 'savebutton',
+                    listeners: {
+                        scope: this,
+                        click: this._onSaveConfig
+                    }
+                }]
+            }]
+        }]);
+    },
+
+    _onSaveConfigAndContinueEditing: function() {
+        this._continueEditAfterSave = true;
+        this._onSaveConfig();
+    },
+    _onSaveConfig: function() {
+        this.getConfigContainer().setLoading(gettext('Saving') + ' ...');
+        this.getGradeConfigEditor().triggerSave();
+    },
+
+    _onSaveConfigSuccess: function(configeditor, gradeEditorConfigRecord) {
+        this.getConfigContainer().setLoading(false);
+        console.log('Saved', gradeEditorConfigRecord);
+    },
+    _onSaveConfigFailure: function(configeditor, gradeEditorConfigRecord) {
+        this.getConfigContainer().setLoading(false);
+        // NOTE: Showing errors is handled by the ConfigEditorWidget itself.
     }
 });
