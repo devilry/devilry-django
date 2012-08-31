@@ -1,6 +1,5 @@
 Ext.define('devilry.gradeeditors.GradeEditorModel', {
     extend: 'Ext.data.Model',
-    requires: ['devilry.extjshelpers.RestProxy'],
 
     fields: [{
         name: 'gradeeditorid',
@@ -15,12 +14,13 @@ Ext.define('devilry.gradeeditors.GradeEditorModel', {
 
     idProperty: 'gradeeditorid',
 
-    proxy: Ext.create('devilry.extjshelpers.RestProxy', {
+    proxy: {
+        type: 'devilryrestproxy',
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/gradeeditors/restfulgradeeditorconfig/',
         reader: {
             type: 'json',
             root: 'items',
             totalProperty: 'total'
         }
-    })
+    }
 });
