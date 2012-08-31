@@ -13,6 +13,11 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Edit' ,{
         cls: 'bootstrap',
         tpl: [
             '<tpl if="registryitem">',
+                '<p>',
+                    '<strong><a href="{assignmenthash}">',
+                        gettext('Return to {assignmentname}'),
+                    '</a></strong>',
+                '</p>',
                 '<h2>',
                     gettext('Current grade editor'),
                     ': {registryitem.title}',

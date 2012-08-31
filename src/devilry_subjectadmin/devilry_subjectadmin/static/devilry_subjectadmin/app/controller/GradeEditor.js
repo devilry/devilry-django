@@ -96,7 +96,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         this.getAbout().addListener({
             scope: this,
             element: 'el',
-            delegate: 'a',
+            delegate: 'a.change_gradeeditor_link',
             click: function(e) {
                 this._onChangeGradeEditor();
                 e.preventDefault();
@@ -172,7 +172,10 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
 
     _setupAboutBox: function() {
         this.getAbout().update({
-            registryitem: this.gradeEditorRegistryItemRecord.data
+            registryitem: this.gradeEditorRegistryItemRecord.data,
+            assignmentname: this.assignmentRecord.get('short_name'),
+            assignmenthash: devilry_subjectadmin.utils.UrlLookup.assignmentOverview(
+                this.assignmentRecord.get('id'))
         });
     },
 
