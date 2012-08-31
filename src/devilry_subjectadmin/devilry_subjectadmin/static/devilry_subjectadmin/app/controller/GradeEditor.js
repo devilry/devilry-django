@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
 
     requires: [
         'devilry.gradeeditors.ConfigEditorWidget',
-        'devilry_extjsextras.SaveButton'
+        'devilry_extjsextras.SaveButton',
+        'devilry_subjectadmin.utils.UrlLookup'
     ],
 
     views: [
@@ -42,15 +43,31 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
 
     init: function() {
         this.control({
-            'viewport gradeeditoroverview #globalAlertmessagelist': {
+            'viewport gradeeditoroverview #about': {
                 render: this._onRender
             }
         });
     },
 
+    _setLoading: function() {
+        this.getOverview().setLoading(gettext('Loading') + ' ...');
+    },
+    _setNotLoading: function() {
+        this.getOverview().setLoading(false);
+    },
+
     _onRender: function() {
         this.setLoadingBreadcrumb();
-        this.getOverview().setLoading(gettext('Loading') + ' ...');
+        this._setLoading();
+        this.getAbout().addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a',
+            click: function(e) {
+                this._onChangeGradeEditor();
+                e.preventDefault();
+            }
+        });
         this.assignment_id = this.getOverview().assignment_id;
         this.loadAssignment(this.assignment_id);
     },
@@ -62,25 +79,42 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     onLoadAssignmentSuccess: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
         this._setBreadcrumb();
-        this.loadGradeEditorRecords(assignmentRecord.get('id'));
+        this._setNotLoading();
+        this._loadAllExceptAssignment();
     },
     onLoadAssignmentFailure: function(operation) {
+        this._setNotLoading();
         this.onLoadFailure(operation);
     },
 
+    _loadAllExceptAssignment: function() {
+        this._setLoading();
+        this.loadGradeEditorRecords(this.assignmentRecord.get('id'));
+    },
+
     onLoadGradeEditorSuccess: function(gradeEditorConfigRecord, gradeEditorRegistryItemRecord) {
-        this.getOverview().setLoading(false);
+        this._setNotLoading();
         this.gradeEditorConfigRecord = gradeEditorConfigRecord;
         this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-        console.log(this.gradeEditorConfigRecord.data);
-        console.log(this.gradeEditorRegistryItemRecord.data);
 
-        this.getAbout().update({
-            registryitem: this.gradeEditorRegistryItemRecord.data
-        });
+        this._setupAboutBox();
         if(this.gradeEditorRegistryItemRecord.isConfigurable()) {
             this._addConfigWidget();
         }
+    },
+    onLoadGradeEditorConfigFailure: function(operation) {
+        this._setNotLoading();
+        console.error(operation);
+    },
+    onLoadGradeEditorRegistryItemFailure: function(operation) {
+        this._setNotLoading();
+        console.error(operation);
+    },
+
+    _setupAboutBox: function() {
+        this.getAbout().update({
+            registryitem: this.gradeEditorRegistryItemRecord.data
+        });
     },
 
     _isMissingGradeEditorConfig: function() {
@@ -158,10 +192,29 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
 
     _onSaveConfigSuccess: function(configeditor, gradeEditorConfigRecord) {
         this.getConfigContainer().setLoading(false);
-        console.log('Saved', gradeEditorConfigRecord);
+        if(this._continueEditAfterSave) {
+            this._loadAllExceptAssignment();
+        } else {
+            this.application.route.navigate(
+                devilry_subjectadmin.utils.UrlLookup.assignmentOverview(
+                    this.assignmentRecord.get('id')));
+        }
+        this._continueEditAfterSave = undefined;
     },
     _onSaveConfigFailure: function(configeditor, gradeEditorConfigRecord) {
         this.getConfigContainer().setLoading(false);
         // NOTE: Showing errors is handled by the ConfigEditorWidget itself.
-    }
+    },
+
+
+
+    //
+    //
+    // Change grade editor
+    //
+    //
+
+    _onChangeGradeEditor: function() {
+        console.log('change');
+    },
 });
