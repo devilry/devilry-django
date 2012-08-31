@@ -60,13 +60,14 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                         '{title}',
                         '&nbsp;',
                         '&nbsp;',
-                        '<a class="edit_link" href="#">(',
+                        '<a class="edit_link" href="{editurl}">(',
                             this.buttonText,
                         ')</a>',
                     '</h4>'
                 ],
                 data: {
-                    title: this.title
+                    title: this.title,
+                    editurl: '#'
                 },
                 listeners: {
                     scope: this,
@@ -109,9 +110,13 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
         });
     },
 
-    updateTitle: function(title) {
+    updateTitle: function(title, editurl) {
+        if(typeof editurl === 'undefined') {
+            editurl = '#';
+        }
         this.down('#title').update({
-            title: title
+            title: title,
+            editurl: editurl
         });
     }
 });
