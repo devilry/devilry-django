@@ -24,6 +24,10 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         'GradeEditorRegistryItem'
     ],
 
+    stores: [
+        'GradeEditors'
+    ],
+
     refs: [{
         ref: 'overview',
         selector: 'gradeeditoroverview'
@@ -45,12 +49,21 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     }, {
         ref: 'gradeEditorChange',
         selector: 'gradeeditoroverview gradeeditorchange'
+    }, {
+        ref: 'gradeEditorChooseGrid',
+        selector: 'gradeeditoroverview gradeeditorchange gradeeditorchoosegrid'
     }],
 
     init: function() {
         this.control({
             'viewport gradeeditoroverview #about': {
                 render: this._onRender
+            },
+            'viewport gradeeditoroverview gradeeditorchange savebutton': {
+                click: this._onSaveGradeEditorSelection
+            },
+            'viewport gradeeditoroverview gradeeditorchange #cancelButton': {
+                click: this._onCancelGradeEditorSelection
             }
         });
     },
@@ -157,7 +170,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
 
     _isMissingGradeEditorConfig: function() {
         var config = this.gradeEditorConfigRecord.get('config');
-        return Ext.isEmpty(config) && this._isConfigurable();
+        return Ext.isEmpty(config) && this.gradeEditorRegistryItemRecord.isConfigurable();
     },
 
     _addConfigWidget: function() {
@@ -170,8 +183,8 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
                     gettext('Configure grade editor'),
                 '</h2>',
                 '<tpl if="isMissingConfig">',
-                    '<div class="alert alert-error">',
-                            gettext('This grade editor requires configuration. Examiners can not provide feedback to students until you have provided configuration. Use the form below if to configure the grade editor.'),
+                    '<div class="alert alert-warning">',
+                            gettext('This grade editor requires configuration. Examiners can not provide feedback to students until you have provided configuration. Use the form below to configure the grade editor.'),
                     '</div>',
                 '<tpl else>',
                     '<p><small>',
@@ -262,5 +275,59 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         this.getGradeEditorEdit().hide();
         this.getGradeEditorChange().show();
         this._setBreadcrumb(true);
+        this.getGradeEditorsStore().load({
+            scope: this,
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this._onLoadGradeEditorsStoreSuccess(records);
+                } else {
+                    this._onLoadGradeEditorsStoreFailure(operation);
+                }
+            }
+        });
+    },
+    _onLoadGradeEditorsStoreSuccess: function(records) {
+        var store = this.getGradeEditorsStore();
+        store.sort('title', 'ASC');
+        var index = store.findExact('gradeeditorid', this.gradeEditorConfigRecord.get('gradeeditorid'));
+        if(index > -1) {
+            var selModel = this.getGradeEditorChooseGrid().getSelectionModel();
+            var record = store.getAt(index);
+            selModel.select([record]);
+        }
+    },
+    _onLoadGradeEditorsStoreFailure: function(operation) {
+        console.error(operation);
+    },
+
+    _onSaveGradeEditorSelection: function() {
+        var selModel = this.getGradeEditorChooseGrid().getSelectionModel();
+        var selected = selModel.getSelection()[0];
+        this.getGradeEditorChange().setLoading(gettext('Saving') + ' ...');
+        var gradeeditorid = selected.get('gradeeditorid');
+        this.gradeEditorConfigRecord.set('gradeeditorid', gradeeditorid);
+        this.gradeEditorConfigRecord.set('config', '');
+        this.gradeEditorConfigRecord.save({
+            scope: this,
+            success: this._onSaveGradeEditorConfigSuccess,
+            failure: this._onSaveGradeEditorConfigFailure
+        });
+    },
+    _onSaveGradeEditorConfigSuccess: function(gradeEditorConfigRecord) {
+        this.getGradeEditorChange().setLoading(false);
+        this._navigateToEditView();
+    },
+    _onSaveGradeEditorConfigFailure: function(unused, operation) {
+        console.error(operation);
+    },
+
+    _onCancelGradeEditorSelection: function() {
+        this._navigateToEditView();
+    },
+
+    _navigateToEditView: function() {
+        this.application.route.navigate(
+            devilry_subjectadmin.utils.UrlLookup.editGradeEditor(
+                this.assignmentRecord.get('id')));
     }
 });
