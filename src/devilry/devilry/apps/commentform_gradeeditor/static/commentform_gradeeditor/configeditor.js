@@ -1,5 +1,4 @@
 {
-    padding: 20,
     border: false,
     frame: false,
     xtype: 'form', // Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.
