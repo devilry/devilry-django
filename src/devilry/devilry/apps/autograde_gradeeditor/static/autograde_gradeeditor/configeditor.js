@@ -103,7 +103,7 @@
      * Get the grade config editor main window.
      */
     getMainWin: function() {
-        return this.up('gradeconfigeditormainwin');
+        return this.up('gradeconfigeditor');
     },
 
     parseGradeValue: function(gradestring) {
