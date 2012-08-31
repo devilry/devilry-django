@@ -93,7 +93,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
         this.gradeEditorPanel.margin = '0 40 0 0';
         if(this._getConfigEditor().help) {
             var helphtml = this._getConfigEditor().help;
-            this.gradeEditorPanel.columnWidth = 0.7;
+            this.gradeEditorPanel.columnWidth = 0.6;
             this.add({
                 xtype: 'container',
                 layout: 'column',
@@ -102,7 +102,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
                     cls: this.helpCls,
                     padding: 0,
                     html: helphtml,
-                    columnWidth: 0.3
+                    columnWidth: 0.4
                 }]
             });
         } else {

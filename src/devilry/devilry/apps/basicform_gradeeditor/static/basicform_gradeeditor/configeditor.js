@@ -72,6 +72,7 @@
         this.formArea = Ext.widget('textareafield', {
             fieldLabel: 'Specify fields',
             flex: 1,
+            height: 300,
             emptyText: 'See help for examples'
         });
         this.add(this.formArea);

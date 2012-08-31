@@ -68,6 +68,7 @@
         this.gradeField = Ext.widget('textareafield', {
             fieldLabel: 'Grades',
             flex: 1,
+            height: 300,
             emptyText: configobj.grades
         });
         this.add(this.gradeField);
