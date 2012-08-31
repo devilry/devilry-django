@@ -52,12 +52,27 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     }, {
         ref: 'gradeEditorChooseGrid',
         selector: 'gradeeditoroverview gradeeditorchange gradeeditorchoosegrid'
+    }, {
+        ref: 'clearConfigConfirmContainer',
+        selector: 'viewport gradeeditoroverview gradeeditorchange #clearConfigConfirmContainer'
+    }, {
+        ref: 'clearConfigConfirmCheckbox',
+        selector: 'viewport gradeeditoroverview gradeeditorchange #clearConfigConfirmCheckbox'
+    }, {
+        ref: 'gradeEditorChangeSaveButton',
+        selector: 'gradeeditoroverview gradeeditorchange savebutton'
     }],
 
     init: function() {
         this.control({
             'viewport gradeeditoroverview #about': {
                 render: this._onRender
+            },
+            'viewport gradeeditoroverview gradeeditorchange gradeeditorchoosegrid': {
+                selectionchange: this._onGradeEditorSelectionChange
+            },
+            'viewport gradeeditoroverview gradeeditorchange #clearConfigConfirmCheckbox': {
+                change: this._onGradeEditorSelectionChange
             },
             'viewport gradeeditoroverview gradeeditorchange savebutton': {
                 click: this._onSaveGradeEditorSelection
@@ -300,7 +315,34 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         console.error(operation);
     },
 
+    _onGradeEditorSelectionChange: function() {
+        var selModel = this.getGradeEditorChooseGrid().getSelectionModel();
+        var newValue = selModel.getSelection()[0].get('gradeeditorid');
+        var currentValue = this.gradeEditorConfigRecord.get('gradeeditorid');
+        var saveButton = this.getGradeEditorChangeSaveButton();
+        if(newValue !== currentValue) {
+            var isConfigurable = this.gradeEditorRegistryItemRecord.isConfigurable();
+            var hasConfig = this.gradeEditorConfigRecord.hasConfig();
+            if(isConfigurable && hasConfig) {
+                var clearConfirmed = this.getClearConfigConfirmCheckbox().getValue();
+                if(isConfigurable && hasConfig && clearConfirmed) {
+                    saveButton.enable();
+                    return;
+                } else {
+                    this.getClearConfigConfirmContainer().show();
+                }
+            } else {
+                saveButton.enable();
+                return;
+            }
+        }
+        saveButton.disable();
+    },
+
     _onSaveGradeEditorSelection: function() {
+        this._saveGradeEditorSelection();
+    },
+    _saveGradeEditorSelection: function() {
         var selModel = this.getGradeEditorChooseGrid().getSelectionModel();
         var selected = selModel.getSelection()[0];
         this.getGradeEditorChange().setLoading(gettext('Saving') + ' ...');

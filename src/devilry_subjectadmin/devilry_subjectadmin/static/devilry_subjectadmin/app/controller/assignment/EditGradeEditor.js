@@ -158,8 +158,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     },
 
     _isMissingGradeEditorConfig: function() {
-        var config = this.gradeEditorConfigRecord.get('config');
-        return Ext.isEmpty(config) && this._isConfigurable();
+        return this.gradeEditorConfigRecord.hasConfig() && this._isConfigurable();
     },
 
     _updateWidget: function() {
