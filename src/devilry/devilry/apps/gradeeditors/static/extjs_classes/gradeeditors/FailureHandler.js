@@ -1,6 +1,6 @@
 Ext.define('devilry.gradeeditors.FailureHandler', {
     statics: {
-        onFailure: function(records, operation) {
+        onFailure: function(operation) {
             var title = 'Failed to save!';
             var msg = 'Please try again';
             var icon = Ext.Msg.ERROR;
