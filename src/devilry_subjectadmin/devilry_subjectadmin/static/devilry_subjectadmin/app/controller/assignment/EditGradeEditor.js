@@ -1,8 +1,12 @@
 Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_subjectadmin.utils.LoadGradeEditorMixin'
+    ],
+
     requires: [
-        'devilry.gradeeditors.ConfigEditorWindow',
+        'devilry.gradeeditors.ConfigEditorWidget',
         'Ext.window.MessageBox'
     ],
 
@@ -56,56 +60,16 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         });
     },
 
-    _onLoadAssignment: function(assignmentRecord, onLoadAction) {
+    _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this.onLoadAction = onLoadAction;
-        this._loadGradeEditorConfig();
+        this.loadGradeEditorRecords(assignmentRecord.get('id'));
     },
 
-    //
-    //
-    // Load the editor and the registry item
-    //
-    //
-
-    _loadGradeEditorConfig: function() {
-        this.getGradeEditorConfigModel().load(this.assignmentRecord.get('id'), {
-            scope: this,
-            success: this._onLoadGradeEditorConfigSuccess,
-            failure: function() {
-                console.log('failed');
-            }
-        });
-    },
-
-    _onLoadGradeEditorConfigSuccess: function(gradeEditorConfigRecord) {
-        this.gradeEditorConfigRecord = gradeEditorConfigRecord;
-        this._loadGradeEditorRegistryItem(gradeEditorConfigRecord.get('gradeeditorid'));
-    },
-
-    _loadGradeEditorRegistryItem: function(gradeeditorid) {
-        this.getGradeEditorRegistryItemModel().load(gradeeditorid, {
-            scope: this,
-            success: this._onLoadGradeEditorRegistryItemSuccess,
-            failure: function() {
-                console.log('failed GradeEditorRegistryItem');
-            }
-        });
-    },
-    _onLoadGradeEditorRegistryItemSuccess: function(gradeEditorRegistryItemRecord, op) {
-        this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-        this._onAllLoaded();
-    },
-
-    _onAllLoaded: function() {
+    onLoadGradeEditorSuccess: function(gradeEditorConfigRecord, gradeEditorRegistryItemRecord) {
         this.getGradeEditorSelectWidget().enable();
+        this.gradeEditorConfigRecord = gradeEditorConfigRecord;
+        this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
         this._updateWidget();
-        console.log(this.onLoadAction);
-        if(this.onLoadAction === 'gradeeditor-edit') {
-            this._onEdit();
-        } else if(this.onLoadAction === 'gradeeditor-configure') {
-            this._onConfigureGradeEditor();
-        }
     },
 
 
@@ -169,7 +133,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
             );
             return;
         }
-        Ext.widget('gradeconfigeditormainwin', {
+        Ext.widget('gradeconfigeditor', {
             registryitem: this.gradeEditorRegistryItemRecord.data,
             gradeEditorConfigRecord: this.gradeEditorConfigRecord,
             listeners: {
@@ -190,8 +154,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     //
 
     _isConfigurable: function () {
-        var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
-        return !Ext.isEmpty(config_editor_url);
+        return this.gradeEditorRegistryItemRecord.isConfigurable();
     },
 
     _isMissingGradeEditorConfig: function() {

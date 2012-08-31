@@ -46,6 +46,7 @@ Ext.application({
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
         'assignment.EditGradeEditor',
+        'GradeEditor',
         'managestudents.Overview',
         'managestudents.Select',
         'managestudents.NoGroupSelectedViewPlugin',
@@ -181,7 +182,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
-        this.route.add("/assignment/:assignment_id/@@:onLoadAction", 'showAssignment'); // NOTE: Must come after the actions with proper routes!
+        this.route.add("/assignment/:assignment_id/@@grade-editor", 'gradeEditor');
         this.route.start();
     },
     
@@ -228,12 +229,18 @@ Ext.application({
         });
     },
 
-    showAssignment: function(routeInfo, assignment_id, onLoadAction) {
+    showAssignment: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
             xtype: 'assignmentoverview',
             url: routeInfo.url,
-            assignment_id: assignment_id,
-            onLoadAction: onLoadAction
+            assignment_id: assignment_id
+        });
+    },
+
+    gradeEditor: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'gradeeditoroverview',
+            assignment_id: assignment_id
         });
     },
 
