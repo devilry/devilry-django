@@ -182,7 +182,8 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
-        this.route.add("/assignment/:assignment_id/@@grade-editor", 'gradeEditor');
+        this.route.add("/assignment/:assignment_id/@@grade-editor/", 'gradeEditor');
+        this.route.add("/assignment/:assignment_id/@@grade-editor/change", 'changeGradeEditor');
         this.route.start();
     },
     
@@ -241,6 +242,13 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'gradeeditoroverview',
             assignment_id: assignment_id
+        });
+    },
+    changeGradeEditor: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'gradeeditoroverview',
+            assignment_id: assignment_id,
+            changeGradeEditor: true
         });
     },
 

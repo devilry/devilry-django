@@ -31,14 +31,20 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         ref: 'globalAlertmessagelist',
         selector: 'gradeeditoroverview #globalAlertmessagelist'
     }, {
+        ref: 'gradeEditorEdit',
+        selector: 'gradeeditoroverview gradeeditoredit'
+    }, {
         ref: 'about',
-        selector: 'gradeeditoroverview #about'
+        selector: 'gradeeditoroverview gradeeditoredit #about'
     }, {
         ref: 'configContainer',
-        selector: 'gradeeditoroverview #configContainer'
+        selector: 'gradeeditoroverview gradeeditoredit #configContainer'
     }, {
         ref: 'gradeConfigEditor',
-        selector: 'gradeeditoroverview gradeconfigeditor'
+        selector: 'gradeeditoroverview gradeeditoredit gradeconfigeditor'
+    }, {
+        ref: 'gradeEditorChange',
+        selector: 'gradeeditoroverview gradeeditorchange'
     }],
 
     init: function() {
@@ -72,10 +78,25 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         this.loadAssignment(this.assignment_id);
     },
 
-    _setBreadcrumb: function(subviewtext) {
-        var title = gettext('Edit grade editor');
-        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], title);
+    _setBreadcrumb: function(change) {
+        var title = gettext('Grade editor');
+        if(change) {
+            this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [{
+                text: title,
+                url: devilry_subjectadmin.utils.UrlLookup.editGradeEditor(
+                    this.assignmentRecord.get('id'))
+            }], gettext('Change'));
+        } else {
+            this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], title);
+        }
     },
+
+
+    //
+    //
+    // Load
+    //
+    //
     onLoadAssignmentSuccess: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
         this._setBreadcrumb();
@@ -96,11 +117,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         this._setNotLoading();
         this.gradeEditorConfigRecord = gradeEditorConfigRecord;
         this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-
-        this._setupAboutBox();
-        if(this.gradeEditorRegistryItemRecord.isConfigurable()) {
-            this._addConfigWidget();
-        }
+        this._onAllLoaded();
     },
     onLoadGradeEditorConfigFailure: function(operation) {
         this._setNotLoading();
@@ -111,11 +128,32 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         console.error(operation);
     },
 
+    _onAllLoaded: function() {
+        var changeGradeEditor = this.getOverview().changeGradeEditor;
+        if(changeGradeEditor) {
+            this._showChangeGradeEditor();
+            return;
+        } 
+        else {
+            this._setupAboutBox();
+            if(this.gradeEditorRegistryItemRecord.isConfigurable()) {
+                this._addConfigWidget();
+            }
+        }
+    },
+
     _setupAboutBox: function() {
         this.getAbout().update({
             registryitem: this.gradeEditorRegistryItemRecord.data
         });
     },
+
+
+    //
+    //
+    // Config editor
+    //
+    //
 
     _isMissingGradeEditorConfig: function() {
         var config = this.gradeEditorConfigRecord.get('config');
@@ -215,6 +253,14 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     //
 
     _onChangeGradeEditor: function() {
-        console.log('change');
+        this.application.route.navigate(
+            devilry_subjectadmin.utils.UrlLookup.changeGradeEditor(
+                this.assignmentRecord.get('id')));
     },
+
+    _showChangeGradeEditor: function() {
+        this.getGradeEditorEdit().hide();
+        this.getGradeEditorChange().show();
+        this._setBreadcrumb(true);
+    }
 });
