@@ -339,19 +339,44 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             title: 'Edit grade editor config',
             layout: 'fit',
             modal: true,
-            items: [{
-                xtype: 'gradeconfigeditor',
-                registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
-                gradeEditorConfigRecord: this.gradeeditorconfig_recordcontainer.record,
-                listeners: {
-                    scope: this,
-                    saveSuccess: function(win, configrecord) {
-                        this.gradeeditorconfig_recordcontainer.setRecord(configrecord);
-                        win.close();
-                        window.location.href = window.location.href;
+            items: {
+                itemId: 'gradeconfigeditorContainer',
+                autoScroll: true,
+                xtype: 'panel',
+                border: false,
+                items: [{
+                    xtype: 'gradeconfigeditor',
+                    helpCls: 'section',
+                    registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
+                    gradeEditorConfigRecord: this.gradeeditorconfig_recordcontainer.record,
+                    listeners: {
+                        scope: this,
+                        saveSuccess: function(gradeconfigeditor, configrecord) {
+                            this.gradeeditorconfig_recordcontainer.setRecord(configrecord);
+                            window.location.reload();
+                        }
                     }
-                }
-            }]
+                }],
+                dockedItems: [{
+                    dock: 'bottom',
+                    xtype: 'toolbar',
+                    ui: 'footer',
+                    items: ['->', {
+                        xtype: 'button',
+                        text: 'Save',
+                        scale: 'large',
+                        iconCls: 'icon-save-32',
+                        listeners: {
+                            scope: this,
+                            click: function(button) {
+                                var win = button.up('#gradeconfigeditorContainer');
+                                var gradeconfigeditor = win.down('gradeconfigeditor');
+                                gradeconfigeditor.triggerSave();
+                            }
+                        }
+                    }]
+                }]
+            }
         }).show();
     },
 

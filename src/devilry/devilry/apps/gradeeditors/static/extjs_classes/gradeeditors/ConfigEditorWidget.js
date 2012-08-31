@@ -1,6 +1,6 @@
 /** Config editor widget. */
 Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.gradeconfigeditor',
     layout: 'fit',
     requires: [
@@ -21,56 +21,49 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
      */
 
 
+    /**
+     * @cfg {String} [helpCls]
+     * The css class(es) for the help box.
+     */
+    helpCls: 'bootstrap',
+
+
     initComponent: function() {
-        this.buttonBar = Ext.widget('toolbar', {
-            dock: 'bottom',
-            ui: 'footer',
-            items: ['->', {
-                xtype: 'button',
-                text: 'Save',
-                scale: 'large',
-                iconCls: 'icon-save-32',
-                listeners: {
-                    scope: this,
-                    click: this.onSave
-                }
+        Ext.apply(this, {
+            layout: 'fit',
+            items: [{
+                xtype: 'box',
+                html: gettext('Loading') + ' ...'
             }]
         });
+        this.callParent(arguments);
 
-        Ext.apply(this, {
-            dockedItems: [this.buttonBar],
-
-            items: {
-                xtype: 'panel',
-                frame: false,
-                border: false,
-                layout: 'fit',
-                loader: {
-                    url: this.registryitem.config_editor_url,
-                    renderer: 'component',
-                    autoLoad: true,
-                    loadMask: true,
-                    scope: this, // for success and failure
-                    success: this.initializeEditor,
-                    failure: this.onLoadConfigEditorFailure
-                }
+        this.gradeEditorPanel = Ext.widget('panel', {
+            border: false,
+            frame: false,
+            loader: {
+                url: this.registryitem.config_editor_url,
+                renderer: 'component',
+                autoLoad: true,
+                loadMask: true,
+                scope: this, // for success and failure
+                success: this._initializeEditor,
+                failure: this._onLoadConfigEditorFailure
             }
         });
-
-        this.callParent(arguments);
     },
 
     /**
      * @private
      */
-    getConfigModelName: function() {
+    _getConfigModelName: function() {
         return 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig';
     },
 
     /**
      * @private
      */
-    onLoadConfigEditorFailure: function(elementloader, response) {
+    _onLoadConfigEditorFailure: function(elementloader, response) {
         console.error(Ext.String.format(
             'Loading grade config editor failed with {0}: {1}',
             response.status, response.statusText
@@ -94,26 +87,27 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
     /**
      * @private
      */
-    initializeEditor: function() {
-        if(this.getConfigEditor().help) {
-            this.helpwindow = Ext.widget('helpwindow', {
-                title: 'Help',
-                closeAction: 'hide',
-                helptext: this.getConfigEditor().help
+    _initializeEditor: function() {
+        this.removeAll();
+        if(this._getConfigEditor().help) {
+            var helphtml = this._getConfigEditor().help;
+            this.gradeEditorPanel.columnWidth = 0.7;
+            this.add({
+                xtype: 'container',
+                layout: 'column',
+                items: [this.gradeEditorPanel, {
+                    xtype: 'box',
+                    cls: this.helpCls,
+                    padding: '20',
+                    html: helphtml,
+                    columnWidth: 0.3
+                }]
             });
-
-            this.buttonBar.insert(0, {
-                text: 'Help',
-                iconCls: 'icon-help-32',
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    click: this.onHelp
-                }
-            });
+        } else {
+            this.add(this.gradeEditorPanel);
         }
 
-        this.getConfigEditor().initializeEditor(this.gradeEditorConfigRecord.data);
+        this._getConfigEditor().initializeEditor(this.gradeEditorConfigRecord.data);
     },
 
 
@@ -121,16 +115,15 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
      * @private
      * Get the config editor.
      */
-    getConfigEditor: function() {
-        return this.getComponent(0).getComponent(0);
+    _getConfigEditor: function() {
+        return this.gradeEditorPanel.getComponent(0);
     },
 
     /**
-     * @private
-     * Call the onSave() method in the config editor.
+     * Call the onSave() method in the config editor. Typically used by a save button event handler.
      */
-    onSave: function() {
-        this.getConfigEditor().onSave();
+    triggerSave: function() {
+        this._getConfigEditor().onSave();
     },
 
 
@@ -140,13 +133,13 @@ Ext.define('devilry.gradeeditors.ConfigEditorWidget', {
     saveConfig: function(configstring, onFailure) {
         onFailure = onFailure || devilry.gradeeditors.FailureHandler.onFailure;
         var me = this;
-        var configrecord = Ext.create(this.getConfigModelName(), {
+        var configrecord = Ext.create(this._getConfigModelName(), {
             config: configstring,
             gradeeditorid: this.gradeEditorConfigRecord.get('gradeeditorid'),
             assignment: this.gradeEditorConfigRecord.get('assignment')
         });
         configrecord.save({
-            scope: this.getConfigEditor(),
+            scope: this._getConfigEditor(),
             success: function(response) {
                 me.fireEvent('saveSuccess', me, configrecord);
             },
