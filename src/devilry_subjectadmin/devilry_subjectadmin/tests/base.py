@@ -12,13 +12,18 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
     def browseTo(self, path):
         self.getPath('/devilry_subjectadmin/#' + path)
 
-    def login(self, username, password='test'):
-        self.selenium.get('{0}{1}?next=/devilry_subjectadmin/emptytestview'.format(self.live_server_url, settings.LOGIN_URL))
+    def login(self, username, password='test', loadurl='/devilry_subjectadmin/emptytestview'):
+        self.selenium.get('{0}{1}?next={2}'.format(self.live_server_url,
+                                                   settings.LOGIN_URL,
+                                                   loadurl))
         username_input = self.selenium.find_element_by_name("username")
         username_input.send_keys(username)
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys(password)
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
+
+    def loginTo(self, username, path):
+        self.login(username, loadurl='/devilry_subjectadmin/#{path}'.format(path=path))
 
     def get_absolute_url(self, path):
         return '{live_server_url}/devilry_subjectadmin/#{path}'.format(live_server_url=self.live_server_url,

@@ -1,7 +1,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.GradeEditorSelectWidget', {
     extend: 'devilry_extjsextras.EditableSidebarBox',
     alias: 'widget.gradeeditorselect-widget',
-    cls: 'devilry_gradeeditorselect_widget',
+    cls: 'devilry_subjectadmin_gradeeditorselect_widget',
     title: gettext('Grade editor'),
     bodyTpl: [
         '<tpl if="text">',
