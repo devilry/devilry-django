@@ -9,13 +9,10 @@ class TestGradeEditorWidget(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
 
-    def _browseToAssignment(self, id):
-        self.browseTo('/assignment/{id}/'.format(id=id))
-
     def _loginToAssignment(self, username, id):
         self.loginTo(username, '/assignment/{id}/'.format(id=id))
 
-    def test_shortcuts_render(self):
+    def test_render(self):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['period1'],
@@ -29,5 +26,49 @@ class TestGradeEditorWidget(SubjectAdminSeleniumTestCase):
         self.assertTrue(title.startswith('Grade editor'))
         self.assertEquals(body, 'Approved/not approved')
         editlink = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget a.edit_link')
-        editurl = '#/assignment/{id}/@@grade-editor/'.format(id=assignmentid)
-        self.assertTrue(editlink.get_attribute('href').endswith(editurl))
+        editpath = '/assignment/{id}/@@grade-editor/'.format(id=assignmentid)
+        self.assertEquals(editlink.get_attribute('href').split('#')[1],
+                        editpath)
+
+
+
+class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['period1'],
+                            assignments=['week2:admin(week2admin)'])
+        self.assignmentid = self.testhelper.sub_period1_week2.id
+
+    def _loginToGradeEditorEdit(self, username, id):
+        self.loginTo(username, '/assignment/{id}/@@grade-editor/'.format(id=id))
+        self.waitForCssSelector('.devilry_subjectadmin_gradeeditoredit')
+
+
+    def _find_element(self, cssselector):
+        cssselector = '.devilry_subjectadmin_gradeeditoredit {0}'.format(cssselector)
+        return self.selenium.find_element_by_css_selector(cssselector)
+
+    def test_render_gradeeditor_info(self):
+        self._loginToGradeEditorEdit('week2admin', self.assignmentid)
+        self.waitForCssSelector('.current_gradeeditor_info')
+        self.assertEquals(self._find_element('.current_gradeeditor_info .registryitem_title').text.strip(),
+                          'Approved/not approved')
+        description = self._find_element('.current_gradeeditor_info .registryitem_description').text.strip()
+        self.assertTrue(description.startswith('A simple gradeeditor that'))
+        changehref = self._find_element('.current_gradeeditor_info .change_gradeeditor_link').get_attribute('href')
+        changepath = '/assignment/{id}/@@grade-editor/change'.format(id=self.assignmentid)
+        self.assertEquals(changehref.split('#')[1], changepath)
+
+    def test_render_what_is(self):
+        self._loginToGradeEditorEdit('week2admin', self.assignmentid)
+        title = self._find_element('.what_is_a_gradeeditor_help h3').text.strip()
+        self.assertEquals(title, 'What is a Grade editor?')
+
+    def test_return_to_assignmentlink(self):
+        self._loginToGradeEditorEdit('week2admin', self.assignmentid)
+        self.waitForCssSelector('.return_to_assignmentlink')
+        href = self._find_element('.return_to_assignmentlink').get_attribute('href')
+        assignmentpath = '/assignment/{id}/'.format(id=self.assignmentid)
+        self.assertEquals(href.split('#')[1], assignmentpath)

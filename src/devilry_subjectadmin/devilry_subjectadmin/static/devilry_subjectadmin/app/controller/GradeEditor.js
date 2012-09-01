@@ -96,15 +96,6 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     _onRender: function() {
         this.setLoadingBreadcrumb();
         this._setLoading();
-        this.getAbout().addListener({
-            scope: this,
-            element: 'el',
-            delegate: 'a.change_gradeeditor_link',
-            click: function(e) {
-                this._onChangeGradeEditor();
-                e.preventDefault();
-            }
-        });
         this.assignment_id = this.getOverview().assignment_id;
         this.loadAssignment(this.assignment_id);
     },
@@ -176,7 +167,8 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     },
     _setupAboutBox: function() {
         this.getAbout().update({
-            registryitem: this.gradeEditorRegistryItemRecord.data
+            registryitem: this.gradeEditorRegistryItemRecord.data,
+            changeurl: this._getChangeGradeEditorHash()
         });
     },
     _setupNoConfigBody: function() {
@@ -187,6 +179,9 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     },
     _getAssignmentHash: function() {
         return devilry_subjectadmin.utils.UrlLookup.assignmentOverview(this.assignmentRecord.get('id'));
+    },
+    _getChangeGradeEditorHash: function() {
+        return devilry_subjectadmin.utils.UrlLookup.changeGradeEditor(this.assignmentRecord.get('id'));
     },
 
 
@@ -301,12 +296,6 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     // Change grade editor
     //
     //
-
-    _onChangeGradeEditor: function() {
-        this.application.route.navigate(
-            devilry_subjectadmin.utils.UrlLookup.changeGradeEditor(
-                this.assignmentRecord.get('id')));
-    },
 
     _showChangeGradeEditor: function() {
         this.getGradeEditorEdit().hide();
