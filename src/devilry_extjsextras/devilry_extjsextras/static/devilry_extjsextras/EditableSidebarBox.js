@@ -21,10 +21,16 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
     },
 
     /**
-     * @cfg {String} [bodyCls='']
+     * @cfg {String} [titleCls='editablesidebarbox_title']
+     * The css class of the title box.
+     */
+    titleCls: 'editablesidebarbox_title',
+
+    /**
+     * @cfg {String} [bodyCls='editablesidebarbox_body']
      * The css class of the body box.
      */
-    bodyCls: '',
+    bodyCls: 'editablesidebarbox_body',
 
     /**
      * @cfg {String} buttontext (optional)
@@ -55,6 +61,7 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
             items: [{
                 xtype: 'box',
                 itemId: 'title',
+                cls: this.titleCls,
                 tpl: [
                     '<h4>',
                         '{title}',
