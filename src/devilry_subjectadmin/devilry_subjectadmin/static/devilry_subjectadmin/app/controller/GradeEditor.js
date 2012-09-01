@@ -206,7 +206,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
                     gettext('Configure grade editor'),
                 '</h2>',
                 '<tpl if="isMissingConfig">',
-                    '<div class="alert alert-warning">',
+                    '<div class="alert alert-warning missing_config">',
                             gettext('This grade editor requires configuration. Examiners can not provide feedback to students until you have provided configuration. Use the form below to configure the grade editor.'),
                     '</div>',
                 '<tpl else>',
