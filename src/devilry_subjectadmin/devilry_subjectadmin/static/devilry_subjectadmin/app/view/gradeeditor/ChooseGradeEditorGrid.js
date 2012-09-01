@@ -13,9 +13,9 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.ChooseGradeEditorGrid', {
     store: 'GradeEditors',
 
     col1Tpl: [
-        '<div style="white-space:normal !important;">',
-            '<div><strong>{record.title}</strong></div>',
-            '<div>{record.description}</div>',
+        '<div style="white-space:normal !important;" class="gradeeditorinfo gradeeditorid_{record.gradeeditorid}">',
+            '<div class="title"><strong>{record.title}</strong></div>',
+            '<div class="description">{record.description}</div>',
         '</div>'
     ],
 

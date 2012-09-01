@@ -1,5 +1,5 @@
 import json
-#from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment
 from devilry.apps.gradeeditors.models import Config
 from devilry.apps.core.testhelper import TestHelper
 
@@ -131,18 +131,19 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase, SetConfigMixin):
 
 
 
-class TestGradeEditorChange(SubjectAdminSeleniumTestCase):
+class TestGradeEditorChange(SubjectAdminSeleniumTestCase, SetConfigMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:admin(week2admin)'])
-        self.assignmentid = self.testhelper.sub_period1_week2.id
+        self.assignment = self.testhelper.sub_period1_week2
 
     def _loginAndLoad(self):
-        self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/change'.format(id=self.assignmentid))
+        self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/change'.format(id=self.assignment.id))
         self.waitForCssSelector('.devilry_subjectadmin_gradeeditorchange')
+        self._wait_for_gridload()
 
     def _find_element(self, cssselector):
         cssselector = '.devilry_subjectadmin_gradeeditorchange {0}'.format(cssselector)
@@ -152,11 +153,74 @@ class TestGradeEditorChange(SubjectAdminSeleniumTestCase):
         cssselector = '.devilry_subjectadmin_gradeeditorchange {0}'.format(cssselector)
         return self.selenium.find_elements_by_css_selector(cssselector)
 
+    def _find_gridrows(self):
+        return self._find_elements('.devilry_subjectadmin_gradeeditorchoosegrid .x-grid-row')
+
+    def _wait_for_gridload(self):
+        self.waitFor(self.selenium, lambda s: len(self._find_gridrows()) > 0)
+
+    def _get_savebutton(self):
+        savebutton = self._find_element('.devilry_extjsextras_savebutton button')
+        return savebutton
+
+    def _perform_save(self):
+        self.waitFor(self.selenium, lambda s: self._get_savebutton().is_enabled())
+        self._get_savebutton().click()
+        self.waitFor(self.selenium, lambda s: s.current_url.endswith('@@grade-editor/'))
+        self.waitForCssSelector('.devilry_subjectadmin_gradeeditoredit')
+
     def test_render(self):
+        self.set_config(self.assignment, 'asminimalaspossible', '')
         self._loginAndLoad()
         self.assertTrue('Select a grade editor' in self.selenium.page_source)
-        grid = self._find_element('.devilry_subjectadmin_gradeeditorchoosegrid')
-        #grid.
+        selected = self._find_element('.devilry_subjectadmin_gradeeditorchoosegrid .x-grid-row-selected')
+        self.assertEquals(len(selected.find_elements_by_css_selector('.gradeeditorid_asminimalaspossible')), 1)
+        savebutton = self._get_savebutton()
+        self.assertFalse(savebutton.is_enabled())
+
+    def _get_row_by_gradeeditorid(self, gradeeditorid):
+        for row in self._find_gridrows():
+            matches = row.find_elements_by_css_selector('.gradeeditorid_{id}'.format(id=gradeeditorid))
+            if len(matches) > 0:
+                return row
+
+    def _get_config(self):
+        return Assignment.objects.get(id=self.assignment.id).gradeeditor_config
+
+    def test_change(self):
+        self.set_config(self.assignment, 'asminimalaspossible', '')
+        self._loginAndLoad()
+        self._get_row_by_gradeeditorid('approved').click()
+        self._perform_save()
+        config = self._get_config()
+        self.assertEquals(config.gradeeditorid, 'approved')
+        self.assertEquals(config.config, '')
+
+    def test_change_existing_config(self):
+        self.set_json_config(self.assignment, 'asminimalaspossible',
+                             {'defaultvalue': True,
+                              'fieldlabel': 'This is a test'})
+        self._loginAndLoad()
+        self.assertFalse(self._get_savebutton().is_enabled())
+        self._get_row_by_gradeeditorid('approved').click()
+        self.waitFor(self.selenium, lambda s: not self._get_savebutton().is_enabled()) # If this times out, the button have been enabled by choosing another grade editor, which should not happen before we have confirmed overwriting config
+
+        self.waitForCssSelector('.clear_config_confirm')
+        self._find_element('.clear_config_confirm input[type="button"]').click() # check the confirm checkbox
+        self.waitFor(self.selenium, lambda s: self._get_savebutton().is_enabled())
+
+        self._perform_save()
+        config = self._get_config()
+        self.assertEquals(config.gradeeditorid, 'approved')
+        self.assertEquals(config.config, '')
+
+    def test_cancel(self):
+        self._loginAndLoad()
+        self.waitForCssSelector('.cancel_gradeeditor_change_button')
+        self._find_element('.cancel_gradeeditor_change_button').click()
+        # If the page is not changed, this will fail
+        editurl = self.get_absolute_url('/assignment/{id}/@@grade-editor/'.format(id=self.assignment.id))
+        self.waitFor(self.selenium, lambda s: s.current_url == editurl)
 
 
 class TestGradeEditorMixin(SetConfigMixin):

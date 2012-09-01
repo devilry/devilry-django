@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Change' ,{
                 }, {
                     xtype: 'container',
                     anchor: '100%',
-                    cls: 'bootstrap',
+                    cls: 'bootstrap clear_config_confirm',
                     layout: 'fit',
                     itemId: 'clearConfigConfirmContainer',
                     hidden: true,
@@ -70,6 +70,7 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Change' ,{
                 items: ['->', {
                     xtype: 'button',
                     text: 'Cancel',
+                    cls: 'cancel_gradeeditor_change_button',
                     itemId: 'cancelButton'
                 }, {
                     enabled: false,
