@@ -13,18 +13,24 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Change' ,{
 
     initComponent: function() {
         Ext.apply(this, {
+            margin: '20 0 0 0',
             layout: 'column',
             items: [{
                 xtype: 'box',
                 width: 300,
                 cls: 'bootstrap',
+                padding: '0 20 0 0',
                 html: [
-                    '<h2>', gettext('Select a grade editor'), '</h2>'
+                    '<h2>', gettext('Select a grade editor'), '</h2>',
+                    '<p class="muted">',
+                        gettext('Please select a grade editor. If your selected grade editor requires configuration, you will be able to do so after saving your choice.'),
+                    '</p>'
                 ].join('')
             }, {
                 columnWidth: 1, // Fill rest of the width
                 xtype: 'container',
                 layout: 'anchor',
+                margin: '10 0 0 0', // Align it better with the top of the "Select a grade editor" title.
                 items: [{
                     xtype: 'gradeeditorchoosegrid',
                     anchor: '100%',
