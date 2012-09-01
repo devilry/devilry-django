@@ -34,7 +34,19 @@ class TestGradeEditorWidget(SubjectAdminSeleniumTestCase):
 
 
 
-class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
+class SetConfigMixin(object):
+    def set_config(self, assignment, gradeeditorid, configstring):
+        config = assignment.gradeeditor_config
+        config.gradeeditorid = gradeeditorid
+        config.config = configstring
+        config.save()
+
+    def set_json_config(self, assignment, gradeeditorid, configobj):
+        configstring = json.dumps(configobj)
+        self.set_config(assignment, gradeeditorid, configstring)
+
+
+class TestGradeEditorEdit(SubjectAdminSeleniumTestCase, SetConfigMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -78,18 +90,8 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
         assignmentpath = '/assignment/{id}/'.format(id=self.assignmentid)
         self.assertEquals(href.split('#')[1], assignmentpath)
 
-    def _set_config(self, assignment, gradeeditorid, configstring):
-        config = assignment.gradeeditor_config
-        config.gradeeditorid = gradeeditorid
-        config.config = configstring
-        config.save()
-
-    def _set_json_config(self, assignment, gradeeditorid, configobj):
-        configstring = json.dumps(configobj)
-        self._set_config(assignment, gradeeditorid, configstring)
-
     def test_gradeeditor_with_config(self):
-        self._set_json_config(self.testhelper.sub_period1_week2,
+        self.set_json_config(self.testhelper.sub_period1_week2,
                               'asminimalaspossible',
                               {'defaultvalue': True,
                                     'fieldlabel': 'This is a test'})
@@ -100,15 +102,15 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
         self.assertEquals(textinput.get_attribute('value'), 'This is a test')
 
     def test_gradeeditor_missing_config(self):
-        self._set_config(self.testhelper.sub_period1_week2,
-                         'asminimalaspossible', configstring=None)
+        self.set_config(self.testhelper.sub_period1_week2,
+                        'asminimalaspossible', configstring='')
         self._loginToGradeEditorEdit('week2admin', self.assignmentid)
         self.waitForCssSelector('.current_gradeeditor_info')
         self.assertEquals(len(self._find_elements('.missing_config')), 1)
 
     def test_gradeeditor_cancel(self):
-        self._set_config(self.testhelper.sub_period1_week2,
-                         'asminimalaspossible', configstring=None)
+        self.set_config(self.testhelper.sub_period1_week2,
+                        'asminimalaspossible', configstring='')
         self._loginToGradeEditorEdit('week2admin', self.assignmentid)
         self.waitForCssSelector('.cancel_edit_config_button')
         self._find_element('.cancel_edit_config_button').click()
@@ -117,8 +119,8 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
         self.waitFor(self.selenium, lambda s: s.current_url == assignmenturl)
 
     def test_gradeeditor_save_and_continue_editing(self):
-        self._set_config(self.testhelper.sub_period1_week2,
-                         'asminimalaspossible', configstring=None)
+        self.set_config(self.testhelper.sub_period1_week2,
+                        'asminimalaspossible', configstring='')
         self._loginToGradeEditorEdit('week2admin', self.assignmentid)
         self.waitForCssSelector('.save_and_continue_editing_button')
         self.assertEquals(len(self._find_elements('.missing_config')), 1)
@@ -129,7 +131,7 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase):
 
 
 
-class TestGradeEditorMixin(object):
+class TestGradeEditorChange(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -138,8 +140,36 @@ class TestGradeEditorMixin(object):
                             assignments=['week2:admin(week2admin)'])
         self.assignmentid = self.testhelper.sub_period1_week2.id
 
+    def _loginAndLoad(self):
+        self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/change'.format(id=self.assignmentid))
+        self.waitForCssSelector('.devilry_subjectadmin_gradeeditorchange')
+
+    def _find_element(self, cssselector):
+        cssselector = '.devilry_subjectadmin_gradeeditorchange {0}'.format(cssselector)
+        return self.selenium.find_element_by_css_selector(cssselector)
+
+    def _find_elements(self, cssselector):
+        cssselector = '.devilry_subjectadmin_gradeeditorchange {0}'.format(cssselector)
+        return self.selenium.find_elements_by_css_selector(cssselector)
+
+    def test_render(self):
+        self._loginAndLoad()
+        self.assertTrue('Select a grade editor' in self.selenium.page_source)
+        grid = self._find_element('.devilry_subjectadmin_gradeeditorchoosegrid')
+        #grid.
+
+
+class TestGradeEditorMixin(SetConfigMixin):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['period1'],
+                            assignments=['week2:admin(week2admin)'])
+        self.assignment = self.testhelper.sub_period1_week2
+
     def loginAndLoad(self):
-        self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/'.format(id=self.assignmentid))
+        self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/'.format(id=self.assignment.id))
         self.waitForCssSelector('.devilry_subjectadmin_gradeeditoredit')
 
     def find_element(self, cssselector):
@@ -151,23 +181,15 @@ class TestGradeEditorMixin(object):
         savebutton.click()
         self.waitFor(self.selenium, lambda s: not s.current_url.endswith('@@grade-editor/'))
 
-    def set_config(self, gradeeditorid, configstring):
-        config = self.testhelper.sub_period1_week2.gradeeditor_config
-        config.gradeeditorid = gradeeditorid
-        config.config = configstring
-        config.save()
-
-    def set_json_config(self, gradeeditorid, configobj):
-        self.set_config(gradeeditorid, json.dumps(configobj))
-
     def waitForConfigEditor(self):
         self.waitForCssSelector('.devilry_gradeconfigeditor')
 
 
 class TestAsMinimalAsPossibleGradeEditor(TestGradeEditorMixin, SubjectAdminSeleniumTestCase):
     def test_sanity(self):
-        self.set_json_config('asminimalaspossible', {'defaultvalue': True,
-                                                     'fieldlabel': 'This is a test'})
+        self.set_json_config(self.assignment, 'asminimalaspossible',
+                             {'defaultvalue': True,
+                              'fieldlabel': 'This is a test'})
         self.loginAndLoad()
         self.waitForConfigEditor()
         textinput = self.find_element('input[type=text]')
@@ -175,6 +197,6 @@ class TestAsMinimalAsPossibleGradeEditor(TestGradeEditorMixin, SubjectAdminSelen
         textinput.clear()
         textinput.send_keys('Updated')
         self.perform_save()
-        config = Config.objects.get(assignment_id=self.assignmentid)
+        config = Config.objects.get(assignment_id=self.assignment.id)
         self.assertEquals(json.loads(config.config), {'defaultvalue': True,
                                                       'fieldlabel': 'Updated'})
