@@ -4,6 +4,7 @@ Ext.define('devilry_usersearch.AutocompleteUserWidget' ,{
     alias: 'widget.autocompleteuserwidget',
     cls: 'devilry_usersearch_autocompleteuserwidget',
     requires: [
+        'devilry_usersearch.UserSearchStore'
     ],
 
     emptyText: gettext('Start typing name, username or email, and select the user from the popup list ...'),
