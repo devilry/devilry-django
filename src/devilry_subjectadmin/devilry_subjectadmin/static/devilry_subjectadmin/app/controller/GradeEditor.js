@@ -240,6 +240,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
                 items: [{
                     xtype: 'button',
                     text: gettext('Cancel'),
+                    cls: 'cancel_edit_config_button',
                     listeners: {
                         scope: this,
                         click: this._onCancelEditConfig
@@ -247,6 +248,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
                 }, '->', {
                     xtype: 'button',
                     text: gettext('Save and continue editing'),
+                    cls: 'save_and_continue_editing_button',
                     listeners: {
                         scope: this,
                         click: this._onSaveConfigAndContinueEditing
