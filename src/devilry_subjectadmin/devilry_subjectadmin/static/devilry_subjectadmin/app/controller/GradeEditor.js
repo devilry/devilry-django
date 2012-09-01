@@ -44,6 +44,9 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         ref: 'configContainer',
         selector: 'gradeeditoroverview gradeeditoredit #configContainer'
     }, {
+        ref: 'noConfigBody',
+        selector: 'gradeeditoroverview gradeeditoredit #noConfigBody'
+    }, {
         ref: 'gradeConfigEditor',
         selector: 'gradeeditoroverview gradeeditoredit gradeconfigeditor'
     }, {
@@ -166,17 +169,24 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
             this._setupAboutBox();
             if(this.gradeEditorRegistryItemRecord.isConfigurable()) {
                 this._addConfigWidget();
+            } else {
+                this._setupNoConfigBody();
             }
         }
     },
-
     _setupAboutBox: function() {
         this.getAbout().update({
-            registryitem: this.gradeEditorRegistryItemRecord.data,
-            assignmentname: this.assignmentRecord.get('short_name'),
-            assignmenthash: devilry_subjectadmin.utils.UrlLookup.assignmentOverview(
-                this.assignmentRecord.get('id'))
+            registryitem: this.gradeEditorRegistryItemRecord.data
         });
+    },
+    _setupNoConfigBody: function() {
+        this.getNoConfigBody().update({
+            assignmentname: this.assignmentRecord.get('short_name'),
+            assignmenthash: this._getAssignmentHash()
+        });
+    },
+    _getAssignmentHash: function() {
+        return devilry_subjectadmin.utils.UrlLookup.assignmentOverview(this.assignmentRecord.get('id'));
     },
 
 
@@ -232,7 +242,14 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
                 dock: 'bottom',
                 xtype: 'toolbar',
                 ui: 'footer',
-                items: ['->', {
+                items: [{
+                    xtype: 'button',
+                    text: gettext('Cancel'),
+                    listeners: {
+                        scope: this,
+                        click: this._onCancelEditConfig
+                    }
+                }, '->', {
                     xtype: 'button',
                     text: gettext('Save and continue editing'),
                     listeners: {
@@ -250,6 +267,10 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         }]);
     },
 
+    _onCancelEditConfig: function() {
+        this.application.route.navigate(this._getAssignmentHash());
+    },
+
     _onSaveConfigAndContinueEditing: function() {
         this._continueEditAfterSave = true;
         this._onSaveConfig();
@@ -264,9 +285,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
         if(this._continueEditAfterSave) {
             this._loadAllExceptAssignment();
         } else {
-            this.application.route.navigate(
-                devilry_subjectadmin.utils.UrlLookup.assignmentOverview(
-                    this.assignmentRecord.get('id')));
+            this.application.route.navigate(this._getAssignmentHash());
         }
         this._continueEditAfterSave = undefined;
     },

@@ -13,11 +13,6 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Edit' ,{
         cls: 'bootstrap',
         tpl: [
             '<tpl if="registryitem">',
-                '<p>',
-                    '<strong><a href="{assignmenthash}">',
-                        gettext('Return to {assignmentname}'),
-                    '</a></strong>',
-                '</p>',
                 '<h2>',
                     gettext('Current grade editor'),
                     ': {registryitem.title}',
@@ -38,6 +33,20 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Edit' ,{
         xtype: 'container',
         itemId: 'configContainer',
         layout: 'fit',
-        items: []
+        items: [{
+            xtype: 'box',
+            itemId: 'noConfigBody',
+            cls: 'bootstrap',
+            tpl: [
+                '<tpl if="assignmenthash">',
+                    '<p>',
+                        '<strong><a href="{assignmenthash}">',
+                            gettext('Return to {assignmentname}'),
+                        '</a></strong>',
+                    '</p>',
+                '</tpl>'
+            ],
+            data: {}
+        }]
     }]
 });
