@@ -88,6 +88,7 @@ def reset():
     bootstrap()
     buildout()
     autogen_extjsmodels()
+    refreshstatic()
 
 @task
 def autodb():
