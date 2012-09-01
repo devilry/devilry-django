@@ -16,13 +16,14 @@ NOTE: Sencha tools requires a Oracle Java Runtime Environment.
 
 ### The tasks
 
-Use one of the jsbuild_* tasks. Use ``fab -l`` to list them all. Example:
+Use one of the jsbuild task. Use ``fab -d jsbuild`` for docs. Example:
 
-    $ fab jsbuild_devilry_subjectadmin
+    $ fab jsbuild:devilry_subjectadmin
 
 To build without compressing the JS-sources (**for debugging**):
 
-    $ fab jsbuild_devilry_subjectadmin:nocompress=true
+    $ fab jsbuild:devilry_subjectadmin,nocompress=true
+
 
 ## Watch the filesystem for changes and rebuild
 
@@ -32,7 +33,16 @@ Install watchdog:
 
 Call the tasks with ``watch=true``. E.g.:
 
-    $ fab jsbuild_devilry_subjectadmin:nocompress=true,watch=true
+    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
+
+You probably want to use:
+
+    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
+
+to create a JSB-file on startup, but no on each watcher-trigger. This speeds up
+rebuild significantly, but you will have to re-start ``jsbuild`` when you add requires or new files.
+    
+
 
 
 ### Broken pipe errors

@@ -128,7 +128,7 @@ def restore_db(sqldumpfile):
     local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
 
 @task
-def jsbuild(appname, nocompress=False, watch=False):
+def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False):
     """
     Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
     ``appname``.
@@ -136,31 +136,26 @@ def jsbuild(appname, nocompress=False, watch=False):
     :param appname: Name of an app, like ``devilry_frontpage``.
     :param nocompress: Run with ``--nocompress``. Good for debugging.
     :param watch: Run with ``--watch ../src/``. Good for development.
+    :param no_jsbcreate:
+        Do not re-create app.jsb3 (the slowest part of building)?
+        Re-creating the jsb-file is only needed when you add requirements/deps
+        or new files. Set to ``true`` to not generate JSB-file, or set to
+        ``next`` and use --watch to generate the jsb-file at startup, but
+        not when the watcher triggers re-build.
     """
-    extra_args = ''
+    extra_args = []
     if nocompress:
-        extra_args += ' --nocompress'
+        extra_args.append('--nocompress')
     if watch:
-        extra_args += ' --watch ../src/'
+        extra_args.append('--watch ../src/')
+    if no_jsbcreate:
+        if no_jsbcreate == 'next':
+            if not watch:
+                abort('no_jsbcreate="next" only makes sense with --watch')
+            jsbuild(appname, nocompress, watch=False) # build one with no_jsbcreate=False
+        extra_args.append('--no-jsbcreate')
+    extra_args = ' '.join(extra_args)
     local(('bin/django_dev.py senchatoolsbuild {extra_args} '
            '--app {appname} '
            '--settings settings.extjsbuild').format(appname=appname,
                                                     extra_args=extra_args))
-
-@task
-def jsbuild_devilry_student(nocompress=False, watch=False):
-    jsbuild('devilry_student', nocompress, watch)
-
-@task
-def jsbuild_devilry_frontpage(nocompress=False, watch=False):
-    jsbuild('devilry_frontpage', nocompress, watch)
-
-@task
-def jsbuild_devilry_subjectadmin(nocompress=False, watch=False):
-    jsbuild('devilry_subjectadmin', nocompress, watch)
-
-@task
-def jsbuild_all(nocompress=False, watch=False):
-    jsbuild_devilry_student(nocompress, watch)
-    jsbuild_devilry_frontpage(nocompress, watch)
-    jsbuild_devilry_subjectadmin(nocompress, watch)

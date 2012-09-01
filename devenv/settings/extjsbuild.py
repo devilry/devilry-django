@@ -11,6 +11,7 @@ from settings import *
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
+EXTJS4_DEBUGFILE = 'extjs4/ext-dev.js'
 MIDDLEWARE_CLASSES += ['djangosenchatools.auth.SettingUserMiddleware']
 AUTHENTICATION_BACKENDS = ('djangosenchatools.auth.SettingUserBackend',)
 SENCHATOOLS_USER = 'grandma'
