@@ -28,8 +28,10 @@
     };
 </script>
 
-<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
 <script type="text/javascript" src="{% url devilry_student_i18n %}"></script>
 
 {{ block.super }}
+
+{#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
 {% endblock %}
