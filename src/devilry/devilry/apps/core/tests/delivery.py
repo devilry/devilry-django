@@ -8,6 +8,9 @@ from ..models import Delivery
 from ..testhelper import TestHelper
 
 class TestDelivery(TestCase, TestHelper):
+    def setUp(self):
+        TestHelper.set_memory_deliverystore()
+
     def _create_testdata(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
@@ -174,6 +177,7 @@ class TestDelivery(TestCase, TestHelper):
         delivery.full_clean()
         delivery.save(autoset_number=False,
                       autoset_time_of_delivery=False)
+        delivery.add_file('test.txt', ['Hello', ' world'])
 
         self.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
         newdeadline = self.sub_p1_a1_g2_d1
@@ -185,3 +189,9 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(copy.time_of_delivery, time_of_delivery)
         self.assertEquals(copy.delivered_by.student, self.student1)
         self.assertEquals(copy.alias_delivery, old_delivery)
+
+        self.assertEquals(delivery.filemetas.count(), 1)
+        self.assertEquals(copy.filemetas.count(), 1)
+        copied_filemeta = copy.filemetas.all()[0]
+        self.assertEquals(copied_filemeta.get_all_data_as_string(),
+                          'Hello world')

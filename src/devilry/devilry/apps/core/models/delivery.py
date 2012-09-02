@@ -201,16 +201,19 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     def copy(self, newdeadline):
         """
-        Copy this delivery, including all FileMeta's into ``newdeadline``.
+        Copy this delivery, including all FileMeta's and their files
+        into ``newdeadline``.
         """
-        copy = Delivery(deadline=newdeadline,
-                        delivery_type=self.delivery_type,
-                        number=self.number,
-                        successful=self.successful,
-                        time_of_delivery=self.time_of_delivery,
-                        delivered_by=self.delivered_by,
-                        alias_delivery=self.alias_delivery)
-        copy.full_clean()
-        copy.save(autoset_time_of_delivery=False,
-                  autoset_number=False)
-        return copy
+        deliverycopy = Delivery(deadline=newdeadline,
+                                delivery_type=self.delivery_type,
+                                number=self.number,
+                                successful=self.successful,
+                                time_of_delivery=self.time_of_delivery,
+                                delivered_by=self.delivered_by,
+                                alias_delivery=self.alias_delivery)
+        deliverycopy.full_clean()
+        deliverycopy.save(autoset_time_of_delivery=False,
+                          autoset_number=False)
+        for filemeta in self.filemetas.all():
+            filemeta.copy(deliverycopy)
+        return deliverycopy
