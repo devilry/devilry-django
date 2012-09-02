@@ -19,21 +19,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     },
 
     initComponent: function() {
-        this.groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: [
-                '<tpl if="groupField == \'is_open\'">',
-                    '<tpl if="groupValue">',
-                        gettext('Open'),
-                    '<tpl else>',
-                        gettext('Closed'),
-                    '</tpl>',
-                '<tpl else>',
-                    '{groupField}: {groupValue}',
-                '</tpl>',
-            ]
-        });
+        //this.groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            //groupHeaderTpl: [
+                //'<tpl if="groupField == \'is_open\'">',
+                    //'<tpl if="groupValue">',
+                        //gettext('Open'),
+                    //'<tpl else>',
+                        //gettext('Closed'),
+                    //'</tpl>',
+                //'<tpl else>',
+                    //'{groupField}: {groupValue}',
+                //'</tpl>',
+            //]
+        //});
         Ext.apply(this, {
-            features: [this.groupingFeature],
+            //features: [this.groupingFeature],
             //groupHeaderTpl: '',
             dockedItems: [{
                 xtype: 'toolbar',
@@ -56,26 +56,26 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                             {value:'username', label:"Sort by: Username"}
                         ]
                     })
-                }, {
-                    xtype: 'combobox',
-                    itemId: 'viewselect',
-                    queryMode: 'local',
-                    valueField: 'value',
-                    displayField: 'label',
-                    forceSelection: true,
-                    editable: false,
-                    value: 'flat',
-                    flex: 1,
-                    matchFieldWidth: false,
-                    store: Ext.create('Ext.data.Store', {
-                        fields: ['value', 'label'],
-                        data : [
-                            {value:'flat', label:"View: Flat"},
-                            {value:'examiner', label:"View: Group by examiner"},
-                            {value:'is_passing_grade', label:"View: Group by passed/failed"},
-                            {value:'is_open', label:"View: Group by open/closed"},
-                        ]
-                    })
+                    
+                    //xtype: 'combobox',
+                    //itemId: 'viewselect',
+                    //queryMode: 'local',
+                    //valueField: 'value',
+                    //displayField: 'label',
+                    //forceSelection: true,
+                    //editable: false,
+                    //value: 'flat',
+                    //flex: 1,
+                    //matchFieldWidth: false,
+                    //store: Ext.create('Ext.data.Store', {
+                        //fields: ['value', 'label'],
+                        //data : [
+                            //{value:'flat', label:"View: Flat"},
+                            //{value:'examiner', label:"View: Group by examiner"},
+                            //{value:'is_passing_grade', label:"View: Group by passed/failed"},
+                            //{value:'is_open', label:"View: Group by open/closed"},
+                        //]
+                    //})
                 }]
             }, {
                 xtype: 'toolbar',

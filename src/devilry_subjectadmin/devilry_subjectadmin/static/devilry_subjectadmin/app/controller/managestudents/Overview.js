@@ -94,10 +94,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview #sortby': {
                 select: this._onSelectSortBy
-            },
-            'viewport managestudentsoverview #viewselect': {
-                select: this._onSelectViewSelect
             }
+            //'viewport managestudentsoverview #viewselect': {
+                //select: this._onSelectViewSelect
+            //}
         });
     },
 
@@ -143,23 +143,23 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      ****************************************/
 
 
-    _onSelectViewSelect: function(combo, records) {
-        var groupby = records[0].get('value');
-        this._groupby(groupby);
-    },
+    //_onSelectViewSelect: function(combo, records) {
+        //var groupby = records[0].get('value');
+        //this._groupby(groupby);
+    //},
 
-    _groupby: function(groupby) {
-        console.log('Group by', groupby);
-        if(groupby == 'flat') {
-            this.getGroupsStore().clearGrouping();
-        } else {
-            this.getGroupsStore().groupBySpecialGrouper(groupby);
-            //Ext.defer(function() {
-                //console.log('Groups', this.getGroupsStore().getGroups());
-                //this.getListOfGroups().groupingFeature.collapseAll();
-            //}, 500, this);
-        }
-    },
+    //_groupby: function(groupby) {
+        //console.log('Group by', groupby);
+        //if(groupby == 'flat') {
+            //this.getGroupsStore().clearGrouping();
+        //} else {
+            //this.getGroupsStore().groupBySpecialGrouper(groupby);
+            ////Ext.defer(function() {
+                ////console.log('Groups', this.getGroupsStore().getGroups());
+                ////this.getListOfGroups().groupingFeature.collapseAll();
+            ////}, 500, this);
+        //}
+    //},
 
 
 
