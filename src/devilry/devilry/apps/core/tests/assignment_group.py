@@ -246,3 +246,60 @@ class TestAssignmentGroupSplit(TestCase):
         candidate = g1.candidates.all()[0]
         with self.assertRaises(GroupPopToFewCandiatesError):
             g1copy = g1.pop_candidate(candidate)
+
+    def test_merge_into(self):
+        self._testdata()
+        g1 = self.testhelper.sub_p1_a1_g1
+
+        self.testhelper.add_to_path('uni;sub.p1.a1.target:candidate(dewey):examiner(donald)')
+
+        # Add d1 and deliveries. d1 matches d1 in g1 (the source)
+        self.testhelper.add_to_path('uni;sub.p1.a1.target.d1:ends(1)')
+        self.testhelper.add_delivery("sub.p1.a1.target", {"a.py": "print a"},
+                                     time_of_delivery=1) # days after deadline
+
+        # Add d2 and deliveries
+        self.testhelper.add_to_path('uni;sub.p1.a1.target.d2:ends(11)')
+        delivery = self.testhelper.add_delivery("sub.p1.a1.target", {"b.py": "print b"},
+                                                time_of_delivery=-1) # days after deadline
+
+        # Create a delivery in g1 that is copy of one in target
+        delivery.copy(self.testhelper.sub_p1_a1_g1_d2)
+
+        # Double check the important values before the merge
+        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deadline,
+                          self.testhelper.sub_p1_a1_target_d1.deadline)
+        self.assertNotEquals(self.testhelper.sub_p1_a1_g1_d2.deadline,
+                             self.testhelper.sub_p1_a1_target_d2.deadline)
+        target = self.testhelper.sub_p1_a1_target
+        self.assertEquals(g1.deadlines.count(), 2)
+        self.assertEquals(target.deadlines.count(), 2)
+        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deliveries.count(), 2)
+        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2) # The one from _testdata() and the one copied in above
+        self.assertEquals(self.testhelper.sub_p1_a1_target_d1.deliveries.count(), 1)
+        self.assertEquals(self.testhelper.sub_p1_a1_target_d2.deliveries.count(), 1)
+
+        # Do the merge
+        deadline1 = self.testhelper.sub_p1_a1_g1_d1.deadline
+        deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
+        deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
+        g1.merge_into(target)
+        self.assertFalse(AssignmentGroup.objects.filter(id=g1.id).exists())
+
+        self.assertEquals(target.examiners.count(), 4)
+        self.assertEquals(set([e.user.username for e in target.examiners.all()]),
+                          set(['donald', 'examiner1', 'examiner2', 'examiner3']))
+
+        self.assertEquals(target.candidates.count(), 4)
+        self.assertEquals(set([e.student.username for e in target.candidates.all()]),
+                          set(['dewey', 'student1', 'student2', 'student3']))
+
+        deadlines = target.deadlines.order_by('deadline')
+        self.assertEquals(len(deadlines), 3)
+        self.assertEquals(deadlines[0].deadline, deadline1)
+        self.assertEquals(deadlines[1].deadline, deadline2)
+        self.assertEquals(deadlines[2].deadline, deadline3)
+
+        self.assertEquals(deadlines[0].deliveries.count(), 3) # d1 from both have been merged
+        self.assertEquals(deadlines[1].deliveries.count(), 1) # g1 d2
+        self.assertEquals(deadlines[2].deliveries.count(), 1) # target d2

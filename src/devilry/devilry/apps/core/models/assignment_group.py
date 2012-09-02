@@ -270,6 +270,76 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         candidate.save()
         return groupcopy
 
+    def recalculate_deadline_numbers(self):
+        """
+        Query all ``successful`` deliveries on this AssignmentGroup, ordered by
+        ``time_of_delivery`` ascending, and number them with the oldest delivery
+        as number 1.
+        """
+        from .delivery import Delivery
+        qry = Delivery.objects.filter(deadline__assignment_group=self,
+                                      successful=True)
+        qry = qry.order_by('time_of_delivery')
+        for number, delivery in enumerate(qry, 1):
+            delivery.number = number
+            delivery.save(autoset_number=False)
+
+    def _merge_examiners_into(self, target):
+        target_examiners = set([e.user.id for e in target.examiners.all()])
+        for examiner in self.examiners.all():
+            if not examiner.user.id in target_examiners:
+                examiner.assignmentgroup = target
+                examiner.save()
+
+    def _merge_candidates_into(self, target):
+        target_candidates = set([e.student.id for e in target.candidates.all()])
+        for candidate in self.candidates.all():
+            if not candidate.student.id in target_candidates:
+                candidate.assignment_group = target
+                candidate.save()
+
+    def merge_into(self, target):
+        """
+        Merge this AssignmentGroup into the ``target`` AssignmentGroup.
+        Algorithm:
+
+            1. Copy in all candidates and examiners not already on the
+               AssignmentGroup.
+            2. Delete all deliveries that are ``copy_of`` a delivery already in
+               the target. We do this globally instead of for each deadline,
+               since someone may have moved the deadline on one of the groups,
+               but the delivery will still be the same.
+            3. Loop through all deadlines in this AssignmentGroup, and for each
+               deadline:
+
+               If the datetime and text of the deadline matches one already in
+               ``target``, move the remaining deliveries into the target deadline.
+
+                If the deadline and text does NOT match a deadline already in
+                ``target``, change assignmentgroup of the deadline to the
+                master group.
+            4. Recalculate delivery numbers of target using
+               :meth:`recalculate_deadline_numbers`.
+            5. Run ``self.delete()``.
+        """
+        from .deadline import Deadline
+        from .delivery import Delivery
+        Delivery.objects.filter(copy_of__deadline__assignment_group=target).delete()
+        self._merge_examiners_into(target)
+        self._merge_candidates_into(target)
+        for deadline in self.deadlines.all():
+            try:
+                matching_deadline = target.deadlines.get(deadline=deadline.deadline,
+                                                         text=deadline.text)
+                for delivery in deadline.deliveries.all():
+                    delivery.deadline = matching_deadline
+                    delivery.save()
+            except Deadline.DoesNotExist:
+                deadline.assignment_group = target
+                deadline.save()
+        self.recalculate_deadline_numbers()
+        self.delete()
+
 
 class AssignmentGroupTag(models.Model):
     """
