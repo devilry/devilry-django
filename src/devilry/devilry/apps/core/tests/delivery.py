@@ -8,8 +8,7 @@ from ..models import Delivery
 from ..testhelper import TestHelper
 
 class TestDelivery(TestCase, TestHelper):
-
-    def setUp(self):
+    def _create_testdata(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
                  periods=["period1:admin(teacher1):begins(-5):ends(10)"],
@@ -25,6 +24,7 @@ class TestDelivery(TestCase, TestHelper):
         self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
 
     def test_where_is_admin(self):
+        self._create_testdata()
         teacher1 = User.objects.get(username='teacher1')
         self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
         delivery0 = self.inf1100_period1_assignment1_g1_d1.deliveries.all()[0]
@@ -33,6 +33,7 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(Delivery.where_is_admin(teacher1).count(), 2)
 
     def test_published_where_is_examiner(self):
+        self._create_testdata()
         examiner1 = User.objects.get(username='examiner1')
         deliveries = Delivery.published_where_is_examiner(examiner1)
         self.assertEquals(deliveries.count(), 2)
@@ -42,6 +43,7 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(Delivery.published_where_is_examiner(examiner1).count(), 1)
 
     def test_delivery(self):
+        self._create_testdata()
         assignmentgroup = self.inf1100_period1_assignment1_g3
         beforeadd = datetime.now().replace(microsecond=0, tzinfo=None)
         d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
@@ -56,6 +58,7 @@ class TestDelivery(TestCase, TestHelper):
         self.assertRaises(IntegrityError, d.save())
 
     def test_delete_delivered_by_candidate(self):
+        self._create_testdata()
         delivery = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
         delivery = Delivery.objects.get(id=delivery.id) # Re-get from DB just to be doubly sure we are using the same delivery below
         self.assertEquals(delivery.delivered_by.student, self.student2)
@@ -65,6 +68,7 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(delivery.delivered_by, None)
 
     def test_delivery_numbering(self):
+        self._create_testdata()
         deadline = self.inf1100_period1_assignment1_g1_d1
         self.assertEquals(deadline.deliveries.count(), 1)
         self.assertEquals(deadline.deliveries.all()[0].number, 1)
@@ -84,6 +88,7 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(d2.number, 3)
 
     def test_published_where_is_candidate(self):
+        self._create_testdata()
         # Add 2 on g1
         d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
@@ -107,6 +112,7 @@ class TestDelivery(TestCase, TestHelper):
 
 
     def test_hard_deadline(self):
+        self._create_testdata()
         self.add_to_path('uni.ifi;inf1100.period1.assignment0.g1:candidate(student1):examiner(examiner1).d0:ends(1)')
 
         # Soft deadlines work without any errors
@@ -120,3 +126,24 @@ class TestDelivery(TestCase, TestHelper):
         assignment.save()
         with self.assertRaises(ValidationError):
             self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
+
+
+    def test_override_autoset(self):
+        self.add(nodes="uni",
+                 subjects=["sub"],
+                 periods=["p1"],
+                 assignments=['a1'])
+        self.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
+        d1 = self.sub_p1_a1_g1_d1
+
+        time_of_delivery = datetime(2005, 1, 1, 0, 0, 0)
+        delivery = Delivery(deadline=d1,
+                            number=10,
+                            successful=False,
+                            time_of_delivery=time_of_delivery)
+        delivery.full_clean()
+        delivery.save(autoset_number=False,
+                      autoset_time_of_delivery=False)
+        self.assertEquals(delivery.number, 10)
+        self.assertEquals(delivery.successful, False)
+        self.assertEquals(delivery.time_of_delivery, time_of_delivery)

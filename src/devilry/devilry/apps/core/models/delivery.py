@@ -187,12 +187,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
             now = datetime.now().replace(microsecond=0, tzinfo=None)
             self.time_of_delivery = now
-        if self.successful:
-            autoset_number = kwargs.pop('autoset_number', True)
-            if autoset_number:
+        autoset_number = kwargs.pop('autoset_number', True)
+        if autoset_number:
+            if self.successful:
                 self._set_number()
-        else:
-            self.number = 0 # NOTE: Number is 0 until the delivery is successful
+            else:
+                self.number = 0 # NOTE: Number is 0 until the delivery is successful
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
