@@ -97,6 +97,25 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def __unicode__(self):
         return self.filename
 
+    def get_all_data_as_string(self):
+        """
+        Get all data store in the deliverystore for this FileMeta as a string.
+        THIS IS ONLY FOR TESTING, and should NEVER be used for production code,
+        since it will eat all memory on the server for huge files.
+        """
+        fileobj = self.deliverystore.read_open(self)
+        data = fileobj.read()
+        fileobj.close()
+        return data
+
+    def copy(self, newdelivery):
+        copy = FileMeta(delivery=newdelivery,
+                        filename=self.filename,
+                        size=self.size)
+        copy.full_clean()
+        copy.save()
+        self.deliverystore.copy(self, copy)
+
 
 def filemeta_deleted_handler(sender, **kwargs):
     filemeta = kwargs['instance']
