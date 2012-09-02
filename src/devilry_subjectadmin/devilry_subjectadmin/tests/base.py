@@ -83,7 +83,7 @@ class RenameBasenodeTestMixin(object):
         short_name.send_keys('Renamed-shortname')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 0)
         savebutton.click()
-        self.waitForCssSelector('.devilry_extjsextras_alertmessagelist', within=window)
+        self.waitForCssSelector('.devilry_extjsextras_alertmessagelist .alert-error', within=window)
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 1)
 
 class DeleteBasenodeTestMixin(object):
