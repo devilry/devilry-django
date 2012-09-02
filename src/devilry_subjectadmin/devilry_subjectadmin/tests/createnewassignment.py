@@ -56,7 +56,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         field = self.selenium.find_element_by_css_selector('input[name={0}]'.format(fieldname))
         field.clear()
         field.send_keys(value)
-        #field.send_keys(Keys.TAB)
+        field.send_keys(Keys.TAB)
 
     def _set_names(self, short_name, long_name):
         self._set_value('short_name', 'temp') # NOTE: prevent long_name from automatically set shortname
