@@ -232,22 +232,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         name = self.name
         if name:
             name = '{0}{1}'.format(name, namesuffix)
-        copy = AssignmentGroup(parentnode=self.parentnode,
+        groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                 name=name,
                                 is_open=self.is_open)
-        copy.full_clean()
-        copy.save()
+        groupcopy.full_clean()
+        groupcopy.save()
         for tagobj in self.tags.all():
-            copy.tags.create(tag=tagobj.tag)
+            groupcopy.tags.create(tag=tagobj.tag)
         for examiner in self.examiners.all():
-            copy.examiners.create(user=examiner.user)
+            groupcopy.examiners.create(user=examiner.user)
         for deadline in self.deadlines.all():
-            newdeadline = copy.deadlines.create(deadline=deadline.deadline,
-                                                 text=deadline.text,
-                                                 feedbacks_published=deadline.feedbacks_published)
-            for delivery in deadline.deliveries.all():
-                newdelivery = delivery.copy(newdeadline)
-        return copy
+            deadline.copy(groupcopy)
+        return groupcopy
 
     def split(self):
         candidates = self.candidates.all()

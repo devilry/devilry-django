@@ -176,8 +176,14 @@ class TestAssignmentGroupSplit(TestCase):
         g1 = self.testhelper.sub_p1_a1_g1
         g1copy = g1.copy_all_except_candidates()
         self.assertEquals(g1copy.candidates.count(), 0)
-        self.assertEquals(g1copy.examiners.count(), 3)
 
+        # Examiners
+        self.assertEquals(g1copy.examiners.count(), 3)
+        examiner_usernames = [e.user.username for e in g1copy.examiners.all()]
+        examiner_usernames.sort()
+        self.assertEquals(examiner_usernames, ['examiner1', 'examiner2', 'examiner3'])
+
+        # Deliveries
         deliveries = Delivery.objects.filter(deadline__assignment_group=g1).order_by('time_of_delivery')
         copydeliveries = Delivery.objects.filter(deadline__assignment_group=g1copy).order_by('time_of_delivery')
         self.assertEquals(len(deliveries), len(copydeliveries))
