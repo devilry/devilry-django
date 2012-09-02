@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     hideHeaders: true,
 
     requires: [
-        'devilry_subjectadmin.view.managestudents.DynamicLoadMenu'
+        'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
+        'Ext.grid.feature.Grouping'
     ],
 
     getColumns: function() {
