@@ -147,3 +147,41 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(delivery.number, 10)
         self.assertEquals(delivery.successful, False)
         self.assertEquals(delivery.time_of_delivery, time_of_delivery)
+
+    def test_copy(self):
+        self.add(nodes="uni",
+                 subjects=["sub"],
+                 periods=["p1"],
+                 assignments=['a1'])
+        self.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
+
+        # Create delivery for alias_delivery
+        self.add_to_path('uni;sub.p_old.a1.g1:candidate(student1):examiner(examiner1).d1')
+        old_delivery = self.add_delivery("sub.p_old.a1.g1", {"secondtry.py": "print second"})
+
+        # Make a delivery without any of the default/generated values, so when
+        # we check that they are copied, we get no generate stuff
+        g1 = self.sub_p1_a1_g1
+        d1 = self.sub_p1_a1_g1_d1
+        time_of_delivery = datetime(2005, 1, 1, 0, 0, 0)
+        delivery = Delivery(deadline=d1,
+                            number=10,
+                            successful=False,
+                            delivery_type=1,
+                            delivered_by=g1.candidates.all()[0],
+                            alias_delivery=old_delivery,
+                            time_of_delivery=time_of_delivery)
+        delivery.full_clean()
+        delivery.save(autoset_number=False,
+                      autoset_time_of_delivery=False)
+
+        self.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
+        newdeadline = self.sub_p1_a1_g2_d1
+        copy = delivery.copy(newdeadline)
+        self.assertEquals(copy.deadline, newdeadline)
+        self.assertEquals(copy.delivery_type, 1)
+        self.assertEquals(copy.number, 10)
+        self.assertEquals(copy.successful, False)
+        self.assertEquals(copy.time_of_delivery, time_of_delivery)
+        self.assertEquals(copy.delivered_by.student, self.student1)
+        self.assertEquals(copy.alias_delivery, old_delivery)

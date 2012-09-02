@@ -87,8 +87,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
 
     # Only used when this is aliasing an earlier delivery, delivery_type == ALIAS
-    alias_delivery = models.OneToOneField("Delivery", blank=True, null=True,
-                                          help_text='Links to another delivery. Used when delivery_type is Alias.')
+    alias_delivery = models.ForeignKey("Delivery", blank=True, null=True,
+                                       on_delete=models.SET_NULL,
+                                       help_text='Links to another delivery. Used when delivery_type is Alias.')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
@@ -197,3 +198,19 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
                                   self.time_of_delivery.isoformat())
+
+    def copy(self, newdeadline):
+        """
+        Copy this delivery, including all FileMeta's into ``newdeadline``.
+        """
+        copy = Delivery(deadline=newdeadline,
+                        delivery_type=self.delivery_type,
+                        number=self.number,
+                        successful=self.successful,
+                        time_of_delivery=self.time_of_delivery,
+                        delivered_by=self.delivered_by,
+                        alias_delivery=self.alias_delivery)
+        copy.full_clean()
+        copy.save(autoset_time_of_delivery=False,
+                  autoset_number=False)
+        return copy
