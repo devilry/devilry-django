@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.utils.formats import date_format
 from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import Q, Max
@@ -197,4 +196,4 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
-                date_format(self.time_of_delivery, "DATETIME_FORMAT"))
+                                  self.time_of_delivery.isoformat())
