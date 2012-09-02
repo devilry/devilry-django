@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
     requires: [
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
-        'Ext.grid.feature.Grouping'
+        'Ext.grid.feature.Grouping',
+        'Ext.grid.column.Action'
     ],
 
     getColumns: function() {
