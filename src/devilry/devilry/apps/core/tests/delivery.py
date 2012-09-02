@@ -55,6 +55,14 @@ class TestDelivery(TestCase, TestHelper):
         d.number = 1
         self.assertRaises(IntegrityError, d.save())
 
+    def test_delete_delivered_by_candidate(self):
+        delivery = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        delivery = Delivery.objects.get(id=delivery.id) # Re-get from DB just to be doubly sure we are using the same delivery below
+        self.assertEquals(delivery.delivered_by.student, self.student2)
+        group = self.inf1100_period1_assignment1_g2
+        group.candidates.all()[0].delete()
+        delivery = Delivery.objects.get(id=delivery.id) # Re-get from DB
+        self.assertEquals(delivery.delivered_by, None)
 
     def test_delivery_numbering(self):
         deadline = self.inf1100_period1_assignment1_g1_d1

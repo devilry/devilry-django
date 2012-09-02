@@ -84,6 +84,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     successful = models.BooleanField(blank=True, default=False,
                                     help_text='Has the delivery and all its files been uploaded successfully?')
     delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
+                                     on_delete=models.SET_NULL,
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
 
     # Only used when this is aliasing an earlier delivery, delivery_type == ALIAS
