@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from django.utils.translation import ugettext as _
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.db import models
 
 from node import Node
@@ -10,13 +8,24 @@ from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
 from model_utils import Etag
-from examiner import Examiner
 import deliverytypes
 
 
-class SplitError(Exception):
+class GroupPopValueError(ValueError):
     """
-    Raised when meth:`AssignmentGroup.split` fails.
+    Base class for exceptions raised by meth:`AssignmentGroup.pop_candidate`.
+    """
+
+class GroupPopToFewCandiatesError(GroupPopValueError):
+    """
+    Raised when meth:`AssignmentGroup.pop_candidate` is called on a group with
+    1 or less candidates.
+    """
+
+class GroupPopNotCandiateError(GroupPopValueError):
+    """
+    Raised when meth:`AssignmentGroup.pop_candidate` is called with a candidate
+    that is not on the group.
     """
 
 
@@ -72,8 +81,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     name = models.CharField(max_length=30, blank=True, null=True,
                            help_text='An optional name for the group. Typically used a project '\
                                        'name on project assignments.')
-    #examiners = models.ManyToManyField(User, blank=True,
-                                       #related_name="examiners", through=Examiner)
     is_open = models.BooleanField(blank=True, default=True,
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
@@ -228,12 +235,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 
-    def copy_all_except_candidates(self, namesuffix=''):
-        name = self.name
-        if name:
-            name = '{0}{1}'.format(name, namesuffix)
+    def copy_all_except_candidates(self):
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
-                                name=name,
+                                name=self.name,
                                 is_open=self.is_open)
         groupcopy.full_clean()
         groupcopy.save()
@@ -245,13 +249,26 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             deadline.copy(groupcopy)
         return groupcopy
 
-    def split(self):
+    def pop_candidate(self, candidate):
+        """
+        Make a copy of this group using ``copy_all_except_candidates``, and
+        add given candidate to the copied group and remove the candidate from
+        this group.
+
+        :param candidate: A :class:`devilry.apps.core.models.Candidate` object. The candidate must be among the candidates on this group.
+        """
         candidates = self.candidates.all()
         if len(candidates) < 2:
-            raise SplitError('Can not split a group with only one member')
+            raise GroupPopToFewCandiatesError('Can not pop caniddaites on a group with less than 2 candidates.')
+        if not candidate in candidates:
+            raise GroupPopNotCandiateError('The candidate to pop must be in the original group.')
+
         assignment = self.parentnode
-        for index, candidate in enumerate(candidates[1:]):
-            group = self.copy_all_except_candidates(namesuffix=' #{0}'.format(index))
+        groupcopy = self.copy_all_except_candidates()
+        candidate.assignment_group = groupcopy # Move the candidate to the new group
+        candidate.full_clean()
+        candidate.save()
+        return groupcopy
 
 
 class AssignmentGroupTag(models.Model):

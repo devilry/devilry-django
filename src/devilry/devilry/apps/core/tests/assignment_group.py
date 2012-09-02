@@ -4,6 +4,8 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 
 from ..models import AssignmentGroup
+from ..models.assignment_group import GroupPopNotCandiateError
+from ..models.assignment_group import GroupPopToFewCandiatesError
 from ..models import Delivery
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
@@ -158,8 +160,8 @@ class TestAssignmentGroupSplit(TestCase):
                             periods=["p1"],
                             assignments=['a1'])
 
-    def test_copy_all_except_candidates(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1,examiner2,examiner3)')
+    def _testdata(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3):examiner(examiner1,examiner2,examiner3)')
 
         # Add d1 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
@@ -173,9 +175,28 @@ class TestAssignmentGroupSplit(TestCase):
         self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
                                      time_of_delivery=-1) # days after deadline
 
+        # Set attributes and tags
+        g1 = self.testhelper.sub_p1_a1_g1
+        g1.name = 'Stuff'
+        g1.is_open = True
+        g1.save()
+        g1.tags.create(tag='a')
+        g1.tags.create(tag='b')
+
+    def test_copy_all_except_candidates(self):
+        self._testdata()
         g1 = self.testhelper.sub_p1_a1_g1
         g1copy = g1.copy_all_except_candidates()
+
+        # Basics
+        self.assertEquals(g1copy.name, 'Stuff')
+        self.assertTrue(g1copy.is_open)
         self.assertEquals(g1copy.candidates.count(), 0)
+
+        # Tags
+        self.assertEquals(g1copy.tags.count(), 2)
+        tags = [t.tag for t in g1copy.tags.all()]
+        self.assertEquals(set(tags), set(['a', 'b']))
 
         # Examiners
         self.assertEquals(g1copy.examiners.count(), 3)
@@ -196,3 +217,32 @@ class TestAssignmentGroupSplit(TestCase):
             self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
             self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
             self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
+
+    def test_pop_candidate(self):
+        self._testdata()
+        g1 = self.testhelper.sub_p1_a1_g1
+        self.assertEquals(g1.candidates.count(), 3) # We check this again after popping
+        candidate = g1.candidates.order_by('student__username')[1]
+        g1copy = g1.pop_candidate(candidate)
+
+        self.assertEquals(g1copy.name, 'Stuff') # Sanity test - the tests for copying are above
+        self.assertEquals(g1copy.candidates.count(), 1)
+        self.assertEquals(g1.candidates.count(), 2)
+        self.assertEquals(candidate.student.username, 'student2')
+        self.assertEquals(g1copy.candidates.all()[0], candidate)
+
+    def test_pop_candidate_not_candidate(self):
+        self._testdata()
+        self.testhelper.add_to_path('uni;sub.p1.a2.other:candidate(student10)')
+        g1 = self.testhelper.sub_p1_a1_g1
+        other = self.testhelper.sub_p1_a2_other
+        candidate = other.candidates.all()[0]
+        with self.assertRaises(GroupPopNotCandiateError):
+            g1copy = g1.pop_candidate(candidate)
+
+    def test_pop_candidate_to_few_candidates(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        g1 = self.testhelper.sub_p1_a1_g1
+        candidate = g1.candidates.all()[0]
+        with self.assertRaises(GroupPopToFewCandiatesError):
+            g1copy = g1.pop_candidate(candidate)
