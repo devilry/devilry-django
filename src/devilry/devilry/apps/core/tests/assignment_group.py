@@ -1,13 +1,13 @@
-from datetime import datetime
-
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 
-from ..models import Assignment, AssignmentGroup, Delivery, Deadline
+from django.test import TestCase
+from django.core.exceptions import ValidationError
+
+from ..models import AssignmentGroup
+from ..models import Delivery
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
+
 
 class TestAssignmentGroup(TestCase, TestHelper):
 
@@ -148,3 +148,45 @@ class TestAssignmentGroup(TestCase, TestHelper):
             obj.etag_update(e.etag)
         obj2 = AssignmentGroup.objects.get(id=obj.id)
         self.assertFalse(obj2.is_open)
+
+
+class TestAssignmentGroupSplit(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes="uni",
+                            subjects=["sub"],
+                            periods=["p1"],
+                            assignments=['a1'])
+
+    def test_copy_all_except_candidates(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1,examiner2,examiner3)')
+
+        # Add d1 and deliveries
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
+        self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
+                                     time_of_delivery=-2) # days after deadline
+        self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
+                                     time_of_delivery=-1) # days after deadline
+
+        # Add d2 and deliveries
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(4)')
+        self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
+                                     time_of_delivery=-1) # days after deadline
+
+        g1 = self.testhelper.sub_p1_a1_g1
+        g1copy = g1.copy_all_except_candidates()
+        self.assertEquals(g1copy.candidates.count(), 0)
+        self.assertEquals(g1copy.examiners.count(), 3)
+
+        deliveries = Delivery.objects.filter(deadline__assignment_group=g1).order_by('time_of_delivery')
+        copydeliveries = Delivery.objects.filter(deadline__assignment_group=g1copy).order_by('time_of_delivery')
+        self.assertEquals(len(deliveries), len(copydeliveries))
+        self.assertEquals(len(deliveries), 3)
+        for delivery, deliverycopy in zip(deliveries, copydeliveries):
+            self.assertEquals(delivery.delivery_type, deliverycopy.delivery_type)
+            self.assertEquals(delivery.time_of_delivery, deliverycopy.time_of_delivery)
+            self.assertEquals(delivery.number, deliverycopy.number)
+            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
+            self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
+            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
+            self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)

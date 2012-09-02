@@ -13,6 +13,13 @@ from model_utils import Etag
 from examiner import Examiner
 import deliverytypes
 
+
+class SplitError(Exception):
+    """
+    Raised when meth:`AssignmentGroup.split` fails.
+    """
+
+
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
@@ -220,6 +227,35 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
+
+    def copy_all_except_candidates(self, namesuffix=''):
+        name = self.name
+        if name:
+            name = '{0}{1}'.format(name, namesuffix)
+        copy = AssignmentGroup(parentnode=self.parentnode,
+                                name=name,
+                                is_open=self.is_open)
+        copy.full_clean()
+        copy.save()
+        for tagobj in self.tags.all():
+            copy.tags.create(tag=tagobj.tag)
+        for examiner in self.examiners.all():
+            copy.examiners.create(user=examiner.user)
+        for deadline in self.deadlines.all():
+            newdeadline = copy.deadlines.create(deadline=deadline.deadline,
+                                                 text=deadline.text,
+                                                 feedbacks_published=deadline.feedbacks_published)
+            for delivery in deadline.deliveries.all():
+                newdelivery = delivery.copy(newdeadline)
+        return copy
+
+    def split(self):
+        candidates = self.candidates.all()
+        if len(candidates) < 2:
+            raise SplitError('Can not split a group with only one member')
+        assignment = self.parentnode
+        for index, candidate in enumerate(candidates[1:]):
+            group = self.copy_all_except_candidates(namesuffix=' #{0}'.format(index))
 
 
 class AssignmentGroupTag(models.Model):
