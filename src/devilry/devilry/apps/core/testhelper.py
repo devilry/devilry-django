@@ -117,10 +117,12 @@ class TestHelper(object):
         elif after_last_deadline:
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
+        else:
+            delivery.time_of_delivery = datetime.now()
 
         delivery.successful = successful
         delivery.full_clean()
-        delivery.save()
+        delivery.save(autoset_time_of_delivery=False)
         # add it to the groups delivery list
         prefix = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
                   group.parentnode.parentnode.short_name + '_' +             # period_
