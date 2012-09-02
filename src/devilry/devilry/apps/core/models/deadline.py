@@ -1,4 +1,3 @@
-from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -164,3 +163,19 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             return self.assignment_group.parentnode.is_admin(user_obj)
         else:
             return False
+
+
+    def copy(self, newgroup):
+        """
+        Copy this deadline into ``newgroup``, including all deliveries and
+        filemetas, with the actual file data.
+        """
+        deadlinecopy = Deadline(assignment_group=newgroup,
+                                deadline=self.deadline,
+                                text=self.text,
+                                feedbacks_published=self.feedbacks_published)
+        deadlinecopy.full_clean()
+        deadlinecopy.save()
+        for delivery in self.deliveries.all():
+            delivery.copy(deadlinecopy)
+        return deadlinecopy
