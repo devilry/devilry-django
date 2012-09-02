@@ -730,7 +730,7 @@ msgid ""
 "Choose a long and a short name. Short name is used in places where long name "
 "takes too much space, such as table headers and navigation."
 msgstr ""
-"Velg et langt og et kort navn. Det korte navnet brukes nå det lange navnet "
+"Velg et langt og et kort navn. Det korte navnet brukes når det lange navnet "
 "er for langt, f.eks. i tabeller og navigasjon."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:59
