@@ -190,6 +190,12 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(copy.delivered_by.student, self.student1)
         self.assertEquals(copy.alias_delivery, old_delivery)
 
+        # Check copy_of and the reverse
+        self.assertEquals(copy.copy_of, delivery)
+        self.assertEquals(list(delivery.copies.all()),
+                          [copy])
+
+        # Filemetas
         self.assertEquals(delivery.filemetas.count(), 1)
         self.assertEquals(copy.filemetas.count(), 1)
         copied_filemeta = copy.filemetas.all()[0]

@@ -64,6 +64,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
+
+    .. attribute:: copy_of
+
+        Link to a delivery that this delivery is a copy of. This is set by :meth:`.copy`.
     """
     #DELIVERY_NOT_CORRECTED = 0
     #DELIVERY_CORRECTED = 1
@@ -90,6 +94,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     alias_delivery = models.ForeignKey("Delivery", blank=True, null=True,
                                        on_delete=models.SET_NULL,
                                        help_text='Links to another delivery. Used when delivery_type is Alias.')
+
+    copy_of = models.ForeignKey("Delivery", blank=True, null=True,
+                                related_name='copies',
+                                on_delete=models.SET_NULL,
+                                help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
@@ -202,7 +211,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def copy(self, newdeadline):
         """
         Copy this delivery, including all FileMeta's and their files
-        into ``newdeadline``.
+        into ``newdeadline``. Sets the ``copy_of`` attribute of the
+        created delivery.
+
+        :return: The newly created, cleaned and saved delivery.
         """
         deliverycopy = Delivery(deadline=newdeadline,
                                 delivery_type=self.delivery_type,
@@ -210,7 +222,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 successful=self.successful,
                                 time_of_delivery=self.time_of_delivery,
                                 delivered_by=self.delivered_by,
-                                alias_delivery=self.alias_delivery)
+                                alias_delivery=self.alias_delivery,
+                                copy_of=self)
         deliverycopy.full_clean()
         deliverycopy.save(autoset_time_of_delivery=False,
                           autoset_number=False)
