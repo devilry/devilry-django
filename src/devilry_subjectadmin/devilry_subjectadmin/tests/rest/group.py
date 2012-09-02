@@ -427,7 +427,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
     def test_create_ro_fields(self):
         data = [{'name': 'g1',
                  'is_open': False,
-                 'id': 'should be ignored',
+                 'id': None,
                  'feedback': 'should be ignored',
                  'num_deliveries': 'should be ignored',
                  'deadlines': 'should be ignored'}]
@@ -435,26 +435,14 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(response.status_code, 201)
 
 
-class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes='uni',
-                            subjects=['sub'],
-                            periods=['p1'],
-                            assignments=['a1:admin(a1admin)'])
-        self.client = RestClient()
-        self.testhelper.create_superuser('grandma')
-        self.testhelper.create_user('candidate1')
-        self.testhelper.create_user('examiner1')
-        self.testhelper.create_superuser('superuser')
-        self.a1id = self.testhelper.sub_p1_a1.id
-
-    def _geturl(self, assignment_id, group_id):
-        return '/devilry_subjectadmin/rest/group/{0}/{1}'.format(assignment_id, group_id)
-
-    def _putas(self, username, assignment_id, group_id, data={}):
+    #
+    #
+    # PUT
+    #
+    #
+    def _putas(self, username, assignment_id, data={}):
         self.client.login(username=username, password='test')
-        return self.client.rest_put(self._geturl(assignment_id, group_id), data)
+        return self.client.rest_put(self._geturl(assignment_id), data)
 
     def _add_group(self, name, candidates, examiners):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate({candidates}):examiner({examiners})'.format(**vars()))
@@ -464,61 +452,68 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         group = self._add_group('g1', candidates='candidate1', examiners='examiner1')
         self.assertEquals(group.name, 'g1')
         self.assertEquals(group.is_open, True)
-        data = {'name': 'changed',
-                'is_open': False}
-        content, response = self._putas('a1admin', self.a1id, group.id, data)
+        data = [{'id': group.id,
+                 'name': 'changed',
+                 'is_open': False}]
+        content, response = self._putas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(set(content.keys()),
+        self.assertEquals(len(content), 1)
+        first = content[0]
+
+        self.assertEquals(set(first.keys()),
                           set(['name', 'id', 'etag', 'is_open', 'parentnode',
                                'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
-        self.assertEquals(content['name'], 'changed')
-        self.assertEquals(content['is_open'], False)
-        self.assertEquals(content['parentnode'], self.a1id)
-        self.assertEquals(content['num_deliveries'], 0)
-        self.assertEquals(content['feedback'], None)
-        self.assertEquals(content['deadlines'], [])
-        self.assertEquals(content['candidates'], [])
-        self.assertEquals(content['examiners'], [])
-        self.assertEquals(content['tags'], [])
+        self.assertEquals(first['name'], 'changed')
+        self.assertEquals(first['is_open'], False)
+        self.assertEquals(first['parentnode'], self.a1id)
+        self.assertEquals(first['num_deliveries'], 0)
+        self.assertEquals(first['feedback'], None)
+        self.assertEquals(first['deadlines'], [])
+        self.assertEquals(first['candidates'], [])
+        self.assertEquals(first['examiners'], [])
+        self.assertEquals(first['tags'], [])
 
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
-        self.assertEquals(content['id'], groups[0].id)
+        self.assertEquals(first['id'], groups[0].id)
 
     def _test_put_as(self, username):
         group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
-        data = {'name': 'changed',
-                'is_open': False,
-                'examiners': [self.create_examinerdict(username='examiner1')],
-                'candidates': [self.create_candidatedict(username='candidate1')],
-                'tags': [self.create_tagdict('mytag')]}
-        content, response = self._putas(username, self.a1id, group.id, data)
+        data = [{'id': group.id,
+                 'name': 'changed',
+                 'is_open': False,
+                 'examiners': [self.create_examinerdict(username='examiner1')],
+                 'candidates': [self.create_candidatedict(username='candidate1')],
+                 'tags': [self.create_tagdict('mytag')]}]
+        content, response = self._putas(username, self.a1id, data)
         #from pprint import pprint
         #print 'Response content:'
         #pprint(content)
         self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        first = content[0]
 
-        self.assertEquals(content['name'], 'changed')
-        self.assertEquals(content['is_open'], False)
-        self.assertEquals(content['parentnode'], self.a1id)
-        self.assertEquals(content['num_deliveries'], 0)
+        self.assertEquals(first['name'], 'changed')
+        self.assertEquals(first['is_open'], False)
+        self.assertEquals(first['parentnode'], self.a1id)
+        self.assertEquals(first['num_deliveries'], 0)
 
         # Feedback
-        self.assertEquals(content['feedback'], None)
+        self.assertEquals(first['feedback'], None)
 
         # Deadlines
-        self.assertEquals(content['deadlines'], [])
+        self.assertEquals(first['deadlines'], [])
 
         # Tags
-        self.assertEquals(len(content['tags']), 1)
-        tag = content['tags'][0]
+        self.assertEquals(len(first['tags']), 1)
+        tag = first['tags'][0]
         self.assertEquals(tag['tag'], 'mytag')
         self.assertEquals(set(tag.keys()), set(['id', 'tag']))
 
         # Examiners
-        self.assertEquals(len(content['examiners']), 1)
-        examiner = content['examiners'][0]
+        self.assertEquals(len(first['examiners']), 1)
+        examiner = first['examiners'][0]
         self.assertEquals(set(examiner.keys()),
                           set(['id', 'user']))
         self.assertEquals(set(examiner['user'].keys()),
@@ -527,8 +522,8 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(examiner['user']['username'], 'examiner1')
 
         # Candidates
-        self.assertEquals(len(content['candidates']), 1)
-        candidate = content['candidates'][0]
+        self.assertEquals(len(first['candidates']), 1)
+        candidate = first['candidates'][0]
         self.assertEquals(set(candidate.keys()),
                           set(['id', 'user', 'candidate_id']))
         self.assertEquals(set(candidate['user'].keys()),
@@ -542,99 +537,244 @@ class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(group.name, 'changed')
 
     def test_put_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
         self._test_put_as('superuser')
 
     def test_put_as_assignmentadmin(self):
         self._test_put_as('a1admin')
 
     def test_put_doesnotexist(self):
-        data = {'name': 'changed',
-                'is_open': False}
-        content, response = self._putas('grandma', 10000, 100000, data)
+        data = [{'id': 100000,
+                 'name': 'changed',
+                 'is_open': False}]
+        content, response = self._putas('grandma', 10000, data)
         self.assertEquals(response.status_code, 404)
 
     def test_put_denied(self):
         self.testhelper.create_user('nobody')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1')
         group = self.testhelper.sub_p1_a1_g1
-        data = {'name': 'changed',
-                'is_open': False}
-        content, response = self._putas('nobody', self.a1id, group.id, data)
+        data = [{'name': 'changed',
+                 'is_open': False}]
+        content, response = self._putas('nobody', self.a1id, data)
         self.assertEquals(response.status_code, 403)
 
     def test_put_ro_fields(self):
         group = self._add_group('g1', candidates='candidate1', examiners='examiner1')
         self.assertEquals(group.name, 'g1')
         self.assertEquals(group.is_open, True)
-        data = {'name': 'changed',
-                'is_open': False,
-                'feedback': 'should be ignored',
-                'id': 'should be ignored',
-                'num_deliveries': 'should be ignored',
-                'deadlines': 'should be ignored'}
-        content, response = self._putas('a1admin', self.a1id, group.id, data)
+        data = [{'id': group.id,
+                 'name': 'changed',
+                 'is_open': False,
+                 'feedback': 'should be ignored',
+                 'id': 'should be ignored',
+                 'num_deliveries': 'should be ignored',
+                 'deadlines': 'should be ignored'}]
+        content, response = self._putas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 200)
 
 
 
+#class TestInstanceGroupRest(TestCase, GroupManagerTestMixin):
+    #def setUp(self):
+        #self.testhelper = TestHelper()
+        #self.testhelper.add(nodes='uni',
+                            #subjects=['sub'],
+                            #periods=['p1'],
+                            #assignments=['a1:admin(a1admin)'])
+        #self.client = RestClient()
+        #self.testhelper.create_superuser('grandma')
+        #self.testhelper.create_user('candidate1')
+        #self.testhelper.create_user('examiner1')
+        #self.testhelper.create_superuser('superuser')
+        #self.a1id = self.testhelper.sub_p1_a1.id
 
-    #
-    # GET
-    #
-    def _getas(self, username, assignment_id, group_id):
-        self.client.login(username=username, password='test')
-        return self.client.rest_get(self._geturl(assignment_id, group_id))
+    #def _geturl(self, assignment_id, group_id):
+        #return '/devilry_subjectadmin/rest/group/{0}/{1}'.format(assignment_id, group_id)
 
-    def _test_get_as(self, username):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(candidate1):examiner(examiner1).d1:ends(5)')
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
-        group = self.testhelper.sub_p1_a1_g1
-        content, response = self._getas(username, self.a1id, group.id)
-        #from pprint import pprint
-        #print 'Response content:'
-        #pprint(content)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(set(content.keys()),
-                          set(['name', 'id', 'etag', 'is_open', 'parentnode',
-                               'feedback', 'deadlines', 'candidates', 'tags',
-                               'examiners', 'num_deliveries']))
-        self.assertEquals(content['name'], 'g1')
-        self.assertEquals(content['is_open'], True)
-        self.assertEquals(content['parentnode'], self.a1id)
-        self.assertEquals(content['num_deliveries'], 0)
-        self.assertEquals(content['feedback'], None)
+    #def _putas(self, username, assignment_id, group_id, data={}):
+        #self.client.login(username=username, password='test')
+        #return self.client.rest_put(self._geturl(assignment_id, group_id), data)
 
-        # Deadlines
-        self.assertEquals(len(content['deadlines']), 2)
-        self.assertEquals(set(content['deadlines'][0].keys()),
-                          set(['id', 'deadline']))
+    #def _add_group(self, name, candidates, examiners):
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate({candidates}):examiner({examiners})'.format(**vars()))
+        #return getattr(self.testhelper, 'sub_p1_a1_' + name)
 
-        # Candidates
-        self.assertEquals(len(content['candidates']), 1)
-        candidate = content['candidates'][0]
-        self.assertEquals(candidate['candidate_id'], None)
-        self.assertEquals(candidate['user'], {'id': self.testhelper.candidate1.id,
-                                              'username': 'candidate1',
-                                              'email': 'candidate1@example.com',
-                                              'full_name': None})
+    #def test_put_minimal(self):
+        #group = self._add_group('g1', candidates='candidate1', examiners='examiner1')
+        #self.assertEquals(group.name, 'g1')
+        #self.assertEquals(group.is_open, True)
+        #data = {'name': 'changed',
+                #'is_open': False}
+        #content, response = self._putas('a1admin', self.a1id, group.id, data)
+        #self.assertEquals(response.status_code, 200)
+        #self.assertEquals(set(content.keys()),
+                          #set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                               #'feedback', 'deadlines', 'candidates', 'tags',
+                               #'examiners', 'num_deliveries']))
+        #self.assertEquals(content['name'], 'changed')
+        #self.assertEquals(content['is_open'], False)
+        #self.assertEquals(content['parentnode'], self.a1id)
+        #self.assertEquals(content['num_deliveries'], 0)
+        #self.assertEquals(content['feedback'], None)
+        #self.assertEquals(content['deadlines'], [])
+        #self.assertEquals(content['candidates'], [])
+        #self.assertEquals(content['examiners'], [])
+        #self.assertEquals(content['tags'], [])
 
-        # Examiners
-        self.assertEquals(len(content['examiners']), 1)
-        examiner = content['examiners'][0]
-        self.assertEquals(examiner['user'], {'id': self.testhelper.examiner1.id,
-                                              'username': 'examiner1',
-                                              'email': 'examiner1@example.com',
-                                              'full_name': None})
+        #groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
+        #self.assertEquals(len(groups), 1)
+        #self.assertEquals(content['id'], groups[0].id)
 
-    def test_get_as_assignmentadmin(self):
-        self._test_get_as('a1admin')
+    #def _test_put_as(self, username):
+        #group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
+        #data = {'name': 'changed',
+                #'is_open': False,
+                #'examiners': [self.create_examinerdict(username='examiner1')],
+                #'candidates': [self.create_candidatedict(username='candidate1')],
+                #'tags': [self.create_tagdict('mytag')]}
+        #content, response = self._putas(username, self.a1id, group.id, data)
+        ##from pprint import pprint
+        ##print 'Response content:'
+        ##pprint(content)
+        #self.assertEquals(response.status_code, 200)
 
-    def test_get_as_superuser(self):
-        self._test_get_as('superuser')
+        #self.assertEquals(content['name'], 'changed')
+        #self.assertEquals(content['is_open'], False)
+        #self.assertEquals(content['parentnode'], self.a1id)
+        #self.assertEquals(content['num_deliveries'], 0)
 
-    def test_get_denied(self):
-        self.testhelper.create_user('nobody')
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
-        group = self.testhelper.sub_p1_a1_g1
-        content, response = self._getas('nobody', self.a1id, group.id)
-        self.assertEquals(response.status_code, 403)
+        ## Feedback
+        #self.assertEquals(content['feedback'], None)
+
+        ## Deadlines
+        #self.assertEquals(content['deadlines'], [])
+
+        ## Tags
+        #self.assertEquals(len(content['tags']), 1)
+        #tag = content['tags'][0]
+        #self.assertEquals(tag['tag'], 'mytag')
+        #self.assertEquals(set(tag.keys()), set(['id', 'tag']))
+
+        ## Examiners
+        #self.assertEquals(len(content['examiners']), 1)
+        #examiner = content['examiners'][0]
+        #self.assertEquals(set(examiner.keys()),
+                          #set(['id', 'user']))
+        #self.assertEquals(set(examiner['user'].keys()),
+                          #set(['email', 'full_name', 'id', 'username']))
+        #self.assertEquals(examiner['user']['id'], self.testhelper.examiner1.id)
+        #self.assertEquals(examiner['user']['username'], 'examiner1')
+
+        ## Candidates
+        #self.assertEquals(len(content['candidates']), 1)
+        #candidate = content['candidates'][0]
+        #self.assertEquals(set(candidate.keys()),
+                          #set(['id', 'user', 'candidate_id']))
+        #self.assertEquals(set(candidate['user'].keys()),
+                          #set(['email', 'full_name', 'id', 'username']))
+        #self.assertEquals(candidate['user']['id'], self.testhelper.candidate1.id)
+        #self.assertEquals(candidate['candidate_id'], '')
+        #self.assertEquals(candidate['user']['username'], 'candidate1')
+
+        ## It was actually updated?
+        #group = self.testhelper.sub_p1_a1.assignmentgroups.get(id=group.id)
+        #self.assertEquals(group.name, 'changed')
+
+    #def test_put_as_superuser(self):
+        #self._test_put_as('superuser')
+
+    #def test_put_as_assignmentadmin(self):
+        #self._test_put_as('a1admin')
+
+    #def test_put_doesnotexist(self):
+        #data = {'name': 'changed',
+                #'is_open': False}
+        #content, response = self._putas('grandma', 10000, 100000, data)
+        #self.assertEquals(response.status_code, 404)
+
+    #def test_put_denied(self):
+        #self.testhelper.create_user('nobody')
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        #group = self.testhelper.sub_p1_a1_g1
+        #data = {'name': 'changed',
+                #'is_open': False}
+        #content, response = self._putas('nobody', self.a1id, group.id, data)
+        #self.assertEquals(response.status_code, 403)
+
+    #def test_put_ro_fields(self):
+        #group = self._add_group('g1', candidates='candidate1', examiners='examiner1')
+        #self.assertEquals(group.name, 'g1')
+        #self.assertEquals(group.is_open, True)
+        #data = {'name': 'changed',
+                #'is_open': False,
+                #'feedback': 'should be ignored',
+                #'id': 'should be ignored',
+                #'num_deliveries': 'should be ignored',
+                #'deadlines': 'should be ignored'}
+        #content, response = self._putas('a1admin', self.a1id, group.id, data)
+        #self.assertEquals(response.status_code, 200)
+
+
+
+
+    ##
+    ## GET
+    ##
+    #def _getas(self, username, assignment_id, group_id):
+        #self.client.login(username=username, password='test')
+        #return self.client.rest_get(self._geturl(assignment_id, group_id))
+
+    #def _test_get_as(self, username):
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(candidate1):examiner(examiner1).d1:ends(5)')
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
+        #group = self.testhelper.sub_p1_a1_g1
+        #content, response = self._getas(username, self.a1id, group.id)
+        ##from pprint import pprint
+        ##print 'Response content:'
+        ##pprint(content)
+        #self.assertEquals(response.status_code, 200)
+        #self.assertEquals(set(content.keys()),
+                          #set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                               #'feedback', 'deadlines', 'candidates', 'tags',
+                               #'examiners', 'num_deliveries']))
+        #self.assertEquals(content['name'], 'g1')
+        #self.assertEquals(content['is_open'], True)
+        #self.assertEquals(content['parentnode'], self.a1id)
+        #self.assertEquals(content['num_deliveries'], 0)
+        #self.assertEquals(content['feedback'], None)
+
+        ## Deadlines
+        #self.assertEquals(len(content['deadlines']), 2)
+        #self.assertEquals(set(content['deadlines'][0].keys()),
+                          #set(['id', 'deadline']))
+
+        ## Candidates
+        #self.assertEquals(len(content['candidates']), 1)
+        #candidate = content['candidates'][0]
+        #self.assertEquals(candidate['candidate_id'], None)
+        #self.assertEquals(candidate['user'], {'id': self.testhelper.candidate1.id,
+                                              #'username': 'candidate1',
+                                              #'email': 'candidate1@example.com',
+                                              #'full_name': None})
+
+        ## Examiners
+        #self.assertEquals(len(content['examiners']), 1)
+        #examiner = content['examiners'][0]
+        #self.assertEquals(examiner['user'], {'id': self.testhelper.examiner1.id,
+                                              #'username': 'examiner1',
+                                              #'email': 'examiner1@example.com',
+                                              #'full_name': None})
+
+    #def test_get_as_assignmentadmin(self):
+        #self._test_get_as('a1admin')
+
+    #def test_get_as_superuser(self):
+        #self._test_get_as('superuser')
+
+    #def test_get_denied(self):
+        #self.testhelper.create_user('nobody')
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        #group = self.testhelper.sub_p1_a1_g1
+        #content, response = self._getas('nobody', self.a1id, group.id)
+        #self.assertEquals(response.status_code, 403)

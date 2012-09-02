@@ -19,6 +19,7 @@ from devilry.apps.core.models import Delivery
 
 from .errors import ValidationErrorResponse
 from .errors import NotFoundError
+from .errors import BadRequestFieldError
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .fields import DictField
@@ -328,6 +329,7 @@ class ExaminersField(ListOfDictField):
         user = UserField(required=False)
 
 class GroupForm(forms.Form):
+    id = forms.IntegerField(required=False)
     name = forms.CharField(required=False,
                            help_text='The name of the group (string)')
     is_open = forms.BooleanField(required=False,
@@ -379,7 +381,7 @@ class GroupResource(ModelResource):
             return GroupSerializer(instance).serialize_candidates()
 
     def validate_request(self, data, files=None):
-        for ignorefield in ('id', 'feedback', 'deadlines', 'num_deliveries'):
+        for ignorefield in ('feedback', 'deadlines', 'num_deliveries'):
             if ignorefield in data:
                 del data[ignorefield]
         return super(GroupResource, self).validate_request(data, files)
@@ -501,50 +503,75 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         return Response(201, created_groups)
 
 
-    def put(self, request, assignment_id):
-        pass
-
-
-
-class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
-    resource = GroupResource
-    form = GroupForm
-    permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
-
     def _not_found_response(self, assignment_id, group_id):
-            raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
+        raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
 
-    def get(self, request, assignment_id, group_id):
-        """
-        Returns aggregated data for the requested AssignmentGroup and related data:
-
-        {responsetable}
-        """
-        return super(InstanceGroupRest, self).get(request, id=group_id)
-
-    def put(self, request, assignment_id, group_id):
-        """
-        # Parameters
-        {parameterstable}
-
-        # Returns (the same as GET)
-        An object/map with the following attributes:
-        {responsetable}
-        """
-        data = self.CONTENT
-        try:
-            manager = GroupManager(assignment_id, group_id)
-        except AssignmentGroup.DoesNotExist:
-            self._not_found_response(assignment_id, group_id)
+    def put(self, request, assignment_id):
+        datalist = self.CONTENT
+        updated_groups = []
         with transaction.commit_on_success():
-            try:
-                manager.update_group(name=data['name'],
-                                     is_open=data['is_open'])
-                manager.update_examiners(data['examiners'])
-                manager.update_candidates(data['candidates'])
-                manager.update_tags(data['tags'])
-            except ValidationError, e:
-                raise ValidationErrorResponse(e)
-            else:
-                logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
-                return Response(200, manager.group)
+            for data in datalist:
+                if data['id'] == None:
+                    raise BadRequestFieldError('id', 'Required.')
+                group_id = data['id']
+                try:
+                    manager = GroupManager(assignment_id, group_id)
+                except AssignmentGroup.DoesNotExist:
+                    self._not_found_response(assignment_id, group_id)
+                try:
+                    manager.update_group(name=data['name'],
+                                         is_open=data['is_open'])
+                    manager.update_examiners(data['examiners'])
+                    manager.update_candidates(data['candidates'])
+                    manager.update_tags(data['tags'])
+                except ValidationError, e:
+                    raise ValidationErrorResponse(e)
+                else:
+                    logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
+                    updated_groups.append(manager.group)
+            return Response(200, updated_groups)
+
+
+
+#class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
+    #resource = GroupResource
+    #form = GroupForm
+    #permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
+
+    #def _not_found_response(self, assignment_id, group_id):
+        #raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
+
+    #def get(self, request, assignment_id, group_id):
+        #"""
+        #Returns aggregated data for the requested AssignmentGroup and related data:
+
+        #{responsetable}
+        #"""
+        #return super(InstanceGroupRest, self).get(request, id=group_id)
+
+    #def put(self, request, assignment_id, group_id):
+        #"""
+        ## Parameters
+        #{parameterstable}
+
+        ## Returns (the same as GET)
+        #An object/map with the following attributes:
+        #{responsetable}
+        #"""
+        #data = self.CONTENT
+        #try:
+            #manager = GroupManager(assignment_id, group_id)
+        #except AssignmentGroup.DoesNotExist:
+            #self._not_found_response(assignment_id, group_id)
+        #with transaction.commit_on_success():
+            #try:
+                #manager.update_group(name=data['name'],
+                                     #is_open=data['is_open'])
+                #manager.update_examiners(data['examiners'])
+                #manager.update_candidates(data['candidates'])
+                #manager.update_tags(data['tags'])
+            #except ValidationError, e:
+                #raise ValidationErrorResponse(e)
+            #else:
+                #logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
+                #return Response(200, manager.group)

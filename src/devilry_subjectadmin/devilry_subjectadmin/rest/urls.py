@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 
 from .group import ListOrCreateGroupRest
-from .group import InstanceGroupRest
+#from .group import InstanceGroupRest
 from .createnewassignment import RestCreateNewAssignment
 from .subject import ListOrCreateSubjectRest
 from .subject import InstanceSubjectRest
@@ -22,7 +22,7 @@ from .deadlinesbulk import DeadlinesBulkUpdateReadOrDelete
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^group/(?P<assignment_id>\d+)/$', ListOrCreateGroupRest.as_view()),
-                       url(r'^group/(?P<assignment_id>\d+)/(?P<group_id>\d+)$', InstanceGroupRest.as_view()),
+                       #url(r'^group/(?P<assignment_id>\d+)/(?P<group_id>\d+)$', InstanceGroupRest.as_view()),
                        url(r'^createnewassignment/$', RestCreateNewAssignment.as_view()),
                        url(r'^subject/$', ListOrCreateSubjectRest.as_view()),
                        url(r'^subject/(?P<id>[^/]+)$', InstanceSubjectRest.as_view()),
