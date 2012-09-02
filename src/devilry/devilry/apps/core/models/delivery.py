@@ -73,8 +73,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                                 verbose_name = "Type of delivery",
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
-    time_of_delivery = models.DateTimeField(auto_now_add=True,
-                                           help_text='Holds the date and time the Delivery was uploaded.')
+    time_of_delivery = models.DateTimeField(help_text='Holds the date and time the Delivery was uploaded.')
     deadline = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
@@ -182,8 +181,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
         """
+        autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
+        if autoset_time_of_delivery:
+            # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
+            now = datetime.now().replace(microsecond=0, tzinfo=None)
+            self.time_of_delivery = now
         if self.successful:
-            self._set_number()
+            autoset_number = kwargs.pop('autoset_number', True)
+            if autoset_number:
+                self._set_number()
         else:
             self.number = 0 # NOTE: Number is 0 until the delivery is successful
         super(Delivery, self).save(*args, **kwargs)

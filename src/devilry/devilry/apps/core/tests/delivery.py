@@ -43,10 +43,13 @@ class TestDelivery(TestCase, TestHelper):
 
     def test_delivery(self):
         assignmentgroup = self.inf1100_period1_assignment1_g3
+        beforeadd = datetime.now().replace(microsecond=0, tzinfo=None)
         d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
+        afteradd = datetime.now().replace(microsecond=0, tzinfo=None)
         self.assertEquals(d.deadline.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 2)
+        self.assertTrue(d.time_of_delivery >= beforeadd and d.time_of_delivery <=afteradd)
 
         # TODO find a graceful way to handle this error:
         d.number = 1
