@@ -58,7 +58,7 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 ## django_seleniumhelpers
 ## - http://django_seleniumhelpers.readthedocs.org/
 #SKIP_SELENIUMTESTS = True
-SELENIUM_BROWSER = 'Firefox' # Default selenium browser
+#SELENIUM_BROWSER = 'Firefox' # Default selenium browser
 
 
 #DEVILRY_USERADMIN_USER_READONLY_FIELDS = ['email', 'is_superuser', 'is_staff', 'is_active']
