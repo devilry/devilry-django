@@ -1,5 +1,5 @@
+import logging
 from django.db import models
-from django.utils.translation import ugettext as _
 from django.db.models import Q
 
 from node import Node
@@ -10,6 +10,10 @@ from abstract_is_candidate import AbstractIsCandidate
 from ..deliverystore import load_deliverystore_backend, FileNotFoundError
 
 from datetime import datetime
+
+
+
+log = logging.getLogger(__name__)
 
 
 class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
@@ -96,14 +100,8 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
 def filemeta_deleted_handler(sender, **kwargs):
     filemeta = kwargs['instance']
-    try:
-        filemeta.deliverystore.remove(filemeta)
-    except FileNotFoundError, e:
-        # TODO: We should have some way of cleaning files which have no
-        # corresponding FileMeta from DeliveryStores (could happen if the
-        # disk is not mounted when this kicks in..
-        pass
+    filemeta.deliverystore.remove(filemeta)
 
 
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
