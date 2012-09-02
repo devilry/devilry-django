@@ -442,6 +442,14 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         qry = qry.order_by('id')
         return qry
 
+    def validate_request(self, datalist, files=None):
+        cleaned_datalist = []
+        for data in datalist:
+            cleaned_data = super(ListOrCreateGroupRest, self).validate_request(data)
+            cleaned_datalist.append(cleaned_data)
+        return cleaned_datalist
+
+
     def get(self, request, assignment_id):
         """
         Without the ``query`` parameter, list all groups.
@@ -474,20 +482,27 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         An object/map with the following attributes:
         {responsetable}
         """
-        data = self.CONTENT
+        datalist = self.CONTENT
         manager = GroupManager(assignment_id)
+        created_groups = []
         with transaction.commit_on_success():
-            try:
-                manager.update_group(name=data['name'],
-                                     is_open=data['is_open'])
-                manager.update_examiners(data['examiners'])
-                manager.update_candidates(data['candidates'])
-                manager.update_tags(data['tags'])
-            except ValidationError, e:
-                raise ValidationErrorResponse(e)
-            else:
-                logger.info('User=%s created AssignmentGroup id=%s', self.user, manager.group.id)
-                return Response(201, manager.group)
+            for data in datalist:
+                try:
+                    manager.update_group(name=data['name'],
+                                         is_open=data['is_open'])
+                    manager.update_examiners(data['examiners'])
+                    manager.update_candidates(data['candidates'])
+                    manager.update_tags(data['tags'])
+                except ValidationError, e:
+                    raise ValidationErrorResponse(e)
+                else:
+                    logger.info('User=%s created AssignmentGroup id=%s', self.user, manager.group.id)
+                    created_groups.append(manager.group)
+        return Response(201, created_groups)
+
+
+    def put(self, request, assignment_id):
+        pass
 
 
 

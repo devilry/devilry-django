@@ -328,62 +328,65 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         return self.client.rest_post(self._geturl(assignment_id), data)
 
     def test_create_minimal(self):
-        data = {'name': 'g1',
-                'is_open': False}
+        data = [{'name': 'g1',
+                 'is_open': False}]
         content, response = self._postas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 201)
-        self.assertEquals(set(content.keys()),
+        self.assertEquals(len(content), 1)
+        first = content[0]
+        self.assertEquals(set(first.keys()),
                           set(['name', 'id', 'etag', 'is_open', 'parentnode',
                                'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
-        self.assertEquals(content['name'], 'g1')
-        self.assertEquals(content['is_open'], False)
-        self.assertEquals(content['parentnode'], self.a1id)
-        self.assertEquals(content['num_deliveries'], 0)
-        self.assertEquals(content['feedback'], None)
-        self.assertEquals(content['deadlines'], [])
-        self.assertEquals(content['candidates'], [])
-        self.assertEquals(content['examiners'], [])
-        self.assertEquals(content['tags'], [])
+        self.assertEquals(first['name'], 'g1')
+        self.assertEquals(first['is_open'], False)
+        self.assertEquals(first['parentnode'], self.a1id)
+        self.assertEquals(first['num_deliveries'], 0)
+        self.assertEquals(first['feedback'], None)
+        self.assertEquals(first['deadlines'], [])
+        self.assertEquals(first['candidates'], [])
+        self.assertEquals(first['examiners'], [])
+        self.assertEquals(first['tags'], [])
 
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
-        self.assertEquals(content['id'], groups[0].id)
+        self.assertEquals(first['id'], groups[0].id)
 
 
     def _test_create_as(self, username):
-        data = {'name': 'g1',
-                'is_open': False,
-                'examiners': [self.create_examinerdict(username='examiner1')],
-                'candidates': [self.create_candidatedict(username='candidate1')],
-                'tags': [self.create_tagdict('mytag')]}
+        data = [{'name': 'g1',
+                 'is_open': False,
+                 'examiners': [self.create_examinerdict(username='examiner1')],
+                 'candidates': [self.create_candidatedict(username='candidate1')],
+                 'tags': [self.create_tagdict('mytag')]}]
         content, response = self._postas(username, self.a1id, data)
         #from pprint import pprint
         #print 'Response content:'
         #pprint(content)
         self.assertEquals(response.status_code, 201)
+        self.assertEquals(len(content), 1)
+        first = content[0]
 
-
-        self.assertEquals(content['name'], 'g1')
-        self.assertEquals(content['is_open'], False)
-        self.assertEquals(content['parentnode'], self.a1id)
-        self.assertEquals(content['num_deliveries'], 0)
+        self.assertEquals(first['name'], 'g1')
+        self.assertEquals(first['is_open'], False)
+        self.assertEquals(first['parentnode'], self.a1id)
+        self.assertEquals(first['num_deliveries'], 0)
 
         # Feedback
-        self.assertEquals(content['feedback'], None)
+        self.assertEquals(first['feedback'], None)
 
         # Deadlines
-        self.assertEquals(content['deadlines'], [])
+        self.assertEquals(first['deadlines'], [])
 
         # Tags
-        self.assertEquals(len(content['tags']), 1)
-        tag = content['tags'][0]
+        self.assertEquals(len(first['tags']), 1)
+        tag = first['tags'][0]
         self.assertEquals(tag['tag'], 'mytag')
         self.assertEquals(set(tag.keys()), set(['id', 'tag']))
 
         # Examiners
-        self.assertEquals(len(content['examiners']), 1)
-        examiner = content['examiners'][0]
+        self.assertEquals(len(first['examiners']), 1)
+        examiner = first['examiners'][0]
         self.assertEquals(set(examiner.keys()),
                           set(['id', 'user']))
         self.assertEquals(set(examiner['user'].keys()),
@@ -392,8 +395,8 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(examiner['user']['username'], 'examiner1')
 
         # Candidates
-        self.assertEquals(len(content['candidates']), 1)
-        candidate = content['candidates'][0]
+        self.assertEquals(len(first['candidates']), 1)
+        candidate = first['candidates'][0]
         self.assertEquals(set(candidate.keys()),
                           set(['id', 'user', 'candidate_id']))
         self.assertEquals(set(candidate['user'].keys()),
@@ -405,7 +408,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         # It was actually created?
         groups = self.testhelper.sub_p1_a1.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
-        self.assertEquals(content['id'], groups[0].id)
+        self.assertEquals(first['id'], groups[0].id)
 
     def test_create_as_assignmentadmin(self):
         self._test_create_as('a1admin')
@@ -415,19 +418,19 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
 
     def test_noperm(self):
         self.testhelper.create_user('nobody')
-        data = {'name': 'g1',
-                'is_open': False}
+        data = [{'name': 'g1',
+                 'is_open': False}]
         content, response = self._postas('nobody', self.a1id, data)
         self.assertEquals(response.status_code, 403)
         self.assertEquals(content, {u'detail': u'Permission denied'})
 
     def test_create_ro_fields(self):
-        data = {'name': 'g1',
-                'is_open': False,
-                'id': 'should be ignored',
-                'feedback': 'should be ignored',
-                'num_deliveries': 'should be ignored',
-                'deadlines': 'should be ignored'}
+        data = [{'name': 'g1',
+                 'is_open': False,
+                 'id': 'should be ignored',
+                 'feedback': 'should be ignored',
+                 'num_deliveries': 'should be ignored',
+                 'deadlines': 'should be ignored'}]
         content, response = self._postas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 201)
 
