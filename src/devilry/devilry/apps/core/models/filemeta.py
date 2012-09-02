@@ -109,6 +109,10 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         return data
 
     def copy(self, newdelivery):
+        """
+        Copy this filemeta into ``newdelivery``. Copies the database object and
+        the data in the deliverystore.
+        """
         copy = FileMeta(delivery=newdelivery,
                         filename=self.filename,
                         size=self.size)
