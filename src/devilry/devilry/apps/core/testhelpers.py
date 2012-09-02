@@ -133,6 +133,7 @@ class DeliveryStoreTestMixin(TestHelper):
         self.filemeta.delivery = d
         self.filemeta.size = 0
         self.filemeta.filename = 'test.txt'
+        self.filemeta.save()
 
     def test_writemany(self):
         store = self.get_storageobj()
@@ -155,6 +156,20 @@ class DeliveryStoreTestMixin(TestHelper):
         store.remove(self.filemeta)
         self.assertFalse(store.exists(self.filemeta))
         self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
+
+    def test_copy(self):
+        store = self.get_storageobj()
+        w = store.write_open(self.filemeta)
+        w.write('hello')
+        w.close()
+
+        target_filemeta = FileMeta()
+        target_filemeta.delivery = self.filemeta.delivery
+        target_filemeta.size = 0
+        target_filemeta.filename = 'test2.txt'
+        target_filemeta.save()
+        store.copy(self.filemeta, target_filemeta)
+        self.assertEquals(store.read_open(target_filemeta).read(), 'hello')
 
 
 class SeleniumTestBase(unittest.TestCase):

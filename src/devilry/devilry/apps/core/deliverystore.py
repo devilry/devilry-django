@@ -1,3 +1,4 @@
+from shutil import copy as shutil_copy
 from django.utils.importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -96,6 +97,21 @@ class DeliveryStoreInterface(object):
         """
         raise NotImplementedError()
 
+    def copy(self, filemeta_obj_from, filemeta_obj_to):
+        """
+        Copy the underlying file-object for ``filemeta_obj_from`` into the
+        file-object for ``filemeta_obj_to``.
+
+        Defaults to an inefficient implementation using :meth:`.read_open` and
+        meth:`.write_open`. Should be overridden for backends with some form of
+        native copy-capability.
+        """
+        infile = self.read_open(filemeta_obj_from)
+        data = infile.read()
+        infile.close()
+        outfile = self.write_open(filemeta_obj_to)
+        outfile.write(data)
+
 
 class FsDeliveryStore(DeliveryStoreInterface):
     """ Filesystem-based DeliveryStore suitable for production use.
@@ -139,6 +155,11 @@ class FsDeliveryStore(DeliveryStoreInterface):
     def exists(self, filemeta_obj):
         filepath = self._get_filepath(filemeta_obj)
         return exists(filepath)
+
+    def copy(self, filemeta_obj_from, filemeta_obj_to):
+        frompath = self._get_filepath(filemeta_obj_from)
+        topath = self._get_filepath(filemeta_obj_to)
+        shutil_copy(frompath, topath)
 
 
 class FsHierDeliveryStore(FsDeliveryStore):
