@@ -382,7 +382,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _notifyGroupsChange: function(callbackconfig) {
-        console.log('sync started');
         this._maskListOfGroups();
         this.getGroupsStore().sync({
             scope: this,
@@ -395,7 +394,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onSyncSuccess: function(batch, options, callbackconfig) {
         this._unmaskListOfGroups();
-        console.log('sync success', batch);
         var affectedRecords = [];
         var operations = batch.operations;
         Ext.Array.each(operations, function(operation) {
