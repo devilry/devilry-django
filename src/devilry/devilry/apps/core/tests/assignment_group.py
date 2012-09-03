@@ -298,12 +298,15 @@ class TestAssignmentGroupSplit(TestCase):
 
     def test_merge_into_sanity(self):
         source, target = self._create_mergetestdata()
+        source.name = 'Test'
+        source.save()
+        target.name = None
+        target.save()
         source.merge_into(target)
 
         # Source has been deleted?
         self.assertFalse(AssignmentGroup.objects.filter(id=source.id).exists())
-
-        # Group attributes
+        self.assertEquals(target.name, 'Test')
 
 
     def test_merge_into_candidates(self):

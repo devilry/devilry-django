@@ -318,25 +318,27 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Merge this AssignmentGroup into the ``target`` AssignmentGroup.
         Algorithm:
 
-            1. Copy in all candidates and examiners not already on the
-               AssignmentGroup.
-            2. Delete all deliveries that are ``copy_of`` a delivery already in
-               the target. We do this globally instead of for each deadline,
-               since someone may have moved the deadline on one of the groups,
-               but the delivery will still be the same.
-            3. Loop through all deadlines in this AssignmentGroup, and for each
-               deadline:
+            - Copy in all candidates and examiners not already on the
+              AssignmentGroup.
+            - If ``target`` has no name, but this AssignmentGroup does,
+              copy the name into target.
+            - Delete all deliveries that are ``copy_of`` a delivery already in
+              the target. We do this globally instead of for each deadline,
+              since someone may have moved the deadline on one of the groups,
+              but the delivery will still be the same.
+            - Loop through all deadlines in this AssignmentGroup, and for each
+              deadline:
 
-               If the datetime and text of the deadline matches one already in
-               ``target``, move the remaining deliveries into the target deadline.
+              If the datetime and text of the deadline matches one already in
+              ``target``, move the remaining deliveries into the target deadline.
 
-                If the deadline and text does NOT match a deadline already in
-                ``target``, change assignmentgroup of the deadline to the
-                master group.
-            4. Recalculate delivery numbers of ``target`` using
-               :meth:`recalculate_delivery_numbers`.
-            5. Set the latest feedback on ``target`` as the active feedback.
-            6. Run ``self.delete()``.
+              If the deadline and text does NOT match a deadline already in
+              ``target``, change assignmentgroup of the deadline to the
+              master group.
+            - Recalculate delivery numbers of ``target`` using
+              :meth:`recalculate_delivery_numbers`.
+            - Set the latest feedback on ``target`` as the active feedback.
+            - Run ``self.delete()``.
 
         .. note:: Always run this is a transaction.
         """
@@ -345,6 +347,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Delivery.objects.filter(copy_of__deadline__assignment_group=target).delete()
         self._merge_examiners_into(target)
         self._merge_candidates_into(target)
+        if not target.name:
+            target.name = self.name
+            target.save()
         for deadline in self.deadlines.all():
             try:
                 matching_deadline = target.deadlines.get(deadline=deadline.deadline,
