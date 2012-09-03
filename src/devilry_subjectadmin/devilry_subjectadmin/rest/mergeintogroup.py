@@ -18,7 +18,7 @@ class MergeIntoGroupResource(FormResource):
 
 class MergeIntoGroup(View):
     """
-    REST API for the merge_into method of ``devilry.apps.code.models.AssignmentGroup``.
+    REST API for the ``merge_into`` method of ``devilry.apps.code.models.AssignmentGroup``.
 
     # POST
     Merge a group (called source) into another group (called target).
@@ -31,7 +31,8 @@ class MergeIntoGroup(View):
     - ``target_group_id`` (int): The ID of the target group.
 
     ## Response
-    Responds with an object/map with the following attributes on success:
+    Responds with status code ``200`` and an object/map with the following
+    attributes on success:
 
     - ``success`` (bool): Always ``true``.
     - ``source_group_id`` (int): The ID of the source group.
@@ -39,7 +40,7 @@ class MergeIntoGroup(View):
 
     On error, we respond with:
 
-    - Errorcode ``400`` if any of the parameters are missing or wrong,
+    - Errorcode ``400`` if any of the parameters are missing or wrong.
     - Errorcode ``403`` for permission denied.
     - Errorcode ``404`` if one of the group IDs are not found within the assignment.
     """

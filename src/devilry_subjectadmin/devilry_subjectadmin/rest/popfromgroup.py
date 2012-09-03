@@ -23,6 +23,34 @@ class PopFromGroupResource(FormResource):
 
 
 class PopFromGroup(View):
+    """
+    REST API for the ``pop_candidate`` method of ``devilry.apps.code.models.AssignmentGroup``.
+
+    # POST
+    Pop a candidate from a group(called source), copy the source, except for
+    the candidates, and add the popped candidate to the newly created group.
+
+    ## Parameters
+    The assignment ID is the last part of the URL.
+    The following parameters must be part of the request body:
+
+    - ``group_id`` (int): The ID of the source group.
+    - ``candidate_id`` (int): The ID of the candidate. Must be a candidate in the source group.
+
+    ## Response
+    Responds with status code ``200`` and an object/map with the following attributes on success:
+
+    - ``success`` (bool): Always ``true``.
+    - ``group_id`` (int): The ID of the source group.
+    - ``candidate_id`` (int): The ID of the candidate.
+    - ``new_group_id`` (int): The ID of the newly created group.
+
+    On error, we respond with:
+
+    - Errorcode ``400`` if any of the parameters are missing or wrong.
+    - Errorcode ``403`` for permission denied.
+    - Errorcode ``404`` if the group is not found within the assignment, or if the candidate is not found within the group.
+    """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
     resource = PopFromGroupResource
 
