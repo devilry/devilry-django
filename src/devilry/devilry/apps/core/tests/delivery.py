@@ -151,7 +151,8 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(delivery.successful, False)
         self.assertEquals(delivery.time_of_delivery, time_of_delivery)
 
-    def test_copy(self):
+
+    def _create_copydata(self):
         self.add(nodes="uni",
                  subjects=["sub"],
                  periods=["p1"],
@@ -178,26 +179,68 @@ class TestDelivery(TestCase, TestHelper):
         delivery.save(autoset_number=False,
                       autoset_time_of_delivery=False)
         delivery.add_file('test.txt', ['Hello', ' world'])
+        return delivery, old_delivery
 
+
+    def test_copy_own_attributes(self):
+        delivery, old_delivery = self._create_copydata()
         self.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
         newdeadline = self.sub_p1_a1_g2_d1
         copy = delivery.copy(newdeadline)
+
         self.assertEquals(copy.deadline, newdeadline)
         self.assertEquals(copy.delivery_type, 1)
         self.assertEquals(copy.number, 10)
         self.assertEquals(copy.successful, False)
-        self.assertEquals(copy.time_of_delivery, time_of_delivery)
+        self.assertEquals(copy.time_of_delivery, datetime(2005, 1, 1, 0, 0, 0))
         self.assertEquals(copy.delivered_by.student, self.student1)
         self.assertEquals(copy.alias_delivery, old_delivery)
 
-        # Check copy_of and the reverse
+        # Check copy_of and the virtual reverse relationship
         self.assertEquals(copy.copy_of, delivery)
         self.assertEquals(list(delivery.copies.all()),
                           [copy])
 
-        # Filemetas
+    def test_copy_filemetas(self):
+        delivery, old_delivery = self._create_copydata()
+        self.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
+        newdeadline = self.sub_p1_a1_g2_d1
+        copy = delivery.copy(newdeadline)
+
         self.assertEquals(delivery.filemetas.count(), 1)
         self.assertEquals(copy.filemetas.count(), 1)
         copied_filemeta = copy.filemetas.all()[0]
         self.assertEquals(copied_filemeta.get_all_data_as_string(),
                           'Hello world')
+
+
+    def test_copy_feedbacks(self):
+        delivery, old_delivery = self._create_copydata()
+        self.add_feedback(delivery=delivery,
+                          verdict={'grade': 'F', 'points':10, 'is_passing_grade':False},
+                          rendered_view='This was bad',
+                          timestamp=datetime(2005, 1, 1, 0, 0, 0))
+        self.add_feedback(delivery=delivery,
+                          verdict={'grade': 'C', 'points':40, 'is_passing_grade':True},
+                          rendered_view='Better',
+                          timestamp=datetime(2010, 1, 1, 0, 0, 0))
+
+        self.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
+        newdeadline = self.sub_p1_a1_g2_d1
+        self.assertEquals(delivery.feedbacks.count(), 2)
+        copy = delivery.copy(newdeadline)
+
+        self.assertEquals(delivery.feedbacks.count(), 2)
+        feedbacks = copy.feedbacks.order_by('save_timestamp')
+        self.assertEquals(len(feedbacks), 2)
+        self.assertEquals(feedbacks[0].grade, 'F')
+        self.assertEquals(feedbacks[0].points, 10)
+        self.assertEquals(feedbacks[0].is_passing_grade, False)
+        self.assertEquals(feedbacks[0].save_timestamp, datetime(2005, 1, 1, 0, 0, 0))
+        self.assertEquals(feedbacks[0].rendered_view, 'This was bad')
+
+        self.assertEquals(feedbacks[1].grade, 'C')
+        self.assertEquals(feedbacks[1].points, 40)
+        self.assertEquals(feedbacks[1].is_passing_grade, True)
+        self.assertEquals(feedbacks[1].save_timestamp, datetime(2010, 1, 1, 0, 0, 0))
+        self.assertEquals(feedbacks[1].rendered_view, 'Better')

@@ -210,9 +210,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     def copy(self, newdeadline):
         """
-        Copy this delivery, including all FileMeta's and their files
-        into ``newdeadline``. Sets the ``copy_of`` attribute of the
+        Copy this delivery, including all FileMeta's and their files, and all
+        feedbacks into ``newdeadline``. Sets the ``copy_of`` attribute of the
         created delivery.
+
+        .. note:: Always run this is a transaction.
+
+        .. warning::
+            This does not autoset the latest feedback as active on the group.
+            You need to handle that yourself after the copy.
 
         :return: The newly created, cleaned and saved delivery.
         """
@@ -229,4 +235,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                           autoset_number=False)
         for filemeta in self.filemetas.all():
             filemeta.copy(deliverycopy)
+        for staticfeedback in self.feedbacks.all():
+            staticfeedback.copy(deliverycopy)
         return deliverycopy
