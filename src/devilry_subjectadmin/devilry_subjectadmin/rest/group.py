@@ -20,6 +20,7 @@ from devilry.apps.core.models import Delivery
 from .errors import ValidationErrorResponse
 from .errors import NotFoundError
 from .errors import BadRequestFieldError
+from .errors import PermissionDeniedError
 from .auth import IsAssignmentAdmin
 from .fields import ListOfDictField
 from .fields import DictField
@@ -189,7 +190,8 @@ class GroupSerializer(object):
 
 
 class GroupManager(object):
-    def __init__(self, assignment_id, group_id=None):
+    def __init__(self, user, assignment_id, group_id=None):
+        self.user = user
         self.assignment_id = assignment_id
         if group_id:
             self.group = AssignmentGroup.objects.get(parentnode_id=assignment_id,
@@ -282,19 +284,23 @@ class GroupManager(object):
         for candidate in self.group.candidates.all():
             existing_by_id[candidate.id] = candidate
         for candidatedict in candidatedicts:
-            candidate_id = candidatedict['id']
-            isnew = candidate_id == None
+            id = candidatedict['id']
+            isnew = id == None
             if isnew:
                 user_id = candidatedict['user']['id']
                 candidate_id = candidatedict['candidate_id']
                 self._create_candidate(user_id=user_id, candidate_id=candidate_id)
             else:
-                existing_candidate = existing_by_id[candidate_id]
+                existing_candidate = existing_by_id[id]
                 self._update_candate(existing_candidate, candidatedict['candidate_id'])
-                del existing_by_id[candidate_id] # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
+                del existing_by_id[id] # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
         to_delete = existing_by_id
-        for candidate in to_delete.itervalues():
-            candidate.delete() # TODO: Split candidates instead of DELETE
+        if len(to_delete) > 0:
+            if self.group.can_delete(self.user):
+                for candidate in to_delete.itervalues():
+                    candidate.delete()
+            else:
+                raise PermissionDeniedError('You do not have permission to remove students from this group. Only superusers can remove students from groups with deliveries.')
 
 
 
@@ -487,7 +493,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         {responsetable}
         """
         datalist = self.CONTENT
-        manager = GroupManager(assignment_id)
+        manager = GroupManager(request.user, assignment_id)
         created_groups = []
         with transaction.commit_on_success():
             for data in datalist:
@@ -517,7 +523,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                     raise BadRequestFieldError('id', 'Required.')
                 group_id = data['id']
                 try:
-                    manager = GroupManager(assignment_id, group_id)
+                    manager = GroupManager(request.user, assignment_id, group_id)
                 except AssignmentGroup.DoesNotExist:
                     self._not_found_response(assignment_id, group_id)
                 try:
@@ -562,7 +568,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         #"""
         #data = self.CONTENT
         #try:
-            #manager = GroupManager(assignment_id, group_id)
+            #manager = GroupManager(request.user, assignment_id, group_id)
         #except AssignmentGroup.DoesNotExist:
             #self._not_found_response(assignment_id, group_id)
         #with transaction.commit_on_success():

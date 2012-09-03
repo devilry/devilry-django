@@ -6,6 +6,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.utils.rest_testclient import RestClient
 
 from devilry_subjectadmin.rest.group import GroupManager
+from devilry_subjectadmin.rest.errors import PermissionDeniedError
 
 
 class TestListGroupRest(TestCase):
@@ -153,10 +154,11 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.testhelper.create_user('user1')
         self.testhelper.create_user('user2')
         self.testhelper.create_user('user3')
+        self.testhelper.create_user('notusedforanything') # NOTE: GroupManager requires a user for very few actions. The tests that do not use these actions use this user.
 
     def test_update_group(self):
         self.assertEquals(AssignmentGroup.objects.all().count(), 0)
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         self.assertEquals(manager.group.id, None)
         manager.update_group(name='Nametest', is_open=False)
         self.assertIsNotNone(manager.group.id)
@@ -166,19 +168,19 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
     def test_existinggroup(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1')
-        manager = GroupManager(self.a1id, self.testhelper.sub_p1_a1_g1.id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, self.testhelper.sub_p1_a1_g1.id)
         self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
         with self.assertRaises(AssignmentGroup.DoesNotExist):
-            GroupManager(self.a1id, 10000000)
+            GroupManager(self.testhelper.notusedforanything, self.a1id, 10000000)
         with self.assertRaises(AssignmentGroup.DoesNotExist):
-            GroupManager(10000000, self.testhelper.sub_p1_a1_g1.id)
+            GroupManager(self.testhelper.notusedforanything, 10000000, self.testhelper.sub_p1_a1_g1.id)
 
     #
     # Examiners
     #
 
     def test_update_examiners_create(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.update_examiners([self.create_examinerdict(username='user1')])
         examiners = manager.get_group_from_db().examiners.all()
@@ -195,14 +197,14 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
                           set([self.testhelper.user1.id, self.testhelper.user2.id]))
 
     def test_update_examiners_create_duplicate(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         with self.assertRaises(ValidationError):
             manager.update_examiners([self.create_examinerdict(username='user1')])
 
     def test_update_examiners_delete(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         manager.group.examiners.create(user=self.testhelper.user2)
@@ -211,7 +213,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(examiners), 0)
 
     def test_update_examiners_complex(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         manager.group.examiners.create(user=self.testhelper.user2)
@@ -230,7 +232,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
     #
 
     def test_update_candidates_create(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.update_candidates([self.create_candidatedict(username='user1')])
         candidates = manager.get_group_from_db().candidates.all()
@@ -248,7 +250,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
                           set([self.testhelper.user1.id, self.testhelper.user2.id]))
 
     def test_update_candidates_create_candidate_id(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.update_candidates([self.create_candidatedict(username='user1',
                                                              candidate_id='secret')])
@@ -257,13 +259,18 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(created.candidate_id, 'secret')
 
     def test_update_candidates_create_duplicate_allowed(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
-        manager.group.candidates.create(student=self.testhelper.user1)
-        manager.update_candidates([self.create_candidatedict(username='user1')]) # Does not raise exception
+        created = manager.group.candidates.create(student=self.testhelper.user1)
+        # Does not raise exception, event if they are the same user
+        manager.update_candidates([self.create_candidatedict(id=created.id,
+                                                             candidate_id=created.candidate_id,
+                                                             username='user1'),
+                                   self.create_candidatedict(username='user1')])
 
     def test_update_candidates_delete(self):
-        manager = GroupManager(self.a1id)
+        superuser = self.testhelper.create_superuser('superuser')
+        manager = GroupManager(superuser, self.a1id)
         manager.group.save()
         manager.group.candidates.create(student=self.testhelper.user1)
         manager.group.candidates.create(student=self.testhelper.user2)
@@ -271,8 +278,18 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         candidates = manager.get_group_from_db().candidates.all()
         self.assertEquals(len(candidates), 0)
 
+    def test_update_candidates_delete_as_nobody(self):
+        nobody = self.testhelper.create_user('nobody')
+        manager = GroupManager(nobody, self.a1id)
+        manager.group.save()
+        manager.group.candidates.create(student=self.testhelper.user1)
+        manager.group.candidates.create(student=self.testhelper.user2)
+        with self.assertRaises(PermissionDeniedError):
+            manager.update_candidates([])
+
     def test_update_candidates_complex(self):
-        manager = GroupManager(self.a1id)
+        superuser = self.testhelper.create_superuser('superuser')
+        manager = GroupManager(superuser, self.a1id)
         manager.group.save()
         manager.group.candidates.create(student=self.testhelper.user1)
         manager.group.candidates.create(student=self.testhelper.user2)
@@ -290,7 +307,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
     #
 
     def test_update_tags(self):
-        manager = GroupManager(self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
         manager.group.save()
         manager.update_tags([self.create_tagdict('mytag')])
         tags = manager.get_group_from_db().tags.all()
