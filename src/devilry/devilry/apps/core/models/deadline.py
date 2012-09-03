@@ -169,6 +169,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         Copy this deadline into ``newgroup``, including all deliveries and
         filemetas, with the actual file data.
+
+        .. note:: Always run this is a transaction.
+
+        .. warning::
+            This does not autoset the latest feedback as active on the group.
+            You need to handle that yourself after the copy.
         """
         deadlinecopy = Deadline(assignment_group=newgroup,
                                 deadline=self.deadline,
