@@ -3,8 +3,11 @@ from django.db import transaction
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
+from djangorestframework.response import ErrorResponse
+from djangorestframework import status
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models.assignment_group import GroupPopValueError
 from devilry.apps.core.models import Candidate
 from .auth import IsAssignmentAdmin
 from .errors import NotFoundError
@@ -35,7 +38,7 @@ class PopFromGroup(View):
     def _get_candidate(self, group_id, candidate_id):
         try:
             return Candidate.objects.get(assignment_group=group_id,
-                                         id=group_id)
+                                         id=candidate_id)
         except Candidate.DoesNotExist:
             raise NotFoundError(('Candidate with candidate_id={candidate_id} and '
                                  'group_id={group_id} not found').format(group_id=group_id,
@@ -48,7 +51,10 @@ class PopFromGroup(View):
         group = self._get_group(group_id)
         candidate = self._get_candidate(group_id, candidate_id)
         with transaction.commit_on_success():
-            new_group = group.pop_candidate(candidate)
+            try:
+                new_group = group.pop_candidate(candidate)
+            except GroupPopValueError as e:
+                raise ErrorResponse(status.HTTP_400_BAD_REQUEST, {'detail': str(e)})
         return {'success': True,
                 'group_id': group_id,
                 'new_group_id': new_group.id,
