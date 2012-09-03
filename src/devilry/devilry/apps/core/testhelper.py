@@ -59,7 +59,7 @@ class TestHelper(object):
     def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True, time_of_delivery=None):
         """
         :param assignmentgroup:
-            Expects either a Delivery object or a string path to an
+            Expects either an AssignmentGroup object or a string path to an
             assignmentgroup. This is a mandatory parameter.
 
         :param files:
