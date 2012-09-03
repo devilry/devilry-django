@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.db import models
+from django.db import transaction
 
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
@@ -337,7 +338,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def _set_latest_feedback_as_active(self):
         from .static_feedback import StaticFeedback
-        feedbacks = StaticFeedback.objects.filter(delivery__deadline__assignment_group=self)[:1]
+        feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
+        self.feedback = None # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
+        self.save()
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
             self.feedback = latest_feedback
@@ -367,33 +370,38 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
               master group.
             - Recalculate delivery numbers of ``target`` using
               :meth:`recalculate_delivery_numbers`.
-            - Set the latest feedback on ``target`` as the active feedback.
             - Run ``self.delete()``.
+            - Set the latest feedback on ``target`` as the active feedback.
 
-        .. note:: Always run this is a transaction.
+        .. note::
+            Everything except setting the latest feedback runs in a
+            transaction. Setting the latest feedback does not run
+            in transaction because we need to save the with ``feedback=None``,
+            and then set the *new* latest feedback to avoid IntegrityError.
         """
         from .deadline import Deadline
         from .delivery import Delivery
-        Delivery.objects.filter(copy_of__deadline__assignment_group=target).delete()
-        self._merge_examiners_into(target)
-        self._merge_candidates_into(target)
-        if not target.name:
-            target.name = self.name
-            target.save()
-        for deadline in self.deadlines.all():
-            try:
-                matching_deadline = target.deadlines.get(deadline=deadline.deadline,
-                                                         text=deadline.text)
-                for delivery in deadline.deliveries.all():
-                    delivery.deadline = matching_deadline
-                    delivery.save(autoset_time_of_delivery=False,
-                                  autoset_number=False)
-            except Deadline.DoesNotExist:
-                deadline.assignment_group = target
-                deadline.save()
-        target.recalculate_delivery_numbers()
+        with transaction.commit_on_success():
+            Delivery.objects.filter(copy_of__deadline__assignment_group=target).delete()
+            self._merge_examiners_into(target)
+            self._merge_candidates_into(target)
+            if not target.name:
+                target.name = self.name
+                target.save()
+            for deadline in self.deadlines.all():
+                try:
+                    matching_deadline = target.deadlines.get(deadline=deadline.deadline,
+                                                             text=deadline.text)
+                    for delivery in deadline.deliveries.all():
+                        delivery.deadline = matching_deadline
+                        delivery.save(autoset_time_of_delivery=False,
+                                      autoset_number=False)
+                except Deadline.DoesNotExist:
+                    deadline.assignment_group = target
+                    deadline.save()
+            target.recalculate_delivery_numbers()
+            self.delete()
         target._set_latest_feedback_as_active()
-        self.delete()
 
 
 class AssignmentGroupTag(models.Model):
