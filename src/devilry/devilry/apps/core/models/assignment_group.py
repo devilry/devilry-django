@@ -216,6 +216,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         is admin on the assignment (uses :meth:`.is_admin`). Only superusers
         are allowed to delete AssignmentGroups where :meth:`.is_empty` returns ``False``.
 
+        .. note::
+            This method can also be used to check if candidates can be
+            removed from the group.
+
         :return: ``True`` if the user is permitted to delete this object.
         """
         if self.id == None:
