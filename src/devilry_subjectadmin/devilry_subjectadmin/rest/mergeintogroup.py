@@ -6,10 +6,16 @@ from djangorestframework.resources import FormResource
 from devilry.apps.core.models import AssignmentGroup
 from .auth import IsAssignmentAdmin
 from .errors import NotFoundError
+from .fields import ListOfDictField
+
+
+class GroupIdsField(ListOfDictField):
+    class Form(forms.Form):
+        id = forms.IntegerField(required=True)
 
 
 class MergeIntoGroupForm(forms.Form):
-    source_group_id = forms.IntegerField(required=True)
+    source_group_ids = GroupIdsField(required=True)
     target_group_id = forms.IntegerField(required=True)
 
 class MergeIntoGroupResource(FormResource):
@@ -21,13 +27,13 @@ class MergeIntoGroup(View):
     REST API for the ``merge_into`` method of ``devilry.apps.code.models.AssignmentGroup``.
 
     # POST
-    Merge a group (called source) into another group (called target).
+    Merge groups (called sources) into another group (called target).
 
     ## Parameters
     The assignment ID is the last part of the URL.
     The following parameters must be part of the request body:
 
-    - ``source_group_id`` (int): The ID of the source group.
+    - ``source_group_ids`` (array): List of IDs of the source groups.
     - ``target_group_id`` (int): The ID of the target group.
 
     ## Response
@@ -35,7 +41,7 @@ class MergeIntoGroup(View):
     attributes on success:
 
     - ``success`` (bool): Always ``true``.
-    - ``source_group_id`` (int): The ID of the source group.
+    - ``source_group_ids`` (array): List of IDs of the source groups.
     - ``target_group_id`` (int): The ID of the target group.
 
     On error, we respond with:
@@ -58,11 +64,12 @@ class MergeIntoGroup(View):
 
     def post(self, request, id):
         self.assignment_id = id
-        source_group_id = self.CONTENT['source_group_id']
+        source_group_ids = self.CONTENT['source_group_ids']
         target_group_id = self.CONTENT['target_group_id']
-        source = self._get_group(source_group_id)
+        sources = [self._get_group(groupdct['id']) for groupdct in source_group_ids]
         target = self._get_group(target_group_id)
-        new_group = source.merge_into(target)
+        for source in sources:
+            new_group = source.merge_into(target)
         return {'success': True,
-                'source_group_id': source_group_id,
+                'source_group_ids': source_group_ids,
                 'target_group_id': target_group_id}
