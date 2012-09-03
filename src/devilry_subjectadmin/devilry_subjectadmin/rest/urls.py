@@ -19,6 +19,7 @@ from .allwhereisadmin import AllWhereIsAdmin
 from .deadlinesbulk import DeadlinesBulkListOrCreate
 from .deadlinesbulk import DeadlinesBulkUpdateReadOrDelete
 from .popfromgroup import PopFromGroup
+from .mergeintogroup import MergeIntoGroup
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
@@ -39,6 +40,7 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^relatedexaminer_assignment_ro/(?P<assignment_id>\d+)/$', ListRelatedExaminersOnAssignmentRest.as_view()),
                        url(r'^allwhereisadmin/$', AllWhereIsAdmin.as_view()),
                        url(r'^popfromgroup/(?P<id>[^/]+)$', PopFromGroup.as_view()),
+                       url(r'^mergeintogroup/(?P<id>[^/]+)$', MergeIntoGroup.as_view()),
                        url(r'^deadlinesbulk/(?P<id>[^/]+)/$', DeadlinesBulkListOrCreate.as_view()),
                        url(r'^deadlinesbulk/(?P<id>[^/]+)/(?P<bulkdeadline_id>\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}--(?:.{40})?)$', DeadlinesBulkUpdateReadOrDelete.as_view(),
                            name='devilry_subjectadmin_rest_deadlinesbulkinstance')
