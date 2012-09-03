@@ -54,3 +54,9 @@ class TestRestPopFromGroup(TestCase):
         self.assertEquals(delivery.feedbacks.all()[0].grade,
                           newdelivery.feedbacks.all()[0].grade)
         self.assertEquals(newdelivery.feedbacks.all()[0].grade, 'F')
+
+    def test_put_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._putas('nobody', {'group_id': 1,
+                                                    'candidate_id': 1})
+        self.assertEquals(response.status_code, 403)
