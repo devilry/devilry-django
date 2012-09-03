@@ -6,6 +6,10 @@
 Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    ],
+
     requires: [
         'devilry_extjsextras.AlertMessage'
     ],
@@ -13,7 +17,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     models: [
         'Candidate',
         'Examiner',
-        'Tag'
+        'Tag',
+        'PopFromGroup'
     ],
 
     views: [
@@ -39,7 +44,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
             // Students
             'viewport singlegroupview studentsingroupgrid': {
-                removeStudent: this._onRemoveStudent
+                removeStudent: this._onPopStudent
             },
 
             // Examiners
@@ -69,6 +74,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             'viewport singlegroupview tagsingroupgrid #removeAllTags': {
                 click: this._onRemoveAllTags
             }
+        });
+        this.mon(this.getPopFromGroupModel().proxy, {
+            scope: this,
+            exception: this._onPopFromGroupProxyError
         });
     },
 
@@ -132,9 +141,33 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
         return store;
     },
-    _onRemoveStudent: function(candidateRecord) {
-        Ext.MessageBox.alert('Not implemented', 'See <a href="https://github.com/devilry/devilry-django/issues/215" target="_blank">issue 215</a> for info about how this will work.');
-        //console.log('Remove student:', candidateRecord.data);
+    _onPopStudent: function(candidateRecord) {
+        //Ext.MessageBox.alert('Not implemented', 'See <a href="https://github.com/devilry/devilry-django/issues/215" target="_blank">issue 215</a> for info about how this will work.');
+        console.log('Remove student:', candidateRecord.data);
+        var assignmentRecord = this.manageStudentsController.assignmentRecord;
+        var record = Ext.create('devilry_subjectadmin.model.PopFromGroup');
+        record.proxy.setUrl(assignmentRecord.get('id'));
+        record.set('group_id', this.groupRecord.get('id'));
+        record.set('candidate_id', candidateRecord.get('id'));
+        console.log('PUTing', record.data);
+        record.save({
+            scope: this,
+            callback: function(result, operation) {
+                if(operation.success) {
+                    this._onPopStudentSuccess(result);
+                } else {
+                    // NOTE: Errors are handled in _onPopFromGroupProxyError
+                }
+            }
+        });
+    },
+
+    _onPopStudentSuccess: function(result) {
+        console.log('Success', result);
+    },
+
+    _onPopFromGroupProxyError: function(proxy, response, operation) {
+        this.handleProxyUsingHtmlErrorDialog(response, operation);
     },
 
 
