@@ -361,3 +361,52 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(target.feedback.save_timestamp, datetime(2011, 1, 1))
         self.assertEquals(target.feedback.rendered_view, 'Good')
         self.assertEquals(target.feedback.points, 100)
+
+
+    def test_merge_into_delivery_numbers(self):
+        source, target = self._create_mergetestdata()
+        def get_deliveries_ordered_by_timestamp(group):
+            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
+        for delivery in get_deliveries_ordered_by_timestamp(source):
+            delivery.number = 0
+            delivery.save(autoset_number=False,
+                          autoset_time_of_delivery=False)
+
+        source.merge_into(target)
+        deliveries = get_deliveries_ordered_by_timestamp(target)
+        self.assertEquals(deliveries[0].number, 1)
+        self.assertEquals(deliveries[1].number, 2)
+        self.assertEquals(deliveries[2].number, 3)
+
+    def test_merge_into_delivery_numbers_unsuccessful(self):
+        source, target = self._create_mergetestdata()
+
+        # Make all deliveries unsuccessful with number=0
+        def get_deliveries_ordered_by_timestamp(group):
+            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
+        def set_all_unsuccessful(group):
+            deliveries = get_deliveries_ordered_by_timestamp(group)
+            for delivery in deliveries:
+                delivery.number = 0
+                delivery.successful = False
+                delivery.save(autoset_number=False,
+                              autoset_time_of_delivery=False)
+        set_all_unsuccessful(source)
+        set_all_unsuccessful(target)
+
+        # Make a single delivery successful, and set its timestamp so it is the oldest
+        deliveries = get_deliveries_ordered_by_timestamp(source)
+        delivery = deliveries[0]
+        delivery.number = 10
+        delivery.successful = True
+        delivery.time_of_delivery = datetime(2001, 1, 1)
+        delivery.save(autoset_number=False,
+                           autoset_time_of_delivery=False)
+
+        source.merge_into(target)
+        deliveries = get_deliveries_ordered_by_timestamp(target)
+        self.assertEquals(deliveries[0].time_of_delivery, datetime(2001, 1, 1))
+        self.assertEquals(deliveries[0].number, 1)
+        self.assertEquals(deliveries[1].number, 0)
+        self.assertEquals(deliveries[2].number, 0)
+        self.assertEquals(deliveries[3].number, 0)

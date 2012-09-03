@@ -276,7 +276,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         candidate.save()
         return groupcopy
 
-    def recalculate_deadline_numbers(self):
+    def recalculate_delivery_numbers(self):
         """
         Query all ``successful`` deliveries on this AssignmentGroup, ordered by
         ``time_of_delivery`` ascending, and number them with the oldest delivery
@@ -288,7 +288,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         qry = qry.order_by('time_of_delivery')
         for number, delivery in enumerate(qry, 1):
             delivery.number = number
-            delivery.save(autoset_number=False)
+            delivery.save(autoset_number=False,
+                          autoset_time_of_delivery=False)
 
     def _merge_examiners_into(self, target):
         target_examiners = set([e.user.id for e in target.examiners.all()])
@@ -333,7 +334,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 ``target``, change assignmentgroup of the deadline to the
                 master group.
             4. Recalculate delivery numbers of ``target`` using
-               :meth:`recalculate_deadline_numbers`.
+               :meth:`recalculate_delivery_numbers`.
             5. Set the latest feedback on ``target`` as the active feedback.
             6. Run ``self.delete()``.
 
@@ -350,11 +351,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                                          text=deadline.text)
                 for delivery in deadline.deliveries.all():
                     delivery.deadline = matching_deadline
-                    delivery.save()
+                    delivery.save(autoset_time_of_delivery=False,
+                                  autoset_number=False)
             except Deadline.DoesNotExist:
                 deadline.assignment_group = target
                 deadline.save()
-        target.recalculate_deadline_numbers()
+        target.recalculate_delivery_numbers()
         target._set_latest_feedback_as_active()
         self.delete()
 
