@@ -446,6 +446,8 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
 
     def validate_request(self, datalist, files=None):
         cleaned_datalist = []
+        if isinstance(datalist, dict):
+            datalist = [datalist]
         for data in datalist:
             cleaned_data = super(ListOrCreateGroupRest, self).validate_request(data)
             cleaned_datalist.append(cleaned_data)
