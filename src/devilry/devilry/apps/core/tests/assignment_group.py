@@ -166,7 +166,7 @@ class TestAssignmentGroupSplit(TestCase):
         # Add d1 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
         self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
-                                     time_of_delivery=-2) # days after deadline
+                                     time_of_delivery=datetime(2002, 1, 1))
         delivery2 = self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
                                                  time_of_delivery=-1) # days after deadline
         self.testhelper.add_feedback(delivery=delivery2,
@@ -326,6 +326,11 @@ class TestAssignmentGroupSplit(TestCase):
         deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
         deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
 
+        # A control delivery that we use to make sure timestamps are not messed with
+        control_delivery = self.testhelper.sub_p1_a1_g1_d1.deliveries.order_by('time_of_delivery')[0]
+        control_delivery_id = control_delivery.id
+        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
+
         source.merge_into(target)
         deadlines = target.deadlines.order_by('deadline')
         self.assertEquals(len(deadlines), 3)
@@ -336,6 +341,10 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(deadlines[0].deliveries.count(), 3) # d1 from both have been merged
         self.assertEquals(deadlines[1].deliveries.count(), 1) # g1(source) d2
         self.assertEquals(deadlines[2].deliveries.count(), 1) # target d2
+
+        control_delivery = Delivery.objects.get(deadline__assignment_group=target,
+                                                id=control_delivery_id)
+        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
 
     def test_merge_into_active_feedback(self):
         source, target = self._create_mergetestdata()
