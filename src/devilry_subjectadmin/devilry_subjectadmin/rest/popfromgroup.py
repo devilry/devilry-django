@@ -41,7 +41,7 @@ class PopFromGroup(View):
                                  'group_id={group_id} not found').format(group_id=group_id,
                                                                          candidate_id=candidate_id))
 
-    def put(self, request, id):
+    def post(self, request, id):
         self.assignment_id = id
         group_id = self.CONTENT['group_id']
         candidate_id = self.CONTENT['candidate_id']
