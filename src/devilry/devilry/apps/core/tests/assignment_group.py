@@ -152,6 +152,52 @@ class TestAssignmentGroup(TestCase, TestHelper):
         self.assertFalse(obj2.is_open)
 
 
+class TestAssignmentGroupCanDelete(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes="uni:admin(nodeadmin)",
+                            subjects=["sub"],
+                            periods=["p1"],
+                            assignments=['a1:admin(a1admin)'],
+                            assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
+        self.g1 = self.testhelper.sub_p1_a1_g1
+
+    def test_is_empty(self):
+        self.assertTrue(self.g1.is_empty())
+
+
+    def _add_delivery(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
+        self.testhelper.add_delivery(self.g1,
+                                     {"firsttry.py": "print first"},
+                                     time_of_delivery=-1)
+
+    def test_not_is_empty(self):
+        self.assertTrue(self.g1.is_empty())
+        self._add_delivery()
+        self.assertFalse(self.g1.is_empty())
+
+    def test_can_delete_superuser(self):
+        superuser = self.testhelper.create_superuser('superuser')
+        self.assertTrue(self.g1.can_delete(superuser))
+        self._add_delivery()
+        self.assertTrue(self.g1.can_delete(superuser))
+
+    def test_can_delete_assignmentadmin(self):
+        self.assertTrue(self.g1.can_delete(self.testhelper.a1admin))
+        self._add_delivery()
+        self.assertFalse(self.g1.can_delete(self.testhelper.a1admin))
+
+    def test_can_delete_nodeadmin(self):
+        self.assertTrue(self.g1.can_delete(self.testhelper.nodeadmin))
+        self._add_delivery()
+        self.assertFalse(self.g1.can_delete(self.testhelper.nodeadmin))
+
+    def test_can_not_delete_nobody(self):
+        nobody = self.testhelper.create_user('nobody')
+        self.assertFalse(self.g1.can_delete(nobody))
+
+
 class TestAssignmentGroupSplit(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()

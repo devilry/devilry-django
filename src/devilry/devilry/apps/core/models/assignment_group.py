@@ -208,6 +208,32 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(user__id=user_obj.pk).count() > 0
 
+
+    def can_delete(self, user_obj):
+        """
+        Check if the given user is permitted to delete this AssignmentGroup. A user is
+        permitted to delete an object if the user is superadmin, or if the user
+        is admin on the assignment (uses :meth:`.is_admin`). Only superusers
+        are allowed to delete AssignmentGroups where :meth:`.is_empty` returns ``False``.
+
+        :return: ``True`` if the user is permitted to delete this object.
+        """
+        if self.id == None:
+            return False
+        if user_obj.is_superuser:
+            return True
+        if self.parentnode != None and self.is_empty():
+            return self.parentnode.is_admin(user_obj)
+        else:
+            return False
+
+    def is_empty(self):
+        """
+        Returns ``True`` if this AssignmentGroup does not contain any deliveries.
+        """
+        from .delivery import Delivery
+        return Delivery.objects.filter(deadline__assignment_group=self).count() == 0
+
     def get_active_deadline(self):
         """ Get the active :class:`Deadline`.
 
