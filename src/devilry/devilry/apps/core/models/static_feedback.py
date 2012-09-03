@@ -69,9 +69,9 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     grade = models.CharField(max_length=12, help_text='The rendered grade, such as "A" or "approved".')
     points = models.PositiveIntegerField(help_text='Number of points given on this feedback.')
     is_passing_grade = models.BooleanField(help_text='Is this a passing grade?')
-    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False,
-                                         help_text=('Time when this feedback was saved. Since StaticFeedback '
-                                                    'is immutable, this never changes.'))
+    save_timestamp = models.DateTimeField(blank=True, null=True,
+                                          help_text=('Time when this feedback was saved. Since StaticFeedback '
+                                                     'is immutable, this never changes.'))
     saved_by = models.ForeignKey(User, blank=False, null=False,
                                  help_text='The user (examiner) who saved this feedback')
     class Meta:
@@ -120,20 +120,52 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             deadline.feedbacks_published = True
             deadline.save()
 
-    def save(self, *args, **kwargs):
-        super(StaticFeedback, self).save(*args, **kwargs)
+    def _set_as_active_feedback_on_group(self):
+        group = self.delivery.deadline.assignment_group
+        group.feedback = self
+        group.save()
+
+    def _close_group(self):
         self.delivery.deadline.assignment_group.is_open = False
         self.delivery.deadline.assignment_group.save()
+
+    def save(self, *args, **kwargs):
+        autoclose_group = kwargs.pop('autoclose_group', True)
+        autoset_as_active_feedback_on_group = kwargs.pop('autoset_as_active_feedback_on_group', True)
+        autoset_timestamp_to_now = kwargs.pop('autoset_timestamp_to_now', True)
+        if autoset_timestamp_to_now:
+            self.save_timestamp = datetime.now()
+        super(StaticFeedback, self).save(*args, **kwargs)
+        if autoclose_group:
+            self._close_group()
+        if autoset_as_active_feedback_on_group:
+            self._set_as_active_feedback_on_group()
         self._publish_if_allowed()
 
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
 
-def set_latest_feedback_handler(sender, **kwargs):
-    feedback = kwargs['instance']
-    feedback.delivery.deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
-    feedback.delivery.deadline.assignment_group.save()
+    def copy(self, newdelivery):
+        """
+        Copy this StaticFeedback into ``newdeadline``.
 
-from django.db.models.signals import post_save
-post_save.connect(set_latest_feedback_handler,
-                  sender=StaticFeedback)
+        .. note::
+            This only copies the StaticFeedback, not any data related to it
+            via any grade editors.
+
+        .. warning::
+            This does not autoset the feedback as active on the group. You
+            need to handle that yourself after the copy.
+        """
+        feedbackcopy = StaticFeedback(delivery=newdelivery,
+                                      rendered_view=self.rendered_view,
+                                      grade=self.grade,
+                                      points=self.points,
+                                      is_passing_grade=self.is_passing_grade,
+                                      save_timestamp=self.save_timestamp,
+                                      saved_by=self.saved_by)
+        feedbackcopy.full_clean()
+        feedbackcopy.save(autoclose_group=False,
+                          autoset_as_active_feedback_on_group=False,
+                          autoset_timestamp_to_now=False)
+        return feedbackcopy
