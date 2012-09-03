@@ -75,7 +75,8 @@ class TestHelper(object):
         :param time_of_delivery:
             Set time_of_delivery to this number of days after the active
             deadline. Use a negative number to add a delivery before the active
-            deadline.
+            deadline. Can also be a datetime.datetime object that specifies an
+            exact timestamp.
         """
 
         if assignmentgroup == None:
@@ -113,7 +114,10 @@ class TestHelper(object):
             delivery.add_file(filename, files[filename])
 
         if time_of_delivery != None:
-            delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=time_of_delivery)
+            if isinstance(time_of_delivery, datetime):
+                delivery.time_of_delivery = time_of_delivery
+            else:
+                delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=time_of_delivery)
         elif after_last_deadline:
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
