@@ -8,3 +8,4 @@ from .relateduser import *
 from .relateduser_assignment_ro import *
 from .allwhereisadmin import *
 from .deadlinesbulk import *
+from .popfromgroup import *
