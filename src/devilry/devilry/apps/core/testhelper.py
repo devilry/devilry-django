@@ -201,11 +201,12 @@ class TestHelper(object):
         # create the feedback
         feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
                                   points=verdict['points'], is_passing_grade=verdict['is_passing_grade'],
-                                  rendered_view=rendered_view)
+                                  rendered_view=rendered_view,
+                                  save_timestamp=timestamp)
         # and finally, save it!
         try:
             feedback.full_clean()
-            feedback.save()
+            feedback.save(autoset_timestamp_to_now=False)
         except ValidationError:
             raise
 
