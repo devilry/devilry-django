@@ -190,6 +190,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
+
+        :param autoset_time_of_delivery:
+            Automatically set ``time_of_delivery`` to *now*? Defaults to ``True``.
+        :param autoset_number:
+            Automatically number the delivery if it is successful? Defaults to ``True``.
         """
         autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
         if autoset_time_of_delivery:
