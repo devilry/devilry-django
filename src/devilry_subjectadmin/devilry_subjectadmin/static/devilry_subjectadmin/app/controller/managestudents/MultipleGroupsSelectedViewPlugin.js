@@ -6,6 +6,10 @@
 Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelectedViewPlugin', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    ],
+
     views: [
         'managestudents.MultipleGroupsSelectedView',
         'managestudents.ChooseExaminersWindow',
@@ -22,12 +26,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     stores: ['SelectedGroups'],
 
+    models: [
+        'MergeIntoGroup'
+    ],
+
     refs: [{
         ref: 'setTagsWindow',
         selector: '#setTagsWindow'
     }, {
         ref: 'addTagsWindow',
         selector: '#addTagsWindow'
+    }, {
+        ref: 'confirmMergeGroupsContainer',
+        selector: 'multiplegroupsview #confirmMergeGroupsContainer'
+    }, {
+        ref: 'mergeGroupsButtonContainer',
+        selector: 'multiplegroupsview #mergeGroupsButtonContainer'
+    }, {
+        ref: 'mergeGroupsButton',
+        selector: 'multiplegroupsview #mergeGroupsButton'
+    }, {
+        ref: 'mergeGroupsConfirmButton',
+        selector: 'multiplegroupsview #mergeGroupsConfirmButton'
     }],
 
     init: function() {
@@ -39,6 +59,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.control({
             'viewport multiplegroupsview': {
                 render: this._onRender
+            },
+
+            // Merge groups
+            'viewport multiplegroupsview #mergeGroupsButton': {
+                toggle: this._onMergeGroupsButtonToggle
+            },
+            'viewport multiplegroupsview #mergeGroupsCancelButton': {
+                click: this._onMergeGroupsCancel
+            },
+            'viewport multiplegroupsview #mergeGroupsConfirmButton': {
+                click: this._onMergeGroupsConfirm
             },
 
             // setExaminers
@@ -84,6 +115,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #clearTagsButton': {
                 click: this._onClearTags
             }
+        });
+
+        this.mon(this.getMergeIntoGroupModel().proxy, {
+            scope: this,
+            exception: this._onMergeIntoGroupProxyError
         });
     },
 
@@ -308,5 +344,60 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             groupRecord.set('tags', []);
         }, this);
         this.manageStudentsController.notifyMultipleGroupsChange();
+    },
+
+
+
+    /************************************************
+     *
+     * Merge groups
+     *
+     ************************************************/
+
+    _onMergeGroupsButtonToggle: function(button, pressed) {
+        var container = this.getConfirmMergeGroupsContainer();
+        var buttonContainer = this.getMergeGroupsButtonContainer();
+        if(pressed) {
+            container.down('#groupMergeHelp').removeCls('muted');
+            container.setBorder(true);
+            buttonContainer.show();
+        } else {
+            buttonContainer.hide();
+            container.setBorder(false);
+            container.down('#groupMergeHelp').addCls('muted');
+        }
+    },
+
+    _onMergeGroupsCancel: function() {
+        this.getMergeGroupsButton().toggle(false);
+    },
+
+    _onMergeGroupsConfirm: function() {
+        var assignmentRecord = this.manageStudentsController.assignmentRecord;
+        var record = Ext.create('devilry_subjectadmin.model.MergeIntoGroup');
+        record.proxy.setUrl(assignmentRecord.get('id'));
+
+        var sourceRecord = this.groupRecords[0];
+        var targetRecord = this.groupRecords[1];
+        record.set('source_group_id', sourceRecord.get('id'));
+        record.set('target_group_id', targetRecord.get('id'));
+
+        record.save({
+            scope: this,
+            callback: function(result, operation) {
+                if(operation.success) {
+                    this._onMergeGroupsSuccess(result);
+                } else {
+                    // NOTE: Errors are handled in _onMergeIntoGroupProxyError
+                }
+            }
+        });
+    },
+    _onMergeIntoGroupProxyError: function(proxy, response, operation) {
+        this.handleProxyUsingHtmlErrorDialog(response, operation);
+    },
+    _onMergeGroupsSuccess: function(result) {
+        var target_group_id = result.get('target_group_id');
+        this.manageStudentsController.reloadGroups([target_group_id]);
     }
 });

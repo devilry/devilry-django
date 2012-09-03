@@ -8,7 +8,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     ui: 'transparentpanel',
     requires: [
         'devilry_theme.Icons',
-        'devilry_extjsextras.form.Help'
+        'devilry_extjsextras.form.Help',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -19,8 +20,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
      * @cfg {string} multiselectHowto (required)
      */
 
+
+    merge_groups_explained: [
+        gettext('Any student in the group will be able to make deliveries on behalf of the group.'),
+        gettext('Feedback will be given to the group as a whole, not to individual students in the group.'),
+        gettext('If any of the selected groups already have any deadlines, deliveries or feedback, they will be moved into the new group.'),
+        gettext('You can split up a group later, however any deliveries and feedback will follow all students on the group, even if they where made before you merged the groups into a single group in the first place.')
+    ],
+
     initComponent: function() {
-        var buttonmargin = '20 0 0 0';
+        var buttonmargin = '30 0 0 0';
         var helpmargin = '4 0 0 0';
         Ext.apply(this, {
             layout: {
@@ -33,6 +42,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 flex: 6,
                 xtype: 'container',
                 padding: 20,
+                layout: 'anchor',
                 autoScroll: true,
                 items: [{
                     xtype: 'alertmessage',
@@ -59,6 +69,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 }, {
                     xtype: 'formhelp',
                     margin: helpmargin,
+                    anchor: '100%',
                     html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
 
                 // Set Tags
@@ -81,7 +92,64 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 }, {
                     xtype: 'formhelp',
                     margin: helpmargin,
+                    anchor: '100%',
                     html: gettext('Assign one or more tag(s) to the selected groups. Use the arrow button for methods of setting tags, such as random and by tags. Setting tags <strong>replaces</strong> the current tags.')
+                
+                // Merge groups
+                }, {
+                    xtype: 'button',
+                    margin: buttonmargin,
+                    scale: 'medium',
+                    text: [
+                        gettext('Create project group'),
+                        ' (', gettext('Merge selected into one group'), ')'
+                    ].join(''),
+                    enableToggle: true,
+                    itemId: 'mergeGroupsButton'
+                }, {
+                    xtype: 'container',
+                    margin: helpmargin,
+                    anchor: '100%',
+                    cls: 'bootstrap merge_groups_confirm',
+                    layout: 'fit',
+                    items: {
+                        xtype: 'container',
+                        border: false,
+                        itemId: 'confirmMergeGroupsContainer',
+                        layout: 'anchor',
+                        items: [{
+                            xtype: 'box',
+                            itemId: 'groupMergeHelp',
+                            cls: 'muted',
+                            tpl: [
+                                '<p>', gettext('Merge the selected groups into a single group'), ':</p>',
+                                '<ul>',
+                                '<tpl for="notes">',
+                                    '<li>{.}</li>',
+                                '</tpl>',
+                                '</ul>'
+                            ],
+                            data: {
+                                notes: this.merge_groups_explained
+                            }
+                        }, {
+                            xtype: 'container',
+                            anchor: '100%',
+                            layout: 'anchor',
+                            itemId: 'mergeGroupsButtonContainer',
+                            hidden: true,
+                            items: [{
+                                xtype: 'button',
+                                itemId: 'mergeGroupsCancelButton',
+                                text: gettext('Cancel'),
+                                margin: '0 10 0 0'
+                            }, {
+                                xtype: 'primarybutton',
+                                itemId: 'mergeGroupsConfirmButton',
+                                text: gettext('Create project group')
+                            }]
+                        }]
+                    }
                 }]
             }, {
                 flex: 4,

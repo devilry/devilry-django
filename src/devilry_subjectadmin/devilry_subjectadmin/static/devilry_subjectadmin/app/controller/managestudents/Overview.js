@@ -200,6 +200,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         selectionModel.select(groupRecords, keepExisting);
     },
 
+    _selectByGroupIds: function(groupIds) {
+        var groupsStore = this.getGroupsStore();
+        var selectedGroups = [];
+        Ext.Array.each(groupIds, function(id) {
+            var index = groupsStore.findExact('id', id);
+            if(index != -1) {
+                var record = groupsStore.getAt(index);
+                selectedGroups.push(record);
+            }
+        }, this);
+        this._selectGroupRecords(selectedGroups);
+    },
+
 
     /*********************************************
      *
@@ -277,18 +290,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             this._handleNoGroupsSelected();
             return;
         }
-        var selectionModel = this.getListOfGroups().getSelectionModel();
-        var groupsStore = this.getGroupsStore();
-        var selectedGroups = [];
+        var groupIds = [];
         Ext.Array.each(select_groupids_on_load.split(','), function(strid) {
             var id = parseInt(strid);
-            var index = groupsStore.findExact('id', id);
-            if(index != -1) {
-                var record = groupsStore.getAt(index);
-                selectedGroups.push(record);
-            }
+            groupIds.push(id);
         }, this);
-        this._selectGroupRecords(selectedGroups);
+        this._selectByGroupIds(groupIds);
     },
 
 
@@ -323,29 +330,30 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this._handleLoadError(operation, gettext('Failed to load assignment'));
     },
 
-    _loadGroupsStore: function() {
+    _loadGroupsStore: function(groupIdsToSelectOnLoad) {
         this.getOverview().setLoading(gettext('Loading groups ...'));
         this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
             scope: this,
-            callback: this._onLoadGroupsStore
+            callback: function(records, operation) {
+                this.getOverview().setLoading(false);
+                if(operation.success) {
+                    this._onLoadGroupsStoreSuccess(groupIdsToSelectOnLoad);
+                } else {
+                    this._handleLoadError(operation, gettext('Failed to load groups'));
+                }
+            }
         });
     },
-
-    _onLoadGroupsStore: function(records, operation) {
-        this.getOverview().setLoading(false);
-        if(operation.success) {
-            this._onLoadGroupsStoreSuccess();
-        } else {
-            this._handleLoadError(operation, gettext('Failed to load groups'));
-        }
-    },
-
-    _onLoadGroupsStoreSuccess: function() {
+    _onLoadGroupsStoreSuccess: function(groupIdsToSelectOnLoad) {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], gettext('Manage students'));
-        this._selectUrlIds();
+        if(groupIdsToSelectOnLoad) {
+            this._selectByGroupIds(groupIdsToSelectOnLoad);
+        } else {
+            this._selectUrlIds();
+        }
     },
 
 
@@ -414,7 +422,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         console.log('failure', batch, options);
     },
 
-
+    /** Used by plugins to reload groups.
+     * @param groupIdsToSelectOnLoad Array of group IDs to select on load.
+     * */
+    reloadGroups: function(groupIdsToSelectOnLoad) {
+        this._loadGroupsStore(groupIdsToSelectOnLoad);
+    },
 
 
 

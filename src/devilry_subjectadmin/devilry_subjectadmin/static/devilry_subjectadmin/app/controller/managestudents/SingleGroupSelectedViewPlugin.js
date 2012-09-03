@@ -143,13 +143,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
     _onPopStudent: function(candidateRecord) {
         //Ext.MessageBox.alert('Not implemented', 'See <a href="https://github.com/devilry/devilry-django/issues/215" target="_blank">issue 215</a> for info about how this will work.');
-        console.log('Remove student:', candidateRecord.data);
         var assignmentRecord = this.manageStudentsController.assignmentRecord;
         var record = Ext.create('devilry_subjectadmin.model.PopFromGroup');
         record.proxy.setUrl(assignmentRecord.get('id'));
         record.set('group_id', this.groupRecord.get('id'));
         record.set('candidate_id', candidateRecord.get('id'));
-        console.log('PUTing', record.data);
         record.save({
             scope: this,
             callback: function(result, operation) {
@@ -163,7 +161,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _onPopStudentSuccess: function(result) {
-        console.log('Success', result);
+        var group_id = result.get('group_id');
+        var new_group_id = result.get('new_group_id');
+        this.manageStudentsController.reloadGroups([group_id, new_group_id]);
     },
 
     _onPopFromGroupProxyError: function(proxy, response, operation) {
