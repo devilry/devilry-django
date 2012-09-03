@@ -236,6 +236,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return self.is_open and self.parentnode.parentnode.is_active()
 
     def copy_all_except_candidates(self):
+        """
+        .. note:: Always run this is a transaction.
+        """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                 name=self.name,
                                 is_open=self.is_open)
@@ -247,6 +250,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             groupcopy.examiners.create(user=examiner.user)
         for deadline in self.deadlines.all():
             deadline.copy(groupcopy)
+        groupcopy._set_latest_feedback_as_active()
         return groupcopy
 
     def pop_candidate(self, candidate):
@@ -256,6 +260,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         this group.
 
         :param candidate: A :class:`devilry.apps.core.models.Candidate` object. The candidate must be among the candidates on this group.
+
+        .. note:: Always run this is a transaction.
         """
         candidates = self.candidates.all()
         if len(candidates) < 2:
@@ -298,6 +304,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 candidate.assignment_group = target
                 candidate.save()
 
+    def _set_latest_feedback_as_active(self):
+        from .static_feedback import StaticFeedback
+        feedbacks = StaticFeedback.objects.filter(delivery__deadline__assignment_group=self)[:1]
+        if len(feedbacks) == 1:
+            latest_feedback = feedbacks[0]
+            self.feedback = latest_feedback
+            self.save()
+
     def merge_into(self, target):
         """
         Merge this AssignmentGroup into the ``target`` AssignmentGroup.
@@ -318,9 +332,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 If the deadline and text does NOT match a deadline already in
                 ``target``, change assignmentgroup of the deadline to the
                 master group.
-            4. Recalculate delivery numbers of target using
+            4. Recalculate delivery numbers of ``target`` using
                :meth:`recalculate_deadline_numbers`.
-            5. Run ``self.delete()``.
+            5. Set the latest feedback on ``target`` as the active feedback.
+            6. Run ``self.delete()``.
+
+        .. note:: Always run this is a transaction.
         """
         from .deadline import Deadline
         from .delivery import Delivery
@@ -337,7 +354,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             except Deadline.DoesNotExist:
                 deadline.assignment_group = target
                 deadline.save()
-        self.recalculate_deadline_numbers()
+        target.recalculate_deadline_numbers()
+        target._set_latest_feedback_as_active()
         self.delete()
 
 

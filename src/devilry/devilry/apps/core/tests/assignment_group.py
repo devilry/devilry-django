@@ -160,20 +160,28 @@ class TestAssignmentGroupSplit(TestCase):
                             periods=["p1"],
                             assignments=['a1'])
 
-    def _testdata(self):
+    def _create_testdata(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3):examiner(examiner1,examiner2,examiner3)')
 
         # Add d1 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
         self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
                                      time_of_delivery=-2) # days after deadline
-        self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
-                                     time_of_delivery=-1) # days after deadline
+        delivery2 = self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
+                                                 time_of_delivery=-1) # days after deadline
+        self.testhelper.add_feedback(delivery=delivery2,
+                                     verdict={'grade': 'F', 'points':10, 'is_passing_grade':False},
+                                     rendered_view='Bad',
+                                     timestamp=datetime(2005, 1, 1))
 
         # Add d2 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(4)')
-        self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
-                                     time_of_delivery=-1) # days after deadline
+        delivery3 = self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
+                                                 time_of_delivery=-1) # days after deadline
+        self.testhelper.add_feedback(delivery=delivery3,
+                                     verdict={'grade': 'C', 'points':40, 'is_passing_grade':True},
+                                     rendered_view='Better',
+                                     timestamp=datetime(2010, 1, 1))
 
         # Set attributes and tags
         g1 = self.testhelper.sub_p1_a1_g1
@@ -184,7 +192,7 @@ class TestAssignmentGroupSplit(TestCase):
         g1.tags.create(tag='b')
 
     def test_copy_all_except_candidates(self):
-        self._testdata()
+        self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
         g1copy = g1.copy_all_except_candidates()
 
@@ -218,8 +226,15 @@ class TestAssignmentGroupSplit(TestCase):
             self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
             self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
 
+        # Active feedback
+        self.assertEquals(g1copy.feedback.grade, 'C')
+        self.assertEquals(g1copy.feedback.save_timestamp, datetime(2010, 1, 1))
+        self.assertEquals(g1copy.feedback.rendered_view, 'Better')
+        self.assertEquals(g1copy.feedback.points, 40)
+
+
     def test_pop_candidate(self):
-        self._testdata()
+        self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
         self.assertEquals(g1.candidates.count(), 3) # We check this again after popping
         candidate = g1.candidates.order_by('student__username')[1]
@@ -232,7 +247,7 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.candidates.all()[0], candidate)
 
     def test_pop_candidate_not_candidate(self):
-        self._testdata()
+        self._create_testdata()
         self.testhelper.add_to_path('uni;sub.p1.a2.other:candidate(student10)')
         g1 = self.testhelper.sub_p1_a1_g1
         other = self.testhelper.sub_p1_a2_other
@@ -247,9 +262,10 @@ class TestAssignmentGroupSplit(TestCase):
         with self.assertRaises(GroupPopToFewCandiatesError):
             g1copy = g1.pop_candidate(candidate)
 
-    def test_merge_into(self):
-        self._testdata()
-        g1 = self.testhelper.sub_p1_a1_g1
+
+    def _create_mergetestdata(self):
+        self._create_testdata()
+        source = self.testhelper.sub_p1_a1_g1
 
         self.testhelper.add_to_path('uni;sub.p1.a1.target:candidate(dewey):examiner(donald)')
 
@@ -272,28 +288,45 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertNotEquals(self.testhelper.sub_p1_a1_g1_d2.deadline,
                              self.testhelper.sub_p1_a1_target_d2.deadline)
         target = self.testhelper.sub_p1_a1_target
-        self.assertEquals(g1.deadlines.count(), 2)
+        self.assertEquals(source.deadlines.count(), 2)
         self.assertEquals(target.deadlines.count(), 2)
         self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2) # The one from _testdata() and the one copied in above
+        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2) # The one from _create_testdata() and the one copied in above
         self.assertEquals(self.testhelper.sub_p1_a1_target_d1.deliveries.count(), 1)
         self.assertEquals(self.testhelper.sub_p1_a1_target_d2.deliveries.count(), 1)
+        return source, target
 
-        # Do the merge
-        deadline1 = self.testhelper.sub_p1_a1_g1_d1.deadline
-        deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
-        deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
-        g1.merge_into(target)
-        self.assertFalse(AssignmentGroup.objects.filter(id=g1.id).exists())
+    def test_merge_into_sanity(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
 
+        # Source has been deleted?
+        self.assertFalse(AssignmentGroup.objects.filter(id=source.id).exists())
+
+        # Group attributes
+
+
+    def test_merge_into_candidates(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
         self.assertEquals(target.examiners.count(), 4)
         self.assertEquals(set([e.user.username for e in target.examiners.all()]),
                           set(['donald', 'examiner1', 'examiner2', 'examiner3']))
 
+    def test_merge_into_examiners(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
         self.assertEquals(target.candidates.count(), 4)
         self.assertEquals(set([e.student.username for e in target.candidates.all()]),
                           set(['dewey', 'student1', 'student2', 'student3']))
 
+    def test_merge_into_deadlines(self):
+        source, target = self._create_mergetestdata()
+        deadline1 = self.testhelper.sub_p1_a1_g1_d1.deadline
+        deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
+        deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
+
+        source.merge_into(target)
         deadlines = target.deadlines.order_by('deadline')
         self.assertEquals(len(deadlines), 3)
         self.assertEquals(deadlines[0].deadline, deadline1)
@@ -301,5 +334,30 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(deadlines[2].deadline, deadline3)
 
         self.assertEquals(deadlines[0].deliveries.count(), 3) # d1 from both have been merged
-        self.assertEquals(deadlines[1].deliveries.count(), 1) # g1 d2
+        self.assertEquals(deadlines[1].deliveries.count(), 1) # g1(source) d2
         self.assertEquals(deadlines[2].deliveries.count(), 1) # target d2
+
+    def test_merge_into_active_feedback(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
+        self.assertEquals(target.feedback.grade, 'C')
+        self.assertEquals(target.feedback.save_timestamp, datetime(2010, 1, 1))
+        self.assertEquals(target.feedback.rendered_view, 'Better')
+        self.assertEquals(target.feedback.points, 40)
+
+    def test_merge_into_active_feedback_target(self):
+        source, target = self._create_mergetestdata()
+
+        # Create the feedack that should become "active feedback" after the merge
+        delivery = self.testhelper.add_delivery(target, {"good.py": "print good"},
+                                                time_of_delivery=2) # days after deadline
+        self.testhelper.add_feedback(delivery=delivery,
+                                     verdict={'grade': 'A', 'points':100, 'is_passing_grade':True},
+                                     rendered_view='Good',
+                                     timestamp=datetime(2011, 1, 1))
+
+        source.merge_into(target)
+        self.assertEquals(target.feedback.grade, 'A')
+        self.assertEquals(target.feedback.save_timestamp, datetime(2011, 1, 1))
+        self.assertEquals(target.feedback.rendered_view, 'Good')
+        self.assertEquals(target.feedback.points, 100)
