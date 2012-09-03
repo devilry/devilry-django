@@ -377,9 +377,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         var record = Ext.create('devilry_subjectadmin.model.MergeIntoGroup');
         record.proxy.setUrl(assignmentRecord.get('id'));
 
-        var sourceRecord = this.groupRecords[0];
-        var targetRecord = this.groupRecords[1];
-        record.set('source_group_id', sourceRecord.get('id'));
+        var targetRecord = this.groupRecords[0];
+        var source_group_ids = [];
+        for(var index=1; index<this.groupRecords.length; index++)  {
+            var sourceRecord = this.groupRecords[index];
+            source_group_ids.push({
+                id: sourceRecord.get('id')
+            });
+        }
+
+        record.set('source_group_ids', source_group_ids);
         record.set('target_group_id', targetRecord.get('id'));
 
         record.save({

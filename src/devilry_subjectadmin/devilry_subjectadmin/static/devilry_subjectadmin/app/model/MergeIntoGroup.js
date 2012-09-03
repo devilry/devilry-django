@@ -1,8 +1,8 @@
 Ext.define('devilry_subjectadmin.model.MergeIntoGroup', {
     extend: 'Ext.data.Model',
-    idProperty: 'source_group_id',
+    idProperty: 'target_group_id',
     fields: [
-        {name: 'source_group_id', type: 'int'},
+        {name: 'source_group_ids', type: 'auto'},
         {name: 'target_group_id', type: 'int'},
         {name: 'success', type: 'bool', persist: false}
     ],
