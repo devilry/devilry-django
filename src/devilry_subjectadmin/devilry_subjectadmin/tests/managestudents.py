@@ -1,5 +1,4 @@
 from devilry.apps.core.testhelper import TestHelper
-from devilry.apps.core.models import Subject
 
 from .base import SubjectAdminSeleniumTestCase
 
