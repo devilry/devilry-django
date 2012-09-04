@@ -102,7 +102,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setTagsButton': {
                 click: this._onSetTags
             },
-            '#setTagsWindow': {
+            '#setTagsWindow choosetagspanel': {
                 savetags: this._onSetTagsSave
             },
 
@@ -110,7 +110,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #addTagsButton': {
                 click: this._onAddTags
             },
-            '#addTagsWindow': {
+            '#addTagsWindow choosetagspanel': {
                 savetags: this._onAddTagsSave
             },
 

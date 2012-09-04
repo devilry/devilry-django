@@ -65,7 +65,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             'viewport singlegroupview tagsingroupgrid #addTags': {
                 click: this._onAddTags
             },
-            '#addTagsOnSingleGroupWindow': {
+            '#addTagsOnSingleGroupWindow choosetagspanel': {
                 savetags: this._onSaveTags
             },
             'viewport singlegroupview tagsingroupgrid': {
@@ -275,8 +275,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         }).show();
     },
 
-    _onSaveTags: function(win, tags) {
-        win.close();
+    _onSaveTags: function(panel, tags) {
+        panel.up('window').close();
         devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags({
             groupRecord: this.groupRecord,
             sourceTags: tags,
