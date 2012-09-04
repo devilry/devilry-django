@@ -422,6 +422,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def merge_many_groups(self, sources, target):
+        """
+        Loop through the ``sources``-iterable, and for each ``source`` in the
+        iterator, run ``source.merge_into(target)``.
+        """
         for source in sources:
             source.merge_into(target) # Source is deleted after this
 
