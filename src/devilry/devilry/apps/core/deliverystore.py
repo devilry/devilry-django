@@ -132,7 +132,7 @@ class FsDeliveryStore(DeliveryStoreInterface):
 
     def _get_filepath(self, filemeta_obj):
         return join(self._get_dirpath(filemeta_obj.delivery),
-                str(filemeta_obj.pk))
+                    str(filemeta_obj.pk))
 
     def read_open(self, filemeta_obj):
         filepath = self._get_filepath(filemeta_obj)
@@ -140,10 +140,13 @@ class FsDeliveryStore(DeliveryStoreInterface):
             raise FileNotFoundError(filemeta_obj)
         return open(filepath, 'rb')
 
-    def write_open(self, filemeta_obj):
+    def _create_dir(self, filemeta_obj):
         dirpath = self._get_dirpath(filemeta_obj.delivery)
         if not exists(dirpath):
             makedirs(dirpath)
+
+    def write_open(self, filemeta_obj):
+        self._create_dir(filemeta_obj)
         return open(self._get_filepath(filemeta_obj), 'wb')
 
     def remove(self, filemeta_obj):
@@ -159,6 +162,7 @@ class FsDeliveryStore(DeliveryStoreInterface):
     def copy(self, filemeta_obj_from, filemeta_obj_to):
         frompath = self._get_filepath(filemeta_obj_from)
         topath = self._get_filepath(filemeta_obj_to)
+        self._create_dir(filemeta_obj_to)
         shutil_copy(frompath, topath)
 
 
