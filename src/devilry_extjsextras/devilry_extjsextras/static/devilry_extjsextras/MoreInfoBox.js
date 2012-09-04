@@ -135,6 +135,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         }
         this._getMoreWidget().show();
         this._getLessButton().show();
+        this.fireEvent('moreclick', this)
     },
 
     _onLess: function(e) {
@@ -149,5 +150,6 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         if(!Ext.isEmpty(this.collapsedCls)) {
             this._getIntroBox().addCls(this.collapsedCls);
         }
+        this.fireEvent('lessclick', this)
     }
 });
