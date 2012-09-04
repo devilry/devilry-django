@@ -112,7 +112,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                         layout: 'fit',
                         dockedItems: [{
                             xtype: 'toolbar',
-                            dock: 'top',
+                            dock: 'bottom',
                             ui: 'footer',
                             padding: 0,
                             defaults: {
@@ -139,11 +139,36 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                             xtype: 'box',
                             margin: '10 0 0 0',
                             cls: 'bootstrap',
-                            html: [
-                                '<p class="muted">',
-                                    gettext('Assign one or more tag(s) to the selected groups. Use the arrow button for methods of setting tags, such as random and by tags. Setting tags <strong>replaces</strong> the current tags.'),
-                                '</p>'
-                            ]
+                            tpl: [
+                                '<div class="muted">',
+                                    '<p>',
+                                        gettext('{Tags_term} is a flexible method of organizing {groups_term}. Only administrators can see {tags_term}. You can search and select {groups_term} by their {tags_term}. Common use-cases are:'),
+                                    '</p>',
+                                    '<ul>',
+                                        '<li>',
+                                            gettext('Mark groups with special needs.'),
+                                        '</li>',
+                                        '<li>',
+                                            gettext('Organize {groups_term} attending the same classroom sessions.'),
+                                        '</li>',
+                                        '<li>',
+                                            gettext('Mark suspected cheaters.'),
+                                        '</li>',
+                                    '</ul>',
+                                    '<p>',
+                                        gettext('NOTE: {Tags_term} on {groups_term} must not be confused with {tags_term} on {students_term} and {examiners_term} on a {period_term}. Those {tags_term} are used to automate assigning examiners to students. {Tags_term} from the {period_term} may have been included when you added {groups_term} to this {assignment_term}, however you can safely edit {tags_term} on {groups_term} without affecting the {tags_term} on the {period_term}.'),
+                                    '</p>',
+                                '</div>'
+                            ],
+                            data: {
+                                Tags_term: gettext('Tags'),
+                                groups_term: gettext('groups'),
+                                tags_term: gettext('tags'),
+                                examiners_term: gettext('examiners'),
+                                students_term: gettext('students'),
+                                period_term: gettext('period'),
+                                assignment_term: gettext('assignment')
+                            }
                         }
                     }]
                 
