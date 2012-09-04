@@ -57,6 +57,7 @@ productionenv/
 *.exe
 devilry_all_uncompiled.js
 devilryrestfullib/build/
+db_and_deliveries_stash/
 
 # devenv
 devenv/deliverystorehier/
