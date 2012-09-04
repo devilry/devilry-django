@@ -4,7 +4,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
     cls: 'devilry_subjectadmin_manageexaminersonmultiple',
     requires: [
         'devilry_extjsextras.MoreInfoBox',
-        //'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
+        'devilry_subjectadmin.view.managestudents.SelectExaminersGrid',
         'devilry_extjsextras.OkCancelPanel',
     ],
 
@@ -29,6 +29,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
 
 
     initComponent: function() {
+        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only %(examiners_term)s registered on the %(period_term)s are available.'), {
+            examiners_term: gettext('examiners'),
+            period_term: gettext('period')
+        }, true);
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',
@@ -93,15 +97,67 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         }
                     }
                 }, {
-                    xtype: 'box',
+                    xtype: 'okcancelpanel',
+                    border: 1,
+                    bodyPadding: 10,
+                    frame: false,
                     itemId: 'setExaminersPanel',
                     id: 'multi_set_examiners_panel',
-                    html: gettext('Set examiners')
+                    oktext: gettext('Set selected examiners'),
+                    layout: 'column',
+                    items: [{
+                        xtype: 'box',
+                        anchor: '100%',
+                        columnWidth: 0.5,
+                        padding: '0 20 0 0',
+                        tpl: [
+                            '<p>{text}</p>',
+                            '<p><small>{relatednote}</small></p>'
+                        ],
+                        data: {
+                            text: interpolate(gettext('Select one or more %(examiner_term)s. Any current %(examiners_term)s on the selected %(groups_term)s will be <strong>replaced</strong> when you confirm your selection.'), {
+                                examiner_term: gettext('examiner'),
+                                examiners_term: gettext('examiners'),
+                                groups_term: gettext('groups')
+                            }, true),
+                            relatednote: this.relatednote
+                        }
+                    }, {
+                        xtype: 'selectexaminersgrid',
+                        columnWidth: 0.5,
+                        anchor: '100%'
+                    }]
                 }, {
-                    xtype: 'box',
+                    xtype: 'okcancelpanel',
+                    border: 1,
+                    bodyPadding: 10,
+                    frame: false,
                     itemId: 'addExaminersPanel',
                     id: 'multi_add_examiners_panel',
-                    html: gettext('Add examiners')
+                    oktext: gettext('Add selected examiners'),
+                    layout: 'column',
+                    items: [{
+                        xtype: 'box',
+                        anchor: '100%',
+                        columnWidth: 0.5,
+                        padding: '0 20 0 0',
+                        tpl: [
+                            '<p>{text}</p>',
+                            '<p><small>{relatednote}</small></p>'
+                        ],
+                        data: {
+                            text: interpolate(gettext('Select one or more %(examiner_term)s. The selected %(examiners_term)s will be <strong>added</strong> to the selected %(groups_term)s when you confirm your selection.'), {
+                                examiner_term: gettext('examiner'),
+                                examiners_term: gettext('examiners'),
+                                groups_term: gettext('groups')
+                            }, true),
+                            relatednote: this.relatednote
+                        }
+                    }, {
+                        xtype: 'selectexaminersgrid',
+                        columnWidth: 0.5,
+                        anchor: '100%'
+                    }]
                 }, {
                     xtype: 'okcancelpanel',
                     itemId: 'clearExaminersPanel',

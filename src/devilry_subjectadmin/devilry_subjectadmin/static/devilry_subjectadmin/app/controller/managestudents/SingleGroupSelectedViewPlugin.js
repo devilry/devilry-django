@@ -23,8 +23,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     views: [
         'managestudents.SingleGroupSelectedView',
-        'managestudents.ChooseExaminersWindow',
-        'managestudents.ChooseTagsWindow'
+        'managestudents.SelectExaminersGrid'
     ],
 
     refs: [{

@@ -39,6 +39,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     }, {
         ref: 'manageExaminersCardBody',
         selector: 'viewport multiplegroupsview manageexaminersonmultiple #cardBody'
+    }, {
+        ref: 'setExaminersGrid',
+        selector: 'viewport multiplegroupsview manageexaminersonmultiple #setExaminersPanel selectexaminersgrid'
+    }, {
+        ref: 'addExaminersGrid',
+        selector: 'viewport multiplegroupsview manageexaminersonmultiple #addExaminersPanel selectexaminersgrid'
 
     // Tags
     }, {
@@ -88,10 +94,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview manageexaminersonmultiple #setExaminersButton': {
                 click: this._onSetExaminers
             },
+            'viewport multiplegroupsview manageexaminersonmultiple okcancelpanel#setExaminersPanel': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onSetExaminersConfirmed
+            },
 
             // addExaminers
             'viewport multiplegroupsview manageexaminersonmultiple #addExaminersButton': {
                 click: this._onAddExaminers
+            },
+            'viewport multiplegroupsview manageexaminersonmultiple okcancelpanel#addExaminersPanel': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onAddExaminersConfirmed
             },
 
             // clearExaminers
@@ -164,6 +178,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             topMessage: this._createTopMessage()
         });
 
+        this.manageStudentsController.getRelatedExaminersRoStore().load();
         this._populateSelectedGroupsStore();
     },
 
@@ -215,43 +230,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.getManageExaminersCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
     },
 
-    _onSetExaminers: function() {
-        //Ext.widget('chooseexaminerswindow', {
-            //title: gettext('Set examiners'),
-            //itemId: 'setExaminersWindow',
-            //panelConfig: {
-                //includeRemove: true,
-                //sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
-            //}
-        //}).show();
-        this.getManageExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
-        this._scrollExaminersIntoView();
-
-    },
-
-    _onAddExaminers: function() {
-        //Ext.widget('chooseexaminerswindow', {
-            //title: gettext('Add examiners'),
-            //itemId: 'addExaminersWindow',
-            //panelConfig: {
-                //sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
-            //}
-        //}).show();
-        this.getManageExaminersCardBody().getLayout().setActiveItem('addExaminersPanel');
-        this._scrollExaminersIntoView();
-    },
-
-    _onClearExaminers: function() {
-        this.getManageExaminersCardBody().getLayout().setActiveItem('clearExaminersPanel');
-        this._scrollExaminersIntoView();
-    },
-    _onClearExaminersConfirmed: function() {
-        Ext.Array.each(this.groupRecords, function(groupRecord) {
-            groupRecord.set('examiners', []);
-        }, this);
-        this.manageStudentsController.notifyMultipleGroupsChange();
-    },
-
     _syncExaminers: function(userStore, doNotDeleteUsers) {
         for(var index=0; index<this.groupRecords.length; index++)  {
             var groupRecord = this.groupRecords[index];
@@ -264,37 +242,50 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         }
     },
 
-    _onExaminerSetAdd: function(addedUserRecord, panel) {
-        var userStore = panel.store;
+    // Set examiners
+    _onSetExaminers: function() {
+        this.getManageExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
+        this._scrollExaminersIntoView();
+    },
+    _onSetExaminersConfirmed: function() {
+        var grid = this.getSetExaminersGrid();
+        var userStore = grid.getSelectedAsUserStore();
         this._syncExaminers(userStore);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                panel.afterItemAddedSuccessfully(addedUserRecord);
+                // TODO: Notify user about successs
             }
         });
     },
 
-    _onExaminerSetRemove: function(removedUserRecords, panel) {
-        var userStore = panel.store;
-        this._syncExaminers(userStore);
-        this.manageStudentsController.notifyMultipleGroupsChange({
-            scope: this,
-            success: function() {
-                panel.afterItemsRemovedSuccessfully(removedUserRecords);
-            }
-        });
+    // Add examiners
+    _onAddExaminers: function() {
+        this.getManageExaminersCardBody().getLayout().setActiveItem('addExaminersPanel');
+        this._scrollExaminersIntoView();
     },
-
-    _onExaminerAddPanelAdd: function(addedUserRecord, panel) {
-        var userStore = panel.store;
+    _onAddExaminersConfirmed: function() {
+        var grid = this.getAddExaminersGrid();
+        var userStore = grid.getSelectedAsUserStore();
         this._syncExaminers(userStore, true);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                panel.afterItemAddedSuccessfully(addedUserRecord);
+                // TODO: Notify user about successs
             }
         });
+    },
+
+    // Clear examiners
+    _onClearExaminers: function() {
+        this.getManageExaminersCardBody().getLayout().setActiveItem('clearExaminersPanel');
+        this._scrollExaminersIntoView();
+    },
+    _onClearExaminersConfirmed: function() {
+        Ext.Array.each(this.groupRecords, function(groupRecord) {
+            groupRecord.set('examiners', []);
+        }, this);
+        this.manageStudentsController.notifyMultipleGroupsChange();
     },
 
 
