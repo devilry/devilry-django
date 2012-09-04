@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
         'devilry_theme.Icons',
         'devilry_extjsextras.form.Help',
         'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
-        'devilry_extjsextras.PrimaryButton'
+        'devilry_extjsextras.PrimaryButton',
+        'devilry_extjsextras.OkCancelPanel',
     ],
 
     /**
@@ -188,6 +189,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                         itemId: 'addTagsPanel',
                         id: 'multi_add_tags_panel',
                         buttonText: gettext('Add tags')
+                    }, {
+                        xtype: 'okcancelpanel',
+                        itemId: 'clearTagsPanel',
+                        id: 'multi_clear_tags_panel',
+                        oktext: gettext('Clear tags'),
+                        bodyPadding: 10,
+                        html: [
+                            '<p>',
+                                gettext('Do you really want to clear all tags on the selected groups?'),
+                            '</p>'
+                        ].join('')
                     }]
                 
                 // Merge groups

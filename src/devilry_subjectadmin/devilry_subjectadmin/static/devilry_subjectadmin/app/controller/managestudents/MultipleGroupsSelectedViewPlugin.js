@@ -103,7 +103,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 click: this._onSetTags
             },
             'viewport multiplegroupsview choosetagspanel#setTagsPanel': {
-                cancel: this._onCancelAddOrEditTags,
+                cancel: this._showTagsDefaultView,
                 savetags: this._onSetTagsSave
             },
 
@@ -112,13 +112,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 click: this._onAddTags
             },
             'viewport multiplegroupsview choosetagspanel#addTagsPanel': {
-                cancel: this._onCancelAddOrEditTags,
+                cancel: this._showTagsDefaultView,
                 savetags: this._onAddTagsSave
             },
 
             // clearTags
             'viewport multiplegroupsview #clearTagsButton': {
                 click: this._onClearTags
+            },
+            'viewport multiplegroupsview okcancelpanel#clearTagsPanel': {
+                cancel: this._showTagsDefaultView,
+                ok: this._onClearTagsConfirmed
             }
         });
 
@@ -299,7 +303,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             }
         });
     },
-    _onCancelAddOrEditTags: function() {
+    _showTagsDefaultView: function() {
         this.getManageTagsPanel().getLayout().setActiveItem('tagsHelpAndButtonsContainer');
     },
 
@@ -320,22 +324,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     // Clear tags
 
     _onClearTags: function() {
-        Ext.MessageBox.show({
-            title: gettext('Confirm clear tags'),
-            msg: gettext('Do you want to remove all tags from the selected groups?'),
-            buttons: Ext.MessageBox.YESNO,
-            icon: Ext.MessageBox.QUESTION,
-            id: 'multi_clear_tags_window',
-            scope: this,
-            fn: function(buttonid) {
-                if(buttonid == 'yes') {
-                    this._clearTags();
-                }
-            }
-        });
+        this.getManageTagsPanel().getLayout().setActiveItem('clearTagsPanel');
     },
 
-    _clearTags: function() {
+    _onClearTagsConfirmed: function() {
         Ext.Array.each(this.groupRecords, function(groupRecord) {
             groupRecord.set('tags', []);
         }, this);
