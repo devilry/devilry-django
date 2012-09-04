@@ -29,9 +29,25 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
         gettext('The name of the group and open/closed status will be copied from the first group you selected.')
     ],
 
+
+    _createMergeHelp: function() {
+        return Ext.create('Ext.XTemplate', 
+            '<p>', gettext('Merge the selected groups into a single group'), ':</p>',
+            '<ul>',
+                '<tpl for="notes">',
+                    '<li>{.}</li>',
+                '</tpl>',
+            '</ul>'
+        ).apply({
+            notes: this.merge_groups_explained
+        });
+    },
+
     initComponent: function() {
         var buttonmargin = '30 0 0 0';
         var helpmargin = '4 0 0 0';
+        this.mergehelp = this._createMergeHelp();
+
         Ext.apply(this, {
             layout: {
                 type: 'vbox',
@@ -105,52 +121,39 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                         gettext('Create project group'),
                         ' (', gettext('Merge selected into one group'), ')'
                     ].join(''),
-                    enableToggle: true,
                     itemId: 'mergeGroupsButton'
                 }, {
-                    xtype: 'container',
+                    xtype: 'box',
+                    itemId: 'mergeGroupsHelp',
+                    margin: helpmargin,
+                    anchor: '100%',
+                    cls: 'bootstrap',
+                    html: ['<div class="muted">', this.mergehelp, '</div>'].join('')
+                }, {
+                    xtype: 'panel',
                     margin: helpmargin,
                     anchor: '100%',
                     cls: 'bootstrap merge_groups_confirm',
+                    itemId: 'confirmMergeGroupsContainer',
                     layout: 'fit',
+                    hidden: true,
+                    bodyPadding: 10,
                     items: {
-                        xtype: 'container',
-                        border: false,
-                        itemId: 'confirmMergeGroupsContainer',
-                        layout: 'anchor',
-                        items: [{
-                            xtype: 'box',
-                            itemId: 'groupMergeHelp',
-                            cls: 'muted',
-                            tpl: [
-                                '<p>', gettext('Merge the selected groups into a single group'), ':</p>',
-                                '<ul>',
-                                    '<tpl for="notes">',
-                                        '<li>{.}</li>',
-                                    '</tpl>',
-                                '</ul>'
-                            ],
-                            data: {
-                                notes: this.merge_groups_explained
-                            }
-                        }, {
-                            xtype: 'container',
-                            anchor: '100%',
-                            layout: 'anchor',
-                            itemId: 'mergeGroupsButtonContainer',
-                            hidden: true,
-                            items: [{
-                                xtype: 'button',
-                                itemId: 'mergeGroupsCancelButton',
-                                text: gettext('Cancel'),
-                                margin: '0 10 0 0'
-                            }, {
-                                xtype: 'primarybutton',
-                                itemId: 'mergeGroupsConfirmButton',
-                                text: gettext('Create project group')
-                            }]
-                        }]
-                    }
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        html: this.mergehelp
+                    },
+                    fbar: [{
+                        xtype: 'button',
+                        itemId: 'mergeGroupsCancelButton',
+                        text: gettext('Cancel'),
+                        margin: '0 10 0 0'
+                    }, {
+                        xtype: 'primarybutton',
+                        itemId: 'mergeGroupsConfirmButton',
+                        minWidth: 200,
+                        text: gettext('Create project group')
+                    }]
                 }]
             }, {
                 flex: 4,

@@ -40,8 +40,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         ref: 'confirmMergeGroupsContainer',
         selector: 'multiplegroupsview #confirmMergeGroupsContainer'
     }, {
-        ref: 'mergeGroupsButtonContainer',
-        selector: 'multiplegroupsview #mergeGroupsButtonContainer'
+        ref: 'mergeGroupsHelp',
+        selector: 'multiplegroupsview #mergeGroupsHelp'
     }, {
         ref: 'mergeGroupsButton',
         selector: 'multiplegroupsview #mergeGroupsButton'
@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
             // Merge groups
             'viewport multiplegroupsview #mergeGroupsButton': {
-                toggle: this._onMergeGroupsButtonToggle
+                click: this._onMergeGroupsButton
             },
             'viewport multiplegroupsview #mergeGroupsCancelButton': {
                 click: this._onMergeGroupsCancel
@@ -354,22 +354,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      *
      ************************************************/
 
-    _onMergeGroupsButtonToggle: function(button, pressed) {
-        var container = this.getConfirmMergeGroupsContainer();
-        var buttonContainer = this.getMergeGroupsButtonContainer();
-        if(pressed) {
-            container.down('#groupMergeHelp').removeCls('muted');
-            container.setBorder(true);
-            buttonContainer.show();
-        } else {
-            buttonContainer.hide();
-            container.setBorder(false);
-            container.down('#groupMergeHelp').addCls('muted');
-        }
+    _onMergeGroupsButton: function(button, pressed) {
+        this.getMergeGroupsHelp().hide();
+        var confirmContainer = this.getConfirmMergeGroupsContainer();
+        confirmContainer.show();
     },
 
     _onMergeGroupsCancel: function() {
-        this.getMergeGroupsButton().toggle(false);
+        this.getConfirmMergeGroupsContainer().hide();
+        this.getMergeGroupsHelp().show();
     },
 
     _onMergeGroupsConfirm: function() {
