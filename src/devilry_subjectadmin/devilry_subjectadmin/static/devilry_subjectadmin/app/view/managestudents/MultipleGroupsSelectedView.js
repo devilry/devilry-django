@@ -9,6 +9,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     requires: [
         'devilry_theme.Icons',
         'devilry_extjsextras.form.Help',
+        'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
         'devilry_extjsextras.PrimaryButton'
     ],
 
@@ -101,12 +102,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                         '</h2>'
                     ],
                     data: {
-                        heading: gettext('Set tag(s)'),
+                        heading: gettext('Manage tag(s)'),
                     }
                 }, {
                     xtype: 'container',
+                    itemId: 'manageTagsPanel',
+                    layout: 'card',
                     items: [{
                         xtype: 'panel',
+                        itemId: 'tagsHelpContainer',
                         border: false,
                         frame: false,
                         layout: 'fit',
@@ -170,6 +174,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                                 assignment_term: gettext('assignment')
                             }
                         }
+                    }, {
+                        xtype: 'choosetagspanel',
+                        itemId: 'setTagsPanel',
+                        buttonText: gettext('Set tags')
+                    }, {
+                        xtype: 'choosetagspanel',
+                        itemId: 'addTagsPanel',
+                        buttonText: gettext('Add tags')
                     }]
                 
                 // Merge groups

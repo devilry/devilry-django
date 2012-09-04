@@ -4,9 +4,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
     cls: 'devilry_subjectadmin_choosetagspanel',
 
     layout: 'fit',
+    border: false,
+    frame: false,
 
     requires: [
-        'devilry_extjsextras.form.Help'
+        'devilry_extjsextras.form.Help',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -16,7 +19,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
     constructor: function(config) {
         this.callParent([config]);
         this.addEvents(
-            'savetags'
+            'savetags',
+            'cancel'
         );
     },
 
@@ -58,8 +62,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
                 }],
                 buttons: [{
                     xtype: 'button',
-                    scale: 'medium',
+                    itemId: 'cancelButton',
+                    cls: 'choosetags_cancelbutton',
+                    text: gettext('Cancel'),
+                    listeners: {
+                        scope: this,
+                        click: this._onCancel
+                    }
+                }, {
+                    xtype: 'primarybutton',
                     itemId: 'saveTags',
+                    cls: 'choosetags_savebutton',
                     formBind: true,
                     text: this.buttonText,
                     listeners: {
@@ -69,6 +82,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
                 }]
             }
         });
+        this.on('show', this._onShow, this);
         this.callParent(arguments);
     },
 
@@ -96,5 +110,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
         if(this._isValid()) {
             this.fireEvent('savetags', this, this._getParsedValueAsArray());
         }
+    },
+
+    _onCancel: function() {
+        this.fireEvent('cancel', this);
+    },
+
+    /** Clear the tags input field. */
+    clear: function() {
+        this.down('textfield').clear();
+    },
+
+    _onShow: function() {
+        this.down('textfield').focus();
     }
 });

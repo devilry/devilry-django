@@ -31,11 +31,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     ],
 
     refs: [{
-        ref: 'setTagsWindow',
-        selector: '#setTagsWindow'
+        ref: 'manageTagsPanel',
+        selector: 'viewport multiplegroupsview #manageTagsPanel'
     }, {
-        ref: 'addTagsWindow',
-        selector: '#addTagsWindow'
+        ref: 'addTagsPanel',
+        selector: 'viewport multiplegroupsview #addTagsPanel'
     }, {
         ref: 'scrollableBodyContainer',
         selector: 'multiplegroupsview #scrollableBodyContainer'
@@ -102,7 +102,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #setTagsButton': {
                 click: this._onSetTags
             },
-            '#setTagsWindow choosetagspanel': {
+            'viewport multiplegroupsview choosetagspanel#setTagsPanel': {
+                cancel: this._onCancelAddOrEditTags,
                 savetags: this._onSetTagsSave
             },
 
@@ -110,7 +111,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #addTagsButton': {
                 click: this._onAddTags
             },
-            '#addTagsWindow choosetagspanel': {
+            'viewport multiplegroupsview choosetagspanel#addTagsPanel': {
+                cancel: this._onCancelAddOrEditTags,
                 savetags: this._onAddTagsSave
             },
 
@@ -285,17 +287,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
 
     // Set tags
-
     _onSetTags: function() {
-        Ext.widget('choosetagswindow', {
-            title: gettext('Set tags'),
-            itemId: 'setTagsWindow',
-            buttonText: gettext('Set tags')
-        }).show();
+        this.getManageTagsPanel().getLayout().setActiveItem('setTagsPanel');
     },
-
     _onSetTagsSave: function(win, tags) {
-        win.close();
+        console.log('SAVE');
         this._syncTags(tags);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
@@ -303,25 +299,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             }
         });
     },
+    _onCancelAddOrEditTags: function() {
+        this.getManageTagsPanel().getLayout().setActiveItem('tagsHelpContainer');
+    },
 
     // Add tags
-
+    _onAddTags: function() {
+        this.getManageTagsPanel().getLayout().setActiveItem('addTagsPanel');
+    },
     _onAddTagsSave: function(win, tags) {
-        win.close();
         this._syncTags(tags, true);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
             }
         });
-    },
-
-    _onAddTags: function() {
-        Ext.widget('choosetagswindow', {
-            title: gettext('Add tags'),
-            itemId: 'addTagsWindow',
-            buttonText: gettext('Add tags')
-        }).show();
     },
 
 
