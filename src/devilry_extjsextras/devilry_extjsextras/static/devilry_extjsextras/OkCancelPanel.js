@@ -38,6 +38,7 @@ Ext.define('devilry_extjsextras.OkCancelPanel', {
             fbar: [{
                 xtype: 'button',
                 itemId: 'cancelbutton',
+                cls: 'cancelbutton',
                 text: this.canceltext,
                 listeners: {
                     scope: this,
@@ -46,6 +47,7 @@ Ext.define('devilry_extjsextras.OkCancelPanel', {
             }, {
                 xtype: 'primarybutton',
                 itemId: 'okbutton',
+                cls: 'okbutton',
                 text: this.oktext,
                 listeners: {
                     scope: this,
