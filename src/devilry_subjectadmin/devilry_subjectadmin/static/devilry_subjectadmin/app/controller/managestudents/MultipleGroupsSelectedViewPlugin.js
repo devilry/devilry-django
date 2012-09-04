@@ -242,18 +242,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _onClearExaminers: function() {
-        //Ext.MessageBox.show({
-            //title: gettext('Confirm clear examiners'),
-            //msg: gettext('Do you want to remove all examiners from the selected groups? Their existing feedback will not be removed, only their permission to give feedback on the groups.'),
-            //buttons: Ext.MessageBox.YESNO,
-            //icon: Ext.MessageBox.QUESTION,
-            //scope: this,
-            //fn: function(buttonid) {
-                //if(buttonid == 'yes') {
-                    //this._clearExaminers();
-                //}
-            //}
-        //});
         this.getManageExaminersCardBody().getLayout().setActiveItem('clearExaminersPanel');
         this._scrollExaminersIntoView();
     },

@@ -7,12 +7,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     cls: 'devilry_subjectadmin_multiplegroupsview',
     ui: 'transparentpanel',
     requires: [
-        'devilry_theme.Icons',
-        'devilry_extjsextras.MoreInfoBox',
-        'devilry_extjsextras.form.Help',
-        'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
-        'devilry_extjsextras.PrimaryButton',
-        'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple',
         'devilry_subjectadmin.view.managestudents.MergeGroups'
@@ -50,33 +44,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     cls: 'top_infobox',
                     type: 'info',
                     message: [this.topMessage, this.multiselectHowto].join(' ')
-                
-                // Set examiners
                 }, {
                     xtype: 'manageexaminersonmultiple'
-                    //xtype: 'splitbutton',
-                    //margin: 0,
-                    //scale: 'medium',
-                    //text: gettext('Set examiner(s)'),
-                    //itemId: 'setExaminersButton',
-                    //menu: [{
-                        //text: gettext('Add examiner(s)'),
-                        //itemId: 'addExaminersButton',
-                        //tooltip: gettext('Add one or more examiner(s) to the selected groups.')
-                    //}, {
-                        //text: gettext('Clear examiners'),
-                        //itemId: 'clearExaminersButton',
-                        //icon: devilry_theme.Icons.DELETE_SMALL,
-                        //tooltip: gettext('Remove/clear all examiners from the selected groups.')
-                    //}]
-                //}, {
-                    //xtype: 'formhelp',
-                    //margin: helpmargin,
-                    //anchor: '100%',
-                    //html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners. Setting examiners <strong>replaces</strong> the current examiners.')
-
-
-
                 }, {
                     xtype: 'managetagsonmultiple',
                     margin: buttonmargin
