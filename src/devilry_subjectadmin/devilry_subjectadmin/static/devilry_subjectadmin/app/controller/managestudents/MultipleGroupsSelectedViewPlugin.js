@@ -37,6 +37,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         ref: 'addTagsWindow',
         selector: '#addTagsWindow'
     }, {
+        ref: 'scrollableBodyContainer',
+        selector: 'multiplegroupsview #scrollableBodyContainer'
+    }, {
         ref: 'confirmMergeGroupsContainer',
         selector: 'multiplegroupsview #confirmMergeGroupsContainer'
     }, {

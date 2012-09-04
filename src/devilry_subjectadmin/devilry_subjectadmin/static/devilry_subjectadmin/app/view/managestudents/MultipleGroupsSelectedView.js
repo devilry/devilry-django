@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.multiplegroupsview',
-    cls: 'multiplegroupsview',
+    cls: 'devilry_subjectadmin_multiplegroupsview',
     ui: 'transparentpanel',
     requires: [
         'devilry_theme.Icons',
@@ -60,9 +60,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 xtype: 'container',
                 padding: 20,
                 layout: 'anchor',
+                itemId: 'scrollableBodyContainer',
                 autoScroll: true,
                 items: [{
                     xtype: 'alertmessage',
+                    cls: 'top_infobox',
                     type: 'info',
                     message: [this.topMessage, this.multiselectHowto].join(' ')
                 
@@ -117,6 +119,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'button',
                     margin: buttonmargin,
                     scale: 'medium',
+                    cls: 'merge_groups_button',
                     text: [
                         gettext('Create project group'),
                         ' (', gettext('Merge selected into one group'), ')'
@@ -127,13 +130,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     itemId: 'mergeGroupsHelp',
                     margin: helpmargin,
                     anchor: '100%',
-                    cls: 'bootstrap',
+                    cls: 'merge_groups_helpbox bootstrap',
                     html: ['<div class="muted">', this.mergehelp, '</div>'].join('')
                 }, {
                     xtype: 'panel',
                     margin: helpmargin,
                     anchor: '100%',
-                    cls: 'bootstrap merge_groups_confirm',
+                    cls: 'bootstrap merge_groups_confirmcontainer',
                     itemId: 'confirmMergeGroupsContainer',
                     layout: 'fit',
                     hidden: true,
@@ -146,11 +149,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     fbar: [{
                         xtype: 'button',
                         itemId: 'mergeGroupsCancelButton',
+                        cls: 'merge_groups_cancel_button',
                         text: gettext('Cancel'),
                         margin: '0 10 0 0'
                     }, {
                         xtype: 'primarybutton',
                         itemId: 'mergeGroupsConfirmButton',
+                        cls: 'merge_groups_confirm_button',
                         minWidth: 200,
                         text: gettext('Create project group')
                     }]
