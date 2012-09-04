@@ -343,15 +343,21 @@ class TestAssignmentGroupSplit(TestCase):
 
     def test_merge_into_sanity(self):
         source, target = self._create_mergetestdata()
-        source.name = 'Test'
+        source.name = 'The source'
+        source.is_open = False
         source.save()
-        target.name = None
+        target.name = 'The target'
+        source.is_open = True
         target.save()
         source.merge_into(target)
 
         # Source has been deleted?
         self.assertFalse(AssignmentGroup.objects.filter(id=source.id).exists())
-        self.assertEquals(target.name, 'Test')
+
+        # Name or is_open unchanged?
+        target = self.testhelper.reload_from_db(target)
+        self.assertEquals(target.name, 'The target')
+        self.assertEquals(target.is_open, True)
 
 
     def test_merge_into_candidates(self):

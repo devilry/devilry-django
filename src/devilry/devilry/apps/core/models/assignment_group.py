@@ -355,8 +355,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
             - Copy in all candidates and examiners not already on the
               AssignmentGroup.
-            - If ``target`` has no name, but this AssignmentGroup does,
-              copy the name into target.
             - Delete all copies where the original is in ``self`` or ``target``:
                 - Delete all deliveries from ``target`` that are ``copy_of`` a delivery
                   ``self``.
@@ -377,6 +375,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             - Set the latest feedback on ``target`` as the active feedback.
 
         .. note::
+            The ``target.name`` or ``target.is_open`` is not changed.
+
+        .. note::
             Everything except setting the latest feedback runs in a
             transaction. Setting the latest feedback does not run
             in transaction because we need to save the with ``feedback=None``,
@@ -394,11 +395,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             # Examiners and candidates
             self._merge_examiners_into(target)
             self._merge_candidates_into(target)
-
-            # Name
-            if not target.name:
-                target.name = self.name
-                target.save()
 
             # Deadlines
             for deadline in self.deadlines.all():
