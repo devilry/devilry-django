@@ -15,6 +15,12 @@ Ext.define('devilry_extjsextras.OkCancelPanel', {
      */
     canceltext: gettext('Cancel'),
 
+    /**
+     * @cfg {String} [okbutton_ui="primary"]
+     * The ``ui``-config for the OK-button.
+     */
+    okbutton_ui: 'primary',
+
     constructor: function(config) {
         this.callParent([config]);
         this.addEvents(
@@ -45,8 +51,10 @@ Ext.define('devilry_extjsextras.OkCancelPanel', {
                     click: this._onCancelButtonClick
                 }
             }, {
-                xtype: 'primarybutton',
+                xtype: 'button',
                 itemId: 'okbutton',
+                ui: this.okbutton_ui,
+                scale: 'large',
                 cls: 'okbutton',
                 text: this.oktext,
                 listeners: {
