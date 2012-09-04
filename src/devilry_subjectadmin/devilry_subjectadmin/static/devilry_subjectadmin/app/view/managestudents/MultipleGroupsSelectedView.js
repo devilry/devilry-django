@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
         'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.OkCancelPanel',
+        'devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple'
     ],
 
     /**
@@ -151,91 +152,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     anchor: '100%',
                     html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners. Setting examiners <strong>replaces</strong> the current examiners.')
 
-                // Set Tags
+                // Tags
                 }, {
-                    xtype: 'box',
-                    cls: 'bootstrap',
-                    margin: buttonmargin,
-                    itemId: 'manageTagsHeading',
-                    tpl: [
-                        '<h2>',
-                            '{heading}',
-                        '</h2>'
-                    ],
-                    data: {
-                        heading: gettext('Manage tag(s)'),
-                    }
-                }, {
-                    xtype: 'container',
-                    itemId: 'manageTagsPanel',
-                    layout: 'card',
-                    items: [{
-                        xtype: 'panel',
-                        itemId: 'tagsHelpAndButtonsContainer',
-                        id: 'multi_tags_help_and_buttons_container',
-                        border: false,
-                        frame: false,
-                        layout: 'fit',
-                        dockedItems: [{
-                            xtype: 'toolbar',
-                            dock: 'bottom',
-                            ui: 'footer',
-                            padding: 0,
-                            defaults: {
-                                xtype: 'button',
-                                scale: 'medium',
-                                minWidth: 100
-                            },
-                            items: [{
-                                text: gettext('Set tag(s)'),
-                                itemId: 'setTagsButton',
-                                id: 'multi_set_tags_button',
-                                tooltip: gettext('Replace the tags on the selected groups with one or more new tag(s).')
-                            }, {
-                                text: gettext('Add tag(s)'),
-                                itemId: 'addTagsButton',
-                                id: 'multi_add_tags_button',
-                                tooltip: gettext('Add one or more tag(s) to the selected groups.')
-                            }, {
-                                text: gettext('Clear tags'),
-                                itemId: 'clearTagsButton',
-                                ui: 'danger',
-                                id: 'multi_clear_tags_button',
-                                tooltip: gettext('Remove/clear all tags from the selected groups.')
-                            }]
-                        }],
-                        items: {
-                            xtype: 'moreinfobox',
-                            margin: '10 0 0 0',
-                            introtext: this.tag_introtext,
-                            moreWidget: {
-                                xtype: 'box',
-                                html: this._createTagMoreHelp()
-                            }
-                        }
-                    }, {
-                        xtype: 'choosetagspanel',
-                        itemId: 'setTagsPanel',
-                        id: 'multi_set_tags_panel',
-                        buttonText: gettext('Set tags')
-                    }, {
-                        xtype: 'choosetagspanel',
-                        itemId: 'addTagsPanel',
-                        id: 'multi_add_tags_panel',
-                        buttonText: gettext('Add tags')
-                    }, {
-                        xtype: 'okcancelpanel',
-                        itemId: 'clearTagsPanel',
-                        id: 'multi_clear_tags_panel',
-                        oktext: gettext('Clear tags'),
-                        okbutton_ui: 'danger',
-                        bodyPadding: 10,
-                        html: [
-                            '<p>',
-                                gettext('Do you really want to clear all tags on the selected groups?'),
-                            '</p>'
-                        ].join('')
-                    }]
+                    xtype: 'managetagsonmultiple',
+                    margin: buttonmargin
                 
                 // Merge groups
                 }, {

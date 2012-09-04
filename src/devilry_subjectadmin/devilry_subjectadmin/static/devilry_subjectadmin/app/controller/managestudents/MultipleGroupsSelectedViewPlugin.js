@@ -31,11 +31,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     ],
 
     refs: [{
-        ref: 'manageTagsPanel',
-        selector: 'viewport multiplegroupsview #manageTagsPanel'
+        ref: 'manageTags',
+        selector: 'viewport multiplegroupsview managetagsonmultiple'
     }, {
-        ref: 'manageTagsHeading',
-        selector: 'viewport multiplegroupsview #manageTagsHeading'
+        ref: 'manageTagsCardBody',
+        selector: 'viewport multiplegroupsview managetagsonmultiple #manageTagsCardBody'
     }, {
         ref: 'addTagsPanel',
         selector: 'viewport multiplegroupsview #addTagsPanel'
@@ -297,8 +297,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      * Set tags
      *
      ************************************************/
-    _scrollTagsHeadingIntoView: function() {
-        this._scrollIntroView(this.getManageTagsHeading());
+    _scrollTagsIntoView: function() {
+        this._scrollIntroView(this.getManageTags());
     },
 
     _syncTags: function(sourceTags, doNotDeleteTags) {
@@ -315,8 +315,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     // Set tags
     _onSetTags: function() {
-        this.getManageTagsPanel().getLayout().setActiveItem('setTagsPanel');
-        this._scrollTagsHeadingIntoView();
+        this.getManageTagsCardBody().getLayout().setActiveItem('setTagsPanel');
+        this._scrollTagsIntoView();
     },
     _onSetTagsSave: function(win, tags) {
         console.log('SAVE');
@@ -328,13 +328,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         });
     },
     _showTagsDefaultView: function() {
-        this.getManageTagsPanel().getLayout().setActiveItem('tagsHelpAndButtonsContainer');
+        this.getManageTagsCardBody().getLayout().setActiveItem('tagsHelpAndButtonsContainer');
     },
 
     // Add tags
     _onAddTags: function() {
-        this.getManageTagsPanel().getLayout().setActiveItem('addTagsPanel');
-        this._scrollTagsHeadingIntoView();
+        this.getManageTagsCardBody().getLayout().setActiveItem('addTagsPanel');
+        this._scrollTagsIntoView();
     },
     _onAddTagsSave: function(win, tags) {
         this._syncTags(tags, true);
@@ -348,8 +348,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     // Clear tags
     _onClearTags: function() {
-        this.getManageTagsPanel().getLayout().setActiveItem('clearTagsPanel');
-        this._scrollTagsHeadingIntoView();
+        this.getManageTagsCardBody().getLayout().setActiveItem('clearTagsPanel');
+        this._scrollTagsIntoView();
     },
 
     _onClearTagsConfirmed: function() {
