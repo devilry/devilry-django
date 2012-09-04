@@ -545,3 +545,40 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(deliveries.filter(copy_of__isnull=True).count(), 2)
         self.assertEquals(deliveries.filter(copy_of__isnull=False).count(), 1)
         self.assertEquals(len(deliveries), 3)
+
+
+    def test_merge_many_groups(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.a:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.b:candidate(student2):examiner(examiner2)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.c:candidate(student1,student3):examiner(examiner1,examiner3)')
+        for groupname in 'a', 'b', 'c':
+            self.testhelper.add(nodes="uni",
+                                subjects=["sub"],
+                                periods=["p1"],
+                                assignments=['a1'],
+                                assignmentgroups=[groupname],
+                                deadlines=['d1:ends(1)'])
+            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
+                                         {groupname: groupname},
+                                         time_of_delivery=datetime(2002, 1, 1))
+        a = self.testhelper.sub_p1_a1_a
+        b = self.testhelper.sub_p1_a1_b
+        c = self.testhelper.sub_p1_a1_c
+
+        AssignmentGroup.merge_many_groups([a, b], c)
+        self.assertFalse(AssignmentGroup.objects.filter(id=a.id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=b.id).exists())
+        self.assertTrue(AssignmentGroup.objects.filter(id=c.id).exists())
+        c = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_c)
+        candidates = [cand.student.username for cand in c.candidates.all()]
+        self.assertEquals(len(candidates), 3)
+        self.assertEquals(set(candidates), set(['student1', 'student2', 'student3']))
+
+        examiners = [cand.user.username for cand in c.examiners.all()]
+        self.assertEquals(len(examiners), 3)
+        self.assertEquals(set(examiners), set(['examiner1', 'examiner2', 'examiner3']))
+
+        deadlines = c.deadlines.all()
+        self.assertEquals(len(deadlines), 1)
+        deliveries = deadlines[0].deliveries.all()
+        self.assertEquals(len(deliveries), 3)

@@ -271,8 +271,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         .. note:: Always run this is a transaction.
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
-                                name=self.name,
-                                is_open=self.is_open)
+                                    name=self.name,
+                                    is_open=self.is_open)
         groupcopy.full_clean()
         groupcopy.save()
         for tagobj in self.tags.all():
@@ -419,6 +419,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target.recalculate_delivery_numbers()
             self.delete()
         target._set_latest_feedback_as_active()
+
+    @classmethod
+    def merge_many_groups(self, sources, target):
+        for source in sources:
+            source.merge_into(target) # Source is deleted after this
 
 
 class AssignmentGroupTag(models.Model):
