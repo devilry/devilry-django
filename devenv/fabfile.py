@@ -1,10 +1,12 @@
-from os.path import exists
-from os import remove
+from os.path import exists, join
+from os import remove, mkdir
+from shutil import rmtree, make_archive
+from zipfile import ZipFile
 from fabric.api import local, abort, task
 
 
 DB_FILE = 'db.sqlite3'
-
+STASH_DIR = 'db_and_deliveries_stash'
 
 @task
 def setup_demo():
@@ -98,6 +100,64 @@ def autodb():
     remove_db()
     syncdb()
     local('bin/django_dev.py dev_autodb -v2')
+
+
+def _gzip_file(infile):
+    import gzip
+    f_in = open(infile, 'rb')
+    gzipped_outfile = '{0}.gz'.format(infile)
+    f_out = gzip.open(gzipped_outfile, 'wb')
+    f_out.writelines(f_in)
+    f_out.close()
+    f_in.close()
+    remove(infile)
+
+@task
+def stash_db_and_deliveries():
+    """
+    Dump the database and deliveries into the
+    ``db_and_deliveries_stash/``-directory.
+    """
+    if exists(STASH_DIR):
+        rmtree(STASH_DIR)
+    mkdir(STASH_DIR)
+
+    # DB
+    dbdumpfile = join(STASH_DIR, 'dbdump.sql')
+    backup_db(dbdumpfile)
+    _gzip_file(dbdumpfile)
+
+    # Delivery files
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    log = logging.getLogger('files.zip')
+    make_archive(join(STASH_DIR, 'files'), 'zip', logger=log, base_dir="deliverystorehier")
+
+
+def _gunzip_file(gzipped_infile):
+    import gzip
+    unzipped = gzip.open(gzipped_infile, 'rb').read()
+    outfile = gzipped_infile.replace('.gz', '')
+    open(outfile, 'wb').write(unzipped)
+    return outfile
+
+@task
+def unstash_db_and_deliveries():
+    """
+    Undo ``stash_db_and_deliveries``.
+    """
+    # DB
+    dbfile = _gunzip_file(join(STASH_DIR, 'dbdump.sql.gz'))
+    restore_db(dbfile)
+    remove(dbfile) # We remove the unzipped dbdump, but keep the .gz
+
+    # Delivery files
+    if exists('deliverystorehier'):
+        rmtree('deliverystorehier')
+    zipfile = ZipFile(join(STASH_DIR, 'files.zip'))
+    zipfile.extractall()
+
+
 
 @task
 def noextjsdebug_server():
