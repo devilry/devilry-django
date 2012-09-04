@@ -110,7 +110,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     layout: 'card',
                     items: [{
                         xtype: 'panel',
-                        itemId: 'tagsHelpContainer',
+                        itemId: 'tagsHelpAndButtonsContainer',
+                        id: 'multi_tags_help_and_buttons_container',
                         border: false,
                         frame: false,
                         layout: 'fit',
@@ -127,14 +128,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                             items: [{
                                 text: gettext('Set tag(s)'),
                                 itemId: 'setTagsButton',
+                                id: 'multi_set_tags_button',
                                 tooltip: gettext('Replace the tags on the selected groups with one or more new tag(s).')
                             }, {
                                 text: gettext('Add tag(s)'),
                                 itemId: 'addTagsButton',
+                                id: 'multi_add_tags_button',
                                 tooltip: gettext('Add one or more tag(s) to the selected groups.')
                             }, {
                                 text: gettext('Clear tags'),
                                 itemId: 'clearTagsButton',
+                                id: 'multi_clear_tags_button',
                                 icon: devilry_theme.Icons.DELETE_SMALL,
                                 tooltip: gettext('Remove/clear all tags from the selected groups.')
                             }]
@@ -177,10 +181,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     }, {
                         xtype: 'choosetagspanel',
                         itemId: 'setTagsPanel',
+                        id: 'multi_set_tags_panel',
                         buttonText: gettext('Set tags')
                     }, {
                         xtype: 'choosetagspanel',
                         itemId: 'addTagsPanel',
+                        id: 'multi_add_tags_panel',
                         buttonText: gettext('Add tags')
                     }]
                 

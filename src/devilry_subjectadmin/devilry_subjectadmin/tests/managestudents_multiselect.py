@@ -29,6 +29,8 @@ class TestManageMultipleStudentsMixin(object):
 
     def find_element(self, cssselector):
         return self.selenium.find_element_by_css_selector('.devilry_subjectadmin_multiplegroupsview {0}'.format(cssselector))
+    def find_elements(self, cssselector):
+        return self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_multiplegroupsview {0}'.format(cssselector))
 
 
 class TestManageMultipleStudentsOverview(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
@@ -94,3 +96,100 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         g1 = self.testhelper.reload_from_db(g1)
         candidates = set([c.student.username for c in g1.candidates.all()])
         self.assertEquals(candidates, set(['student1', 'student2']))
+
+
+class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
+    def test_render(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_tags_button')
+        self.waitForCssSelector('#multi_add_tags_button')
+        self.waitForCssSelector('#multi_clear_tags_button')
+        self.assertTrue(self.find_element('#multi_tags_help_and_buttons_container').is_displayed())
+        self.assertFalse(self.find_element('#multi_set_tags_panel').is_displayed())
+        self.assertFalse(self.find_element('#multi_add_tags_panel').is_displayed())
+
+    def _has_reloaded(self, ignored):
+        # Since the #multi_tags_help_and_buttons_container is invisible on the
+        # save, it will not become visible again until reloaded
+        panels = self.find_elements('#multi_tags_help_and_buttons_container')
+        if panels:
+            return panels[0].is_displayed()
+        else:
+            return False
+
+    def test_set_tags(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_tags_button')
+        self.find_element('#multi_set_tags_button button').click()
+
+        panel = self.find_element('#multi_set_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        panel.find_element_by_css_selector('input[type=text]').send_keys('a,b')
+        savebutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
+        self.waitFor(savebutton, lambda b: b.is_enabled())
+        savebutton.click()
+
+        self.waitFor(self.selenium, self._has_reloaded)
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            tags = set([t.tag for t in group.tags.all()])
+            self.assertEquals(tags, set(['a', 'b']))
+
+    def test_set_tags_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_tags_button')
+        self.find_element('#multi_set_tags_button button').click()
+
+        panel = self.find_element('#multi_set_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.choosetags_cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+    def test_add_tags(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_add_tags_button')
+        self.find_element('#multi_add_tags_button button').click()
+
+        panel = self.find_element('#multi_add_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        panel.find_element_by_css_selector('input[type=text]').send_keys('a,b')
+        savebutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
+        self.waitFor(savebutton, lambda b: b.is_enabled())
+        savebutton.click()
+
+        self.waitFor(self.selenium, self._has_reloaded)
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            tags = set([t.tag for t in group.tags.all()])
+            self.assertEquals(tags, set(['a', 'b']))
+
+    def test_add_tags_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_add_tags_button')
+        self.find_element('#multi_add_tags_button button').click()
+
+        panel = self.find_element('#multi_add_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.choosetags_cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())

@@ -300,7 +300,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         });
     },
     _onCancelAddOrEditTags: function() {
-        this.getManageTagsPanel().getLayout().setActiveItem('tagsHelpContainer');
+        this.getManageTagsPanel().getLayout().setActiveItem('tagsHelpAndButtonsContainer');
     },
 
     // Add tags
@@ -325,6 +325,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             msg: gettext('Do you want to remove all tags from the selected groups?'),
             buttons: Ext.MessageBox.YESNO,
             icon: Ext.MessageBox.QUESTION,
+            id: 'multi_clear_tags_window',
             scope: this,
             fn: function(buttonid) {
                 if(buttonid == 'yes') {

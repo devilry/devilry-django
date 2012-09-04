@@ -118,10 +118,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
 
     /** Clear the tags input field. */
     clear: function() {
-        this.down('textfield').clear();
+        this.down('textfield').setValue('');
     },
 
     _onShow: function() {
+        this.clear();
         this.down('textfield').focus();
     }
 });
