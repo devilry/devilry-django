@@ -11,6 +11,7 @@ from devilry.apps.core.models.assignment_group import GroupPopValueError
 from devilry.apps.core.models import Candidate
 from .auth import IsAssignmentAdmin
 from .errors import NotFoundError
+from .log import logger
 
 
 class PopFromGroupForm(forms.Form):
@@ -78,11 +79,15 @@ class PopFromGroup(View):
         candidate_id = self.CONTENT['candidate_id']
         group = self._get_group(group_id)
         candidate = self._get_candidate(group_id, candidate_id)
+        logger.info('User %s moving candidate %r from %r into a copy of the group.',
+                    request.user.username, candidate, group)
         with transaction.commit_on_success():
             try:
                 new_group = group.pop_candidate(candidate)
             except GroupPopValueError as e:
                 raise ErrorResponse(status.HTTP_400_BAD_REQUEST, {'detail': str(e)})
+        logger.info('User %s successfully moved candidate %r from %r into %r.',
+                    request.user.username, candidate, group, new_group)
         return {'success': True,
                 'group_id': group_id,
                 'new_group_id': new_group.id,

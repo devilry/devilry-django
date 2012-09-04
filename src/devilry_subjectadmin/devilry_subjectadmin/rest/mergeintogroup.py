@@ -7,6 +7,7 @@ from devilry.apps.core.models import AssignmentGroup
 from .auth import IsAssignmentAdmin
 from .errors import NotFoundError
 from .fields import ListOfDictField
+from .log import logger
 
 
 class GroupIdsField(ListOfDictField):
@@ -68,8 +69,10 @@ class MergeIntoGroup(View):
         target_group_id = self.CONTENT['target_group_id']
         sources = [self._get_group(groupdct['id']) for groupdct in source_group_ids]
         target = self._get_group(target_group_id)
-        for source in sources:
-            new_group = source.merge_into(target)
+        logger.info('User %s merging %r into %r', request.user.username, sources, target)
+        AssignmentGroup.merge_many_groups(sources, target)
+        logger.info('User %s successfully merged groups %s into %r', request.user.username,
+                    source_group_ids, target)
         return {'success': True,
                 'source_group_ids': source_group_ids,
                 'target_group_id': target_group_id}
