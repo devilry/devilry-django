@@ -359,6 +359,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     _onMergeGroupsButton: function(button, pressed) {
         this.getMergeGroupsHelp().hide();
+        this.getMergeGroupsButton().hide();
         var confirmContainer = this.getConfirmMergeGroupsContainer();
         confirmContainer.show();
     },
@@ -366,6 +367,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onMergeGroupsCancel: function() {
         this.getConfirmMergeGroupsContainer().hide();
         this.getMergeGroupsHelp().show();
+        this.getMergeGroupsButton().show();
     },
 
     _onMergeGroupsConfirm: function() {

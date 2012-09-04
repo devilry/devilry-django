@@ -51,8 +51,8 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         self.waitForCssSelector('.merge_groups_helpbox')
         button = self.find_element('.merge_groups_button')
         help = self.find_element('.merge_groups_helpbox')
-        self.assertTrue(button.text.strip().startswith('Create project group'))
-        self.assertTrue(help.text.strip().startswith('Merge the selected groups into a single group'))
+        self.assertEquals(button.text.strip(), 'Create project group')
+        self.assertTrue(help.text.strip().startswith('Any student in the group will'))
 
     def test_show_and_hide(self):
         g1 = self.create_group('g1:candidate(student1)')
@@ -68,12 +68,14 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         self.assertTrue(help.is_displayed())
         buttonEl.click()
         self.waitFor(help, lambda h: not h.is_displayed()) # Wait for help to be hidden
+        self.waitFor(buttonEl, lambda b: not b.is_displayed()) # Wait for button to be hidden
         self.waitFor(confirmContainer, lambda c: c.is_displayed()) # Wait for confirm to be displayed
 
         cancelButtonEl = self.find_element('.merge_groups_cancel_button')
         cancelButtonEl.click()
         self.waitFor(confirmContainer, lambda c: not c.is_displayed()) # Wait for confirm to be hidden
         self.waitFor(help, lambda h: h.is_displayed()) # Wait for help to be displayed
+        self.waitFor(buttonEl, lambda b: b.is_displayed()) # Wait for button to be displayed
 
     def test_create_project_group(self):
         g1 = self.create_group('g1:candidate(student1)')

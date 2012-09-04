@@ -32,7 +32,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
 
     _createMergeHelp: function() {
         return Ext.create('Ext.XTemplate', 
-            '<p>', gettext('Merge the selected groups into a single group'), ':</p>',
             '<ul>',
                 '<tpl for="notes">',
                     '<li>{.}</li>',
@@ -89,7 +88,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'formhelp',
                     margin: helpmargin,
                     anchor: '100%',
-                    html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners, such as random and by tags. Setting examiners <strong>replaces</strong> the current examiners.')
+                    html: gettext('Assign one or more examiner(s) to the selected groups. Use the arrow button for methods of setting examiners. Setting examiners <strong>replaces</strong> the current examiners.')
 
                 // Set Tags
                 }, {
@@ -116,15 +115,20 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 
                 // Merge groups
                 }, {
-                    xtype: 'button',
+                    xtype: 'box',
+                    cls: 'bootstrap',
                     margin: buttonmargin,
-                    scale: 'medium',
-                    cls: 'merge_groups_button',
-                    text: [
-                        gettext('Create project group'),
-                        ' (', gettext('Merge selected into one group'), ')'
-                    ].join(''),
-                    itemId: 'mergeGroupsButton'
+                    itemId: 'header',
+                    tpl: [
+                        '<h2>',
+                            '{heading}',
+                            ' <small>- {subheading}</small>',
+                        '</h2>'
+                    ],
+                    data: {
+                        heading: gettext('Create project group'),
+                        subheading: gettext('Merge selected into one group')
+                    }
                 }, {
                     xtype: 'box',
                     itemId: 'mergeGroupsHelp',
@@ -132,6 +136,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     anchor: '100%',
                     cls: 'merge_groups_helpbox bootstrap',
                     html: ['<div class="muted">', this.mergehelp, '</div>'].join('')
+                }, {
+                    xtype: 'button',
+                    scale: 'medium',
+                    cls: 'merge_groups_button',
+                    text: gettext('Create project group'),
+                    itemId: 'mergeGroupsButton'
                 }, {
                     xtype: 'panel',
                     margin: helpmargin,
@@ -144,7 +154,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     items: {
                         xtype: 'box',
                         cls: 'bootstrap',
-                        html: this.mergehelp
+                        tpl: [
+                            gettext('Merge selected groups into a single group?'),
+                            '{mergehelp}'
+                        ],
+                        data: {
+                            mergehelp: this.mergehelp
+                        }
                     },
                     fbar: [{
                         xtype: 'button',
