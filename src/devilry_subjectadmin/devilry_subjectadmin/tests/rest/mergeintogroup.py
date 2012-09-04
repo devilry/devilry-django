@@ -1,9 +1,7 @@
 from django.test import TestCase
-from django.db.models import Q
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
-from devilry.apps.core.models import Delivery
 
 
 
