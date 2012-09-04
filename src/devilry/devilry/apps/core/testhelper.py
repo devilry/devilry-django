@@ -36,11 +36,19 @@ class TestHelper(object):
         vars(self)[name] = user
         return user
 
-    def refresh_var(self, obj):
+    def reload_from_db(self, obj):
+        """
+        Reload the given ``django.db.Model`` object from the database using
+        ``obj.__class__.get(pk=obj.pk)``. Updates the cache entry on this
+        testhelper object if the object was created using this testhelper.
+
+        :return: The object that was re-loaded from the database.
+        """
         freshed_obj = type(obj).objects.get(pk=obj.pk)
         for key in vars(self).keys():
             if vars(self)[key] == obj:
                 vars(self)[key] = freshed_obj
+        return freshed_obj
 
     def create_superuser(self, name):
         """

@@ -144,7 +144,7 @@ class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
         self.assertEquals(update_res.short_name, 'testuni')
 
         self.assertEquals(self.uni.short_name, 'uni')
-        self.refresh_var(self.uni)
+        self.reload_from_db(self.uni)
         self.assertEquals(self.uni.short_name, 'testuni')
 
     def test_updatemany(self):
@@ -411,7 +411,7 @@ class TestSimplifiedAdminSubject(SimplifiedAdminTestBase):
         self.assertEquals(update_res.short_name, 'test110')
 
         self.assertEquals(self.inf110.short_name, 'inf110')
-        self.refresh_var(self.inf110)
+        self.reload_from_db(self.inf110)
         self.assertEquals(self.inf110.short_name, 'test110')
 
     def test_update_security_asstudent(self):
@@ -652,7 +652,7 @@ class TestSimplifiedAdminPeriod(SimplifiedAdminTestBase):
         self.assertEquals(update_res.short_name, 'testsem')
 
         self.assertEquals(self.inf110_firstsem.short_name, 'firstsem')
-        self.refresh_var(self.inf110_firstsem)
+        self.reload_from_db(self.inf110_firstsem)
         self.assertEquals(self.inf110_firstsem.short_name, 'testsem')
 
     def test_update_security_asstudent(self):
@@ -1010,7 +1010,7 @@ class TestSimplifiedAdminAssignment(SimplifiedAdminTestBase):
         update_res = SimplifiedAssignment.update(self.admin1,
                                                  pk=self.inf110_firstsem_a2.id,
                                                  short_name = 'test110')
-        self.refresh_var(self.inf110_firstsem_a2)
+        self.reload_from_db(self.inf110_firstsem_a2)
         self.assertEquals(self.inf110_firstsem_a2.short_name, 'test110')
 
     def test_update_security_asstudent(self):

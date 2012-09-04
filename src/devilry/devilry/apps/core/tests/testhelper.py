@@ -455,7 +455,7 @@ class TestTestHelper(TestCase):
         node = Node.objects.get(pk=self.ti.uio.pk)
         node.long_name = "university"
         node.save()
-        self.ti.refresh_var(self.ti.uio)
+        self.ti.reload_from_db(self.ti.uio)
         self.assertEquals(node, self.ti.uio)
 
     def test_create_superuser(self):
