@@ -25,7 +25,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
         gettext('Any student in the group will be able to make deliveries on behalf of the group.'),
         gettext('Feedback will be given to the group as a whole, not to individual students in the group.'),
         gettext('If any of the selected groups already have any deadlines, deliveries or feedback, they will be moved into the new group.'),
-        gettext('You can split up a group later, however any deliveries and feedback will follow all students on the group, even if they where made before you merged the groups into a single group in the first place.')
+        gettext('You can split up a group later, however any deliveries and feedback will follow all students on the group, even if they where made before you merged the groups into a single group in the first place.'),
+        gettext('The name of the group and open/closed status will be copied from the first group you selected.')
     ],
 
     initComponent: function() {
@@ -124,9 +125,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                             tpl: [
                                 '<p>', gettext('Merge the selected groups into a single group'), ':</p>',
                                 '<ul>',
-                                '<tpl for="notes">',
-                                    '<li>{.}</li>',
-                                '</tpl>',
+                                    '<tpl for="notes">',
+                                        '<li>{.}</li>',
+                                    '</tpl>',
                                 '</ul>'
                             ],
                             data: {
