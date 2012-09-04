@@ -92,33 +92,66 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
 
                 // Set Tags
                 }, {
-                    xtype: 'splitbutton',
+                    xtype: 'box',
+                    cls: 'bootstrap',
                     margin: buttonmargin,
-                    scale: 'medium',
-                    text: gettext('Set tag(s)'),
-                    itemId: 'setTagsButton',
-                    menu: [{
-                        text: gettext('Add tag(s)'),
-                        itemId: 'addTagsButton',
-                        tooltip: gettext('Add one or more tag(s) to the selected groups.')
-                    }, {
-                        text: gettext('Clear tags'),
-                        itemId: 'clearTagsButton',
-                        icon: devilry_theme.Icons.DELETE_SMALL,
-                        tooltip: gettext('Remove/clear all tags from the selected groups.')
-                    }]
+                    tpl: [
+                        '<h2>',
+                            '{heading}',
+                        '</h2>'
+                    ],
+                    data: {
+                        heading: gettext('Set tag(s)'),
+                    }
                 }, {
-                    xtype: 'formhelp',
-                    margin: helpmargin,
-                    anchor: '100%',
-                    html: gettext('Assign one or more tag(s) to the selected groups. Use the arrow button for methods of setting tags, such as random and by tags. Setting tags <strong>replaces</strong> the current tags.')
+                    xtype: 'container',
+                    items: [{
+                        xtype: 'panel',
+                        border: false,
+                        frame: false,
+                        layout: 'fit',
+                        dockedItems: [{
+                            xtype: 'toolbar',
+                            dock: 'top',
+                            ui: 'footer',
+                            padding: 0,
+                            defaults: {
+                                xtype: 'button',
+                                scale: 'medium',
+                                minWidth: 100
+                            },
+                            items: [{
+                                text: gettext('Set tag(s)'),
+                                itemId: 'setTagsButton',
+                                tooltip: gettext('Replace the tags on the selected groups with one or more new tag(s).')
+                            }, {
+                                text: gettext('Add tag(s)'),
+                                itemId: 'addTagsButton',
+                                tooltip: gettext('Add one or more tag(s) to the selected groups.')
+                            }, {
+                                text: gettext('Clear tags'),
+                                itemId: 'clearTagsButton',
+                                icon: devilry_theme.Icons.DELETE_SMALL,
+                                tooltip: gettext('Remove/clear all tags from the selected groups.')
+                            }]
+                        }],
+                        items: {
+                            xtype: 'box',
+                            margin: '10 0 0 0',
+                            cls: 'bootstrap',
+                            html: [
+                                '<p class="muted">',
+                                    gettext('Assign one or more tag(s) to the selected groups. Use the arrow button for methods of setting tags, such as random and by tags. Setting tags <strong>replaces</strong> the current tags.'),
+                                '</p>'
+                            ]
+                        }
+                    }]
                 
                 // Merge groups
                 }, {
                     xtype: 'box',
                     cls: 'bootstrap',
                     margin: buttonmargin,
-                    itemId: 'header',
                     tpl: [
                         '<h2>',
                             '{heading}',
