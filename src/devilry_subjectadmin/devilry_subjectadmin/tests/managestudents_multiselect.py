@@ -54,7 +54,7 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         button = self.find_element('.merge_groups_button')
         help = self.find_element('.merge_groups_helpbox')
         self.assertEquals(button.text.strip(), 'Create project group')
-        self.assertTrue(help.text.strip().startswith('Any student in the group will'))
+        self.assertTrue(help.text.strip().startswith('Multiple students on a single group is used'))
 
     def test_show_and_hide(self):
         g1 = self.create_group('g1:candidate(student1)')

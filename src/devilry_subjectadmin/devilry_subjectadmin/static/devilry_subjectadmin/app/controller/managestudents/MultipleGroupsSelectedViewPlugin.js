@@ -31,6 +31,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     ],
 
     refs: [{
+        ref: 'scrollableBodyContainer',
+        selector: 'multiplegroupsview #scrollableBodyContainer'
+
+    // Tags
+    }, {
         ref: 'manageTags',
         selector: 'viewport multiplegroupsview managetagsonmultiple'
     }, {
@@ -39,9 +44,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     }, {
         ref: 'addTagsPanel',
         selector: 'viewport multiplegroupsview #addTagsPanel'
+
+    // Merge
     }, {
-        ref: 'scrollableBodyContainer',
-        selector: 'multiplegroupsview #scrollableBodyContainer'
+        ref: 'mergeGroups',
+        selector: 'multiplegroupsview mergegroups'
     }, {
         ref: 'confirmMergeGroupsContainer',
         selector: 'multiplegroupsview #confirmMergeGroupsContainer'
@@ -319,7 +326,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this._scrollTagsIntoView();
     },
     _onSetTagsSave: function(win, tags) {
-        console.log('SAVE');
         this._syncTags(tags);
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
@@ -379,7 +385,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.getConfirmMergeGroupsContainer().hide();
         this.getMergeGroupsHelp().show();
         this.getMergeGroupsButton().show();
-        this._scrollIntroView(this.getMergeGroupsButton());
+        this._scrollIntroView(this.getMergeGroups());
     },
 
     _onMergeGroupsConfirm: function() {
