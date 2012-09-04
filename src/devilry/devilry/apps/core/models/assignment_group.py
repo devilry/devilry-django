@@ -174,7 +174,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return Q(examiners__user=user_obj)
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.parentnode.get_path(), self.get_candidates())
+        return u'id={id} path={path} candidates=({candidates})'.format(id=self.id,
+                                                                       path=self.parentnode.get_path(),
+                                                                       candidates=self.get_candidates())
 
     def get_students(self):
         """ Get a string containing all students in the group separated by
