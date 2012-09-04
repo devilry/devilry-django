@@ -12,8 +12,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     views: [
         'managestudents.MultipleGroupsSelectedView',
-        'managestudents.ChooseExaminersWindow',
-        'managestudents.ChooseTagsWindow',
         'managestudents.SelectedGroupsSummaryGrid'
     ],
 
@@ -34,6 +32,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         ref: 'scrollableBodyContainer',
         selector: 'multiplegroupsview #scrollableBodyContainer'
 
+    // Examiners
+    }, {
+        ref: 'manageExaminers',
+        selector: 'viewport multiplegroupsview manageexaminersonmultiple'
+    }, {
+        ref: 'manageExaminersCardBody',
+        selector: 'viewport multiplegroupsview manageexaminersonmultiple #cardBody'
+
     // Tags
     }, {
         ref: 'manageTags',
@@ -41,9 +47,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     }, {
         ref: 'manageTagsCardBody',
         selector: 'viewport multiplegroupsview managetagsonmultiple #manageTagsCardBody'
-    }, {
-        ref: 'addTagsPanel',
-        selector: 'viewport multiplegroupsview #addTagsPanel'
 
     // Merge
     }, {
@@ -80,27 +83,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 lessclick: this._onLessClick
             },
 
+
             // setExaminers
-            'viewport multiplegroupsview #setExaminersButton': {
+            'viewport multiplegroupsview manageexaminersonmultiple #setExaminersButton': {
                 click: this._onSetExaminers
-            },
-            '#setExaminersWindow chooseexaminerspanel': {
-                addUser: this._onExaminerSetAdd,
-                removeUsers: this._onExaminerSetRemove
             },
 
             // addExaminers
-            'viewport multiplegroupsview #addExaminersButton': {
+            'viewport multiplegroupsview manageexaminersonmultiple #addExaminersButton': {
                 click: this._onAddExaminers
-            },
-            '#addExaminersWindow chooseexaminerspanel': {
-                addUser: this._onExaminerAddPanelAdd
             },
 
             // clearExaminers
-            'viewport multiplegroupsview #clearExaminersButton': {
+            'viewport multiplegroupsview manageexaminersonmultiple #clearExaminersButton': {
                 click: this._onClearExaminers
             },
+            'viewport multiplegroupsview manageexaminersonmultiple okcancelpanel#clearExaminersPanel': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onClearExaminersConfirmed
+            },
+
 
             // setTags
             'viewport multiplegroupsview #setTagsButton': {
@@ -206,45 +208,56 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      * Set examiners
      *
      ************************************************/
-
+    _scrollExaminersIntoView: function() {
+        this._scrollIntroView(this.getManageExaminers());
+    },
+    _showExaminersDefaultView: function() {
+        this.getManageExaminersCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
+    },
 
     _onSetExaminers: function() {
-        Ext.widget('chooseexaminerswindow', {
-            title: gettext('Set examiners'),
-            itemId: 'setExaminersWindow',
-            panelConfig: {
-                includeRemove: true,
-                sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
-            }
-        }).show();
+        //Ext.widget('chooseexaminerswindow', {
+            //title: gettext('Set examiners'),
+            //itemId: 'setExaminersWindow',
+            //panelConfig: {
+                //includeRemove: true,
+                //sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            //}
+        //}).show();
+        this.getManageExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
+        this._scrollExaminersIntoView();
+
     },
 
     _onAddExaminers: function() {
-        Ext.widget('chooseexaminerswindow', {
-            title: gettext('Add examiners'),
-            itemId: 'addExaminersWindow',
-            panelConfig: {
-                sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
-            }
-        }).show();
+        //Ext.widget('chooseexaminerswindow', {
+            //title: gettext('Add examiners'),
+            //itemId: 'addExaminersWindow',
+            //panelConfig: {
+                //sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
+            //}
+        //}).show();
+        this.getManageExaminersCardBody().getLayout().setActiveItem('addExaminersPanel');
+        this._scrollExaminersIntoView();
     },
 
     _onClearExaminers: function() {
-        Ext.MessageBox.show({
-            title: gettext('Confirm clear examiners'),
-            msg: gettext('Do you want to remove all examiners from the selected groups? Their existing feedback will not be removed, only their permission to give feedback on the groups.'),
-            buttons: Ext.MessageBox.YESNO,
-            icon: Ext.MessageBox.QUESTION,
-            scope: this,
-            fn: function(buttonid) {
-                if(buttonid == 'yes') {
-                    this._clearExaminers();
-                }
-            }
-        });
+        //Ext.MessageBox.show({
+            //title: gettext('Confirm clear examiners'),
+            //msg: gettext('Do you want to remove all examiners from the selected groups? Their existing feedback will not be removed, only their permission to give feedback on the groups.'),
+            //buttons: Ext.MessageBox.YESNO,
+            //icon: Ext.MessageBox.QUESTION,
+            //scope: this,
+            //fn: function(buttonid) {
+                //if(buttonid == 'yes') {
+                    //this._clearExaminers();
+                //}
+            //}
+        //});
+        this.getManageExaminersCardBody().getLayout().setActiveItem('clearExaminersPanel');
+        this._scrollExaminersIntoView();
     },
-
-    _clearExaminers: function() {
+    _onClearExaminersConfirmed: function() {
         Ext.Array.each(this.groupRecords, function(groupRecord) {
             groupRecord.set('examiners', []);
         }, this);
