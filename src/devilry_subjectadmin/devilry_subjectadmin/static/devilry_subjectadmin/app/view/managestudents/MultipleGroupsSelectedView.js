@@ -139,8 +139,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                             }, {
                                 text: gettext('Clear tags'),
                                 itemId: 'clearTagsButton',
+                                ui: 'danger',
                                 id: 'multi_clear_tags_button',
-                                icon: devilry_theme.Icons.DELETE_SMALL,
                                 tooltip: gettext('Remove/clear all tags from the selected groups.')
                             }]
                         }],
@@ -194,6 +194,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                         itemId: 'clearTagsPanel',
                         id: 'multi_clear_tags_panel',
                         oktext: gettext('Clear tags'),
+                        okbutton_ui: 'danger',
                         bodyPadding: 10,
                         html: [
                             '<p>',
