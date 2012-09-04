@@ -278,7 +278,6 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.feedback.rendered_view, 'Better')
         self.assertEquals(g1copy.feedback.points, 40)
 
-
     def test_pop_candidate(self):
         self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
@@ -420,7 +419,6 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(target.feedback.rendered_view, 'Good')
         self.assertEquals(target.feedback.points, 100)
 
-
     def test_merge_into_delivery_numbers(self):
         source, target = self._create_mergetestdata()
         def get_deliveries_ordered_by_timestamp(group):
@@ -468,3 +466,82 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(deliveries[1].number, 0)
         self.assertEquals(deliveries[2].number, 0)
         self.assertEquals(deliveries[3].number, 0)
+
+
+    def test_merge_with_copy_of_in_both(self):
+        for groupname in 'source', 'target':
+            self.testhelper.add(nodes="uni",
+                                subjects=["sub"],
+                                periods=["p1"],
+                                assignments=['a1'],
+                                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(**vars())],
+                                deadlines=['d1:ends(1)'])
+            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
+                                         {'a.txt': "a"},
+                                         time_of_delivery=datetime(2002, 1, 1))
+        source = self.testhelper.sub_p1_a1_source
+        target = self.testhelper.sub_p1_a1_target
+
+        # Copy the delivery from source into target, and vica versa
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
+        sourcedeadline = source.deadlines.all()[0]
+        targetdeadine = target.deadlines.all()[0]
+        sourcedeadline.deliveries.all()[0].copy(targetdeadine)
+        targetdeadine.deliveries.all()[0].copy(sourcedeadline)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
+                                                  copy_of__deadline__assignment_group=target).count(), 1)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
+                                                  copy_of__deadline__assignment_group=source).count(), 1)
+
+        # Merge and make sure we do not get any duplicates
+        # - We should only end up with 2 deliveries, since 2 of the deliveries are copies
+        source.merge_into(target)
+        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
+        self.assertEquals(len(deliveries), 2)
+        self.assertEquals(deliveries[0].copy_of, None)
+        self.assertEquals(deliveries[1].copy_of, None)
+
+    def test_merge_with_copy_of_in_other(self):
+        for groupname in 'source', 'target', 'other':
+            self.testhelper.add(nodes="uni",
+                                subjects=["sub"],
+                                periods=["p1"],
+                                assignments=['a1'],
+                                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(**vars())],
+                                deadlines=['d1:ends(1)'])
+            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
+                                         {'a.txt': "a"},
+                                         time_of_delivery=datetime(2002, 1, 1))
+        source = self.testhelper.sub_p1_a1_source
+        target = self.testhelper.sub_p1_a1_target
+        other = self.testhelper.sub_p1_a1_other
+
+        # Copy the delivery from source into target, and vica versa
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
+        for group in source, target:
+            deadline = group.deadlines.all()[0]
+            other.deadlines.all()[0].deliveries.all()[0].copy(deadline)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
+                                                  copy_of__deadline__assignment_group=target).count(), 0)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
+                                                  copy_of__deadline__assignment_group=source).count(), 0)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
+                                                  copy_of__deadline__assignment_group=other).count(), 1)
+        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
+                                                  copy_of__deadline__assignment_group=other).count(), 1)
+
+        # Merge and make sure we do not get any duplicates
+        # - We should only end up with 3 deliveries, one from source, one from
+        #   target, and one copy from other (both have the same copy from
+        #   other, so we should not get any duplicates)
+        source.merge_into(target)
+        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
+        self.assertEquals(deliveries.filter(copy_of__isnull=True).count(), 2)
+        self.assertEquals(deliveries.filter(copy_of__isnull=False).count(), 1)
+        self.assertEquals(len(deliveries), 3)

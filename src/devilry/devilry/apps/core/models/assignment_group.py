@@ -355,10 +355,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
               AssignmentGroup.
             - If ``target`` has no name, but this AssignmentGroup does,
               copy the name into target.
-            - Delete all deliveries that are ``copy_of`` a delivery already in
-              the target. We do this globally instead of for each deadline,
-              since someone may have moved the deadline on one of the groups,
-              but the delivery will still be the same.
+            - Delete all copies where the original is in ``self`` or ``target``:
+                - Delete all deliveries from ``target`` that are ``copy_of`` a delivery
+                  ``self``.
+                - Delete all deliveries from ``self`` that are ``copy_of`` a delivery in
+                  ``target``.
             - Loop through all deadlines in this AssignmentGroup, and for each
               deadline:
 
@@ -382,17 +383,33 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         from .deadline import Deadline
         from .delivery import Delivery
         with transaction.commit_on_success():
-            Delivery.objects.filter(copy_of__deadline__assignment_group=target).delete()
+            # Copies
+            Delivery.objects.filter(deadline__assignment_group=self,
+                                    copy_of__deadline__assignment_group=target).delete()
+            Delivery.objects.filter(deadline__assignment_group=target,
+                                    copy_of__deadline__assignment_group=self).delete()
+
+            # Examiners and candidates
             self._merge_examiners_into(target)
             self._merge_candidates_into(target)
+
+            # Name
             if not target.name:
                 target.name = self.name
                 target.save()
+
+            # Deadlines
             for deadline in self.deadlines.all():
                 try:
                     matching_deadline = target.deadlines.get(deadline=deadline.deadline,
                                                              text=deadline.text)
                     for delivery in deadline.deliveries.all():
+                        if delivery.copy_of:
+                            # NOTE: If we merge 2 groups with a copy from the same third group, we
+                            #       we only want one of the copies.
+                            if Delivery.objects.filter(deadline__assignment_group=target,
+                                                       copy_of=delivery.copy_of).exists():
+                                continue
                         delivery.deadline = matching_deadline
                         delivery.save(autoset_time_of_delivery=False,
                                       autoset_number=False)
