@@ -66,6 +66,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 click: this._onAddTags
             },
             '#addTagsOnSingleGroupWindow choosetagspanel': {
+                cancel: this._onCancelTags,
                 savetags: this._onSaveTags
             },
             'viewport singlegroupview tagsingroupgrid': {
@@ -273,6 +274,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             itemId: 'addTagsOnSingleGroupWindow',
             buttonText: gettext('Add tags')
         }).show();
+    },
+
+    _onCancelTags: function(panel) {
+        panel.up('window').close();
     },
 
     _onSaveTags: function(panel, tags) {
