@@ -193,3 +193,41 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
         help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+    def test_clear_tags(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        g1.tags.create(tag='a')
+        g2.tags.create(tag='b')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_clear_tags_button')
+        self.find_element('#multi_clear_tags_button button').click()
+
+        panel = self.find_element('#multi_clear_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        okbutton = panel.find_element_by_css_selector('.okbutton button')
+        okbutton.click()
+
+        self.waitFor(self.selenium, self._has_reloaded)
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            self.assertEquals(group.tags.all().count(), 0)
+
+    def test_clear_tags_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        g1.tags.create(tag='a')
+        g2.tags.create(tag='b')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_tags_help_and_buttons_container')
+        self.waitForCssSelector('#multi_clear_tags_button')
+        self.find_element('#multi_clear_tags_button button').click()
+
+        panel = self.find_element('#multi_clear_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
