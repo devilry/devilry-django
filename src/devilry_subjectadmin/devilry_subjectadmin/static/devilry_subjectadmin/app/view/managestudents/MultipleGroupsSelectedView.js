@@ -156,6 +156,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'box',
                     cls: 'bootstrap',
                     margin: buttonmargin,
+                    itemId: 'manageTagsHeading',
                     tpl: [
                         '<h2>',
                             '{heading}',

@@ -34,6 +34,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         ref: 'manageTagsPanel',
         selector: 'viewport multiplegroupsview #manageTagsPanel'
     }, {
+        ref: 'manageTagsHeading',
+        selector: 'viewport multiplegroupsview #manageTagsHeading'
+    }, {
         ref: 'addTagsPanel',
         selector: 'viewport multiplegroupsview #addTagsPanel'
     }, {
@@ -64,15 +67,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
                 render: this._onRender
             },
 
-            // Merge groups
-            'viewport multiplegroupsview #mergeGroupsButton': {
-                click: this._onMergeGroupsButton
-            },
-            'viewport multiplegroupsview #mergeGroupsCancelButton': {
-                click: this._onMergeGroupsCancel
-            },
-            'viewport multiplegroupsview #mergeGroupsConfirmButton': {
-                click: this._onMergeGroupsConfirm
+            // moreinfobox
+            'viewport multiplegroupsview moreinfobox': {
+                moreclick: this._onMoreClick,
+                lessclick: this._onLessClick
             },
 
             // setExaminers
@@ -96,7 +94,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview #clearExaminersButton': {
                 click: this._onClearExaminers
             },
-
 
             // setTags
             'viewport multiplegroupsview #setTagsButton': {
@@ -123,6 +120,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview okcancelpanel#clearTagsPanel': {
                 cancel: this._showTagsDefaultView,
                 ok: this._onClearTagsConfirmed
+            },
+
+
+            // Merge groups
+            'viewport multiplegroupsview #mergeGroupsButton': {
+                click: this._onMergeGroupsButton
+            },
+            'viewport multiplegroupsview #mergeGroupsCancelButton': {
+                click: this._onMergeGroupsCancel
+            },
+            'viewport multiplegroupsview #mergeGroupsConfirmButton': {
+                click: this._onMergeGroupsConfirm
             }
         });
 
@@ -170,6 +179,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             total: this.manageStudentsController.getTotalGroupsCount(),
             groups_term: gettext('groups')
         }, true);
+    },
+
+    _scrollIntroView: function(widget) {
+        widget.getEl().scrollIntoView(this.getScrollableBodyContainer().getEl(), false, true);
+    },
+
+    _onMoreClick: function(moreinfobox) {
+        this._scrollIntroView(moreinfobox);
+    },
+    _onLessClick: function(moreinfobox) {
+        this._scrollIntroView(moreinfobox);
     },
 
 
@@ -277,6 +297,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      * Set tags
      *
      ************************************************/
+    _scrollTagsHeadingIntoView: function() {
+        this._scrollIntroView(this.getManageTagsHeading());
+    },
 
     _syncTags: function(sourceTags, doNotDeleteTags) {
         for(var index=0; index<this.groupRecords.length; index++)  {
@@ -293,6 +316,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     // Set tags
     _onSetTags: function() {
         this.getManageTagsPanel().getLayout().setActiveItem('setTagsPanel');
+        this._scrollTagsHeadingIntoView();
     },
     _onSetTagsSave: function(win, tags) {
         console.log('SAVE');
@@ -310,6 +334,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     // Add tags
     _onAddTags: function() {
         this.getManageTagsPanel().getLayout().setActiveItem('addTagsPanel');
+        this._scrollTagsHeadingIntoView();
     },
     _onAddTagsSave: function(win, tags) {
         this._syncTags(tags, true);
@@ -322,9 +347,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
 
     // Clear tags
-
     _onClearTags: function() {
         this.getManageTagsPanel().getLayout().setActiveItem('clearTagsPanel');
+        this._scrollTagsHeadingIntoView();
     },
 
     _onClearTagsConfirmed: function() {
@@ -347,12 +372,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.getMergeGroupsButton().hide();
         var confirmContainer = this.getConfirmMergeGroupsContainer();
         confirmContainer.show();
+        this._scrollIntroView(confirmContainer);
     },
 
     _onMergeGroupsCancel: function() {
         this.getConfirmMergeGroupsContainer().hide();
         this.getMergeGroupsHelp().show();
         this.getMergeGroupsButton().show();
+        this._scrollIntroView(this.getMergeGroupsButton());
     },
 
     _onMergeGroupsConfirm: function() {
