@@ -12288,7 +12288,7 @@ input[type="submit"].btn.small {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
   background-repeat: no-repeat;
-  padding: 0 3px;
+  padding: 0 25px;
 }
 
 /* line 656, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12577,6 +12577,744 @@ input[type="submit"].btn.small {
 /* line 63, ../sass/_button-uis.scss */
 .x-btn-focus {
   outline: 1px dotted #666;
+}
+
+/* line 637, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large {
+  border-color: #9d261d;
+}
+
+/* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-btn-danger-large {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  padding: 3px 3px 3px 3px;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #9d261d;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d83a2e), color-stop(50%, #b32b21), color-stop(51%, #9d261d), color-stop(100%, #872119));
+  background-image: -webkit-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -moz-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -o-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -ms-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+}
+
+/* line 102, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-btn-danger-large-mc {
+  background-image: url('../images/btn/btn-danger-large-bg.gif');
+  background-color: #9d261d;
+}
+
+/* line 115, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-large {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1100303px 1000303px;
+}
+/* line 147, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-large-tl,
+.x-nbr .x-btn-danger-large-bl,
+.x-nbr .x-btn-danger-large-tr,
+.x-nbr .x-btn-danger-large-br,
+.x-nbr .x-btn-danger-large-tc,
+.x-nbr .x-btn-danger-large-bc,
+.x-nbr .x-btn-danger-large-ml,
+.x-nbr .x-btn-danger-large-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-danger-large-corners.gif');
+}
+/* line 168, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-large-ml,
+.x-nbr .x-btn-danger-large-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-danger-large-sides.gif');
+  background-position: 0 0;
+}
+/* line 200, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-large-mc {
+  padding: 1px 1px 1px 1px;
+}
+
+/* line 210, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-strict .x-ie7 .x-btn-danger-large-tl,
+.x-strict .x-ie7 .x-btn-danger-large-bl {
+  position: relative;
+  right: 0;
+}
+
+/* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large .x-btn-inner {
+  font-size: 14px;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: white;
+  background-repeat: no-repeat;
+  padding: 0 25px;
+}
+
+/* line 656, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon button,
+.x-btn-danger-large-icon a,
+.x-btn-danger-large-icon .x-btn-inner,
+.x-btn-danger-large-noicon button,
+.x-btn-danger-large-noicon a,
+.x-btn-danger-large-noicon .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+}
+
+/* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon button, .x-btn-danger-large-icon a {
+  padding: 0;
+}
+/* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon .x-btn-inner {
+  /* even though there is no text we set a width and padding as buttons shrink-wrap around this element */
+  width: 32px;
+  padding: 0;
+}
+/* line 675, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon .x-btn-icon {
+  width: 32px;
+  height: 32px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-left button, .x-btn-danger-large-icon-text-left a {
+  height: 32px;
+}
+/* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-left .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+  padding-left: 36px;
+}
+/* line 696, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-left .x-btn-icon {
+  width: 32px;
+  height: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: auto;
+}
+/* line 705, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-large-icon-text-left .x-btn-icon, .x-quirks .x-btn-danger-large-icon-text-left .x-btn-icon {
+  height: 32px;
+}
+
+/* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-right button, .x-btn-danger-large-icon-text-right a {
+  height: 32px;
+}
+/* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-right .x-btn-inner {
+  height: 32px;
+  line-height: 32px;
+  padding-right: 36px !important;
+}
+/* line 722, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-right .x-btn-icon {
+  width: 32px;
+  height: auto;
+  top: 0;
+  left: auto;
+  bottom: 0;
+  right: 0;
+}
+/* line 731, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-large-icon-text-right .x-btn-icon, .x-quirks .x-btn-danger-large-icon-text-right .x-btn-icon {
+  height: 32px;
+}
+
+/* line 738, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-top .x-btn-inner {
+  padding-top: 36px;
+}
+/* line 742, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-top .x-btn-icon {
+  width: auto;
+  height: 32px;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  right: 0;
+}
+/* line 751, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-large-icon-text-top .x-btn-icon, .x-quirks .x-ie .x-btn-danger-large-icon-text-top .x-btn-icon {
+  width: 32px;
+}
+
+/* line 758, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-bottom .x-btn-inner {
+  padding-bottom: 36px;
+}
+/* line 762, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-icon-text-bottom .x-btn-icon {
+  width: auto;
+  height: 32px;
+  top: auto;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+/* line 771, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-large-icon-text-bottom .x-btn-icon, .x-quirks .x-ie .x-btn-danger-large-icon-text-bottom .x-btn-icon {
+  width: 32px;
+}
+
+/* line 777, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-over {
+  background-image: none;
+  background-color: #872119;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c83025), color-stop(50%, #9d261d), color-stop(51%, #872119), color-stop(100%, #721c15));
+  background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+}
+
+/* line 801, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-focus {
+  border-color: black;
+  background-image: none;
+  background-color: #872119;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c83025), color-stop(50%, #9d261d), color-stop(51%, #872119), color-stop(100%, #721c15));
+  background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+}
+
+/* line 826, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-menu-active,
+.x-btn-danger-large-pressed {
+  background-image: none;
+  background-color: #8c221a;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #721c15), color-stop(100%, #9d261d));
+  background-image: -webkit-linear-gradient(top, #721c15, #9d261d);
+  background-image: -moz-linear-gradient(top, #721c15, #9d261d);
+  background-image: -o-linear-gradient(top, #721c15, #9d261d);
+  background-image: -ms-linear-gradient(top, #721c15, #9d261d);
+  background-image: linear-gradient(top, #721c15, #9d261d);
+}
+
+/* line 850, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-large-disabled {
+  border-color: transparent;
+  background-image: none;
+  background-color: #e06359;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e36f66), color-stop(100%, #dd5248));
+  background-image: -webkit-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -moz-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -o-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -ms-linear-gradient(top, #e36f66, #dd5248);
+  background-image: linear-gradient(top, #e36f66, #dd5248);
+}
+
+/* line 898, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-over .x-frame-tl,
+.x-nbr .x-btn-danger-large-over .x-frame-bl,
+.x-nbr .x-btn-danger-large-over .x-frame-tr,
+.x-nbr .x-btn-danger-large-over .x-frame-br,
+.x-nbr .x-btn-danger-large-over .x-frame-tc,
+.x-nbr .x-btn-danger-large-over .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-large-over-corners.gif');
+}
+/* line 902, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-over .x-frame-ml,
+.x-nbr .x-btn-danger-large-over .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-large-over-sides.gif');
+}
+/* line 905, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-over .x-frame-mc {
+  background-color: #872119;
+  background-image: url('../images/btn/btn-danger-large-over-bg.gif');
+}
+/* line 919, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-focus .x-frame-tl,
+.x-nbr .x-btn-danger-large-focus .x-frame-bl,
+.x-nbr .x-btn-danger-large-focus .x-frame-tr,
+.x-nbr .x-btn-danger-large-focus .x-frame-br,
+.x-nbr .x-btn-danger-large-focus .x-frame-tc,
+.x-nbr .x-btn-danger-large-focus .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-large-focus-corners.gif');
+}
+/* line 923, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-focus .x-frame-ml,
+.x-nbr .x-btn-danger-large-focus .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-large-focus-sides.gif');
+}
+/* line 926, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-focus .x-frame-mc {
+  background-color: #872119;
+  background-image: url('../images/btn/btn-danger-large-focus-bg.gif');
+}
+/* line 941, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-menu-active .x-frame-tl,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-bl,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-tr,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-br,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-tc,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-bc,
+.x-nbr .x-btn-danger-large-pressed .x-frame-tl,
+.x-nbr .x-btn-danger-large-pressed .x-frame-bl,
+.x-nbr .x-btn-danger-large-pressed .x-frame-tr,
+.x-nbr .x-btn-danger-large-pressed .x-frame-br,
+.x-nbr .x-btn-danger-large-pressed .x-frame-tc,
+.x-nbr .x-btn-danger-large-pressed .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-large-pressed-corners.gif');
+}
+/* line 945, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-menu-active .x-frame-ml,
+.x-nbr .x-btn-danger-large-menu-active .x-frame-mr,
+.x-nbr .x-btn-danger-large-pressed .x-frame-ml,
+.x-nbr .x-btn-danger-large-pressed .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-large-pressed-sides.gif');
+}
+/* line 948, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-menu-active .x-frame-mc,
+.x-nbr .x-btn-danger-large-pressed .x-frame-mc {
+  background-color: #8c221a;
+  background-image: url('../images/btn/btn-danger-large-pressed-bg.gif');
+}
+/* line 962, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-disabled .x-frame-tl,
+.x-nbr .x-btn-danger-large-disabled .x-frame-bl,
+.x-nbr .x-btn-danger-large-disabled .x-frame-tr,
+.x-nbr .x-btn-danger-large-disabled .x-frame-br,
+.x-nbr .x-btn-danger-large-disabled .x-frame-tc,
+.x-nbr .x-btn-danger-large-disabled .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-large-disabled-corners.gif');
+}
+/* line 966, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-disabled .x-frame-ml,
+.x-nbr .x-btn-danger-large-disabled .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-large-disabled-sides.gif');
+}
+/* line 969, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-large-disabled .x-frame-mc {
+  background-color: #e06359;
+  background-image: url('../images/btn/btn-danger-large-disabled-bg.gif');
+}
+
+/* line 982, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-large {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-large-bg.gif');
+}
+
+/* line 991, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-large-over {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-large-over-bg.gif');
+}
+
+/* line 1000, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-large-focus {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-large-focus-bg.gif');
+}
+
+/* line 1010, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-large-menu-active,
+.x-nlg .x-btn-danger-large-pressed {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-large-pressed-bg.gif');
+}
+
+/* line 1019, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-large-disabled {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-large-disabled-bg.gif');
+}
+
+/* line 637, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium {
+  border-color: #9d261d;
+}
+
+/* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-btn-danger-medium {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  padding: 3px 3px 3px 3px;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #9d261d;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d83a2e), color-stop(50%, #b32b21), color-stop(51%, #9d261d), color-stop(100%, #872119));
+  background-image: -webkit-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -moz-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -o-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: -ms-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+  background-image: linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
+}
+
+/* line 102, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nlg .x-btn-danger-medium-mc {
+  background-image: url('../images/btn/btn-danger-medium-bg.gif');
+  background-color: #9d261d;
+}
+
+/* line 115, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-medium {
+  padding: 0 !important;
+  border-width: 0 !important;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -o-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  background-position: 1100303px 1000303px;
+}
+/* line 147, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-medium-tl,
+.x-nbr .x-btn-danger-medium-bl,
+.x-nbr .x-btn-danger-medium-tr,
+.x-nbr .x-btn-danger-medium-br,
+.x-nbr .x-btn-danger-medium-tc,
+.x-nbr .x-btn-danger-medium-bc,
+.x-nbr .x-btn-danger-medium-ml,
+.x-nbr .x-btn-danger-medium-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-danger-medium-corners.gif');
+}
+/* line 168, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-medium-ml,
+.x-nbr .x-btn-danger-medium-mr {
+  zoom: 1;
+  background-image: url('../images/btn/btn-danger-medium-sides.gif');
+  background-position: 0 0;
+}
+/* line 200, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-nbr .x-btn-danger-medium-mc {
+  padding: 1px 1px 1px 1px;
+}
+
+/* line 210, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
+.x-strict .x-ie7 .x-btn-danger-medium-tl,
+.x-strict .x-ie7 .x-btn-danger-medium-bl {
+  position: relative;
+  right: 0;
+}
+
+/* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium .x-btn-inner {
+  font-size: 14px;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: white;
+  background-repeat: no-repeat;
+  padding: 0 18px;
+}
+
+/* line 656, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon button,
+.x-btn-danger-medium-icon a,
+.x-btn-danger-medium-icon .x-btn-inner,
+.x-btn-danger-medium-noicon button,
+.x-btn-danger-medium-noicon a,
+.x-btn-danger-medium-noicon .x-btn-inner {
+  height: 24px;
+  line-height: 24px;
+}
+
+/* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon button, .x-btn-danger-medium-icon a {
+  padding: 0;
+}
+/* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon .x-btn-inner {
+  /* even though there is no text we set a width and padding as buttons shrink-wrap around this element */
+  width: 24px;
+  padding: 0;
+}
+/* line 675, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon .x-btn-icon {
+  width: 24px;
+  height: 24px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-left button, .x-btn-danger-medium-icon-text-left a {
+  height: 24px;
+}
+/* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-left .x-btn-inner {
+  height: 24px;
+  line-height: 24px;
+  padding-left: 28px;
+}
+/* line 696, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-left .x-btn-icon {
+  width: 24px;
+  height: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: auto;
+}
+/* line 705, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-medium-icon-text-left .x-btn-icon, .x-quirks .x-btn-danger-medium-icon-text-left .x-btn-icon {
+  height: 24px;
+}
+
+/* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-right button, .x-btn-danger-medium-icon-text-right a {
+  height: 24px;
+}
+/* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-right .x-btn-inner {
+  height: 24px;
+  line-height: 24px;
+  padding-right: 28px !important;
+}
+/* line 722, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-right .x-btn-icon {
+  width: 24px;
+  height: auto;
+  top: 0;
+  left: auto;
+  bottom: 0;
+  right: 0;
+}
+/* line 731, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-medium-icon-text-right .x-btn-icon, .x-quirks .x-btn-danger-medium-icon-text-right .x-btn-icon {
+  height: 24px;
+}
+
+/* line 738, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-top .x-btn-inner {
+  padding-top: 28px;
+}
+/* line 742, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-top .x-btn-icon {
+  width: auto;
+  height: 24px;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  right: 0;
+}
+/* line 751, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-medium-icon-text-top .x-btn-icon, .x-quirks .x-ie .x-btn-danger-medium-icon-text-top .x-btn-icon {
+  width: 24px;
+}
+
+/* line 758, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-bottom .x-btn-inner {
+  padding-bottom: 28px;
+}
+/* line 762, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-icon-text-bottom .x-btn-icon {
+  width: auto;
+  height: 24px;
+  top: auto;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+/* line 771, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-ie6 .x-btn-danger-medium-icon-text-bottom .x-btn-icon, .x-quirks .x-ie .x-btn-danger-medium-icon-text-bottom .x-btn-icon {
+  width: 24px;
+}
+
+/* line 777, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-over {
+  background-image: none;
+  background-color: #872119;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c83025), color-stop(50%, #9d261d), color-stop(51%, #872119), color-stop(100%, #721c15));
+  background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+}
+
+/* line 801, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-focus {
+  border-color: black;
+  background-image: none;
+  background-color: #872119;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c83025), color-stop(50%, #9d261d), color-stop(51%, #872119), color-stop(100%, #721c15));
+  background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+  background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
+}
+
+/* line 826, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-menu-active,
+.x-btn-danger-medium-pressed {
+  background-image: none;
+  background-color: #8c221a;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #721c15), color-stop(100%, #9d261d));
+  background-image: -webkit-linear-gradient(top, #721c15, #9d261d);
+  background-image: -moz-linear-gradient(top, #721c15, #9d261d);
+  background-image: -o-linear-gradient(top, #721c15, #9d261d);
+  background-image: -ms-linear-gradient(top, #721c15, #9d261d);
+  background-image: linear-gradient(top, #721c15, #9d261d);
+}
+
+/* line 850, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-btn-danger-medium-disabled {
+  border-color: transparent;
+  background-image: none;
+  background-color: #e06359;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e36f66), color-stop(100%, #dd5248));
+  background-image: -webkit-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -moz-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -o-linear-gradient(top, #e36f66, #dd5248);
+  background-image: -ms-linear-gradient(top, #e36f66, #dd5248);
+  background-image: linear-gradient(top, #e36f66, #dd5248);
+}
+
+/* line 898, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-over .x-frame-tl,
+.x-nbr .x-btn-danger-medium-over .x-frame-bl,
+.x-nbr .x-btn-danger-medium-over .x-frame-tr,
+.x-nbr .x-btn-danger-medium-over .x-frame-br,
+.x-nbr .x-btn-danger-medium-over .x-frame-tc,
+.x-nbr .x-btn-danger-medium-over .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-medium-over-corners.gif');
+}
+/* line 902, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-over .x-frame-ml,
+.x-nbr .x-btn-danger-medium-over .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-medium-over-sides.gif');
+}
+/* line 905, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-over .x-frame-mc {
+  background-color: #872119;
+  background-image: url('../images/btn/btn-danger-medium-over-bg.gif');
+}
+/* line 919, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-focus .x-frame-tl,
+.x-nbr .x-btn-danger-medium-focus .x-frame-bl,
+.x-nbr .x-btn-danger-medium-focus .x-frame-tr,
+.x-nbr .x-btn-danger-medium-focus .x-frame-br,
+.x-nbr .x-btn-danger-medium-focus .x-frame-tc,
+.x-nbr .x-btn-danger-medium-focus .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-medium-focus-corners.gif');
+}
+/* line 923, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-focus .x-frame-ml,
+.x-nbr .x-btn-danger-medium-focus .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-medium-focus-sides.gif');
+}
+/* line 926, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-focus .x-frame-mc {
+  background-color: #872119;
+  background-image: url('../images/btn/btn-danger-medium-focus-bg.gif');
+}
+/* line 941, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-tl,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-bl,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-tr,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-br,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-tc,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-bc,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-tl,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-bl,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-tr,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-br,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-tc,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-medium-pressed-corners.gif');
+}
+/* line 945, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-ml,
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-mr,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-ml,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-medium-pressed-sides.gif');
+}
+/* line 948, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-menu-active .x-frame-mc,
+.x-nbr .x-btn-danger-medium-pressed .x-frame-mc {
+  background-color: #8c221a;
+  background-image: url('../images/btn/btn-danger-medium-pressed-bg.gif');
+}
+/* line 962, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-disabled .x-frame-tl,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-bl,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-tr,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-br,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-tc,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-bc {
+  background-image: url('../images/btn/btn-danger-medium-disabled-corners.gif');
+}
+/* line 966, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-disabled .x-frame-ml,
+.x-nbr .x-btn-danger-medium-disabled .x-frame-mr {
+  background-image: url('../images/btn/btn-danger-medium-disabled-sides.gif');
+}
+/* line 969, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nbr .x-btn-danger-medium-disabled .x-frame-mc {
+  background-color: #e06359;
+  background-image: url('../images/btn/btn-danger-medium-disabled-bg.gif');
+}
+
+/* line 982, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-medium {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-medium-bg.gif');
+}
+
+/* line 991, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-medium-over {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-medium-over-bg.gif');
+}
+
+/* line 1000, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-medium-focus {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-medium-focus-bg.gif');
+}
+
+/* line 1010, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-medium-menu-active,
+.x-nlg .x-btn-danger-medium-pressed {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-medium-pressed-bg.gif');
+}
+
+/* line 1019, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
+.x-nlg .x-btn-danger-medium-disabled {
+  background-repeat: repeat-x;
+  background-image: url('../images/btn/btn-danger-medium-disabled-bg.gif');
 }
 
 /* line 2, ../sass/_doesnotexist.scss */
