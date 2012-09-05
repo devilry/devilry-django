@@ -1,3 +1,4 @@
+from selenium.common.exceptions import StaleElementReferenceException
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
 
@@ -116,7 +117,10 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         # save, it will not become visible again until reloaded
         panels = self.find_elements('#multi_tags_help_and_buttons_container')
         if panels:
-            return panels[0].is_displayed()
+            try:
+                return panels[0].is_displayed()
+            except StaleElementReferenceException:
+                pass
         else:
             return False
 
@@ -252,9 +256,11 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, Subje
         # save, it will not become visible again until reloaded
         panels = self.find_elements('#multi_examiners_help_and_buttons_container')
         if panels:
-            return panels[0].is_displayed()
-        else:
-            return False
+            try:
+                return panels[0].is_displayed()
+            except StaleElementReferenceException:
+                pass
+        return False
 
     def _create_related_examiner(self, username, fullname=None):
         user = self.testhelper.create_user(username, fullname=fullname)
