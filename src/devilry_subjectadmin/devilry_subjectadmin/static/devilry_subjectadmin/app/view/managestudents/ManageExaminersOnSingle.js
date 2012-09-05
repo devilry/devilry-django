@@ -21,6 +21,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
 
 
     initComponent: function() {
+        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only %(examiners_term)s registered on the %(period_term)s are available.'), {
+            examiners_term: gettext('examiners'),
+            period_term: gettext('period')
+        }, true);
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',
@@ -86,11 +90,36 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     id: 'single_examiners_confirm_remove',
                     okbutton_ui: 'danger',
                     bodyPadding: 10,
-                    html: [
-                        '<p>',
-                            gettext('Do you really want to remove this examiner from this group? Any feedback the examiner have already provided the group will we left untouched. The only change will be that the examiner looses access to the group.'),
-                        '</p>'
-                    ].join('')
+                    html: gettext('Do you really want to remove the examiner from this group? Any feedback the examiner have already provided the group will we left untouched. The only change will be that the examiner looses access to the group.')
+                }, {
+                    xtype: 'okcancelpanel',
+                    itemId: 'addExaminersPanel',
+                    border: 1,
+                    bodyPadding: 10,
+                    frame: false,
+                    id: 'single_add_examiners_panel',
+                    oktext: gettext('Add'),
+                    layout: 'anchor',
+                    items: [{
+                        xtype: 'box',
+                        anchor: '100%',
+                        padding: '0 20 0 0',
+                        tpl: [
+                            '<p>{text}</p>',
+                            '<p><small>{relatednote}</small></p>'
+                        ],
+                        data: {
+                            text: interpolate(gettext('Select one or more %(examiner_term)s. The selected %(examiners_term)s will be <strong>added</strong> to the %(group_term)s when you confirm your selection.'), {
+                                examiner_term: gettext('examiner'),
+                                examiners_term: gettext('examiners'),
+                                group_term: gettext('group')
+                            }, true),
+                            relatednote: this.relatednote
+                        }
+                    }, {
+                        xtype: 'selectexaminersgrid',
+                        anchor: '100%'
+                    }]
                 }]
             }]
         });

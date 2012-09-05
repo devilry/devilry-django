@@ -347,6 +347,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this.getOverview().setLoading(false);
         this._loadGroupsStore();
+        this.getRelatedExaminersRoStore().load();
     },
     onLoadAssignmentFailure: function(operation) {
         this.getOverview().setLoading(false);

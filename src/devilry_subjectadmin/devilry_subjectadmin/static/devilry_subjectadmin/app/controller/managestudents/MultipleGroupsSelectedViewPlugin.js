@@ -186,7 +186,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             topMessage: this._createTopMessage()
         });
 
-        this.manageStudentsController.getRelatedExaminersRoStore().load();
         this._populateSelectedGroupsStore();
     },
 

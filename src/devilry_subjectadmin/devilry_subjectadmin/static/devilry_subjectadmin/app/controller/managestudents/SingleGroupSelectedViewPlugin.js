@@ -36,6 +36,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'examinersCardBody',
         selector: 'viewport singlegroupview manageexaminersonsingle #cardBody'
     }, {
+        ref: 'addExaminersGrid',
+        selector: 'viewport singlegroupview manageexaminersonsingle #addExaminersPanel selectexaminersgrid'
+    }, {
 
     // Tags
         ref: 'addTagsOnSingleGroupWindow',
@@ -70,14 +73,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 ok: this._onRemoveExaminerConfirmed
             },
 
-            'viewport singlegroupview examinersingroupgrid #addExaminer': {
-                click: this._onAddExaminerButtonClicked
+            'viewport singlegroupview manageexaminersonsingle #addExaminerButton': {
+                click: this._onAddExaminers
             },
-            //'viewport singlegroupview examinersingroupgrid #removeAllExaminers': {
-                //click: this._onRemoveAllExaminers
-            //},
-            '#addExaminersOnSingleGroupWindow chooseexaminerspanel': {
-                addUser: this._onAddExaminer
+            'viewport singlegroupview manageexaminersonsingle okcancelpanel#addExaminersPanel': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onAddExaminersConfirmed
             },
 
             // Tags
@@ -218,17 +219,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
         return store;
     },
-    _onAddExaminerButtonClicked: function() {
-        Ext.widget('chooseexaminerswindow', {
-            title: gettext('Add examiners'),
-            itemId: 'addExaminersOnSingleGroupWindow',
-            panelConfig: {
-                sourceStore: this.manageStudentsController.getRelatedExaminersRoStore()
-            }
-        }).show();
+    _onAddExaminers: function() {
+        this.getExaminersCardBody().getLayout().setActiveItem('addExaminersPanel');
     },
-    _onAddExaminer: function(addedUserRecord, panel) {
-        var userStore = panel.store;
+    _onAddExaminersConfirmed: function() {
+        var grid = this.getAddExaminersGrid();
+        var userStore = grid.getSelectedAsUserStore();
         devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers({
             groupRecord: this.groupRecord,
             userRecords: userStore.data.items,
@@ -237,7 +233,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.manageStudentsController.notifySingleGroupChange({
             scope: this,
             success: function() {
-                panel.afterItemAddedSuccessfully(addedUserRecord);
+                console.log('Success');
             }
         });
     },
