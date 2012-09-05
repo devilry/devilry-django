@@ -17,7 +17,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinesContainer', {
     },
 
     populate: function(aggregatedGroupInfoRecord, active_feedback) {
-        console.log(aggregatedGroupInfoRecord);
         var deadlines = aggregatedGroupInfoRecord.get('deadlines');
         if(deadlines.length == 0) {
             this.add({
