@@ -57,5 +57,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
             model: 'devilry_usersearch.ManageUsersGridModel',
             data: users
         });
+    },
+
+    selectUsersById: function(userIds) {
+        var store = this.getStore();
+        var records = [];
+        Ext.Array.each(userIds, function(userId) {
+            var index = store.findBy(function(record) {
+                return record.get('user').id == userId;
+            }, this);
+            if(index > -1) {
+                var record = store.getAt(index);
+                records.push(record);
+            }
+        }, this);
+        var selModel = this.getSelectionModel();
+        selModel.select(records);
     }
 });

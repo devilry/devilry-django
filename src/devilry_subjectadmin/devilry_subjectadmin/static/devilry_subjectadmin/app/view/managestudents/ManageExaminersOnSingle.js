@@ -78,10 +78,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                             minWidth: 100
                         },
                         items: [{
-                            text: gettext('Add examiner(s)'),
-                            itemId: 'addExaminerButton',
-                            id: 'single_add_examiners_button',
-                            tooltip: gettext('Add examiner(s) to this group.')
+                            text: gettext('Edit examiner(s)'),
+                            itemId: 'setExaminerButton',
+                            id: 'single_set_examiners_button',
+                            tooltip: gettext('Edit examiner(s) to this group.')
                         }]
                     }],
                 }, {
@@ -93,12 +93,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     html: gettext('Do you really want to remove the examiner from this group? Any feedback the examiner have already provided the group will we left untouched. The only change will be that the examiner looses access to the group.')
                 }, {
                     xtype: 'okcancelpanel',
-                    itemId: 'addExaminersPanel',
+                    itemId: 'setExaminersPanel',
                     border: 1,
                     bodyPadding: 10,
                     frame: false,
-                    id: 'single_add_examiners_panel',
-                    oktext: gettext('Add'),
+                    id: 'single_set_examiners_panel',
+                    oktext: gettext('Save'),
                     layout: 'anchor',
                     items: [{
                         xtype: 'box',
@@ -109,7 +109,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                             '<p><small>{relatednote}</small></p>'
                         ],
                         data: {
-                            text: interpolate(gettext('Select one or more %(examiner_term)s. The selected %(examiners_term)s will be <strong>added</strong> to the %(group_term)s when you confirm your selection.'), {
+                            text: interpolate(gettext('The selected %(examiners_term)s will <strong>replace</strong> any %(examiners_term)s currently on the %(group_term)s when you confirm your selection. Removing an %(examiner_term)s from the group does not affect any feedback they have already made on the group.'), {
                                 examiner_term: gettext('examiner'),
                                 examiners_term: gettext('examiners'),
                                 group_term: gettext('group')

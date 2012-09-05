@@ -210,18 +210,18 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
                 pass
         return False
 
-    def test_add(self):
+    def test_set(self):
         newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
         newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
         ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('#single_add_examiners_button button')
-        addbutton = self.find_element('#single_add_examiners_button button')
-        addbutton.click()
+        self.waitForCssSelector('#single_set_examiners_button button')
+        setbutton = self.find_element('#single_set_examiners_button button')
+        setbutton.click()
 
         # Select newexaminer and newexaminer2, and save
-        panel = self.find_element('#single_add_examiners_panel')
+        panel = self.find_element('#single_set_examiners_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
         self.waitForCssSelector('.examiner_username_newexaminer')
         self.waitForCssSelector('.examiner_username_newexaminer2')
@@ -238,18 +238,18 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         self.waitFor(self.selenium, self._has_reloaded)
         g1 = self.testhelper.reload_from_db(g1)
         self.assertEquals(set([e.user.username for e in g1.examiners.all()]),
-                          set(['examiner1', 'newexaminer', 'newexaminer2']))
+                          set(['newexaminer', 'newexaminer2']))
 
 
-    def test_add_cancel(self):
+    def test_set_cancel(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
         self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('#single_add_examiners_button button')
-        addbutton = self.find_element('#single_add_examiners_button button')
-        addbutton.click()
+        self.waitForCssSelector('#single_set_examiners_button button')
+        setbutton = self.find_element('#single_set_examiners_button button')
+        setbutton.click()
 
         # Cancel
-        cancelbutton = self.find_element('#single_add_examiners_panel .cancelbutton')
+        cancelbutton = self.find_element('#single_set_examiners_panel .cancelbutton')
         self.waitFor(cancelbutton, lambda b: cancelbutton.is_displayed())
         cancelbutton.click()
         meta = self.find_element('.examinersingroupgrid_meta_examiner1')
