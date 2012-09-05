@@ -134,7 +134,7 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
         panel = self.find_element('#multi_set_tags_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
-        panel.find_element_by_css_selector('input[type=text]').send_keys('a,b')
+        panel.find_element_by_css_selector('textarea').send_keys('a,b')
         savebutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
         self.waitFor(savebutton, lambda b: b.is_enabled())
         savebutton.click()
@@ -171,7 +171,7 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
         panel = self.find_element('#multi_add_tags_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
-        panel.find_element_by_css_selector('input[type=text]').send_keys('a,b')
+        panel.find_element_by_css_selector('textarea').send_keys('a,b')
         savebutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
         self.waitFor(savebutton, lambda b: b.is_enabled())
         savebutton.click()

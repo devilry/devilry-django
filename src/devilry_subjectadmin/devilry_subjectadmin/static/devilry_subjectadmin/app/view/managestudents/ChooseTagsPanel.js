@@ -16,6 +16,19 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
      * @cfg {String} [buttonText]
      */
 
+    /**
+     * @cfg {String} [initialValue=""]
+     * The initial value of the tag-input field.
+     */
+    initialValue: '',
+
+    /**
+     * @cfg {bool} [allowNoTags]
+     */
+    allowNoTags: false,
+
+    inputFieldType: 'textarea', // NOTE: textarea seems to be the best choice if we are going to use the same for single and multiple groups.
+
     constructor: function(config) {
         this.callParent([config]);
         this.addEvents(
@@ -29,7 +42,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
             layout: 'fit',
             items: {
                 xtype: 'form',
-                bodyPadding: 20,
+                bodyPadding: 10,
                 listeners: {
                     scope: this,
                     render: this._onRenderFormPanel
@@ -37,10 +50,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
                 layout: 'anchor',
                 items: [{
                     anchor: '100%',
-                    xtype: 'textfield',
+                    xtype: this.inputFieldType,
                     name: 'tags',
-                    minWidth: 500,
-                    allowBlank: false,
+                    value: this.initialValue,
+                    allowBlank: this.allowNoTags,
                     emptyText: pgettext('tagsexample', 'Example: group3, needs_extra_help'),
                     regex: new RegExp('^[a-zA-Z0-9_, ]+$'),
                     regexText: gettext('A tag can contain a-z, A-Z, 0-9 and "_".'),
@@ -117,12 +130,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
     },
 
     /** Clear the tags input field. */
-    clear: function() {
-        this.down('textfield').setValue('');
+    setValue: function(value) {
+        this.down(this.inputFieldType).setValue(value);
     },
 
     _onShow: function() {
-        this.clear();
-        this.down('textfield').focus();
+        this.setValue(this.initialValue);
+        this.down(this.inputFieldType).focus();
     }
 });
