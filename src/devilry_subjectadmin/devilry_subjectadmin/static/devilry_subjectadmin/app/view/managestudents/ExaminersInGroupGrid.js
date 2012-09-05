@@ -7,49 +7,49 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     cls: 'examinersingroupgrid',
     hideHeaders: true,
     disableSelection: true,
+    border: false,
     requires: [
         'Ext.XTemplate',
         'devilry_theme.Icons'
     ],
 
     rowTpl: [
-        '<tpl if="user.full_name">',
-            '{user.full_name} <small>({user.username})</small>',
-        '</tpl>',
-        '<tpl if="!user.full_name">',
-            '{user.username}',
-        '</tpl>'
+        '<div class="examinersingroupgrid_meta examinersingroupgrid_meta_{user.username}">',
+            '<div class="fullname">',
+                '<tpl if="user.full_name">',
+                    '<div>{user.full_name}</div>',
+                '<tpl else>',
+                    '<em class="nofullname">', gettext('Full name missing'), '</em>',
+                '</tpl>',
+            '</div>',
+            '<div class="username"><small>{user.username}</small></div>',
+        '</div>'
     ],
 
     initComponent: function() {
         var me = this;
+        var rowTplCompiled = Ext.create('Ext.XTemplate', this.rowTpl);
         Ext.apply(this, {
-            title: gettext('Examiners'),
-            tools: [{
-                xtype: 'splitbutton',
-                icon: devilry_theme.Icons.ADD_SMALL,
-                itemId: 'addExaminer',
-                menu: [{
-                    text: gettext('Remove all'),
-                    itemId: 'removeAllExaminers',
-                    icon: devilry_theme.Icons.DELETE_SMALL
-                }]
-            }],
             columns: [{
                 header: 'Name',
                 flex: 1,
                 dataIndex: 'id',
                 renderer: function(unused1, unused2, examinerRecord) {
-                    return Ext.create('Ext.XTemplate', this.rowTpl).apply(examinerRecord.data);
+                    return rowTplCompiled.apply(examinerRecord.data);
                 }
             }, {
                 xtype: 'actioncolumn',
                 width: 20,
                 items: [{
                     icon: devilry_theme.Icons.DELETE_SMALL,
-                    tooltip: gettext('Remove examiner'),
+                    tooltip: gettext('Remove examiner from group.'),
                     handler: function(grid, rowIndex, colIndex) {
                         me._onRemove(rowIndex, colIndex);
+                    },
+                    getClass: function(unused, unused2, record) {
+                        return Ext.String.format(
+                            'devilry_clickable_icon examinersingroupgrid_remove examinersingroupgrid_remove_{0}',
+                            record.get('user').username);
                     }
                 }]
             }]

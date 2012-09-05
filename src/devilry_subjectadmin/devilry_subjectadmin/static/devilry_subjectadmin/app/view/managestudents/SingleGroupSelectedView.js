@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
 
     requires: [
         'devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle',
-        'devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle',
         'devilry_subjectadmin.view.managestudents.TagsInGroupGrid'
     ],
 
@@ -113,8 +113,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                         margin: '0 0 0 0',
                         studentsStore: this.studentsStore
                     }, {
-                        xtype: 'examinersingroupgrid',
-                        store: this.examinersStore
+                        xtype: 'manageexaminersonsingle',
+                        examinersStore: this.examinersStore
                     }, {
                         xtype: 'tagsingroupgrid',
                         store: this.tagsStore

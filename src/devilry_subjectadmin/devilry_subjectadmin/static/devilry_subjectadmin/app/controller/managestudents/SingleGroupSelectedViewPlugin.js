@@ -32,6 +32,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         selector: 'viewport singlegroupview managestudentsonsingle #cardBody'
     }, {
 
+    // Examiners
+        ref: 'examinersCardBody',
+        selector: 'viewport singlegroupview manageexaminersonsingle #cardBody'
+    }, {
+
     // Tags
         ref: 'addTagsOnSingleGroupWindow',
         selector: '#addTagsOnSingleGroupWindow'
@@ -57,15 +62,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Examiners
-            'viewport singlegroupview examinersingroupgrid': {
+            'viewport singlegroupview manageexaminersonsingle examinersingroupgrid': {
                 removeExaminer: this._onRemoveExaminer
             },
+            'viewport singlegroupview manageexaminersonsingle okcancelpanel#confirmRemove': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onRemoveExaminerConfirmed
+            },
+
             'viewport singlegroupview examinersingroupgrid #addExaminer': {
                 click: this._onAddExaminerButtonClicked
             },
-            'viewport singlegroupview examinersingroupgrid #removeAllExaminers': {
-                click: this._onRemoveAllExaminers
-            },
+            //'viewport singlegroupview examinersingroupgrid #removeAllExaminers': {
+                //click: this._onRemoveAllExaminers
+            //},
             '#addExaminersOnSingleGroupWindow chooseexaminerspanel': {
                 addUser: this._onAddExaminer
             },
@@ -197,6 +207,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      * Examiners
      *
      ***********************************************/
+    _showExaminersDefaultView: function() {
+        this.getExaminersCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
+    },
 
     _createExaminersStore: function() {
         var store = Ext.create('Ext.data.Store', {
@@ -232,32 +245,31 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     // Remove all examiners
 
-    _onRemoveAllExaminers: function() {
-        this._confirm({
-            title: gettext('Confirm clear examiners'),
-            msg: gettext('Do you want to remove all examiners from this group?'),
-            callback: this._removeAllExaminers
-        });
-    },
-    _removeAllExaminers: function() {
-        this.groupRecord.set('examiners', []);
-        this.manageStudentsController.notifySingleGroupChange();
-    },
+    //_onRemoveAllExaminers: function() {
+        //this._confirm({
+            //title: gettext('Confirm clear examiners'),
+            //msg: gettext('Do you want to remove all examiners from this group?'),
+            //callback: this._removeAllExaminers
+        //});
+    //},
+    //_removeAllExaminers: function() {
+        //this.groupRecord.set('examiners', []);
+        //this.manageStudentsController.notifySingleGroupChange();
+    //},
 
 
     // Remove examiner
 
     _onRemoveExaminer: function(examinerRecord) {
-        this._confirm({
-            title: gettext('Confirm remove examiner'),
-            msg: Ext.String.format(gettext('Do you want to remove "{0}" from examiners?'), examinerRecord.get('user').username),
-            callback: function() {
-                this._removeExaminer(examinerRecord);
-            }
-        });
+        this.getExaminersCardBody().getLayout().setActiveItem('confirmRemove');
+        var confirmPanel = this.getExaminersCardBody().down('#confirmRemove');
+        confirmPanel.examinerRecord = examinerRecord; // NOTE: temporary storage - removed in _onPopExaminerConfirmed()
     },
+    _onRemoveExaminerConfirmed: function() {
+        var confirmPanel = this.getExaminersCardBody().down('#confirmRemove');
+        var examinerRecord = confirmPanel.examinerRecord;
+        confirmPanel.examinerRecord = undefined;
 
-    _removeExaminer: function(examinerRecord) {
         devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.removeExaminers({
             groupRecord: this.groupRecord,
             userRecords: [examinerRecord],
