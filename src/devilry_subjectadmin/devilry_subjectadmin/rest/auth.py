@@ -6,7 +6,8 @@ from django.utils.translation import ugettext as _
 from devilry.apps.core.models import (Node,
                                       Subject,
                                       Period,
-                                      Assignment)
+                                      Assignment,
+                                      AssignmentGroup)
 from djangorestframework.permissions import BasePermission
 from errors import PermissionDeniedError
 
@@ -107,3 +108,19 @@ class IsAssignmentAdmin(BaseIsAdmin):
     def check_permission(self, user):
         assignmentid = self.get_id()
         _assignmentadmin_required(user, assignmentid)
+
+class IsGroupAdmin(BaseIsAdmin):
+    """
+    Djangorestframework permission checker that checks if the requesting user
+    has admin-permissions on the assignment of the group given as the id kwarg
+    to the view.
+    """
+    def check_permission(self, user):
+        groupid = self.get_id()
+        try:
+            group = AssignmentGroup.objects.get(id=groupid)
+        except AssignmentGroup.DoesNotExist:
+            raise PermissionDeniedError(_('Permission denied'))
+        else:
+            if not group.can_save(user):
+                raise PermissionDeniedError(_('Permission denied'))

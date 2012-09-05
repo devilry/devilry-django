@@ -10,3 +10,4 @@ from .allwhereisadmin import *
 from .deadlinesbulk import *
 from .popfromgroup import *
 from .mergeintogroup import *
+from .aggregated_groupinfo import *
