@@ -86,35 +86,24 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
                         ' <a href="#" class="more_button" style="white-space: nowrap;">',
                             '{moretext}',
                         '</a>',
+                        '<a href="#" class="less_button" style="white-space: nowrap; display: none;">',
+                            '{lesstext}',
+                        '</a>',
                         this.small_morelink? '</small>': '',
                     '</p>'
                 ],
                 data: {
                     introtext: this.introtext,
-                    moretext: this.moretext
+                    moretext: this.moretext,
+                    lesstext: this.lesstext
                 },
                 listeners: {
                     scope: this,
                     element: 'el',
-                    delegate: 'a.more_button',
-                    click: this._onMore
-                }
-            }, this.moreWidget, {
-                xtype: 'box',
-                itemId: 'lessButton',
-                hidden: true,
-                html: [
-                    '<p><a href="#" style="white-space: nowrap;">',
-                        this.lesstext,
-                    '</a></p>'
-                ].join(''),
-                listeners: {
-                    scope: this,
-                    element: 'el',
                     delegate: 'a',
-                    click: this._onLess
+                    click: this._onMoreOrLess
                 }
-            }]
+            }, this.moreWidget]
         });
         this.callParent(arguments);
     },
@@ -125,8 +114,10 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
     _getIntroBox: function() {
         return this.down('#introBox');
     },
-    _getLessButton: function() {
-        return this.down('#lessButton');
+    _getLessButtonEl: function() {
+        var element = Ext.get(this._getIntroBox().getEl().query('a.less_button')[0]);
+        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
+        return element;
     },
     _getMoreButtonEl: function() {
         var element = Ext.get(this._getIntroBox().getEl().query('a.more_button')[0]);
@@ -134,8 +125,17 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         return element;
     },
 
-    _onMore: function(e) {
+    _onMoreOrLess: function(e) {
         e.preventDefault();
+        var element = Ext.get(e.target);
+        if(element.hasCls('more_button')) {
+            this._onMore();
+        } else {
+            this._onLess();
+        }
+    },
+
+    _onMore: function(e) {
         if(!Ext.isEmpty(this.collapsedCls)) {
             this.removeCls(this.collapsedCls);
         }
@@ -144,13 +144,12 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         }
 
         this._getMoreButtonEl().hide(); // NOTE: Important that this comes before the other show()-calls below, because hide() on an element does not trigger re-rendering.
+        this._getLessButtonEl().show();
         this._getMoreWidget().show();
-        this._getLessButton().show();
         this.fireEvent('moreclick', this)
     },
 
     _onLess: function(e) {
-        e.preventDefault();
         if(!Ext.isEmpty(this.expandedCls)) {
             this.removeCls(this.expandedCls);
         }
@@ -159,7 +158,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         }
 
         this._getMoreButtonEl().show();
-        this._getLessButton().hide();
+        this._getLessButtonEl().hide();
         this._getMoreWidget().hide();
         this.fireEvent('lessclick', this)
     }
