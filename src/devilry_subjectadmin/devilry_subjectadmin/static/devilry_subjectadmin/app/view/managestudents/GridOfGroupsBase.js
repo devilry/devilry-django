@@ -8,17 +8,20 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     frame: true,
 
     groupInfoColTemplateString: [
-        '<div class="groupInfoWrapper">',
+        '<div class="groupInfoWrapper" style="white-space:normal !important;">',
             '<div class="name"><strong>',
                 '<tpl if="groupUrlPrefix">',
                     '<a href="{groupUrlPrefix}{id}">',
-                        '{displayName}',
+                        '{fullnames}',
                     '</a>',
                 '<tpl else>',
-                    '{displayName}',
+                    '{fullnames}',
                 '</tpl>',
             '</strong></div>',
-            '<div class="username"><small>{displayUsername}</small></div>',
+            '<tpl if="groupname">',
+                '<div class="groupname">{groupname}</div>',
+            '</tpl>',
+            '<div class="username"><small>{usernames}</small></div>',
             '<tpl if="hasFeedback">',
                 '<tpl if="feedback.is_passing_grade">',
                     '<div class="passinggrade">',
@@ -155,9 +158,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     },
 
     renderGroupMembersCol: function(unused, unused2, record) {
+        var groupname = record.get('name');
+        if(!Ext.isEmpty(groupname)) {
+            groupname = Ext.String.ellipsis(groupname, 20);
+        }
         var data = {
-            displayName: this.getNameDivContent(record),
-            displayUsername: this.getUsernameDivContent(record),
+            fullnames: this.getFullnames(record),
+            groupname: groupname,
+            usernames: this.getUsernames(record),
             notApprovedText: this.notApprovedText,
             hasFeedback: record.get('feedback') != null,
             approvedText: this.approvedText,
@@ -194,44 +202,51 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
      *
      * Prioritized in this order:
      *
-     * 1. If no candidates, use the ID
-     * 2. Name of first student.
-     * 3. Username of first student.
-     *
-     * This view is optimized for single student assignments.
+     * 1. If no candidates, return "No-students(groupID=ID)"
+     * 2. Comma separated list of full names, where the string "Missing-fullname(userID=ID)" is used when full name is missing
      * */
-    getNameDivContent: function(record) {
+    getFullnames: function(record) {
         var candidates = record.get('candidates');
         if(candidates.length == 0) {
-            return record.get('id');
+            return Ext.String.format('{0}(groupID={1})', gettext('No-students'), record.get('id'));
         }
-        var firstCandidate = candidates[0];
-        if(firstCandidate.user.full_name) {
-            return firstCandidate.user.full_name;
+        var names = [];
+        for(var index=0; index<candidates.length; index++)  {
+            var candidate = candidates[index];
+            var full_name = candidate.user.full_name;
+            if(Ext.isEmpty(full_name)) {
+                full_name = Ext.String.format('{0}(userID={1})',
+                    gettext('Missing-fullname'), candidate.user.id);
+            }
+            names.push(full_name);
         }
-        return firstCandidate.user.username;
+        return names.join(', ');
     },
 
     /**
      * Get the text for the username DIV.
      *
      * Prioritized in this order:
-     * 1. If no candidates, translate "Group have no candidates"
-     * 2. Username of first student.
+     * 1. If no candidates, return empty string.
+     * 2. Comma-separated list of usernames.
      * */
-    getUsernameDivContent: function(record) {
+    getUsernames: function(record) {
         var candidates = record.get('candidates');
         if(candidates.length == 0) {
-            return gettext('Group have no candidates');
+            return '';
         }
-        var firstCandidate = candidates[0];
-        return firstCandidate.user.username;
+        var usernames = [];
+        for(var index=0; index<candidates.length; index++)  {
+            var candidate = candidates[index];
+            usernames.push(candidate.user.username);
+        }
+        return usernames.join(', ');
     },
 
 
 
     /**
-     * Override this if you want the displayName to be a link.
+     * Override this if you want the fullnames to be a link.
      */
     getGroupUrlPrefix: function() {
         return null;
