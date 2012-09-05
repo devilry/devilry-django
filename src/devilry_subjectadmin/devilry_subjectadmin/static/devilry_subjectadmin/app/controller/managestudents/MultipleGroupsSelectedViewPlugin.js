@@ -28,6 +28,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         'MergeIntoGroup'
     ],
 
+
+    group_summarygrid_size_cookiename: 'devilry_subjectadmin.managestudents.MultipleGroupsSelectedViewPlugin.groupsummary.height',
+
     refs: [{
         ref: 'scrollableBodyContainer',
         selector: 'multiplegroupsview #scrollableBodyContainer'
@@ -81,6 +84,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.control({
             'viewport multiplegroupsview': {
                 render: this._onRender
+            },
+
+            'viewport multiplegroupsview selectedgroupssummarygrid': {
+                resize: this._onResizeGroupSummaryGrid,
+                boxready: this._onShowGroupsSummaryGrid
             },
 
             // moreinfobox
@@ -216,6 +224,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this._scrollIntroView(moreinfobox);
     },
 
+    _onResizeGroupSummaryGrid: function(groupsummarygrid, width, height, oldWidth, oldHeight) {
+        var firstLoad = Ext.isEmpty(oldHeight);
+        if(!firstLoad) {
+            Ext.util.Cookies.set(this.group_summarygrid_size_cookiename, height);
+        }
+    },
+    _onShowGroupsSummaryGrid: function(groupsummarygrid) {
+        var height = Ext.util.Cookies.get(this.group_summarygrid_size_cookiename);
+        if(height) {
+            groupsummarygrid.setHeight(parseInt(height));
+        }
+    },
 
 
     /************************************************

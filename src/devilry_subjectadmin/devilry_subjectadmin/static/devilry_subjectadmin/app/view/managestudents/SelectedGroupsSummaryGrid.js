@@ -8,8 +8,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsSummaryGrid',
     store: 'SelectedGroups',
     //disableSelection: true,
 
-    title: gettext('Selected groups (click group to deselect it)'),
-    frame: false,
+    //frame: false,
 
     getColumns: function() {
         return [

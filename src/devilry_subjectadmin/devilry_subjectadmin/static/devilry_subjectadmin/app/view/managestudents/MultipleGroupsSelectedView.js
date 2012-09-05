@@ -5,7 +5,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     extend: 'Ext.panel.Panel',
     alias: 'widget.multiplegroupsview',
     cls: 'devilry_subjectadmin_multiplegroupsview',
-    ui: 'transparentpanel',
     requires: [
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple',
@@ -20,20 +19,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
      * @cfg {string} multiselectHowto (required)
      */
 
-
     initComponent: function() {
         var buttonmargin = '30 0 0 0';
         var helpmargin = '4 0 0 0';
 
         Ext.apply(this, {
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
+            layout: 'border',
+            border: false,
+            frame: false,
             items: [{
-                //region: 'center',
-                minHeight: 100,
-                flex: 6,
+                region: 'center',
                 xtype: 'container',
                 padding: 20,
                 layout: 'anchor',
@@ -54,9 +49,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     margin: buttonmargin
                 }]
             }, {
-                flex: 4,
-                minHeight: 150,
-                xtype: 'selectedgroupssummarygrid'
+                xtype: 'selectedgroupssummarygrid',
+                region: 'south',
+                height: 300,
+                //collapsible: true,
+                title: gettext('Selected groups (click group to deselect it)'),
+                frame: false,
+                border: '1 0 0 0',
+
+                // Only resize at the top
+                resizable: true,
+                resizeHandles: 'n'
             }]
         });
         this.callParent(arguments);
