@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
         'devilry_extjsextras.MoreInfoBox',
         'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.ExaminersHelp',
         'devilry_subjectadmin.view.managestudents.SelectExaminersGrid'
     ],
 
@@ -13,10 +14,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
      * @cfg {Ext.data.Store} examinersStore (required)
      */
 
-    more_text: gettext('Examiners provide feedback to a group. They can also add new deadlines for their groups, and open/close their groups.'),
-
     _createMoreInfo: function() {
-        return this.more_text;
+        return [
+            '<p>',
+                devilry_subjectadmin.view.managestudents.ExaminersHelp.getIntroText(),
+            '</p>',
+            devilry_subjectadmin.view.managestudents.ExaminersHelp.getDetailsUl()
+        ]
     },
 
     constructor: function(config) {

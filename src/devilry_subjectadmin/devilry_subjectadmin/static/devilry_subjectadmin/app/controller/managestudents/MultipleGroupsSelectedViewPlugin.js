@@ -227,7 +227,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _onGroupSummaryGridResize: function(groupsummarygrid, width, height, oldWidth, oldHeight) {
-        console.log(this.getViewport().getHeight());
         var maxHeight = this.getViewport().getHeight() - 120;
         if(height > maxHeight) {
             groupsummarygrid.setHeight(maxHeight);
