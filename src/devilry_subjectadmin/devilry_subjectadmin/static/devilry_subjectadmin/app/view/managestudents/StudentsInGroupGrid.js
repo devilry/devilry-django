@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
     cls: 'studentsingroupgrid',
     hideHeaders: true,
     disableSelection: true,
+    border: false,
     requires: [
         'Ext.XTemplate',
         'devilry_theme.Icons'
@@ -24,7 +25,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            title: gettext('Students'),
             columns: [{
                 header: 'Name',
                 flex: 1,

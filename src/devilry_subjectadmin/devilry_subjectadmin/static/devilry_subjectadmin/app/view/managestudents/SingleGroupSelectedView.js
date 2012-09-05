@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     padding: 20,
 
     requires: [
-        'devilry_subjectadmin.view.managestudents.StudentsInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle',
         'devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid',
         'devilry_subjectadmin.view.managestudents.TagsInGroupGrid'
     ],
@@ -76,12 +76,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
 
     initComponent: function() {
         Ext.apply(this, {
+            layout: 'anchor',
             items: [{
                 xtype: 'alertmessage',
+                anchor: '100%',
+                cls: 'top_infobox',
                 type: 'info',
                 message: [this.multiselectHowto, this.multiselectWhy].join(' ')
             }, {
                 xtype: 'container',
+                anchor: '100%',
                 layout: 'column',
                 items: [{
                     xtype: 'container',
@@ -99,13 +103,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     xtype: 'container',
                     columnWidth: .37,
                     padding: '0 0 0 20',
+                    layout: 'anchor',
                     defaults: {
-                        margin: '20 0 0 0'
+                        margin: '20 0 0 0',
+                        anchor: '100%'
                     },
                     items: [{
-                        xtype: 'studentsingroupgrid',
+                        xtype: 'managestudentsonsingle',
                         margin: '0 0 0 0',
-                        store: this.studentsStore
+                        studentsStore: this.studentsStore
                     }, {
                         xtype: 'examinersingroupgrid',
                         store: this.examinersStore
