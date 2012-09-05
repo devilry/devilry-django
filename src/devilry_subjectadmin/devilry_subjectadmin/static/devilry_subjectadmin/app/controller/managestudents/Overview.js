@@ -51,6 +51,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * @method getGroupsStore
      */
 
+
+    listofgroups_size_cookiename: 'devilry_subjectadmin.managestudents.ListOfGroups.width',
+
     stores: [
         'RelatedStudentsRo',
         'RelatedExaminersRo',
@@ -90,7 +93,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             },
             'viewport managestudentsoverview listofgroups': {
                 selectionchange: this._onGroupSelectionChange,
-                render: this._onRenderListOfGroups
+                render: this._onRenderListOfGroups,
+                resize: this._onListOfGroupsResize,
+                boxready: this._onListOfGroupsBoxReady
             },
             'viewport managestudentsoverview #sortby': {
                 select: this._onSelectSortBy
@@ -130,6 +135,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onRenderListOfGroups: function() {
         this.getGroupsStore().sortBySpecialSorter(this.getCurrentGroupsStoreSorter());
+    },
+
+
+
+    /*************************************
+     * List of groups resize
+     *************************************/
+    _onListOfGroupsResize: function(listofgroups, width, height, oldWidth, oldHeight) {
+        var firstLoad = Ext.isEmpty(oldWidth);
+        console.log('resize', width, oldWidth);
+        if(!firstLoad) {
+            Ext.util.Cookies.set(this.listofgroups_size_cookiename, width);
+        }
+    },
+    _onListOfGroupsBoxReady: function(listofgroups) {
+        var width = Ext.util.Cookies.get(this.listofgroups_size_cookiename);
+        console.log('ready', width);
+        if(width) {
+            listofgroups.setWidth(parseInt(width));
+        }
     },
 
 

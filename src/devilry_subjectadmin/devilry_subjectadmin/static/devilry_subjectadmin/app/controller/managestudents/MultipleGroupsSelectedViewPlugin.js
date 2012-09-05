@@ -87,8 +87,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             },
 
             'viewport multiplegroupsview selectedgroupssummarygrid': {
-                resize: this._onResizeGroupSummaryGrid,
-                boxready: this._onShowGroupsSummaryGrid
+                resize: this._onGroupSummaryGridResize,
+                boxready: this._onGroupsSummaryBoxReady
             },
 
             // moreinfobox
@@ -224,13 +224,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this._scrollIntroView(moreinfobox);
     },
 
-    _onResizeGroupSummaryGrid: function(groupsummarygrid, width, height, oldWidth, oldHeight) {
+    _onGroupSummaryGridResize: function(groupsummarygrid, width, height, oldWidth, oldHeight) {
         var firstLoad = Ext.isEmpty(oldHeight);
         if(!firstLoad) {
             Ext.util.Cookies.set(this.group_summarygrid_size_cookiename, height);
         }
     },
-    _onShowGroupsSummaryGrid: function(groupsummarygrid) {
+    _onGroupsSummaryBoxReady: function(groupsummarygrid) {
         var height = Ext.util.Cookies.get(this.group_summarygrid_size_cookiename);
         if(height) {
             groupsummarygrid.setHeight(parseInt(height));
