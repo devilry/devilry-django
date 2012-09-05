@@ -41,8 +41,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
 
     // Tags
-        ref: 'addTagsOnSingleGroupWindow',
-        selector: '#addTagsOnSingleGroupWindow'
+        ref: 'tagsCardBody',
+        selector: 'viewport singlegroupview managetagsonsingle #cardBody'
     }],
 
     init: function() {
@@ -74,18 +74,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Tags
-            'viewport singlegroupview tagsingroupgrid #addTags': {
-                click: this._onAddTags
+            'viewport singlegroupview managetagsonsingle #setTagButton': {
+                click: this._onSetTags
             },
-            '#addTagsOnSingleGroupWindow choosetagspanel': {
-                cancel: this._onCancelTags,
-                savetags: this._onSaveTags
-            },
-            'viewport singlegroupview tagsingroupgrid': {
-                removeTag: this._onRemoveTag
-            },
-            'viewport singlegroupview tagsingroupgrid #removeAllTags': {
-                click: this._onRemoveAllTags
+            'viewport singlegroupview managetagsonsingle choosetagspanel#setTagsPanel': {
+                cancel: this._showTagsDefaultView,
+                savetags: this._onSetTagsConfirmed
             }
         });
         this.mon(this.getPopFromGroupModel().proxy, {
@@ -242,6 +236,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      * Tags
      *
      **********************************************/
+    _showTagsDefaultView: function() {
+        this.getTagsCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
+    },
 
     _createTagsStore: function() {
         //console.log(this.groupRecord.data);
@@ -254,61 +251,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     // Add tags
 
-    _onAddTags: function() {
-        Ext.widget('choosetagswindow', {
-            title: gettext('Add tags'),
-            itemId: 'addTagsOnSingleGroupWindow',
-            buttonText: gettext('Add tags')
-        }).show();
+    _onSetTags: function() {
+        this.getTagsCardBody().getLayout().setActiveItem('setTagsPanel');
     },
-
-    _onCancelTags: function(panel) {
-        panel.up('window').close();
-    },
-
-    _onSaveTags: function(panel, tags) {
-        panel.up('window').close();
+    _onSetTagsConfirmed: function(panel, tags) {
         devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeTags({
             groupRecord: this.groupRecord,
             sourceTags: tags,
-            doNotDeleteTags: true
+            doNotDeleteTags: false
         });
-        this.manageStudentsController.notifySingleGroupChange();
-    },
-
-
-    // Remove all tags
-
-    _onRemoveAllTags: function() {
-        this._confirm({
-            title: gettext('Confirm clear tags'),
-            msg: gettext('Do you want to remove all tags from this group?'),
-            callback: this._removeAllTags
-        });
-    },
-    _removeAllTags: function() {
-        this.groupRecord.set('tags', []);
-        this.manageStudentsController.notifySingleGroupChange();
-    },
-
-
-    // Remove tag
-
-    _onRemoveTag: function(tagRecord) {
-        this._confirm({
-            title: gettext('Confirm remove tag'),
-            msg: Ext.String.format(gettext('Do you want to remove "{0}" from tags?'), tagRecord.get('tag')),
-            callback: function() {
-                this._removeTag(tagRecord);
+        this.manageStudentsController.notifySingleGroupChange({
+            scope: this,
+            success: function() {
+                // TODO: Notify the user about the change
             }
         });
-    },
-
-    _removeTag: function(tagRecord) {
-        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.removeTags({
-            groupRecord: this.groupRecord,
-            sourceTags: [tagRecord.get('tag')]
-        });
-        this.manageStudentsController.notifySingleGroupChange();
     }
 });

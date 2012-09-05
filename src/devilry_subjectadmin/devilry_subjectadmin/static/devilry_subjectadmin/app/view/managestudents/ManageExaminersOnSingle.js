@@ -96,7 +96,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     items: [{
                         xtype: 'box',
                         anchor: '100%',
-                        padding: '0 20 0 0',
                         tpl: [
                             '<p>{text}</p>',
                             '<p><small>{relatednote}</small></p>'
