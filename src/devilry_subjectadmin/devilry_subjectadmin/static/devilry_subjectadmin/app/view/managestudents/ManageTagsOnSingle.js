@@ -13,8 +13,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
      * @cfg {Ext.data.Store} tagsStore (required)
      */
 
-    more_text: gettext('TODO'),
-
     constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
         this.addEvents(
@@ -80,11 +78,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                         anchor: '100%',
                         moretext: gettext('Tags help ...'),
                         lesstext: gettext('Hide help'),
-                        introtext: '',
                         small_morelink: true,
                         moreWidget: {
                             xtype: 'box',
-                            html: this.more_text
+                            html: [
+                                '<p>',
+                                    devilry_subjectadmin.view.managestudents.TagsHelp.getIntroText(),
+                                '</p>',
+                                devilry_subjectadmin.view.managestudents.TagsHelp.getDetailsUl(),
+                                '<p><small>', devilry_subjectadmin.view.managestudents.TagsHelp.getPeriodNote(), '</small></p>'
+                            ].join('')
                         }
                     }]
                 }, {
