@@ -86,13 +86,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     }],
                 }, {
                     xtype: 'okcancelpanel',
-                    itemId: 'confirmRemove',
-                    id: 'single_examiners_confirm_remove',
-                    okbutton_ui: 'danger',
-                    bodyPadding: 10,
-                    html: gettext('Do you really want to remove the examiner from this group? Any feedback the examiner have already provided the group will we left untouched. The only change will be that the examiner looses access to the group.')
-                }, {
-                    xtype: 'okcancelpanel',
                     itemId: 'setExaminersPanel',
                     border: 1,
                     bodyPadding: 10,

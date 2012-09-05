@@ -146,46 +146,6 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         self.assertTrue(missing.text.strip(), 'Full name missing')
         self.assertTrue(username.text.strip(), 'examiner1')
 
-    def _remove_by_username(self, username):
-        cssselector = '.examinersingroupgrid_remove_{0}'.format(username)
-        self.waitForCssSelector(cssselector)
-        self.find_element(cssselector).click()
-
-        examinercount = len(self._find_gridrows())
-        self.assertTrue(examinercount > 0)
-
-        # Confirm delete
-        self.waitForCssSelector('#single_examiners_confirm_remove .okbutton')
-        okbutton = self.find_element('#single_examiners_confirm_remove .okbutton')
-        self.waitFor(okbutton, lambda b: okbutton.is_displayed())
-        okbutton.click()
-        self.waitFor(self.selenium, lambda s: len(self._find_gridrows()) == examinercount-1)
-
-    def test_remove(self):
-        g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
-        self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
-        self.assertEquals(len(self.find_elements('.examinersingroupgrid_remove')), 2)
-        self._remove_by_username('examiner2')
-
-    def test_remove_cancel(self):
-        g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
-        self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
-        self.assertEquals(len(self.find_elements('.examinersingroupgrid_remove')), 2)
-
-        cssselector = '.examinersingroupgrid_remove_examiner1'
-        self.waitForCssSelector(cssselector)
-        self.find_element(cssselector).click()
-
-        # Cancel
-        cancelbutton = self.find_element('#single_examiners_confirm_remove .cancelbutton')
-        self.waitFor(cancelbutton, lambda b: cancelbutton.is_displayed())
-        cancelbutton.click()
-        meta = self.find_element('.examinersingroupgrid_meta_examiner1')
-        self.waitFor(meta, lambda m: meta.is_displayed())
-
-
     def _create_related_examiner(self, username, fullname=None):
         user = self.testhelper.create_user(username, fullname=fullname)
         self.assignment.parentnode.relatedexaminer_set.create(user=user)
@@ -210,12 +170,8 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
                 pass
         return False
 
-    def test_set(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
-        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
-        self.browseToAndSelectAs('a1admin', g1)
+    def _set_examiners(self, group, click_examiners):
+        self.browseToAndSelectAs('a1admin', group)
         self.waitForCssSelector('#single_set_examiners_button button')
         setbutton = self.find_element('#single_set_examiners_button button')
         setbutton.click()
@@ -223,10 +179,10 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         # Select newexaminer and newexaminer2, and save
         panel = self.find_element('#single_set_examiners_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
-        self.waitForCssSelector('.examiner_username_newexaminer')
-        self.waitForCssSelector('.examiner_username_newexaminer2')
-        self._get_relatedexaminer_row_by_username('newexaminer').click()
-        self._get_relatedexaminer_row_by_username('newexaminer2').click()
+        for examiner in click_examiners:
+            self.waitForCssSelector('.examiner_username_{0}'.format(examiner))
+        for examiner in click_examiners:
+            self._get_relatedexaminer_row_by_username(examiner).click()
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
@@ -234,12 +190,25 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         # Wait for reload
         self.waitFor(self.selenium, self._has_reloaded)
 
+    def test_set(self):
+        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
+        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self._set_examiners(g1, ['newexaminer', 'newexaminer2'])
+
         # Check the results
-        self.waitFor(self.selenium, self._has_reloaded)
         g1 = self.testhelper.reload_from_db(g1)
         self.assertEquals(set([e.user.username for e in g1.examiners.all()]),
                           set(['newexaminer', 'newexaminer2']))
 
+    def test_clear(self):
+        self._create_related_examiner('examiner1')
+        self._create_related_examiner('examiner2')
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
+        self._set_examiners(g1, click_examiners=['examiner1', 'examiner2']) # Should deselect them both
+        g1 = self.testhelper.reload_from_db(g1)
+        self.assertEquals(g1.examiners.count(), 0)
 
     def test_set_cancel(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')

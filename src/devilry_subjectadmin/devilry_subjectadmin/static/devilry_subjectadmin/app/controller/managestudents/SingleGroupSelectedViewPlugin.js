@@ -65,14 +65,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Examiners
-            'viewport singlegroupview manageexaminersonsingle examinersingroupgrid': {
-                removeExaminer: this._onRemoveExaminer
-            },
-            'viewport singlegroupview manageexaminersonsingle okcancelpanel#confirmRemove': {
-                cancel: this._showExaminersDefaultView,
-                ok: this._onRemoveExaminerConfirmed
-            },
-
             'viewport singlegroupview manageexaminersonsingle #setExaminerButton': {
                 click: this._onSetExaminers
             },
@@ -243,45 +235,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             }
         });
     },
-    
-
-    // Remove all examiners
-
-    //_onRemoveAllExaminers: function() {
-        //this._confirm({
-            //title: gettext('Confirm clear examiners'),
-            //msg: gettext('Do you want to remove all examiners from this group?'),
-            //callback: this._removeAllExaminers
-        //});
-    //},
-    //_removeAllExaminers: function() {
-        //this.groupRecord.set('examiners', []);
-        //this.manageStudentsController.notifySingleGroupChange();
-    //},
-
-
-    // Remove examiner
-
-    _onRemoveExaminer: function(examinerRecord) {
-        this.getExaminersCardBody().getLayout().setActiveItem('confirmRemove');
-        var confirmPanel = this.getExaminersCardBody().down('#confirmRemove');
-        confirmPanel.examinerRecord = examinerRecord; // NOTE: temporary storage - removed in _onPopExaminerConfirmed()
-    },
-    _onRemoveExaminerConfirmed: function() {
-        var confirmPanel = this.getExaminersCardBody().down('#confirmRemove');
-        var examinerRecord = confirmPanel.examinerRecord;
-        confirmPanel.examinerRecord = undefined;
-
-        devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.removeExaminers({
-            groupRecord: this.groupRecord,
-            userRecords: [examinerRecord],
-            getUserId: function(examinerRecord) {
-                return examinerRecord.get('user').id;
-            }
-        });
-        this.manageStudentsController.notifySingleGroupChange();
-    },
-
 
 
     /***********************************************

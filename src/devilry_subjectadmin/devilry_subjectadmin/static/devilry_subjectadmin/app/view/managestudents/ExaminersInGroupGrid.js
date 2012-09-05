@@ -37,28 +37,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                 renderer: function(unused1, unused2, examinerRecord) {
                     return rowTplCompiled.apply(examinerRecord.data);
                 }
-            }, {
-                xtype: 'actioncolumn',
-                width: 20,
-                items: [{
-                    icon: devilry_theme.Icons.DELETE_SMALL,
-                    tooltip: gettext('Remove examiner from group.'),
-                    handler: function(grid, rowIndex, colIndex) {
-                        me._onRemove(rowIndex, colIndex);
-                    },
-                    getClass: function(unused, unused2, record) {
-                        return Ext.String.format(
-                            'devilry_clickable_icon examinersingroupgrid_remove examinersingroupgrid_remove_{0}',
-                            record.get('user').username);
-                    }
-                }]
             }]
         });
         this.callParent(arguments);
-    },
-
-    _onRemove: function(rowIndex, colIndex) {
-        var record = this.getStore().getAt(rowIndex);
-        this.fireEvent('removeExaminer', record);
     }
 });
