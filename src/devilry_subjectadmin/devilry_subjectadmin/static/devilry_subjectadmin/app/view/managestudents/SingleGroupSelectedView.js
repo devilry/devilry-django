@@ -12,7 +12,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     requires: [
         'devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle',
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle',
-        'devilry_subjectadmin.view.managestudents.ManageTagsOnSingle'
+        'devilry_subjectadmin.view.managestudents.ManageTagsOnSingle',
+        'devilry_subjectadmin.view.managestudents.SingleMetaInfo'
     ],
 
     /**
@@ -35,44 +36,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      * @cfg {Ext.data.Store} tagsStore (required)
      */
 
-    metaInfoTpl: [
-        '<dl>',
-            '<dt>', pgettext('group', 'Grade') ,':</dt> ',
-            '<dd>',
-                '<tpl if="hasFeedback">',
-                    '{feedback.grade} ',
-                    '<tpl if="feedback.is_passing_grade"><span class="label label-success">',
-                        pgettext('group', 'Passed'),
-                    '</span></tpl>',
-                    '<tpl if="!feedback.is_passing_grade"><span class="label label-warning">',
-                        pgettext('group', 'Failed'),
-                    '</span></tpl>',
-                    ' <span class="label">',
-                        pgettext('group', 'Points'), ': {feedback.points}',
-                    '</span>',
-                '</tpl>',
-                '<tpl if="!hasFeedback"><span class="label label-info">',
-                    gettext('No feedback'),
-                '</span></tpl>',
-            '</dd>',
-
-            '<dt>', Ext.String.capitalize(gettext('Deliveries')) ,':</dt> ',
-            '<dd>{num_deliveries}</dd>',
-
-            '<dt>', gettext('Status'), ':</dt>',
-            '<dd>',
-                '<tpl if="is_open">',
-                    '<span class="label label-success">', pgettext('group', 'Open'), '</span> ',
-                    gettext('The student(s) can add more deliveries.'),
-                '</tpl>',
-                '<tpl if="!is_open">',
-                    '<span class="label label-warning">', pgettext('group', 'Closed'), '</span> ',
-                    gettext('The current grade is the final grade. The student(s) can <strong>not</strong> add more deliveries.'),
-                '</tpl>',
-                ' ', gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
-            '</dd>',
-        '</dl>'
-    ],
 
     initComponent: function() {
         Ext.apply(this, {
@@ -91,9 +54,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     xtype: 'container',
                     columnWidth: 1,
                     items: [{
-                        xtype: 'box',
-                        cls: 'bootstrap',
-                        html: this._getMetaInfo()
+                        xtype: 'singlegroupmetainfo',
+                        groupRecord: this.groupRecord
                     }, {
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -123,16 +85,5 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
             }]
         });
         this.callParent(arguments);
-    },
-
-    _getMetaInfo: function() {
-        var tpl = Ext.create('Ext.XTemplate', this.metaInfoTpl);
-        var data = Ext.apply({
-            hasFeedback: this.groupRecord.get('feedback') != null,
-            passing_grade_i18n: pgettext('group', 'Passed'),
-            not_passing_grade_i18n: pgettext('group', 'Failed'),
-            points_i18n: pgettext('group', 'Points')
-        }, this.groupRecord.data);
-        return tpl.apply(data);
     }
 });
