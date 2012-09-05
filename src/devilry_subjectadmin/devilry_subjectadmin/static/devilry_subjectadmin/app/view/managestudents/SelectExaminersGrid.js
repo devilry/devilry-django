@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
     hideHeaders: true,
 
     col1Tpl: [
-        '<divclass="examinercell examinerid_{record.id}">',
+        '<div class="examinercell examinerid_{record.id} examiner_username_{record.user.username}">',
             '<div class="full_name"><strong>{record.user.full_name}</strong></div>',
             '<div class="username">',
                 '<small>{record.user.username}</small>',

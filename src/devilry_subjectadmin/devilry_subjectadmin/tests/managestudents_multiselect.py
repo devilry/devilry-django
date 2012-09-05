@@ -231,3 +231,188 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
         help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+
+
+class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
+    def test_render(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_examiners_button')
+        self.waitForCssSelector('#multi_add_examiners_button')
+        self.waitForCssSelector('#multi_clear_examiners_button')
+        self.assertTrue(self.find_element('#multi_examiners_help_and_buttons_container').is_displayed())
+        self.assertFalse(self.find_element('#multi_set_examiners_panel').is_displayed())
+        self.assertFalse(self.find_element('#multi_add_examiners_panel').is_displayed())
+
+    def _has_reloaded(self, ignored):
+        # Since the #multi_examiners_help_and_buttons_container is invisible on the
+        # save, it will not become visible again until reloaded
+        panels = self.find_elements('#multi_examiners_help_and_buttons_container')
+        if panels:
+            return panels[0].is_displayed()
+        else:
+            return False
+
+    def _create_related_examiner(self, username, fullname=None):
+        user = self.testhelper.create_user(username, fullname=fullname)
+        self.assignment.parentnode.relatedexaminer_set.create(user=user)
+
+    def _find_gridrows(self):
+        return self.find_elements('.devilry_subjectadmin_selectexaminersgrid .x-grid-row')
+
+    def _get_row_by_username(self, username):
+        for row in self._find_gridrows():
+            matches = row.find_elements_by_css_selector('.examiner_username_{username}'.format(username=username))
+            if len(matches) > 0:
+                return row
+
+    #
+    # SET
+    #
+
+    def test_set_examiners(self):
+        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
+        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_examiners_button')
+        self.find_element('#multi_set_examiners_button button').click()
+
+        panel = self.find_element('#multi_set_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        self.waitForCssSelector('.examiner_username_newexaminer')
+        self.waitForCssSelector('.examiner_username_newexaminer2')
+        self._get_row_by_username('newexaminer').click()
+        self._get_row_by_username('newexaminer2').click()
+        okbutton = panel.find_element_by_css_selector('.okbutton button')
+        self.waitFor(okbutton, lambda b: b.is_enabled())
+        okbutton.click()
+
+        self.waitFor(self.selenium, self._has_reloaded)
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            examiners = set([e.user.username for e in group.examiners.all()])
+            self.assertEquals(examiners, set(['newexaminer', 'newexaminer2']))
+
+    def test_set_examiners_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_set_examiners_button')
+        self.find_element('#multi_set_examiners_button button').click()
+
+        panel = self.find_element('#multi_set_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+
+    #
+    # ADD
+    #
+
+    def test_add_examiners(self):
+        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
+        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
+
+        # Load the page and click the "Add examiners" button
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_add_examiners_button')
+        self.find_element('#multi_add_examiners_button button').click()
+
+        # Select newexaminer and newexaminer2, and save
+        panel = self.find_element('#multi_add_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        self.waitForCssSelector('.examiner_username_newexaminer')
+        self.waitForCssSelector('.examiner_username_newexaminer2')
+        self._get_row_by_username('newexaminer').click()
+        self._get_row_by_username('newexaminer2').click()
+        okbutton = panel.find_element_by_css_selector('.okbutton button')
+        self.waitFor(okbutton, lambda b: b.is_enabled())
+        okbutton.click()
+
+        # Check the results
+        self.waitFor(self.selenium, self._has_reloaded)
+        g1 = self.testhelper.reload_from_db(g1)
+        self.assertEquals(set([e.user.username for e in g1.examiners.all()]),
+                          set(['examiner1', 'newexaminer', 'newexaminer2']))
+        g2 = self.testhelper.reload_from_db(g2)
+        self.assertEquals(set([e.user.username for e in g2.examiners.all()]),
+                          set(['examiner2', 'newexaminer', 'newexaminer2']))
+
+    def test_add_examiners_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_add_examiners_button')
+        self.find_element('#multi_add_examiners_button button').click()
+
+        panel = self.find_element('#multi_add_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+
+    #
+    # CLEAR
+    #
+
+    def test_clear_examiners(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
+
+        # Load page and click "Clear examiners"
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_clear_examiners_button')
+        self.find_element('#multi_clear_examiners_button button').click()
+
+        # Confirm clear
+        panel = self.find_element('#multi_clear_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        okbutton = panel.find_element_by_css_selector('.okbutton button')
+        okbutton.click()
+
+        # Check results
+        self.waitFor(self.selenium, self._has_reloaded)
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            self.assertEquals(group.examiners.all().count(), 0)
+
+    def test_clear_examiners_cancel(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_clear_examiners_button')
+        self.find_element('#multi_clear_examiners_button button').click()
+
+        panel = self.find_element('#multi_clear_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
+        for group in (g1, g2):
+            group = self.testhelper.reload_from_db(group)
+            self.assertEquals(group.examiners.all().count(), 1)
