@@ -76,6 +76,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         ref: 'overview',
         selector: 'managestudentsoverview'
     }, {
+        ref: 'viewport',
+        selector: 'viewport'
+    }, {
         ref: 'listOfGroups',
         selector: 'listofgroups'
     }, {
@@ -143,9 +146,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * List of groups resize
      *************************************/
     _onListOfGroupsResize: function(listofgroups, width, height, oldWidth, oldHeight) {
-        var firstLoad = Ext.isEmpty(oldWidth);
-        if(!firstLoad) {
-            Ext.util.Cookies.set(this.listofgroups_size_cookiename, width);
+        var maxWidth = this.getViewport().getWidth() - 200;
+        if(width > maxWidth) { // Limit the maxwidth - this is only to avoid that the resizer loads or are pulled out of sight, and not to ensure proper and pretty layout.
+            listofgroups.setWidth(maxWidth);
+        } else {
+            var firstLoad = Ext.isEmpty(oldWidth);
+            if(!firstLoad) {
+                Ext.util.Cookies.set(this.listofgroups_size_cookiename, width);
+            }
         }
     },
     _onListOfGroupsBoxReady: function(listofgroups) {

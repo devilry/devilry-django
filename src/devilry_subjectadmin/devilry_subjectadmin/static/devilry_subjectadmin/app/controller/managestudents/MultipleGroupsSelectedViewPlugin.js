@@ -34,6 +34,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     refs: [{
         ref: 'scrollableBodyContainer',
         selector: 'multiplegroupsview #scrollableBodyContainer'
+    }, {
+        ref: 'viewport',
+        selector: 'viewport'
 
     // Examiners
     }, {
@@ -224,9 +227,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _onGroupSummaryGridResize: function(groupsummarygrid, width, height, oldWidth, oldHeight) {
-        var firstLoad = Ext.isEmpty(oldHeight);
-        if(!firstLoad) {
-            Ext.util.Cookies.set(this.group_summarygrid_size_cookiename, height);
+        console.log(this.getViewport().getHeight());
+        var maxHeight = this.getViewport().getHeight() - 120;
+        if(height > maxHeight) {
+            groupsummarygrid.setHeight(maxHeight);
+        } else {
+            var firstLoad = Ext.isEmpty(oldHeight);
+            if(!firstLoad) {
+                Ext.util.Cookies.set(this.group_summarygrid_size_cookiename, height);
+            }
         }
     },
     _onGroupsSummaryBoxReady: function(groupsummarygrid) {
