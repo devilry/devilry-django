@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
     tpl: [
         '<h3>', gettext('Grade') ,'</h3> ',
         '<tpl if="hasFeedback">',
-            '<p style="margin: 0;">',
+            '<p>',
                 '<tpl if="group.feedback.is_passing_grade">',
                     '<span class="success">',
                         gettext('Passed'),
@@ -25,9 +25,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                 ' <small class="points">(',
                     gettext('Points'), ': {group.feedback.points}',
                 ')</small>',
-            '</p>',
-
-            '<p style="margin: 0;">',
+                '<br/>',
                 '<small>',
                     '<strong>', gettext('Note'), ':</strong> ',
                     gettext('Students can not see their points, only the grade, and if it is failed or passed.'),
