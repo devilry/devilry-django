@@ -223,3 +223,93 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         cancelbutton.click()
         meta = self.find_element('.examinersingroupgrid_meta_examiner1')
         self.waitFor(meta, lambda m: meta.is_displayed())
+
+
+
+class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
+    def _find_gridrows(self):
+        return self.find_elements('.devilry_subjectadmin_tagsingroupgrid .x-grid-row')
+
+    def test_render(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g1.tags.create(tag='a')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('.devilry_subjectadmin_managetagsonsingle')
+        self.waitForCssSelector('.tagsingroupgrid_tag_a')
+        tag = self.find_element('.tagsingroupgrid_tag_a')
+        self.assertTrue(tag.text.strip(), 'a')
+
+    def _has_reloaded(self, ignored):
+        # Since the #single_tags_help_and_buttons_container is invisible on the
+        # save, it will not become visible again until reloaded
+        panels = self.find_elements('#single_tags_help_and_buttons_container')
+        if panels:
+            try:
+                return panels[0].is_displayed()
+            except StaleElementReferenceException:
+                pass
+        return False
+
+    def _click_edit_tags_button(self):
+        self.waitForCssSelector('#single_set_tags_button button')
+        setbutton = self.find_element('#single_set_tags_button button')
+        setbutton.click()
+
+    def _set_tags(self, group, tags):
+        # Select newtag and newtag2, and save
+        panel = self.find_element('#single_set_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        inputfield = panel.find_element_by_css_selector('textarea')
+        inputfield.clear()
+        inputfield.send_keys(tags)
+        okbutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
+        self.waitFor(okbutton, lambda b: b.is_enabled())
+        okbutton.click()
+        self.waitFor(self.selenium, self._has_reloaded) # Wait for reload
+
+    def test_set(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g1.tags.create(tag='a')
+        g1.tags.create(tag='b')
+        self.browseToAndSelectAs('a1admin', g1)
+        self._click_edit_tags_button()
+        self._set_tags(g1, 'newtag1,newtag2')
+
+        # Check the results
+        g1 = self.testhelper.reload_from_db(g1)
+        self.assertEquals(set([t.tag for t in g1.tags.all()]),
+                          set(['newtag1', 'newtag2']))
+
+    def test_current_tags_present_on_show(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g1.tags.create(tag='a')
+        g1.tags.create(tag='b')
+        self.browseToAndSelectAs('a1admin', g1)
+        self._click_edit_tags_button()
+        panel = self.find_element('#single_set_tags_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        inputfield = panel.find_element_by_css_selector('textarea')
+        self.assertEquals(inputfield.get_attribute('value'), 'a,b')
+
+    def test_clear(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.browseToAndSelectAs('a1admin', g1)
+        self._click_edit_tags_button()
+        self._set_tags(g1, '')
+        g1 = self.testhelper.reload_from_db(g1)
+        self.assertEquals(g1.tags.count(), 0)
+
+    def test_set_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g1.tags.create(tag='a')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('#single_set_tags_button button')
+        setbutton = self.find_element('#single_set_tags_button button')
+        setbutton.click()
+
+        # Cancel
+        cancelbutton = self.find_element('#single_set_tags_panel .choosetags_cancelbutton')
+        self.waitFor(cancelbutton, lambda b: cancelbutton.is_displayed())
+        cancelbutton.click()
+        meta = self.find_element('.tagsingroupgrid_tag_a')
+        self.waitFor(meta, lambda m: meta.is_displayed())

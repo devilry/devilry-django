@@ -12,13 +12,23 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
         'Ext.XTemplate'
     ],
 
+    rowTpl: [
+        '<div class="tagsingroupgrid_tag tagsingroupgrid_tag_{tag}">',
+            '{tag}',
+        '</div>'
+    ],
+
     initComponent: function() {
+        var rowTplCompiled = Ext.create('Ext.XTemplate', this.rowTpl);
         var me = this;
         Ext.apply(this, {
             columns: [{
                 header: 'Tag',
                 flex: 1,
-                dataIndex: 'tag'
+                dataIndex: 'tag',
+                renderer: function(unused1, unused2, tagRecord) {
+                    return rowTplCompiled.apply(tagRecord.data);
+                }
             }]
         });
         this.callParent(arguments);
