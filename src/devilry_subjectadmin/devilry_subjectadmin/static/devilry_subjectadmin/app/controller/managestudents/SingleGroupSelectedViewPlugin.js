@@ -65,8 +65,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Examiners
-            'viewport singlegroupview manageexaminersonsingle #setExaminerButton': {
-                click: this._onSetExaminers
+            'viewport singlegroupview manageexaminersonsingle': {
+                edit_examiners: this._onSetExaminers
             },
             'viewport singlegroupview manageexaminersonsingle okcancelpanel#setExaminersPanel': {
                 cancel: this._showExaminersDefaultView,
@@ -74,8 +74,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Tags
-            'viewport singlegroupview managetagsonsingle #setTagButton': {
-                click: this._onSetTags
+            'viewport singlegroupview managetagsonsingle': {
+                edit_tags: this._onSetTags
             },
             'viewport singlegroupview managetagsonsingle choosetagspanel#setTagsPanel': {
                 cancel: this._showTagsDefaultView,

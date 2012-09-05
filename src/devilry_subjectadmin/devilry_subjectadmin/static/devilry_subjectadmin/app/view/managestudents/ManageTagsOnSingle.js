@@ -15,6 +15,19 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
 
     more_text: gettext('TODO'),
 
+    constructor: function(config) {
+        this.mixins.observable.constructor.call(this, config);
+        this.addEvents(
+            /**
+             * @event
+             * Fired when edit-tags is clicked.
+             * @param panel This panel.
+             */
+            'edit_tags'
+        );
+        this.callParent([config]);
+    },
+
     initComponent: function() {
         var tags = [];
         this.tagsStore.each(function(tagRecord) {
@@ -29,10 +42,22 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                 tpl: [
                     '<h4>',
                         '{heading}',
+                        ' <a href="#" class="edit_tags_button">(',
+                            gettext('Edit'),
+                        ')</a>',
                     '</h4>'
                 ],
                 data: {
                     heading: gettext('Tags'),
+                },
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: 'a.edit_tags_button',
+                    click: function(e) {
+                        e.preventDefault();
+                        this.fireEvent('edit_tags', this);
+                    }
                 }
             }, {
                 xtype: 'container',
@@ -61,24 +86,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                             xtype: 'box',
                             html: this.more_text
                         }
-                    }],
-                    dockedItems: [{
-                        xtype: 'toolbar',
-                        dock: 'bottom',
-                        ui: 'footer',
-                        padding: 0,
-                        defaults: {
-                            xtype: 'button',
-                            scale: 'medium',
-                            minWidth: 100
-                        },
-                        items: [{
-                            text: gettext('Edit tag(s)'),
-                            itemId: 'setTagButton',
-                            id: 'single_set_tags_button',
-                            tooltip: gettext('Edit tag(s) on this group.')
-                        }]
-                    }],
+                    }]
                 }, {
                     xtype: 'choosetagspanel',
                     itemId: 'setTagsPanel',

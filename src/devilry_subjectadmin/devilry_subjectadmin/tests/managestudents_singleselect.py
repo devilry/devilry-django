@@ -170,11 +170,14 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
                 pass
         return False
 
+    def _click_edit_examiners_button(self):
+        self.waitForCssSelector('.devilry_subjectadmin_manageexaminersonsingle a.edit_examiners_button')
+        setbutton = self.find_element('a.edit_examiners_button')
+        setbutton.click()
+
     def _set_examiners(self, group, click_examiners):
         self.browseToAndSelectAs('a1admin', group)
-        self.waitForCssSelector('#single_set_examiners_button button')
-        setbutton = self.find_element('#single_set_examiners_button button')
-        setbutton.click()
+        self._click_edit_examiners_button()
 
         # Select newexaminer and newexaminer2, and save
         panel = self.find_element('#single_set_examiners_panel')
@@ -213,9 +216,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
     def test_set_cancel(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
         self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('#single_set_examiners_button button')
-        setbutton = self.find_element('#single_set_examiners_button button')
-        setbutton.click()
+        self._click_edit_examiners_button()
 
         # Cancel
         cancelbutton = self.find_element('#single_set_examiners_panel .cancelbutton')
@@ -251,8 +252,8 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         return False
 
     def _click_edit_tags_button(self):
-        self.waitForCssSelector('#single_set_tags_button button')
-        setbutton = self.find_element('#single_set_tags_button button')
+        self.waitForCssSelector('.devilry_subjectadmin_managetagsonsingle a.edit_tags_button')
+        setbutton = self.find_element('a.edit_tags_button')
         setbutton.click()
 
     def _set_tags(self, group, tags):
@@ -303,9 +304,7 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         g1 = self.create_group('g1:candidate(student1)')
         g1.tags.create(tag='a')
         self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('#single_set_tags_button button')
-        setbutton = self.find_element('#single_set_tags_button button')
-        setbutton.click()
+        self._click_edit_tags_button()
 
         # Cancel
         cancelbutton = self.find_element('#single_set_tags_panel .choosetags_cancelbutton')

@@ -19,6 +19,19 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
         return this.more_text;
     },
 
+    constructor: function(config) {
+        this.mixins.observable.constructor.call(this, config);
+        this.addEvents(
+            /**
+             * @event
+             * Fired when edit-examiners is clicked.
+             * @param panel This panel.
+             */
+            'edit_examiners'
+        );
+        this.callParent([config]);
+    },
+
 
     initComponent: function() {
         this.relatednote = interpolate(gettext('<strong>Note</strong>: Only %(examiners_term)s registered on the %(period_term)s are available.'), {
@@ -34,10 +47,22 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                 tpl: [
                     '<h4>',
                         '{heading}',
+                        ' <a href="#" class="edit_examiners_button">(',
+                            gettext('Edit'),
+                        ')</a>',
                     '</h4>'
                 ],
                 data: {
                     heading: gettext('Examiners'),
+                },
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: 'a.edit_examiners_button',
+                    click: function(e) {
+                        e.preventDefault();
+                        this.fireEvent('edit_examiners', this);
+                    }
                 }
             }, {
                 xtype: 'container',
@@ -66,24 +91,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                             xtype: 'box',
                             html: this._createMoreInfo()
                         }
-                    }],
-                    dockedItems: [{
-                        xtype: 'toolbar',
-                        dock: 'bottom',
-                        ui: 'footer',
-                        padding: 0,
-                        defaults: {
-                            xtype: 'button',
-                            scale: 'medium',
-                            minWidth: 100
-                        },
-                        items: [{
-                            text: gettext('Edit examiner(s)'),
-                            itemId: 'setExaminerButton',
-                            id: 'single_set_examiners_button',
-                            tooltip: gettext('Edit examiner(s) to this group.')
-                        }]
-                    }],
+                    }]
                 }, {
                     xtype: 'okcancelpanel',
                     itemId: 'setExaminersPanel',
