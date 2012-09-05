@@ -32,6 +32,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'deadlinesContainer',
         selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
     }, {
+        ref: 'deliveriesList',
+        selector: 'viewport singlegroupview deliverieslist'
+    }, {
 
     // Students
         ref: 'studentsCardBody',
@@ -112,6 +115,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             studentsStore: this._createStudentsStore(),
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
+            assignment_id: this.manageStudentsController.assignmentRecord.get('id'),
             groupRecord: this.groupRecord
         });
     },
@@ -146,17 +150,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
 
 
-    /************************************************
+    /********************************************************
      *
-     * Deadlines
+     * AggregatedGroupInfo views (deadlines and deliveries)
      *
-     ***********************************************/
+     ********************************************************/
     _onRenderDeadlinesContainer: function() {
         this.getDeadlinesContainer().setLoading(gettext('Loading') + ' ...');
+        this.getDeliveriesList().setLoading(gettext('Loading') + ' ...');
         this.getAggregatedGroupInfoModel().load(this.groupRecord.get('id'), {
             scope: this,
             callback: function(aggregatedGroupInfoRecord, operation) {
                 this.getDeadlinesContainer().setLoading(false);
+                this.getDeliveriesList().setLoading(false);
                 if(operation.success) {
                     this._onAggregatedGroupInfoLoadSuccess(aggregatedGroupInfoRecord);
                 } else {
@@ -168,6 +174,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onAggregatedGroupInfoLoadSuccess: function(aggregatedGroupInfoRecord) {
         var active_feedback = this.groupRecord.get('feedback');
         this.getDeadlinesContainer().populate(aggregatedGroupInfoRecord, active_feedback);
+        this.getDeliveriesList().populate(
+            this.manageStudentsController.assignmentRecord.get('id'),
+            this.groupRecord.get('id'),
+            aggregatedGroupInfoRecord.get('deadlines'));
     },
     _onAggregatedGroupInfoLoadFailure: function(operation) {
         console.log('AggregatedGroupInfo load error', operation); // TODO: Handle load errors

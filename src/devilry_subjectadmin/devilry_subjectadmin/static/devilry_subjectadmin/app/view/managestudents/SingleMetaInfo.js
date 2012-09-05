@@ -3,9 +3,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
     alias: 'widget.singlegroupmetainfo',
     cls: 'devilry_subjectadmin_singlegroupmetainfo bootstrap',
 
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
+
 
     /**
      * @cfg {Ext.data.Model} [groupRecord]
+     */
+
+    /**
+     * @cfg {String} [assignment_id]
      */
 
     tpl: [
@@ -25,6 +33,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                 ' <small class="points">(',
                     gettext('Points'), ': {group.feedback.points}',
                 ')</small>',
+                ' - <a class="active_feedback_link" href="{delivery_link_prefix}{group.feedback.delivery_id}">',
+                    gettext('Details'),
+                '</a>',
+
                 '<br/>',
                 '<small>',
                     '<strong>', gettext('Note'), ':</strong> ',
@@ -49,18 +61,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                 gettext('The current grade is the final grade. The student(s) can <strong>not</strong> add more deliveries.'),
             '</tpl>',
             ' ', gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
-        '</p>',
-
-        '<h3>', Ext.String.capitalize(gettext('Deliveries')) ,'</h3> ',
-        '<p>{group.num_deliveries}</p>'
+        '</p>'
     ],
 
 
     initComponent: function() {
         this.data = {
-            loading: false,
             hasFeedback: this.groupRecord.get('feedback') != null,
-            group: this.groupRecord.data
+            group: this.groupRecord.data,
+            delivery_link_prefix: devilry_subjectadmin.utils.UrlLookup.manageGroupAndShowDeliveryPrefix(
+                this.assignment_id,
+                this.groupRecord.get('id'))
         };
         this.callParent(arguments);
     }

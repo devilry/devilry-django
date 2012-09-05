@@ -46,6 +46,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     manageStudentsAddStudents: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@manage-students/@@add-students', assignment_id);
     },
+    manageGroupAndShowDeliveryPrefix: function(assignment_id, group_id) {
+        return Ext.String.format('#/assignment/{0}/@@manage-students/@@select-delivery/{1}/',
+            assignment_id, group_id);
+    },
 
     bulkManageDeadlines: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@bulk-manage-deadlines/', assignment_id);

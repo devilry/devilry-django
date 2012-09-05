@@ -13,11 +13,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         'devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle',
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle',
         'devilry_subjectadmin.view.managestudents.ManageTagsOnSingle',
-        'devilry_subjectadmin.view.managestudents.SingleMetaInfo'
+        'devilry_subjectadmin.view.managestudents.SingleMetaInfo',
+        'devilry_subjectadmin.view.managestudents.DeliveriesList'
     ],
 
     /**
      * @cfg {string} multiselectHowto (required)
+     */
+
+    /**
+     * @cfg {String} [assignment_id]
      */
 
     /**
@@ -51,9 +56,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 anchor: '100%',
                 layout: 'column',
                 items: [{
-                    xtype: 'singlegroupmetainfo',
+                    xtype: 'container',
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%'
+                    },
                     columnWidth: 1,
-                    groupRecord: this.groupRecord
+                    items: [{
+                        xtype: 'singlegroupmetainfo',
+                        groupRecord: this.groupRecord,
+                        assignment_id: this.assignment_id
+                    }, {
+                        xtype: 'deliverieslist',
+                        groupRecord: this.groupRecord,
+                        assignment_id: this.assignment_id
+                    }]
                 }, {
                     xtype: 'container',
                     width: 250,
