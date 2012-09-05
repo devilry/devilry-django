@@ -298,7 +298,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         candidates = self.candidates.all()
         if len(candidates) < 2:
-            raise GroupPopToFewCandiatesError('Can not pop caniddaites on a group with less than 2 candidates.')
+            raise GroupPopToFewCandiatesError('Can not pop candidates on a group with less than 2 candidates.')
         if not candidate in candidates:
             raise GroupPopNotCandiateError('The candidate to pop must be in the original group.')
 

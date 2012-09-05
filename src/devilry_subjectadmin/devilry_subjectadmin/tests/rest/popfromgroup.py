@@ -68,7 +68,7 @@ class TestRestPopFromGroup(TestCase):
         content, response = self._postas('a1admin', {'group_id': source.id,
                                                      'candidate_id': student1cand.id})
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['detail'], 'Can not pop caniddaites on a group with less than 2 candidates.')
+        self.assertEquals(content['detail'], 'Can not pop candidates on a group with less than 2 candidates.')
 
     def test_post_not_candidate_on_group(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1, student2)')
