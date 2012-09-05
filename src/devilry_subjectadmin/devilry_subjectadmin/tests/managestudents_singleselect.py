@@ -76,14 +76,14 @@ class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSele
         self.assertTrue(missing.text.strip(), 'Full name missing')
         self.assertTrue(username.text.strip(), 'student1')
 
-    def test_no_removebutton_on_single(self):
+    def test_no_popbutton_on_single(self):
         g1 = self.create_group('g1:candidate(student1)')
         self.browseToAndSelectAs('a1admin', g1)
         self.waitForCssSelector('.studentsingroupgrid_meta_student1')
-        self.assertEquals(len(self.find_elements('.studentsingroupgrid_remove')), 0)
+        self.assertEquals(len(self.find_elements('.studentsingroupgrid_pop')), 0)
 
     def _pop_by_username(self, username):
-        cssselector = '.studentsingroupgrid_remove_{0}'.format(username)
+        cssselector = '.studentsingroupgrid_pop_{0}'.format(username)
         self.waitForCssSelector(cssselector)
         self.find_element(cssselector).click()
 
@@ -101,16 +101,16 @@ class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSele
         g1 = self.create_group('g1:candidate(student1,student2)')
         self.browseToAndSelectAs('a1admin', g1)
         self.waitForCssSelector('.studentsingroupgrid_meta_student1')
-        self.assertEquals(len(self.find_elements('.studentsingroupgrid_remove')), 2)
+        self.assertEquals(len(self.find_elements('.studentsingroupgrid_pop')), 2)
         self._pop_by_username('student2')
 
     def test_pop_cancel(self):
         g1 = self.create_group('g1:candidate(student1,student2)')
         self.browseToAndSelectAs('a1admin', g1)
         self.waitForCssSelector('.studentsingroupgrid_meta_student1')
-        self.assertEquals(len(self.find_elements('.studentsingroupgrid_remove')), 2)
+        self.assertEquals(len(self.find_elements('.studentsingroupgrid_pop')), 2)
 
-        cssselector = '.studentsingroupgrid_remove_student1'
+        cssselector = '.studentsingroupgrid_pop_student1'
         self.waitForCssSelector(cssselector)
         self.find_element(cssselector).click()
 
@@ -119,4 +119,69 @@ class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSele
         self.waitFor(cancelbutton, lambda b: cancelbutton.is_displayed())
         cancelbutton.click()
         meta = self.find_element('.studentsingroupgrid_meta_student1')
+        self.waitFor(meta, lambda m: meta.is_displayed())
+
+
+class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
+    def _find_gridrows(self):
+        return self.find_elements('.devilry_subjectadmin_examinersingroupgrid .x-grid-row')
+
+    def test_render(self):
+        self.testhelper.create_user('examiner1', fullname='Examiner One')
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('.devilry_subjectadmin_manageexaminersonsingle')
+        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
+        fullname = self.find_element('.examinersingroupgrid_meta_examiner1 .fullname')
+        username = self.find_element('.examinersingroupgrid_meta_examiner1 .username')
+        self.assertTrue(fullname.text.strip(), 'Examiner One')
+        self.assertTrue(username.text.strip(), 'examiner1')
+
+    def test_missing_fullname(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('.devilry_subjectadmin_manageexaminersonsingle')
+        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
+        missing = self.find_element('.examinersingroupgrid_meta_examiner1 .fullname .nofullname')
+        username = self.find_element('.examinersingroupgrid_meta_examiner1 .username')
+        self.assertTrue(missing.text.strip(), 'Full name missing')
+        self.assertTrue(username.text.strip(), 'examiner1')
+
+    def _remove_by_username(self, username):
+        cssselector = '.examinersingroupgrid_remove_{0}'.format(username)
+        self.waitForCssSelector(cssselector)
+        self.find_element(cssselector).click()
+
+        examinercount = len(self._find_gridrows())
+        self.assertTrue(examinercount > 0)
+
+        # Confirm delete
+        self.waitForCssSelector('#single_examiners_confirm_remove .okbutton')
+        okbutton = self.find_element('#single_examiners_confirm_remove .okbutton')
+        self.waitFor(okbutton, lambda b: okbutton.is_displayed())
+        okbutton.click()
+        self.waitFor(self.selenium, lambda s: len(self._find_gridrows()) == examinercount-1)
+
+    def test_remove(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
+        self.assertEquals(len(self.find_elements('.examinersingroupgrid_remove')), 2)
+        self._remove_by_username('examiner2')
+
+    def test_remove_cancel(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
+        self.browseToAndSelectAs('a1admin', g1)
+        self.waitForCssSelector('.examinersingroupgrid_meta_examiner1')
+        self.assertEquals(len(self.find_elements('.examinersingroupgrid_remove')), 2)
+
+        cssselector = '.examinersingroupgrid_remove_examiner1'
+        self.waitForCssSelector(cssselector)
+        self.find_element(cssselector).click()
+
+        # Cancel
+        cancelbutton = self.find_element('#single_examiners_confirm_remove .cancelbutton')
+        self.waitFor(cancelbutton, lambda b: cancelbutton.is_displayed())
+        cancelbutton.click()
+        meta = self.find_element('.examinersingroupgrid_meta_examiner1')
         self.waitFor(meta, lambda m: meta.is_displayed())

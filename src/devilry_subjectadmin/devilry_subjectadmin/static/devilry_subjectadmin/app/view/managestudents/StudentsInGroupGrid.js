@@ -48,7 +48,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                     },
                     getClass: function(unused, unused2, record) {
                         return Ext.String.format(
-                            'devilry_clickable_icon studentsingroupgrid_remove studentsingroupgrid_remove_{0}',
+                            'devilry_clickable_icon studentsingroupgrid_pop studentsingroupgrid_pop_{0}',
                             record.get('user').username);
                     }
                 }]
