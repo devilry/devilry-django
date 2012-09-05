@@ -5,9 +5,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.singlegroupview',
     cls: 'devilry_subjectadmin_singlegroupview',
-    ui: 'transparentpanel',
     autoScroll: true,
-    padding: 20,
+    border: 0,
+    bodyPadding: 20,
 
     requires: [
         'devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle',
@@ -89,7 +89,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 layout: 'column',
                 items: [{
                     xtype: 'container',
-                    columnWidth: .63,
+                    columnWidth: 1,
                     items: [{
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -101,8 +101,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     }]
                 }, {
                     xtype: 'container',
-                    columnWidth: .37,
-                    padding: '0 0 0 20',
+                    width: 250,
+                    padding: '0 0 0 30',
                     layout: 'anchor',
                     defaults: {
                         margin: '20 0 0 0',

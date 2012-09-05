@@ -27,6 +27,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     ],
 
     refs: [{
+    // Students
+        ref: 'studentsCardBody',
+        selector: 'viewport singlegroupview managestudentsonsingle #cardBody'
+    }, {
+
+    // Tags
         ref: 'addTagsOnSingleGroupWindow',
         selector: '#addTagsOnSingleGroupWindow'
     }],
@@ -42,8 +48,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             // Students
-            'viewport singlegroupview studentsingroupgrid': {
-                removeStudent: this._onPopStudent
+            'viewport singlegroupview managestudentsonsingle studentsingroupgrid': {
+                popStudent: this._onPopStudent
+            },
+            'viewport singlegroupview managestudentsonsingle okcancelpanel#confirmPop': {
+                cancel: this._showStudentsDefaultView,
+                ok: this._onPopStudentConfirmed
             },
 
             // Examiners
@@ -133,6 +143,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      * Students
      *
      ***********************************************/
+    _showStudentsDefaultView: function() {
+        this.getStudentsCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
+    },
 
     _createStudentsStore: function() {
         var store = Ext.create('Ext.data.Store', {
@@ -142,7 +155,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         return store;
     },
     _onPopStudent: function(candidateRecord) {
-        //Ext.MessageBox.alert('Not implemented', 'See <a href="https://github.com/devilry/devilry-django/issues/215" target="_blank">issue 215</a> for info about how this will work.');
+        this.getStudentsCardBody().getLayout().setActiveItem('confirmPop');
+        var confirmPanel = this.getStudentsCardBody().down('#confirmPop');
+        confirmPanel.candidateRecord = candidateRecord; // NOTE: temporary storage - removed in _onPopStudentConfirmed()
+    },
+    _onPopStudentConfirmed: function() {
+        var confirmPanel = this.getStudentsCardBody().down('#confirmPop');
+        var candidateRecord = confirmPanel.candidateRecord;
+        confirmPanel.candidateRecord = undefined;
+
         var assignmentRecord = this.manageStudentsController.assignmentRecord;
         var record = Ext.create('devilry_subjectadmin.model.PopFromGroup');
         record.proxy.setUrl(assignmentRecord.get('id'));
@@ -165,7 +186,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         var new_group_id = result.get('new_group_id');
         this.manageStudentsController.reloadGroups([group_id, new_group_id]);
     },
-
     _onPopFromGroupProxyError: function(proxy, response, operation) {
         this.handleProxyUsingHtmlErrorDialog(response, operation);
     },

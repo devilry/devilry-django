@@ -45,7 +45,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                 items: [{
                     xtype: 'panel',
                     itemId: 'helpAndButtonsContainer',
-                    id: 'multi_examiners_help_and_buttons_container',
+                    id: 'single_students_help_and_buttons_container',
                     border: false,
                     frame: false,
                     layout: 'anchor',
@@ -57,7 +57,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                         xtype: 'moreinfobox',
                         anchor: '100%',
                         moretext: gettext('Students help ...'),
-                        lesstext: gettext('Hide help ...'),
+                        lesstext: gettext('Hide help'),
                         introtext: '',
                         small_morelink: true,
                         moreWidget: {
@@ -67,14 +67,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                     }]
                 }, {
                     xtype: 'okcancelpanel',
-                    itemId: 'clearExaminersPanel',
-                    id: 'multi_clear_examiners_panel',
-                    oktext: gettext('Clear examiners'),
+                    itemId: 'confirmPop',
+                    id: 'single_students_confirm_pop',
                     okbutton_ui: 'danger',
                     bodyPadding: 10,
                     html: [
                         '<p>',
-                            gettext('Do you really want to clear all examiners on the selected groups?'),
+                            gettext('Do you really want to split this group in two? This will move the selected student from this project group, into a copy of this group. Copies everything except the candidates (deadlines, deliveries, feedback, tags and examiners).'),
                         '</p>'
                     ].join('')
                 }]
