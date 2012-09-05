@@ -8,11 +8,24 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_extjsextras.OkCancelPanel',
     ],
 
-    intro_text: interpolate(gettext('TODO'), {
+    intro_text: interpolate(gettext('%(Examiners_term)s are the ones that give feedback to students on their %(deliveries_term)s.'), {
+        Examiners_term: gettext('Examiners'),
+        deliveries_term: gettext('deliveries')
     }, true),
 
     details_points: [
-        'TODO'
+        interpolate(gettext('A %(group_term)s can have multiple %(examiners_term)s.'), {
+            group_term: gettext('group'),
+            examiners_term: gettext('examiners')
+        }, true),
+        interpolate(gettext('Administrators can not give feedback. If you want to give feedback to any %(groups_term)s, you have to make yourself %(examiner_term)s on those %(groups_term)s.'), {
+            groups_term: gettext('groups'),
+            examiner_term: gettext('examiner')
+        }, true),
+        interpolate(gettext('Removing an %(examiner_term)s from a %(group_term)s does NOT remove any feedback already provided by that %(examiner_term)s.'), {
+            examiner_term: gettext('examiner'),
+            group_term: gettext('group')
+        }, true)
     ],
 
     _createMoreInfo: function() {
