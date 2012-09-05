@@ -74,7 +74,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
                 tpl: [
                     '<p>',
                         '{introtext}',
-                        ' <a href="#" class="more_button">',
+                        ' <a href="#" class="more_button" style="white-space: nowrap;">',
                             '{moretext}',
                         '</a>',
                     '</p>'
@@ -95,7 +95,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
                 cls: this.expandedCls,
                 hidden: true,
                 html: [
-                    '<p><a href="#">',
+                    '<p><a href="#" style="white-space: nowrap;">',
                         this.lesstext,
                     '</a></p>'
                 ].join(''),
@@ -120,7 +120,9 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         return this.down('#lessButton');
     },
     _getMoreButtonEl: function() {
-        return Ext.get(this._getIntroBox().getEl().query('a.more_button')[0]);
+        var element = Ext.get(this._getIntroBox().getEl().query('a.more_button')[0]);
+        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
+        return element;
     },
 
     _onMore: function(e) {
