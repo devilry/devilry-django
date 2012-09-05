@@ -37,6 +37,12 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
      * Text of the "More info"-link
      */
     lesstext: gettext('Less info'),
+
+    /**
+     * @cfg {bool} [small_morelink=false]
+     * Wrap the more-link in a html SMALL-tag?
+     */
+    small_morelink: false,
     
     constructor: function(config) {
         this.callParent([config]);
@@ -60,6 +66,9 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         if(this.cls) {
             cls = Ext.String.format('{0} {1}', cls, this.cls);
         }
+        if(!Ext.isEmpty(this.collapsedCls)) {
+            cls = Ext.String.format('{0} {1}', cls, this.collapsedCls);
+        }
         this.cls = cls;
 
         this.moreWidget.anchor = '100%';
@@ -68,15 +77,16 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
             layout: 'anchor',
             items: [{
                 xtype: 'box',
-                cls: this.collapsedCls,
                 itemId: 'introBox',
                 anchor: '100%',
                 tpl: [
                     '<p>',
                         '{introtext}',
+                        this.small_morelink? '<small>': '',
                         ' <a href="#" class="more_button" style="white-space: nowrap;">',
                             '{moretext}',
                         '</a>',
+                        this.small_morelink? '</small>': '',
                     '</p>'
                 ],
                 data: {
@@ -92,7 +102,6 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
             }, this.moreWidget, {
                 xtype: 'box',
                 itemId: 'lessButton',
-                cls: this.expandedCls,
                 hidden: true,
                 html: [
                     '<p><a href="#" style="white-space: nowrap;">',
@@ -127,14 +136,14 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
 
     _onMore: function(e) {
         e.preventDefault();
-        this._getMoreButtonEl().hide();
         if(!Ext.isEmpty(this.collapsedCls)) {
-            this._getIntroBox().removeCls(this.collapsedCls);
+            this.removeCls(this.collapsedCls);
+        }
+        if(!Ext.isEmpty(this.expandedCls)) {
+            this.addCls(this.expandedCls);
         }
 
-        if(!Ext.isEmpty(this.expandedCls)) {
-            this._getIntroBox().addCls(this.expandedCls);
-        }
+        this._getMoreButtonEl().hide(); // NOTE: Important that this comes before the other show()-calls below, because hide() on an element does not trigger re-rendering.
         this._getMoreWidget().show();
         this._getLessButton().show();
         this.fireEvent('moreclick', this)
@@ -142,16 +151,16 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
 
     _onLess: function(e) {
         e.preventDefault();
-        this._getLessButton().hide();
-        this._getMoreWidget().hide();
         if(!Ext.isEmpty(this.expandedCls)) {
-            this._getIntroBox().removeCls(this.expandedCls);
+            this.removeCls(this.expandedCls);
+        }
+        if(!Ext.isEmpty(this.collapsedCls)) {
+            this.addCls(this.collapsedCls);
         }
 
         this._getMoreButtonEl().show();
-        if(!Ext.isEmpty(this.collapsedCls)) {
-            this._getIntroBox().addCls(this.collapsedCls);
-        }
+        this._getLessButton().hide();
+        this._getMoreWidget().hide();
         this.fireEvent('lessclick', this)
     }
 });
