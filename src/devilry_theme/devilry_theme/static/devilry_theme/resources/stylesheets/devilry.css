@@ -17190,6 +17190,11 @@ You only need something like this extjs code to make it work:
   text-overflow: ellipsis;
 }
 
+/* line 1, ../sass/_devilry_extras.scss */
+.devilry_clickable_icon {
+  cursor: pointer;
+}
+
 /* line 1, ../sass/_spotlight.scss */
 .x-spotlight {
   background-color: #ccc;
