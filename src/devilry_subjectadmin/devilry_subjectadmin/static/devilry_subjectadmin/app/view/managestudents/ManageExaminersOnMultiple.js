@@ -102,7 +102,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                     }],
                     items: {
                         xtype: 'moreinfobox',
-                        margin: '10 0 0 0',
                         introtext: this.intro_text,
                         moreWidget: {
                             xtype: 'box',

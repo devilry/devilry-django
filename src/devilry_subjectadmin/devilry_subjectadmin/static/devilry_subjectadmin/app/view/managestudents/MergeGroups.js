@@ -31,7 +31,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
 
     initComponent: function() {
         this.mergehelp = this._createMergeHelp();
-        var helpmargin = '4 0 0 0';
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',
@@ -51,7 +50,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
             }, {
                 xtype: 'moreinfobox',
                 itemId: 'mergeGroupsHelp',
-                margin: helpmargin,
                 anchor: '100%',
                 introtext: this.merge_introtext,
                 cls: 'merge_groups_helpbox',
@@ -68,7 +66,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
                 margin: '0 0 20 0' // NOTE: This is because "More info" seems to cause the rendering of the padding on the container to sometimes not apply, and we want some space below the button
             }, {
                 xtype: 'panel',
-                margin: helpmargin,
                 anchor: '100%',
                 cls: 'bootstrap merge_groups_confirmcontainer',
                 itemId: 'confirmMergeGroupsContainer',

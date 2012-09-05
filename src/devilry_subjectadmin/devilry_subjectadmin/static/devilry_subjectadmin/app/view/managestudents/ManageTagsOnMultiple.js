@@ -107,7 +107,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple', {
                     }],
                     items: {
                         xtype: 'moreinfobox',
-                        margin: '10 0 0 0',
                         introtext: this.tag_introtext,
                         moreWidget: {
                             xtype: 'box',
