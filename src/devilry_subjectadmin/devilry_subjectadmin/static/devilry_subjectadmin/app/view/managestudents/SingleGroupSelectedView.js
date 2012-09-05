@@ -51,16 +51,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 anchor: '100%',
                 layout: 'column',
                 items: [{
-                    xtype: 'container',
+                    xtype: 'singlegroupmetainfo',
                     columnWidth: 1,
-                    items: [{
-                        xtype: 'singlegroupmetainfo',
-                        groupRecord: this.groupRecord
-                    }, {
-                        xtype: 'box',
-                        cls: 'bootstrap',
-                        html: '<strong>NOTE:</strong> This view is incomplete. Please see <a href="http://heim.ifi.uio.no/espeak/devilry-figures/managestudents-singleselect.png" target="_blank">this image mockup</a> of the planned interface.'
-                    }]
+                    groupRecord: this.groupRecord
                 }, {
                     xtype: 'container',
                     width: 250,
@@ -82,6 +75,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                         tagsStore: this.tagsStore
                     }]
                 }]
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                itemId: 'header',
+                tpl: '<h3>{heading}</h3>',
+                data: {
+                    heading: gettext('Deadlines and deliveries')
+                }
+            }, {
+                xtype: 'admingroupinfo_deadlinescontainer'
             }]
         });
         this.callParent(arguments);

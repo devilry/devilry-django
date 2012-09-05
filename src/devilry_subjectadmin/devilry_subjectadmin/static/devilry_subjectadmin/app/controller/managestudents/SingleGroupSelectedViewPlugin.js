@@ -11,14 +11,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     ],
 
     requires: [
-        'devilry_extjsextras.AlertMessage'
+        'devilry_extjsextras.AlertMessage',
+        'devilry_subjectadmin.view.managestudents.DeadlinesContainer'
     ],
 
     models: [
         'Candidate',
         'Examiner',
         'Tag',
-        'PopFromGroup'
+        'PopFromGroup',
+        'AggregatedGroupInfo'
     ],
 
     views: [
@@ -27,6 +29,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     ],
 
     refs: [{
+        ref: 'deadlinesContainer',
+        selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
+    }, {
+
     // Students
         ref: 'studentsCardBody',
         selector: 'viewport singlegroupview managestudentsonsingle #cardBody'
@@ -53,6 +59,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.control({
             'viewport singlegroupview': {
                 render: this._onRender
+            },
+
+            'viewport singlegroupview admingroupinfo_deadlinescontainer': {
+                render: this._onRenderDeadlinesContainer
             },
 
             // Students
@@ -133,6 +143,36 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             }
         });
     },
+
+
+
+    /************************************************
+     *
+     * Deadlines
+     *
+     ***********************************************/
+    _onRenderDeadlinesContainer: function() {
+        this.getDeadlinesContainer().setLoading(gettext('Loading') + ' ...');
+        this.getAggregatedGroupInfoModel().load(this.groupRecord.get('id'), {
+            scope: this,
+            callback: function(aggregatedGroupInfoRecord, operation) {
+                this.getDeadlinesContainer().setLoading(false);
+                if(operation.success) {
+                    this._onAggregatedGroupInfoLoadSuccess(aggregatedGroupInfoRecord);
+                } else {
+                    this._onAggregatedGroupInfoLoadFailure(operation);
+                }
+            }
+        });
+    },
+    _onAggregatedGroupInfoLoadSuccess: function(aggregatedGroupInfoRecord) {
+        var active_feedback = this.groupRecord.get('feedback');
+        this.getDeadlinesContainer().populate(aggregatedGroupInfoRecord, active_feedback);
+    },
+    _onAggregatedGroupInfoLoadFailure: function(operation) {
+        console.log('AggregatedGroupInfo load error', operation); // TODO: Handle load errors
+    },
+
 
 
     /************************************************
