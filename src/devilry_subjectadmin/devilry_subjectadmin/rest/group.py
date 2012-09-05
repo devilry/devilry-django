@@ -161,6 +161,7 @@ class GroupSerializer(object):
         if feedback:
             return {'id': feedback.id,
                     'grade': feedback.grade,
+                    'delivery_id': feedback.delivery.id,
                     'points': feedback.points,
                     'is_passing_grade': feedback.is_passing_grade,
                     'save_timestamp': feedback.save_timestamp}
