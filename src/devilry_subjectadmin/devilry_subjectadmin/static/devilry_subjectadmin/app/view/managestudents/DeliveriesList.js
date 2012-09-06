@@ -45,9 +45,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveriesList', {
             delegate: 'a.delivery_link',
             scope: this,
             click: function(e) {
+                e.preventDefault();
                 var element = Ext.dom.Element(e.target);
                 this.fireEvent('delivery_link_clicked', element.getAttribute('data-deliveryid'));
-                e.preventDefault();
             }
         });
         this.callParent(arguments);

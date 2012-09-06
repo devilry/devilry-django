@@ -71,8 +71,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
             delegate: 'a.active_feedback_link',
             scope: this,
             click: function(e) {
-                this.fireEvent('active_feedback_link_clicked');
                 e.preventDefault();
+                this.fireEvent('active_feedback_link_clicked');
             }
         });
 

@@ -233,7 +233,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         if(deliveryPanel) {
             var container = deliveryPanel.up('admingroupinfo_deadline');
             container.expand();
-            deliveryPanel.el.scrollIntoView(this.getScrollableBody().body, false, true);
+            deliveryPanel.getEl().scrollIntoView(this.getScrollableBody().body, false, true);
             Ext.create('Ext.fx.Animator', {
                 target: deliveryPanel.body,
                 duration: 3000,
