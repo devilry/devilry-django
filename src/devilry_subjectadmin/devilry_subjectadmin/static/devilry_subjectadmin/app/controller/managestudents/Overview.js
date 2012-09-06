@@ -252,13 +252,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      *********************************************/
 
     _setSelectionUrl: function(selectedGroupRecords) {
-        var ids = [];
-        Ext.Array.each(selectedGroupRecords, function(record) {
-            ids.push(record.get('id'));
-        }, this);
-        var hashpatt = '/assignment/{0}/@@manage-students/@@select/{1}';
-        var hash = Ext.String.format(hashpatt, this.assignmentRecord.get('id'), ids.join(','));
-        this.application.route.setHashWithoutEvent(hash);
+        var select_delivery_on_load = !Ext.isEmpty(this.getOverview().select_delivery_on_load);
+        // NOTE: We do not change hash if ``select_delivery_on_load``, since the hash should already be correct
+        if(!select_delivery_on_load) {
+            var group_ids = [];
+            Ext.Array.each(selectedGroupRecords, function(record) {
+                group_ids.push(record.get('id'));
+            }, this);
+            var assignment_id = this.assignmentRecord.get('id');
+            var hash = devilry_subjectadmin.utils.UrlLookup.manageSpecificGroups(assignment_id, group_ids);
+            this.application.route.setHashWithoutEvent(hash);
+        }
     },
 
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
