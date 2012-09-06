@@ -36,6 +36,15 @@ class RelatedUserResource(ModelResource):
         if isinstance(instance, self.model):
             return instance.period_id
 
+    def validate_request(self, data, files=None):
+        user = data.get('user')
+        if user:
+            if isinstance(user, dict) and 'id' in user:
+                data['user'] = user['id']
+        if 'id' in data:
+            del data['id']
+        return super(RelatedUserResource, self).validate_request(data, files)
+
 
 class ListRelatedUsersRestMixin(SelfdocumentingMixin):
     def get_period_id(self): # Overridden in ListRelatedUsersOnAssignmentMixin
@@ -135,8 +144,8 @@ class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
         # Response
         Status 204, with empty body on success.
         """
-        userid = self.get_instance().user_id
-        result = super(InstanceRelatedUserRestBaseView, self).delete(request, id)
+        userid = self.get_instance(id=id).user_id
+        result = super(InstanceRelatedUserRestBaseView, self).delete(request, id=id)
         logger.info('User=%s deleted %s with id=%s (user_id=%s)', self.user,
                     self.resource.model.__name__, id, userid)
         return result
