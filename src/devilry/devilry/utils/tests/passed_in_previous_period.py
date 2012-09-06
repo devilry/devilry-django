@@ -4,6 +4,7 @@ from devilry.apps.core.testhelper import TestHelper
 from ..passed_in_previous_period import MarkAsPassedInPreviousPeriod
 from ..passed_in_previous_period import OnlyFailingInPrevious
 from ..passed_in_previous_period import NotInPrevious
+from ..passed_in_previous_period import HasFeedback
 from ..passed_in_previous_period import PassingGradeOnlyInMultiCandidateGroups
 
 
@@ -124,6 +125,12 @@ class TestMarkAsPassedInPrevious(TestCase):
         with self.assertRaises(PassingGradeOnlyInMultiCandidateGroups):
             marker.mark_group(group)
 
+    def test_has_feedback(self):
+        assignment = self.testhelper.sub_p2_a1
+        marker = MarkAsPassedInPreviousPeriod(assignment)
+        group = self.testhelper.sub_p2_a1_stud2
+        with self.assertRaises(HasFeedback):
+            marker.find_previously_passed_group(group)
 
     def test_mark_all(self):
         self.testhelper.add(nodes="uni",

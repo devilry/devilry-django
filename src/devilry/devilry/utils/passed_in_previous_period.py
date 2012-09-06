@@ -1,5 +1,5 @@
 from devilry.apps.core.models import Candidate
-from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import deliverytypes
 
 
@@ -7,6 +7,8 @@ from devilry.apps.core.models import deliverytypes
 class NotInPrevious(Exception):
     pass
 class OnlyFailingInPrevious(Exception):
+    pass
+class HasFeedback(Exception):
     pass
 
 class PassingGradeOnlyInMultiCandidateGroups(Exception):
@@ -59,18 +61,20 @@ class MarkAsPassedInPreviousPeriod(object):
             - ``not_in_previous``
             - ``only_failing_grade_in_previous``
             - ``only_multicandidategroups_passed``: The group only matches old groups where there are more than one candidate with passing grade.
+            - ``has_feedback``: The group already has feedback.
         """
-        ignored_multiple_students_in_group = []
-        ignored_no_students_in_group = []
-        ignored_not_in_previous = []
-        ignored_only_failing_grade_in_previous = []
-        ignored_only_multicandidategroups_passed = []
+        ignored = {'multiple_students_groups': [],
+                   'no_students_in_group': [],
+                   'not_in_previous': [],
+                   'only_failing_grade_in_previous': [],
+                   'only_multicandidategroups_passed': [],
+                   'has_feedback': []}
         marked = []
 
         for group in self.assignment.assignmentgroups.all():
             candidates = group.candidates.all()
             if len(candidates) == 0:
-                ignored_no_students_in_group.append(group)
+                ignored['no_students_in_group'].append(group)
             elif len(candidates) == 1:
                 try:
                     if pretend:
@@ -78,22 +82,19 @@ class MarkAsPassedInPreviousPeriod(object):
                     else:
                         oldgroup = self.mark_group(group)
                 except OnlyFailingInPrevious:
-                    ignored_only_failing_grade_in_previous.append(group)
+                    ignored['only_failing_grade_in_previous'].append(group)
                 except NotInPrevious:
-                    ignored_not_in_previous.append(group)
+                    ignored['not_in_previous'].append(group)
                 except PassingGradeOnlyInMultiCandidateGroups:
-                    ignored_only_multicandidategroups_passed.append(group)
+                    ignored['only_multicandidategroups_passed'].append(group)
+                except HasFeedback:
+                    ignored['has_feedback'].append(group)
                 else:
                     marked.append((group, oldgroup))
             else:
-                ignored_multiple_students_in_group.append(group)
+                ignored['multiple_students_in_group'].append(group)
         return {'marked': marked,
-                'ignored': {'multiple_students_groups': ignored_multiple_students_in_group,
-                            'no_students_in_group': ignored_no_students_in_group,
-                            'not_in_previous': ignored_not_in_previous,
-                            'only_failing_grade_in_previous': ignored_only_failing_grade_in_previous,
-                            'only_multicandidategroups_passed': ignored_only_multicandidategroups_passed
-                           }}
+                'ignored': ignored}
 
     def mark_group(self, group):
         oldgroup = self.find_previously_passed_group(group)
@@ -109,6 +110,9 @@ class MarkAsPassedInPreviousPeriod(object):
         if len(candidates) != 1:
             raise NotExactlyOneCandidateInGroup(len(candidates))
         candidate = candidates[0]
+
+        if StaticFeedback.objects.filter(delivery__deadline__assignment_group=group).exists():
+            raise HasFeedback()
 
         candidates_from_previous = self._find_candidates_in_previous(candidate)
         if candidates_from_previous:
