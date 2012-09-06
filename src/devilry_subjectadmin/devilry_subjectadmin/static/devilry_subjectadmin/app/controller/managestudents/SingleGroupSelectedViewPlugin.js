@@ -79,6 +79,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             'viewport singlegroupview admingroupinfo_deadlinescontainer': {
                 render: this._onRenderDeadlinesContainer
             },
+            'viewport singlegroupview admingroupinfo_delivery #feedback': {
+                render: this._onFeedbackRender
+            },
 
             // Students
             'viewport singlegroupview managestudentsonsingle studentsingroupgrid': {
@@ -184,6 +187,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     _onDeliveryLink: function(delivery_id) {
         this._selectDelivery(delivery_id);
+    },
+    _onFeedbackRender: function(component) {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
     },
 
 
