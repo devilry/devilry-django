@@ -119,7 +119,8 @@ class MarkAsPassedInPreviousPeriod(object):
             passing_but_multigroup = []
             for candidate in candidates_from_previous:
                 oldgroup = candidate.assignment_group
-                if oldgroup.feedback and oldgroup.feedback.is_passing_grade:
+                if oldgroup.feedback and oldgroup.feedback.is_passing_grade \
+                        and not oldgroup.feedback.delivery.delivery_type == deliverytypes.ALIAS:
                     if oldgroup.candidates.count() != 1:
                         passing_but_multigroup.append(oldgroup)
                     else:
