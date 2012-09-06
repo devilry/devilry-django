@@ -167,13 +167,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      *
      *********************************************/
     _selectDelivery: function(delivery_id) {
-        this._hightlightSelectedDelivery(delivery_id);
         var group_id = this.groupRecord.get('id');
         var prefix = devilry_subjectadmin.utils.UrlLookup.manageGroupAndShowDeliveryPrefix(
             this.manageStudentsController.assignmentRecord.get('id'),
             group_id);
         var hash = Ext.String.format('{0}{1}', prefix, delivery_id);
         this.application.route.setHashWithoutEvent(hash);
+        window.location.reload(); // NOTE: Horrible hack to work around issues with autoscrolling in _hightlightSelectedDelivery
+        //this._hightlightSelectedDelivery(delivery_id);
     },
 
     _onActiveFeedbackLink: function() {
