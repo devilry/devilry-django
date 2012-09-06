@@ -91,11 +91,19 @@ class MarkAsPassedInPreviousPeriod(object):
                            }}
 
     def mark_group(self, group):
+        oldgroup = self.find_previously_passed_group(group)
+        self._mark_as_delivered_in_previous(group, oldgroup)
+
+    def find_previously_passed_group(self, group):
+        """
+        Find the newest delivery with passing feedback for this group with
+        assignment matching ``self.assignment``.
+        """
         candidates = group.candidates.all()
         if len(candidates) != 1:
             raise NotExactlyOneCandidateInGroup(len(candidates))
-
         candidate = candidates[0]
+
         candidates_from_previous = self._find_candidates_in_previous(candidate)
         if candidates_from_previous:
             passing_but_multigroup = []
@@ -105,8 +113,7 @@ class MarkAsPassedInPreviousPeriod(object):
                     if oldgroup.candidates.count() != 1:
                         passing_but_multigroup.append(oldgroup)
                     else:
-                        self._mark_as_delivered_in_previous(group, oldgroup)
-                        return group
+                        return oldgroup
             if passing_but_multigroup:
                 raise PassingGradeOnlyInMultiCandidateGroups(passing_but_multigroup)
             raise OnlyFailingInPrevious()
