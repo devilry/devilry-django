@@ -7,13 +7,16 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
     cls: 'devilry_subjectadmin_relatedstudents',
     requires: [
         'Ext.layout.container.Column',
-        'devilry_extjsextras.AlertMessageList'
+        'devilry_subjectadmin.view.relatedstudents.Grid',
+        'devilry_extjsextras.PrimaryButton',
+        'devilry_extjsextras.AlertMessageList',
+        'devilry_extjsextras.OkCancelPanel',
+        'devilry_subjectadmin.view.relatedstudents.SelectUserPanel'
     ],
 
     frame: false,
-    border: 0,
+    border: false,
     bodyPadding: 40,
-    autoScroll: true,
 
 
     /**
@@ -23,11 +26,68 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
 
     initComponent: function() {
         Ext.apply(this, {
+            layout: 'anchor',
             items: [{
-                xtype: 'alertmessagelist'
-            }, {
                 xtype: 'box',
-                html: 'hei'
+                cls: 'bootstrap',
+                anchor: '100%',
+                html: [
+                    '<h1>',
+                        interpolate(gettext('Manage related %(students_term)s'), {
+                            students_term: gettext('students')
+                        }, true),
+                    '</h1>',
+                    '<p><small>',
+                        interpolate(gettext('Manage the %(students_term)s available on this %(period_term)s.'), {
+                            students_term: gettext('students'),
+                            period_term: gettext('period')
+                        }, true),
+                    '</small></p>'
+                ].join('')
+            }, {
+                xtype: 'panel',
+                border: false,
+                layout: 'border',
+                anchor: '100% -60',
+                items: [{
+                    xtype: 'relatedstudentsgrid',
+                    region: 'center',
+                    fbar: [{
+                        xtype: 'button',
+                        ui: 'danger',
+                        scale: 'large',
+                        itemId: 'removeButton',
+                        text: gettext('Remove selected')
+                    }, {
+                        xtype: 'primarybutton',
+                        itemId: 'addButton',
+                        text: gettext('Add student')
+                    }]
+                }, {
+                    xtype: 'container',
+                    layout: 'anchor',
+                    width: 400,
+                    region: 'east',
+                    padding: '0 0 0 30',
+                    items: [{
+                        xtype: 'alertmessagelist',
+                        itemId: 'globalAlertmessagelist',
+                        anchor: '100%'
+                    }, {
+                        xtype: 'panel',
+                        border: false,
+                        layout: 'card',
+                        itemId: 'sidebarDeck',
+                        items: [{
+                            xtype: 'box',
+                            itemId: 'helpBox',
+                            html: 'Help - TODO'
+                        }, {
+                            xtype: 'selectrelateduserpanel',
+                            itemId: 'selectRelatedUserPanel'
+                        }]
+                    }]
+                }]
             }]
         });
         this.callParent(arguments);

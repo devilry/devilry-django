@@ -91,5 +91,17 @@ Ext.define('devilry_subjectadmin.store.AbstractRelatedUsers', {
             }, this);
         }, this);
         return map;
+    },
+
+
+    getByUserid: function(userId) {
+        var index = this.findBy(function(record) {
+            return record.get('user').id === userId;
+        }, this);
+        if(index === -1) {
+            return null;
+        } else {
+            return this.getAt(index);
+        }
     }
 });
