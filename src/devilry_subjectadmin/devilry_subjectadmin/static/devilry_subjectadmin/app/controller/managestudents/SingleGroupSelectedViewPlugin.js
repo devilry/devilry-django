@@ -12,7 +12,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     requires: [
         'devilry_extjsextras.AlertMessage',
-        'devilry_subjectadmin.view.managestudents.DeadlinesContainer'
+        'devilry_subjectadmin.view.managestudents.DeadlinesContainer',
+        'Ext.fx.Animator',
+        'devilry_subjectadmin.utils.UrlLookup'
     ],
 
     models: [
@@ -29,6 +31,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     ],
 
     refs: [{
+        ref: 'scrollableBody',
+        selector: 'viewport singlegroupview'
+    }, {
         ref: 'deadlinesContainer',
         selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
     }, {
@@ -62,6 +67,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.control({
             'viewport singlegroupview': {
                 render: this._onRender
+            },
+
+            'viewport singlegroupview singlegroupmetainfo': {
+                active_feedback_link_clicked: this._onActiveFeedbackLink
+            },
+            'viewport singlegroupview deliverieslist': {
+                delivery_link_clicked: this._onDeliveryLink
             },
 
             'viewport singlegroupview admingroupinfo_deadlinescontainer': {
@@ -149,6 +161,32 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
 
+    /*********************************************
+     *
+     * Metadata views
+     *
+     *********************************************/
+    _selectDelivery: function(delivery_id) {
+        this._hightlightSelectedDelivery(delivery_id);
+        var group_id = this.groupRecord.get('id');
+        var prefix = devilry_subjectadmin.utils.UrlLookup.manageGroupAndShowDeliveryPrefix(
+            this.manageStudentsController.assignmentRecord.get('id'),
+            group_id);
+        var hash = Ext.String.format('{0}{1}', prefix, delivery_id);
+        this.application.route.setHashWithoutEvent(hash);
+    },
+
+    _onActiveFeedbackLink: function() {
+        var delivery_id = this.groupRecord.get('feedback').delivery_id;
+        this._selectDelivery(delivery_id);
+    },
+
+    _onDeliveryLink: function(delivery_id) {
+        this._selectDelivery(delivery_id);
+    },
+
+
+
 
     /********************************************************
      *
@@ -178,9 +216,45 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this.manageStudentsController.assignmentRecord.get('id'),
             this.groupRecord.get('id'),
             aggregatedGroupInfoRecord.get('deadlines'));
+
+        var delivery_id = this.manageStudentsController.getOverview().select_delivery_on_load;
+        this.manageStudentsController.getOverview().select_delivery_on_load = undefined; //NOTE: We only want to get it on the first load.
+        if(!Ext.isEmpty(delivery_id)) {
+            this._hightlightSelectedDelivery(delivery_id);
+        }
     },
     _onAggregatedGroupInfoLoadFailure: function(operation) {
         console.log('AggregatedGroupInfo load error', operation); // TODO: Handle load errors
+    },
+
+    _hightlightSelectedDelivery: function(delivery_id) {
+        var itemid = Ext.String.format('#delivery-{0}', delivery_id);
+        var deliveryPanel = this.getDeadlinesContainer().down(itemid);
+        if(deliveryPanel) {
+            var container = deliveryPanel.up('admingroupinfo_deadline');
+            container.expand();
+            deliveryPanel.el.scrollIntoView(this.getScrollableBody().body, false, true);
+            Ext.create('Ext.fx.Animator', {
+                target: deliveryPanel.body,
+                duration: 3000,
+                keyframes: {
+                    0: {
+                        backgroundColor: '#FFFFFF'
+                    },
+                    20: {
+                        backgroundColor: '#FBEED5'
+                    },
+                    50: {
+                        backgroundColor: '#FBEED5'
+                    },
+                    100: {
+                        backgroundColor: '#FFFFFF'
+                    }
+                }
+            });
+        } else {
+            alert(Ext.String.format('Invalid delivery: {0}'), delivery_id);
+        }
     },
 
 

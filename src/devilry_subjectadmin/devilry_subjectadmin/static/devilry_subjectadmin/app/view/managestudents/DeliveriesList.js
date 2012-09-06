@@ -39,6 +39,20 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveriesList', {
         deliveries: undefined
     },
 
+    initComponent: function() {
+        this.addListener({
+            element: 'el',
+            delegate: 'a.delivery_link',
+            scope: this,
+            click: function(e) {
+                var element = Ext.dom.Element(e.target);
+                this.fireEvent('delivery_link_clicked', element.getAttribute('data-deliveryid'));
+                e.preventDefault();
+            }
+        });
+        this.callParent(arguments);
+    },
+
     _deliveriesAsFlatArray: function(deadlines) {
         var deliveries = [];
         Ext.Array.each(deadlines, function(deadline) {

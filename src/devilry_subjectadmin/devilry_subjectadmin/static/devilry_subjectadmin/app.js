@@ -179,6 +179,7 @@ Ext.application({
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
+        this.route.add("/assignment/:assignment_id/@@manage-students/@@select-delivery/:group_id/:delivery_id", 'manageGroupsSelectDelivery');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select/:group_ids", 'manageGroupsSelectGroups');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroupsAddStudents');
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/", 'bulkManageDeadlines');
@@ -273,6 +274,14 @@ Ext.application({
             xtype: 'managestudentsoverview',
             assignment_id: assignment_id,
             select_groupids_on_load: group_ids
+        });
+    },
+    manageGroupsSelectDelivery: function(routeInfo, assignment_id, group_id, delivery_id) {
+        this.setPrimaryContent({
+            xtype: 'managestudentsoverview',
+            assignment_id: assignment_id,
+            select_groupids_on_load: group_id,
+            select_delivery_on_load: delivery_id
         });
     },
     manageGroupsAddStudents: function(routeInfo, assignment_id) {

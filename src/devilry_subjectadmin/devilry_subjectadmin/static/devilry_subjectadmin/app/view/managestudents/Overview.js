@@ -20,6 +20,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
      */
 
     /**
+     * @cfg {String} [select_delivery_on_load] (optional)
+     * A string containing the ID of a delivery to select on load.
+     * Only used when ``select_groupids_on_load`` contains exactly one ID.
+     */
+
+    /**
      * @cfg {Boolean} [add_students_on_load=false] (optional)
      * Should we show the add-students window on load?
      */

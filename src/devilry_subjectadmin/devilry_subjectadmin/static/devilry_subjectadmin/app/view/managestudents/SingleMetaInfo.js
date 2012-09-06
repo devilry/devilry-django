@@ -66,6 +66,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
 
 
     initComponent: function() {
+        this.addListener({
+            element: 'el',
+            delegate: 'a.active_feedback_link',
+            scope: this,
+            click: function(e) {
+                this.fireEvent('active_feedback_link_clicked');
+                e.preventDefault();
+            }
+        });
+
         this.data = {
             hasFeedback: this.groupRecord.get('feedback') != null,
             group: this.groupRecord.data,
