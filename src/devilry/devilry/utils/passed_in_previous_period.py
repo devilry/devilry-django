@@ -40,7 +40,7 @@ class MarkAsPassedInPreviousPeriod(object):
             self._previous_periods = self._get_previous_periods()
         return self._previous_periods
 
-    def mark_all(self):
+    def mark_all(self, pretend=False):
         """
         Mark all groups in assignment. Ignores:
 
@@ -51,7 +51,8 @@ class MarkAsPassedInPreviousPeriod(object):
 
         Collects the results in a dict with the following keys:
 
-        - ``marked``: List of marked groups.
+        - ``marked``: List of marked group pairs (group, oldgroup), where
+          ``group`` is the group from the current assignment.
         - ``ignored``: Ignored groups organized by the reason for the ignore (dict):
             - ``multiple_students_groups``
             - ``no_students_in_group``
@@ -65,13 +66,17 @@ class MarkAsPassedInPreviousPeriod(object):
         ignored_only_failing_grade_in_previous = []
         ignored_only_multicandidategroups_passed = []
         marked = []
+
         for group in self.assignment.assignmentgroups.all():
             candidates = group.candidates.all()
             if len(candidates) == 0:
                 ignored_no_students_in_group.append(group)
             elif len(candidates) == 1:
                 try:
-                    self.mark_group(group)
+                    if pretend:
+                        oldgroup = self.find_previously_passed_group(group)
+                    else:
+                        oldgroup = self.mark_group(group)
                 except OnlyFailingInPrevious:
                     ignored_only_failing_grade_in_previous.append(group)
                 except NotInPrevious:
@@ -79,7 +84,7 @@ class MarkAsPassedInPreviousPeriod(object):
                 except PassingGradeOnlyInMultiCandidateGroups:
                     ignored_only_multicandidategroups_passed.append(group)
                 else:
-                    marked.append(group)
+                    marked.append((group, oldgroup))
             else:
                 ignored_multiple_students_in_group.append(group)
         return {'marked': marked,
@@ -93,6 +98,7 @@ class MarkAsPassedInPreviousPeriod(object):
     def mark_group(self, group):
         oldgroup = self.find_previously_passed_group(group)
         self._mark_as_delivered_in_previous(group, oldgroup)
+        return oldgroup
 
     def find_previously_passed_group(self, group):
         """

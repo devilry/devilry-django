@@ -142,11 +142,44 @@ class TestMarkAsPassedInPrevious(TestCase):
         marker = MarkAsPassedInPreviousPeriod(assignment)
         results = marker.mark_all()
         self.assertEquals(set(results['marked']),
-                          set([self.testhelper.sub_p3_a1_g1,
-                               self.testhelper.sub_p3_a1_g2,
-                               self.testhelper.sub_p3_a1_g5]))
+                          set([(self.testhelper.sub_p3_a1_g1, self.testhelper.sub_p1_a1_stud1),
+                               (self.testhelper.sub_p3_a1_g2, self.testhelper.sub_p2_a1_stud2),
+                               (self.testhelper.sub_p3_a1_g5, self.testhelper.sub_p2_a1_stud5)]))
         self.assertEquals(set(results['ignored']['not_in_previous']),
                           set([self.testhelper.sub_p3_a1_g6]))
         self.assertEquals(set(results['ignored']['only_multicandidategroups_passed']),
                           set([self.testhelper.sub_p3_a1_g3,
                                self.testhelper.sub_p3_a1_g4]))
+        g2 = self.testhelper.sub_p3_a1_g2
+        delivery = g2.deadlines.all()[0].deliveries.all()[0]
+        self.assertEquals(delivery.alias_delivery,
+                          self.testhelper.sub_p2_a1_stud2_d1.deliveries.all()[0])
+
+
+    def test_mark_all_pretend(self):
+        self.testhelper.add(nodes="uni",
+                            subjects=["sub"],
+                            periods=["p3:begins(-2):ends(6)"],
+                            assignments=["a1"],
+                            assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
+                                              "g2:candidate(student2):examiner(examiner1)",
+                                              "g3:candidate(student3):examiner(examiner1)",
+                                              "g4:candidate(student4):examiner(examiner1)",
+                                              "g5:candidate(student5):examiner(examiner1)",
+                                              "g6:candidate(student6):examiner(examiner1)" # student6 is not in any of the previous semesters, and should not be touched
+                                             ],
+                            deadlines=['d1:ends(1)'])
+        assignment = self.testhelper.sub_p3_a1
+        marker = MarkAsPassedInPreviousPeriod(assignment)
+        results = marker.mark_all(pretend=True)
+        self.assertEquals(set(results['marked']),
+                          set([(self.testhelper.sub_p3_a1_g1, self.testhelper.sub_p1_a1_stud1),
+                               (self.testhelper.sub_p3_a1_g2, self.testhelper.sub_p2_a1_stud2),
+                               (self.testhelper.sub_p3_a1_g5, self.testhelper.sub_p2_a1_stud5)]))
+        self.assertEquals(set(results['ignored']['not_in_previous']),
+                          set([self.testhelper.sub_p3_a1_g6]))
+        self.assertEquals(set(results['ignored']['only_multicandidategroups_passed']),
+                          set([self.testhelper.sub_p3_a1_g3,
+                               self.testhelper.sub_p3_a1_g4]))
+        g2 = self.testhelper.sub_p3_a1_g2
+        self.assertEquals(g2.deadlines.all()[0].deliveries.count(), 0)
