@@ -2,19 +2,14 @@
 {% load i18n %}
 {% load static %}
 
-{% comment %}
 {% block css %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css"
-    href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
+{% include "devilry_theme/cssimports.django.html" %}
+{% include "devilry_header/cssimports.django.html" %}
 {% endblock %}
-{% endcomment %}
 
 {% block app %}
 
 <script type="text/javascript" src="{% url devilry-settings %}"></script>
-{% include "devilry_header/cssimports.django.html" %}
-
 <script type="text/javascript" src="{% url devilry_frontpage_i18n %}"></script>
 
 {{ block.super }}
