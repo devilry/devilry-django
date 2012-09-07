@@ -30,7 +30,9 @@ class RelatedUserResource(ModelResource):
             return {'email': user.email,
                     'username': user.username,
                     'id': user.id,
-                    'full_name': user.devilryuserprofile.full_name}
+                    'full_name': user.devilryuserprofile.full_name,
+                    'displayname': user.devilryuserprofile.full_name or user.username
+                   }
 
     def period(self, instance):
         if isinstance(instance, self.model):

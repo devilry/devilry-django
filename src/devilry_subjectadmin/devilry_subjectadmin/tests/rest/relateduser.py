@@ -124,8 +124,8 @@ class TestListOrCreateRelatedUserMixin(object):
         self.assertEquals(self.modelcls.objects.all().count(), 0)
         content, response = self._createas(username, self.get_valid_createdata())
         self.assertEquals(response.status_code, 201)
-        self.assertEquals(content['user'].keys(),
-                          [u'username', u'email', u'full_name', u'id'])
+        self.assertEquals(set(content['user'].keys()),
+                          set(['username', 'email', 'full_name', 'id', 'displayname']))
         self.assertEquals(content['user']['username'], 'testuser')
         self.assertEquals(content['user']['id'], self.testhelper.testuser.id)
         self.assertEquals(content['tags'], 'tag1,tag2')
@@ -243,7 +243,8 @@ class TestInstanceRelatedUserMixin(object):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['period'], self.testhelper.sub_p1.id)
         self.assertEquals(content['tags'], 'group10,group20')
-        self.assertEquals(set(content['user'].keys()), set(['email', 'full_name', 'id', 'username']))
+        self.assertEquals(set(content['user'].keys()),
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
         self.assertEquals(content['user']['id'], self.testreluser.user.id)
         self.assertEquals(content['user']['username'], 'testuser')
         return content
@@ -297,6 +298,7 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
                            u'user': {u'username': u'testuser',
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
+                                     u'displayname': 'testuser',
                                      u'id': 4}})
 
     def test_put(self):
@@ -327,6 +329,7 @@ class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
                            u'user': {u'username': u'testuser',
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
+                                     u'displayname': 'testuser',
                                      u'id': 4}})
 
     def test_put(self):
