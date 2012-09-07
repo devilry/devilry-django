@@ -30,7 +30,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         selector: 'viewport relatedstudents'
     }, {
         ref: 'grid',
-        selector: 'viewport relatedstudentsgrid'
+        selector: 'viewport relatedstudents relatedstudentsgrid'
+    }, {
+        ref: 'removeButton',
+        selector: 'viewport relatedstudents #removeButton'
     }, {
         ref: 'sidebarDeck',
         selector: 'viewport relatedstudents #sidebarDeck'
@@ -43,6 +46,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         this.control({
             'viewport relatedstudents': {
                 render: this._onRender
+            },
+
+            'viewport relatedstudents relatedstudentsgrid': {
+                selectionchange: this._onGridSelectionChange
             },
 
             // Remove students
@@ -151,6 +158,19 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             message: message,
             autoclose: true
         });
+    },
+
+    //
+    //
+    // Grid
+    //
+    //
+    _onGridSelectionChange: function(grid, selected) {
+        if(selected.length === 0) {
+            this.getRemoveButton().disable();
+        } else {
+            this.getRemoveButton().enable();
+        }
     },
 
     //

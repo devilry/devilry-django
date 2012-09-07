@@ -23,7 +23,7 @@ class RelatedUsersUITestMixin(object):
                 return row
         raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
 
-    def select_row_by_username(self, username):
+    def click_row_by_username(self, username):
         self.get_row_by_username(username).click()
 
     def get_row_data(self, row):
@@ -55,13 +55,13 @@ class RelatedUsersUITestMixin(object):
         self.waitForText('{0} added'.format(displayname))
 
     def click_remove_button(self):
-        removebutton = self.waitForAndFindElementByCssSelector('.remove_related_user_button')
+        removebutton = self.waitForAndFindElementByCssSelector('.remove_related_user_button button')
         removebutton.click()
 
     def ui_remove_related_users(self, *usernames):
         displaynames = []
         for username in usernames:
-            self.select_row_by_username(username)
+            self.click_row_by_username(username)
             user = getattr(self.testhelper, username)
             displayname = user.devilryuserprofile.full_name or user.username
             displaynames = []
@@ -167,3 +167,13 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.assertFalse(self.period.relatedstudent_set.filter(user__username='student2').exists())
         self.assertFalse(self.period.relatedstudent_set.filter(user__username='student3').exists())
         self.assertTrue(self.period.relatedstudent_set.filter(user__username='ignored').exists())
+
+    def test_remove_enable_disable(self):
+        self._add_relatedstudent('student1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        removebutton = self.waitForAndFindElementByCssSelector('.remove_related_user_button button')
+        self.assertFalse(removebutton.is_enabled())
+        self.click_row_by_username('student1')
+        self.waitForEnabled(removebutton)
+        self.click_row_by_username('student1')
+        self.waitForDisabled(removebutton)

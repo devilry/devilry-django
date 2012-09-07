@@ -57,6 +57,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                         scale: 'large',
                         itemId: 'removeButton',
                         cls: 'remove_related_user_button remove_related_student_button',
+                        disabled: true,
                         text: gettext('Remove selected')
                     }, {
                         xtype: 'primarybutton',

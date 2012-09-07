@@ -1,7 +1,7 @@
 Ext.define('devilry_extjsextras.OkCancelPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.okcancelpanel',
-    cls: 'devilry_extjsextras_okcancelpanel',
+    cls: 'devilry_extjsextras_okcancelpanel bootstrap',
 
     /**
      * @cfg {String} [oktext]
