@@ -66,9 +66,9 @@ class RelatedUsersUITestMixin(object):
             displayname = user.devilryuserprofile.full_name or user.username
             displaynames = []
         self.click_remove_button()
-        #removeconfirmbutton = self.find_element('.devilry_subjectadmin_removeconfirmpanel .okbutton')
-        #self.waitForDisplayed(removeconfirmbutton)
-        #removeconfirmbutton.click()
+        removeconfirmbutton = self.find_element('.removeconfirmpanel .okbutton button')
+        self.waitForDisplayed(removeconfirmbutton)
+        removeconfirmbutton.click()
         self.waitForText('Removed: {0}'.format(', '.join(displaynames)))
 
 

@@ -49,6 +49,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             'viewport relatedstudents #removeButton': {
                 click: this._onRemoveSelected
             },
+            'viewport relatedstudents okcancelpanel#confirmRemovePanel': {
+                cancel: this._resetToHelpView,
+                ok: this._removeSelected
+            },
 
             // Add student
             'viewport relatedstudents #addButton': {
@@ -155,6 +159,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     //
     _onRemoveSelected: function() {
+        this.getSidebarDeck().getLayout().setActiveItem('confirmRemovePanel');
+    },
+
+    _removeSelected: function() {
+        this._resetToHelpView();
         var selModel = this.getGrid().getSelectionModel();
         var selectedRelatedUserRecords = selModel.getSelection();
 

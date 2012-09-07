@@ -83,6 +83,21 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                         }, {
                             xtype: 'selectrelateduserpanel',
                             itemId: 'selectRelatedUserPanel'
+                        }, {
+                            xtype: 'okcancelpanel',
+                            itemId: 'confirmRemovePanel',
+                            cls: 'removeconfirmpanel',
+                            oktext: gettext('Remove selected'),
+                            okbutton_ui: 'danger',
+                            bodyPadding: 10,
+                            html: [
+                                '<p>',
+                                    gettext('Do you really want to remove all the selected related students?'),
+                                    interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
+                                        period_term: gettext('period')
+                                    }, true),
+                                '</p>'
+                            ].join('')
                         }]
                     }]
                 }]
