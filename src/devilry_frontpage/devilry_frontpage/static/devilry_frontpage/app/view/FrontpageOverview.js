@@ -43,7 +43,7 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
                     '<h2 style="margin-top: 0; padding-top: 0;">',
                         gettext('Choose your role'),
                     '</h2>',
-                    '<p><small>',
+                    '<p><small class="muted">',
                         gettext('Devilry handles all aspects of the electronic delivery process, including feedback and grading. Each distinct area of responsibilty, or role, has its own user interface. Choose a role from the menu on your right hand side.'),
                     '</small></p>'
                 ],
