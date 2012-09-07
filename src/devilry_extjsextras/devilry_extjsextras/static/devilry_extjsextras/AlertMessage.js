@@ -7,7 +7,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     alias: 'widget.alertmessage',
     
     tpl: [
-        '<div class="alert alert-{type}">',
+        '<div class="alert alert-{type}" style="{style}">',
             '<tpl if="closable">',
                 '<button type="button" class="close" data-dismiss="alert">×</button>',
             '</tpl>',
@@ -17,6 +17,12 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             '{message}',
         '</div>'
     ],
+
+    /**
+     * @cfg {String} [boxMargin]
+     * Override the margin style of the alert DIV.
+     */
+    boxMargin: undefined,
 
     /**
      * @cfg
@@ -76,10 +82,15 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             this.type = type;
         }
         this.message = message;
+        var style = '';
+        if(!Ext.isEmpty(this.boxMargin)) {
+            style = Ext.String.format('margin: {0};', this.boxMargin);
+        }
         this.callParent([{
             type: this.type,
             message: this.message,
             title: this.title,
+            style: style,
             closable: this.closable
         }]);
     }

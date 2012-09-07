@@ -9,28 +9,34 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     requires: [
         'devilry_extjsextras.AlertMessage'
     ],
-    ui: 'transparentpanel',
     alias: 'widget.alertmessagelist',
     cls: 'devilry_extjsextras_alertmessagelist',
     hidden: true,
+    frame: false,
+    border: false,
+
+    messageDefaults: {},
 
     initComponent: function() {
         this.on('remove', this._onRemove, this);
         this.callParent(arguments);
         this.addListener({
             scope: this,
-            closed: this._onClose
+            closed: this.onClose
         });
     },
 
-    _onClose: function(alertmessage) {
+    onClose: function(alertmessage) {
         this.remove(alertmessage, true);
     },
 
     /** Create and add a ``devilry_extjsextras.AlertMessage``. The config parameter is
      * forwarded to the AlertMessage constructor. */
     add: function(config) {
-        var message = Ext.widget('alertmessage', config);
+        var messageConfig = {};
+        Ext.apply(messageConfig, this.messageDefaults);
+        Ext.apply(messageConfig, config);
+        var message = Ext.widget('alertmessage', messageConfig);
         this.callParent([message]);
         message.enableBubble('closed');
         this.show();
@@ -48,12 +54,11 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
      * @param messages Array of messages (strings).
      * @param type The type of the message (see ``devilry_extjsextras.AlertMessage.type``).
      * */
-    addMany: function(messages, type, closable) {
+    addMany: function(messages, type) {
         Ext.Array.each(messages, function(message) {
             this.add({
                 message: message,
-                type: type,
-                closable: closable
+                type: type
             });
         }, this);
     }
