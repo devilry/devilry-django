@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
 
     refs: [{
         ref: 'globalAlertmessagelist',
-        selector: 'viewport relatedstudents alertmessagelist#globalAlertmessagelist'
+        selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
     }, {
         ref: 'overview',
         selector: 'viewport relatedstudents'
@@ -94,14 +94,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         if(operation.success) {
             this._onLoadRelatedStudentsSuccess(records);
         } else {
-            this._onLoadRelatedStudentsFailure(operation);
+            // NOTE: Errors is handled by _onRelatedStoreProxyError
         }
     },
     _onLoadRelatedStudentsSuccess: function(records) {
-        console.log(records);
-    },
-    _onLoadRelatedStudentsFailure: function(operation) {
-        this.onLoadFailure(operation);
+        //console.log(records);
     },
 
     //
@@ -140,7 +137,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     //
     _onRelatedStoreProxyError: function(proxy, response, operation) {
-        this.handleProxyUsingHtmlErrorDialog(response, operation);
+        this.handleProxyErrorNoForm(this.getGlobalAlertmessagelist(), response, operation);
     },
 
     _onSyncSuccess: function() {

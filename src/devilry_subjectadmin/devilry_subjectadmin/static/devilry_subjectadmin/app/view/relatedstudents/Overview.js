@@ -9,7 +9,6 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
         'Ext.layout.container.Column',
         'devilry_subjectadmin.view.relatedstudents.Grid',
         'devilry_extjsextras.PrimaryButton',
-        'devilry_extjsextras.AlertMessageList',
         'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.relatedstudents.SelectUserPanel'
     ],
@@ -72,10 +71,6 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                     region: 'east',
                     padding: '0 0 0 30',
                     items: [{
-                        xtype: 'alertmessagelist',
-                        itemId: 'globalAlertmessagelist',
-                        anchor: '100%'
-                    }, {
                         xtype: 'panel',
                         border: false,
                         layout: 'card',
