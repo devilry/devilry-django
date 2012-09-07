@@ -5,6 +5,10 @@ an action. Particularly useful for forms.
 Ext.define('devilry_extjsextras.AlertMessage', {
     extend: 'Ext.Component',
     alias: 'widget.alertmessage',
+
+    requires: [
+        'Ext.fx.Animator'
+    ],
     
     tpl: [
         '<div class="alert alert-{type}" style="{style}">',
@@ -50,6 +54,8 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     /**
      * @cfg {int} [autoclose]
      * Fire the ``close`` event ``autoclose`` seconds after creating the message.
+     * If ``true``, we calculate the autoclose time automatically based on the
+     * number of words.
      */
 
     /**
@@ -78,10 +84,45 @@ Ext.define('devilry_extjsextras.AlertMessage', {
         });
 
         if(!Ext.isEmpty(this.autoclose)) {
+            if(this.autoclose === true) {
+                this.autoclose = this._calculateAutocloseTime();
+            }
             Ext.defer(function() {
-                this.fireEvent('closed', this);
+                this.fadeOutAndClose();
             }, 1000*this.autoclose, this);
         }
+    },
+
+    _calculateAutocloseTime: function() {
+        var alltext = this.message;
+        if(!Ext.isEmpty(this.title)) {
+            alltext += this.title;
+        }
+        var words = Ext.String.splitWords(alltext);
+        var sec = words.length * 1; // One second per work
+        sec = sec > 7? sec: 7; // ... but never less than 5 sec
+        return 2 + sec; // 2 seconds to focus on the message + time to read it
+    },
+
+    fadeOutAndClose: function() {
+        Ext.create('Ext.fx.Animator', {
+            target: this.getEl(),
+            duration: 3000,
+            keyframes: {
+                0: {
+                    opacity: 1,
+                },
+                100: {
+                    opacity: 0,
+                }
+            },
+            listeners: {
+                scope: this,
+                afteranimate: function() {
+                    this.fireEvent('closed', this);
+                }
+            }
+        });
     },
 
 
