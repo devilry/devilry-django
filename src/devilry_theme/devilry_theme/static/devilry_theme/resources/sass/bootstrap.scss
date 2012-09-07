@@ -2,8 +2,15 @@
 @import "bootstrap/variables";
 .bootstrap {
     @import "bootstrap/scaffolding";
+    @import "bootstrap/type";
+    @import "bootstrap/code";
     @import "bootstrap/alerts";
     @import "bootstrap/buttons";
-    @import "bootstrap/type";
     @import "bootstrap/labels-badges";
+
+    // These are overriden by ExtJS since we do not use the .bootstrap body class.
+    p {
+        font-size: $baseFontSize;
+        line-height: $baseLineHeight;
+    }
 }

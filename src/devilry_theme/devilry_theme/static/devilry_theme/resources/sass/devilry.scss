@@ -14,15 +14,6 @@ $font-family: $baseFontFamily;
 $font-size: $baseFontSize;
 @import "extjs";
 
-// Bootstrap styles
-//@import "mixins";
-
-//@import "alerts";
-//@import "buttons";
-//@import "scaffolding";
-//@import "type";
-//@import "labels";
-
 // Devilry overrides and UIs
 @import "button-uis";
 @import "doesnotexist";
