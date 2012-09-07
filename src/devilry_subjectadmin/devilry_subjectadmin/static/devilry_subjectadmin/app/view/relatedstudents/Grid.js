@@ -46,14 +46,14 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
             selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
             columns: [{
                 dataIndex: 'id',
-                flex: 3,
+                flex: 5,
                 header: gettext('Student'),
                 menuDisabled: true,
                 renderer: this.renderCol1,
                 sortable: false
             }, {
                 dataIndex: 'tags',
-                flex: 7,
+                flex: 5,
                 header: gettext('Tags'),
                 menuDisabled: true,
                 sortable: false,

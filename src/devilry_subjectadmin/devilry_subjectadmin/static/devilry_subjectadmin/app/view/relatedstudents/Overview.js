@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             students_term: gettext('students')
                         }, true),
                     '</h1>',
-                    '<p><small>',
+                    '<p><small class="muted">',
                         interpolate(gettext('Manage the %(students_term)s available on this %(period_term)s.'), {
                             students_term: gettext('students'),
                             period_term: gettext('period')
@@ -47,7 +47,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 xtype: 'panel',
                 border: false,
                 layout: 'border',
-                anchor: '100% -60',
+                anchor: '100% -80',
                 items: [{
                     xtype: 'relatedstudentsgrid',
                     region: 'center',

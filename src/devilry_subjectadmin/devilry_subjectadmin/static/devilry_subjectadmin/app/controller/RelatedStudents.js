@@ -140,8 +140,13 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         this.handleProxyErrorNoForm(this.getGlobalAlertmessagelist(), response, operation);
     },
 
-    _onSyncSuccess: function() {
+    _onSyncSuccess: function(message) {
         this.getGrid().setLoading(false);
+        this.getGlobalAlertmessagelist().add({
+            type: 'success',
+            message: message,
+            autoclose: true
+        });
     },
 
     //
@@ -151,13 +156,23 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     _onRemoveSelected: function() {
         var selModel = this.getGrid().getSelectionModel();
-        var selected = selModel.getSelection();
+        var selectedRelatedUserRecords = selModel.getSelection();
+
+        var names = [];
+        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
+            var displayname = relatedUserRecord.getDisplayName();
+            names.push(displayname);
+        }, this);
+
         var store = this.getRelatedStudentsStore();
-        store.remove(selected);
+        store.remove(selectedRelatedUserRecords);
         this.getGrid().setLoading(gettext('Saving') + ' ...');
         store.sync({
             scope: this,
-            success: this._onSyncSuccess
+            success: function() {
+                var msg = gettext('The following users was removed: {0}');
+                this._onSyncSuccess(Ext.String.format(msg, names.join(', ')));
+            }
         });
     },
 
@@ -190,13 +205,18 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
                 }
             });
         } else {
-            Ext.MessageBox.alert(gettext('Error'),
-                gettext('User is already registered as related.'));
+            this.getGlobalAlertmessagelist().add({
+                type: 'warning',
+                message: Ext.String.format(gettext('{0} is already in the table.'),
+                    matchingRelatedUser.getDisplayName()),
+                autoclose: true
+            });
         }
     },
 
-    _onAddUserSuccess: function(record) {
-        this._onSyncSuccess();
-        this.getGrid().getSelectionModel().select([record]);
+    _onAddUserSuccess: function(relatedStudentRecord) {
+        this._onSyncSuccess(Ext.String.format(gettext('{0} added.'),
+            relatedStudentRecord.getDisplayName()));
+        this.getGrid().getSelectionModel().select([relatedStudentRecord]);
     }
 });

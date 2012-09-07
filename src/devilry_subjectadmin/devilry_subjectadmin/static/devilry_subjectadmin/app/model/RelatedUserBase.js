@@ -4,5 +4,9 @@ Ext.define('devilry_subjectadmin.model.RelatedUserBase', {
     getTagsAsArray: function() {
         var tags = this.get('tags') || '';
         return tags.split(',');
+    },
+
+    getDisplayName: function() {
+        return this.get('user').displayname;
     }
 });
