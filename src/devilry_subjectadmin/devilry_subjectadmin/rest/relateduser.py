@@ -134,7 +134,7 @@ class InstanceRelatedUserRestBaseView(SelfdocumentingMixin, InstanceModelView):
         # Returns
         {responsetable}
         """
-        result = super(InstanceRelatedUserRestBaseView, self).put(request, id)
+        result = super(InstanceRelatedUserRestBaseView, self).put(request, id=id)
         logger.info('User=%s updated %s with id=%s (user_id=%s, tags=%s)', self.user,
                     self.resource.model.__name__, id, result.user_id, result.tags)
         return result
