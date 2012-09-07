@@ -1,0 +1,9 @@
+@import "bootstrap/mixins";
+@import "bootstrap/variables";
+.bootstrap {
+    @import "bootstrap/scaffolding";
+    @import "bootstrap/alerts";
+    @import "bootstrap/buttons";
+    @import "bootstrap/type";
+    @import "bootstrap/labels-badges";
+}

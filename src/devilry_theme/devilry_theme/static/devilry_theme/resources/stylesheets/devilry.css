@@ -285,8 +285,8 @@ input, textarea, select {
 
 /* line 1, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/core/_core.scss */
 .x-body {
-  color: #404040;
-  font-size: 13px;
+  color: #333333;
+  font-size: 14px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -777,7 +777,7 @@ tr.x-container:before {
   border: 1px solid #d5d5d5;
   background-color: #eeeeee;
   color: #222222;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /**
@@ -825,7 +825,7 @@ tr.x-container:before {
   padding-left: 20px;
   white-space: nowrap;
   color: #000;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid;
   border-color: #ddd #bbb #bbb #ddd;
   background-color: #fff;
@@ -2586,7 +2586,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -2974,7 +2974,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-medium .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -3359,7 +3359,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -3733,7 +3733,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-small .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -4088,7 +4088,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-medium .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -4443,7 +4443,7 @@ tr.x-container:before {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -4860,7 +4860,7 @@ tr.x-container:before {
 
 /* line 80, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-header-text-default-framed {
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #666666;
 }
 
@@ -5042,7 +5042,7 @@ table.x-datepicker-inner a {
   padding-right: 4px;
   display: block;
   zoom: 1;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
   text-decoration: none;
   text-align: right;
@@ -5139,7 +5139,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 .x-monthpicker-item {
   float: left;
   margin: 4px 0 5px 0;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
   vertical-align: middle;
   height: 18px;
@@ -5402,7 +5402,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 
 /* line 96, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-menu-item-text {
-  font-size: 12px;
+  font-size: 13px;
   color: #222222;
 }
 
@@ -5604,7 +5604,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   color: null;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-image: none;
   background-color: #c5c5c5;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f9f9f9), color-stop(100%, #e3e4e6));
@@ -5732,7 +5732,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 /* line 199, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row .x-grid-cell {
   color: null;
-  font: normal 12px/16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/17px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: white;
   border-color: #ededed;
   border-style: solid;
@@ -5820,7 +5820,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 
 /* line 291, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-with-row-lines .x-grid-cell-inner {
-  line-height: 14px;
+  line-height: 15px;
   padding-bottom: 4px;
 }
 
@@ -6060,7 +6060,7 @@ browsers will do whacky things with it.
 /* line 515, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-title {
   color: #838383;
-  font: bold 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: bold 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* line 521, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -6300,7 +6300,7 @@ browsers will do whacky things with it.
 }
 /* line 738, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-editor .x-form-display-field {
-  font: normal 12px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 0;
   padding-left: 2px;
 }
@@ -6327,7 +6327,7 @@ browsers will do whacky things with it.
 
 /* line 768, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-editor .x-form-text, .x-grid-row-editor .x-form-text {
-  font: normal 12px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 18px;
 }
 
@@ -6525,7 +6525,7 @@ browsers will do whacky things with it.
 .x-form-item-label {
   display: block;
   padding: 3px 0 0;
-  font-size: 13px;
+  font-size: 14px;
   user-select: none;
   -o-user-select: none;
   -ms-user-select: none;
@@ -6550,7 +6550,7 @@ browsers will do whacky things with it.
 .x-form-invalid-under {
   padding: 2px 2px 2px 18px;
   color: #c0272b;
-  font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 16px;
   background: no-repeat 0 2px;
   background-image: url('../images/form/exclamation.gif');
@@ -6584,7 +6584,7 @@ browsers will do whacky things with it.
 .x-form-field,
 .x-form-display-field {
   margin: 0 0 0 0;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
 }
 
@@ -6661,7 +6661,7 @@ textarea.x-form-invalid-field {
 
 /* line 91, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-item {
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* line 95, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
@@ -6744,7 +6744,7 @@ textarea.x-form-invalid-field {
 
 /* line 29, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_fieldset.scss */
 .x-fieldset-header {
-  font: 12px/14px bold "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 13px/14px bold "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   padding: 0 3px 1px;
   overflow: hidden;
@@ -7481,7 +7481,7 @@ textarea.x-form-invalid-field {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default {
-  font-size: 12px;
+  font-size: 13px;
   border-color: #e0e0e0;
   border-width: 1px;
   border-style: solid;
@@ -7532,7 +7532,7 @@ textarea.x-form-invalid-field {
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-default {
   color: #333333;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -7685,7 +7685,7 @@ textarea.x-form-invalid-field {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed {
-  font-size: 12px;
+  font-size: 13px;
   border-color: #e0e0e0;
   border-width: 1px;
   border-style: solid;
@@ -7766,7 +7766,7 @@ textarea.x-form-invalid-field {
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-default-framed {
   color: #333333;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -8757,7 +8757,7 @@ textarea.x-form-invalid-field {
   -webkit-user-select: none;
   cursor: default;
   color: #444444;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
 }
 
@@ -8779,7 +8779,7 @@ textarea.x-form-invalid-field {
 .x-tip-body,
 .x-form-invalid-tip-body {
   color: #444444;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
 }
 /* line 59, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_qtip.scss */
@@ -9141,7 +9141,7 @@ textarea.x-form-invalid-field {
   padding: 0 5px;
   height: 18px;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   text-align: center;
 }
@@ -9190,13 +9190,13 @@ textarea.x-form-invalid-field {
 
 /* line 6, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_toolbar.scss */
 .x-toolbar {
-  font-size: 12px;
+  font-size: 13px;
   border: 1px solid;
   padding: 2px 0 2px 2px;
 }
 /* line 13, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_toolbar.scss */
 .x-toolbar .x-form-item-label {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 15px;
 }
 /* line 18, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_toolbar.scss */
@@ -9211,7 +9211,7 @@ textarea.x-form-invalid-field {
   color: black;
   line-height: 16px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
 }
 /* line 33, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_toolbar.scss */
@@ -9550,7 +9550,7 @@ textarea.x-form-invalid-field {
 
 /* line 188, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default {
-  font-size: 12px;
+  font-size: 13px;
   border-color: #cbcbcb;
   zoom: 1;
 }
@@ -9561,7 +9561,7 @@ textarea.x-form-invalid-field {
   font-weight: bold;
   line-height: 17px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
@@ -10319,7 +10319,7 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(top, #fefdfd, #f2f2f2);
   background-image: -ms-linear-gradient(top, #fefdfd, #f2f2f2);
   background-image: linear-gradient(top, #fefdfd, #f2f2f2);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* line 80, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_tabbar.scss */
@@ -10679,7 +10679,7 @@ textarea.x-form-invalid-field {
   padding: 0;
   margin: 0;
   -webkit-appearance: none;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #6f6f6f;
@@ -11551,660 +11551,6 @@ svg, vml {
   position: static;
 }
 
-/* line 5, ../sass/_alerts.scss */
-.alert {
-  padding: 8px 35px 8px 14px;
-  margin-bottom: 18px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
-}
-
-/* line 14, ../sass/_alerts.scss */
-.alert,
-.alert-heading {
-  color: #c09853;
-}
-
-/* line 19, ../sass/_alerts.scss */
-.alert .close {
-  position: relative;
-  top: -2px;
-  right: -21px;
-  line-height: 18px;
-}
-
-/* line 29, ../sass/_alerts.scss */
-.alert-success {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-}
-
-/* line 34, ../sass/_alerts.scss */
-.alert-success,
-.alert-success .alert-heading {
-  color: #468847;
-}
-
-/* line 38, ../sass/_alerts.scss */
-.alert-danger,
-.alert-error {
-  background-color: #f2dede;
-  border-color: #eed3d7;
-}
-
-/* line 45, ../sass/_alerts.scss */
-.alert-danger,
-.alert-error,
-.alert-danger .alert-heading,
-.alert-error .alert-heading {
-  color: #b94a48;
-}
-
-/* line 48, ../sass/_alerts.scss */
-.alert-info {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-
-/* line 53, ../sass/_alerts.scss */
-.alert-info,
-.alert-info .alert-heading {
-  color: #3a87ad;
-}
-
-/* line 60, ../sass/_alerts.scss */
-.alert-block {
-  padding-top: 14px;
-  padding-bottom: 14px;
-}
-
-/* line 65, ../sass/_alerts.scss */
-.alert-block > p,
-.alert-block > ul {
-  margin-bottom: 0;
-}
-
-/* line 68, ../sass/_alerts.scss */
-.alert-block p + p {
-  margin-top: 5px;
-}
-
-/* line 9, ../sass/_buttons.scss */
-.btn {
-  display: inline-block;
-  padding: 4px 10px 4px;
-  font-size: 13px;
-  line-height: 18px;
-  color: #404040;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(25%, #ffffff), color-stop(100%, #e6e6e6));
-  background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -moz-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  border: 1px solid #ccc;
-  border-bottom-color: #bbb;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
-  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -o-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  text-decoration: none;
-  *margin-left: .3em;
-}
-/* line 61, ../sass/_mixins.scss */
-.btn:first-child {
-  *margin-left: 0;
-}
-
-/* line 32, ../sass/_buttons.scss */
-.btn:hover {
-  color: #404040;
-  text-decoration: none;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(35%, #ffffff), color-stop(100%, #d9d9d9));
-  background-image: -webkit-linear-gradient(#ffffff, #ffffff 35%, #d9d9d9);
-  background-image: -moz-linear-gradient(#ffffff, #ffffff 35%, #d9d9d9);
-  background-image: -o-linear-gradient(#ffffff, #ffffff 35%, #d9d9d9);
-  background-image: -ms-linear-gradient(#ffffff, #ffffff 35%, #d9d9d9);
-  background-image: linear-gradient(#ffffff, #ffffff 35%, #d9d9d9);
-}
-
-/* line 39, ../sass/_buttons.scss */
-.btn:focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-/* line 45, ../sass/_buttons.scss */
-.btn.active,
-.btn:active {
-  background-image: none;
-  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -o-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  background-color: #e6e6e6;
-  background-color: #d9d9d9 e("\9");
-  color: rgba(0, 0, 0, 0.5);
-  outline: 0;
-}
-
-/* line 57, ../sass/_buttons.scss */
-.btn.disabled,
-.btn[disabled] {
-  cursor: default;
-  background-image: none;
-  background-color: #e6e6e6;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=6500);
-  opacity: 65;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  -o-box-shadow: none;
-  box-shadow: none;
-}
-
-/* line 70, ../sass/_buttons.scss */
-.btn-large {
-  padding: 9px 14px;
-  font-size: 15px;
-  line-height: normal;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
-  border-radius: 5px;
-}
-
-/* line 76, ../sass/_buttons.scss */
-.btn-large .icon {
-  margin-top: 1px;
-}
-
-/* line 81, ../sass/_buttons.scss */
-.btn-small {
-  padding: 5px 9px;
-  font-size: 11px;
-  line-height: 16px;
-}
-
-/* line 86, ../sass/_buttons.scss */
-.btn-small .icon {
-  margin-top: -1px;
-}
-
-/* line 105, ../sass/_buttons.scss */
-.btn-primary,
-.btn-primary:hover,
-.btn-warning,
-.btn-warning:hover,
-.btn-danger,
-.btn-danger:hover,
-.btn-success,
-.btn-success:hover,
-.btn-info,
-.btn-info:hover {
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  color: white;
-}
-
-/* line 114, ../sass/_buttons.scss */
-.btn-primary.active,
-.btn-warning.active,
-.btn-danger.active,
-.btn-success.active,
-.btn-info.active {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-/* line 120, ../sass/_buttons.scss */
-.btn-primary {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0088cc), color-stop(100%, #0044cc));
-  background-image: -webkit-linear-gradient(#0088cc, #0044cc);
-  background-image: -moz-linear-gradient(#0088cc, #0044cc);
-  background-image: -o-linear-gradient(#0088cc, #0044cc);
-  background-image: -ms-linear-gradient(#0088cc, #0044cc);
-  background-image: linear-gradient(#0088cc, #0044cc);
-  border-color: #0044cc #0044cc #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
-  background-color: #0044cc;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-primary:active, .btn-primary.active {
-  background-color: #003399 e("\9");
-}
-/* line 122, ../sass/_buttons.scss */
-.btn-primary:hover {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0081c2), color-stop(100%, #003399));
-  background-image: -webkit-linear-gradient(#0081c2, #003399);
-  background-image: -moz-linear-gradient(#0081c2, #003399);
-  background-image: -o-linear-gradient(#0081c2, #003399);
-  background-image: -ms-linear-gradient(#0081c2, #003399);
-  background-image: linear-gradient(#0081c2, #003399);
-  border-color: #003399 #003399 #00194d;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-primary:hover:hover, .btn-primary:hover:active, .btn-primary:hover.active, .btn-primary:hover.disabled, .btn-primary:hover[disabled] {
-  background-color: #003399;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-primary:hover:active, .btn-primary:hover.active {
-  background-color: #002266 e("\9");
-}
-
-/* line 127, ../sass/_buttons.scss */
-.btn-warning {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbb450), color-stop(100%, #f89406));
-  background-image: -webkit-linear-gradient(#fbb450, #f89406);
-  background-image: -moz-linear-gradient(#fbb450, #f89406);
-  background-image: -o-linear-gradient(#fbb450, #f89406);
-  background-image: -ms-linear-gradient(#fbb450, #f89406);
-  background-image: linear-gradient(#fbb450, #f89406);
-  border-color: #f89406 #f89406 #ad6704;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-warning:hover, .btn-warning:active, .btn-warning.active, .btn-warning.disabled, .btn-warning[disabled] {
-  background-color: #f89406;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-warning:active, .btn-warning.active {
-  background-color: #c67605 e("\9");
-}
-
-/* line 131, ../sass/_buttons.scss */
-.btn-danger {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ee5f5b), color-stop(100%, #bd362f));
-  background-image: -webkit-linear-gradient(#ee5f5b, #bd362f);
-  background-image: -moz-linear-gradient(#ee5f5b, #bd362f);
-  background-image: -o-linear-gradient(#ee5f5b, #bd362f);
-  background-image: -ms-linear-gradient(#ee5f5b, #bd362f);
-  background-image: linear-gradient(#ee5f5b, #bd362f);
-  border-color: #bd362f #bd362f #802420;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-danger:hover, .btn-danger:active, .btn-danger.active, .btn-danger.disabled, .btn-danger[disabled] {
-  background-color: #bd362f;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-danger:active, .btn-danger.active {
-  background-color: #942a25 e("\9");
-}
-
-/* line 135, ../sass/_buttons.scss */
-.btn-success {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #62c462), color-stop(100%, #51a351));
-  background-image: -webkit-linear-gradient(#62c462, #51a351);
-  background-image: -moz-linear-gradient(#62c462, #51a351);
-  background-image: -o-linear-gradient(#62c462, #51a351);
-  background-image: -ms-linear-gradient(#62c462, #51a351);
-  background-image: linear-gradient(#62c462, #51a351);
-  border-color: #51a351 #51a351 #387038;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
-  background-color: #51a351;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-success:active, .btn-success.active {
-  background-color: #408140 e("\9");
-}
-
-/* line 139, ../sass/_buttons.scss */
-.btn-info {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #5bc0de), color-stop(100%, #2f96b4));
-  background-image: -webkit-linear-gradient(#5bc0de, #2f96b4);
-  background-image: -moz-linear-gradient(#5bc0de, #2f96b4);
-  background-image: -o-linear-gradient(#5bc0de, #2f96b4);
-  background-image: -ms-linear-gradient(#5bc0de, #2f96b4);
-  background-image: linear-gradient(#5bc0de, #2f96b4);
-  border-color: #2f96b4 #2f96b4 #1f6377;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-}
-/* line 287, ../sass/_mixins.scss */
-.btn-info:hover, .btn-info:active, .btn-info.active, .btn-info.disabled, .btn-info[disabled] {
-  background-color: #2f96b4;
-}
-/* line 293, ../sass/_mixins.scss */
-.btn-info:active, .btn-info.active {
-  background-color: #24748c e("\9");
-}
-
-/* line 148, ../sass/_buttons.scss */
-button.btn,
-input[type="submit"].btn {
-  *padding-top: 2px;
-  *padding-bottom: 2px;
-}
-/* line 149, ../sass/_buttons.scss */
-button.btn::-moz-focus-inner,
-input[type="submit"].btn::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-/* line 157, ../sass/_buttons.scss */
-button.btn.large,
-input[type="submit"].btn.large {
-  *padding-top: 7px;
-  *padding-bottom: 7px;
-}
-/* line 161, ../sass/_buttons.scss */
-button.btn.small,
-input[type="submit"].btn.small {
-  *padding-top: 3px;
-  *padding-bottom: 3px;
-}
-
-/* line 3, ../sass/_scaffolding.scss */
-.bootstrap {
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  color: #404040;
-}
-/* line 15, ../sass/_scaffolding.scss */
-.bootstrap a {
-  color: #0088cc;
-  text-decoration: none;
-}
-/* line 19, ../sass/_scaffolding.scss */
-.bootstrap a:hover {
-  color: #005580;
-  text-decoration: underline;
-}
-
-/* line 11, ../sass/_type.scss */
-.bootstrap p {
-  margin: 0 0 9px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-}
-/* line 16, ../sass/_type.scss */
-.bootstrap p small {
-  font-size: 11px;
-  color: #bfbfbf;
-}
-/* line 21, ../sass/_type.scss */
-.bootstrap .lead {
-  margin-bottom: 18px;
-  font-size: 20px;
-  font-weight: 200;
-  line-height: 27px;
-}
-/* line 31, ../sass/_type.scss */
-.bootstrap h1, .bootstrap h2, .bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
-  margin: 0;
-  font-weight: bold;
-  color: #404040;
-  text-rendering: optimizelegibility;
-}
-/* line 36, ../sass/_type.scss */
-.bootstrap h1 small, .bootstrap h2 small, .bootstrap h3 small, .bootstrap h4 small, .bootstrap h5 small, .bootstrap h6 small {
-  font-weight: normal;
-  color: #bfbfbf;
-}
-/* line 41, ../sass/_type.scss */
-.bootstrap h1 {
-  font-size: 30px;
-  line-height: 36px;
-}
-/* line 44, ../sass/_type.scss */
-.bootstrap h1 small {
-  font-size: 18px;
-}
-/* line 48, ../sass/_type.scss */
-.bootstrap h2 {
-  font-size: 24px;
-  line-height: 36px;
-}
-/* line 51, ../sass/_type.scss */
-.bootstrap h2 small {
-  font-size: 18px;
-}
-/* line 55, ../sass/_type.scss */
-.bootstrap h3 {
-  line-height: 27px;
-  font-size: 18px;
-}
-/* line 58, ../sass/_type.scss */
-.bootstrap h3 small {
-  font-size: 14px;
-}
-/* line 62, ../sass/_type.scss */
-.bootstrap h4, .bootstrap h5, .bootstrap h6 {
-  line-height: 18px;
-}
-/* line 65, ../sass/_type.scss */
-.bootstrap h4 {
-  font-size: 14px;
-}
-/* line 67, ../sass/_type.scss */
-.bootstrap h4 small {
-  font-size: 12px;
-}
-/* line 71, ../sass/_type.scss */
-.bootstrap h5 {
-  font-size: 12px;
-}
-/* line 74, ../sass/_type.scss */
-.bootstrap h6 {
-  font-size: 11px;
-  color: #bfbfbf;
-  text-transform: uppercase;
-}
-/* line 81, ../sass/_type.scss */
-.bootstrap .page-header {
-  padding-bottom: 17px;
-  margin: 18px 0;
-  border-bottom: 1px solid #e6e6e6;
-}
-/* line 86, ../sass/_type.scss */
-.bootstrap .page-header h1 {
-  line-height: 1;
-}
-/* line 96, ../sass/_type.scss */
-.bootstrap ul, .bootstrap ol {
-  padding: 0;
-  margin: 0 0 9px 25px;
-}
-/* line 103, ../sass/_type.scss */
-.bootstrap ul ul,
-.bootstrap ul ol,
-.bootstrap ol ol,
-.bootstrap ol ul {
-  margin-bottom: 0;
-}
-/* line 106, ../sass/_type.scss */
-.bootstrap ul {
-  list-style: disc;
-}
-/* line 108, ../sass/_type.scss */
-.bootstrap ul li {
-  list-style: disc;
-}
-/* line 112, ../sass/_type.scss */
-.bootstrap ol {
-  list-style: decimal;
-}
-/* line 114, ../sass/_type.scss */
-.bootstrap ol li {
-  list-style: decimal;
-}
-/* line 118, ../sass/_type.scss */
-.bootstrap li {
-  line-height: 18px;
-}
-/* line 121, ../sass/_type.scss */
-.bootstrap ul.unstyled {
-  margin-left: 0;
-  list-style: none;
-}
-/* line 124, ../sass/_type.scss */
-.bootstrap ul.unstyled li {
-  list-style: none;
-}
-/* line 130, ../sass/_type.scss */
-.bootstrap dl {
-  margin-bottom: 18px;
-}
-/* line 134, ../sass/_type.scss */
-.bootstrap dt,
-.bootstrap dd {
-  line-height: 18px;
-}
-/* line 137, ../sass/_type.scss */
-.bootstrap dt {
-  font-weight: bold;
-}
-/* line 140, ../sass/_type.scss */
-.bootstrap dd {
-  margin-left: 9px;
-}
-/* line 148, ../sass/_type.scss */
-.bootstrap hr {
-  margin: 18px 0;
-  border: 0;
-  border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid white;
-}
-/* line 156, ../sass/_type.scss */
-.bootstrap strong {
-  font-weight: bold;
-}
-/* line 159, ../sass/_type.scss */
-.bootstrap em {
-  font-style: italic;
-}
-/* line 162, ../sass/_type.scss */
-.bootstrap .muted {
-  color: #bfbfbf;
-}
-/* line 167, ../sass/_type.scss */
-.bootstrap abbr {
-  font-size: 90%;
-  text-transform: uppercase;
-  border-bottom: 1px dotted #ddd;
-  cursor: help;
-}
-/* line 175, ../sass/_type.scss */
-.bootstrap blockquote {
-  padding: 0 0 0 15px;
-  margin: 0 0 18px;
-  border-left: 5px solid #e6e6e6;
-}
-/* line 179, ../sass/_type.scss */
-.bootstrap blockquote p {
-  margin-bottom: 0;
-  font-size: 300;
-  font-weight: 16px;
-  line-height: 22.5px;
-}
-/* line 183, ../sass/_type.scss */
-.bootstrap blockquote small {
-  display: block;
-  line-height: 18px;
-  color: #bfbfbf;
-}
-/* line 187, ../sass/_type.scss */
-.bootstrap blockquote small:before {
-  content: '\2014 \00A0';
-}
-/* line 193, ../sass/_type.scss */
-.bootstrap blockquote.pull-right {
-  float: right;
-  padding-left: 0;
-  padding-right: 15px;
-  border-left: 0;
-  border-right: 5px solid #e6e6e6;
-}
-/* line 200, ../sass/_type.scss */
-.bootstrap blockquote.pull-right p,
-.bootstrap blockquote.pull-right small {
-  text-align: right;
-}
-/* line 210, ../sass/_type.scss */
-.bootstrap q:before,
-.bootstrap q:after,
-.bootstrap blockquote:before,
-.bootstrap blockquote:after {
-  content: "";
-}
-/* line 215, ../sass/_type.scss */
-.bootstrap address {
-  display: block;
-  margin-bottom: 18px;
-  line-height: 18px;
-  font-style: normal;
-}
-/* line 223, ../sass/_type.scss */
-.bootstrap small {
-  font-size: 100%;
-}
-/* line 226, ../sass/_type.scss */
-.bootstrap cite {
-  font-style: normal;
-}
-
-/* line 5, ../sass/_labels.scss */
-.label {
-  padding: 2px 4px 3px;
-  font-size: 11.05px;
-  font-weight: bold;
-  color: white;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #bfbfbf;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
-}
-
-/* line 22, ../sass/_labels.scss */
-.label-important {
-  background-color: #b94a48;
-}
-
-/* line 25, ../sass/_labels.scss */
-.label-warning {
-  background-color: #f89406;
-}
-
-/* line 28, ../sass/_labels.scss */
-.label-success {
-  background-color: #468847;
-}
-
-/* line 31, ../sass/_labels.scss */
-.label-info {
-  background-color: #3a87ad;
-}
-
 /* line 637, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-primary-large {
   border-color: #0064cd;
@@ -12283,7 +11629,7 @@ input[type="submit"].btn.small {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-primary-large .x-btn-inner {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
@@ -12657,7 +12003,7 @@ input[type="submit"].btn.small {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-danger-large .x-btn-inner {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
@@ -13026,7 +12372,7 @@ input[type="submit"].btn.small {
 
 /* line 643, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-danger-medium .x-btn-inner {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
@@ -13326,17 +12672,17 @@ input[type="submit"].btn.small {
 
 /* line 1, ../sass/_forms-port.scss */
 .formhelp {
-  font-size: 13px;
-  line-height: 18px;
-  color: #bfbfbf;
+  font-size: 14px;
+  line-height: 20px;
+  color: #999999;
   padding-left: 4px;
 }
 
 /* line 15, ../sass/_forms-port.scss */
 label {
-  font-size: 13px;
-  line-height: 18px;
-  color: #404040;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
 }
 
 /* line 24, ../sass/_forms-port.scss */
@@ -13376,13 +12722,13 @@ select:focus {
 
 /* line 11, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner strong {
-  font-size: 15px;
-  line-height: 21px;
+  font-size: 16px;
+  line-height: 23px;
 }
 /* line 15, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner small {
-  font-size: 11px;
-  color: gray;
+  font-size: 12px;
+  color: #555555;
 }
 /* line 2, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
@@ -13394,12 +12740,12 @@ select:focus {
 }
 /* line 21, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .countbox {
-  background-color: gray;
+  background-color: #555555;
   color: white;
   padding: 2px 4px;
   margin: 2px 0;
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
   -o-border-radius: 3px 3px 3px 3px;
@@ -13427,13 +12773,13 @@ select:focus {
 
 /* line 11, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item strong {
-  font-size: 15px;
-  line-height: 21px;
+  font-size: 16px;
+  line-height: 23px;
 }
 /* line 15, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item small {
-  font-size: 11px;
-  color: gray;
+  font-size: 12px;
+  color: #555555;
 }
 /* line 2, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .success, .x-boundlist .x-boundlist-item small.success {
@@ -13445,12 +12791,12 @@ select:focus {
 }
 /* line 21, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .countbox {
-  background-color: gray;
+  background-color: #555555;
   color: white;
   padding: 2px 4px;
   margin: 2px 0;
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
   -o-border-radius: 3px 3px 3px 3px;
@@ -13466,7 +12812,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-inset-header-panel {
-  font-size: 17px;
+  font-size: 18px;
   border-color: white;
   border-width: 1px;
   border-style: solid;
@@ -13480,8 +12826,8 @@ select:focus {
 
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-inset-header-panel {
-  color: #404040;
-  font-size: 17px;
+  color: #333333;
+  font-size: 18px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -14350,7 +13696,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-inset-header-strong-panel {
-  font-size: 21px;
+  font-size: 22px;
   border-color: white;
   border-width: 1px;
   border-style: solid;
@@ -14364,8 +13710,8 @@ select:focus {
 
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-inset-header-strong-panel {
-  color: #404040;
-  font-size: 21px;
+  color: #333333;
+  font-size: 22px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -15233,7 +14579,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-inset-header-danger-panel {
-  font-size: 17px;
+  font-size: 18px;
   border-color: white;
   border-width: 1px;
   border-style: solid;
@@ -15248,7 +14594,7 @@ select:focus {
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-inset-header-danger-panel {
   color: #991a00;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -16117,7 +15463,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-lookslike-parawitheader-panel {
-  font-size: 17px;
+  font-size: 18px;
   border-color: white;
   border-width: 1px;
   border-style: solid;
@@ -16131,8 +15477,8 @@ select:focus {
 
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-lookslike-parawitheader-panel {
-  color: #404040;
-  font-size: 17px;
+  color: #333333;
+  font-size: 18px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -16293,7 +15639,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-transparentpanel {
-  font-size: 12px;
+  font-size: 13px;
   border-color: #e0e0e0;
   border-width: 1px;
   border-style: solid;
@@ -16344,7 +15690,7 @@ select:focus {
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-transparentpanel {
   color: #333333;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -16501,7 +15847,7 @@ select:focus {
 
 /* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-transparentpanel-overflowvisible {
-  font-size: 12px;
+  font-size: 13px;
   border-color: #e0e0e0;
   border-width: 1px;
   border-style: solid;
@@ -16552,7 +15898,7 @@ select:focus {
 /* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-text-transparentpanel-overflowvisible {
   color: #333333;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
@@ -17140,7 +16486,7 @@ You only need something like this extjs code to make it work:
 .x-panel.devilry_discussionview_container > .x-panel-body > .x-panel > .x-panel-header .x-panel-header-body .x-panel-header-text-container .x-panel-header-text {
   display: block;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: normal;
 }
 /* line 49, ../sass/_devilry_discussionview.scss */
@@ -17158,8 +16504,8 @@ You only need something like this extjs code to make it work:
 }
 /* line 59, ../sass/_devilry_discussionview.scss */
 .x-panel.devilry_discussionview_container > .x-panel-body > .x-panel > .x-panel-header .x-panel-header-body .x-panel-header-text-container .x-panel-header-text small {
-  font-size: 11px;
-  color: gray;
+  font-size: 12px;
+  color: #555555;
 }
 /* line 66, ../sass/_devilry_discussionview.scss */
 .x-panel.devilry_discussionview_container > .x-panel-body > .x-panel > .x-panel-header:hover {
