@@ -24,29 +24,27 @@
     }
 }
 
-
-.devilry_subjectadmin_actionlist {
+.devilry_subjectadmin_actionlist.bootstrap {
     ul {
         list-style: none;
+        margin: 0;
         li {
             margin: 7px 0 7px 0;
             strong {
-                font-size: 15px;
+                font-size: 18px;
             }
         }
     }
 }
 
-.devilry_subjectadmin_navigation {
+.devilry_subjectadmin_navigation.bootstrap {
     strong {
-        font-size: 15px;
+        font-size: 18px;
     }
 }
 
-.devilry_subjectadmin_dangerousactions {
-    h2 {
-        color: #900;
-    }
+.devilry_subjectadmin_dangerousactions .bootstrap h2 {
+    color: #900;
 }
 
 @import "managestudents";

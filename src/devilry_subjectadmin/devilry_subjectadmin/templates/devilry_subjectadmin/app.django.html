@@ -3,10 +3,11 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css"
-    href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
 {% include "devilry_theme/cssimports.django.html" %}
 {% include "devilry_header/cssimports.django.html" %}
+
+<link rel="stylesheet" type="text/css"
+    href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
 {% endblock %}
 
 {% block app %}
