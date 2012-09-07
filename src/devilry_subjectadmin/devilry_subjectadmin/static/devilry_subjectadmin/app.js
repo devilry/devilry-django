@@ -36,7 +36,8 @@ Ext.application({
         'devilry_header.Breadcrumbs',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.form.DateField',
-        'devilry_extjsextras.form.TimeField'
+        'devilry_extjsextras.form.TimeField',
+        'devilry_extjsextras.FloatingAlertMessageList'
     ],
 
     controllers: [
@@ -60,6 +61,11 @@ Ext.application({
         'BulkManageDeadlines',
         'RelatedStudents'
     ],
+
+    refs: [{
+        ref: 'alertmessagelist',
+        selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
+    }],
 
     constructor: function() {
         this.addEvents(
@@ -142,7 +148,11 @@ Ext.application({
                 xtype: 'container',
                 region: 'center',
                 layout: 'fit',
-                items: [this.primaryContentContainer]
+                items: [{
+                    xtype: 'floatingalertmessagelist',
+                    itemId: 'appAlertmessagelist',
+                    anchor: '100%'
+                }, this.primaryContentContainer]
             }]
         });
     },
@@ -171,7 +181,12 @@ Ext.application({
      ********************************************/
 
     _setupRoutes: function() {
-        this.route = Ext.create('devilry_extjsextras.Router', this);
+        this.route = Ext.create('devilry_extjsextras.Router', this, {
+            listeners: {
+                scope: this,
+                beforeroute: this._beforeRoute
+            }
+        });
         this.route.add("", 'dashboard');
         this.route.add("/allsubjects/", 'allSubjects');
         this.route.add("/", 'allWhereIsAdmin');
@@ -191,6 +206,10 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@grade-editor/", 'gradeEditor');
         this.route.add("/assignment/:assignment_id/@@grade-editor/change", 'changeGradeEditor');
         this.route.start();
+    },
+
+    _beforeRoute: function() {
+        this.getAlertmessagelist().removeAll();
     },
     
     routeNotFound: function(routeInfo) {
