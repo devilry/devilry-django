@@ -74,7 +74,8 @@ class TestListGroupRest(TestCase):
         # Feedback
         feedback = content[0]['feedback']
         self.assertEquals(set(feedback.keys()),
-                          set(['id', 'grade', 'is_passing_grade', 'points', 'save_timestamp']))
+                          set(['id', 'grade', 'is_passing_grade', 'points', 'save_timestamp',
+                               'delivery_id']))
         self.assertEquals(feedback['grade'], 'A')
         self.assertEquals(feedback['is_passing_grade'], True)
         self.assertEquals(feedback['points'], 100)
@@ -584,7 +585,6 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
                  'name': 'changed',
                  'is_open': False,
                  'feedback': 'should be ignored',
-                 'id': 'should be ignored',
                  'num_deliveries': 'should be ignored',
                  'deadlines': 'should be ignored'}]
         content, response = self._putas('a1admin', self.a1id, data)
