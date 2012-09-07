@@ -30,7 +30,7 @@ Ext.define('devilry_student.view.browsehistory.BrowsePeriods', {
                 itemId: 'heading',
                 tpl: [
                     '<h1>{heading}</h1>',
-                    '<p><small>{subheading}</small></p>'
+                    '<p><small class="muted">{subheading}</small></p>'
                 ],
                 data: {
                     heading: gettext('Browse'),

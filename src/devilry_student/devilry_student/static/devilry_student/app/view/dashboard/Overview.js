@@ -55,7 +55,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                 cls: 'bootstrap',
                 tpl: [
                     '<h3>{heading}</h3>',
-                    '<p><small>{subheading}</small></p>'
+                    '<p><small class="muted">{subheading}</small></p>'
                 ],
                 data: {
                     heading: interpolate(gettext('%(assignments_term)s with expired %(deadlines_term)s'), {
