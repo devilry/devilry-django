@@ -35,6 +35,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         ref: 'removeButton',
         selector: 'viewport relatedstudents #removeButton'
     }, {
+        ref: 'tagsButton',
+        selector: 'viewport relatedstudents #tagsButton'
+    }, {
         ref: 'sidebarDeck',
         selector: 'viewport relatedstudents #sidebarDeck'
     }, {
@@ -60,6 +63,35 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
                 cancel: this._resetToHelpView,
                 ok: this._removeSelected
             },
+
+
+            // setTags
+            'viewport relatedstudents #setTagsButton': {
+                click: this._onSetTags
+            },
+            'viewport relatedstudents choosetagspanel#setTagsPanel': {
+                cancel: this._resetToHelpView,
+                savetags: this._onSetTagsSave
+            },
+
+            // addTags
+            'viewport relatedstudents #addTagsButton': {
+                click: this._onAddTags
+            },
+            'viewport relatedstudents choosetagspanel#addTagsPanel': {
+                cancel: this._resetToHelpView,
+                savetags: this._onAddTagsSave
+            },
+
+            // clearTags
+            'viewport relatedstudents #clearTagsButton': {
+                click: this._onClearTags
+            },
+            'viewport relatedstudents okcancelpanel#clearTagsPanel': {
+                cancel: this._resetToHelpView,
+                ok: this._onClearTagsConfirmed
+            },
+
 
             // Add student
             'viewport relatedstudents #addButton': {
@@ -168,9 +200,16 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     _onGridSelectionChange: function(grid, selected) {
         if(selected.length === 0) {
             this.getRemoveButton().disable();
+            this.getTagsButton().disable();
         } else {
             this.getRemoveButton().enable();
+            this.getTagsButton().enable();
         }
+    },
+    _getSelectedRelatedUserRecords: function() {
+        var selModel = this.getGrid().getSelectionModel();
+        var selectedRelatedUserRecords = selModel.getSelection();
+        return selectedRelatedUserRecords;
     },
 
     //
@@ -182,16 +221,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         this.getSidebarDeck().getLayout().setActiveItem('confirmRemovePanel');
     },
 
+
     _removeSelected: function() {
         this._resetToHelpView();
-        var selModel = this.getGrid().getSelectionModel();
-        var selectedRelatedUserRecords = selModel.getSelection();
-
-        var names = [];
-        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
-            var displayname = relatedUserRecord.getDisplayName();
-            names.push(displayname);
-        }, this);
+        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
+        var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
 
         var store = this.getRelatedStudentsStore();
         store.remove(selectedRelatedUserRecords);
@@ -247,5 +281,75 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         this._onSyncSuccess(Ext.String.format(gettext('{0} added.'),
             relatedStudentRecord.getDisplayName()));
         this.getGrid().getSelectionModel().select([relatedStudentRecord]);
+    },
+
+
+
+    //
+    //
+    // Tags
+    //
+    //
+    _onTagSyncSuccess: function(selectedRelatedUserRecords, tagsArray) {
+        this._resetToHelpView();
+        var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
+        var msg = gettext('Tagged %(users)s with: %(tags)s')
+        this._onSyncSuccess(interpolate(msg, {
+            users: names.join(', '),
+            tags: tagsArray.join(', ')
+        }, true));
+    },
+
+    _onSetTags: function() {
+        this.getSidebarDeck().getLayout().setActiveItem('setTagsPanel');
+    },
+    _onSetTagsSave: function(panel, tagsArray) {
+        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
+        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
+            relatedUserRecord.setTagsFromArray(tagsArray);
+        }, this);
+        this.getRelatedStudentsStore().sync({
+            scope: this,
+            success: function() {
+                this._onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
+            }
+        });
+    },
+
+    _onAddTags: function() {
+        this.getSidebarDeck().getLayout().setActiveItem('addTagsPanel');
+    },
+    _onAddTagsSave: function(panel, tagsArray) {
+        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
+        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
+            relatedUserRecord.addTagsFromArray(tagsArray);
+        }, this);
+        this.getRelatedStudentsStore().sync({
+            scope: this,
+            success: function() {
+                this._onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
+            }
+        });
+    },
+
+    _onClearTags: function() {
+        this.getSidebarDeck().getLayout().setActiveItem('clearTagsPanel');
+    },
+    _onClearTagsConfirmed: function() {
+        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
+        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
+            relatedUserRecord.clearTags();
+        }, this);
+        this.getRelatedStudentsStore().sync({
+            scope: this,
+            success: function() {
+                this._resetToHelpView();
+                var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
+                var msg = gettext('Cleared tags on %(users)s.')
+                this._onSyncSuccess(interpolate(msg, {
+                    users: names.join(', ')
+                }, true));
+            }
+        });
     }
 });

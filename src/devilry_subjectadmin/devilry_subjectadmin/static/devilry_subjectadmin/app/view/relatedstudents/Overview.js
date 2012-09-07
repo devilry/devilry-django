@@ -51,19 +51,41 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 items: [{
                     xtype: 'relatedstudentsgrid',
                     region: 'center',
-                    fbar: [{
-                        xtype: 'button',
-                        ui: 'danger',
-                        scale: 'large',
-                        itemId: 'removeButton',
-                        cls: 'remove_related_user_button remove_related_student_button',
-                        disabled: true,
-                        text: gettext('Remove selected')
-                    }, {
-                        xtype: 'primarybutton',
-                        itemId: 'addButton',
-                        cls: 'add_related_user_button add_related_student_button',
-                        text: gettext('Add student')
+                    dockedItems: [{
+                        xtype: 'toolbar',
+                        dock: 'bottom',
+                        ui: 'footer',
+                        items: [{
+                            xtype: 'button',
+                            ui: 'danger',
+                            scale: 'large',
+                            itemId: 'removeButton',
+                            cls: 'remove_related_user_button remove_related_student_button',
+                            disabled: true,
+                            text: gettext('Remove selected')
+                        }, '->', {
+                            xtype: 'button',
+                            scale: 'large',
+                            itemId: 'tagsButton',
+                            disabled: true,
+                            cls: 'related_users_tags_button related_students_tags_button',
+                            text: gettext('Tags'),
+                            menu: [{
+                                text: gettext('Clear tags'),
+                                itemId: 'clearTagsButton'
+                            }, {
+                                text: gettext('Set tag(s)'),
+                                itemId: 'setTagsButton'
+                            }, {
+                                text: gettext('Add tag(s)'),
+                                itemId: 'addTagsButton'
+                            }]
+                        }, {
+                            xtype: 'primarybutton',
+                            itemId: 'addButton',
+                            cls: 'add_related_user_button add_related_student_button',
+                            text: gettext('Add student')
+                        }]
                     }]
                 }, {
                     xtype: 'container',
@@ -87,7 +109,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                         }, {
                             xtype: 'okcancelpanel',
                             itemId: 'confirmRemovePanel',
-                            cls: 'removeconfirmpanel',
+                            cls: 'removeconfirmpanel bootstrap',
                             oktext: gettext('Remove selected'),
                             okbutton_ui: 'danger',
                             bodyPadding: 10,
@@ -97,6 +119,28 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                                     interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
                                         period_term: gettext('period')
                                     }, true),
+                                '</p>'
+                            ].join('')
+                        }, {
+                            xtype: 'choosetagspanel',
+                            itemId: 'setTagsPanel',
+                            cls: 'set_tags_panel',
+                            buttonText: gettext('Set tags')
+                        }, {
+                            xtype: 'choosetagspanel',
+                            itemId: 'addTagsPanel',
+                            cls: 'add_tags_panel',
+                            buttonText: gettext('Add tags')
+                        }, {
+                            xtype: 'okcancelpanel',
+                            itemId: 'clearTagsPanel',
+                            cls: 'clear_tags_panel',
+                            oktext: gettext('Clear tags'),
+                            okbutton_ui: 'danger',
+                            bodyPadding: 10,
+                            html: [
+                                '<p>',
+                                    gettext('Do you really want to clear all tags the selected users?'),
                                 '</p>'
                             ].join('')
                         }]
