@@ -9,7 +9,7 @@
     @import "bootstrap/labels-badges";
 
     // These are overriden by ExtJS since we do not use the .bootstrap body class.
-    p {
+    p, .alert, li {
         font-size: $baseFontSize;
         line-height: $baseLineHeight;
     }

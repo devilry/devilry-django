@@ -872,7 +872,7 @@
   top: 0;
 }
 /* line 12, ../sass/bootstrap.scss */
-.bootstrap p {
+.bootstrap p, .bootstrap .alert, .bootstrap li {
   font-size: 14px;
   line-height: 20px;
 }
