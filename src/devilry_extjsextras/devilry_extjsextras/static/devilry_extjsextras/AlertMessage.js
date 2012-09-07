@@ -12,7 +12,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
                 '<button type="button" class="close" data-dismiss="alert">×</button>',
             '</tpl>',
             '<tpl if="title">',
-                '<strong>{title}</strong>',
+                '<strong>{title}</strong>: ',
             '</tpl>',
             '{message}',
         '</div>'
@@ -48,6 +48,11 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     closable: false,
 
     /**
+     * @cfg {int} [autoclose]
+     * Fire the ``close`` event ``autoclose`` seconds after creating the message.
+     */
+
+    /**
      * @cfg
      * An optional title for the message.
      */
@@ -68,10 +73,18 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             delegate: '.close',
             click: function(e) {
                 e.preventDefault();
-                this.fireEvent('closed', this, e);
+                this.fireEvent('closed', this);
             }
         });
+
+        if(!Ext.isEmpty(this.autoclose)) {
+            Ext.defer(function() {
+                this.fireEvent('closed', this);
+            }, 1000*this.autoclose, this);
+        }
     },
+
+
 
     /**
      * Update the message and optionally the type. If the type is not
