@@ -8,4 +8,4 @@ from .managestudents_multiselect import *
 from .managestudents_singleselect import *
 from .rest import *
 from .gradeeditor import *
-from .relatedstudents import *
+from .relatedusersui import *

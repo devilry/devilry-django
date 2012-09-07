@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.relatedstudents',
-    cls: 'devilry_subjectadmin_relatedstudents',
+    cls: 'devilry_subjectadmin_relatedusers devilry_subjectadmin_relatedstudents',
     requires: [
         'Ext.layout.container.Column',
         'devilry_subjectadmin.view.relatedstudents.Grid',
@@ -57,10 +57,12 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                         ui: 'danger',
                         scale: 'large',
                         itemId: 'removeButton',
+                        cls: 'remove_related_user_button remove_related_student_button',
                         text: gettext('Remove selected')
                     }, {
                         xtype: 'primarybutton',
                         itemId: 'addButton',
+                        cls: 'add_related_user_button add_related_student_button',
                         text: gettext('Add student')
                     }]
                 }, {
@@ -81,6 +83,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                         items: [{
                             xtype: 'box',
                             itemId: 'helpBox',
+                            cls: 'related_user_helpbox related_student_helpbox',
                             html: 'Help - TODO'
                         }, {
                             xtype: 'selectrelateduserpanel',

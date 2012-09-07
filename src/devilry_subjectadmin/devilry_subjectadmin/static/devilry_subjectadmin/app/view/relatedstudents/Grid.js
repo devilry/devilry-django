@@ -1,7 +1,7 @@
 Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.relatedstudentsgrid',
-    cls: 'devilry_subjectadmin_relatedstudentsgrid bootstrap',
+    cls: 'devilry_subjectadmin_relatedusergrid devilry_subjectadmin_relatedstudentsgrid bootstrap',
     requires: [
         'Ext.XTemplate',
         'devilry_extjsextras.GridMultiSelectModel',
@@ -14,10 +14,10 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
     hideHeaders: false,
 
     col1Tpl: [
-        '<div class="relateduser_meta_cell relateduserid_{record.id} relateduser_username_{record.user.username}">',
+        '<div class="meta_cell relateduserid_{record.id} relateduser_username_{record.user.username}">',
             '<div class="full_name">',
                 '<tpl if="record.user.full_name">',
-                    '<strong>{record.user.full_name}</strong></div>',
+                    '<strong>{record.user.full_name}</strong>',
                 '<tpl else>',
                     '<em class="nofullname">', gettext('Full name missing'), '</em>',
                 '</tpl>',
@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
     ],
 
     col2Tpl: [
-        '<div class="relateduser_tags_cell " style="white-space:normal !important;">',
+        '<div class="tags_cell" style="white-space:normal !important;">',
             '{record.tags}',
         '</div>'
     ],
