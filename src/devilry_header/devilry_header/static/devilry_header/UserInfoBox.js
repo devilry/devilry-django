@@ -29,9 +29,9 @@ Ext.define('devilry_header.UserInfoBox', {
                     '</tr>',
                 '</tbody>',
             '</table>',
-            '<p><a href="{logout_url}">',
+            '<div class="logout_para bootstrap"><a href="{logout_url}" class="logout_button btn btn-primary btn-large">',
                 gettext('Log out'),
-            '</a></p>',
+            '</a></div>',
         '</tpl>'
     ],
 

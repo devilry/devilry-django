@@ -205,19 +205,27 @@ $hovermenu_bgcolor: #000;
     }
 }
 
-.devilryheader_userinfobox {
-    table.userinfotable {
-        th, td {
-            line-height: $baseLineHeight;
-            font-size: $baseFontSize;
+.devilryheader_hovermenu {
+    .devilryheader_userinfobox {
+        table.userinfotable {
+            th, td {
+                line-height: $baseLineHeight;
+                font-size: $baseFontSize;
+            }
+            th {
+                color: #999;
+                font-weight: bold;
+                padding: 4px 10px 4px 0;
+            }
+            td {
+                color: #fff;
+            }
         }
-        th {
-            color: #999;
-            font-weight: bold;
-            padding: 4px 10px 4px 0;
-        }
-        td {
-            color: #fff;
+        div.logout_para {
+            margin-top: 10px !important;
+            a.logout_button {
+                text-decoration: none;
+            }
         }
     }
 }
