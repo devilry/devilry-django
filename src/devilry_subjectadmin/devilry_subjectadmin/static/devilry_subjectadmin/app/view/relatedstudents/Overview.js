@@ -10,12 +10,13 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
         'devilry_subjectadmin.view.relatedstudents.Grid',
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.OkCancelPanel',
+        'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
         'devilry_subjectadmin.view.relatedstudents.SelectUserPanel'
     ],
 
     frame: false,
     border: false,
-    bodyPadding: 40,
+    bodyPadding: 20,
 
 
     /**
@@ -31,7 +32,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 cls: 'bootstrap',
                 anchor: '100%',
                 html: [
-                    '<h1>',
+                    '<h1 style="margin-top: 0; padding-top: 0;">',
                         interpolate(gettext('Manage related %(students_term)s'), {
                             students_term: gettext('students')
                         }, true),
@@ -72,12 +73,15 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             text: gettext('Tags'),
                             menu: [{
                                 text: gettext('Clear tags'),
+                                cls: 'clear_tags_button',
                                 itemId: 'clearTagsButton'
                             }, {
                                 text: gettext('Set tag(s)'),
+                                cls: 'set_tags_button',
                                 itemId: 'setTagsButton'
                             }, {
                                 text: gettext('Add tag(s)'),
+                                cls: 'add_tags_button',
                                 itemId: 'addTagsButton'
                             }]
                         }, {

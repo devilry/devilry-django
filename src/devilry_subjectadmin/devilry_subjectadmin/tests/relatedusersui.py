@@ -17,8 +17,10 @@ class RelatedUsersUITestMixin(object):
         return self.find_elements('.devilry_subjectadmin_relatedusergrid .x-grid-row')
 
     def get_row_by_username(self, username):
+        cssselector = '.relateduser_username_{username}'.format(username=username)
+        self.waitForCssSelector('.x-grid-row {0}'.format(cssselector))
         for row in self.find_gridrows():
-            matches = row.find_elements_by_css_selector('.relateduser_username_{username}'.format(username=username))
+            matches = row.find_elements_by_css_selector(cssselector)
             if len(matches) > 0:
                 return row
         raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
@@ -71,6 +73,46 @@ class RelatedUsersUITestMixin(object):
         removeconfirmbutton.click()
         self.waitForText('Removed: {0}'.format(', '.join(displaynames)))
 
+    def click_tagbutton(self, action):
+        tagsbutton = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_relatedusers .related_users_tags_button')
+        tagsbutton.click()
+        cssselector = '.{0}_tags_button'.format(action)
+        button = self.waitForAndFindElementByCssSelector(cssselector)
+        button.click()
+        cssselector = '.devilry_subjectadmin_relatedusers .{0}_tags_panel'.format(action)
+        panel = self.waitForAndFindElementByCssSelector(cssselector)
+        self.waitForDisplayed(panel)
+        return panel
+
+    def ui_set_or_add_tags(self, action, tags):
+        panel = self.click_tagbutton(action)
+        textarea = panel.find_element_by_css_selector('textarea')
+        textarea.send_keys(','.join(tags))
+        savebutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
+        self.waitForEnabled(savebutton)
+        savebutton.click()
+        self.waitForCssSelector('.alert-success')
+        self.waitForText('with: {0}'.format(', '.join(tags)))
+
+    def ui_set_or_add_tags_cancel(self, action):
+        panel = self.click_tagbutton(action)
+        cancelbutton = panel.find_element_by_css_selector('.choosetags_cancelbutton button')
+        self.waitForEnabled(cancelbutton)
+        cancelbutton.click()
+        helpbox = self.getHelpBox()
+        self.waitForDisplayed(helpbox)
+
+    def ui_clear_tags(self):
+        panel = self.click_tagbutton('clear')
+        okbutton = panel.find_element_by_css_selector('.okbutton')
+        self.waitForDisplayed(okbutton)
+        okbutton.click()
+        self.waitForCssSelector('.alert-success')
+        self.waitForText('Cleared tags on')
+
+    def getHelpBox(self):
+        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_relatedusers .related_user_helpbox')
+
 
 class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixin):
     def setUp(self):
@@ -100,7 +142,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self._add_relatedstudent('student3', full_name='Student Three')
         self._browseToManageStudentsAs('p1admin', self.period.id)
 
-        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.waitForCssSelector('.devilry_subjectadmin_relatedusers')
         self.waitForGridRowCount(3)
         self.assertEquals(self.get_row_data(self.get_row_by_username('student1')),
                           {'full_name': 'Student One',
@@ -147,7 +189,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
     def test_remove_single(self):
         self._add_relatedstudent('student1')
         self._browseToManageStudentsAs('p1admin', self.period.id)
-        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.waitForCssSelector('.devilry_subjectadmin_relatedusers')
         self.waitForGridRowCount(1)
         self.ui_remove_related_users('student1')
         self.waitForGridRowCount(0)
@@ -159,7 +201,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self._add_relatedstudent('student3', full_name='Student Three')
         self._add_relatedstudent('ignored', full_name='Ignored student')
         self._browseToManageStudentsAs('p1admin', self.period.id)
-        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.waitForCssSelector('.devilry_subjectadmin_relatedusers')
         self.waitForGridRowCount(4)
         self.ui_remove_related_users('student1', 'student2', 'student3')
         self.waitForGridRowCount(1)
@@ -177,3 +219,95 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.waitForEnabled(removebutton)
         self.click_row_by_username('student1')
         self.waitForDisabled(removebutton)
+
+    def test_add_tags(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='a,b')
+        self._add_relatedstudent('ignored', tags='unchanged')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+        self.ui_set_or_add_tags('add', ['bad', 'supergood', 'awesome'])
+
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          'good,bad,supergood,awesome')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          'a,b,bad,supergood,awesome')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='ignored').tags,
+                          'unchanged')
+
+    def test_add_tags_cancel(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='group1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+        self.ui_set_or_add_tags_cancel('add')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          'good,bad')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          'group1')
+
+    def test_set_tags(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='a,b')
+        self._add_relatedstudent('ignored', tags='unchanged')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+        self.ui_set_or_add_tags('set', ['bad', 'supergood', 'awesome'])
+
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          'bad,supergood,awesome')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          'bad,supergood,awesome')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='ignored').tags,
+                          'unchanged')
+
+    def test_set_tags_cancel(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='group1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+        self.ui_set_or_add_tags_cancel('set')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          'good,bad')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          'group1')
+
+
+    def test_clear_tags(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='group1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+        self.ui_clear_tags()
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          '')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          '')
+
+    def test_clear_tags_cancel(self):
+        self._add_relatedstudent('student1', tags='good,bad')
+        self._add_relatedstudent('student2', tags='group1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.click_row_by_username('student1')
+        self.click_row_by_username('student2')
+
+        self.click_tagbutton('clear')
+        panel = self.click_tagbutton('clear')
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton')
+        self.waitForDisplayed(cancelbutton)
+        cancelbutton.click()
+
+        helpbox = self.getHelpBox()
+        self.waitForDisplayed(helpbox)
+
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student1').tags,
+                          'good,bad')
+        self.assertEquals(self.period.relatedstudent_set.get(user__username='student2').tags,
+                          'group1')
