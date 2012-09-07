@@ -36,16 +36,23 @@ class RelatedUsersUITestMixin(object):
         return result
 
 
-    def ui_add_related_user(self, username):
+    def click_add_related_user_button(self):
         self.waitForCssSelector('.add_related_user_button')
         addbutton = self.find_element('.add_related_user_button')
-        usersearchfield = self.find_element('.devilry_subjectadmin_selectrelateduserpanel input[type=text]')
         addbutton.click()
+
+    def ui_add_related_user(self, username):
+        usersearchfield = self.find_element('.devilry_subjectadmin_selectrelateduserpanel input[type=text]')
+        self.click_add_related_user_button()
         self.waitForDisplayed(usersearchfield)
         usersearchfield.send_keys(username)
         match = self.waitForAndFindElementByCssSelector('.autocompleteuserwidget_matchlist .matchlistitem_{0}'.format(username))
         match.click()
         self.waitForNotDisplayed(usersearchfield)
+        self.waitForCssSelector('.alert-success')
+        user = getattr(self.testhelper, username)
+        displayname = user.devilryuserprofile.full_name or user.username
+        self.waitForText('{0} added'.format(displayname))
 
 
 class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixin):
@@ -105,4 +112,14 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.testhelper.create_user('student1')
         self.ui_add_related_user('student1')
         self.waitForGridRowCount(1)
-        # TODO: Wait for success message, and test the database.
+
+    def test_add_student_cancel(self):
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.testhelper.create_user('student1')
+        self.ui_add_related_user('student1')
+        self.click_add_related_user_button()
+        cancelbutton = self.find_element('.devilry_subjectadmin_selectrelateduserpanel .cancelbutton button')
+        self.waitForDisplayed(cancelbutton)
+        cancelbutton.click()
+        self.waitForNotDisplayed(cancelbutton)
