@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin', {
     handleProxyError: function(alertmessagelist, formpanel, response, operation) {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
-        alertmessagelist.addMany(errorhandler.errormessages, 'error');
+        alertmessagelist.addMany(errorhandler.errormessages, 'error', true);
         if(typeof formpanel !== 'undefined') {
             devilry_extjsextras.form.ErrorUtils.addFieldErrorsToAlertMessageList(formpanel,
                 errorhandler.fielderrors, alertmessagelist);

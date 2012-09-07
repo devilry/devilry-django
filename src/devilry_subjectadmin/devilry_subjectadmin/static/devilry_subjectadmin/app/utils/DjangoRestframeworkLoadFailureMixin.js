@@ -9,6 +9,6 @@ Ext.define('devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin', {
     onLoadFailure: function(operation) {
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
         error.addErrors(null, operation);
-        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error');
+        this.getGlobalAlertmessagelist().addMany(error.errormessages, 'error', true);
     }
 });
