@@ -1,5 +1,7 @@
 Ext.define('devilry_extjsextras.Router', {
-    extend: 'Ext.util.Observable',
+    mixins: {
+        observable: 'Ext.util.Observable'
+    },
     requires: [
         'Ext.util.History'
     ],
@@ -8,12 +10,28 @@ Ext.define('devilry_extjsextras.Router', {
     splatParam: /\*\w+/g,
     escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g,
 
-    constructor: function(handler) {
+    constructor: function(handler, config) {
         this.handler = handler;
         this.routes = [];
         this.started = false;
         this.suspendedEvents = false;
-        this.callParent();
+
+        this.mixins.observable.constructor.call(this, config);
+        this.addEvents(
+            /**
+             * @event
+             * Fired before a successful route.
+             * @param route The Route object.
+             */
+            'beforeroute',
+
+            /**
+             * @event
+             * Fired after a successful route.
+             * @param route The Route object.
+             */
+            'afterroute'
+        );
     },
 
     add: function(pattern, action) {
@@ -56,9 +74,11 @@ Ext.define('devilry_extjsextras.Router', {
             var match = token.match(route.regex);
             if(match) {
                 var args = match.slice(1);
+                this.fireEvent('beforeroute', this);
                 Ext.bind(this.handler[route.action], this.handler, args, true)(Ext.apply(routeInfo, {
                     action: route.action
                 }));
+                this.fireEvent('afterroute', this);
                 return;
             }
         }
