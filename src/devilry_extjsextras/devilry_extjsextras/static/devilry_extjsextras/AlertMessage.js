@@ -8,8 +8,11 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     
     tpl: [
         '<div class="alert alert-{type}">',
+            '<tpl if="closable">',
+                '<button type="button" class="close" data-dismiss="alert">×</button>',
+            '</tpl>',
             '<tpl if="title">',
-                '<h1 class="alert-heading">{title}</h1>',
+                '<strong>{title}</strong>',
             '</tpl>',
             '{message}',
         '</div>'
@@ -30,6 +33,14 @@ Ext.define('devilry_extjsextras.AlertMessage', {
      */
     message: '',
 
+
+    /**
+     * @cfg {bool} [closable=false]
+     * Show close button. The ``closed`` event is fired when the button is
+     * clicked.
+     */
+    closable: false,
+
     /**
      * @cfg
      * An optional title for the message.
@@ -44,6 +55,16 @@ Ext.define('devilry_extjsextras.AlertMessage', {
         this.cls = cls;
         this.callParent(arguments);
         this.update(this.message, this.type);
+
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: '.close',
+            click: function(e) {
+                e.preventDefault();
+                this.fireEvent('closed', this, e);
+            }
+        });
     },
 
     /**
@@ -58,7 +79,8 @@ Ext.define('devilry_extjsextras.AlertMessage', {
         this.callParent([{
             type: this.type,
             message: this.message,
-            title: this.title
+            title: this.title,
+            closable: this.closable
         }]);
     }
 });
