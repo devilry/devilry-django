@@ -21,6 +21,7 @@ class RelatedUsersUITestMixin(object):
             matches = row.find_elements_by_css_selector('.relateduser_username_{username}'.format(username=username))
             if len(matches) > 0:
                 return row
+        raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
 
     def select_row_by_username(self, username):
         self.get_row_by_username(username).click()
@@ -34,7 +35,6 @@ class RelatedUsersUITestMixin(object):
         if len(candidate_id_elements) == 1:
             result['candidate_id'] = candidate_id_elements[0].text.strip()
         return result
-
 
     def click_add_related_user_button(self):
         self.waitForCssSelector('.add_related_user_button')
@@ -53,6 +53,23 @@ class RelatedUsersUITestMixin(object):
         user = getattr(self.testhelper, username)
         displayname = user.devilryuserprofile.full_name or user.username
         self.waitForText('{0} added'.format(displayname))
+
+    def click_remove_button(self):
+        removebutton = self.waitForAndFindElementByCssSelector('.remove_related_user_button')
+        removebutton.click()
+
+    def ui_remove_related_users(self, *usernames):
+        displaynames = []
+        for username in usernames:
+            self.select_row_by_username(username)
+            user = getattr(self.testhelper, username)
+            displayname = user.devilryuserprofile.full_name or user.username
+            displaynames = []
+        self.click_remove_button()
+        #removeconfirmbutton = self.find_element('.devilry_subjectadmin_removeconfirmpanel .okbutton')
+        #self.waitForDisplayed(removeconfirmbutton)
+        #removeconfirmbutton.click()
+        self.waitForText('Removed: {0}'.format(', '.join(displaynames)))
 
 
 class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixin):
@@ -110,8 +127,11 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self._browseToManageStudentsAs('p1admin', self.period.id)
         self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
         self.testhelper.create_user('student1')
+        self.assertFalse(self.period.relatedstudent_set.filter(user__username='student1').exists())
+
         self.ui_add_related_user('student1')
         self.waitForGridRowCount(1)
+        self.assertTrue(self.period.relatedstudent_set.filter(user__username='student1').exists())
 
     def test_add_student_cancel(self):
         self._browseToManageStudentsAs('p1admin', self.period.id)
@@ -123,3 +143,27 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.waitForDisplayed(cancelbutton)
         cancelbutton.click()
         self.waitForNotDisplayed(cancelbutton)
+
+    def test_remove_single(self):
+        self._add_relatedstudent('student1')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.waitForGridRowCount(1)
+        self.ui_remove_related_users('student1')
+        self.waitForGridRowCount(0)
+        self.assertFalse(self.period.relatedstudent_set.filter(user__username='student1').exists())
+
+    def test_remove_many(self):
+        self._add_relatedstudent('student1')
+        self._add_relatedstudent('student2', full_name='Student Two')
+        self._add_relatedstudent('student3', full_name='Student Three')
+        self._add_relatedstudent('ignored', full_name='Ignored student')
+        self._browseToManageStudentsAs('p1admin', self.period.id)
+        self.waitForCssSelector('.devilry_subjectadmin_selectrelateduserpanel')
+        self.waitForGridRowCount(4)
+        self.ui_remove_related_users('student1', 'student2', 'student3')
+        self.waitForGridRowCount(1)
+        self.assertFalse(self.period.relatedstudent_set.filter(user__username='student1').exists())
+        self.assertFalse(self.period.relatedstudent_set.filter(user__username='student2').exists())
+        self.assertFalse(self.period.relatedstudent_set.filter(user__username='student3').exists())
+        self.assertTrue(self.period.relatedstudent_set.filter(user__username='ignored').exists())

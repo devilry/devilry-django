@@ -170,7 +170,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         store.sync({
             scope: this,
             success: function() {
-                var msg = gettext('The following users was removed: {0}');
+                var msg = gettext('Removed: {0}');
                 this._onSyncSuccess(Ext.String.format(msg, names.join(', ')));
             }
         });
