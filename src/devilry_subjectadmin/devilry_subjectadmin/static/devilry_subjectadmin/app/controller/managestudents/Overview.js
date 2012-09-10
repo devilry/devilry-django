@@ -354,8 +354,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
         var period_id = this.assignmentRecord.get('parentnode');
-        this.getRelatedExaminersRoStore().setPeriod(period_id);
-        this.getRelatedStudentsRoStore().setPeriod(period_id);
+        this.getRelatedExaminersRoStore().setAssignment(this.assignmentRecord.get('id'));
+        this.getRelatedStudentsRoStore().setAssignment(this.assignmentRecord.get('id'));
         this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this.getOverview().setLoading(false);
         this._loadGroupsStore();
