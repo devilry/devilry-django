@@ -37,7 +37,7 @@ Ext.application({
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.form.DateField',
         'devilry_extjsextras.form.TimeField',
-        'devilry_extjsextras.FloatingAlertMessageList'
+        'devilry_extjsextras.FloatingAlertmessageList'
     ],
 
     controllers: [

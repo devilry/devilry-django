@@ -1,7 +1,7 @@
 /**
 *  AlertMessageList that floats and automatically closes when all messages are closed.
 */ 
-Ext.define('devilry_extjsextras.FloatingAlertMessageList', {
+Ext.define('devilry_extjsextras.FloatingAlertmessageList', {
     extend: 'devilry_extjsextras.AlertMessageList',
     alias: 'widget.floatingalertmessagelist',
     cls: 'devilry_extjsextras_floatingalertmessagelist',
