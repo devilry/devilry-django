@@ -31,6 +31,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveriesList', {
                         '</a></li>',
                     '</tpl>',
                 '</ul>',
+            '<tpl else>',
+                '<p class="muted">',
+                    gettext('No deliveries'),
+                '</p>',
             '</tpl>',
         '</tpl>'
     ],
