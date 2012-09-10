@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
 
     adminsTpl: [
         '<tpl if="admins.length &gt; 0">',
-            '<ul class="devilry_subjectadmin_administratorlist">',
+            '<ul class="devilry_subjectadmin_administratorlist unstyled">',
                 '<tpl for="admins">',
                     '<li class="administratorlistitem administratorlistitem_{username}">',
                         '<a href="mailto:{email}">',
@@ -35,7 +35,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     ],
     inheritedAdminsTpl: [
         '<tpl if="inherited_admins.length &gt; 0">',
-            '<ul class="devilry_subjectadmin_inherited_administratorlist">',
+            '<ul class="devilry_subjectadmin_inherited_administratorlist unstyled">',
                 '<tpl for="inherited_admins">',
                     '<li class="inherited_administratorlistitem inherited_administratorlistitem_{user.username}">',
                         '<a href="mailto:{user.email}">',
