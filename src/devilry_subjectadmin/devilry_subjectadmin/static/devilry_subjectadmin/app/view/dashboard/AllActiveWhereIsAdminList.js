@@ -1,7 +1,7 @@
-Ext.define('devilry_subjectadmin.view.AllWhereIsAdminList' ,{
+Ext.define('devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList' ,{
     extend: 'Ext.Component',
-    alias: 'widget.allwhereisadminlist',
-    cls: 'devilry_subjectadmin_allwhereisadminlist bootstrap',
+    alias: 'widget.allactivewhereisadminlist',
+    cls: 'devilry_subjectadmin_allactivewhereisadminlist bootstrap',
     tpl: [
         '<tpl if="loadingtext">',
             '<h2>{loadingtext}</h2>',

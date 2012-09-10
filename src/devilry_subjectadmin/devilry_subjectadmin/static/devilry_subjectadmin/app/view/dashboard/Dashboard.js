@@ -4,7 +4,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     cls: 'dashboard',
 
     requires: [
-        'devilry_subjectadmin.view.AllWhereIsAdminList'
+        'devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList'
     ],
 
     layout: 'column',
@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         xtype: 'container',
         columnWidth: .65,
         items: [{
-            xtype: 'allwhereisadminlist'
+            xtype: 'allactivewhereisadminlist'
         }, {
             xtype: 'box',
             cls: 'bootstrap',

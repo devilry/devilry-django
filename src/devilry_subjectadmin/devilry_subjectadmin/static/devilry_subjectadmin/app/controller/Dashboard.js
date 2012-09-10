@@ -12,17 +12,12 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
     refs: [{
         // Create selector method for the ``allwhereisadminpanel`` widget called getAllWhereIsAdminPanel()
         ref: 'allWhereIsAdminList',
-        selector: 'allwhereisadminlist'
+        selector: 'allactivewhereisadminlist'
     }],
 
     init: function() {
         this.control({
-            // Listen for events by selector
-            'viewport dashboard allwhereisadminlist': {
-                // NOTE: Important that we listen for #listOfSubjects, and not
-                // for the panel, since the panel is rendered before the list,
-                // which would mess up our code that requires the list to be
-                // rendered.
+            'viewport dashboard allactivewhereisadminlist': {
                 render: this._onRenderAllWhereIsAdminList
             }
         });
