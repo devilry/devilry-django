@@ -112,9 +112,8 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this._setBreadcrumb();
 
-        var period_id = this.assignmentRecord.get('parentnode');
-        this.getRelatedExaminersRoStore().setPeriod(period_id);
-        this.getRelatedStudentsRoStore().setPeriod(period_id);
+        this.getRelatedExaminersRoStore().setAssignment(this.assignmentRecord.get('id'));
+        this.getRelatedStudentsRoStore().setAssignment(this.assignmentRecord.get('id'));
 
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
         relatedStudentsStore.loadWithAutomaticErrorHandling({

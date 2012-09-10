@@ -11,10 +11,6 @@ Ext.define('devilry_subjectadmin.store.AbstractRelatedUsers', {
         this.load(loadConfig);
     },
 
-    setPeriod: function(periodId) {
-        this.proxy.url = Ext.String.format(this.proxy.urlpatt, periodId);
-    },
-
 
     /**
      * @param {Function} [config.success]
