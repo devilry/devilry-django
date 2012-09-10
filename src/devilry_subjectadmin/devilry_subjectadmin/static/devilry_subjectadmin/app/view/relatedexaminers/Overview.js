@@ -24,6 +24,22 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
      */
 
 
+    introhelp: interpolate(gettext('These are the examinerss available on this %(period_term)s. They are the examiners that can be added to any assignments within the %(period_term)s.'), {
+        period_term: gettext('period'),
+        examiners_term: gettext('examiners')
+    }, true),
+    morehelptpl: [
+        '<h3>', gettext('Removing examiners'), '</h3>',
+        '<p>',
+            gettext('Removing an examiner from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
+        '</p>',
+
+        '<h3>', gettext('Accociate examiners with {students_term} using tags'), '</h3>',
+        '<p>',
+            gettext('If you tag your {students_term} and examiners with the same tags, you can automatically assignment examiners to {students_term} when creating a new assignment. E.g.: If you tag two examiners and 20 {students_term} with <em>group1</em>, those two examiners will be set up to correct those 20 {students_term} when you create a new assignment.'),
+        '</p>'
+    ],
+
     initComponent: function() {
         Ext.apply(this, {
             layout: 'anchor',
@@ -37,13 +53,10 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                     anchor: '100%',
                     html: [
                         '<h1 style="margin-top: 0; padding-top: 0;">',
-                            interpolate(gettext('Manage related %(examiners_term)s'), {
-                                examiners_term: gettext('examiners')
-                            }, true),
+                            gettext('Manage related examiners'),
                         '</h1>',
                         '<p><small class="muted">',
-                            interpolate(gettext('Manage the %(examiners_term)s available on this %(period_term)s.'), {
-                                examiners_term: gettext('examiners'),
+                            interpolate(gettext('Manage the examiners available on this %(period_term)s.'), {
                                 period_term: gettext('period')
                             }, true),
                         '</small></p>'
@@ -102,19 +115,29 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                 }, {
                     xtype: 'container',
                     layout: 'anchor',
-                    width: 400,
-                    region: 'east',
-                    padding: '0 0 0 30',
+                    width: 460,
+                    region: 'west',
+                    padding: '0 30 0 0',
                     items: [{
                         xtype: 'panel',
                         border: false,
                         layout: 'card',
                         itemId: 'sidebarDeck',
                         items: [{
-                            xtype: 'box',
-                            itemId: 'helpBox',
+                            xtype: 'moreinfobox',
                             cls: 'related_user_helpbox related_examiner_helpbox',
-                            html: 'Help - TODO'
+                            introtext: this.introhelp,
+                            itemId: 'helpBox',
+                            moretext: gettext('More help ...'),
+                            lesstext: gettext('Less help'),
+                            moreWidget: {
+                                xtype: 'box',
+                                tpl: this.morehelptpl,
+                                data: {
+                                    period_term: gettext('period'),
+                                    students_term: gettext('students')
+                                }
+                            }
                         }, {
                             xtype: 'selectrelateduserpanel',
                             itemId: 'selectRelatedUserPanel'

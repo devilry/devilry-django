@@ -118,6 +118,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     getRelatedUsersStore: function() {
         return this.getRelatedStudentsStore();
     },
+    getLabel: function() {
+        return gettext('Manage students');
+    },
 
 
     //

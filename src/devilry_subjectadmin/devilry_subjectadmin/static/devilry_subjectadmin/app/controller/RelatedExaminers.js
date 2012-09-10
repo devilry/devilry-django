@@ -111,6 +111,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
     getRelatedUsersStore: function() {
         return this.getRelatedExaminersStore();
     },
+    getLabel: function() {
+        return gettext('Manage examiners');
+    },
 
     _onRender: function() {
         var period_id = this.getOverview().period_id;

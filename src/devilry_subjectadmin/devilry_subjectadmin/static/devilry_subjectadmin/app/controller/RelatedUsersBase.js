@@ -19,6 +19,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         throw "Must be implemented in subclasses.";
     },
 
+    getLabel: function() {
+        throw "Must be implemented in subclasses.";
+    },
+
 
     //
     //
@@ -42,10 +46,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
         var path = this.getPathFromBreadcrumb(this.periodRecord);
-        var label = gettext('Manage students');
+        var label = this.getLabel();
         this.application.setTitle(Ext.String.format('{0} - {1}', label, path));
         this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], label);
     },
+
     _onLoadPeriodFailure: function(operation) {
         this.onLoadFailure(operation);
     },
