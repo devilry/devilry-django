@@ -49,6 +49,11 @@
   color: #900;
 }
 
+/* line 51, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_allwhereisadminlist strong {
+  font-size: 18px;
+}
+
 /* line 2, ../sass/_managestudents.scss */
 .listofgroups .col2Wrapper {
   text-align: right;
