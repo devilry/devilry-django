@@ -21,6 +21,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         ref: 'grid',
         selector: 'viewport relatedstudents relatedstudentsgrid'
     }, {
+        ref: 'addButton',
+        selector: 'viewport relatedstudents #addButton'
+    }, {
         ref: 'removeButton',
         selector: 'viewport relatedstudents #removeButton'
     }, {
@@ -42,7 +45,8 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             },
 
             'viewport relatedstudents relatedstudentsgrid': {
-                selectionchange: this._onGridSelectionChange
+                selectionchange: this._onGridSelectionChange,
+                edit: this._onEditGrid
             },
 
             // Remove students
@@ -127,7 +131,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     // Grid
     //
     //
-    _onGridSelectionChange: function(grid, selected) {
+    _onGridSelectionChange: function(selModel, selected) {
         if(selected.length === 0) {
             this.getRemoveButton().disable();
             this.getTagsButton().disable();
@@ -140,6 +144,22 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         var selModel = this.getGrid().getSelectionModel();
         var selectedRelatedUserRecords = selModel.getSelection();
         return selectedRelatedUserRecords;
+    },
+    _onEditGrid: function(editor, e) {
+        var store = this.getRelatedStudentsStore();
+        var relatedStudentRecord = e.record;
+        if(relatedStudentRecord.dirty) {
+            this.setLoading(gettext('Saving') + ' ...');
+            store.sync({
+                scope: this,
+                success: function() {
+                    var msg = gettext('Updated candidate ID of {0} to {1}.');
+                    this.showSyncSuccessMessage(Ext.String.format(msg,
+                        relatedStudentRecord.getDisplayName(),
+                        relatedStudentRecord.get('candidate_id')));
+                }
+            });
+        }
     },
 
 
@@ -206,6 +226,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
                 autoclose: true
             });
         }
+        this.getAddButton().focus(false, 200);
     },
 
     _onAddUserSuccess: function(relatedStudentRecord) {

@@ -55,7 +55,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
                     value: this.initialValue,
                     allowBlank: this.allowNoTags,
                     emptyText: pgettext('tagsexample', 'Example: group3, needs_extra_help'),
-                    regex: new RegExp('^[a-zA-Z0-9_, ]+$'),
+                    regex: new RegExp('^[a-zA-Z0-9_, -]+$'),
                     regexText: gettext('A tag can contain a-z, A-Z, 0-9 and "_".'),
                     listeners: {
                         scope: this,

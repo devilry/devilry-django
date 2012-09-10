@@ -28,22 +28,35 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                xtype: 'box',
-                cls: 'bootstrap',
-                anchor: '100%',
-                html: [
-                    '<h1 style="margin-top: 0; padding-top: 0;">',
-                        interpolate(gettext('Manage related %(students_term)s'), {
-                            students_term: gettext('students')
-                        }, true),
-                    '</h1>',
-                    '<p><small class="muted">',
-                        interpolate(gettext('Manage the %(students_term)s available on this %(period_term)s.'), {
-                            students_term: gettext('students'),
-                            period_term: gettext('period')
-                        }, true),
-                    '</small></p>'
-                ].join('')
+                xtype: 'container',
+                layout: 'column',
+                items: [{
+                    xtype: 'box',
+                    columnWidth: 1,
+                    cls: 'bootstrap',
+                    anchor: '100%',
+                    html: [
+                        '<h1 style="margin-top: 0; padding-top: 0;">',
+                            interpolate(gettext('Manage related %(students_term)s'), {
+                                students_term: gettext('students')
+                            }, true),
+                        '</h1>',
+                        '<p><small class="muted">',
+                            interpolate(gettext('Manage the %(students_term)s available on this %(period_term)s.'), {
+                                students_term: gettext('students'),
+                                period_term: gettext('period')
+                            }, true),
+                        '</small></p>'
+                    ].join('')
+                }, {
+                    width: 200,
+                    xtype: 'primarybutton',
+                    itemId: 'addButton',
+                    margin: '15 0 0 0',
+                    tabIndex: 1,
+                    cls: 'add_related_user_button add_related_student_button',
+                    text: gettext('Add student')
+                }]
             }, {
                 xtype: 'panel',
                 border: false,
@@ -84,11 +97,6 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                                 cls: 'add_tags_button',
                                 itemId: 'addTagsButton'
                             }]
-                        }, {
-                            xtype: 'primarybutton',
-                            itemId: 'addButton',
-                            cls: 'add_related_user_button add_related_student_button',
-                            text: gettext('Add student')
                         }]
                     }]
                 }, {

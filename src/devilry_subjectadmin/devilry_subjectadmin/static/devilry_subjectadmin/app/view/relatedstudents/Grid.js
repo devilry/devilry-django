@@ -5,13 +5,16 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
     requires: [
         'Ext.XTemplate',
         'devilry_extjsextras.GridMultiSelectModel',
-        'Ext.selection.CheckboxModel'
+        'Ext.selection.CheckboxModel',
+        'Ext.grid.plugin.CellEditing',
+        'Ext.grid.plugin.RowEditing'
     ],
 
     store: 'RelatedStudents',
     border: 1,
     frame: false,
     hideHeaders: false,
+    multiSelect: true,
 
     col1Tpl: [
         '<div class="meta_cell relateduserid_{record.id} relateduser_username_{record.user.username}">',
@@ -25,11 +28,6 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
             '<div class="username">',
                 '<small>{record.user.username}</small>',
             '</div>',
-            '<tpl if="record.candidate_id">',
-                '<div class="candidate_id">',
-                    '{record.candidate_id}',
-                '</div>',
-            '</tpl>',
         '</div>'
     ],
 
@@ -42,8 +40,12 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
     initComponent: function() {
         this.col1TplCompiled = Ext.create('Ext.XTemplate', this.col1Tpl);
         this.col2TplCompiled = Ext.create('Ext.XTemplate', this.col2Tpl);
+
+        var editingPlugin = Ext.create('Ext.grid.plugin.CellEditing', {
+            clicksToEdit: 2
+        });
         Ext.apply(this, {
-            selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
+            //selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
             columns: [{
                 dataIndex: 'id',
                 flex: 5,
@@ -58,7 +60,16 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
                 menuDisabled: true,
                 sortable: false,
                 renderer: this.renderCol2
-            }]
+            }, {
+                dataIndex: 'candidate_id',
+                itemId: 'candidateColumn',
+                flex: 2,
+                header: gettext('Candidate ID'),
+                editor: {
+                    xtype: 'textfield'
+                }
+            }],
+            plugins: [editingPlugin]
         });
         this.callParent(arguments);
     },

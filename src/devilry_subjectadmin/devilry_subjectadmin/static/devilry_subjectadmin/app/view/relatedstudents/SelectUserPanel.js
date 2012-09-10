@@ -39,6 +39,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.SelectUserPanel', {
             items: [{
                 anchor: '100%',
                 xtype: 'autocompleteuserwidget',
+                emptyText: gettext('Search by username, name or email ...'),
                 hideLabel: true
             }]
         });
