@@ -35,9 +35,9 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
                                verbose_name='Period',
                                help_text="The period.")
     user = models.ForeignKey(User, help_text="The related user.")
-    tags = models.TextField(blank=True, null=True, help_text="Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z and 0-9. Each word is separated by a comma, and no whitespace.")
+    tags = models.TextField(blank=True, null=True, help_text="Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.")
 
-    tags_patt = re.compile('^(?:[a-z0-9]+,)*[a-z0-9]+$')
+    tags_patt = re.compile('^(?:[a-z0-9_-]+,)*[a-z0-9_-]+$')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
@@ -52,7 +52,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     def clean(self):
         if self.tags and not self.tags_patt.match(self.tags):
-            raise ValidationError('tags must be a comma-separated list of tags, each tag only containing a-z and 0-9.')
+            raise ValidationError('tags must be a comma-separated list of tags, each tag only containing a-z, 0-9, ``_`` and ``-``.')
 
     def __unicode__(self):
         return '{0}:user={1}:tags={2}'.format(self.period, self.user.username, self.tags)
