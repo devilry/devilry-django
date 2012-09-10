@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
                     }, true),
                 '</h2>',
                 '<p>',
-                    '<a href="#/doesnotexist">',
+                    '<a href="#/">',
                         gettext('Browse everything where you are administrator'),
                     '</a>',
                 '</p>'

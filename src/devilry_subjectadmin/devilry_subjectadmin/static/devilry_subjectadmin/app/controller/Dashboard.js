@@ -14,7 +14,6 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
     ],
 
     refs: [{
-        // Create selector method for the ``allwhereisadminpanel`` widget called getAllWhereIsAdminPanel()
         ref: 'allWhereIsAdminList',
         selector: 'allactivewhereisadminlist'
     }],

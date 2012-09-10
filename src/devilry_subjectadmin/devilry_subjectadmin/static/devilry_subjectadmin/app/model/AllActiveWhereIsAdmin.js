@@ -1,21 +1,12 @@
 Ext.define('devilry_subjectadmin.model.AllActiveWhereIsAdmin', {
-    extend: 'Ext.data.Model',
-
-    idProperty: 'id',
-    fields: [
-        {name: 'id', type: 'int'},
-        {name: 'can_administer', type: 'bool'},
-        {name: 'is_admin', type: 'bool'},
-        {name: 'short_name',  type: 'string'},
-        {name: 'long_name',  type: 'string'},
-        {name: 'periods',  type: 'auto'}
-    ],
+    extend: 'devilry_subjectadmin.model.AllWhereIsAdmin',
 
     proxy: {
         type: 'rest',
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/allwhereisadmin/',
         extraParams: {
-            format: 'json'
+            format: 'json',
+            only_active: 'yes' // NOTE: This is the only difference from the AllWhereIsAdmin model
         },
         reader: {
             type: 'json'

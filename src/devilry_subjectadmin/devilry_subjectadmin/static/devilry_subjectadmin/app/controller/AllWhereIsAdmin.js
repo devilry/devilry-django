@@ -1,47 +1,48 @@
 Ext.define('devilry_subjectadmin.controller.AllWhereIsAdmin', {
     extend: 'Ext.app.Controller',
 
-    requires: [
-    ],
-
-    // Views - the init function of this controller is called when the first of its views is added to the page (which we do in ../app.js)
     views: [
         'allwhereisadmin.AllWhereIsAdminPanel'
     ],
 
-    // Models - Available as get<modelname>()
-    models: [
-        //'AllWhereIsAdmin',
+    stores: [
+        'AllWhereIsAdmin'
     ],
 
     refs: [{
-        // Create selector method for the ``allwhereisadminpanel`` widget called getAllWhereIsAdminPanel()
-        ref: 'allWhereIsAdminPanel',
-        selector: 'allwhereisadminpanel'
-    }, {
-        ref: 'listOfSubjects',
-        selector: 'allwhereisadminpanel #listOfSubjects' // Note: we use the itemId for the selector
+        ref: 'allWhereIsAdminList',
+        selector: 'allwhereisadminlist'
     }],
 
     init: function() {
         this.control({
-            // Listen for events by selector
-            'viewport allwhereisadminpanel #listOfSubjects': {
-                // NOTE: Important that we listen for #listOfSubjects, and not
-                // for the panel, since the panel is rendered before the list,
-                // which would mess up our code that requires the list to be
-                // rendered.
-                render: this._onRenderListOfSubjects
+            'viewport allwhereisadminpanel allwhereisadminlist': {
+                render: this._onRenderAllWhereIsAdminList
             }
         });
     },
 
-    _onRenderListOfSubjects: function() {
-        console.log('Rendered');
-        // TODO: load the model and move the code below into the load-success handler
-        this.getListOfSubjects().update({
-            // Refresh the template with new data
-            loadingtext: null
+    _onRenderAllWhereIsAdminList: function() {
+        this.getAllWhereIsAdminStore().load({
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadSuccess(records);
+                } else {
+                    // NOTE: Errors are handled in _onProxyError
+                }
+            }
         });
-    }
+        var label = interpolate(gettext('All %(subjects_term)s'), {
+            subjects_term: gettext('subjects')
+        }, true);
+        this.application.breadcrumbs.set([], label);
+    },
+
+    _onLoadSuccess: function(records) {
+        this.getAllWhereIsAdminList().update({
+            loadingtext: null,
+            subjects: records
+        });
+    },
 });
