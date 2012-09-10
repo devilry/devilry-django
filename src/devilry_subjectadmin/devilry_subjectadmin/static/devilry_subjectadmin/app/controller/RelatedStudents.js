@@ -2,13 +2,7 @@
  * Controller for the related students view
  */
 Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
-    extend: 'Ext.app.Controller',
-
-    mixins: [
-        'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
-        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
-        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
-    ],
+    extend: 'devilry_subjectadmin.controller.RelatedUsersBase',
 
     views: [
         'relatedstudents.Overview'
@@ -16,11 +10,6 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
 
     stores: ['RelatedStudents'],
     models: ['Period'],
-
-    requires: [
-        'devilry_subjectadmin.utils.UrlLookup',
-        'Ext.window.MessageBox'
-    ],
 
     refs: [{
         ref: 'globalAlertmessagelist',
@@ -46,6 +35,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     }],
 
     init: function() {
+        // NOTE: All of the handlers not starting with ``_`` is inherited from RelatedUsersBase.
         this.control({
             'viewport relatedstudents': {
                 render: this._onRender
@@ -60,66 +50,67 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
                 click: this._onRemoveSelected
             },
             'viewport relatedstudents okcancelpanel#confirmRemovePanel': {
-                cancel: this._resetToHelpView,
+                cancel: this.resetToHelpView,
                 ok: this._removeSelected
             },
 
 
             // setTags
             'viewport relatedstudents #setTagsButton': {
-                click: this._onSetTags
+                click: this.onSetTagsClick
             },
             'viewport relatedstudents choosetagspanel#setTagsPanel': {
-                cancel: this._resetToHelpView,
-                savetags: this._onSetTagsSave
+                cancel: this.resetToHelpView,
+                savetags: this.onSetTagsSave
             },
 
             // addTags
             'viewport relatedstudents #addTagsButton': {
-                click: this._onAddTags
+                click: this.onAddTagsButtonClick
             },
             'viewport relatedstudents choosetagspanel#addTagsPanel': {
-                cancel: this._resetToHelpView,
-                savetags: this._onAddTagsSave
+                cancel: this.resetToHelpView,
+                savetags: this.onAddTagsSave
             },
 
             // clearTags
             'viewport relatedstudents #clearTagsButton': {
-                click: this._onClearTags
+                click: this.onClearTagsClick
             },
             'viewport relatedstudents okcancelpanel#clearTagsPanel': {
-                cancel: this._resetToHelpView,
-                ok: this._onClearTagsConfirmed
+                cancel: this.resetToHelpView,
+                ok: this.onClearTagsConfirmed
             },
 
 
             // Add student
             'viewport relatedstudents #addButton': {
-                click: this._onGridAddButton
+                click: this._onAddUserButtonClick
             },
             'viewport relatedstudents selectrelateduserpanel': {
-                cancel: this._resetToHelpView
+                cancel: this.resetToHelpView
             },
             'viewport relatedstudents selectrelateduserpanel autocompleteuserwidget': {
                 userSelected: this._onAddSelectedUser
             },
         });
+
         this.mon(this.getRelatedStudentsStore().proxy, {
             scope: this,
-            exception: this._onRelatedStoreProxyError
+            exception: this.onRelatedStoreProxyError
+        });
+        this.mon(this.getPeriodModel().proxy, {
+            scope: this,
+            exception: this.onPeriodProxyError
         });
     },
 
     _onRender: function() {
-        this.setLoadingBreadcrumb();
-        this.period_id = this.getOverview().period_id;
-        this._loadPeriod(this.period_id);
-        this._loadRelatedStudents(this.period_id);
+        var period_id = this.getOverview().period_id;
+        this.loadPeriod(period_id);
+        this._loadRelatedStudents(period_id);
     },
 
-    _resetToHelpView: function() {
-        this.getSidebarDeck().getLayout().setActiveItem('helpBox');
-    },
 
     //
     //
@@ -127,70 +118,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     //
     _loadRelatedStudents: function(period_id) {
-        this.getRelatedStudentsStore().loadInPeriod(period_id, {
-            scope: this,
-            callback: this._onLoadRelatedStudents
-        });
+        this.getRelatedStudentsStore().loadInPeriod(period_id);
     },
 
-    _onLoadRelatedStudents: function(records, operation) {
-        if(operation.success) {
-            this._onLoadRelatedStudentsSuccess(records);
-        } else {
-            // NOTE: Errors is handled by _onRelatedStoreProxyError
-        }
-    },
-    _onLoadRelatedStudentsSuccess: function(records) {
-        //console.log(records);
-    },
-
-    //
-    //
-    // Load period
-    //
-    //
-
-    _loadPeriod: function(period_id) {
-        this.getPeriodModel().load(period_id, {
-            scope: this,
-            callback: function(record, operation) {
-                if(operation.success) {
-                    this._onLoadPeriodSuccess(record);
-                } else {
-                    this._onLoadPeriodFailure(operation);
-                }
-            }
-        });
-    },
-    _onLoadPeriodSuccess: function(record) {
-        this.periodRecord = record;
-        var path = this.getPathFromBreadcrumb(this.periodRecord);
-        var label = gettext('Manage students');
-        this.application.setTitle(Ext.String.format('{0} - {1}', label, path));
-        this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], label);
-    },
-    _onLoadPeriodFailure: function(operation) {
-        this.onLoadFailure(operation);
-    },
-
-
-    //
-    //
-    // Proxy success/error
-    //
-    //
-    _onRelatedStoreProxyError: function(proxy, response, operation) {
-        this.handleProxyErrorNoForm(this.getGlobalAlertmessagelist(), response, operation);
-    },
-
-    _onSyncSuccess: function(message) {
-        this.getGrid().setLoading(false);
-        this.getGlobalAlertmessagelist().add({
-            type: 'success',
-            message: message,
-            autoclose: true
-        });
-    },
 
     //
     //
@@ -212,6 +142,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         return selectedRelatedUserRecords;
     },
 
+
     //
     //
     // Remove student(s)
@@ -223,7 +154,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
 
 
     _removeSelected: function() {
-        this._resetToHelpView();
+        this.resetToHelpView();
         var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
         var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
 
@@ -234,7 +165,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             scope: this,
             success: function() {
                 var msg = gettext('Removed: {0}');
-                this._onSyncSuccess(Ext.String.format(msg, names.join(', ')));
+                this.showSyncSuccessMessage(Ext.String.format(msg, names.join(', ')));
             }
         });
     },
@@ -246,14 +177,14 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     //
 
-    _onGridAddButton: function() {
+    _onAddUserButtonClick: function() {
         this.getSidebarDeck().getLayout().setActiveItem('selectRelatedUserPanel');
         this.getAutocompleteUserWidget().setValue('');
         this.getAutocompleteUserWidget().focus();
     },
 
     _onAddSelectedUser: function(combo, userRecord) {
-        this._resetToHelpView();
+        this.resetToHelpView();
         var store = this.getRelatedStudentsStore();
         var matchingRelatedUser = store.getByUserid(userRecord.get('id'));
         if(matchingRelatedUser === null) {
@@ -278,78 +209,8 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     },
 
     _onAddUserSuccess: function(relatedStudentRecord) {
-        this._onSyncSuccess(Ext.String.format(gettext('{0} added.'),
+        this.showSyncSuccessMessage(Ext.String.format(gettext('{0} added.'),
             relatedStudentRecord.getDisplayName()));
         this.getGrid().getSelectionModel().select([relatedStudentRecord]);
-    },
-
-
-
-    //
-    //
-    // Tags
-    //
-    //
-    _onTagSyncSuccess: function(selectedRelatedUserRecords, tagsArray) {
-        this._resetToHelpView();
-        var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
-        var msg = gettext('Tagged %(users)s with: %(tags)s')
-        this._onSyncSuccess(interpolate(msg, {
-            users: names.join(', '),
-            tags: tagsArray.join(', ')
-        }, true));
-    },
-
-    _onSetTags: function() {
-        this.getSidebarDeck().getLayout().setActiveItem('setTagsPanel');
-    },
-    _onSetTagsSave: function(panel, tagsArray) {
-        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
-        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
-            relatedUserRecord.setTagsFromArray(tagsArray);
-        }, this);
-        this.getRelatedStudentsStore().sync({
-            scope: this,
-            success: function() {
-                this._onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
-            }
-        });
-    },
-
-    _onAddTags: function() {
-        this.getSidebarDeck().getLayout().setActiveItem('addTagsPanel');
-    },
-    _onAddTagsSave: function(panel, tagsArray) {
-        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
-        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
-            relatedUserRecord.addTagsFromArray(tagsArray);
-        }, this);
-        this.getRelatedStudentsStore().sync({
-            scope: this,
-            success: function() {
-                this._onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
-            }
-        });
-    },
-
-    _onClearTags: function() {
-        this.getSidebarDeck().getLayout().setActiveItem('clearTagsPanel');
-    },
-    _onClearTagsConfirmed: function() {
-        var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
-        Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
-            relatedUserRecord.clearTags();
-        }, this);
-        this.getRelatedStudentsStore().sync({
-            scope: this,
-            success: function() {
-                this._resetToHelpView();
-                var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
-                var msg = gettext('Cleared tags on %(users)s.')
-                this._onSyncSuccess(interpolate(msg, {
-                    users: names.join(', ')
-                }, true));
-            }
-        });
     }
 });
