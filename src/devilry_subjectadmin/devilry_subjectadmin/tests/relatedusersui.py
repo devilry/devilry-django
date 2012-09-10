@@ -25,7 +25,7 @@ class RelatedUsersUITestMixin(object):
                 return row
         raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
 
-    def click_row_by_username(self, username):
+    def click_row_by_username(self, username, add_to_selection=True):
         self.get_row_by_username(username).click()
 
     def get_row_data(self, row):
@@ -33,9 +33,6 @@ class RelatedUsersUITestMixin(object):
         result['full_name'] = row.find_element_by_css_selector('.meta_cell .full_name').text.strip()
         result['username'] = row.find_element_by_css_selector('.meta_cell .username').text.strip()
         result['tags'] = row.find_element_by_css_selector('.tags_cell').text.strip()
-        candidate_id_elements = row.find_elements_by_css_selector('.meta_cell .candidate_id')
-        if len(candidate_id_elements) == 1:
-            result['candidate_id'] = candidate_id_elements[0].text.strip()
         return result
 
     def click_add_related_user_button(self):
@@ -78,6 +75,7 @@ class RelatedUsersUITestMixin(object):
         tagsbutton.click()
         cssselector = '.{0}_tags_button'.format(action)
         button = self.waitForAndFindElementByCssSelector(cssselector)
+        self.waitForDisplayed(button)
         button.click()
         cssselector = '.devilry_subjectadmin_relatedusers .{0}_tags_panel'.format(action)
         panel = self.waitForAndFindElementByCssSelector(cssselector)
@@ -147,8 +145,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.assertEquals(self.get_row_data(self.get_row_by_username('student1')),
                           {'full_name': 'Student One',
                            'username': 'student1',
-                           'tags': 'a,b',
-                           'candidate_id': 'SEC-RET'})
+                           'tags': 'a,b'})
         self.assertEquals(self.get_row_data(self.get_row_by_username('student2')),
                           {'full_name': 'Full name missing',
                            'username': 'student2',
@@ -298,7 +295,6 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.click_row_by_username('student1')
         self.click_row_by_username('student2')
 
-        self.click_tagbutton('clear')
         panel = self.click_tagbutton('clear')
         cancelbutton = panel.find_element_by_css_selector('.cancelbutton')
         self.waitForDisplayed(cancelbutton)
