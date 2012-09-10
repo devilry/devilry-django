@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
     cls: 'devilry_subjectadmin_relatedusers devilry_subjectadmin_relatedstudents',
     requires: [
         'Ext.layout.container.Column',
+        'devilry_extjsextras.MoreInfoBox',
         'devilry_subjectadmin.view.relatedstudents.Grid',
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.OkCancelPanel',
@@ -23,6 +24,30 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
      * @cfg {String} period_id (required)
      */
 
+
+    introhelp: interpolate(gettext('These are the students available on this %(period_term)s. They are the students that can be added to any assignments within the %(period_term)s.'), {
+        period_term: gettext('period')
+    }, true),
+    morehelptpl: [
+        '<h3>', gettext('Removing students'), '</h3>',
+        '<p>',
+            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the {period_term}. This means that they will disappear from any {period_term} summaries, including calculation of final grade on the {period_term}.'),
+        '</p>',
+        
+        '<p>',
+            gettext('Removing a student from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
+        '</p>',
+
+        '<h3>', gettext('Tags'), '</h3>',
+        '<p>',
+            gettext('Tags is a flexible way of organizing students. The tags you set here are copied into groups on an assignment when you add students to an assignment.'),
+        '</p>',
+
+        '<h4>', gettext('Accociate examiners with students using tags'), '</h4>',
+        '<p>',
+            gettext('If you tag your students and examiners with the same tags, you can automatically assignment examiners to students when creating a new assignment. E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students when you create a new assignment.'),
+        '</p>'
+    ],
 
     initComponent: function() {
         Ext.apply(this, {
@@ -102,19 +127,29 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 }, {
                     xtype: 'container',
                     layout: 'anchor',
-                    width: 400,
-                    region: 'east',
-                    padding: '0 0 0 30',
+                    width: 460,
+                    region: 'west',
+                    padding: '0 30 0 0',
+                    autoScroll: true,
                     items: [{
                         xtype: 'panel',
                         border: false,
                         layout: 'card',
                         itemId: 'sidebarDeck',
                         items: [{
-                            xtype: 'box',
-                            itemId: 'helpBox',
+                            xtype: 'moreinfobox',
                             cls: 'related_user_helpbox related_student_helpbox',
-                            html: 'Help - TODO'
+                            introtext: this.introhelp,
+                            moretext: gettext('More help ...'),
+                            lesstext: gettext('Less help'),
+                            moreWidget: {
+                                xtype: 'box',
+                                itemId: 'helpBox',
+                                tpl: this.morehelptpl,
+                                data: {
+                                    period_term: gettext('period')
+                                }
+                            }
                         }, {
                             xtype: 'selectrelateduserpanel',
                             itemId: 'selectRelatedUserPanel'
