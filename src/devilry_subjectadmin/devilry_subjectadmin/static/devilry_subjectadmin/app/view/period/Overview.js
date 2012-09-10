@@ -38,7 +38,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 layout: 'column',
                 items: [{
                     xtype: 'container',
-                    columnWidth: .65,
+                    columnWidth: 1.0,
                     items: [{
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -107,7 +107,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 }, {
                     xtype: 'container',
                     border: false,
-                    columnWidth: .35,
+                    width: 250,
                     margin: '0 0 0 40',
                     defaults: {
                         margin: '20 0 0 0'

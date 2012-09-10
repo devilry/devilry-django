@@ -13,8 +13,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
      */
 
     more_text: [
-        gettext('A group can have one or more students.'), ' ',
-        gettext('Feedback is given to a group as a whole, not to individual students on a group.'),
+        '<p>',
+            gettext('A group can have one or more students.'), ' ',
+            gettext('Feedback is given to a group as a whole, not to individual students on a group.'),
+        '</p>'
     ].join(''),
 
     _createMoreInfo: function() {

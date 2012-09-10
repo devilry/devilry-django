@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.view.ActionList', {
     cls: 'devilry_subjectadmin_actionlist bootstrap',
 
     tpl: [
-        '<ul>',
+        '<ul class="unstyled">',
         '    <tpl for="links">',
         '       <li>',
         '           <strong><a href="{url}" style="{style}">{text}</a></strong>',

@@ -10,22 +10,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple', {
     ],
 
 
-    _createTagMoreHelp: function() {
-        return Ext.create('Ext.XTemplate', 
-            '<ul>',
-                '<tpl for="points">',
-                    '<li>{.}</li>',
-                '</tpl>',
-            '</ul>',
-            '<p>',
-                this.tag_details_periodnote,
-            '</p>'
-        ).apply({
-            points: this.tag_details_points
-        });
-    },
-
-
     initComponent: function() {
         Ext.apply(this, {
             cls: 'bootstrap',
@@ -88,7 +72,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple', {
                             xtype: 'box',
                             html: [
                                 devilry_subjectadmin.view.managestudents.TagsHelp.getDetailsUl(),
-                                '<p><small>', devilry_subjectadmin.view.managestudents.TagsHelp.getPeriodNote(), '</small></p>'
+                                '<p><small class="muted">', devilry_subjectadmin.view.managestudents.TagsHelp.getPeriodNote(), '</small></p>'
                             ].join('')
                         }
                     }

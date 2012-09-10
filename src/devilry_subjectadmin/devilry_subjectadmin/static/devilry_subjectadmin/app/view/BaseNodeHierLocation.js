@@ -9,7 +9,7 @@ Ext.define('devilry_subjectadmin.view.BaseNodeHierLocation', {
 
     tpl: [
         '<h4>', gettext('Location in hierarchy'), '</h4>',
-        '<ul>',
+        '<ul class="unstyled">',
             '<tpl for="breadcrumb">',
                 '<li>',
                     '<a href="{url}">{text}</a>',

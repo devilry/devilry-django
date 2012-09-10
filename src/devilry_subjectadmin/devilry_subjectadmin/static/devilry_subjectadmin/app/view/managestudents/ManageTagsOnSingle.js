@@ -6,7 +6,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
         'devilry_extjsextras.MoreInfoBox',
         'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
-        'devilry_subjectadmin.view.managestudents.TagsInGroupGrid'
+        'devilry_subjectadmin.view.managestudents.TagsInGroupGrid',
+        'devilry_subjectadmin.view.managestudents.TagsHelp'
     ],
 
     /**
@@ -86,7 +87,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                                     devilry_subjectadmin.view.managestudents.TagsHelp.getIntroText(),
                                 '</p>',
                                 devilry_subjectadmin.view.managestudents.TagsHelp.getDetailsUl(),
-                                '<p><small>', devilry_subjectadmin.view.managestudents.TagsHelp.getPeriodNote(), '</small></p>'
+                                '<p><small class="muted">', devilry_subjectadmin.view.managestudents.TagsHelp.getPeriodNote(), '</small></p>'
                             ].join('')
                         }
                     }]

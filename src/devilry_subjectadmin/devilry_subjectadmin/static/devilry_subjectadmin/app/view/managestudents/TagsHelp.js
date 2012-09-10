@@ -1,8 +1,9 @@
 Ext.define('devilry_subjectadmin.view.managestudents.TagsHelp', {
     singleton: true,
 
-    _introText: interpolate(gettext('%(Tags_term)s is a flexible method of organizing %(groups_term)s. Only administrators can see %(tags_term)s. You can search and select %(groups_term)s by their %(tags_term)s. Common use-cases are:'), {
+    _introText: interpolate(gettext('%(Tags_term)s is a flexible method of organizing %(groups_term)s. Only administrators and %(examiners_term)s can see %(tags_term)s. You can search and select %(groups_term)s by their %(tags_term)s. Common use-cases are:'), {
         Tags_term: gettext('Tags'),
+        examiners_term: gettext('examiners'),
         groups_term: gettext('groups'),
         tags_term: gettext('tags')
     }, true),
