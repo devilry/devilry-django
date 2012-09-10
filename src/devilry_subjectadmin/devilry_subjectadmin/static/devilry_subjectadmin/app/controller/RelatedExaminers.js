@@ -1,14 +1,14 @@
 /**
- * Controller for the related students view
+ * Controller for the related examiners view
  */
-Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
+Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
     extend: 'devilry_subjectadmin.controller.RelatedUsersBase',
 
     views: [
-        'relatedstudents.Overview'
+        'relatedexaminers.Overview'
     ],
 
-    stores: ['RelatedStudents'],
+    stores: ['RelatedExaminers'],
     models: ['Period'],
 
     refs: [{
@@ -16,90 +16,89 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
     }, {
         ref: 'overview',
-        selector: 'viewport relatedstudents'
+        selector: 'viewport relatedexaminers'
     }, {
         ref: 'grid',
-        selector: 'viewport relatedstudents relatedstudentsgrid'
+        selector: 'viewport relatedexaminers relatedexaminersgrid'
     }, {
         ref: 'addButton',
-        selector: 'viewport relatedstudents #addButton'
+        selector: 'viewport relatedexaminers #addButton'
     }, {
         ref: 'removeButton',
-        selector: 'viewport relatedstudents #removeButton'
+        selector: 'viewport relatedexaminers #removeButton'
     }, {
         ref: 'tagsButton',
-        selector: 'viewport relatedstudents #tagsButton'
+        selector: 'viewport relatedexaminers #tagsButton'
     }, {
         ref: 'sidebarDeck',
-        selector: 'viewport relatedstudents #sidebarDeck'
+        selector: 'viewport relatedexaminers #sidebarDeck'
     }, {
         ref: 'autocompleteUserWidget',
-        selector: 'viewport relatedstudents autocompleteuserwidget'
+        selector: 'viewport relatedexaminers autocompleteuserwidget'
     }],
 
     init: function() {
         // NOTE: All of the handlers not starting with ``_`` is inherited from RelatedUsersBase.
         this.control({
-            'viewport relatedstudents': {
+            'viewport relatedexaminers': {
                 render: this._onRender
             },
 
-            'viewport relatedstudents relatedstudentsgrid': {
-                selectionchange: this._onGridSelectionChange,
-                edit: this._onEditGrid
+            'viewport relatedexaminers relatedexaminersgrid': {
+                selectionchange: this._onGridSelectionChange
             },
 
-            // Remove students
-            'viewport relatedstudents #removeButton': {
+            // Remove examiners
+            'viewport relatedexaminers #removeButton': {
                 click: this._onRemoveSelected
             },
-            'viewport relatedstudents okcancelpanel#confirmRemovePanel': {
+            'viewport relatedexaminers okcancelpanel#confirmRemovePanel': {
                 cancel: this.resetToHelpView,
                 ok: this._removeSelected
             },
 
 
             // setTags
-            'viewport relatedstudents #setTagsButton': {
+            'viewport relatedexaminers #setTagsButton': {
                 click: this.onSetTagsClick
             },
-            'viewport relatedstudents choosetagspanel#setTagsPanel': {
+            'viewport relatedexaminers choosetagspanel#setTagsPanel': {
                 cancel: this.resetToHelpView,
                 savetags: this.onSetTagsSave
             },
 
             // addTags
-            'viewport relatedstudents #addTagsButton': {
+            'viewport relatedexaminers #addTagsButton': {
                 click: this.onAddTagsButtonClick
             },
-            'viewport relatedstudents choosetagspanel#addTagsPanel': {
+            'viewport relatedexaminers choosetagspanel#addTagsPanel': {
                 cancel: this.resetToHelpView,
                 savetags: this.onAddTagsSave
             },
 
             // clearTags
-            'viewport relatedstudents #clearTagsButton': {
+            'viewport relatedexaminers #clearTagsButton': {
                 click: this.onClearTagsClick
             },
-            'viewport relatedstudents okcancelpanel#clearTagsPanel': {
+            'viewport relatedexaminers okcancelpanel#clearTagsPanel': {
                 cancel: this.resetToHelpView,
                 ok: this.onClearTagsConfirmed
             },
 
 
-            // Add student
-            'viewport relatedstudents #addButton': {
+            // Add examiner
+            'viewport relatedexaminers #addButton': {
                 click: this._onAddUserButtonClick
             },
-            'viewport relatedstudents selectrelateduserpanel': {
+            'viewport relatedexaminers selectrelateduserpanel': {
                 cancel: this.resetToHelpView
             },
-            'viewport relatedstudents selectrelateduserpanel autocompleteuserwidget': {
+            'viewport relatedexaminers selectrelateduserpanel autocompleteuserwidget': {
                 userSelected: this._onAddSelectedUser
             },
         });
 
-        this.mon(this.getRelatedStudentsStore().proxy, {
+        this.mon(this.getRelatedExaminersStore().proxy, {
             scope: this,
             exception: this.onRelatedStoreProxyError
         });
@@ -109,14 +108,14 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         });
     },
 
+    getRelatedUsersStore: function() {
+        return this.getRelatedExaminersStore();
+    },
+
     _onRender: function() {
         var period_id = this.getOverview().period_id;
         this.loadPeriod(period_id);
-        this._loadRelatedStudents(period_id);
-    },
-
-    getRelatedUsersStore: function() {
-        return this.getRelatedStudentsStore();
+        this._loadRelatedExaminers(period_id);
     },
 
 
@@ -125,8 +124,8 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     // Load related
     //
     //
-    _loadRelatedStudents: function(period_id) {
-        this.getRelatedStudentsStore().loadInPeriod(period_id);
+    _loadRelatedExaminers: function(period_id) {
+        this.getRelatedExaminersStore().loadInPeriod(period_id);
     },
 
 
@@ -149,27 +148,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         var selectedRelatedUserRecords = selModel.getSelection();
         return selectedRelatedUserRecords;
     },
-    _onEditGrid: function(editor, e) {
-        var store = this.getRelatedStudentsStore();
-        var relatedStudentRecord = e.record;
-        if(relatedStudentRecord.dirty) {
-            this.setLoading(gettext('Saving') + ' ...');
-            store.sync({
-                scope: this,
-                success: function() {
-                    var msg = gettext('Updated candidate ID of {0} to {1}.');
-                    this.showSyncSuccessMessage(Ext.String.format(msg,
-                        relatedStudentRecord.getDisplayName(),
-                        relatedStudentRecord.get('candidate_id')));
-                }
-            });
-        }
-    },
 
 
     //
     //
-    // Remove student(s)
+    // Remove examiner(s)
     //
     //
     _onRemoveSelected: function() {
@@ -182,7 +165,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         var selectedRelatedUserRecords = this._getSelectedRelatedUserRecords();
         var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
 
-        var store = this.getRelatedStudentsStore();
+        var store = this.getRelatedExaminersStore();
         store.remove(selectedRelatedUserRecords);
         this.setLoading(gettext('Saving') + ' ...');
         store.sync({
@@ -197,7 +180,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     
     //
     //
-    // Add student
+    // Add examiner
     //
     //
 
@@ -209,7 +192,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
 
     _onAddSelectedUser: function(combo, userRecord) {
         this.resetToHelpView();
-        var store = this.getRelatedStudentsStore();
+        var store = this.getRelatedExaminersStore();
         var matchingRelatedUser = store.getByUserid(userRecord.get('id'));
         if(matchingRelatedUser === null) {
             var record = store.add({
@@ -233,9 +216,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         this.getAddButton().focus(false, 200);
     },
 
-    _onAddUserSuccess: function(relatedStudentRecord) {
+    _onAddUserSuccess: function(relatedExaminerRecord) {
         this.showSyncSuccessMessage(Ext.String.format(gettext('{0} added.'),
-            relatedStudentRecord.getDisplayName()));
-        this.getGrid().getSelectionModel().select([relatedStudentRecord]);
+            relatedExaminerRecord.getDisplayName()));
+        this.getGrid().getSelectionModel().select([relatedExaminerRecord]);
     }
 });

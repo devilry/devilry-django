@@ -15,6 +15,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     },
 
 
+    getRelatedUsersStore: function() {
+        throw "Must be implemented in subclasses.";
+    },
+
+
     //
     //
     // Load period
@@ -100,7 +105,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
             relatedUserRecord.setTagsFromArray(tagsArray);
         }, this);
-        this.getRelatedStudentsStore().sync({
+        this.getRelatedUsersStore().sync({
             scope: this,
             success: function() {
                 this.onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
@@ -116,7 +121,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
             relatedUserRecord.addTagsFromArray(tagsArray);
         }, this);
-        this.getRelatedStudentsStore().sync({
+        this.getRelatedUsersStore().sync({
             scope: this,
             success: function() {
                 this.onTagSyncSuccess(selectedRelatedUserRecords, tagsArray);
@@ -132,7 +137,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         Ext.Array.each(selectedRelatedUserRecords, function(relatedUserRecord) {
             relatedUserRecord.clearTags();
         }, this);
-        this.getRelatedStudentsStore().sync({
+        this.getRelatedUsersStore().sync({
             scope: this,
             success: function() {
                 this.resetToHelpView();

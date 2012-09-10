@@ -59,7 +59,8 @@ Ext.application({
         'AddGroups',
         'AllWhereIsAdmin',
         'BulkManageDeadlines',
-        'RelatedStudents'
+        'RelatedStudents',
+        'RelatedExaminers'
     ],
 
     refs: [{
@@ -192,7 +193,8 @@ Ext.application({
         this.route.add("/", 'allWhereIsAdmin');
         this.route.add("/subject/:subject_id/", 'showSubject');
         this.route.add("/period/:period_id/", 'showPeriod');
-        this.route.add("/period/:period_id/@@related-students", 'showRelatedStudents');
+        this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
+        this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
@@ -250,6 +252,12 @@ Ext.application({
     showRelatedStudents: function(routeInfo, period_id) {
         this.setPrimaryContent({
             xtype: 'relatedstudents',
+            period_id: period_id
+        });
+    },
+    showRelatedExaminers: function(routeInfo, period_id) {
+        this.setPrimaryContent({
+            xtype: 'relatedexaminers',
             period_id: period_id
         });
     },
