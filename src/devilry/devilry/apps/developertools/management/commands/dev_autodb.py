@@ -212,9 +212,9 @@ class Command(BaseCommand):
         Thor is admin on the ``springcur`` period.
         """
         assignments = ['week{0}:pub({1})'.format(weeknum, weeknum*7) for weeknum in xrange(1, 10)]
-        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)',
-                   'springold:begins(-14):ends(6):ln(Spring Old - Example of an old period)',
-                   'springveryold:begins(-24):ends(6):ln(Spring VeryOld - Example of an even older period)']
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Current)',
+                   'springold:begins(-14):ends(6):ln(Spring Old)',
+                   'springveryold:begins(-24):ends(6):ln(Spring VeryOld)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck1100:ln(DUCK1100 - Getting started with python)"],
                             periods=periods,
@@ -245,8 +245,8 @@ class Command(BaseCommand):
         Thor is admin on the subject.
         """
         assignments = ['oblig{num}:pub({pub}):ln(Obligatorisk oppgave {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
-        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)',
-                   'springold:begins(-14):ends(6):ln(Spring Old - Example of an old period)']
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Current)',
+                   'springold:begins(-14):ends(6):ln(Spring Old)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck1010:ln(DUCK1010 - Objektorientert programmering)"],
                             periods=periods,
