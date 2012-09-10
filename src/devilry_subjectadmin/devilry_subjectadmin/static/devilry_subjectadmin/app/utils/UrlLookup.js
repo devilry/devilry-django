@@ -15,10 +15,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         return Ext.String.format('#/period/{0}/@@create-new-assignment/', period_id);
     },
     manageRelatedStudents: function(period_id) {
-        return Ext.String.format('#/period/{0}/@@manage-related-students', period_id);
+        return Ext.String.format('#/period/{0}/@@relatedstudents', period_id);
     },
     manageRelatedExaminers: function(period_id) {
-        return Ext.String.format('#/period/{0}/@@manage-related-examiners', period_id);
+        return Ext.String.format('#/period/{0}/@@relatedexaminers', period_id);
     },
 
     assignmentOverview: function(assignment_id) {

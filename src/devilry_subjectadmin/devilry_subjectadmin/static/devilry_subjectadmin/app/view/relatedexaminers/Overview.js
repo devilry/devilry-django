@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
      */
 
 
-    introhelp: interpolate(gettext('These are the examinerss available on this %(period_term)s. They are the examiners that can be added to any assignments within the %(period_term)s.'), {
+    introhelp: interpolate(gettext('These are the examiners available on this %(period_term)s. They are the examiners that can be added to any assignments within the %(period_term)s.'), {
         period_term: gettext('period'),
         examiners_term: gettext('examiners')
     }, true),

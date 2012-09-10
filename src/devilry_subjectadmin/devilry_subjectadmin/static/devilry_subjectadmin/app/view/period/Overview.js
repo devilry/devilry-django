@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.AdminsBox',
-        'devilry_subjectadmin.view.period.OverviewOfRelatedUsers',
+        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
@@ -58,18 +58,32 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                             url: devilry_subjectadmin.utils.UrlLookup.createNewAssignment(this.period_id),
                             text: gettext('Create new assignment')
                         }
-                    //}, {
-                        //xtype: 'box',
-                        //cls: 'bootstrap',
-                        //margin: '20 0 0 0',
-                        //tpl: '<h2>{heading}</h2>',
-                        //data: {
-                            //heading: gettext('Assignments')
-                        //}
                     }, {
                         xtype: 'listofassignments'
-                    //}, {
-                        //xtype: 'overviewofrelatedusers'
+                    }, {
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        margin: '20 0 0 0',
+                        tpl: [
+                            '<h2>{heading}</h2>',
+                            '<ul class="unstyled">',
+                                '<li>',
+                                    '<a href="{managestudentsurl}">',
+                                        gettext('View and manage students'),
+                                    '</a>',
+                                '</li>',
+                                '<li>',
+                                    '<a href="{manageexaminersurl}">',
+                                        gettext('View and manage examiners'),
+                                    '</a>',
+                                '</li>',
+                            '</ul>'
+                        ],
+                        data: {
+                            heading: gettext('Students and examiners'),
+                            managestudentsurl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id),
+                            manageexaminersurl: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id)
+                        }
                     }, {
                         xtype: 'dangerousactions',
                         margin: '20 0 0 0',
