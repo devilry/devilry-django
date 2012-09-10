@@ -65,7 +65,7 @@
     }
     ul.unstyled,
     ol.unstyled {
-        li {
+        &> li {
             margin-left: 0;
             list-style: none;
         }
