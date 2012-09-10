@@ -8,13 +8,24 @@ Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
     store: 'Periods',
 
     tpl: [
-        '<ul>',
+        '<ul class="unstyled">',
             '<tpl for=".">',
-                '<li class="devilry_period">',
-                    '<a href="#/period/{id}/">{long_name}</a>',
-                '</li>',
+                '<li class="devilry_period"><p>',
+                    '<div class="name"><a href="#/period/{id}/">{long_name}</a></div> ',
+                    '<div class="timespan">',
+                        '<small class="muted">',
+                            '{[this.formatDatetime(values.start_time)]}',
+                            ' &mdash; ',
+                            '{[this.formatDatetime(values.end_time)]}',
+                        '</small>',
+                    '<div>',
+                '</p></li>',
             '</tpl>',
-        '<ul>'
+        '<ul>', {
+            formatDatetime: function(datetime) {
+                return Ext.Date.format(datetime, 'Y-m-d h:i');
+            }
+        }
     ],
     itemSelector: 'li.period'
 });
