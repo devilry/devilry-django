@@ -1,6 +1,8 @@
 Ext.define('devilry_extjsextras.MoreInfoBox', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.moreinfobox',
+    border: false,
+    frame: false,
 
     /**
      * @cfg {string} [collapsedCls="muted"]
@@ -67,7 +69,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
             cls = Ext.String.format('{0} {1}', cls, this.cls);
         }
         if(!Ext.isEmpty(this.collapsedCls)) {
-            cls = Ext.String.format('{0} {1}', cls, this.collapsedCls);
+            this.bodyCls = this.collapsedCls;
         }
         this.cls = cls;
 
@@ -137,10 +139,10 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
 
     _onMore: function(e) {
         if(!Ext.isEmpty(this.collapsedCls)) {
-            this.removeCls(this.collapsedCls);
+            this.removeBodyCls(this.collapsedCls);
         }
         if(!Ext.isEmpty(this.expandedCls)) {
-            this.addCls(this.expandedCls);
+            this.addBodyCls(this.expandedCls);
         }
 
         this._getMoreButtonEl().hide(); // NOTE: Important that this comes before the other show()-calls below, because hide() on an element does not trigger re-rendering.
@@ -151,10 +153,10 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
 
     _onLess: function(e) {
         if(!Ext.isEmpty(this.expandedCls)) {
-            this.removeCls(this.expandedCls);
+            this.removeBodyCls(this.expandedCls);
         }
         if(!Ext.isEmpty(this.collapsedCls)) {
-            this.addCls(this.collapsedCls);
+            this.addBodyCls(this.collapsedCls);
         }
 
         this._getMoreButtonEl().show();
