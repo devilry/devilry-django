@@ -160,7 +160,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
 
         var store = this.getRelatedStudentsStore();
         store.remove(selectedRelatedUserRecords);
-        this.getGrid().setLoading(gettext('Saving') + ' ...');
+        this.setLoading(gettext('Saving') + ' ...');
         store.sync({
             scope: this,
             success: function() {

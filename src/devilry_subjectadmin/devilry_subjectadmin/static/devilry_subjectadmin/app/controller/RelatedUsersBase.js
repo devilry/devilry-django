@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
 
 
     showSyncSuccessMessage: function(message) {
-        this.getGrid().setLoading(false);
+        this.setLoading(false);
         this.getGlobalAlertmessagelist().add({
             type: 'success',
             message: message,
@@ -71,7 +71,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         });
     },
 
-
+    
+    setLoading: function(messageOrFalse) {
+        this.getOverview().setLoading(messageOrFalse);
+    },
 
 
     //
