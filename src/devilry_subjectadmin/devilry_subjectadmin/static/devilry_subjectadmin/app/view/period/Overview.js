@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     }, {
                         xtype: 'box',
                         cls: 'bootstrap',
-                        margin: '20 0 0 0',
+                        margin: '30 0 0 0',
                         tpl: [
                             '<h2>{heading}</h2>',
                             '<ul class="unstyled">',
