@@ -67,33 +67,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         });
     },
 
-    _loadRelatedUsers: function(period_id) {
-        this.getRelatedExaminersStore().loadInPeriod(period_id, {
-            scope: this,
-            callback: this._onLoadRelatedExaminers
-        });
-        this.getRelatedStudentsStore().loadInPeriod(period_id, {
-            scope: this,
-            callback: this._onLoadRelatedStudents
-        });
-    },
-
-    _onLoadRelatedExaminers: function(records, operation) {
-        if(operation.success) {
-            this.getRelatedexaminerslist().setLoadedStore(this.getRelatedExaminersStore());
-        } else {
-            this.getRelatedexaminerslist().setFailedToLoad(operation);
-        }
-    },
-
-    _onLoadRelatedStudents: function(records, operation) {
-        if(operation.success) {
-            this.getRelatedstudentslist().setLoadedStore(this.getRelatedStudentsStore());
-        } else {
-            this.getRelatedstudentslist().setFailedToLoad(operation);
-        }
-    },
-
     _getPath: function() {
         return this.getPathFromBreadcrumb(this.periodRecord);
     },
@@ -102,7 +75,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setLoadingBreadcrumb();
         this.period_id = this.getPeriodOverview().period_id;
         this._loadPeriod(this.period_id);
-        //this._loadRelatedUsers(this.period_id);
         this._loadAssignments(this.period_id);
     },
 
