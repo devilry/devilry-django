@@ -45,7 +45,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Grid', {
             clicksToEdit: 2
         });
         Ext.apply(this, {
-            //selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
+            selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
             columns: [{
                 dataIndex: 'id',
                 flex: 5,
