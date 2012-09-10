@@ -21,7 +21,12 @@ Ext.define('devilry_header.Header', {
         'no_role': gettext('Select role'),
         'student': gettext('Student'),
         'examiner': gettext('Examiner'),
-        'administrator': gettext('Administrator'),
+        'subjectadmin': interpolate(gettext('%(Subject_term)s administrator'), {
+            Subject_term: gettext('Subject')
+        }, true),
+        'nodeadmin': interpolate(gettext('%(Node_term)s administrator'), {
+            Node_term: gettext('Node')
+        }, true),
         'superuser': gettext('Superuser')
     },
 

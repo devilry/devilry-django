@@ -10,6 +10,7 @@ $almostblack: #191919 !default;
 $norolecolor_bg: #555;
 $studentcolor_bg: #77B300;
 $examinercolor_bg: #0077B3;
+$subjectadmin_bg: #FFCC00;
 $administratorcolor_bg: #ff9900;
 $superusercolor_bg: #CC3300;
 $logocolor: #A00;
@@ -93,7 +94,10 @@ $hovermenu_bgcolor: #000;
             &.examiner {
                 background-color: $examinercolor_bg;
             }
-            &.administrator {
+            &.subjectadmin {
+                background-color: $subjectadmin_bg;
+            }
+            &.nodeadmin {
                 background-color: $administratorcolor_bg;
             }
             &.superuser {
@@ -190,7 +194,10 @@ $hovermenu_bgcolor: #000;
                 &.examiner_role{
                     @include role_link($examinercolor_bg);
                 }
-                &.administrator_role{
+                &.subjectadmin_role {
+                    @include role_link($subjectadmin_bg);
+                }
+                &.nodeadmin_role{
                     @include role_link($administratorcolor_bg);
                 }
                 &.superuser_role{

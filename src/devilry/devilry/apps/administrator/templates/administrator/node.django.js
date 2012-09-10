@@ -24,7 +24,7 @@
         items: [{
             region: 'north',
             xtype: 'devilryheader',
-            navclass: 'administrator'
+            navclass: 'nodeadmin'
         }, {
             region: 'south',
             xtype: 'pagefooter'

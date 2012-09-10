@@ -143,7 +143,7 @@ Ext.application({
             items: [{
                 xtype: 'devilryheader',
                 region: 'north',
-                navclass: 'administrator',
+                navclass: 'subjectadmin',
                 breadcrumbs: this.breadcrumbs
             }, {
                 xtype: 'container',

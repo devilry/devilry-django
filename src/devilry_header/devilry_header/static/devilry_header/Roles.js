@@ -34,17 +34,35 @@ Ext.define('devilry_header.Roles', {
                             '</div>',
                         '</a></li>',
                     '</tpl>',
-                    '<tpl if="userInfo.is_superuser | userInfo.is_nodeadmin | userInfo.is_subjectadmin | userInfo.is_periodadmin | userInfo.is_assignmentadmin">',
-                        '<li><a href="{urlpath_prefix}/administrator/" class="administrator_role">',
+                    '<tpl if="userInfo.is_subjectadmin | userInfo.is_periodadmin | userInfo.is_assignmentadmin">',
+                        '<li><a href="{urlpath_prefix}/devilry_subjectadmin/" class="subjectadmin_role">',
                             '<div class="heading">',
-                                gettext('Administrator'),
+                                interpolate(gettext('%(Subject_term)s administrator'), {
+                                    Subject_term: gettext('Subject')
+                                }, true),
                             '</div>',
                             '<div class="description">',
-                                interpolate(gettext('Administrators manage %(subjects_term)s, %(nodes_term)s, %(periods_term)s and %(assignments_term)s where they have been explicitly registered as administrator.'), {
+                                interpolate(gettext('%(Subject_term)s administrators manage %(subjects_term)s, %(periods_term)s and %(assignments_term)s where they have been explicitly registered as administrator.'), {
+                                    Subject_term: gettext('Subject'),
                                     subjects_term: gettext('subjects'),
                                     nodes_term: gettext('nodes'),
                                     periods_term: gettext('periods'),
                                     assignments_term: gettext('assignments')
+                                }, true),
+                            '</div>',
+                        '</a></li>',
+                    '</tpl>',
+                    '<tpl if="userInfo.is_superuser | userInfo.is_nodeadmin">',
+                        '<li><a href="{urlpath_prefix}/administrator/" class="nodeadmin_role">',
+                            '<div class="heading">',
+                                interpolate(gettext('%(Node_term)s administrator'), {
+                                    Node_term: gettext('Node')
+                                }, true),
+                            '</div>',
+                            '<div class="description">',
+                                interpolate(gettext('%(Node_term)s administrators manage %(nodes_term)s where they have been explicitly registered as administrator.'), {
+                                    Node_term: gettext('Node'),
+                                    nodes_term: gettext('nodes')
                                 }, true),
                             '</div>',
                         '</a></li>',
