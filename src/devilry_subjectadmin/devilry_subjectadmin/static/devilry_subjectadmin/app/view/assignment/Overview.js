@@ -54,26 +54,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
                             text: gettext('Manage deadlines')
                         }]
-                    //}, {
-                        //xtype: 'panel',
-                        //ui: 'transparentpanel-overflowvisible',
-                        //margin: '40 0 0 0',
-                        //layout: 'column',
-                        //items: [{
-                            //xtype: 'panel',
-                            //ui: 'inset-header-panel',
-                            //margin: '0 20 0 0',
-                            //columnWidth: .5,
-                            //title: gettext('Upcoming deadlines'),
-                            //html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
-                        //}, {
-                            //xtype: 'panel',
-                            //ui: 'inset-header-panel',
-                            //title: gettext('Waiting for feedback'),
-                            //columnWidth: .5,
-                            //margin: '0 0 0 20',
-                            //html: 'TODO. See this <a href="http://heim.ifi.uio.no/espeak/devilry-figures/assignmentadmin.png" target="_blank">mockup image</a>.'
-                        //}]
                     }, {
                         xtype: 'dangerousactions',
                         margin: '20 0 0 0',
