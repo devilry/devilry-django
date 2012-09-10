@@ -39,8 +39,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 region: 'west',
                 border: true,
                 frame: true,
-                width: 350, // Default width
-                minWidth: 350, // Wont be able to make it smaller than this
+                width: 390, // Default width
+                minWidth: 390, // Wont be able to make it smaller than this
 
                 // Only resize to the right (east)
                 resizable: true,

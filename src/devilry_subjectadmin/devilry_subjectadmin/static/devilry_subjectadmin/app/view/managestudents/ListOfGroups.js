@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
     requires: [
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
+        'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
         'Ext.grid.column.Action'
     ],
@@ -82,7 +83,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 ui: 'footer',
                 dock: 'bottom',
                 defaults: {
-                    scale: 'medium'
+                    scale: 'large'
                 },
                 items: [{
                     xtype: 'button',
@@ -114,10 +115,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                         itemId: 'addToSelectionMenu'
                     })
                 }, '->', {
-                    xtype: 'button',
+                    xtype: 'primarybutton',
                     itemId: 'addstudents',
                     cls: 'addstudents',
-                    iconCls: 'icon-add-24',
                     text: gettext('Add students')
                 }]
             }]

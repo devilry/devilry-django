@@ -88,7 +88,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     init: function() {
         this.control({
-            'viewport managestudentsoverview button[itemId=addstudents]': {
+            'viewport managestudentsoverview #addstudents': {
                 click: this._onAddstudents
             },
             'viewport managestudentsoverview': {
