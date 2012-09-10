@@ -67,16 +67,16 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         tpl: [
                             '<h2>{heading}</h2>',
                             '<ul class="unstyled">',
-                                '<li>',
+                                '<li><p>',
                                     '<a href="{managestudentsurl}">',
-                                        gettext('View and manage students'),
+                                        gettext('Manage students'),
                                     '</a>',
-                                '</li>',
-                                '<li>',
+                                '</p></li>',
+                                '<li><p>',
                                     '<a href="{manageexaminersurl}">',
-                                        gettext('View and manage examiners'),
+                                        gettext('Manage examiners'),
                                     '</a>',
-                                '</li>',
+                                '</p></li>',
                             '</ul>'
                         ],
                         data: {
