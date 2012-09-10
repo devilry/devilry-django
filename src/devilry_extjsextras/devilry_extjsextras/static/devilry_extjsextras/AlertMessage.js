@@ -113,7 +113,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
                     opacity: 1,
                 },
                 100: {
-                    opacity: 0,
+                    opacity: 0.1,
                 }
             },
             listeners: {
