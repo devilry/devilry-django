@@ -1,6 +1,10 @@
 Ext.define('devilry_subjectadmin.controller.Dashboard', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+    ],
+
     views: [
         'dashboard.Dashboard'
     ],
@@ -21,6 +25,10 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
                 render: this._onRenderAllWhereIsAdminList
             }
         });
+        this.mon(this.getAllActivesWhereIsAdminStore().proxy, {
+            scope: this,
+            exception: this._onProxyError
+        });
     },
 
     _onRenderAllWhereIsAdminList: function() {
@@ -30,7 +38,7 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
                 if(op.success) {
                     this._onLoadSuccess(records);
                 } else {
-                    this._onLoadError(op);
+                    // NOTE: Errors are handled in _onProxyError
                 }
             }
         });
@@ -43,8 +51,9 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
         });
     },
 
-    _onLoadError: function(op) {
-        console.log('load error', op);
-    }
+    _onProxyError: function(proxy, response, operation) {
+        this.handleProxyErrorNoForm(this.application.getAlertmessagelist(),
+            response, operation);
+    },
 });
 
