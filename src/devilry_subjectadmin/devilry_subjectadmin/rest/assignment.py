@@ -46,14 +46,6 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
                                           'number_of_deliveries',
                                           'number_of_candiates')
 
-    def number_of_deliveries(self, instance):
-        if isinstance(instance, self.model):
-            return Delivery.objects.filter(deadline__assignment_group__parentnode=instance).count()
-
-    def number_of_candiates(self, instance):
-        if isinstance(instance, self.model):
-            return Candidate.objects.filter(assignment_group__parentnode=instance).count()
-
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
     """
@@ -81,5 +73,7 @@ class InstanceAssignmentRest(BaseNodeInstanceModelView):
         qry = qry.prefetch_related('admins', 'admins__devilryuserprofile',
                                    'parentnode__admins', 'parentnode__admins__devilryuserprofile',
                                    'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
-        qry = qry.annotate(number_of_groups=Count('assignmentgroups'))
+        qry = qry.annotate(number_of_groups=Count('assignmentgroups', distinct=True))
+        qry = qry.annotate(number_of_deliveries=Count('assignmentgroups__deadlines__deliveries', distinct=True))
+        qry = qry.annotate(number_of_candiates=Count('assignmentgroups__candidates', distinct=True))
         return qry
