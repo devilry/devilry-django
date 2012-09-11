@@ -12,8 +12,13 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminList' ,{
                 }, true),
             '</h1>',
             '<p class="muted">',
-                interpolate(gettext('These are all %(subjects_term)s where you are administrator.'), {
-                    subjects_term: gettext('subjects')
+                interpolate(gettext('These are all %(subjects_term)s, %(periods_term)s and %(assignments_term)s where you are administrator. Assignments are listed if you are administrator on the %(assignment_term)s, and not on the %(period_term)s or %(subject_term)s containing the assignment. The %(subject_term)s name is a link on if you are administrator on the subject.'), {
+                    subjects_term: gettext('subjects'),
+                    periods_term: gettext('periods'),
+                    assignments_term: gettext('assignments'),
+                    subject_term: gettext('subject'),
+                    period_term: gettext('period'),
+                    assignment_term: gettext('assignment')
                 }, true),
             '</p>',
             '<ul class="unstyled">',
