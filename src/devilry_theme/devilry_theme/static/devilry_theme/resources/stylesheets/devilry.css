@@ -12682,10 +12682,27 @@ svg, vml {
 label {
   font-size: 14px;
   line-height: 20px;
-  color: #333333;
+  color: #444;
+  cursor: pointer;
+}
+/* line 20, ../sass/_forms-port.scss */
+label:hover {
+  color: #000;
 }
 
-/* line 24, ../sass/_forms-port.scss */
+/* line 26, ../sass/_forms-port.scss */
+.stronglabel label {
+  font-weight: bold;
+}
+
+/* line 29, ../sass/_forms-port.scss */
+.extrastronglabel label {
+  font-weight: bold;
+  font-size: 17px;
+  line-height: 23px;
+}
+
+/* line 37, ../sass/_forms-port.scss */
 input,
 textarea {
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
@@ -12698,7 +12715,7 @@ textarea {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* line 30, ../sass/_forms-port.scss */
+/* line 43, ../sass/_forms-port.scss */
 input:focus,
 textarea:focus {
   outline: 0;
@@ -12709,7 +12726,7 @@ textarea:focus {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
-/* line 38, ../sass/_forms-port.scss */
+/* line 51, ../sass/_forms-port.scss */
 input[type=file]:focus,
 input[type=checkbox]:focus,
 select:focus {

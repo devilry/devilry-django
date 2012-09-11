@@ -15,9 +15,22 @@
 label {
     font-size: $baseFontSize;
     line-height: $baseLineHeight;
-    color: $grayDark;
+    color: #444;
+    cursor: pointer;
+    &:hover {
+        color: #000;
+    }
 }
 
+// Can be set on ExtJS fields with label to make the label strong
+.stronglabel label {
+    font-weight: bold;
+}
+.extrastronglabel label {
+    font-weight: bold;
+    font-size: $baseFontSize + 3px;
+    line-height: $baseLineHeight + 3px;
+}
 
 // Focus states
 input,
