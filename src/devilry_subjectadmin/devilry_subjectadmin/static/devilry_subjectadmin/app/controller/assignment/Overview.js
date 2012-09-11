@@ -37,6 +37,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     }, {
         ref: 'renameButton',
         selector: 'assignmentoverview #renameButton'
+    }, {
+        ref: 'noGroupsMessage',
+        selector: 'assignmentoverview #noGroupsMessage'
     }],
 
     init: function() {
@@ -74,6 +77,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         });
         this._setDangerousActionsLabels();
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
+        if(this.assignmentRecord.get('number_of_groups') === 0) {
+            this._handleNoGroups();
+        }
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);
@@ -112,5 +118,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
                 }
             }
         });
+    },
+
+    _handleNoGroups: function() {
+        this.getNoGroupsMessage().show();
     }
 });

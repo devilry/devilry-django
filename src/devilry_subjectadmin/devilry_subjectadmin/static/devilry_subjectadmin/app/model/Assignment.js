@@ -25,7 +25,10 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'short_name',  type: 'string'},
         {name: 'scale_points_percent',  type: 'int'},
         {name: 'deadline_handling',  type: 'int'},
-        {name: 'delivery_types',  type: 'int'}
+        {name: 'delivery_types',  type: 'int'},
+        {name: 'number_of_groups',  type: 'int'},
+        {name: 'number_of_deliveries',  type: 'int'},
+        {name: 'assignmentgroups__candidates',  type: 'int'}
     ],
 
     proxy: {
