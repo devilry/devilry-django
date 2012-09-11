@@ -67,7 +67,15 @@ Ext.define('devilry_subjectadmin.store.AbstractRelatedUsers', {
     },
 
     _sortByUserProperty: function(property, a, b) {
-        return a.get('user')[property].localeCompare(b.get('user')[property]);
+        var avalue = a.get('user')[property];
+        var bvalue = b.get('user')[property];
+        if(Ext.isEmpty(avalue)) {
+            return 1;
+        } else if(Ext.isEmpty(bvalue)) {
+            return -1;
+        } else {
+            return avalue.localeCompare(bvalue);
+        }
     },
 
 
