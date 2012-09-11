@@ -273,7 +273,7 @@ class Command(BaseCommand):
         """
         Created with a single period, and no assignments, where thor is admin.
         """
-        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)']
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck6000:ln(DUCK6000 - Make robots dance)"],
                             periods=periods)
@@ -291,7 +291,7 @@ class Command(BaseCommand):
         Created with a single period and a single assignment, where thor is admin.
         """
         assignments = ['oblig1:pub(40):ln(Obligatorisk oppgave 1)']
-        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur - Example of an active period)']
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Cur)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
                             subjects=["duck4000:ln(DUCK4000 - Make robots walk)"],
                             periods=periods,
