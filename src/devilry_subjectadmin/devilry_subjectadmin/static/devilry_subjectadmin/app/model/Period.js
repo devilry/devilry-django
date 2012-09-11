@@ -14,7 +14,9 @@ Ext.define('devilry_subjectadmin.model.Period', {
         {name: 'inherited_admins',  type: 'auto'},
         {name: 'start_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
         {name: 'end_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
-        {name: 'breadcrumb',  type: 'auto'}
+        {name: 'breadcrumb',  type: 'auto'},
+        {name: 'number_of_relatedexaminers',  type: 'int'},
+        {name: 'number_of_relatedstudents',  type: 'int'}
     ],
 
     proxy: {

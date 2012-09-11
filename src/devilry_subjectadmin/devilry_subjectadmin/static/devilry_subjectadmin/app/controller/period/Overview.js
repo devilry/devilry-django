@@ -43,14 +43,14 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         ref: 'basenodehierlocation',
         selector: 'periodoverview basenodehierlocation'
     }, {
-        ref: 'overviewofrelatedusers',
-        selector: 'periodoverview overviewofrelatedusers'
+        ref: 'createNewAssignmentBox',
+        selector: 'periodoverview #createNewAssignmentBox'
     }, {
-        ref: 'relatedstudentslist',
-        selector: 'periodoverview overviewofrelatedusers #students'
+        ref: 'noRelatedStudentsMessage',
+        selector: 'periodoverview #noRelatedStudentsMessage'
     }, {
-        ref: 'relatedexaminerslist',
-        selector: 'periodoverview overviewofrelatedusers #examiners'
+        ref: 'noRelatedExaminersMessage',
+        selector: 'periodoverview #noRelatedExaminersMessage'
     }],
 
     init: function() {
@@ -124,6 +124,12 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this._setMenuLabels();
         this.getAdminsbox().setBasenodeRecord(this.periodRecord);
         this.getBasenodehierlocation().setLocation(this.periodRecord);
+        if(this.periodRecord.get('number_of_relatedstudents') === 0) {
+            this._handleNoRelatedStudents();
+        }
+        if(this.periodRecord.get('number_of_relatedexaminers') === 0) {
+            this._handleNoRelatedExaminers();
+        }
     },
     _onLoadPeriodFailure: function(operation) {
         this.onLoadFailure(operation);
@@ -146,5 +152,14 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
                 }
             }
         });
+    },
+
+
+    _handleNoRelatedStudents: function() {
+        this.getCreateNewAssignmentBox().hide();
+        this.getNoRelatedStudentsMessage().show();
+    },
+    _handleNoRelatedExaminers: function() {
+        this.getNoRelatedExaminersMessage().show();
     }
 });
