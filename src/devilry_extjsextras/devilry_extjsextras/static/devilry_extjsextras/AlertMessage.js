@@ -99,9 +99,9 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             alltext += this.title;
         }
         var words = Ext.String.splitWords(alltext);
-        var sec = words.length * 1; // One second per work
-        sec = sec > 7? sec: 7; // ... but never less than 5 sec
-        return 2 + sec; // 2 seconds to focus on the message + time to read it
+        var sec = words.length * 0.4; // One second per work
+        sec = sec > 3? sec: 3; // ... but never less than 3 sec
+        return Math.round(2 + sec); // 2 seconds to focus on the message + time to read it
     },
 
     fadeOutAndClose: function() {
