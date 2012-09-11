@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
                 '<tpl else>',
                     '<span class="danger">{offset_from_now}</span>',
                 '</tpl>',
-                ' <small>({publishing_time})</small>',
+                ' <small class="muted">({publishing_time})</small>',
             '</tpl>',
         '</p>'
     ]
