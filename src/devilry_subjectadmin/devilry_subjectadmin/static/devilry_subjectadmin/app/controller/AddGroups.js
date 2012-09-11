@@ -129,8 +129,10 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
 
     _onProxyError: function(response, operation) {
-        this.getOverview().setLoading(false);
-        this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
+        if(this.getOverview() && this.getOverview().isVisible()) { // NOTE: Some of the proxies are used in many views. We only want to handle them if we are in the AddGroups view
+            this.getOverview().setLoading(false);
+            this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
+        }
     },
     _onAssignmentProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
