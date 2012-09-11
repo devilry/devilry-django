@@ -3,13 +3,14 @@ from django.db.models import Count
 from devilry.apps.core.models import Assignment
 from djangorestframework.permissions import IsAuthenticated
 
+from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Candidate
+from devilry.utils.restformat import format_datetime
+from devilry.utils.restformat import format_timedelta
 from .auth import IsAssignmentAdmin
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
-from devilry.apps.core.models import Delivery
-from devilry.utils.restformat import format_datetime
-from devilry.utils.restformat import format_timedelta
 
 
 
@@ -42,11 +43,16 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     model = Assignment
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb', 'number_of_groups',
-                                          'number_of_deliveries')
+                                          'number_of_deliveries',
+                                          'number_of_candiates')
 
     def number_of_deliveries(self, instance):
         if isinstance(instance, self.model):
             return Delivery.objects.filter(deadline__assignment_group__parentnode=instance).count()
+
+    def number_of_candiates(self, instance):
+        if isinstance(instance, self.model):
+            return Candidate.objects.filter(assignment_group__parentnode=instance).count()
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):

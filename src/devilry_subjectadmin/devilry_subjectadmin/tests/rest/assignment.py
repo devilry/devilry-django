@@ -146,7 +146,7 @@ class TestRestInstanceAssignmentRest(TestCase):
 
     def test_get(self):
         self.testhelper.add_to_path('uni;duck2000.someperiod.first.g1:candidate(student1):examiner(examiner1).d1')
-        self.testhelper.add_to_path('uni;duck2000.someperiod.first.g2:candidate(student2):examiner(examiner1).d1')
+        self.testhelper.add_to_path('uni;duck2000.someperiod.first.g2:candidate(student2,student3,student4,student5):examiner(examiner1).d1')
         self.testhelper.add_delivery('duck2000.someperiod.first.g1', {'bad.py': ['print ', 'bah']})
         self.testhelper.add_delivery('duck2000.someperiod.first.g1', {'good.py': ['print ', 'good']})
         self.testhelper.add_delivery('duck2000.someperiod.first.g2', {'good.py': ['print ', 'good']})
@@ -163,6 +163,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['can_delete'], False)
         self.assertEquals(content['number_of_groups'], 2)
         self.assertEquals(content['number_of_deliveries'], 3)
+        self.assertEquals(content['number_of_candiates'], 5)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
@@ -170,7 +171,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
-                               'number_of_deliveries', 'number_of_groups']))
+                               'number_of_deliveries', 'number_of_groups',
+                               'number_of_candiates']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -245,7 +247,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
-                               'number_of_deliveries', 'number_of_groups']))
+                               'number_of_deliveries', 'number_of_groups',
+                               'number_of_candiates']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
