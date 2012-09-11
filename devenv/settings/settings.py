@@ -20,7 +20,6 @@ INSTALLED_APPS += [
                    #'devilry.apps.gradeform_gradeeditor',
                    #'devilry.projects.dev.apps.test',
 
-                   'devilry_subjectadmin',
                    'seleniumhelpers',
                    'djangosenchatools',
 

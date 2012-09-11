@@ -69,7 +69,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_frontpage',
                   'devilry_student',
                   'devilry_i18n',
-                  'devilry_settings'
+                  'devilry_settings',
+                  'devilry_subjectadmin'
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
