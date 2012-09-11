@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         hidden: true,
                         type: 'error',
                         title: gettext('No students'),
-                        message: interpolate(gettext('This %(period_term)s has no students. Please go to the <a href="%(relatedstudents_url)s">manage students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
+                        message: interpolate(gettext('This %(period_term)s has no students. Go to the <a href="%(relatedstudents_url)s">manage related students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
                             period_term: gettext('period'),
                             relatedstudents_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)
                         }, true)
@@ -73,7 +73,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         hidden: true,
                         type: 'warning',
                         title: gettext('No examiners'),
-                        message: interpolate(gettext('This %(period_term)s has no examiners. Please go to the <a href="%(relatedexaminers_url)s">manage examiners</a> page and add some examiners.'), {
+                        message: interpolate(gettext('This %(period_term)s has no examiners. Go to the <a href="%(relatedexaminers_url)s">manage related examiners</a> page and add some examiners.'), {
                             period_term: gettext('period'),
                             relatedexaminers_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id)
                         }, true)
@@ -84,19 +84,19 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         cls: 'bootstrap',
                         margin: '30 0 0 0',
                         tpl: [
-                            '<h2>', gettext('Students and examiners'), '</h2>',
+                            '<h2>', gettext('Related students and examiners'), '</h2>',
                             '<p class="muted">',
-                                gettext('Students and examiners registered on a period are the only users available when you add students and examiners to assignments.'),
+                                gettext('Related students and examiners on a period are the only users available when you add students and examiners to assignments.'),
                             '</p>',
                             '<ul class="unstyled">',
                                 '<li><p>',
                                     '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id), '">',
-                                        gettext('Manage students'),
+                                        gettext('Manage related students'),
                                     '</a>',
                                 '</p></li>',
                                 '<li><p>',
                                     '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id), '">',
-                                        gettext('Manage examiners'),
+                                        gettext('Manage related examiners'),
                                     '</a>',
                                 '</p></li>',
                             '</ul>'
