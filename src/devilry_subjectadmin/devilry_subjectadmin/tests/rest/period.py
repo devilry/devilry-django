@@ -123,7 +123,16 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
         self.assertEquals(Period.objects.filter(id=self.testhelper.duck2000_periodone.id).count(), 0)
 
+
     def test_get(self):
+        period = self.testhelper.duck2000_periodone
+        for username in ('student1', 'student2', 'student3', 'student4'):
+            user = self.testhelper.create_user(username)
+            period.relatedstudent_set.create(user=user)
+        for username in ('examiner1', 'examiner2'):
+            user = self.testhelper.create_user(username)
+            period.relatedexaminer_set.create(user=user)
+
         self.client.login(username='duck2000admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
         self.assertEquals(response.status_code, 200)
@@ -132,10 +141,13 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertEquals(content['long_name'], self.testhelper.duck2000_periodone.long_name)
         self.assertEquals(content['parentnode'], self.testhelper.duck2000_periodone.parentnode_id)
         self.assertEquals(content['can_delete'], self.testhelper.duck2000_periodone.can_delete(self.testhelper.uniadmin))
+        self.assertEquals(content['number_of_relatedexaminers'], 2)
+        self.assertEquals(content['number_of_relatedstudents'], 4)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time', 'breadcrumb']))
+                               'start_time', 'end_time', 'breadcrumb',
+                               'number_of_relatedexaminers', 'number_of_relatedstudents']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -198,7 +210,8 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time', 'breadcrumb']))
+                               'start_time', 'end_time', 'breadcrumb',
+                               'number_of_relatedstudents', 'number_of_relatedexaminers']))
         updated = Period.objects.get(id=self.testhelper.duck2000_periodone.id)
         self.assertEquals(updated.long_name, 'Updated')
 

@@ -1,4 +1,4 @@
-from devilry.apps.core.models import Period
+from django.db.models import Count
 from djangorestframework.permissions import IsAuthenticated
 
 from .auth import IsPeriodAdmin
@@ -6,6 +6,7 @@ from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
 from devilry.utils.restformat import format_datetime
+from devilry.apps.core.models import Period
 
 
 class PeriodResourceMixin(object):
@@ -27,7 +28,9 @@ class PeriodResource(PeriodResourceMixin, BaseNodeInstanceResource):
 class PeriodInstanceResource(PeriodResourceMixin, BaseNodeInstanceResource):
     model = Period
     fields = PeriodResource.fields + ('can_delete', 'admins', 'inherited_admins',
-                                      'breadcrumb')
+                                      'breadcrumb',
+                                      'number_of_relatedstudents',
+                                      'number_of_relatedexaminers')
 
 
 class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
@@ -44,3 +47,12 @@ class InstancePeriodRest(BaseNodeInstanceModelView):
     """
     permissions = (IsAuthenticated, IsPeriodAdmin)
     resource = PeriodInstanceResource
+
+    def get_queryset(self):
+        qry = super(InstancePeriodRest, self).get_queryset()
+        qry = qry.select_related('parentnode', 'parentnode__parentnode')
+        qry = qry.prefetch_related('admins', 'admins__devilryuserprofile',
+                                   'parentnode__admins', 'parentnode__admins__devilryuserprofile')
+        qry = qry.annotate(number_of_relatedstudents=Count('relatedstudent', distinct=True),
+                           number_of_relatedexaminers=Count('relatedexaminer', distinct=True))
+        return qry
