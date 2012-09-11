@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import Count
 from devilry.apps.core.models import Assignment
 from djangorestframework.permissions import IsAuthenticated
 
@@ -6,6 +7,7 @@ from .auth import IsAssignmentAdmin
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
+from devilry.apps.core.models import Delivery
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
 
@@ -39,7 +41,12 @@ class AssignmentResource(AssignmentResourceMixin, BaseNodeInstanceResource):
 class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
-                                          'breadcrumb')
+                                          'breadcrumb', 'number_of_groups',
+                                          'number_of_deliveries')
+
+    def number_of_deliveries(self, instance):
+        if isinstance(instance, self.model):
+            return Delivery.objects.filter(deadline__assignment_group__parentnode=instance).count()
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
@@ -61,3 +68,12 @@ class InstanceAssignmentRest(BaseNodeInstanceModelView):
     """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
     resource = AssignmentInstanceResource
+
+    def get_queryset(self):
+        qry = super(InstanceAssignmentRest, self).get_queryset()
+        qry = qry.select_related('parentnode', 'parentnode__parentnode')
+        qry = qry.prefetch_related('admins', 'admins__devilryuserprofile',
+                                   'parentnode__admins', 'parentnode__admins__devilryuserprofile',
+                                   'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
+        qry = qry.annotate(number_of_groups=Count('assignmentgroups'))
+        return qry

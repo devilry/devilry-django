@@ -145,6 +145,12 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(Assignment.objects.filter(id=self.testhelper.duck2000_someperiod_first.id).count(), 0)
 
     def test_get(self):
+        self.testhelper.add_to_path('uni;duck2000.someperiod.first.g1:candidate(student1):examiner(examiner1).d1')
+        self.testhelper.add_to_path('uni;duck2000.someperiod.first.g2:candidate(student2):examiner(examiner1).d1')
+        self.testhelper.add_delivery('duck2000.someperiod.first.g1', {'bad.py': ['print ', 'bah']})
+        self.testhelper.add_delivery('duck2000.someperiod.first.g1', {'good.py': ['print ', 'good']})
+        self.testhelper.add_delivery('duck2000.someperiod.first.g2', {'good.py': ['print ', 'good']})
+
         self.client.login(username='duck2000admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_someperiod_first.id))
         self.assertEquals(response.status_code, 200)
@@ -153,14 +159,18 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['long_name'], self.testhelper.duck2000_someperiod_first.long_name)
         self.assertEquals(content['deadline_handling'], self.testhelper.duck2000_someperiod_first.deadline_handling)
         self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod_first.parentnode_id)
-        self.assertEquals(content['can_delete'], self.testhelper.duck2000_someperiod_first.can_delete(self.testhelper.uniadmin))
+        self.assertEquals(content['can_delete'], self.testhelper.duck2000_someperiod_first.can_delete(self.testhelper.duck2000admin))
+        self.assertEquals(content['can_delete'], False)
+        self.assertEquals(content['number_of_groups'], 2)
+        self.assertEquals(content['number_of_deliveries'], 3)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
                                'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
-                               'first_deadline', 'breadcrumb', 'anonymous']))
+                               'first_deadline', 'breadcrumb', 'anonymous',
+                               'number_of_deliveries', 'number_of_groups']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -234,7 +244,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'publishing_time', 'delivery_types',
                                'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'deadline_handling',
-                               'first_deadline', 'breadcrumb', 'anonymous']))
+                               'first_deadline', 'breadcrumb', 'anonymous',
+                               'number_of_deliveries', 'number_of_groups']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
