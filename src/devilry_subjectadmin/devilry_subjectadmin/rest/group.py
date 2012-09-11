@@ -494,11 +494,11 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         {responsetable}
         """
         datalist = self.CONTENT
-        manager = GroupManager(request.user, assignment_id)
         created_groups = []
         with transaction.commit_on_success():
             for data in datalist:
                 try:
+                    manager = GroupManager(request.user, assignment_id)
                     manager.update_group(name=data['name'],
                                          is_open=data['is_open'])
                     manager.update_examiners(data['examiners'])
