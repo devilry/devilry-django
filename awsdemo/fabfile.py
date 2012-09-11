@@ -6,7 +6,7 @@ from fabric.context_managers import cd
 
 
 repo = 'git://github.com/devilry/devilry-django.git'
-branch = 'master'
+branch = 'admin'
 checkout_dir = '/home/ubuntu/devilry-django'
 prodenv_dir = checkout_dir + '/example-productionenv' # Must not end with ``/``
 gunicorn_pidfile = '/tmp/gunicorn.pid'
