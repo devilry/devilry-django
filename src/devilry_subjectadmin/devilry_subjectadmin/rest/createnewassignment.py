@@ -10,6 +10,7 @@ from djangorestframework.views import View
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
 from devilry.apps.core.models.deliverytypes import as_choices_tuple
+from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 
 from .auth import periodadmin_required
 from .errors import BadRequestFieldError
@@ -73,7 +74,7 @@ class CreateNewAssignmentDao(object):
 
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
-        if not first_deadline:
+        if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
             raise BadRequestFieldError('first_deadline', _('Required when automatically adding related students'))
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
@@ -83,7 +84,8 @@ class CreateNewAssignmentDao(object):
             group = self._create_group_from_relatedstudent(assignment,
                                                            relatedstudent,
                                                            relatedexaminers)
-            self._create_deadline(group, first_deadline)
+            if assignment.delivery_types != NON_ELECTRONIC:
+                self._create_deadline(group, first_deadline)
 
     def create(self, user, period,
                short_name, long_name, first_deadline, publishing_time,
@@ -163,6 +165,10 @@ class RestCreateNewAssignment(SelfdocumentingMixin, View):
         {paramteterstable}
         """
         self._require_periodadmin(request.user)
+        if self.CONTENT['first_deadline'] and self.CONTENT['delivery_types'] == NON_ELECTRONIC:
+            raise BadRequestFieldError('first_deadline',
+                                       # NOTE: We do not translate this because it is something the UI should handle to avoid ever getting this error.
+                                       'Must be ``null`` when creating NON_ELECTRONIC assignment.')
         with transaction.commit_on_success():
             # Need to use a transaction since we potentially perform multiple changes.
             try:

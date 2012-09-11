@@ -1,13 +1,11 @@
-from datetime import timedelta, datetime
-from dingus import Dingus
+from datetime import timedelta
 from django.test import TestCase
-import json
-from django.contrib.auth.models import User
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
-from devilry_subjectadmin.rest.errors import PermissionDeniedError
 from devilry.utils.rest_testclient import RestClient
+from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
+from devilry.apps.core.models.deliverytypes import ELECTRONIC
 
 from .common import isoformat_datetime
 
@@ -28,7 +26,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
                                             short_name='a1', long_name='Assignment 1',
                                             first_deadline = first_deadline,
                                             publishing_time=publishing_time,
-                                            delivery_types=0, anonymous=False)
+                                            delivery_types=ELECTRONIC, anonymous=False)
         self.assertEquals(assignment.short_name, 'a1')
         self.assertEquals(assignment.long_name, 'Assignment 1')
         self.assertEquals(assignment.publishing_time, publishing_time)
@@ -73,6 +71,16 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(len(tags), 2)
         self.assertEquals(tags[0].tag, 'aa')
         self.assertEquals(tags[1].tag, 'bb')
+
+    def test_create_group_from_relatedstudent_non_electronic(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        related_louie = self._create_related_student('louie')
+        a1 = self.testhelper.sub_p1_a1
+        a1.delivery_types = NON_ELECTRONIC
+        group = dao._create_group_from_relatedstudent(a1, related_louie, [])
+        self.assertEquals(group.deadlines.count(), 1)
+
 
     def test_add_all_relatedstudents(self):
         self._create_related_student('louie')
@@ -129,7 +137,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                     short_name='a', long_name='Aa',
                     first_deadline=isoformat_datetime(first_deadline),
                     publishing_time=isoformat_datetime(publishing_time),
-                    delivery_types=0, anonymous=False,
+                    delivery_types=ELECTRONIC, anonymous=False,
                     add_all_relatedstudents=False,
                     autosetup_examiners=False)
 

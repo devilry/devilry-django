@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from datetime import datetime
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
@@ -175,6 +176,24 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
             GroupManager(self.testhelper.notusedforanything, self.a1id, 10000000)
         with self.assertRaises(AssignmentGroup.DoesNotExist):
             GroupManager(self.testhelper.notusedforanything, 10000000, self.testhelper.sub_p1_a1_g1.id)
+
+    def test_create_first_deadline_not_available(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, self.testhelper.sub_p1_a1_g1.id)
+        self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
+        manager.create_first_deadline_if_available()
+        self.assertEquals(manager.group.deadlines.count(), 0)
+
+    def test_create_first_deadline(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
+        g1 = self.testhelper.sub_p1_a1_g1
+        g1.parentnode.first_deadline = datetime(2005, 1, 1)
+        g1.parentnode.save()
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, g1.id)
+        self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
+        manager.create_first_deadline_if_available()
+        self.assertEquals(manager.group.deadlines.count(), 1)
+        self.assertEquals(manager.group.deadlines.all()[0].deadline, datetime(2005, 1, 1))
 
     #
     # Examiners
@@ -372,6 +391,9 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
 
 
     def _test_create_as(self, username):
+        a1 = self.testhelper.sub_p1_a1
+        a1.first_deadline = datetime(2005, 1, 1)
+        a1.save()
         data = [{'name': 'g1',
                  'is_open': False,
                  'examiners': [self.create_examinerdict(username='examiner1')],
@@ -386,7 +408,7 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         first = content[0]
 
         self.assertEquals(first['name'], 'g1')
-        self.assertEquals(first['is_open'], False)
+        self.assertEquals(first['is_open'], True) # NOTE: Overrides the parameter since first_deadline is set.
         self.assertEquals(first['parentnode'], self.a1id)
         self.assertEquals(first['num_deliveries'], 0)
 
@@ -394,7 +416,9 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(first['feedback'], None)
 
         # Deadlines
-        self.assertEquals(first['deadlines'], [])
+        self.assertEquals(len(first['deadlines']), 1)
+        self.assertEquals(first['deadlines'][0]['deadline'], '2005-01-01T00:00:00')
+        self.assertEquals(set(first['deadlines'][0].keys()), set(['id', 'deadline']))
 
         # Tags
         self.assertEquals(len(first['tags']), 1)

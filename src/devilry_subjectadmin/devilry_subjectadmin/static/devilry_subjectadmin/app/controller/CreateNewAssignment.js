@@ -232,7 +232,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var values = this._getFormValues();
         var NON_ELECTRONIC = 1;
         if(values.delivery_types === NON_ELECTRONIC) {
-            values.first_deadline = new Date(Ext.Date.now());
+            values.first_deadline = null;
         }
         values.period_id = this.period_id;
 

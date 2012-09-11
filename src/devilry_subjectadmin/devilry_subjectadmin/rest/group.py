@@ -7,12 +7,12 @@ from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import Response
 from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView
-from djangorestframework.views import InstanceModelView
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 
+from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Delivery
@@ -208,6 +208,12 @@ class GroupManager(object):
         self.group.name = name
         self.group.is_open = is_open
         self.group.save()
+
+    def create_first_deadline_if_available(self):
+        assignment = self.group.parentnode
+        first_deadline = assignment.first_deadline
+        if first_deadline and assignment.delivery_types != NON_ELECTRONIC:
+            self.group.deadlines.create(deadline=first_deadline)
 
     def _create_tag(self, tag):
         self.group.tags.create(tag=tag)
@@ -489,6 +495,12 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         # Parameters
         {parameterstable}
 
+        **NOTE**: If the assignment has ``first_deadline`` set, the deadline will be created.
+        This will set ``is_open`` to ``true`` even if the ``is_open``-parameter
+        is set to ``false``. We have not made a workaround for this, since setting
+        ``is_open=False`` when creating a group have no know use-cases, and a workaround
+        would require one extra save.
+
         # Returns
         An object/map with the following attributes:
         {responsetable}
@@ -501,6 +513,7 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                     manager = GroupManager(request.user, assignment_id)
                     manager.update_group(name=data['name'],
                                          is_open=data['is_open'])
+                    manager.create_first_deadline_if_available()
                     manager.update_examiners(data['examiners'])
                     manager.update_candidates(data['candidates'])
                     manager.update_tags(data['tags'])
