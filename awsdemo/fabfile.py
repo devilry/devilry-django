@@ -150,6 +150,25 @@ def load_dump_from_local_db(dbpath='../devenv/db.sqlite3'):
         rmtree(tempdir)
     start_servers()
 
+#@task
+#def upload_dbstash(stashdir='../devenv/db_and_deliveries_stash/'):
+    #from fabric.contrib.files import exists
+    #with cd(prodenv_dir):
+        #if not exists('db_and_deliveries_stash'):
+            #run('mkdir db_and_deliveries_stash')
+        #from os.path import join
+        #with cd('db_and_deliveries_stash'):
+            #for filename in ('dbdump.sql.gz', 'files.zip'):
+                #put(join(stashdir, filename), filename)
+
+#@task
+#def unstash_db_and_deliveries():
+    #"""
+    #Run "fab unstash_db_and_deliveries" in the prodenv.
+    #"""
+    #with cd(prodenv_dir):
+        #run('fab unstash_db_and_deliveries')
+
 
 @task
 def upload_file(relpath):
