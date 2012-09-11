@@ -74,7 +74,7 @@ class CreateNewAssignmentDao(object):
 
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
-        if not first_deadline:
+        if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
             raise BadRequestFieldError('first_deadline', _('Required when automatically adding related students'))
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
