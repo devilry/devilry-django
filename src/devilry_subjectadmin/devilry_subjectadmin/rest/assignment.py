@@ -51,7 +51,7 @@ class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
 
     def get_queryset(self):
         qry = super(ListOrCreateAssignmentRest, self).get_queryset()
-        qry = qry.order_by('publishing_time')
+        qry = qry.order_by('-publishing_time')
         return qry
 
 
