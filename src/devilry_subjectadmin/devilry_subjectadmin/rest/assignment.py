@@ -49,6 +49,11 @@ class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
     permissions = (IsAuthenticated,)
     resource = AssignmentResource
 
+    def get_queryset(self):
+        qry = super(ListOrCreateAssignmentRest, self).get_queryset()
+        qry = qry.order_by('publishing_time')
+        return qry
+
 
 class InstanceAssignmentRest(BaseNodeInstanceModelView):
     """
