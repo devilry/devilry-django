@@ -23,7 +23,9 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
                             '<em>',
                                 gettext('Publishing time'),
                             ': </em>',
-                            '{[this.formatRelativeDatetime(values.publishing_time_offset_from_now, values.is_published)]} ',
+                            '<span class="{[this.getRelativeTimeCls(values.is_published)]}">',
+                                '{[this.formatRelativeDatetime(values.publishing_time_offset_from_now, values.is_published)]} ',
+                            '</span>',
                             '({[this.formatDatetime(values.publishing_time)]})',
                         '</small>',
                     '<div>',
@@ -36,6 +38,9 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
             formatRelativeDatetime: function(publishing_time_offset_from_now, is_published) {
                 return devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
                     publishing_time_offset_from_now, !is_published);
+            },
+            getRelativeTimeCls: function(is_published) {
+                return is_published? 'success': 'danger';
             }
         }
     ],
