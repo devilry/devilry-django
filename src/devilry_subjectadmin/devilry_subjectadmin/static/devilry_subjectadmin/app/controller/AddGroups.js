@@ -5,7 +5,8 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     extend: 'Ext.app.Controller',
     mixins: [
         'devilry_subjectadmin.utils.LoadAssignmentMixin',
-        'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin'
+        'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     ],
 
     requires: [
@@ -80,6 +81,26 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
                 render: this._setTooltip
             }
         });
+        this.mon(this.getAssignmentModel().proxy, {
+            scope: this,
+            exception: this._onAssignmentProxyError
+        });
+        this.mon(this.getGroupsStore().proxy, {
+            scope: this,
+            exception: this._onGroupsProxyError
+        });
+        this.mon(this.getAssignmentModel().proxy, {
+            scope: this,
+            exception: this._onAssignmentProxyError
+        });
+        this.mon(this.getRelatedStudentsRoStore().proxy, {
+            scope: this,
+            exception: this._onRelatedStudentsProxyError
+        });
+        this.mon(this.getRelatedExaminersRoStore().proxy, {
+            scope: this,
+            exception: this._onRelatedExaminersProxyError
+        });
     },
 
     _setTooltip: function(item) {
@@ -97,7 +118,34 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         this.on_save_success_url = this.getOverview().on_save_success_url;
         this.getOverview().setLoading(true);
         this.setLoadingBreadcrumb();
-        this.loadAssignment(assignment_id);
+        this.getAssignmentModel().load(assignment_id, {
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this.onLoadAssignmentSuccess(record);
+                } // NOTE: Errors are handled in _onAssignmentProxyError
+            }
+        });
+    },
+
+    _onProxyError: function(response, operation) {
+        this.getOverview().setLoading(false);
+        this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
+    },
+    _onAssignmentProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
+    },
+    _onGroupsProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
+    },
+    _onAssignmentProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
+    },
+    _onRelatedStudentsProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
+    },
+    _onRelatedExaminersProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
     },
 
 
@@ -109,52 +157,50 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this._setBreadcrumb();
 
-        this.getRelatedExaminersRoStore().setAssignment(this.assignmentRecord.get('id'));
         this.getRelatedStudentsRoStore().setAssignment(this.assignmentRecord.get('id'));
-
         var relatedStudentsStore = this.getRelatedStudentsRoStore();
-        relatedStudentsStore.loadWithAutomaticErrorHandling({
+        relatedStudentsStore.load({
             scope: this,
-            success: this._onLoadRelatedStudentsStoreSuccess,
-            errortitle: gettext('Failed to load students from the period')
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this._onLoadRelatedStudentsStoreSuccess();
+                } // NOTE: Failure handled in _onRelatedStudentsProxyError
+            }
         });
     },
 
-    _handleLoadError: function(operation, title) {
-        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
-        error.addErrors(null, operation);
-        var errormessage = error.asHtmlList();
-        Ext.widget('htmlerrordialog', {
-            title: title,
-            bodyHtml: errormessage
-        }).show();
-    },
     onLoadAssignmentFailure: function(operation) {
         this.getOverview().setLoading(false);
-        this._handleLoadError(operation, gettext('Failed to load assignment'));
     },
 
     _onLoadRelatedStudentsStoreSuccess: function(records) {
+        this.getRelatedExaminersRoStore().setAssignment(this.assignmentRecord.get('id'));
         var relatedExaminersStore = this.getRelatedExaminersRoStore();
-        relatedExaminersStore.loadWithAutomaticErrorHandling({
+        relatedExaminersStore.load({
             scope: this,
-            success: this._onLoadRelatedExaminersStoreSuccess,
-            errortitle: gettext('Failed to load examiners from the period')
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this._onLoadRelatedExaminersStoreSuccess();
+                } // NOTE: Failure handled in _onRelatedStudentsProxyError
+            }
         });
     },
 
     _onLoadRelatedExaminersStoreSuccess: function() {
-        this.getGroupsStore().loadWithAutomaticErrorHandling({
+        this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
+        this.getGroupsStore().load({
             scope: this,
-            success: this._onLoad,
-            errortitle: gettext('Failed to load groups')
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this._onAllLoaded();
+                } // NOTE: Failure handled in _onRelatedStudentsProxyError
+            }
         });
     },
 
-    _onLoad: function() {
+    _onAllLoaded: function() {
         this.getOverview().setLoading(false);
         this.relatedExaminersMappedByTag = this.getRelatedExaminersRoStore().getMappedByTags();
 
@@ -292,7 +338,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
 
     _syncGroupsStore: function() {
-        console.log('sync started');
         this.getOverview().setLoading(gettext('Saving ...'));
         this.getGroupsStore().sync({
             scope: this,
@@ -319,7 +364,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     _onSyncGroupsStoreFailure: function(batch, options) {
         this.getOverview().setLoading(false);
-        this._unmaskListOfGroups();
         console.log('failure', batch, options);
     }
 });
