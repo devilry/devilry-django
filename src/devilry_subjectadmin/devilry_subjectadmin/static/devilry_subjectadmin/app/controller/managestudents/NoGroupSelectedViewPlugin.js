@@ -23,17 +23,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
     _onNoGroupSelected: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
         this.manageStudentsController.setBody({
-            xtype: 'nogroupselectedview',
-            topMessage: this._createTopMessage()
+            xtype: 'nogroupselectedview'
         });
-    },
-
-    _createTopMessage: function() {
-        return interpolate(gettext('%(Students_term)s are is a group even when they work alone. No %(groups_term)s selected. Choose one or more %(groups_term)s to gain access to settings, such as %(examiners_term)s and %(tags_term)s.'), {
-            Students_term: gettext('Students'),
-            groups_term: gettext('groups'),
-            examiners_term: gettext('examiners'),
-            tags_term: gettext('tags')
-        }, true);
     }
 });
