@@ -16,7 +16,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     ],
     views: [
         'createnewassignment.Form',
-        'createnewassignment.SuccessPanel',
         'createnewassignment.CreateNewAssignment'
     ],
 
@@ -93,23 +92,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             },
             'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
                 change: this._onAddRelatedStudentChange
-            },
-
-            // Success page
-            'viewport createnewassignment-successpanel': {
-                render: this._onRenderSuccesspanel
             }
         });
     },
-
-    //_selectAppropriateDeliverytypes: function() {
-        //var radioButtons = this.getDeliveryTypesRadioGroup().query('radio');
-        //var index = 0;
-        //if(this.successPanelSetupConfig) {
-            //index = this.successPanelSetupConfig.delivery_types;
-        //}
-        //radioButtons[index].setValue(true);
-    //},
 
     _onLongNameBlur: function(field) {
         var shortnamefield = this.getShortNameField();
@@ -262,13 +247,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onSuccessfulSave: function(record) {
         this._unmask();
-        //this.successPanelSetupConfig = {
-            //period_id: this.periodRecord.get('id'),
-            //periodpath : this.periodpath,
-            //short_name: record.get('short_name'),
-            //assignment_id: record.get('id')
-        //};
-        //this.application.route.navigate('/@@create-new-assignment/@@success');
         this.application.route.navigate(devilry_subjectadmin.utils.UrlLookup.assignmentOverview(record.get('id')));
     },
 
@@ -286,29 +264,15 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.getCreateNewAssignmentForm().getEl().unmask();
     },
 
-    _setInitialValues: Ext.emptyFn,
+    _setInitialValues: Ext.emptyFn
 
     //_setInitialValues: function() {
         //Ext.defer(function() {
             //this.getCreateNewAssignmentForm().getForm().setValues({
                 //long_name: 'A2',
-                //short_name: 'a2'
+                //short_name: 'a2',
+                //first_deadline: new Date()
             //});
         //}, 300, this);
-    //},
-
-
-
-    //////////////////////////////////////////////
-    //
-    // Success page
-    //
-    //////////////////////////////////////////////
-    _onRenderSuccesspanel: function(successpanel) {
-        if(!this.successPanelSetupConfig) {
-            Ext.MessageBox.alert('Error', 'This page is only available after creating a new assignment.');
-        } else {
-            successpanel.setup(this.successPanelSetupConfig);
-        }
-    }
+    //}
 });
