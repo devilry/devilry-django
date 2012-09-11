@@ -1,12 +1,8 @@
-from datetime import timedelta, datetime
-from dingus import Dingus
+from datetime import timedelta
 from django.test import TestCase
-import json
-from django.contrib.auth.models import User
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
-from devilry_subjectadmin.rest.errors import PermissionDeniedError
 from devilry.utils.rest_testclient import RestClient
 
 from .common import isoformat_datetime
