@@ -342,13 +342,12 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         this.getGroupsStore().sync({
             scope: this,
             success: this._onSyncGroupsStoreSuccess,
-            failure: this._onSyncGroupsStoreFailure
+            // NOTE: Failure is handled in _onGroupsProxyError
         });
     },
 
     _onSyncGroupsStoreSuccess: function(batch, options) {
         this.getOverview().setLoading(false);
-        console.log('sync success', batch);
         var affectedRecords = [];
         var operations = batch.operations;
         Ext.Array.each(operations, function(operation) {
@@ -360,10 +359,5 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         }, this);
 
         this.application.route.navigate(this.on_save_success_url);
-    },
-
-    _onSyncGroupsStoreFailure: function(batch, options) {
-        this.getOverview().setLoading(false);
-        console.log('failure', batch, options);
     }
 });

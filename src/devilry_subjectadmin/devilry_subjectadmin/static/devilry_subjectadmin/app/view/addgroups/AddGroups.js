@@ -27,11 +27,11 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         this.userCellTemplate = new Ext.XTemplate(
             '<div class="userinfo">',
                 '<div class="full_name"><strong>',
-                    '<tpl if="full_name">',
+                    '<tpl if="full_name"><strong>',
                         '{full_name}',
-                    '<tpl else>',
+                    '</strong><tpl else><em>',
                         gettext('Full name missing'),
-                    '</tpl>',
+                    '</em></tpl>',
                 '</strong></div>',
                 '<div class="username"><small>{username}</small></div>',
             '</div>'
@@ -40,15 +40,21 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '<ul class="unstyled">',
                 '<tpl for="tagsAndExaminers">',
                     '<li>',
-                        '{tag}: <small>',
-                        '<tpl for="examiners">',
-                            '<tpl if="data.user.full_name">',
-                                '{data.user.full_name}',
+                        '{tag}: ',
+                        '<small>',
+                            '<tpl if="examiners">',
+                                '<tpl for="examiners">',
+                                    '<tpl if="data.user.full_name">',
+                                        '{data.user.full_name}',
+                                    '<tpl else>',
+                                        '{data.user.username}',
+                                    '</tpl>',
+                                    '<tpl if="xindex != xcount">, </tpl>',
+                                '</tpl>',
                             '<tpl else>',
-                                '{data.user.username}',
+                                '<span class="danger">', gettext('No matching examiners'), '</em>',
                             '</tpl>',
-                            '<tpl if="xindex != xcount">, </tpl>',
-                        '</tpl></small>',
+                        '</small>',
                     '</li>',
                 '</tpl>',
             '</ul>'
@@ -65,40 +71,15 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         var selModel = Ext.create('devilry_extjsextras.GridMultiSelectModel');
         Ext.apply(this, {
             layout: 'border',
-            buttons: ['->', {
-                xtype: 'checkbox',
-                itemId: 'includeTagsCheckbox',
-                checked: true,
-                boxLabel: gettext('Include tags'),
-                tooltip: gettext('Check this to tag the added students with the tags they have on the period. Keep this checked if you are unsure of what to do. When this is checked, tags are displayed in the second column of the table.')
-            }, {
-                xtype: 'checkbox',
-                checked: true,
-                tooltip: gettext('Check this to automatically set examiners that have at least one tag in common with a student as their examiner on this assignment. When this is checked, the result of the tag-matching is displayed in the second column of the table.'),
-                itemId: 'automapExaminersCheckbox',
-                boxLabel: gettext('Autoset examiners by tags')
-            }, {
-                xtype: 'button',
-                scale: 'medium',
-                itemId: 'saveButton',
-                text: gettext('Add selected students')
-            }],
+            bodyPadding: 20,
             items: [{
                 xtype: 'grid',
                 region: 'center',
+                cls: 'bootstrap',
                 store: 'RelatedStudentsRo',
                 selModel: selModel,
                 columns: this._getGridColumns(),
                 tbar: [{
-                    text: gettext('Advanced options'),
-                    menu: {
-                        xtype: 'menu',
-                        plain: true,
-                        items: [{
-                            xtype: 'addgroupsallowduplicatescheckbox'
-                        }]
-                    }
-                }, {
                     text: gettext('Select'),
                     menu: [{
                         text: gettext('Select all'),
@@ -107,13 +88,34 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         text: gettext('Deselect all'),
                         itemId: 'deselectAll'
                     }]
+                }, {
+                    xtype: 'addgroupsallowduplicatescheckbox',
+                    margin: '0 0 0 20'
+                }],
+                buttons: ['->', {
+                    xtype: 'checkbox',
+                    itemId: 'includeTagsCheckbox',
+                    checked: true,
+                    boxLabel: gettext('Include tags'),
+                    tooltip: gettext('Check this to tag the added students with the tags they have on the period. Keep this checked if you are unsure of what to do. When this is checked, tags are displayed in the second column of the table.')
+                }, {
+                    xtype: 'checkbox',
+                    checked: true,
+                    tooltip: gettext('Check this to automatically set examiners that have at least one tag in common with a student as their examiner on this assignment. When this is checked, the result of the tag-matching is displayed in the second column of the table.'),
+                    itemId: 'automapExaminersCheckbox',
+                    boxLabel: gettext('Autoset examiners by tags')
+                }, {
+                    xtype: 'primarybutton',
+                    itemId: 'saveButton',
+                    text: gettext('Add selected students')
                 }]
             }, {
                 xtype: 'panel',
-                region: 'east',
+                border: false,
+                region: 'west',
                 autoScroll: true,
                 width: 300,
-                bodyPadding: 20,
+                bodyPadding: '0 30 0 0',
                 items: [{
                     xtype: 'box',
                     cls: 'bootstrap',
