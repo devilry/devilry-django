@@ -1,15 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-from datetime import datetime, timedelta
 
 from django.db.models import Q
-from ..models import Period, Assignment, AssignmentGroup, Candidate
+from ..models import Period, Assignment, Candidate
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
+
+
 
 class TestAssignment(TestCase, TestHelper):
 
@@ -22,6 +23,39 @@ class TestAssignment(TestCase, TestHelper):
                                    "g3:candidate(student2,student3):examiner(examiner1,examiner2)"])
         self.add_to_path('uio.ifi;inf1100.looong.assignment3.group1:examiner(examiner1)')
         self.add_to_path('uio.ifi;inf1100.old.oldassignment.group1:examiner(examiner3)')
+
+    def test_first_deadline_clean_ok(self):
+        assignment1 = self.inf1100_looong_assignment1
+        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
+        assignment1.clean()
+
+    def test_first_deadline_clean_pubtime_error(self):
+        assignment1 = self.inf1100_looong_assignment1
+        assignment1.publishing_time = assignment1.parentnode.start_time + timedelta(days=2)
+        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
+        with self.assertRaises(ValidationError):
+            assignment1._clean_first_deadline()
+        with self.assertRaises(ValidationError):
+            assignment1.clean()
+        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=3)
+        assignment1.clean()
+
+    def test_first_deadline_clean_perioderror(self):
+        assignment1 = self.inf1100_looong_assignment1
+        assignment1.first_deadline = assignment1.parentnode.start_time - timedelta(days=10)
+        with self.assertRaises(ValidationError):
+            assignment1._clean_first_deadline()
+        with self.assertRaises(ValidationError):
+            assignment1.clean()
+
+        assignment1.first_deadline = assignment1.parentnode.end_time + timedelta(days=10)
+        with self.assertRaises(ValidationError):
+            assignment1._clean_first_deadline()
+        with self.assertRaises(ValidationError):
+            assignment1.clean()
+
+        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
+        assignment1.clean()
 
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),

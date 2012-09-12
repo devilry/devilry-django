@@ -170,6 +170,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_examiner(cls, user_obj):
         return Q(assignmentgroups__examiners__user=user_obj)
 
+    def _clean_first_deadline(self):
+        self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        if self.first_deadline < self.publishing_time:
+            raise ValidationError(_('First deadline cannot be before publishing time.'))
+        if self.first_deadline > self.parentnode.end_time:
+            msg = _("First deadline must be within it's period ({start_time} - {end_time}).")
+            raise ValidationError(msg.format(start_time=self.parentnode.start_time.isoformat(),
+                                             end_time=self.parentnode.end_time.isoformat()))
+
     def clean(self, *args, **kwargs):
         """Validate the assignment.
 
@@ -190,6 +199,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                               period=unicode(self.parentnode),
                                                                               end_time=self.parentnode.end_time,
                                                                               start_time=self.parentnode.start_time))
+        if self.first_deadline:
+            self._clean_first_deadline()
 
 
     def is_empty(self):
