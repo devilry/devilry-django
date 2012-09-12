@@ -175,8 +175,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         if self.first_deadline < self.publishing_time:
             raise ValidationError(_('First deadline cannot be before publishing time.'))
         if self.first_deadline > self.parentnode.end_time:
-            msg = _("First deadline must be within it's period ({start_time} - {end_time}).")
-            raise ValidationError(msg.format(start_time=self.parentnode.start_time.isoformat(),
+            msg = _("First deadline must be within it's {period_term} ({start_time} - {end_time}).")
+            raise ValidationError(msg.format(period_term=_('period'),
+                                             start_time=self.parentnode.start_time.isoformat(),
                                              end_time=self.parentnode.end_time.isoformat()))
 
     def clean(self, *args, **kwargs):
