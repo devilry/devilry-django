@@ -39,17 +39,21 @@
   font-size: 18px;
 }
 
+/* line 40, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_navigation.bootstrap {
+  margin: 20px 0 20px 0;
+}
 /* line 41, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_navigation.bootstrap strong {
   font-size: 18px;
 }
 
-/* line 46, ../sass/devilry_subjectadmin.scss */
+/* line 47, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .bootstrap h2 {
   color: #900;
 }
 
-/* line 52, ../sass/devilry_subjectadmin.scss */
+/* line 53, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allactivewhereisadminlist strong {
   font-size: 18px;
 }
