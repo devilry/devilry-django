@@ -1,5 +1,5 @@
 from os import walk, sep
-from os.path import join, dirname, isdir, exists
+from os.path import join, dirname, isdir, exists, basename
 import re
 
 from django.core.management.base import BaseCommand
@@ -17,7 +17,6 @@ class JsFile(object):
 
     def __init__(self, filepath):
         self.filepath = filepath
-        print filepath
         self.filecontent = open(self.filepath, 'rb').read()
         self.match_define()
         self.match_requires() # must be before extend and mixins, since they add to self.requires
@@ -40,6 +39,8 @@ class JsFile(object):
             self.requires = self.LISTSPLITPATT.findall(requiresstr)
         else:
             self.requires = []
+        if 'devilryrestproxy' in self.filecontent and basename(self.filepath) != 'RestProxy.js':
+            self.requires.append('devilry.extjshelpers.RestProxy')
 
     def match_extend(self):
         m = self.EXTENDPATT.search(self.filecontent)
