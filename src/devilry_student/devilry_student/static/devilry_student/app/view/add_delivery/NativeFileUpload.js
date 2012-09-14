@@ -15,7 +15,6 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
     childEls: ['fileInputEl'],
 
     initComponent: function() {
-        
         this.callParent(arguments);
         this.on('render', this._onRender, this);
     },
@@ -23,6 +22,8 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
     setValue: function(value) {
         if(Ext.isEmpty(value)) {
             this.reset();
+        } else {
+            throw "It is not possible to set the value of a file field in all browsers, so we do not support any other value than an empty string.";
         }
     },
 
@@ -58,8 +59,31 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
         this.callParent();
     },
 
-    reset: function(){
-        this.fileInputEl.dom.value = '';
+    _getPositionInContainer: function() {
+        var container = this.up();
+        var index = container.items.findIndexBy(function(item) {
+            return item == this;
+        }, this);
+        if(index === -1) {
+            throw "Position in container not found";
+        } else {
+            return index;
+        }
+    },
+
+    reset: function() {
+        var index = this._getPositionInContainer();
+        var container = this.up();
+        var itemId = this.itemId;
+        var name = this.name;
+        container.remove(this);
+        container.add({
+            xtype: 'native_file_upload',
+            itemId: itemId,
+            name: name
+        });
+        console.log('YESS');
+        //this.fileInputEl.dom.value = '';
     },
 
     _onFileChange: function(e) {
