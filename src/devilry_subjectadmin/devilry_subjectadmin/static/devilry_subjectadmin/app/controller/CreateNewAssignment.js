@@ -67,17 +67,17 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     init: function() {
         this.control({
-            // Page one
             'viewport createnewassignmentform': {
                 render: this._onRenderCreateNewAssignmentForm
+                //validitychange: this._onFormValidityChange
             },
             'viewport createnewassignmentform textfield[name=long_name]': {
                 render: this._onRenderLongName,
                 blur: this._onLongNameBlur
             },
-            'viewport createnewassignmentform textfield[name=short_name]': {
-                blur: this._onShortNameBlur
-            },
+            //'viewport createnewassignmentform textfield[name=short_name]': {
+                //blur: this._onShortNameBlur
+            //},
             'viewport createnewassignmentform #createButton': {
                 click: this._onCreate
             },
@@ -93,6 +93,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
                 change: this._onAddRelatedStudentChange
             }
+            //'viewport createnewassignmentform #firstDeadlineField': {
+                //change: this._onFirstDeadlineChange
+            //}
         });
     },
 
@@ -104,9 +107,16 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             shortnamefield.setValue(short_name);
         }
     },
-    _onShortNameBlur: function() {
-    },
+    //_onShortNameBlur: function() {
+    //},
 
+    //_onFirstDeadlineChange: function(field, newValue, oldValue) {
+        //console.log(newValue, oldValue);
+    //},
+
+    //_onFormValidityChange: function(basicform, valid) {
+        //console.log(valid);
+    //},
 
     _onRenderLongName: function(field) {
         Ext.defer(function() {
@@ -195,10 +205,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             this.getFirstDeadlineField().show();
             this.getPublishingTimeField().show();
             this.getPublishingTimeHelp().show();
+            this.getFirstDeadlineField().setValue(null); // NOTE: See note in the else section below
         } else {
             this.getFirstDeadlineField().hide();
             this.getPublishingTimeField().hide();
             this.getPublishingTimeHelp().hide();
+            this.getFirstDeadlineField().setValue(new Date()); // NOTE: Set datetime to make sure the field validates - we clear it when we show the field again, and the value is not submitted as long as the type is non-electronic.
         }
     },
 
