@@ -105,7 +105,10 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             }, {
                                 xtype: 'formhelp',
                                 margin: '5 0 0 0',
-                                html: gettext('If you only use Devilry to give feedback, and %(students_term)s deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.')
+                                tpl: gettext('If you only use Devilry to give feedback, and {students_term} deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'),
+                                data: {
+                                    students_term: 'students'
+                                }
                             }]
 
                         }, {
