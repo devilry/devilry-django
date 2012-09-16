@@ -10,6 +10,7 @@
 @mixin selectableRowStyles() {
     strong {
         font-size: $baseFontSize + 2;
+        font-weight: bold;
         line-height: $baseLineHeight + 3px;
     }
     small {
