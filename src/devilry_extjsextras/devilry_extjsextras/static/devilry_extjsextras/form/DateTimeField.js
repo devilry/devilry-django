@@ -13,6 +13,7 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
     combineErrors: true,
     msgTarget: 'under',    
     readOnly: false,
+    allowBlank: true,
 
     /**
      * @cfg {Object} dateConfig
@@ -40,6 +41,7 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
     initComponent: function(){
         this.childrenRendered = 0;
         this.currentValue = null;
+        this.currentIsValid = false;
         Ext.apply(this, {
             layout: 'column',
             items: [Ext.Object.merge({
@@ -47,7 +49,8 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
                 columnWidth: 0.5,
                 isFormField: false, //exclude from field query's
                 emptyText: this.dateFieldEmptyText,
-                submitValue:false,
+                submitValue: false,
+                allowBlank: this.allowBlank,
                 listeners: {
                     scope: this,
                     render: this._onChildRender,
@@ -58,9 +61,10 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
             }, this.dateConfig), Ext.Object.merge({
                 xtype: 'devilry_extjsextras_timefield',
                 columnWidth: 0.5,
-                isFormField:false, //exclude from field query's
+                isFormField: false, //exclude from field query's
                 emptyText: this.timeFieldEmptyText,
-                submitValue:false,
+                submitValue: false,
+                allowBlank: this.allowBlank,
                 listeners: {
                     scope: this,
                     render: this._onChildRender,
@@ -111,16 +115,24 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
         if(this.newFullValue !== null) {
             this.currentValue = newFullValue;
             this.fireEvent('change', this, newFullValue, oldFullValue);
+            var isValid = this.isValid();
+            if(isValid !== this.currentIsValid) {
+                this.currentIsValid = isValid;
+                this.fireEvent('validitychange', this, isValid);
+            }
         }
     },
 
     _onChildRender: function() {
         this.childrenRendered ++;
         if(this.childrenRendered == 2) {
+            if(!Ext.isEmpty(this.value)) {
+                this.setValue(this.value);
+            }
             this.fireEvent('allRendered', this);
         }
     },
-    
+
     focus:function(){
         this.callParent();
         this.getDateField().focus();
