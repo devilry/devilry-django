@@ -52,6 +52,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
 
 
+    /**
+     * @property {Object} [assignmentRecord]
+     * The assignment record. Loaded before any group records are loaded, which
+     * means that it is available in the selection handlers.
+     */
+
+
     listofgroups_size_cookiename: 'devilry_subjectadmin.managestudents.ListOfGroups.width',
 
     stores: [

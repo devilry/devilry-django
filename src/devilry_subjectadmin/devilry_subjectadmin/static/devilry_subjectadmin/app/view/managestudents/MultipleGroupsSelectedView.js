@@ -19,6 +19,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
      * @cfg {string} multiselectHowto (required)
      */
 
+    /**
+     * @cfg {int} [period_id]
+     */
+
     initComponent: function() {
         var buttonmargin = '30 0 0 0';
         var helpmargin = '4 0 0 0';
@@ -40,7 +44,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     type: 'info',
                     message: [this.topMessage, this.multiselectHowto].join(' ')
                 }, {
-                    xtype: 'manageexaminersonmultiple'
+                    xtype: 'manageexaminersonmultiple',
+                    period_id: this.period_id
                 }, {
                     xtype: 'managetagsonmultiple',
                     margin: buttonmargin

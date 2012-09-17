@@ -6,8 +6,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_extjsextras.MoreInfoBox',
         'devilry_subjectadmin.view.managestudents.SelectExaminersGrid',
         'devilry_subjectadmin.view.managestudents.ExaminersHelp',
+        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.OkCancelPanel',
     ],
+
+    /**
+     * @cfg {int} [period_id]
+     * The ID of the current period.
+     */
 
     _createMoreInfo: function() {
         return devilry_subjectadmin.view.managestudents.ExaminersHelp.getDetailsUl();
@@ -15,9 +21,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
 
 
     initComponent: function() {
-        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only %(examiners_term)s registered on the %(period_term)s are available.'), {
+        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only <a %(relatedexaminers_link)s>%(examiners_term)s registered on the %(period_term)s</a> are available.'), {
             examiners_term: gettext('examiners'),
-            period_term: gettext('period')
+            period_term: gettext('period'),
+            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
+                devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id))
         }, true);
         Ext.apply(this, {
             cls: 'bootstrap',

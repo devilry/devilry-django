@@ -186,7 +186,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.setBody({
             xtype: 'multiplegroupsview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            topMessage: this._createTopMessage()
+            topMessage: this._createTopMessage(),
+            period_id: manageStudentsController.assignmentRecord.get('parentnode')
         });
 
         this._populateSelectedGroupsStore();
