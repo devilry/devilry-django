@@ -24,8 +24,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
      */
 
     initComponent: function() {
-        var buttonmargin = '30 0 0 0';
-        var helpmargin = '4 0 0 0';
+        var defaultmargin = '15 0 0 0';
 
         Ext.apply(this, {
             layout: 'border',
@@ -47,11 +46,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'manageexaminersonmultiple',
                     period_id: this.period_id
                 }, {
-                    xtype: 'managetagsonmultiple',
-                    margin: buttonmargin
-                }, {
                     xtype: 'mergegroups',
-                    margin: buttonmargin
+                    margin: defaultmargin
+                }, {
+                    xtype: 'managetagsonmultiple',
+                    margin: defaultmargin,
+                    padding: '0 0 20 0'
                 }]
             }, {
                 xtype: 'selectedgroupssummarygrid',

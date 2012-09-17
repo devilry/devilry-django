@@ -38,10 +38,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
                 xtype: 'box',
                 anchor: '100%',
                 tpl: [
-                    '<h2>',
+                    '<h3>',
                         '{heading}',
                         ' <small>- {subheading}</small>',
-                    '</h2>'
+                    '</h3>'
                 ],
                 data: {
                     heading: gettext('Create project group'),
@@ -62,8 +62,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
                 scale: 'medium',
                 cls: 'merge_groups_button',
                 text: gettext('Create project group'),
-                itemId: 'mergeGroupsButton',
-                margin: '0 0 20 0' // NOTE: This is because "More info" seems to cause the rendering of the padding on the container to sometimes not apply, and we want some space below the button
+                itemId: 'mergeGroupsButton'
             }, {
                 xtype: 'panel',
                 anchor: '100%',

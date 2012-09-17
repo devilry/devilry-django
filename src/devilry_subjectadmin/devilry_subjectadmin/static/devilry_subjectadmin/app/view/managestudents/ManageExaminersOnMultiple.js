@@ -28,9 +28,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                 xtype: 'box',
                 anchor: '100%',
                 tpl: [
-                    '<h2>',
+                    '<h3>',
                         '{heading}',
-                    '</h2>'
+                    '</h3>'
                 ],
                 data: {
                     heading: gettext('Manage examiners'),
