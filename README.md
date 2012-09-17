@@ -39,6 +39,7 @@ You should setup your [buildout cache](https://github.com/devilry/devilry-django
 
 ## 4 - Create a demo database
 
+    $ cd devenv/
     $ fab setup_demo
 
 Note: Creating the testdata takes a lot of time, but you can start using the
@@ -48,12 +49,14 @@ script does).
 
 ### Alternative step 4 - Setup an empty databse
 
+    $ cd devenv/
     $ fab reset syncdb
 
 
 ### Alternative step 4 - From database dump
 Creating the demo database takes a lot of time (12mins on a macbook air with SSD disk). You may ask a developer to send you a dump, and use it instead of ``setup_demo``:
 
+    $ cd devenv/
     $ fab reset
     $ fab restore_db:/path/to/dbdump.sql
 
