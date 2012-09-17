@@ -11,6 +11,13 @@ Ext.define('devilry_usersearch.ManageUsersGridModel', {
         {name: 'email',  type: 'string'}
     ],
 
+    getDisplayName: function() {
+        if(Ext.isEmpty(this.get('full_name'))) {
+            return this.get('username');
+        } else {
+            return this.get('full_name');
+        }
+    },
 
     statics: {
         /** Returns a template that can be used to pretty-format a ManageUsersGridModel object in a grid cell. */
