@@ -10,7 +10,7 @@ class TestManageSingleGroupMixin(object):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
-                            periods=['p1'],
+                            periods=['p1:begins(-2):ends(6)'],
                             assignments=['a1:admin(a1admin)'])
         self.assignment = self.testhelper.sub_p1_a1
 
@@ -312,3 +312,107 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         cancelbutton.click()
         meta = self.find_element('.tagsingroupgrid_tag_a')
         self.waitFor(meta, lambda m: meta.is_displayed())
+
+
+
+class TestManageSingleGroupDeadlinesAndDeliveries(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
+
+    def _getDeliveryCount(self, deadline):
+        deliverycount_el = deadline.find_element_by_css_selector('.deadlineheader .deliverycount')
+        return int(deliverycount_el.text.strip())
+
+    def _isInTheFuture(self, deadline):
+        return len(deadline.find_elements_by_css_selector('.deadlineheader .in_the_future .success')) == 1
+
+    def _waitForDeadlineCount(self, count):
+        deadlinescontainer = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_admingroupinfo_deadlinescontainer')
+        def get_deadlines():
+            return deadlinescontainer.find_elements_by_css_selector('.devilry_subjectadmin_admingroupinfo_deadline')
+        self.waitFor(deadlinescontainer, lambda d: len(get_deadlines()) == count)
+        return get_deadlines()
+
+    def _click_header(self, deadline):
+        header = deadline.find_element_by_css_selector('.x-panel-header')
+        header.click()
+
+    def _show_deadline(self, deadline):
+        self._click_header(deadline)
+        self.waitFor(deadline, lambda d: deadline.find_element_by_css_selector('.x-panel-body').is_displayed())
+
+    def _get_deliveries(self, deadline):
+        return deadline.find_elements_by_css_selector('.devilry_subjectadmin_admingroupinfo_delivery')
+
+    def test_render(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
+        self.testhelper.add_delivery(g1, {'a.py': ['print ', 'meh']})
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_delivery(g1, {'c.py': ['print ', 'meh']})
+
+        self.browseToAndSelectAs('a1admin', g1)
+        deadlines = self._waitForDeadlineCount(2)
+
+        self.assertEquals(self._getDeliveryCount(deadlines[0]), 2)
+        self.assertTrue(self._isInTheFuture(deadlines[0]))
+        self.assertEquals(self._getDeliveryCount(deadlines[1]), 1)
+        self.assertFalse(self._isInTheFuture(deadlines[1]))
+
+    def test_deadlinerender(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_delivery(g1, {'c.py': ['print ', 'meh']})
+
+        self.browseToAndSelectAs('a1admin', g1)
+        deadline = self._waitForDeadlineCount(1)[0]
+        self._show_deadline(deadline)
+        deliveries = self._get_deliveries(deadline)
+        self.assertEquals(len(deliveries), 2)
+
+    def test_delivery_render(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+
+        self.browseToAndSelectAs('a1admin', g1)
+        deadline = self._waitForDeadlineCount(1)[0]
+        self._show_deadline(deadline)
+        delivery = self._get_deliveries(deadline)[0]
+
+        self.assertEquals(len(delivery.find_elements_by_css_selector('.no_feedback')), 1)
+        made_by = delivery.find_element_by_css_selector('.deliverymadebyblock .madeby_displayname').text.strip()
+        self.assertEquals(made_by, 'student1')
+
+    def test_delivery_feedback(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g1, verdict={'grade': 'C', 'points': 85, 'is_passing_grade': True},
+                                     rendered_view="Hello world")
+
+        self.browseToAndSelectAs('a1admin', g1)
+        deadline = self._waitForDeadlineCount(1)[0]
+        self._show_deadline(deadline)
+        delivery = self._get_deliveries(deadline)[0]
+
+        self.assertEquals(len(delivery.find_elements_by_css_selector('.no_feedback')), 0)
+        feedback = delivery.find_element_by_css_selector('.feedback_rendered_view').text.strip()
+        self.assertEquals(feedback, 'Hello world')
+        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .success').text.strip(),
+                          'Passed')
+        self.assertTrue('This is the active feedback' in delivery.text)
+
+    def test_delivery_feedback_failed(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g1, verdict={'grade': 'F', 'points': 5, 'is_passing_grade': False})
+
+        self.browseToAndSelectAs('a1admin', g1)
+        deadline = self._waitForDeadlineCount(1)[0]
+        self._show_deadline(deadline)
+        delivery = self._get_deliveries(deadline)[0]
+
+        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .danger').text.strip(),
+                          'Failed')
