@@ -493,12 +493,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * Get multiselect help message.
      */
     getMultiSelectHowto: function() {
-        var shortcutkey = 'CTRL';
-        if(Ext.isMac) {
-            shortcutkey = 'CMD';
-        }
-        return interpolate(gettext('Hold down <strong>%(shortcutkey)s</strong> to select more %(groups_term)s.'), {
-            shortcutkey: shortcutkey,
+        return interpolate(gettext('Use the checkboxes to select more %(groups_term)s.'), {
             groups_term: gettext('groups')
         }, true);
     },
