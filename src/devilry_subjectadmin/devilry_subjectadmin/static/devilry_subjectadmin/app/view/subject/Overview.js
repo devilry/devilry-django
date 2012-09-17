@@ -76,7 +76,8 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                             id: 'subjectDeleteButton',
                             titleText: gettext('Loading ...'),
                             bodyHtml: gettext('Once you delete a subject, there is no going back. Only superusers can delete a non-empty subject.'),
-                            buttonText: gettext('Delete') + ' ...'
+                            buttonText: gettext('Delete') + ' ...',
+                            buttonUi: 'danger'
                         }]
                     }]
                 }, {

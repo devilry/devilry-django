@@ -80,7 +80,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             id: 'assignmentDeleteButton',
                             titleText: gettext('Loading ...'),
                             bodyHtml: gettext('Once you delete an assignment, there is no going back. Only superusers can delete an assignment with deliveries.'),
-                            buttonText: gettext('Delete') + ' ...'
+                            buttonText: gettext('Delete') + ' ...',
+                            buttonUi: 'danger'
                         }]
                     }]
                 }, {
