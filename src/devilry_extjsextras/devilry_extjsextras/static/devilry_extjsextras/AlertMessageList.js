@@ -14,6 +14,7 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     hidden: true,
     frame: false,
     border: false,
+    bodyStyle: 'background-color: transparent !important;',
 
     messageDefaults: {},
 
