@@ -42,7 +42,7 @@ class TestManageMultipleStudentsOverview(TestManageMultipleStudentsMixin, Subjec
         self.waitForCssSelector('.top_infobox')
         top_infobox = self.find_element('.top_infobox')
         self.assertEquals(top_infobox.text.strip(),
-                          '2/2 groups selected. Hold down CMD to select more groups.')
+                          '2/2 groups selected. Use the checkboxes to select more groups.')
 
 
 class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
