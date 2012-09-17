@@ -34,7 +34,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
 
         '<div class="activefeedbackblock">',
             '<tpl if="has_active_feedback">',
-                '<h4>', gettext('Active deadline'), '</h4>',
+                '<h4>', gettext('Active feedback'), '</h4>',
                 '<p><small>',
                     interpolate(gettext('This is your active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s gives you a new %(feedback_term)s, this will be you final %(grade_term)s on this %(assignment_term)s.'), {
                         feedback_term: gettext('feedback'),

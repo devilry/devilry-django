@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-30 12:12+0200\n"
+"POT-Creation-Date: 2012-09-17 23:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/devilry_student/app.js:48
+#: static/devilry_student/app.js:59
 msgid "Dashboard"
 msgstr ""
 
-#: static/devilry_student/app.js:101
+#: static/devilry_student/app.js:112
 msgid "Route not found"
 msgstr ""
 
@@ -30,7 +30,7 @@ msgid "Uploading your file ..."
 msgstr "Last opp din fil ..."
 
 #: static/devilry_student/app/controller/AddDelivery.js:155
-#: static/devilry_student/app/controller/BrowseHistory.js:46
+#: static/devilry_student/app/controller/BrowseHistory.js:48
 #: static/devilry_student/app/controller/Dashboard.js:58
 #: static/devilry_student/app/controller/GroupInfo.js:97
 msgid "Error"
@@ -48,27 +48,27 @@ msgstr ""
 msgid "delivery"
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:47
+#: static/devilry_student/app/controller/BrowseHistory.js:49
 msgid "Invalid %(period)s ID: %(period_id)s."
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:48
+#: static/devilry_student/app/controller/BrowseHistory.js:50
 msgid "period"
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:71
-#: static/devilry_student/app/controller/BrowseHistory.js:72
-#: static/devilry_student/app/controller/BrowseHistory.js:90
+#: static/devilry_student/app/controller/BrowseHistory.js:73
+#: static/devilry_student/app/controller/BrowseHistory.js:74
+#: static/devilry_student/app/controller/BrowseHistory.js:92
 #: static/devilry_student/app/controller/GroupInfo.js:213
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:37
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:36
 msgid "Browse"
 msgstr ""
 
-#: static/devilry_student/app/controller/BrowseHistory.js:73
+#: static/devilry_student/app/controller/BrowseHistory.js:75
 msgid "Please select an %(assignment_term)s from the list."
 msgstr "Velg en %(assignment_term)s fra listen."
 
-#: static/devilry_student/app/controller/BrowseHistory.js:74
+#: static/devilry_student/app/controller/BrowseHistory.js:76
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:43
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:90
 msgid "assignment"
@@ -118,7 +118,7 @@ msgstr ""
 #: static/devilry_student/app/controller/GroupInfo.js:239
 #: static/devilry_student/app/controller/GroupInfo.js:247
 #: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:22
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
 #: static/devilry_student/app/view/dashboard/Overview.js:69
 #: static/devilry_student/app/view/dashboard/Overview.js:90
 #: static/devilry_student/app/view/dashboard/Overview.js:122
@@ -245,7 +245,7 @@ msgstr ""
 "resultater."
 
 #: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:93
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:38
 #: static/devilry_student/app/view/dashboard/Overview.js:45
 #: static/devilry_student/app/view/dashboard/Overview.js:66
 #: static/devilry_student/app/view/dashboard/Overview.js:82
@@ -264,7 +264,7 @@ msgstr ""
 msgid "Grade"
 msgstr ""
 
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:38
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:37
 msgid ""
 "Browse all your %(assignments_term)s and %(deliveries_term)s, including "
 "%(assignments_term)s from old %(periods_term)s."
@@ -272,17 +272,17 @@ msgstr ""
 "Bla i alle dine %(assignments_term)s og %(deliveries_term)s, inkludert "
 "%(assignments_term)s fra gamle %(periods_term)s."
 
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:41
+#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
 msgid "periods"
 msgstr ""
 
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:69
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:74
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:83
+#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:68
+#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:73
+#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:82
 msgid "Subject"
 msgstr ""
 
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:73
+#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:72
 msgid "Find a %(subject_term)s ..."
 msgstr "Finn et %(subject_term)s ..."
 
@@ -371,7 +371,7 @@ msgid "About this deadline"
 msgstr "Om denne innleveringsfristen"
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:37
-msgid "Active deadline"
+msgid "Active feedback"
 msgstr "Aktiv tilbakemelding"
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:39
