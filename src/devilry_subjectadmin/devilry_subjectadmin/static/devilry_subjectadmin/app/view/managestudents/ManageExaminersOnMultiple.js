@@ -21,12 +21,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
 
 
     initComponent: function() {
-        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only <a %(relatedexaminers_link)s>%(examiners_term)s registered on the %(period_term)s</a> are available.'), {
-            examiners_term: gettext('examiners'),
-            period_term: gettext('period'),
-            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
-                devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id))
-        }, true);
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',
@@ -105,7 +99,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         padding: '0 20 0 0',
                         tpl: [
                             '<p>{text}</p>',
-                            '<p><small>{relatednote}</small></p>'
+                            '{relatednote}'
                         ],
                         data: {
                             text: interpolate(gettext('Select one or more %(examiner_term)s. Any current %(examiners_term)s on the selected %(groups_term)s will be <strong>replaced</strong> when you confirm your selection.'), {
@@ -113,7 +107,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                                 examiners_term: gettext('examiners'),
                                 groups_term: gettext('groups')
                             }, true),
-                            relatednote: this.relatednote
+                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
@@ -136,7 +130,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         padding: '0 20 0 0',
                         tpl: [
                             '<p>{text}</p>',
-                            '<p><small>{relatednote}</small></p>'
+                            '{relatednote}'
                         ],
                         data: {
                             text: interpolate(gettext('Select one or more %(examiner_term)s. The selected %(examiners_term)s will be <strong>added</strong> to the selected %(groups_term)s when you confirm your selection.'), {
@@ -144,7 +138,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                                 examiners_term: gettext('examiners'),
                                 groups_term: gettext('groups')
                             }, true),
-                            relatednote: this.relatednote
+                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
                         }
                     }, {
                         xtype: 'selectexaminersgrid',

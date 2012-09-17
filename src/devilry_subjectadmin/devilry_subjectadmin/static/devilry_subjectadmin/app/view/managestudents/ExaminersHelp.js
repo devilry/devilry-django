@@ -11,7 +11,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
         return this._introText;
     },
 
-    
     _detailList: [
         interpolate(gettext('Administrators can not give feedback. If you want to give feedback to any %(groups_term)s, you have to make yourself %(examiner_term)s on those %(groups_term)s.'), {
             groups_term: gettext('groups'),
@@ -37,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
     ],
 
     getDetailsUl: function() {
-        if(Ext.isEmpty(this.ul)) {
+        if(Ext.isEmpty(this._detailsUl)) {
             this._detailsUl = Ext.create('Ext.XTemplate', 
                 '<ul>',
                     '<tpl for="list">',
@@ -49,5 +48,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
             });
         }
         return this._detailsUl;
+    },
+
+    getRelatedNote: function(period_id) {
+        if(Ext.isEmpty(this._relatedNoteTpl)) {
+            this._relatedNoteTpl = Ext.create('Ext.XTemplate', 
+                '<p><small class="muted">',
+                    gettext('Only <a {relatedexaminers_link}>{examiners_term} registered on the {period_term}</a> are available.'),
+                '</small></p>'
+            );
+        }
+        return this._relatedNoteTpl.apply({
+            examiners_term: gettext('examiners'),
+            period_term: gettext('period'),
+            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
+                devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(period_id))
+        });
     }
 });
