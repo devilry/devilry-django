@@ -144,7 +144,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         deliverypanel = deadlinepanel.find_elements_by_css_selector('.devilry_student_groupinfo_delivery')[0]
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock').text.strip(), '')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view small').text.strip(), 'No feedback')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.no_feedback').text.strip(), 'No feedback')
 
     def test_passing_grade(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1)')
@@ -165,7 +165,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .success').text.strip(), 'Passed')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(A)')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view').text.strip(), 'Good stuff')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.feedback_rendered_view').text.strip(), 'Good stuff')
 
     def test_failing_grade(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1)')
@@ -186,7 +186,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view').text.strip(), 'Bad stuff')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.feedback_rendered_view').text.strip(), 'Bad stuff')
 
     def test_deliverieslist(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1)')
