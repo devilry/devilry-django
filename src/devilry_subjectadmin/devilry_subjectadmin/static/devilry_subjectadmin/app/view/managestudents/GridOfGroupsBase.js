@@ -3,7 +3,6 @@
  */
 Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     extend: 'Ext.grid.Panel',
-    multiSelect: true,
     border: 1,
     frame: true,
 

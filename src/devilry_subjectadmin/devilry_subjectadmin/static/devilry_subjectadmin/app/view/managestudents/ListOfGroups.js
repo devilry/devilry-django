@@ -12,7 +12,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
         'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
-        'Ext.grid.column.Action'
+        'Ext.grid.column.Action',
+        'Ext.selection.CheckboxModel'
     ],
 
     getColumns: function() {
@@ -36,6 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         Ext.apply(this, {
             //features: [this.groupingFeature],
             //groupHeaderTpl: '',
+            selModel: Ext.create('Ext.selection.CheckboxModel'),
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
