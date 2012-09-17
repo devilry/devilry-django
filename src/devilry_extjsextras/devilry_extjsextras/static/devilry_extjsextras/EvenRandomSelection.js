@@ -21,12 +21,9 @@ Ext.define('devilry_extjsextras.EvenRandomSelection', {
         if(this.pool.length === 0) {
             this.pool = Ext.Array.clone(this.selection);
         }
-        console.log(this.pool);
         var randomIndex = Math.floor(Math.random() * (this.pool.length));
-        console.log(randomIndex);
         var next = this.pool[randomIndex];
         Ext.Array.remove(this.pool, next);
-        console.log(next);
         return next;
     }
 });
