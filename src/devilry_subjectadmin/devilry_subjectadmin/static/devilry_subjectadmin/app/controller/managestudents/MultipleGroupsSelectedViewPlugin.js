@@ -17,6 +17,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     requires: [
         'devilry_extjsextras.AlertMessage',
+        'devilry_extjsextras.EvenRandomSelection',
         'devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup',
         'Ext.tip.ToolTip',
         'Ext.util.KeyNav'
@@ -26,6 +27,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     models: [
         'MergeIntoGroup'
+    ],
+
+
+    random_distribute_result_tpl: [
+        '<h3>',
+            gettext('Examiners random distributed successfully'),
+        '</h3>',
+        '<dl>',
+        '<tpl for="resultsByExaminer">',
+            '<dt>{examiner}</dt>',
+            '<dd>',
+                '{groupRecords.length}',
+            '</dd>',
+        '</tpl>',
+        '</dl>'
     ],
 
 
@@ -48,6 +64,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     }, {
         ref: 'setExaminersGrid',
         selector: 'viewport multiplegroupsview manageexaminersonmultiple #setExaminersPanel selectexaminersgrid'
+    }, {
+        ref: 'randomDistributeExaminersGrid',
+        selector: 'viewport multiplegroupsview manageexaminersonmultiple #randomDistributeExaminersPanel selectexaminersgrid'
     }, {
         ref: 'addExaminersGrid',
         selector: 'viewport multiplegroupsview manageexaminersonmultiple #addExaminersPanel selectexaminersgrid'
@@ -108,6 +127,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             'viewport multiplegroupsview manageexaminersonmultiple okcancelpanel#setExaminersPanel': {
                 cancel: this._showExaminersDefaultView,
                 ok: this._onSetExaminersConfirmed
+            },
+
+            // randomDistributeExaminers
+            'viewport multiplegroupsview manageexaminersonmultiple #randomDistributeExaminersButton': {
+                click: this._onRandomDistributeExaminers
+            },
+            'viewport multiplegroupsview manageexaminersonmultiple okcancelpanel#randomDistributeExaminersPanel': {
+                cancel: this._showExaminersDefaultView,
+                ok: this._onRandomDistributeExaminersConfirmed
             },
 
             // addExaminers
@@ -284,6 +312,63 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             success: function() {
                 // TODO: Notify user about successs
             }
+        });
+    },
+
+    // Random distribute examiners
+    _onRandomDistributeExaminers: function() {
+        this.getManageExaminersCardBody().getLayout().setActiveItem('randomDistributeExaminersPanel');
+        this._scrollExaminersIntoView();
+    },
+    _syncExaminersRandomly: function(userStore) {
+        var randomExaminerPool = Ext.create('devilry_extjsextras.EvenRandomSelection', {
+            selection: userStore.data.items
+        });
+        var resultsByExaminer = {};
+        for(var index=0; index<this.groupRecords.length; index++)  {
+            var groupRecord = this.groupRecords[index];
+            var examinerUserRecord = randomExaminerPool.getRandomItem();
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers({
+                groupRecord: groupRecord,
+                userRecords: [examinerUserRecord],
+                doNotDeleteUsers: false
+            });
+
+            // Add to results
+            var displayName = examinerUserRecord.getDisplayName();
+            if(Ext.isEmpty(resultsByExaminer[displayName])) {
+                resultsByExaminer[displayName] = [];
+            }
+            resultsByExaminer[displayName].push(groupRecord);
+        }
+        return resultsByExaminer;
+    },
+    _onRandomDistributeExaminersConfirmed: function() {
+        var grid = this.getRandomDistributeExaminersGrid();
+        var userStore = grid.getSelectedAsUserStore();
+        var resultsByExaminer = this._syncExaminersRandomly(userStore);
+        this.manageStudentsController.notifyMultipleGroupsChange({
+            scope: this,
+            success: function() {
+                this._onRandomDistributeExaminersSuccess(resultsByExaminer)
+            }
+        });
+    },
+    _onRandomDistributeExaminersSuccess: function(resultsByExaminer) {
+        var resultsAsArray = [];
+        Ext.Object.each(resultsByExaminer, function(examiner, groupRecords) {
+            resultsAsArray.push({
+                examiner: examiner,
+                groupRecords: groupRecords
+            });
+        }, this);
+        var message = Ext.create('Ext.XTemplate', this.random_distribute_result_tpl).apply({
+            resultsByExaminer: resultsAsArray
+        });
+        this.application.getAlertmessagelist().add({
+            type: 'success',
+            autoclose: true,
+            message: message
         });
     },
 

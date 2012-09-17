@@ -58,10 +58,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                             minWidth: 100
                         },
                         items: [{
+                            xtype: 'splitbutton',
                             text: gettext('Set examiner(s)'),
                             itemId: 'setExaminersButton',
                             id: 'multi_set_examiners_button',
-                            tooltip: gettext('Replace the examiners on the selected groups with one or more new examiner(s).')
+                            tooltip: gettext('Replace the examiners on the selected groups with one or more new examiner(s).'),
+                            menu: [{
+                                text: gettext('Random distribute'),
+                                itemId: 'randomDistributeExaminersButton',
+                                tooltip: gettext('Replace the examiners on the selected groups with a random examiner from a set of examiners that you select.'),
+                            }]
                         }, {
                             text: gettext('Add examiner(s)'),
                             itemId: 'addExaminersButton',
@@ -91,6 +97,37 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                     itemId: 'setExaminersPanel',
                     id: 'multi_set_examiners_panel',
                     oktext: gettext('Set selected examiners'),
+                    layout: 'column',
+                    items: [{
+                        xtype: 'box',
+                        anchor: '100%',
+                        columnWidth: 0.5,
+                        padding: '0 20 0 0',
+                        tpl: [
+                            '<p>{text}</p>',
+                            '{relatednote}'
+                        ],
+                        data: {
+                            text: interpolate(gettext('Select one or more %(examiner_term)s. Any current %(examiners_term)s on the selected %(groups_term)s will be <strong>replaced</strong> when you confirm your selection.'), {
+                                examiner_term: gettext('examiner'),
+                                examiners_term: gettext('examiners'),
+                                groups_term: gettext('groups')
+                            }, true),
+                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
+                        }
+                    }, {
+                        xtype: 'selectexaminersgrid',
+                        columnWidth: 0.5,
+                        anchor: '100%'
+                    }]
+                }, {
+                    xtype: 'okcancelpanel',
+                    border: 1,
+                    bodyPadding: 10,
+                    frame: false,
+                    itemId: 'randomDistributeExaminersPanel',
+                    id: 'multi_randomdist_examiners_panel',
+                    oktext: gettext('Random distribute selected examiners'),
                     layout: 'column',
                     items: [{
                         xtype: 'box',
