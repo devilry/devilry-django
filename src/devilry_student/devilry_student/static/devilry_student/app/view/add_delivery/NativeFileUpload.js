@@ -82,8 +82,6 @@ Ext.define('devilry_student.view.add_delivery.NativeFileUpload', {
             itemId: itemId,
             name: name
         });
-        console.log('YESS');
-        //this.fileInputEl.dom.value = '';
     },
 
     _onFileChange: function(e) {
