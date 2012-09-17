@@ -27,7 +27,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                     '<tpl else>',
                         '<span class="danger">', gettext('Failed') ,'</span>',
                     '</tpl>',
-                    ' <small>({latest_feedback.grade})</small>',
+                    ' <small class="muted">({latest_feedback.grade})</small>',
                 '</p>',
             '</tpl>',
         '</div>',
@@ -35,8 +35,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
         '<div class="activefeedbackblock">',
             '<tpl if="has_active_feedback">',
                 '<h4>', gettext('Active deadline'), '</h4>',
-                '<p><small>',
-                    interpolate(gettext('This is your active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s gives you a new %(feedback_term)s, this will be you final %(grade_term)s on this %(assignment_term)s.'), {
+                '<p><small class="muted">',
+                    interpolate(gettext('This is the active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s creates a new %(feedback_term)s, this will be the final %(grade_term)s on this %(assignment_term)s.'), {
                         feedback_term: gettext('feedback'),
                         examiner_term: gettext('examiner'),
                         grade_term: gettext('grade'),
@@ -54,17 +54,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                         gettext('{offset} AFTER the deadline.'),
                     '</span>',
                 '<tpl else>',
-                    '<small>',
+                    '<small class="muted">',
                         gettext('{offset} before the deadline.'),
                     '</small>',
                 '</tpl>',
-                '<br/><small>({delivery.time_of_delivery})</small>',
+                '<br/><small class="muted">({delivery.time_of_delivery})</small>',
             '</p>',
         '</div>',
 
         '<div class="deliverymadebyblock">',
             '<h4>', gettext('Delivery made by'), '</h4>',
-            '<p>{delivery.delivered_by.user.displayname}</p>',
+            '<p class="madeby_displayname">{delivery.delivered_by.user.displayname}</p>',
         '</div>',
 
         '<div class="fileblock">',
@@ -85,10 +85,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
 
     feedbackTpl: [
         '<tpl if="latest_feedback">',
-            '{latest_feedback.rendered_view}',
+            '<div class="feedback_rendered_view">{latest_feedback.rendered_view}</div>',
         '<tpl else>',
-            '<p><small>', gettext('No feedback'), '</small></p>',
-        '</tpl>'  
+            '<p><small class="muted no_feedback">', gettext('No feedback'), '</small></p>',
+        '</tpl>'
     ],
 
     headerTpl: [
@@ -142,8 +142,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                     columnWidth: 0.7,
                     tpl: this.feedbackTpl,
                     itemId: 'feedback',
-                    cls: 'bootstrap rendered_view',
-                    padding: '0 0 0 40',
+                    cls: 'bootstrap',
+                    padding: '12 0 0 40',
                     data: {
                         latest_feedback: latest_feedback
                     }
