@@ -6,7 +6,20 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
     alias: 'widget.singleactionbox',
     cls: 'devilry_singleactionbox bootstrap',
 
+    /**
+     * @cfg {String} [bodyTpl]
+     * The body template.
+     */
     bodyTpl: '<p>{html}</p>',
+
+    /**
+     * @cfg {Object} [bodyData=undefined]
+     * Data for the ``bodyTpl``. Defaults to ``{html: bodyHtml}``.
+     */
+
+    /**
+     * @cfg {string} [bodyHtml=undefined]
+     */
 
     /**
      * @cfg {string} titleText (Required)
@@ -17,10 +30,6 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
      * Title template. Defaults to ``<strong>{text}</strong>``.
      */
     titleTpl: '<strong>{text}</strong>',
-
-    /**
-     * @cfg {string} bodyHtml (Required)
-     */
 
     /**
      * @cfg {string} buttonText (Required)
@@ -42,6 +51,12 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
      * @cfg {Object} buttonListeners (Required)
      */
 
+    /**
+     * @cfg {String} [buttonUi="default"]
+     * The ``ui``-attribute of the button.
+     */
+    buttonUi: 'default',
+
     initComponent: function() {
         this.addEvents({
             /**
@@ -51,6 +66,10 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
              * */
             click: true
         });
+        var bodyData = this.bodyData;
+        if(Ext.isEmpty(bodyData)) {
+            bodyData = {html: this.bodyHtml};
+        }
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
@@ -69,15 +88,14 @@ Ext.define('devilry_extjsextras.SingleActionBox', {
                     xtype: 'box',
                     itemId: 'singleactionbox_body',
                     tpl: this.bodyTpl,
-                    data: {
-                        html: this.bodyHtml
-                    },
+                    data: bodyData,
                     padding: '0 20 0 0',
                     columnWidth: 1
                 }, {
                     xtype: 'button',
                     scale: this.buttonScale,
                     text: this.buttonText,
+                    ui: this.buttonUi,
                     itemId: 'singleactionbox_button',
                     width: this.buttonWidth,
                     listeners: {
