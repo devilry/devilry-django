@@ -41,6 +41,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      * @cfg {Ext.data.Store} tagsStore (required)
      */
 
+    /**
+     * @cfg {int} [period_id]
+     */
+
 
     initComponent: function() {
         Ext.apply(this, {
@@ -86,7 +90,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                         studentsStore: this.studentsStore
                     }, {
                         xtype: 'manageexaminersonsingle',
-                        examinersStore: this.examinersStore
+                        examinersStore: this.examinersStore,
+                        period_id: this.period_id
                     }, {
                         xtype: 'managetagsonsingle',
                         tagsStore: this.tagsStore

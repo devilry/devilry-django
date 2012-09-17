@@ -131,7 +131,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
             assignment_id: this.manageStudentsController.assignmentRecord.get('id'),
-            groupRecord: this.groupRecord
+            groupRecord: this.groupRecord,
+            period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
         });
     },
 

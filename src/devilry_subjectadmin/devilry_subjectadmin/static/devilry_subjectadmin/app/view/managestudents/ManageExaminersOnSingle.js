@@ -14,6 +14,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
      * @cfg {Ext.data.Store} examinersStore (required)
      */
 
+    /**
+     * @cfg {int} [period_id]
+     * The ID of the current period.
+     */
+
     _createMoreInfo: function() {
         return [
             '<p>',
@@ -110,7 +115,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                         anchor: '100%',
                         tpl: [
                             '<p>{text}</p>',
-                            '<p><small>{relatednote}</small></p>'
+                            '{relatednote}'
                         ],
                         data: {
                             text: interpolate(gettext('The selected %(examiners_term)s will <strong>replace</strong> any %(examiners_term)s currently on the %(group_term)s when you confirm your selection. Removing an %(examiner_term)s from the group does not affect any feedback they have already made on the group.'), {
@@ -118,7 +123,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                                 examiners_term: gettext('examiners'),
                                 group_term: gettext('group')
                             }, true),
-                            relatednote: this.relatednote
+                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
