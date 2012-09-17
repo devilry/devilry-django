@@ -50,24 +50,6 @@
 
     // Utility classes
     @import "bootstrap/utilities"; // Has to be last to override when necessary
-
-
-
-    // These are overriden by ExtJS since we do not use the .bootstrap body class.
-    p, .alert, li {
-        font-size: $baseFontSize;
-        line-height: $baseLineHeight;
-    }
-
-    // These are set by the ExtJS theme, however we want the default bootstrap styles!
-    ul li {
-        list-style: disc outside none;
-    }
-    ul.unstyled,
-    ol.unstyled {
-        &> li {
-            margin-left: 0;
-            list-style: none;
-        }
-    }
 }
+
+@import "devilry_bootstrap_extras";
