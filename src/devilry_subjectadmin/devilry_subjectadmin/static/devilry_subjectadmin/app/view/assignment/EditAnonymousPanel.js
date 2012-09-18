@@ -5,9 +5,6 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
     extend: 'devilry_extjsextras.OkCancelPanel',
     alias: 'widget.editanonymouspanel',
     cls: 'devilry_subjectadmin_editanonymouspanel bootstrap',
-    requires: [
-        'devilry_extjsextras.SaveButton'
-    ],
 
     initComponent: function() {
         Ext.apply(this, {
@@ -15,7 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
             oktext: gettext('Save'),
             items: {
                 xtype: 'form',
-                bodyPadding: 20,
+                bodyPadding: 10,
                 autoScroll: true,
                 border: 0,
                 layout: 'anchor',

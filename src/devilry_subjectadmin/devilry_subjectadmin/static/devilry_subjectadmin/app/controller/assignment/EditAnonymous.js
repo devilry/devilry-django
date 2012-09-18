@@ -113,10 +113,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     },
 
     _onRenderForm: function() {
-        this.getEditAnonymous().mon(this.getAssignmentModel().proxy, {
-            scope: this,
-            exception: this._onProxyError
-        });
         this.getFormPanel().keyNav = Ext.create('Ext.util.KeyNav', this.getFormPanel().el, {
             enter: this._onSave,
             scope: this
@@ -133,9 +129,23 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         var assignmentRecord = this.assignmentRecord;
         form.updateRecord(assignmentRecord);
         this._getMaskElement().mask(gettext('Saving ...'));
+
+        this.getAssignmentModel().proxy.addListener({
+            scope: this,
+            exception: this._onProxyError
+        });
         assignmentRecord.save({
             scope: this,
-            success: this._onSaveSuccess
+            success: this._onSaveSuccess,
+            callback: function(r, operation) {
+                this.getAssignmentModel().proxy.removeListener({
+                    scope: this,
+                    exception: this._onProxyError
+                });
+                if(operation.success) {
+                    this._onSaveSuccess();
+                }
+            }
         });
     },
 
@@ -151,7 +161,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onProxyError: function(proxy, response, operation) {
         this._getMaskElement().unmask();
+        this.getAlertMessageList().removeAll();
         this.handleProxyError(this.getAlertMessageList(), this.getFormPanel(),
-            response, operation);
+        response, operation);
     }
 });
