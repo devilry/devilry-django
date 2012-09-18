@@ -16,7 +16,9 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         'devilry_subjectadmin.view.assignment.EditFirstDeadlineWidget',
         'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.DangerousActions',
-        'devilry_extjsextras.SingleActionBox'
+        'devilry_extjsextras.SingleActionBox',
+        'devilry_subjectadmin.view.AdminsBox',
+        'devilry_subjectadmin.view.BaseNodeHierLocation'
     ],
 
     /**
@@ -103,6 +105,10 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         xtype: 'editanonymous-widget'
                     }, {
                         xtype: 'editfirstdeadline-widget'
+                    }, {
+                        xtype: 'adminsbox',
+                    }, {
+                        xtype: 'basenodehierlocation'
                     }]
                 }]
             }]

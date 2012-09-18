@@ -40,6 +40,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     }, {
         ref: 'noGroupsMessage',
         selector: 'assignmentoverview #noGroupsMessage'
+    }, {
+        ref: 'adminsbox',
+        selector: 'assignmentoverview adminsbox'
+    }, {
+        ref: 'basenodehierlocation',
+        selector: 'assignmentoverview basenodehierlocation'
     }],
 
     init: function() {
@@ -80,6 +86,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         if(this.assignmentRecord.get('number_of_groups') === 0) {
             this._handleNoGroups();
         }
+        this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
+        this.getBasenodehierlocation().setLocation(this.assignmentRecord);
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);
