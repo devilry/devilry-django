@@ -16,7 +16,7 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     border: false,
     bodyStyle: 'background-color: transparent !important;',
 
-    messageDefaults: {},
+    layout: 'anchor',
 
     initComponent: function() {
         this.on('remove', this._onRemove, this);
