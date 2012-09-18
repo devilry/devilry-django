@@ -6,10 +6,10 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     alias: 'widget.adminsbox',
     cls: 'devilry_subjectadmin_adminsbox bootstrap',
     requires: [
-        'Ext.window.Window',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_subjectadmin.view.ManageAdminsPanel',
-        'devilry_extjsextras.EditableSidebarBox'
+        'devilry_extjsextras.EditableSidebarBox',
+        'devilry_extjsextras.AutoSizedWindow'
     ],
 
     adminsTpl: [
@@ -128,16 +128,17 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     },
 
     _onEdit: function() {
-        Ext.widget('window', {
-            layout: 'fit',
+        Ext.widget('devilry_extjsextras_autosizedwindow', {
             closable: true,
-            width: 700,
-            height: 500,
-            maximizable: true,
+            width: 950,
+            height: 550,
+            maximizable: false,
             modal: true,
             title: gettext('Edit administrators'),
-            items: {
+            layout: 'border',
+            items: [{
                 xtype: 'manageadminspanel',
+                region: 'center',
                 basenodeRecord: this.basenodeRecord,
                 listeners: {
                     scope: this,
@@ -148,7 +149,32 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                         this._updateView();
                     }
                 }
-            }
+            }, {
+                xtype: 'panel',
+                region: 'east',
+                width: 250,
+                bodyPadding: '20',
+                bodyCls: 'bootstrap',
+                autoScroll: true,
+                border: false,
+                tpl: [
+                    '<p>',
+                        gettext('Use the field at the bottom of this window to search for users. When you select a user from the search results, they are immediatly made administrator. Close the window or hit ESC when you are finished.'),
+                    '</p>',
+                    '<p>',
+                        gettext('Select one or more users and click the remove-button to remove them from administrators.'),
+                    '</p>',
+                    '<p>',
+                        '<span class="text-warning">',
+                            gettext('You can remove yourself from administrators.'),
+                        '</span> ',
+                        '<small class="muted">',
+                            gettext('If you remove yourself by accident, you need to ask another administrator to re-add you. Close this window and use the list of administrators and inherited administrators to get in touch with them.'),
+                        '</small>',
+                    '</p>'
+                ],
+                data: {}
+            }]
         }).show();
     }
 });
