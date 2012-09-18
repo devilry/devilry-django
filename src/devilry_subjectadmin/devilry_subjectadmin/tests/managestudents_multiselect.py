@@ -3,6 +3,7 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
 
 from .base import SubjectAdminSeleniumTestCase
+from .base import WaitForAlertMessageMixin
 
 
 
@@ -238,7 +239,9 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
 
 
-class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
+class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
+                                          SubjectAdminSeleniumTestCase,
+                                          WaitForAlertMessageMixin):
     def test_render(self):
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
@@ -330,15 +333,6 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, Subje
         self.find_element('#multi_advanced_examiners_button').click()
         self.waitForAndFindElementByCssSelector(cssselector).click()
 
-    def _waitForAlertMessage(self, ttype, contains):
-        def find(selenium):
-            cssselector = '.alert-{0}'.format(ttype)
-            for element in selenium.find_elements_by_css_selector(cssselector):
-                if contains in element.text:
-                    return True
-            return False
-        self.waitFor(self.selenium, find)
-
 
     def _randomdist_examiners(self, *usernames):
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
@@ -353,7 +347,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, Subje
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
-        self._waitForAlertMessage('success', 'Examiners random distributed successfully')
+        self.waitForAlertMessage('success', 'Examiners random distributed successfully')
 
     def test_random_distribute_examiners(self):
         newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')

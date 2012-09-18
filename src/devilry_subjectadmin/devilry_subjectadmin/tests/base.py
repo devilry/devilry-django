@@ -103,6 +103,17 @@ class DeleteBasenodeTestMixin(object):
         deletebutton.click()
 
 
+class WaitForAlertMessageMixin(object):
+    def waitForAlertMessage(self, ttype, contains):
+        def find(selenium):
+            cssselector = '.alert-{0}'.format(ttype)
+            for element in selenium.find_elements_by_css_selector(cssselector):
+                if contains in element.text:
+                    return True
+            return False
+        self.waitFor(self.selenium, find)
+
+
 class EditAdministratorsTestMixin(object):
     """
     Test the Edit/manage administrators window.
