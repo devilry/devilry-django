@@ -58,21 +58,24 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                             minWidth: 100
                         },
                         items: [{
-                            xtype: 'splitbutton',
                             text: gettext('Set examiner(s)'),
                             itemId: 'setExaminersButton',
                             id: 'multi_set_examiners_button',
-                            tooltip: gettext('Replace the examiners on the selected groups with one or more new examiner(s).'),
-                            menu: [{
-                                text: gettext('Random distribute'),
-                                itemId: 'randomDistributeExaminersButton',
-                                tooltip: gettext('Replace the examiners on the selected groups with a random examiner from a set of examiners that you select.'),
-                            }]
+                            tooltip: gettext('Replace the examiners on the selected groups with one or more new examiner(s).')
                         }, {
                             text: gettext('Add examiner(s)'),
                             itemId: 'addExaminersButton',
                             id: 'multi_add_examiners_button',
                             tooltip: gettext('Add one or more examiner(s) to the selected groups.')
+                        }, {
+                            text: gettext('Advanced'),
+                            id: 'multi_advanced_examiners_button',
+                            menu: [{
+                                text: gettext('Random distribute'),
+                                itemId: 'randomDistributeExaminersButton',
+                                id: 'multi_randomdistribute_examiners_button',
+                                tooltip: gettext('Replace the examiners on the selected groups with a random examiner from a set of examiners that you select.')
+                            }]
                         }, {
                             text: gettext('Clear examiners'),
                             itemId: 'clearExaminersButton',
@@ -126,7 +129,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                     bodyPadding: 10,
                     frame: false,
                     itemId: 'randomDistributeExaminersPanel',
-                    id: 'multi_randomdist_examiners_panel',
+                    id: 'multi_randomdistribute_examiners_panel',
                     oktext: gettext('Random distribute selected examiners'),
                     layout: 'column',
                     items: [{

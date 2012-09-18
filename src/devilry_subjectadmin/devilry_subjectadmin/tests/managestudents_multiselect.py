@@ -322,6 +322,90 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin, Subje
         help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
 
+    #
+    # RANDOM DISTRIBUTE
+    #
+
+    def _click_advanced_button(self, cssselector):
+        self.find_element('#multi_advanced_examiners_button').click()
+        self.waitForAndFindElementByCssSelector(cssselector).click()
+
+    def _waitForAlertMessage(self, ttype, contains):
+        def find(selenium):
+            cssselector = '.alert-{0}'.format(ttype)
+            for element in selenium.find_elements_by_css_selector(cssselector):
+                if contains in element.text:
+                    return True
+            return False
+        self.waitFor(self.selenium, find)
+
+
+    def _randomdist_examiners(self, *usernames):
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self._click_advanced_button('#multi_randomdistribute_examiners_button')
+
+        panel = self.find_element('#multi_randomdistribute_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        self.waitForCssSelector('.examiner_username_newexaminer')
+        self.waitForCssSelector('.examiner_username_newexaminer2')
+        for username in usernames:
+            self._get_row_by_username(username).click()
+        okbutton = panel.find_element_by_css_selector('.okbutton button')
+        self.waitFor(okbutton, lambda b: b.is_enabled())
+        okbutton.click()
+        self._waitForAlertMessage('success', 'Examiners random distributed successfully')
+
+    def test_random_distribute_examiners(self):
+        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
+        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self._randomdist_examiners('newexaminer', 'newexaminer2')
+
+        g1 = self.testhelper.reload_from_db(g1)
+        self.assertEquals(g1.examiners.count(), 1)
+        g2 = self.testhelper.reload_from_db(g2)
+        self.assertEquals(g1.examiners.count(), 1)
+        self.assertNotEquals(g1.examiners.all()[0], g2.examiners.all()[0])
+
+    def _get_groups_by_examiner(self, assignment, username):
+        return AssignmentGroup.objects.filter(parentnode=assignment,
+                                              examiners__user__username=username)
+
+    def test_random_distribute_examiners_more(self):
+        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
+        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        g3 = self.create_group('g3:candidate(student2)')
+        self.create_group('ignored:candidate(ignoredstudent)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2, g3])
+        self._randomdist_examiners('newexaminer', 'newexaminer2')
+
+        newexaminer_groups = self._get_groups_by_examiner(g1.parentnode, 'newexaminer')
+        newexaminer2_groups = self._get_groups_by_examiner(g1.parentnode, 'newexaminer2')
+        self.assertTrue((newexaminer_groups.count() == 1 and newexaminer2_groups.count() == 2) or
+                        (newexaminer_groups.count() == 2 and newexaminer2_groups.count() == 1))
+
+    def test_random_distribute_examiners_cancel(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
+        self.waitForCssSelector('#multi_advanced_examiners_button button')
+        self._click_advanced_button('#multi_randomdistribute_examiners_button')
+
+        panel = self.find_element('#multi_randomdistribute_examiners_panel')
+        self.waitFor(panel, lambda p: p.is_displayed())
+        cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        cancelbutton.click()
+
+        help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
+        self.waitFor(help_and_buttons, lambda h: h.is_displayed())
+
 
     #
     # ADD
