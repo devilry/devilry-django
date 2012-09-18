@@ -108,6 +108,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             'viewport singlegroupview managetagsonsingle choosetagspanel#setTagsPanel': {
                 cancel: this._showTagsDefaultView,
                 savetags: this._onSetTagsConfirmed
+            },
+
+            // Delete
+            'viewport singlegroupview #deleteButton': {
+                click: this._onDelete
             }
         });
         this.mon(this.getPopFromGroupModel().proxy, {
@@ -398,5 +403,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 // TODO: Notify the user about the change
             }
         });
+    },
+
+
+    /************************************************
+     * 
+     * DELETE
+     *
+     ***********************************************/
+    _onDelete: function() {
+        this.manageStudentsController.removeGroups([this.groupRecord]);
     }
 });
