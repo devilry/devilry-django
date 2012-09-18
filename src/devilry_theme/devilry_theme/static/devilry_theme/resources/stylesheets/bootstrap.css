@@ -2272,3 +2272,7 @@
 .bootstrap .feedback_rendered_view h4 small {
   font-size: 8px;
 }
+/* line 51, ../sass/_devilry_bootstrap_extras.scss */
+.bootstrap .alert.closable:hover {
+  border: 1px solid #888;
+}

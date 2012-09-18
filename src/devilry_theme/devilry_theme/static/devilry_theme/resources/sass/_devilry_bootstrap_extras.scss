@@ -47,4 +47,8 @@
         h3 small { font-size: 10px; }
         h4 small { font-size: 8px; }
     }
+
+    .alert.closable:hover {
+        border: 1px solid #888;
+    }
 }
