@@ -64,6 +64,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                             'admins': [],
                                             'anonymous': True,
                                             'publishing_time': isoformat_relativetime(days=2),
+                                            'first_deadline': isoformat_relativetime(days=3),
                                             'scale_points_percent': 100,
                                             'deadline_handling': 0,
                                             'delivery_types': 0,
@@ -71,6 +72,8 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(response.status_code, 201)
         self.assertEquals(content['delivery_types'], 0)
         self.assertEquals(content['scale_points_percent'], 100)
+        self.assertTrue(content['publishing_time'] != None)
+        self.assertTrue(content['first_deadline'] != None)
         self.assertEquals(content['long_name'], 'Test')
         self.assertEquals(content['short_name'], 'test')
         self.assertEquals(content['anonymous'], True)
