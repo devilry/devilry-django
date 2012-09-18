@@ -30,11 +30,14 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             '</ul>',
         '</tpl>',
         '<tpl if="admins.length == 0">',
-            '<p><em>', gettext('No administrators') ,'</em></p>',
+            '<p><small class="muted">', gettext('No administrators') ,'</small></p>',
         '</tpl>'
     ],
     inheritedAdminsTpl: [
         '<tpl if="inherited_admins.length &gt; 0">',
+            '<small class="muted">(',
+                gettext('The links in parenthesis is to the location where the administrator is inherited from'),
+            ')</p>',
             '<ul class="devilry_subjectadmin_inherited_administratorlist">',
                 '<tpl for="inherited_admins">',
                     '<li class="inherited_administratorlistitem inherited_administratorlistitem_{user.username}">',
@@ -52,7 +55,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
             '</ul>',
         '</tpl>',
         '<tpl if="inherited_admins.length == 0">',
-            '<p><em>', gettext('No administrators') ,'</em></p>',
+            '<p><small class="muted">', gettext('No administrators') ,'</small></p>',
         '</tpl>'
     ],
 
