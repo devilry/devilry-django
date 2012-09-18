@@ -23,11 +23,12 @@ class RestClient(Client):
                              HTTP_ACCEPT="application/json")
         return self._load_json(response.content), response
 
-    def rest_put(self, url, data):
+    def rest_put(self, url, data, **extra):
         response = self.put(url,
                             data=json.dumps(data),
                             content_type="application/json",
-                            HTTP_ACCEPT="application/json")
+                            HTTP_ACCEPT="application/json",
+                            **extra)
         return self._load_json(response.content), response
 
     def rest_get(self, url, **data):
