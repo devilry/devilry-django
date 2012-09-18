@@ -16,7 +16,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.HtmlErrorDialog'
+        'devilry_extjsextras.HtmlErrorDialog',
+        'devilry_extjsextras.ConfirmDeleteDialog'
     ],
 
     views: [
@@ -435,16 +436,29 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     /** Used by related controllers (SingleGroupSelectedViewPlugin,
      * MultipleGroupsSelectedViewPlugin) to remove groups. */
     removeGroups: function(groupRecords) {
+        var groups = devilry_subjectadmin.model.Group.formatIdentsAsStringList(groupRecords);
+        Ext.create('devilry_extjsextras.ConfirmDeleteDialog', {
+            short_description: Ext.String.ellipsis(groups, 100),
+            width: 450,
+            height: 330,
+            listeners: {
+                scope: this,
+                deleteConfirmed: function(win) {
+                    win.close();
+                    this._removeGroups(groupRecords);
+                }
+            }
+        }).show();
+    },
+
+    _removeGroups: function(groupRecords) {
         this.getGroupsStore().remove(groupRecords);
         this._notifyGroupsChange({
             scope: this,
             success: function() {
-                var groups = [];
-                Ext.Array.each(groupRecords, function(groupRecord) {
-                    groups.push(groupRecord.getIdentString());
-                }, this);
+                var groups = devilry_subjectadmin.model.Group.formatIdentsAsStringList(groupRecords);
                 this.application.getAlertmessagelist().add({
-                    message: Ext.String.format(gettext('Removed: {0}.'), groups.join(', ')),
+                    message: Ext.String.format(gettext('Removed: {0}.'), groups),
                     type: 'success',
                     autoclose: true
                 });

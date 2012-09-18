@@ -144,5 +144,16 @@ Ext.define('devilry_subjectadmin.model.Group', {
             }
         }, this);
         this.setExaminersFromArrayOfUserIds(Ext.Array.unique(examiners));
+    },
+
+
+    statics: {
+        formatIdentsAsStringList: function(groupRecords) {
+            var groups = [];
+            Ext.Array.each(groupRecords, function(groupRecord) {
+                groups.push(groupRecord.getIdentString());
+            }, this);
+            return groups.join(', ');
+        }
     }
 });
