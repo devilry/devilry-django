@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -344,7 +345,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
 
 
-class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
+class TestGroupRest(TestCase, GroupManagerTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -613,6 +614,63 @@ class TestCreateGroupRest(TestCase, GroupManagerTestMixin):
                  'deadlines': 'should be ignored'}]
         content, response = self._putas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 200)
+
+    #
+    #
+    # DELETE
+    #
+    #
+
+    def _add_group_with_delivery(self, name, **kwargs):
+        group = self._add_group(name, **kwargs)
+        self.testhelper.add_to_path('uni;sub.p1.a1.{0}.d1'.format(name))
+        self.testhelper.add_delivery(group)
+        return group
+
+    def _deleteas(self, username, assignment_id, data):
+        self.client.login(username=username, password='test')
+        return self.client.rest_put(self._geturl(assignment_id), data,
+                                    X_DEVILRY_DELETEHACK='1')
+
+    def _test_delete_ok_as(self, group, username):
+        data = [{'id': group.id}]
+        content, response = self._deleteas(username, self.a1id, data)
+        self.assertEquals(response.status_code, 204)
+        self.assertEquals(content, None)
+        self.assertFalse(AssignmentGroup.objects.filter(id=group.id).exists())
+
+    def test_delete_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
+        group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
+        self._test_delete_ok_as(group, 'superuser')
+
+
+    def test_delete_as_a1admin(self):
+        group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
+        self._test_delete_ok_as(group, 'a1admin')
+
+
+    def _test_delete_noperm_as(self, group, username):
+        data = [{'id': group.id}]
+        content, response = self._deleteas(username, self.a1id, data)
+        #from pprint import pprint
+        #print 'Response content:'
+        #pprint(content)
+        self.assertEquals(response.status_code, 403)
+        self.assertTrue(AssignmentGroup.objects.filter(id=group.id).exists())
+
+    def test_delete_with_content_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
+        group = self._add_group_with_delivery('g1',
+                                              candidates='candidate2',
+                                              examiners='examiner2')
+        self._test_delete_ok_as(group, 'superuser')
+
+    def test_delete_with_content_as_a1admin(self):
+        group = self._add_group_with_delivery('g1',
+                                              candidates='candidate2',
+                                              examiners='examiner2')
+        self._test_delete_noperm_as(group, 'a1admin')
 
 
 

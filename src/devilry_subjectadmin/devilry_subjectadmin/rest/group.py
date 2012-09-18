@@ -309,6 +309,12 @@ class GroupManager(object):
             else:
                 raise PermissionDeniedError('You do not have permission to remove students from this group. Only superusers can remove students from groups with deliveries.')
 
+    def delete(self):
+        if self.group.can_delete(self.user):
+            self.group.delete()
+        else:
+            raise PermissionDeniedError('You do not have permission to delete this group. Only superusers can delete groups with deliveries.')
+
 
 
 
@@ -529,6 +535,9 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
 
     def put(self, request, assignment_id):
+        if request.META.get('X_DEVILRY_DELETEHACK'):
+            # NOTE: This is only a workaround for the limitations of the Django test client in version 1.4. DELETE with request data is supported in 1.5.
+            return self.delete(request, assignment_id)
         datalist = self.CONTENT
         updated_groups = []
         with transaction.commit_on_success():
@@ -552,6 +561,27 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                     logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
                     updated_groups.append(manager.group)
             return Response(200, updated_groups)
+
+    def delete(self, request, assignment_id):
+        datalist = self.CONTENT
+        deleted_groups = []
+        with transaction.commit_on_success():
+            for data in datalist:
+                if data['id'] == None:
+                    raise BadRequestFieldError('id', 'Required.')
+                group_id = data['id']
+                try:
+                    manager = GroupManager(request.user, assignment_id, group_id)
+                except AssignmentGroup.DoesNotExist:
+                    self._not_found_response(assignment_id, group_id)
+                try:
+                    manager.delete()
+                except ValidationError, e:
+                    raise ValidationErrorResponse(e)
+                else:
+                    logger.warning('User=%s deleted AssignmentGroup id=%s', self.user, group_id)
+                    deleted_groups.append(group_id)
+            return Response(204, '')
 
 
 
