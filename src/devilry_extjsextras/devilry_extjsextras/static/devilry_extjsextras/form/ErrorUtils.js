@@ -5,12 +5,12 @@ Ext.define('devilry_extjsextras.form.ErrorUtils', {
 
     _getFieldByName: function(formpanel, fieldname) {
         var fieldComponentQuery = Ext.String.format('[name={0}]', fieldname);
-            var match = formpanel.query(fieldComponentQuery);
-            if(match.length > 0) {
-                return match[0];
-            } else {
-                return null;
-            }
+        var match = formpanel.query(fieldComponentQuery);
+        if(match.length > 0) {
+            return match[0];
+        } else {
+            return null;
+        }
     },
 
     /**
@@ -70,9 +70,9 @@ Ext.define('devilry_extjsextras.form.ErrorUtils', {
                     type: 'error'
                 });
             } else {
-                throw Ext.String.format(
+                console.error(Ext.String.format(
                     "Field error in field that is not in the form. Field name: {0}. Error: {1}.",
-                    fieldname, fielderror)
+                    fieldname, fielderror));
             }
         }, this);
     }
