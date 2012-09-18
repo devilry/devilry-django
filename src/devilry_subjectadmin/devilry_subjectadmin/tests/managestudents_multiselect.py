@@ -500,3 +500,29 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         for group in (g1, g2):
             group = self.testhelper.reload_from_db(group)
             self.assertEquals(group.examiners.all().count(), 1)
+
+
+
+
+class TestManageMultiGroupDelete(TestManageMultipleStudentsMixin,
+                                 SubjectAdminSeleniumTestCase,
+                                 WaitForAlertMessageMixin):
+    def test_delete(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g2 = self.create_group('g2:candidate(student2)')
+        ignored = self.create_group('ignored:candidate(student3)')
+        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
+        deletebutton = self.waitForAndFindElementByCssSelector('#multi_group_delete_button button')
+        deletebutton.click()
+
+        window = self.waitForAndFindElementByCssSelector('.devilry_confirmdeletedialog')
+        inputfield = window.find_element_by_css_selector('input[name=confirm_text]')
+        deletebutton = window.find_element_by_css_selector('.devilry_deletebutton button')
+        inputfield.send_keys('DELETE')
+        self.waitForEnabled(deletebutton)
+        deletebutton.click()
+        self.waitForAlertMessage('success', 'Removed: student1, student2')
+
+        self.assertFalse(AssignmentGroup.objects.filter(id=g1.id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=g2.id).exists())
+        self.assertTrue(AssignmentGroup.objects.filter(id=ignored.id).exists())

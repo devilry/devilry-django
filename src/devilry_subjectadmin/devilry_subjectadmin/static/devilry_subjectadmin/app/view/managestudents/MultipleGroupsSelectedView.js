@@ -8,7 +8,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     requires: [
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple',
-        'devilry_subjectadmin.view.managestudents.MergeGroups'
+        'devilry_subjectadmin.view.managestudents.MergeGroups',
+        'devilry_subjectadmin.view.managestudents.MultiDangerousActions'
     ],
 
     /**
@@ -50,6 +51,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     margin: defaultmargin
                 }, {
                     xtype: 'managetagsonmultiple',
+                    margin: defaultmargin,
+                }, {
+                    xtype: 'multigroupdangerous',
                     margin: defaultmargin,
                     padding: '0 0 20 0'
                 }]

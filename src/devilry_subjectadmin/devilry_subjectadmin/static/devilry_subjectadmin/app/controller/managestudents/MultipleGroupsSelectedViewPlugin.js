@@ -194,6 +194,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             },
             'viewport multiplegroupsview #mergeGroupsConfirmButton': {
                 click: this._onMergeGroupsConfirm
+            },
+
+            // Delete
+            'viewport multiplegroupsview #multiDeleteButton': {
+                click: this._onDelete
             }
         });
 
@@ -527,5 +532,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onMergeGroupsSuccess: function(result) {
         var target_group_id = result.get('target_group_id');
         this.manageStudentsController.reloadGroups([target_group_id]);
+    },
+
+
+    
+    /************************************************
+     * 
+     * DELETE
+     *
+     ***********************************************/
+    _onDelete: function() {
+        this.manageStudentsController.removeGroups(this.groupRecords);
     }
 });
