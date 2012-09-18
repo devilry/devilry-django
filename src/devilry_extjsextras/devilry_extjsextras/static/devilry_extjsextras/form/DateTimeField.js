@@ -7,6 +7,10 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
         field:'Ext.form.field.Field'
     },
     alias: 'widget.devilry_extjsextras-datetimefield',
+
+    requires: [
+        'Ext.util.DelayedTask'
+    ],
         
     //configurables
     
