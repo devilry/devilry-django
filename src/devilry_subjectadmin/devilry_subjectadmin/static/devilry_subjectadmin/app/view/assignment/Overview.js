@@ -97,8 +97,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         xtype: 'gradeeditorselect-widget',
                         disabled: true
                     }, {
-                        xtype: 'editpublishingtime-widget',
-                        disabled: true
+                        xtype: 'editpublishingtime-widget'
                     }, {
                         xtype: 'editanonymous-widget'
                     }]

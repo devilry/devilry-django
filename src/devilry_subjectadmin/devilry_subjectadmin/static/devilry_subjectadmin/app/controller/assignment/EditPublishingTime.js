@@ -8,7 +8,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     },
 
     views: [
-        'assignment.EditPublishingTime',
+        'assignment.EditPublishingTimePanel',
         'assignment.EditPublishingTimeWidget'
     ],
 
@@ -23,20 +23,24 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     ],
 
     refs: [{
+        ref: 'cardContainer',
+        selector: 'editpublishingtime-widget'
+    }, {
+        ref: 'readOnlyView',
+        selector: 'editpublishingtime-widget editablesidebarbox#readPublishingTime'
+    }, {
+
         ref: 'editPublishingTime',
-        selector: 'editpublishingtime'
+        selector: 'editpublishingtime-widget editpublishingtimepanel'
     }, {
         ref: 'publishingTimeField',
-        selector: 'editpublishingtime devilry_extjsextras-datetimefield'
+        selector: 'editpublishingtime-widget editpublishingtimepanel devilry_extjsextras-datetimefield'
     }, {
         ref: 'formPanel',
-        selector: 'editpublishingtime form'
+        selector: 'editpublishingtime-widget editpublishingtimepanel form'
     }, {
         ref: 'alertMessageList',
-        selector: 'editpublishingtime alertmessagelist'
-    }, {
-        ref: 'publishingTimeWidget',
-        selector: 'editpublishingtime-widget'
+        selector: 'editpublishingtime-widget editpublishingtimepanel alertmessagelist'
     }],
 
     init: function() {
@@ -46,29 +50,68 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editpublishingtime form devilry_extjsextras-datetimefield': {
+            'editpublishingtime-widget #readPublishingTime': {
+                edit: this._onEdit
+            },
+            'editpublishingtime-widget editpublishingtimepanel form devilry_extjsextras-datetimefield': {
                 allRendered: this._onRenderForm
             },
-            'editpublishingtime savebutton': {
+            'editpublishingtime-widget editpublishingtimepanel #okbutton': {
                 click: this._onSave
             },
-            'editpublishingtime cancelbutton': {
-                click: this._close
+            'editpublishingtime-widget editpublishingtimepanel #cancelbutton': {
+                click: this._onCancel
             },
-            'editpublishingtime-widget': {
-                edit: this._onEdit
-            }
         });
     },
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this.getPublishingTimeWidget().enable();
+        this.getReadOnlyView().enable();
         this._updatePublishingTimeWidget();
+    },
+    
+    //////////////////////////////////
+    //
+    // View pubtime
+    //
+    //////////////////////////////////
+
+    _showReadView: function() {
+        this.getCardContainer().getLayout().setActiveItem('readPublishingTime');
+    },
+
+    _updatePublishingTimeWidget: function() {
+        var offset_from_now = this.assignmentRecord.formatPublishOffsetFromNow();
+        var is_published = this.assignmentRecord.get('is_published');
+        this.getReadOnlyView().updateTitle(gettext('Publishing time'));
+        this.getReadOnlyView().updateBody({
+            publishing_time: this.assignmentRecord.formatPublishingTime(),
+            offset_from_now: offset_from_now,
+            is_published: is_published
+        });
+    },
+
+    _onEdit: function() {
+        this._showEditView();
+    },
+
+    
+    //////////////////////////////////
+    //
+    // Edit pubtime
+    //
+    //////////////////////////////////
+
+    _showEditView: function() {
+        this.getCardContainer().getLayout().setActiveItem('editPublishingTime');
+        this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
+        Ext.defer(function() {
+            this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
+        }, 200, this);
     },
 
     _onRenderForm: function() {
-        this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
         this.getEditPublishingTime().mon(this.getAssignmentModel().proxy, {
             scope: this,
             exception: this._onProxyError
@@ -77,9 +120,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             enter: this._onSave,
             scope: this
         });
-        Ext.defer(function() {
-            this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
-        }, 200, this);
     },
 
     _onSave: function() {
@@ -87,14 +127,27 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         var assignmentRecord = this.assignmentRecord;
         form.updateRecord(assignmentRecord);
         this._getMaskElement().mask(gettext('Saving ...'));
+
+        this.getAssignmentModel().proxy.addListener({
+            scope: this,
+            exception: this._onProxyError
+        });
         assignmentRecord.save({
             scope: this,
-            success: this._onSaveSuccess
+            callback: function(r, operation) {
+                this.getAssignmentModel().proxy.removeListener({
+                    scope: this,
+                    exception: this._onProxyError
+                });
+                if(operation.success) {
+                    this._onSaveSuccess();
+                }
+            }
         });
     },
 
-    _close: function() {
-        this.getEditPublishingTime().close();
+    _onCancel: function() {
+        this._showReadView();
     },
 
     _getMaskElement: function() {
@@ -103,30 +156,14 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
 
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
-        this._close();
+        this._showReadView();
         this._updatePublishingTimeWidget();
     },
 
     _onProxyError: function(proxy, response, operation) {
         this._getMaskElement().unmask();
-        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel,
+        this.getAlertMessageList().removeAll();
+        this.handleProxyError(this.getAlertMessageList(), this.getFormPanel(),
             response, operation);
-    },
-
-    _onEdit: function() {
-        Ext.widget('editpublishingtime', {
-            assignmentRecord: this.assignmentRecord
-        }).show();
-    },
-
-    _updatePublishingTimeWidget: function() {
-        var offset_from_now = this.assignmentRecord.formatPublishOffsetFromNow();
-        var is_published = this.assignmentRecord.get('is_published');
-        this.getPublishingTimeWidget().updateTitle(gettext('Publishing time'));
-        this.getPublishingTimeWidget().updateBody({
-            publishing_time: this.assignmentRecord.formatPublishingTime(),
-            offset_from_now: offset_from_now,
-            is_published: is_published
-        });
     }
 });
