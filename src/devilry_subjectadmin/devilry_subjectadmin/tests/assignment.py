@@ -125,20 +125,18 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
                             subjects=['sub'],
                             periods=['period1:begins(-3)'],
                             assignments=['week1:admin(week1admin)'])
-        self.login('week1admin')
+        self.week1 = self.testhelper.sub_period1_week1
+        self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
-        self.browseTo('/assignment/1/')
-        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .edit_link')
-        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime_widget .edit_link')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox .edit_link')
         button.click()
-        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime')
 
-        editpublishingtime_window = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editpublishingtime')
-        self.datefield = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_datefield input')
-        self.timefield = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_timefield input')
-        self.savebutton = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_savebutton button')
-        self.cancelbutton = editpublishingtime_window.find_element_by_css_selector('.devilry_extjsextras_cancelbutton')
-        self.editpublishingtime_window = editpublishingtime_window
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtimepanel')
+        self.datefield = panel.find_element_by_css_selector('.devilry_extjsextras_datefield input')
+        self.timefield = panel.find_element_by_css_selector('.devilry_extjsextras_timefield input')
+        self.savebutton = panel.find_element_by_css_selector('.okbutton button')
+        self.cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
 
     def _set_datetime(self, date, time):
         self.datefield.clear()
@@ -168,9 +166,8 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self.assertEquals(week1.publishing_time.date(), tomorrow.date())
 
     def test_cancel(self):
-        self.failIfCssSelectorFound(self.editpublishingtime_window, '.x-tool-close')  # Make sure window does not have closable set to true
         self.cancelbutton.click()
-        self.assertFalse('.devilry_subjectadmin_editpublishingtime' in self.selenium.page_source)
+        self.waitForDisplayed(self.readOnlyPanel)
 
     def test_editpublishingtime_errorhandling(self):
         self._set_datetime('2000-02-01', '12:00')
@@ -198,7 +195,6 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.anonymouscheckbox = editanonymouspanel.find_element_by_css_selector('input.x-form-checkbox')
         self.savebutton = editanonymouspanel.find_element_by_css_selector('.okbutton button')
         self.cancelbutton = editanonymouspanel.find_element_by_css_selector('.cancelbutton button')
-        self.editanonymouspanel = editanonymouspanel
 
     def test_editanonymous(self):
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)

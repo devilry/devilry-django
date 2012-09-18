@@ -112,10 +112,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     },
 
     _onRenderForm: function() {
-        this.getEditPublishingTime().mon(this.getAssignmentModel().proxy, {
-            scope: this,
-            exception: this._onProxyError
-        });
         this.getFormPanel().keyNav = Ext.create('Ext.util.KeyNav', this.getFormPanel().el, {
             enter: this._onSave,
             scope: this

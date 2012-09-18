@@ -4,7 +4,7 @@
 Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimePanel', {
     extend: 'devilry_extjsextras.OkCancelPanel',
     alias: 'widget.editpublishingtimepanel',
-    cls: 'devilry_subjectadmin_editpublishingtime bootstrap',
+    cls: 'devilry_subjectadmin_editpublishingtimepanel bootstrap',
 
     requires: [
         'devilry_extjsextras.form.DateTimeField'
