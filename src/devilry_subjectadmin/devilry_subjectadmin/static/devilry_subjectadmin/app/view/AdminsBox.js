@@ -49,7 +49,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                                 '{user.username}',
                             '</tpl>',
                         '</a>',
-                        ' (<a href="{url}">{basenode.path}</a>)',
+                        ' <small>(<a href="{url}">{basenode.path}</a>)</small>',
                     '</li>',
                 '</tpl>',
             '</ul>',
