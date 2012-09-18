@@ -22,8 +22,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         ref: 'cardContainer',
         selector: 'editanonymous-widget'
     }, {
-        ref: 'sidebarBox',
-        selector: 'editanonymous-widget editablesidebarbox'
+        ref: 'readOnlyView',
+        selector: 'editanonymous-widget editablesidebarbox#readAnonymous'
 
     }, {
         ref: 'editAnonymous',
@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this.getSidebarBox().enable();
+        this.getReadOnlyView().enable();
         this._updateAnonymousWidget();
     },
 
@@ -90,8 +90,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             body = gettext('Examiners and students can see each other and communicate.');
         }
         var anonymous = this.assignmentRecord.get('anonymous');
-        this.getSidebarBox().updateTitle(title);
-        this.getSidebarBox().updateText(body);
+        this.getReadOnlyView().updateTitle(title);
+        this.getReadOnlyView().updateText(body);
     },
 
     _onEdit: function() {
