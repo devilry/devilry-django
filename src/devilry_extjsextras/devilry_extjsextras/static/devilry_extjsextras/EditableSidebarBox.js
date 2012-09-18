@@ -81,8 +81,8 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                     element: 'el',
                     delegate: 'a.edit_link',
                     click: function(e) {
-                        this.fireEvent('edit', this);
                         e.preventDefault();
+                        this.fireEvent('edit', this);
                     }
                 }
             }, {
@@ -97,8 +97,8 @@ Ext.define('devilry_extjsextras.EditableSidebarBox', {
                     element: 'el',
                     delegate: 'a',
                     click: function(e) {
-                        this.fireEvent('bodyLinkClicked', this, e);
                         e.preventDefault();
+                        this.fireEvent('bodyLinkClicked', this, e);
                     }
                 }
             }]
