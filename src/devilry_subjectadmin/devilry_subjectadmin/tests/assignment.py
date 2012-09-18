@@ -12,20 +12,18 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
 
-    def _browseToAssignment(self, id):
-        self.browseTo('/assignment/{id}/'.format(id=id))
+    def _loginToAssignment(self, username, id):
+        self.loginTo(username, '/assignment/{id}/'.format(id=id))
 
     def test_doesnotexists(self):
         self.testhelper.create_user('normal')
-        self.login('normal')
-        self._browseToAssignment(100000)
+        self._loginToAssignment('normal', 100000)
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('403: FORBIDDEN' in self.selenium.page_source)
 
     def test_doesnotexists_superadmin(self):
         self.testhelper.create_superuser('grandma')
-        self.login('grandma')
-        self._browseToAssignment(100000)
+        self._loginToAssignment('grandma', 100000)
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
@@ -34,8 +32,7 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
-        self.login('week2admin')
-        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
+        self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.assertTrue('Manage students' in self.selenium.page_source)
         self.assertTrue('Manage deadlines' in self.selenium.page_source)
@@ -45,18 +42,16 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
-        self.login('week2admin')
-        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
+        self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        self.assertEquals(self.selenium.title, 'sub.period1.week2 - Devilry')
+        self.waitFor(self.selenium, lambda s: s.title == 'sub.period1.week2 - Devilry')
 
     def test_notpublished(self):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
-        self.login('week2admin')
-        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
+        self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox_body .danger')
 
     def test_published(self):
@@ -64,8 +59,7 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             subjects=['sub'],
                             periods=['period1:begins(-2)'],
                             assignments=['week2:admin(week2admin)'])
-        self.login('week2admin')
-        self._browseToAssignment(self.testhelper.sub_period1_week2.id)
+        self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox_body .success')
 
 
@@ -80,18 +74,16 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
                             periods=['period1:begins(-2):admin(p1admin)'],
                             assignments=['week1:admin(weekadmin)'])
 
-    def _browseToAssignment(self, id):
-        self.browseTo('/assignment/{id}/'.format(id=id))
+    def _loginToAssignment(self, username, id):
+        self.loginTo(username, '/assignment/{id}/'.format(id=id))
 
     def test_rename(self):
-        self.login('weekadmin')
-        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
+        self._loginToAssignment('weekadmin', self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.rename_test_helper(self.testhelper.sub_period1_week1)
 
     def test_rename_failure(self):
-        self.login('weekadmin')
-        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
+        self._loginToAssignment('weekadmin', self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.rename_test_failure_helper()
 
@@ -100,8 +92,7 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
                             subjects=['sub'],
                             periods=['period1:begins(-2):admin(p1admin)'],
                             assignments=['willbedeleted'])
-        self.login('p1admin')
-        self._browseToAssignment(self.testhelper.sub_period1_willbedeleted.id)
+        self._loginToAssignment('p1admin', self.testhelper.sub_period1_willbedeleted.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         assignmenturl = self.selenium.current_url
         self.perform_delete()
@@ -113,8 +104,7 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
                             subjects=['sub'],
                             periods=['period1:begins(-2)'],
                             assignments=['willbedeleted:admin(willbedeletedadm)'])
-        self.login('willbedeletedadm')
-        self._browseToAssignment(self.testhelper.sub_period1_willbedeleted.id)
+        self._loginToAssignment('willbedeletedadm', self.testhelper.sub_period1_willbedeleted.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.click_delete_button()
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
@@ -122,8 +112,7 @@ class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMi
     def test_delete_not_empty(self):
         self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(goodStud1):examiner(exam1).d1')
         self.testhelper.add_delivery('sub.period1.week1.g1', {'bad.py': ['print ', 'bah']})
-        self.login('uniadmin')
-        self._browseToAssignment(self.testhelper.sub_period1_week1.id)
+        self._loginToAssignment('uniadmin', self.testhelper.sub_period1_week1.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.click_delete_button()
         self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
