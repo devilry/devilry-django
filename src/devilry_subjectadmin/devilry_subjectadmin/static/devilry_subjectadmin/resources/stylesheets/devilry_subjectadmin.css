@@ -48,12 +48,12 @@
   font-size: 18px;
 }
 
-/* line 47, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_dangerousactions .bootstrap h2 {
+/* line 48, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_dangerousactions .bootstrap h2, .devilry_subjectadmin_dangerousactions .bootstrap h3 {
   color: #900;
 }
 
-/* line 53, ../sass/devilry_subjectadmin.scss */
+/* line 55, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allactivewhereisadminlist strong {
   font-size: 18px;
 }

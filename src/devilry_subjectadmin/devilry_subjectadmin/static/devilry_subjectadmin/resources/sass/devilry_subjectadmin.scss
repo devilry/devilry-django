@@ -44,8 +44,10 @@
     margin: 20px 0 20px 0;
 }
 
-.devilry_subjectadmin_dangerousactions .bootstrap h2 {
-    color: #900;
+.devilry_subjectadmin_dangerousactions .bootstrap {
+    h2, h3 {
+        color: #900;
+    }
 }
 
 //.devilry_subjectadmin_allwhereisadminlist,
