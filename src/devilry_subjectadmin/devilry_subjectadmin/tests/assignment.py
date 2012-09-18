@@ -216,3 +216,68 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.waitForDisplayed(self.readOnlyPanel)
         self.waitForText('Not anonymous') # If this times out, it has not been updated
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
+
+
+class TestEditFirstDeadline(SubjectAdminSeleniumTestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['period1:begins(-3)'],
+                            assignments=['week1:admin(week1admin)'])
+        self.week1 = self.testhelper.sub_period1_week1
+        self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .editablesidebarbox')
+
+    def _click_edit(self):
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .editablesidebarbox .edit_link')
+        button.click()
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadlinepanel')
+        self.datefield = panel.find_element_by_css_selector('.devilry_extjsextras_datefield input')
+        self.timefield = panel.find_element_by_css_selector('.devilry_extjsextras_timefield input')
+        self.savebutton = panel.find_element_by_css_selector('.okbutton button')
+        self.cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+
+    def _set_datetime(self, date, time):
+        self.datefield.clear()
+        self.timefield.clear()
+        self.datefield.send_keys(date)
+        self.timefield.send_keys(time)
+
+
+    def test_readonlypanel(self):
+        self.assertTrue('First deadline' in self.readOnlyPanel.text)
+        self.assertIn('The first deadline is the deadline added to groups when they are added to the assignment.',
+                      self.readOnlyPanel.text)
+
+    def test_editfirstdeadline(self):
+        self._click_edit()
+        now = datetime.now()
+        yesterday = now - timedelta(days=1)
+        isoday_yesterday = yesterday.date().isoformat()
+        self._set_datetime(isoday_yesterday, '12:00')
+        self.savebutton.click()
+        self.waitForText('{isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
+        self.assertEquals(week1.first_deadline.date(), yesterday.date())
+
+    def test_editfirstdeadline_notpublished(self):
+        self._click_edit()
+        tomorrow = datetime.now() + timedelta(days=1)
+        isoday_tomorrow = tomorrow.date().isoformat()
+        self._set_datetime(isoday_tomorrow, '12:00')
+        self.savebutton.click()
+        self.waitForText('{isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
+        week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
+        self.assertEquals(week1.first_deadline.date(), tomorrow.date())
+
+    def test_cancel(self):
+        self._click_edit()
+        self.cancelbutton.click()
+        self.waitForDisplayed(self.readOnlyPanel)
+
+    def test_editfirstdeadline_errorhandling(self):
+        self._click_edit()
+        self._set_datetime('2000-02-01', '12:00')
+        self.savebutton.click()
+        self.waitForText("First deadline cannot be before publishing time.")

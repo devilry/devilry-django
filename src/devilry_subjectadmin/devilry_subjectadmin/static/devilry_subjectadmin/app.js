@@ -50,6 +50,7 @@ Ext.application({
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
         'assignment.EditGradeEditor',
+        'assignment.EditFirstDeadline',
         'GradeEditor',
         'managestudents.Overview',
         'managestudents.Select',

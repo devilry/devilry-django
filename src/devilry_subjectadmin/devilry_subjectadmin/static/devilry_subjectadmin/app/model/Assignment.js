@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'can_delete',  type: 'bool'},
         {name: 'anonymous',  type: 'bool'},
         {name: 'etag',  type: 'string'},
-        {name: 'first_deadline',  type: 'date', "dateFormat": "Y-m-d H:i:s", persist: false},
+        {name: 'first_deadline',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
         {name: 'id', type: 'auto'},
         {name: 'inherited_admins',  type: 'auto'},
         {name: 'long_name',  type: 'string'},
@@ -49,6 +49,9 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
 
     formatPublishingTime: function() {
         return Ext.Date.format(this.get('publishing_time'), 'Y-m-d H:i');
+    },
+    formatFirstDeadline: function() {
+        return Ext.Date.format(this.get('first_deadline'), 'Y-m-d H:i');
     },
 
 
