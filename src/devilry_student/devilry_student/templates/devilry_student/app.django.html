@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block app %}
+<script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
 
 {# formatoverrides is required by the old rest apis #}
 <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
