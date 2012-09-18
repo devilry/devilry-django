@@ -116,7 +116,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 items: [{
                     xtype: 'singleactionbox',
                     itemId: 'deleteButton',
-                    id: 'groupDeleteButton',
+                    id: 'single_group_delete_button',
                     titleText: gettext('Delete'),
                     bodyHtml: interpolate(gettext('Once you delete a %(group_term)s, there is no going back. Only superusers can delete a %(group_term)s with deliveries.'), {
                         group_term: gettext('group')

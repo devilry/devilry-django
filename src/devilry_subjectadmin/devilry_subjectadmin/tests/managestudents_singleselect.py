@@ -426,7 +426,7 @@ class TestManageSingleGroupDelete(TestManageSingleGroupMixin,
     def test_delete(self):
         g1 = self.create_group('g1:candidate(student1)')
         self.browseToAndSelectAs('a1admin', g1)
-        deletebutton = self.waitForAndFindElementByCssSelector('#groupDeleteButton button')
+        deletebutton = self.waitForAndFindElementByCssSelector('#single_group_delete_button button')
         deletebutton.click()
 
         window = self.waitForAndFindElementByCssSelector('.devilry_confirmdeletedialog')
