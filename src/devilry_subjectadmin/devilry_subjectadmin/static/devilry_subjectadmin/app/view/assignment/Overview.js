@@ -14,7 +14,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
         'devilry_subjectadmin.view.assignment.GradeEditorSelectWidget',
         'devilry_subjectadmin.view.ActionList',
-        'devilry_subjectadmin.view.DangerousActions'
+        'devilry_subjectadmin.view.DangerousActions',
+        'devilry_extjsextras.SingleActionBox'
     ],
 
     /**
