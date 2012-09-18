@@ -21,13 +21,30 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
      */
     addErrorsFromOperation: function(operation) {
         var httpError = this.getErrorMessageFromOperation(operation);
-        if(httpError) {
+        if(!Ext.isEmpty(httpError)) {
             this.errormessages.push(httpError);
         }
     },
 
     _formatTpl: function(tpl, data) {
         return Ext.create('Ext.XTemplate', tpl).apply(data);
+    },
+
+    parseHttpError: function(error, request) {
+        var message;
+        if(error.status === 0) {
+            message = this._formatTpl(gettext('Could not connect to server at URL "{url}".'), {
+                url: request.url
+            });
+        } else {
+            message = this._formatTpl('The server responded with error message "{status}: {statusText}" when we did a {method}-request to URL "{url}".', {
+                status: error.status,
+                statusText: error.statusText,
+                method: request.method,
+                url: request.url
+            });
+        }
+        return message;
     },
 
     /** Formats the error object returned by ``Ext.data.Operation.getError(). as
@@ -40,21 +57,7 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
         if(error === undefined) {
             return null;
         }
-        var message;
-        var url = operation.request.url;
-        if(error.status === 0) {
-            message = this._formatTpl(gettext('Could not connect to server at URL "{url}".'), {
-                url: url
-            });
-        } else {
-            message = this._formatTpl('The server responded with error message "{status}: {statusText}" when we did a {method}-request to URL "{url}".', {
-                status: error.status,
-                statusText: error.statusText,
-                method: operation.request.method,
-                url: operation.request.url
-            });
-        }
-        return message;
+        return this.parseHttpError(error, operation.request);
     },
 
     /**

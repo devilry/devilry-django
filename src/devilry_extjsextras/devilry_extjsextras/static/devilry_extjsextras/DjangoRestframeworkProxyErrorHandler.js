@@ -46,5 +46,12 @@ Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
         if(!this.hasErrors()) {
             this.addErrorsFromOperation(operation);
         }
+    },
+
+    addBatchErrors: function(batch) {
+        Ext.Array.each(batch.exceptions, function(exception) {
+            var message = this.parseHttpError(exception.error, exception.request);
+            this.errormessages.push(message);
+        }, this);
     }
 });
