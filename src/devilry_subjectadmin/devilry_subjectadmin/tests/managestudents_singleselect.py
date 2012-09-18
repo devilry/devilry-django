@@ -1,7 +1,9 @@
 from selenium.common.exceptions import StaleElementReferenceException
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models import AssignmentGroup
 
 from .base import SubjectAdminSeleniumTestCase
+from .base import WaitForAlertMessageMixin
 
 
 
@@ -416,3 +418,23 @@ class TestManageSingleGroupDeadlinesAndDeliveries(TestManageSingleGroupMixin, Su
 
         self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .danger').text.strip(),
                           'Failed')
+
+
+class TestManageSingleGroupDelete(TestManageSingleGroupMixin,
+                                  SubjectAdminSeleniumTestCase,
+                                  WaitForAlertMessageMixin):
+    def test_delete(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.browseToAndSelectAs('a1admin', g1)
+        deletebutton = self.waitForAndFindElementByCssSelector('#groupDeleteButton button')
+        deletebutton.click()
+
+        window = self.waitForAndFindElementByCssSelector('.devilry_confirmdeletedialog')
+        inputfield = window.find_element_by_css_selector('input[name=confirm_text]')
+        deletebutton = window.find_element_by_css_selector('.devilry_deletebutton button')
+        inputfield.send_keys('DELETE')
+        self.waitForEnabled(deletebutton)
+        deletebutton.click()
+        self.waitForAlertMessage('success', 'Removed: student1')
+
+        self.assertFalse(AssignmentGroup.objects.filter(id=g1.id).exists())
