@@ -349,7 +349,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      ***************************************************/
 
     _handleLoadError: function(operation, title) {
-        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', operation);
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         error.addErrors(null, operation);
         var errormessage = error.asHtmlList();
         Ext.widget('htmlerrordialog', {
@@ -432,6 +432,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this._notifyGroupsChange(callbackconfig);
     },
 
+    /** Used by related controllers (SingleGroupSelectedViewPlugin,
+     * MultipleGroupsSelectedViewPlugin) to remove groups. */
+    removeGroups: function(groupRecords) {
+        this.getGroupsStore().remove(groupRecords);
+        this._notifyGroupsChange({
+            scope: this,
+            success: function() {
+                var groups = [];
+                Ext.Array.each(groupRecords, function(groupRecord) {
+                    groups.push(groupRecord.getIdentString());
+                }, this);
+                this.application.getAlertmessagelist().add({
+                    message: Ext.String.format(gettext('Removed: {0}.'), groups.join(', ')),
+                    type: 'success',
+                    autoclose: true
+                });
+            }
+        });
+    },
+
     _notifyGroupsChange: function(callbackconfig) {
         this._maskListOfGroups();
         this.getGroupsStore().sync({
@@ -462,7 +482,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onSyncFailure: function(batch, options) {
         this._unmaskListOfGroups();
-        console.log('failure', batch, options);
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        error.addBatchErrors(batch);
+        var messages = error.asArrayOfStrings();
+        this.application.getAlertmessagelist().addMany(messages, 'error');
     },
 
     /** Used by plugins to reload groups.
