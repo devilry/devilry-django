@@ -452,7 +452,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _removeGroups: function(groupRecords) {
+        this.getGroupsStore().suspendEvents(); // Suspend events to avoid that we re-draw and re-select for each removal
         this.getGroupsStore().remove(groupRecords);
+        this.getGroupsStore().resumeEvents();
         this._notifyGroupsChange({
             scope: this,
             success: function() {
@@ -462,18 +464,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                     type: 'success',
                     autoclose: true
                 });
+                this.reloadGroups([]); // Reload groups, since we suspended events above
             }
-        });
+        }, true); // reloadOnError=true
     },
 
-    _notifyGroupsChange: function(callbackconfig) {
+    _notifyGroupsChange: function(callbackconfig, reloadOnError) {
         this._maskListOfGroups();
         this.getGroupsStore().sync({
             scope: this,
             success: function(batch, options) {
                 this._onSyncSuccess(batch, options, callbackconfig);
             },
-            failure: this._onSyncFailure
+            failure: function(batch, options) {
+                this._onSyncFailure(batch, options, reloadOnError);
+            }
         });
     },
 
@@ -494,12 +499,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         }
     },
 
-    _onSyncFailure: function(batch, options) {
+    _onSyncFailure: function(batch, options, reloadOnError) {
         this._unmaskListOfGroups();
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         error.addBatchErrors(batch);
         var messages = error.asArrayOfStrings();
         this.application.getAlertmessagelist().addMany(messages, 'error');
+        if(reloadOnError) {
+            this.reloadGroups([]);
+        }
     },
 
     /** Used by plugins to reload groups.
