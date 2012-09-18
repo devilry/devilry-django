@@ -12,6 +12,9 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
         'devilry_extjsextras.DeleteButton'
     ],
 
+    width: 350,
+    height: 230,
+
     /**
      * @cfg {string} required_confirm_text (optional)
      * Defaults to ``DELETE``.
@@ -55,8 +58,6 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
 
         Ext.apply(this, {
             layout: 'fit',
-            width: 350,
-            height: 230,
             closable: false,
             modal: true,
             title: this._apply_template(gettext('Delete {something}?'), {
@@ -93,7 +94,7 @@ Ext.define('devilry_extjsextras.ConfirmDeleteDialog', {
                         render: function(field) {
                             Ext.defer(function() {
                                 field.focus();
-                            }, 100);
+                            }, 200);
                         }
                     }
                 }],
