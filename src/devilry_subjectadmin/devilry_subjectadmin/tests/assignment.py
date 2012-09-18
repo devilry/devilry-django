@@ -186,21 +186,19 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
                             subjects=['sub'],
                             periods=['period1:begins(-3)'],
                             assignments=['week1:admin(week1admin)'])
-        self.login('week1admin')
-
         self.week1 = self.testhelper.sub_period1_week1
+        self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
-        self.browseTo('/assignment/{0}/'.format(self.testhelper.sub_period1_week1.id))
-        self.waitForCssSelector('.devilry_subjectadmin_editanonymous_widget .edit_link')
-        button = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous_widget .edit_link')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox .edit_link')
         button.click()
-        self.waitForCssSelector('.devilry_subjectadmin_editanonymous')
 
-        editanonymous_window = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_editanonymous')
-        self.anonymouscheckbox = editanonymous_window.find_element_by_css_selector('input.x-form-checkbox')
-        self.savebutton = editanonymous_window.find_element_by_css_selector('.devilry_extjsextras_savebutton button')
-        self.cancelbutton = editanonymous_window.find_element_by_css_selector('.devilry_extjsextras_cancelbutton')
-        self.editanonymous_window = editanonymous_window
+        editanonymouspanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymouspanel')
+        self.waitForDisplayed(editanonymouspanel)
+        self.anonymouscheckbox = editanonymouspanel.find_element_by_css_selector('input.x-form-checkbox')
+        self.savebutton = editanonymouspanel.find_element_by_css_selector('.okbutton button')
+        self.cancelbutton = editanonymouspanel.find_element_by_css_selector('.cancelbutton button')
+        self.editanonymouspanel = editanonymouspanel
 
     def test_editanonymous(self):
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
@@ -213,12 +211,12 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.assertTrue(Assignment.objects.get(pk=self.week1.pk).anonymous)
 
     def test_cancel(self):
-        self.failIfCssSelectorFound(self.editanonymous_window, '.x-tool-close') # Make sure window does not have closable set to true
         self.cancelbutton.click()
-        self.assertFalse('.devilry_subjectadmin_editanonymous' in self.selenium.page_source)
+        self.waitForDisplayed(self.readOnlyPanel)
 
     def test_editanonymous_nochange(self):
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
         self.savebutton.click()
+        self.waitForDisplayed(self.readOnlyPanel)
         self.waitForText('Not anonymous') # If this times out, it has not been updated
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)

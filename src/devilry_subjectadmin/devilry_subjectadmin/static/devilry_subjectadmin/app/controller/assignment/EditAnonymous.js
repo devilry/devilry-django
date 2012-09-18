@@ -8,7 +8,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     },
 
     views: [
-        'assignment.EditAnonymous',
+        'assignment.EditAnonymousPanel',
         'assignment.EditAnonymousWidget'
     ],
 
@@ -19,20 +19,24 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     models: ['Assignment'],
 
     refs: [{
+        ref: 'cardContainer',
+        selector: 'editanonymous-widget'
+    }, {
+        ref: 'sidebarBox',
+        selector: 'editanonymous-widget editablesidebarbox'
+
+    }, {
         ref: 'editAnonymous',
-        selector: 'editanonymous'
+        selector: 'editanonymous-widget editanonymouspanel'
     }, {
         ref: 'anonymousField',
-        selector: 'editanonymous checkbox'
+        selector: 'editanonymous-widget editanonymouspanel checkbox'
     }, {
         ref: 'formPanel',
-        selector: 'editanonymous form'
+        selector: 'editanonymous-widget editanonymouspanel form'
     }, {
         ref: 'alertMessageList',
-        selector: 'editanonymous alertmessagelist'
-    }, {
-        ref: 'anonymousWidget',
-        selector: 'editanonymous-widget'
+        selector: 'editanonymous-widget editanonymouspanel alertmessagelist'
     }],
 
     init: function() {
@@ -42,29 +46,73 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous form checkbox': {
+            'editanonymous-widget editablesidebarbox': {
+                edit: this._onEdit
+            },
+            'editanonymous-widget editanonymouspanel form checkbox': {
                 render: this._onRenderForm
             },
-            'editanonymous savebutton': {
+            'editanonymous-widget editanonymouspanel #okbutton': {
                 click: this._onSave
             },
-            'editanonymous cancelbutton': {
-                click: this._close
-            },
-            'editanonymous-widget': {
-                edit: this._onEdit
+            'editanonymous-widget editanonymouspanel #cancelbutton': {
+                click: this._onCancel
             }
         });
     },
 
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
-        this.getAnonymousWidget().enable();
+        this.getSidebarBox().enable();
         this._updateAnonymousWidget();
     },
 
-    _onRenderForm: function() {
+
+    //////////////////////////////////
+    //
+    // The current stored value view
+    //
+    //////////////////////////////////
+    
+    _showReadView: function() {
+        this.getCardContainer().getLayout().setActiveItem('readAnonymous');
+    },
+
+    _updateAnonymousWidget: function() {
+        var anonymous = this.assignmentRecord.get('anonymous');
+        var title, body;
+
+        if(anonymous) {
+            title = gettext('Anonymous');
+            body = gettext('Examiners and students can not see each other and they can not communicate.');
+        } else {
+            title = gettext('Not anonymous');
+            body = gettext('Examiners and students can see each other and communicate.');
+        }
+        var anonymous = this.assignmentRecord.get('anonymous');
+        this.getSidebarBox().updateTitle(title);
+        this.getSidebarBox().updateText(body);
+    },
+
+    _onEdit: function() {
+        this._showEditView();
+    },
+
+
+    //////////////////////////////////
+    //
+    // Edit anonymous
+    //
+    //////////////////////////////////
+    _showEditView: function() {
+        this.getCardContainer().getLayout().setActiveItem('editAnonymous');
         this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
+        Ext.defer(function() {
+            this.getFormPanel().down('checkbox').focus();
+        }, 100, this);
+    },
+
+    _onRenderForm: function() {
         this.getEditAnonymous().mon(this.getAssignmentModel().proxy, {
             scope: this,
             exception: this._onProxyError
@@ -73,13 +121,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             enter: this._onSave,
             scope: this
         });
-        Ext.defer(function() {
-            this.getFormPanel().down('checkbox').focus();
-        }, 100, this);
     },
 
-    _close: function() {
-        this.getEditAnonymous().close();
+    _onCancel: function() {
+        this._showReadView();
     },
 
     _onSave: function() {
@@ -100,7 +145,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
-        this._close();
+        this._showReadView();
         this._updateAnonymousWidget();
     },
 
@@ -108,27 +153,5 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         this._getMaskElement().unmask();
         this.handleProxyError(this.getAlertMessageList(), this.getFormPanel(),
             response, operation);
-    },
-
-    _onEdit: function() {
-        Ext.widget('editanonymous', {
-            assignmentRecord: this.assignmentRecord
-        }).show();
-    },
-
-    _updateAnonymousWidget: function() {
-        var anonymous = this.assignmentRecord.get('anonymous');
-        var title, body;
-
-        if(anonymous) {
-            title = gettext('Anonymous');
-            body = gettext('Examiners and students can not see each other and they can not communicate.');
-        } else {
-            title = gettext('Not anonymous');
-            body = gettext('Examiners and students can see each other and communicate.');
-        }
-        var anonymous = this.assignmentRecord.get('anonymous');
-        this.getAnonymousWidget().updateTitle(title);
-        this.getAnonymousWidget().updateText(body);
     }
 });

@@ -100,8 +100,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         xtype: 'editpublishingtime-widget',
                         disabled: true
                     }, {
-                        xtype: 'editanonymous-widget',
-                        disabled: true
+                        xtype: 'editanonymous-widget'
                     }]
                 }]
             }]

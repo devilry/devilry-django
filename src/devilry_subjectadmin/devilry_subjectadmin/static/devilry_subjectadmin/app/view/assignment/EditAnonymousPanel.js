@@ -1,10 +1,10 @@
 /**
- * A window for editing the anonymous attribute of an Assignment.
+ * A panel for editing the anonymous attribute of an Assignment.
  * */
-Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
-    extend: 'Ext.window.Window',
-    alias: 'widget.editanonymous',
-    cls: 'devilry_subjectadmin_editanonymous bootstrap',
+Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
+    extend: 'devilry_extjsextras.OkCancelPanel',
+    alias: 'widget.editanonymouspanel',
+    cls: 'devilry_subjectadmin_editanonymouspanel bootstrap',
     requires: [
         'devilry_extjsextras.SaveButton'
     ],
@@ -12,11 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'fit',
-            width: 460,
-            height: 270,
-            closable: false,
-            modal: true,
-            title: gettext('Anonymous'),
+            oktext: gettext('Save'),
             items: {
                 xtype: 'form',
                 bodyPadding: 20,
@@ -41,11 +37,6 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymous', {
                     name: 'anonymous',
                     uncheckedValue: false,
                     inputValue: true
-                }],
-                buttons: ['->', {
-                    xtype: 'cancelbutton'
-                }, {
-                    xtype: 'savebutton'
                 }]
             }
         });
