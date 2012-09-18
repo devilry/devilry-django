@@ -205,6 +205,12 @@ class Command(BaseCommand):
         self._addRelatedStudentsFromList(period, medium_students_usernames)
         self._addRelatedStudentsFromList(period, bad_students_usernames)
 
+    def _set_first_deadlines(self, period, days_after_pubtime=2):
+        for assignment in period.assignments.all():
+            logging.info('Setting first_deadline on %s', assignment)
+            assignment.first_deadline = assignment.publishing_time + timedelta(days=days_after_pubtime)
+            assignment.save()
+
     def create_duck1100(self):
         """
         Weekly assignments with points.
@@ -231,6 +237,7 @@ class Command(BaseCommand):
             periodpath = 'duckburgh.ifi;duck1100.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
+            self._set_first_deadlines(period)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
@@ -263,6 +270,7 @@ class Command(BaseCommand):
             periodpath = 'duckburgh.ifi;duck1010.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
+            self._set_first_deadlines(period)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
@@ -283,6 +291,7 @@ class Command(BaseCommand):
             periodpath = 'duckburgh.ifi;duck6000.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
+            self._set_first_deadlines(period)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
 
@@ -302,6 +311,7 @@ class Command(BaseCommand):
             periodpath = 'duckburgh.ifi;duck4000.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
+            self._set_first_deadlines(period)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
 
