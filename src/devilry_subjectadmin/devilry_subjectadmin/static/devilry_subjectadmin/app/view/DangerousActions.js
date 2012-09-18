@@ -3,10 +3,8 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
     alias: 'widget.dangerousactions',
     cls: 'devilry_subjectadmin_dangerousactions',
 
-    requires: [
-    ],
-
     title: gettext('Dangerous actions'),
+    titleTpl: '<h2>{heading}</h2>',
 
     initComponent: function() {
         Ext.apply(this, {
@@ -15,7 +13,7 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
                 cls: 'bootstrap',
                 //margin: '0 0 2 0',
                 itemId: 'header',
-                tpl: '<h2>{heading}</h2>',
+                tpl: this.titleTpl,
                 data: {
                     heading: this.title
                 }
