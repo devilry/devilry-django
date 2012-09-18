@@ -7,11 +7,12 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     alias: 'widget.alertmessage',
 
     requires: [
-        'Ext.fx.Animator'
+        'Ext.fx.Animator',
+        'Ext.util.DelayedTask'
     ],
     
     tpl: [
-        '<div class="alert alert-{type}" style="{style}">',
+        '<div class="alert alert-{type} {extracls}" style="{style}">',
             '<tpl if="closable">',
                 '<button type="button" class="close" data-dismiss="alert">×</button>',
             '</tpl>',
@@ -82,15 +83,34 @@ Ext.define('devilry_extjsextras.AlertMessage', {
                 this.fireEvent('closed', this);
             }
         });
-
         if(!Ext.isEmpty(this.autoclose)) {
             if(this.autoclose === true) {
                 this.autoclose = this._calculateAutocloseTime();
             }
-            Ext.defer(function() {
+            this.cancelTask = new Ext.util.DelayedTask(function(){
                 this.fadeOutAndClose();
-            }, 1000*this.autoclose, this);
+            }, this);
+            this.addListener({
+                scope: this,
+                element: 'el',
+                delegate: 'div.alert',
+                //mouseover: this._onMouseOver,
+                mouseleave: this._onMouseLeave,
+                mouseenter: this._onMouseEnter
+            });
+            this._deferAutoclose();
         }
+    },
+
+    _deferAutoclose: function() {
+        this.cancelTask.delay(1000*this.autoclose);
+    },
+
+    _onMouseEnter: function() {
+        this.cancelTask.cancel(); // We do not close the message while mouse is over it.
+    },
+    _onMouseLeave: function() {
+        this._deferAutoclose();
     },
 
     _calculateAutocloseTime: function() {
@@ -145,7 +165,8 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             message: this.message,
             title: this.title,
             style: style,
-            closable: this.closable
+            closable: this.closable,
+            extracls: this.closable? 'closable': ''
         }]);
     }
 });
