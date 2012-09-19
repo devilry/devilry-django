@@ -121,7 +121,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.period = self.testhelper.sub_p1
 
     def _browseToManageStudentsAs(self, username, period_id):
-        path = '/period/{0}/@@related-students'.format(period_id)
+        path = '/period/{0}/@@relatedstudents'.format(period_id)
         self.loginTo(username, path)
         self.waitForCssSelector('.devilry_subjectadmin_relatedstudents')
 
