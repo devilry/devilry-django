@@ -8,6 +8,8 @@ Ext.define('devilry_subjectadmin.view.assignment.EditDeadlineHandlingWidget', {
     cls: 'devilry_subjectadmin_editdeadline_handling_widget',
 
     requires: [
+        'devilry_extjsextras.ContainerWithEditTitle',
+        'devilry_extjsextras.MarkupMoreInfoBox',
         'devilry_subjectadmin.view.assignment.EditDeadlineHandlingPanel'
     ],
 
@@ -16,27 +18,47 @@ Ext.define('devilry_subjectadmin.view.assignment.EditDeadlineHandlingWidget', {
             layout: 'card',
             deferredRender: true,
             items: [{
-                xtype: 'editablesidebarbox',
+                xtype: 'containerwithedittitle',
                 itemId: 'readDeadlineHandling',
                 disabled: true,
-                bodyTpl: [
-                    '<tpl if="text">',
-                        '<p class="muted">{text}</small>',
-                    '<tpl else>',
-                        '<tpl if="deadline_handling == SOFT">',
-                            '<p><small class="muted">',
-                                gettext('The assignment is configured to use SOFT deadlines. This means that students will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted.'),
-                            '</p>',
-                        '<tpl elseif="deadline_handling == HARD">',
-                            '<p><small class="muted">',
-                                gettext('The assignment is configured to use HARD deadlines. This means that students will be unable to make deliveries when a deadline has expired.'),
-                            '</p>',
+                body: {
+                    xtype: 'markupmoreinfobox',
+                    moreCls: 'alert alert-info',
+                    tpl: [
+                        '<tpl if="text">',
+                            '<p class="muted">{text}</small>',
                         '<tpl else>',
-                            // NOTE: We do not translate this, because it is a bug, and we do not raise an error because it is a bug that should not crash the entire UI.
-                            '<p class="text-warning">This UI does not know how to handle <code>deadline_handling</code> values other that 0 and 1.</p>',
-                        '</tpl>',
-                    '</tpl>'
-                ]
+                            '<p>',
+                                '<small class="muted">',
+                                    '<tpl if="deadline_handling == SOFT">',
+                                        gettext('Possible to add deliveries after active deadline.'),
+                                    '<tpl elseif="deadline_handling == HARD">',
+                                        gettext('Impossible to add deliveries after active deadline.'),
+                                    '<tpl else>',
+                                        // NOTE: We do not translate this, because it is a bug, and we do not raise an error because it is a bug that should not crash the entire UI.
+                                        '<span class="text-warning">This UI does not know how to handle <code>deadline_handling</code> values other that 0 and 1.</p>',
+                                    '</tpl>',
+                                '</small>',
+                                ' <small>{MORE_BUTTON}</small>',
+                            '</p>',
+                            '<div {MORE_ATTRS}>',
+
+                                '<p>',
+                                    gettext('With HARD deadlines, {students_term} will be unable to make deliveries when a deadline has expired.'),
+                                '</p>',
+                                '<p>',
+                                    gettext('With SOFT deadlines {students_term} will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted.'),
+                                '</p>',
+                                '<p><small>',
+                                    gettext('NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both {students_term} and {examiners_term}.'),
+                                '</small></p>',
+                            '</div>',
+                        '</tpl>'
+                    ],
+                    data: {
+                        text: gettext('Loading') + ' ...'
+                    }
+                }
             }, {
                 xtype: 'editdeadline_handlingpanel',
                 itemId: 'editDeadlineHandling'

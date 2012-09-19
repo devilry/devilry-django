@@ -238,10 +238,10 @@ class TestEditDeadlineHandling(SubjectAdminSeleniumTestCase):
         self.week1 = self.testhelper.sub_period1_week1
         self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
-        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdeadline_handling_widget .editablesidebarbox')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdeadline_handling_widget .containerwithedittitle')
 
     def _click_edit(self):
-        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdeadline_handling_widget .editablesidebarbox .edit_link')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdeadline_handling_widget .containerwithedittitle .edit_link')
         button.click()
 
         editdeadline_handlingpanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdeadline_handlingpanel')
@@ -253,7 +253,7 @@ class TestEditDeadlineHandling(SubjectAdminSeleniumTestCase):
     def test_readonlypanel(self):
         self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 0)
         self.assertIn('Soft deadlines', self.readOnlyPanel.text)
-        self.assertIn('The assignment is configured to use SOFT deadlines',
+        self.assertIn('Possible to add deliveries after active deadline',
                       self.readOnlyPanel.text)
 
     def test_editdeadline_handling(self):
@@ -262,7 +262,7 @@ class TestEditDeadlineHandling(SubjectAdminSeleniumTestCase):
         self.deadline_handlingcheckbox.click()
         self.savebutton.click()
         self.waitForText('>Hard deadlines') # If this times out, is has not been updated
-        self.waitForText('The assignment is configured to use HARD deadlines') # If this times out, is has not been updated
+        self.waitForText('Impossible to add deliveries after active deadline') # If this times out, is has not been updated
         self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 1)
 
     def test_cancel(self):

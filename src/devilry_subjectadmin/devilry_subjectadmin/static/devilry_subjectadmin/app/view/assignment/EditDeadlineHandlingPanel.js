@@ -26,14 +26,10 @@ Ext.define('devilry_subjectadmin.view.assignment.EditDeadlineHandlingPanel', {
                     tpl: [
                         '<p>',
                             gettext('Enable hard deadlines if you want to make it impossible for {students_term} to add deliveries after their active deadline.'),
-                        '</p>',
-                        '<p><small class="muted">',
-                            gettext('NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both {students_term} and {examiners_term}.'),
-                        '</small></p>'
+                        '</p>'
                     ],
                     data: {
-                        students_term: gettext('students'),
-                        examiners_term: gettext('examiners')
+                        students_term: gettext('students')
                     },
                     margin: '0 0 10 0'
                 }, {

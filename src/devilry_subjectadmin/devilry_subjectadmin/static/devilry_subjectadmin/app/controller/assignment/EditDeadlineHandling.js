@@ -23,7 +23,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
         selector: 'editdeadline_handling-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editdeadline_handling-widget editablesidebarbox#readDeadlineHandling'
+        selector: 'editdeadline_handling-widget #readDeadlineHandling'
+    }, {
+        ref: 'readOnlyViewBody',
+        selector: 'editdeadline_handling-widget #readDeadlineHandling markupmoreinfobox'
 
     }, {
         ref: 'editDeadlineHandling',
@@ -46,7 +49,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editdeadline_handling-widget editablesidebarbox': {
+            'editdeadline_handling-widget #readDeadlineHandling': {
                 edit: this._onEdit
             },
             'editdeadline_handling-widget editdeadline_handlingpanel form checkbox': {
@@ -93,10 +96,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
             title = 'Unknown deadline handling value';
         }
         this.getReadOnlyView().updateTitle(title);
-        this.getReadOnlyView().updateBody({
+        this.getReadOnlyViewBody().update({
             deadline_handling: deadline_handling,
             SOFT: SOFT,
-            HARD: HARD
+            HARD: HARD,
+            students_term: gettext('students'),
+            examiners_term: gettext('examiners')
         });
     },
 
