@@ -176,7 +176,6 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
 
 
 class TestEditAnonymous(SubjectAdminSeleniumTestCase):
-
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -187,6 +186,8 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
         self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox')
+
+    def _click_edit(self):
         button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox .edit_link')
         button.click()
 
@@ -196,10 +197,14 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.savebutton = editanonymouspanel.find_element_by_css_selector('.okbutton button')
         self.cancelbutton = editanonymouspanel.find_element_by_css_selector('.cancelbutton button')
 
+    def test_readonlypanel(self):
+        self.assertIn('Not anonymous', self.readOnlyPanel.text)
+        self.assertIn('Examiners and students can see each other and communicate.',
+                      self.readOnlyPanel.text)
+
     def test_editanonymous(self):
+        self._click_edit()
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
-        self.assertTrue('Not anonymous' in self.selenium.page_source)
-        self.assertTrue('Examiners and students can see each other and communicate.' in self.selenium.page_source)
         self.anonymouscheckbox.click()
         self.savebutton.click()
         self.waitForText('>Anonymous') # If this times out, is has not been updated
@@ -207,10 +212,12 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.assertTrue(Assignment.objects.get(pk=self.week1.pk).anonymous)
 
     def test_cancel(self):
+        self._click_edit()
         self.cancelbutton.click()
         self.waitForDisplayed(self.readOnlyPanel)
 
     def test_editanonymous_nochange(self):
+        self._click_edit()
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
         self.savebutton.click()
         self.waitForDisplayed(self.readOnlyPanel)
