@@ -47,6 +47,7 @@ Ext.application({
         'subject.Overview',
         'period.Overview',
         'period.EditDuration',
+        'CreateNewPeriod',
         'assignment.Overview',
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
@@ -202,6 +203,7 @@ Ext.application({
         this.route.add("/allsubjects/", 'allSubjects');
         this.route.add("/", 'allWhereIsAdmin');
         this.route.add("/subject/:subject_id/", 'showSubject');
+        this.route.add("/subject/:subject_id/@@create-new-period", 'createNewPeriod');
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
         this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
@@ -249,6 +251,13 @@ Ext.application({
     showSubject: function(routeInfo, subject_id) {
         this.setPrimaryContent({
             xtype: 'subjectoverview',
+            subject_id: subject_id
+        });
+    },
+
+    createNewPeriod: function(routeInfo, subject_id) {
+        this.setPrimaryContent({
+            xtype: 'createnewperiod',
             subject_id: subject_id
         });
     },
