@@ -15,12 +15,11 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
                             periods=['periodone:begins(-1):ends(6):admin(periodoneadmin)'])
-        self.login('periodoneadmin')
         self.period_id = self.testhelper.duck1100_periodone.id
 
     def _load(self, period_id=None):
         period_id = period_id or self.period_id
-        self.browseTo('/period/{0}/@@create-new-assignment/'.format(period_id))
+        self.loginTo('periodoneadmin', '/period/{0}/@@create-new-assignment/'.format(period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
     def test_form_render(self):
@@ -79,11 +78,11 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
         self.assertFalse(nextbutton.is_enabled())
 
-        # Make sure the next button is clickable after both short and long names are entered.
         self._set_names('', 'Test')
-        self.assertFalse(nextbutton.is_enabled())
-
+        self.waitForDisabled(nextbutton)
         self._set_value('short_name', 'test')
+        self.waitForDisabled(nextbutton)
+        self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self.waitForEnabled(nextbutton)
 
     def _click_createbutton(self):
