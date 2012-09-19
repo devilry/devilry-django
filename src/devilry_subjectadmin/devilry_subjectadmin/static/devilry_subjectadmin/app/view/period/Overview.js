@@ -15,6 +15,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_subjectadmin.view.BaseNodeHierLocation',
         'devilry_subjectadmin.view.DangerousActions',
+        'devilry_subjectadmin.view.period.EditDurationWidget',
         'devilry_extjsextras.SingleActionBox'
     ],
 
@@ -151,8 +152,10 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         margin: '20 0 0 0'
                     },
                     items: [{
-                        xtype: 'adminsbox',
-                        margin: '0 0 0 0'
+                        margin: '0 0 0 0',
+                        xtype: 'editperiod_duration-widget'
+                    }, {
+                        xtype: 'adminsbox'
                     }, {
                         xtype: 'basenodehierlocation'
                     }]

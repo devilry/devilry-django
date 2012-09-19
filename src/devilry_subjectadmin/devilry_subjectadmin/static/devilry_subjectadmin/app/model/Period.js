@@ -19,6 +19,13 @@ Ext.define('devilry_subjectadmin.model.Period', {
         {name: 'number_of_relatedstudents',  type: 'int'}
     ],
 
+    formatStartTime: function() {
+        return Ext.Date.format(this.get('start_time'), 'Y-m-d H:i');
+    },
+    formatEndTime: function() {
+        return Ext.Date.format(this.get('end_time'), 'Y-m-d H:i');
+    },
+
     proxy: {
         type: 'rest',
         url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_subjectadmin/rest/period/',
