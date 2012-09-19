@@ -8,6 +8,8 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousWidget', {
     cls: 'devilry_subjectadmin_editanonymous_widget',
 
     requires: [
+        'devilry_extjsextras.ContainerWithEditTitle',
+        'devilry_extjsextras.MarkupMoreInfoBox',
         'devilry_subjectadmin.view.assignment.EditAnonymousPanel'
     ],
 
@@ -16,10 +18,30 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousWidget', {
             layout: 'card',
             deferredRender: true,
             items: [{
-                xtype: 'editablesidebarbox',
+                xtype: 'containerwithedittitle',
                 itemId: 'readAnonymous',
                 disabled: true,
-                bodyTpl: '<p class="muted">{text}</p>'
+                body: {
+                    xtype: 'markupmoreinfobox',
+                    moreCls: 'alert alert-info',
+                    tpl: [
+                        '<tpl if="loading">',
+                            '<p class="muted">{loading}</p>',
+                        '<tpl else>',
+                            '<p class="muted"><small>',
+                                '{info}',
+                            ' {MORE_BUTTON}</small></p>',
+                            '<p {MORE_ATTRS}>',
+                                gettext('For exams, assignments should normally be anonymous.'),
+                                ' ',
+                                gettext('If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.'),
+                            '</p>',
+                        '</tpl>'
+                    ],
+                    data: {
+                        loading: gettext('Loading') + ' ...'
+                    }
+                }
             }, {
                 xtype: 'editanonymouspanel',
                 itemId: 'editAnonymous'

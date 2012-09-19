@@ -185,10 +185,10 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.week1 = self.testhelper.sub_period1_week1
         self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
-        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .containerwithedittitle')
 
     def _click_edit(self):
-        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .editablesidebarbox .edit_link')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymous_widget .containerwithedittitle .edit_link')
         button.click()
 
         editanonymouspanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editanonymouspanel')

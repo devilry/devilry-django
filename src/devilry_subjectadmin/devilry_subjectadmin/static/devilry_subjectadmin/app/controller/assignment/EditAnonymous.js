@@ -23,7 +23,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         selector: 'editanonymous-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editanonymous-widget editablesidebarbox#readAnonymous'
+        selector: 'editanonymous-widget #readAnonymous'
+    }, {
+        ref: 'readOnlyViewBody',
+        selector: 'editanonymous-widget #readAnonymous markupmoreinfobox'
+
 
     }, {
         ref: 'editAnonymous',
@@ -46,7 +50,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous-widget editablesidebarbox': {
+            'editanonymous-widget #readAnonymous': {
                 edit: this._onEdit
             },
             'editanonymous-widget editanonymouspanel form checkbox': {
@@ -80,18 +84,20 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _updateAnonymousWidget: function() {
         var anonymous = this.assignmentRecord.get('anonymous');
-        var title, body;
+        var title, info;
 
         if(anonymous) {
             title = gettext('Anonymous');
-            body = gettext('Examiners and students can not see each other and they can not communicate.');
+            info = gettext('Examiners and students can not see each other and they can not communicate.');
         } else {
             title = gettext('Not anonymous');
-            body = gettext('Examiners and students can see each other and communicate.');
+            info = gettext('Examiners and students can see each other and communicate.');
         }
         var anonymous = this.assignmentRecord.get('anonymous');
         this.getReadOnlyView().updateTitle(title);
-        this.getReadOnlyView().updateText(body);
+        this.getReadOnlyViewBody().update({
+            info: info
+        });
     },
 
     _onEdit: function() {
