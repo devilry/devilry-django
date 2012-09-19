@@ -27,7 +27,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
         selector: 'editfirstdeadline-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editfirstdeadline-widget editablesidebarbox#readFirstDeadline'
+        selector: 'editfirstdeadline-widget #readFirstDeadline'
+    }, {
+        ref: 'readOnlyViewBody',
+        selector: 'editfirstdeadline-widget #readFirstDeadline markupmoreinfobox'
     }, {
 
         ref: 'editFirstDeadline',
@@ -82,7 +85,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
     },
 
     _updateFirstDeadlineWidget: function() {
-        this.getReadOnlyView().updateBody({
+        this.getReadOnlyViewBody().update({
             first_deadline: this.assignmentRecord.formatFirstDeadline()
         });
     },

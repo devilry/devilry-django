@@ -289,10 +289,10 @@ class TestEditFirstDeadline(SubjectAdminSeleniumTestCase):
                             assignments=['week1:admin(week1admin)'])
         self.week1 = self.testhelper.sub_period1_week1
         self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
-        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .editablesidebarbox')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .containerwithedittitle')
 
     def _click_edit(self):
-        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .editablesidebarbox .edit_link')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadline_widget .containerwithedittitle .edit_link')
         button.click()
         panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editfirstdeadlinepanel')
         self.datefield = panel.find_element_by_css_selector('.devilry_extjsextras_datefield input')
@@ -309,7 +309,7 @@ class TestEditFirstDeadline(SubjectAdminSeleniumTestCase):
 
     def test_readonlypanel(self):
         self.assertTrue('First deadline' in self.readOnlyPanel.text)
-        self.assertIn('The first deadline is the deadline added to groups when they are added to the assignment.',
+        self.assertIn('This assignment has no first deadline set.',
                       self.readOnlyPanel.text)
 
     def test_editfirstdeadline(self):
@@ -322,16 +322,6 @@ class TestEditFirstDeadline(SubjectAdminSeleniumTestCase):
         self.waitForText('{isoday_yesterday} 12:00'.format(**vars())) # If this times out, it has not been updated
         week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
         self.assertEquals(week1.first_deadline.date(), yesterday.date())
-
-    def test_editfirstdeadline_notpublished(self):
-        self._click_edit()
-        tomorrow = datetime.now() + timedelta(days=1)
-        isoday_tomorrow = tomorrow.date().isoformat()
-        self._set_datetime(isoday_tomorrow, '12:00')
-        self.savebutton.click()
-        self.waitForText('{isoday_tomorrow} 12:00'.format(**vars())) # If this times out, it has not been updated
-        week1 = Assignment.objects.get(pk=self.testhelper.sub_period1_week1.pk)
-        self.assertEquals(week1.first_deadline.date(), tomorrow.date())
 
     def test_cancel(self):
         self._click_edit()
