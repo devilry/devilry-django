@@ -44,5 +44,5 @@ Ext.define('devilry_subjectadmin.controller.AllWhereIsAdmin', {
             loadingtext: null,
             subjects: records
         });
-    },
+    }
 });
