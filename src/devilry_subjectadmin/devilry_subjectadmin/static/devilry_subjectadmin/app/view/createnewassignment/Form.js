@@ -12,7 +12,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         'devilry_extjsextras.CreateButton',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.form.Help'
+        'devilry_extjsextras.form.Help',
+        'devilry_subjectadmin.utils.BaseNodeHelp'
     ],
 
     /**
@@ -69,10 +70,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     }, {
                         xtype: 'formhelp',
                         margin: '5 0 0 0',
-                        html: [
-                            gettext('Choose a long and a short name. Short name is used in places where long name takes too much space, such as table headers and navigation.'),
-                            gettext("The short name can have max 20 letters, and it can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>.")
-                        ].join(' ')
+                        html: devilry_subjectadmin.utils.BaseNodeHelp.getShortAndLongNameHelp()
 
                     }, {
                         xtype: 'container',
