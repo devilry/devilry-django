@@ -20,19 +20,18 @@ Ext.define('devilry_subjectadmin.view.period.EditDurationWidget', {
                 title: gettext('Duration'),
                 body: {
                     xtype: 'markupmoreinfobox',
-                    moreCls: 'alert alert-info',
+                    //moreCls: 'alert alert-info',
                     tpl: [
                         '<tpl if="text">',
                             '<p class="muted">{text}</p>',
                         '<tpl else>',
                             '<p class="muted">',
                                 '<small class="muted durationdisplay">{start_time} - {end_time}</small>',
-                                '<br/>',
-                                '<small>{MORE_BUTTON}</small>',
+                                //'<br/>',
+                                //'<small>{MORE_BUTTON}</small>',
                             '</p>',
-                            '<p {MORE_ATTRS}>',
-                                gettext('TODO'),
-                            '</p>',
+                            //'<p {MORE_ATTRS}>',
+                            //'</p>',
                         '</tpl>'
                     ]
                 }
