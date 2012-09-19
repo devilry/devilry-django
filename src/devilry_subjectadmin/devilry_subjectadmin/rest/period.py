@@ -40,6 +40,7 @@ class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
     """
     permissions = (IsAuthenticated,)
     resource = PeriodResource
+
     def authenticate_postrequest(self, user, parentnode_id):
         subjectadmin_required(user, parentnode_id)
 
