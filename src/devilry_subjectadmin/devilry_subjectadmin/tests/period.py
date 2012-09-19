@@ -70,8 +70,8 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
         self.waitForText('Delete duck9000.period1')
         self.waitForText('Rename duck9000.period1')
-        self.assertIn('Once you delete a period, there is no going back', self.selenium.page_source)
-        self.assertIn('Renaming a period should not done without a certain amount of consideration', self.selenium.page_source)
+        self.assertIn('Once you delete a ', self.selenium.page_source)
+        self.assertIn('should not done without a certain amount of consideration', self.selenium.page_source)
 
     def test_rename(self):
         self.login('period1admin')
