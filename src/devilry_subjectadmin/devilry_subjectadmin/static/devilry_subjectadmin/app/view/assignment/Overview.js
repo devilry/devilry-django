@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         'devilry_subjectadmin.view.assignment.GradeEditorSelectWidget',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
+        'devilry_subjectadmin.view.assignment.EditDeadlineHandlingWidget',
         'devilry_subjectadmin.view.assignment.EditFirstDeadlineWidget',
         'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.DangerousActions',
@@ -103,6 +104,8 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         xtype: 'editpublishingtime-widget'
                     }, {
                         xtype: 'editanonymous-widget'
+                    }, {
+                        xtype: 'editdeadline_handling-widget'
                     }, {
                         xtype: 'editfirstdeadline-widget'
                     }, {

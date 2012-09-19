@@ -12,7 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
             oktext: gettext('Save'),
             items: {
                 xtype: 'form',
-                bodyPadding: 10,
+                bodyPadding: 20,
                 autoScroll: true,
                 border: 0,
                 layout: 'anchor',

@@ -49,6 +49,7 @@ Ext.application({
         'assignment.Overview',
         'assignment.EditPublishingTime',
         'assignment.EditAnonymous',
+        'assignment.EditDeadlineHandling',
         'assignment.EditGradeEditor',
         'assignment.EditFirstDeadline',
         'GradeEditor',
