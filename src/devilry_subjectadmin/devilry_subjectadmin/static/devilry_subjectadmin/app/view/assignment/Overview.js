@@ -93,7 +93,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     xtype: 'container',
                     border: false,
                     width: 250,
-                    margin: '0 0 0 40',
+                    margin: '6 0 0 40',
                     defaults: {
                         margin: '10 0 0 0'
                     },
