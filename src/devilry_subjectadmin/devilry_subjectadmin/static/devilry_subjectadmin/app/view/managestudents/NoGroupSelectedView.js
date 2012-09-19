@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.NoGroupSelectedView' ,{
     alias: 'widget.nogroupselectedview',
     cls: 'nogroupselectedview bootstrap',
     requires: [
-        'devilry_subjectadmin.view.managestudents.GeneralHelp'
+        'devilry_subjectadmin.view.managestudents.HelpPanel'
     ],
 
     initComponent: function() {
@@ -20,16 +20,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.NoGroupSelectedView' ,{
             items: [{
                 xtype: 'alertmessage',
                 type: 'info',
-                message: interpolate(gettext('%(Students_term)s are in a group even when they work alone. No %(groups_term)s selected. Choose one or more %(groups_term)s to gain access to settings, such as %(examiners_term)s and %(tags_term)s.'), {
+                message: interpolate(gettext('%(Students_term)s are in a group even when they work alone. That means that the list to your left is the groups registered on this assignment. Choose one or more %(groups_term)s to gain access to settings, such as %(examiners_term)s and %(tags_term)s.'), {
                     Students_term: gettext('Students'),
                     groups_term: gettext('groups'),
                     examiners_term: gettext('examiners'),
                     tags_term: gettext('tags')
                 }, true)
             }, {
-                xtype: 'box',
-                cls: 'bootstrap',
-                html: devilry_subjectadmin.view.managestudents.GeneralHelp.getProjectGroupHowto()
+                xtype: 'managestudents_help',
+                border: false
             }]
         });
         this.callParent(arguments);
