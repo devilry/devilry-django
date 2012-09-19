@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditFirstDeadlineWidget', {
                             '<p {MORE_ATTRS}>',
                                 gettext('The first deadline is the deadline added to groups when you add them to the assignment. Editing it does not affect existing groups.'),
                             '</p>',
-                        '</tpl>',
+                        '</tpl>'
                     ]
                 }
             }, {
