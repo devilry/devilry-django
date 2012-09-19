@@ -30,6 +30,11 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
     buttonText: pgettext('uibutton', 'Edit'),
 
     /**
+     * @cfg {String} [title]
+     * The title text.
+     */
+
+    /**
      * @cfg {Object} [body]
      * The config for the body element. The container
      * uses anchor layout to lay out the title and the body.
