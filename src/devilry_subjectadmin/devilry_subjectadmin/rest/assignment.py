@@ -43,7 +43,7 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb', 'number_of_groups',
                                           'number_of_deliveries',
-                                          'number_of_candiates')
+                                          'number_of_candidates')
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
@@ -77,5 +77,5 @@ class InstanceAssignmentRest(BaseNodeInstanceModelView):
                                    'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
         qry = qry.annotate(number_of_groups=Count('assignmentgroups', distinct=True))
         qry = qry.annotate(number_of_deliveries=Count('assignmentgroups__deadlines__deliveries', distinct=True))
-        qry = qry.annotate(number_of_candiates=Count('assignmentgroups__candidates', distinct=True))
+        qry = qry.annotate(number_of_candidates=Count('assignmentgroups__candidates', distinct=True))
         return qry
