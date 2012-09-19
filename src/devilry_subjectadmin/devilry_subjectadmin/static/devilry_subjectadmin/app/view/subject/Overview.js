@@ -31,7 +31,8 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 xtype: 'alertmessagelist'
             }, {
                 xtype: 'panel',
-                ui: 'transparentpanel-overflowvisible',
+                frame: false,
+                border: false,
                 layout: 'column',
                 items: [{
                     xtype: 'container',
