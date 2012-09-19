@@ -59,6 +59,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 }]
             }, {
                 xtype: 'selectedgroupssummarygrid',
+                scroll: 'vertical',
                 region: 'south',
                 height: 300,
                 minHeight: 100, // Prevent it from beeing completely hidden (this should show at least most of the first selected item)
