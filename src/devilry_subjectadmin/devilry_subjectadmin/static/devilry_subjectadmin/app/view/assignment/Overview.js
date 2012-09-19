@@ -60,14 +60,41 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                             addstudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudentsAddStudents(this.assignment_id)
                         }, true)
                     }, {
-                        xtype: 'actionlist',
-                        links: [{
-                            url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
-                            text: gettext('Manage students')
-                        }, {
-                            url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
-                            text: gettext('Manage deadlines')
-                        }]
+                        xtype: 'box',
+                        cls: 'bootstrap devilry_subjectadmin_navigation',
+                        itemId: 'linkList',
+                        tpl: [
+                            '<tpl if="loading">',
+                                '<p class="muted">', gettext('Loading'), '...</p>',
+                            '<tpl else>',
+                                '<ul class="unstyled">',
+                                    '<li><p>',
+                                        '<div><strong><a href="{managestudents_url}">',
+                                            gettext('Manage students'),
+                                        '</a></strong></div>',
+                                        '<div><small class="muted">',
+                                            gettext('View, edit and add students on this assignment'),
+                                            ' (',
+                                                '<em>', gettext('Students'),   ':</em> {assignmentData.number_of_candidates}, ',
+                                                '<em>', gettext('Groups'),     ':</em> {assignmentData.number_of_groups}, ',
+                                                '<em>', gettext('Deliveries'), ':</em> {assignmentData.number_of_deliveries}',
+                                            ').',
+                                        '</small></div>',
+                                    '</p></li>',
+                                    '<li><p>',
+                                        '<div><strong><a href="{managedeadlines_url}">',
+                                            gettext('Manage deadlines'),
+                                        '</a></strong></div>',
+                                        '<div><small class="muted">',
+                                            gettext('Manage deadlines in bulk. Use <em>Manage students</em> to add/edit deadlines on indidual groups.'),
+                                        '</small></div>',
+                                    '</p></li>',
+                                '</ul>',
+                            '</tpl>'
+                        ],
+                        data: {
+                            loading: true
+                        }
                     }, {
                         xtype: 'dangerousactions',
                         margin: '20 0 0 0',
