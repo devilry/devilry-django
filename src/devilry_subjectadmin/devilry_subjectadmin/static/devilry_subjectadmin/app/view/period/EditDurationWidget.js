@@ -26,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.period.EditDurationWidget', {
                             '<p class="muted">{text}</p>',
                         '<tpl else>',
                             '<p class="muted">',
-                                '<small class="muted">{start_time} - {end_time}</small>',
+                                '<small class="muted durationdisplay">{start_time} - {end_time}</small>',
                                 '<br/>',
                                 '<small>{MORE_BUTTON}</small>',
                             '</p>',

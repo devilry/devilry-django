@@ -32,10 +32,12 @@ Ext.define('devilry_subjectadmin.view.period.EditDurationPanel', {
                 //}, {
                     xtype: 'devilry_extjsextras-datetimefield',
                     fieldLabel: gettext('Start time'),
+                    cls: 'start_time_field',
                     name: 'start_time'
                 }, {
                     xtype: 'devilry_extjsextras-datetimefield',
                     fieldLabel: gettext('End time'),
+                    cls: 'end_time_field',
                     name: 'end_time'
                 }]
             }
