@@ -14,6 +14,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousWidget', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'card',
+            deferredRender: true,
             items: [{
                 xtype: 'editablesidebarbox',
                 itemId: 'readAnonymous',

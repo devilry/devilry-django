@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditFirstDeadlineWidget', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'card',
+            deferredRender: true,
             items: [{
                 xtype: 'editablesidebarbox',
                 itemId: 'readFirstDeadline',

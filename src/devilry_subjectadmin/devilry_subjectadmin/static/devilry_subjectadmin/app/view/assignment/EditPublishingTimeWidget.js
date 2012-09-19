@@ -15,6 +15,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'card',
+            deferredRender: true,
             items: [{
                 xtype: 'editablesidebarbox',
                 itemId: 'readPublishingTime',
