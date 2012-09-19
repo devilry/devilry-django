@@ -12749,11 +12749,11 @@ select:focus {
 }
 /* line 2, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
-  color: #46a546;
+  color: #468847;
 }
 /* line 5, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
-  color: #dc5600;
+  color: #c09853;
 }
 /* line 22, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .countbox {
@@ -12801,11 +12801,11 @@ select:focus {
 }
 /* line 2, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .success, .x-boundlist .x-boundlist-item small.success {
-  color: #46a546;
+  color: #468847;
 }
 /* line 5, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .danger, .x-boundlist .x-boundlist-item small.danger {
-  color: #dc5600;
+  color: #c09853;
 }
 /* line 22, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .countbox {

@@ -2187,11 +2187,11 @@
 
 /* line 2, ../sass/_devilry_mixins.scss */
 .bootstrap .success, .bootstrap small.success {
-  color: #46a546;
+  color: #468847;
 }
 /* line 5, ../sass/_devilry_mixins.scss */
 .bootstrap .danger, .bootstrap small.danger {
-  color: #dc5600;
+  color: #c09853;
 }
 /* line 9, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap p, .bootstrap .alert, .bootstrap li {
