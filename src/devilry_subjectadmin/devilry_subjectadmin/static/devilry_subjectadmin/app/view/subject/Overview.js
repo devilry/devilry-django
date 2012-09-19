@@ -7,7 +7,6 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
     cls: 'devilry_subjectoverview',
     requires: [
         'Ext.layout.container.Column',
-        'devilry_subjectadmin.view.ActionList',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.AdminsBox',
         'devilry_extjsextras.SingleActionBox',

@@ -11,8 +11,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     },
 
     views: [
-        'assignment.Overview',
-        'ActionList'
+        'assignment.Overview'
     ],
 
     requires: [
