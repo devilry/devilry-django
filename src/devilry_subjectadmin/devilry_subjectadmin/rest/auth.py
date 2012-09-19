@@ -31,7 +31,7 @@ def nodeadmin_required(user, nodeid):
     _admin_required(Node, user, _('Permission denied'),  nodeid)
 
 
-def _subjectadmin_required(user, subjectid):
+def subjectadmin_required(user, subjectid):
     """
     Raise :exc:`devilry_subjectadmin.rest.errors.PermissionDeniedError` unless
     the given ``user`` is admin on all of the given Subjects.
@@ -85,7 +85,7 @@ class IsSubjectAdmin(BaseIsAdmin):
     """
     def check_permission(self, user):
         subjectid = self.get_id()
-        _subjectadmin_required(user, subjectid)
+        subjectadmin_required(user, subjectid)
 
 
 class IsPeriodAdmin(BaseIsAdmin):

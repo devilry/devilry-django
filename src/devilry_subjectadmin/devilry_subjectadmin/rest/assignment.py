@@ -3,11 +3,10 @@ from django.db.models import Count
 from devilry.apps.core.models import Assignment
 from djangorestframework.permissions import IsAuthenticated
 
-from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import Candidate
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
 from .auth import IsAssignmentAdmin
+from .auth import periodadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
@@ -53,6 +52,9 @@ class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
     """
     permissions = (IsAuthenticated,)
     resource = AssignmentResource
+
+    def authenticate_postrequest(self, user, parentnode_id):
+        periodadmin_required(user, parentnode_id)
 
     def get_queryset(self):
         qry = super(ListOrCreateAssignmentRest, self).get_queryset()

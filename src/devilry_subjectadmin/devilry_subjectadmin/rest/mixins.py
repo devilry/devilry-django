@@ -483,11 +483,14 @@ class BaseNodeListModelMixin(ListModelMixin, GetParamFormMixin):
 
 
 class BaseNodeCreateModelMixin(CreateModelMixin):
+    def authenticate_postrequest(self, user, parentnode_id):
+        raise NotImplementedError()
+
     def _require_nodeadmin(self, user):
         if not 'parentnode' in self.CONTENT:
             raise PermissionDeniedError('parentnode is a required parameter.')
         parentnode = self.CONTENT['parentnode']
-        nodeadmin_required(user, parentnode.id)
+        self.authenticate_postrequest(user, parentnode.id)
 
     def post(self, request):
         """

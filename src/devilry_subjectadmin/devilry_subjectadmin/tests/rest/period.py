@@ -11,7 +11,7 @@ class TestRestListOrCreatePeriodRest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
-                            subjects=['duck2000'],
+                            subjects=['duck2000:admin(subadmin)'],
                             periods=['one:admin(adminone)',
                                      'two',
                                      'three:admin(adminone)'])
@@ -53,7 +53,7 @@ class TestRestListOrCreatePeriodRest(TestCase):
         return self.client.rest_post(self.url, data)
 
     def test_create(self):
-        content, response = self._createas('uniadmin',
+        content, response = self._createas('subadmin',
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],

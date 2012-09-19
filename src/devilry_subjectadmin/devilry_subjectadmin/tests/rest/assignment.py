@@ -11,7 +11,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck2000'],
-                            periods=['someperiod:begins(-2):ends(6)'],
+                            periods=['someperiod:begins(-2):ends(6):admin(periodadm)'],
                             assignments=['first:admin(firstadmin)',
                                          'second:admin(secondadmin,firstadmin)',
                                          'third'])
@@ -58,7 +58,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         return self.client.rest_post(self.url, data)
 
     def test_create(self):
-        content, response = self._createas('uniadmin',
+        content, response = self._createas('periodadm',
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
