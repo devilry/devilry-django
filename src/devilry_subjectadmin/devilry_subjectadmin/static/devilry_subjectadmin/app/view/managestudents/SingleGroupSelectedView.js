@@ -52,12 +52,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                xtype: 'alertmessage',
-                anchor: '100%',
-                cls: 'top_infobox',
-                type: 'info',
-                message: [this.multiselectHowto, this.multiselectWhy].join(' ')
-            }, {
+                //xtype: 'alertmessage',
+                //anchor: '100%',
+                //cls: 'top_infobox',
+                //type: 'info',
+                //message: [this.multiselectHowto, this.multiselectWhy].join(' ')
+            //}, {
                 xtype: 'container',
                 anchor: '100%',
                 layout: 'column',

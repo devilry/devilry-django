@@ -42,7 +42,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     xtype: 'alertmessage',
                     cls: 'top_infobox',
                     type: 'info',
-                    message: [this.topMessage, this.multiselectHowto].join(' ')
+                    //message: [this.topMessage, this.multiselectHowto].join(' ')
+                    message: this.topMessage
                 }, {
                     xtype: 'manageexaminersonmultiple',
                     period_id: this.period_id
