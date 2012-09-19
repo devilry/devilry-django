@@ -2,6 +2,11 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
     extend: 'Ext.container.Container',
     alias: 'widget.containerwithedittitle',
 
+    /**
+     * @cfg {String} [cls="containerwithedittitle"]
+     * Defaults to ``containerwithedittitle``.
+     */
+    cls: 'containerwithedittitle',
 
     /**
      * @cfg {String} title
@@ -16,7 +21,7 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
      * @cfg {String} [titleCls='editablesidebarbox_title bootstrap']
      * The css class of the title box.
      */
-    titleCls: 'editablesidebarbox_title bootstrap',
+    titleCls: 'titlebox bootstrap',
 
     /**
      * @cfg {String} buttontext (optional)

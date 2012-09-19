@@ -31,6 +31,12 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     frame: false,
 
     /**
+     * @cfg {String} [cls="markupmoreinfobox"]
+     * Defaults to ``markupmoreinfobox bootstrap``.
+     */
+    cls: 'markupmoreinfobox bootstrap',
+
+    /**
      * @cfg {String} [lesstext="Less info"]
      * The text to show on the Less info button. The default text is translated.
      */
