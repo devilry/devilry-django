@@ -4,7 +4,7 @@
  * data. This extra attribute, inserts a button in the markup that toggles
  * the visibility of any element in the component with the ``.more`` css class.
  *
- * Example:
+ * ## Example:
  *      {
  *          xtype: 'markupmoreinfobox',
  *          tpl: [
@@ -14,7 +14,15 @@
  *          data: {}
  *      }
  *
- * Note that we use {MORE_ATTRS}, which simply inserts ``class="more" style="display: none;"``.
+ * **Note**: we use {MORE_ATTRS}, which simply inserts ``class="more" style="display: none;"``.
+ *
+ * ## Special template attributes
+ *
+ * - ``MORE_BUTTON``: The more button (an A-tag).
+ * - ``MORE_ATTRS``: The html attributes required on a container for the
+ *   more/less buttons show/hide the container. The value is:
+ *   ``class="more" style="display: none;"``. If you set the
+ *   ``moreCls`` config, that/those classes are added to ``class``.
  */
 Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     extend: 'Ext.Component',
@@ -33,6 +41,12 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
      * The text to show on the More info button. The default text is translated.
      */
     moretext: gettext('More info') + ' ...',
+
+    /**
+     * @cfg {String} [moreCls='']
+     * Added to the ``class`` attribute of the ``MORE_ATTRS`` template variable.
+     */
+    moreCls: '',
 
     initComponent: function() {
         this.morebutton = [
@@ -100,7 +114,8 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
 
     _setTplAttrs: function(data) {
         data.MORE_BUTTON = this.morebutton;
-        data.MORE_ATTRS = 'class="more" style="display: none;"'
+        data.MORE_ATTRS = Ext.String.format('class="more {0}" style="display: none;"', this.moreCls);
+        data.MORE_STYLE = 'style="display: none;"'
     },
 
     update: function(data) {
