@@ -6,6 +6,8 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
     layout: 'anchor',
     title: gettext('Loading') + ' ...',
     bodyPadding: 10,
+    closable: true,
+    closeAction: 'hide',
     items: [{
         xtype: 'box',
         itemId: 'progress',

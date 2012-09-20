@@ -130,7 +130,20 @@ Ext.application({
              * Fired when the sorter for the Groups list is changed.
              * @param {String} [sorter]
              */
-            'managestudentsGroupSorterChanged'
+            'managestudentsGroupSorterChanged',
+
+
+            /**
+             * @event
+             * Forwarded from the Router, primarily to make it possible for controllers to attach to route events before the router object is created.
+             */
+            'beforeroute',
+
+            /**
+             * @event
+             * Forwarded from the Router, primarily to make it possible for controllers to attach to route events before the router object is created.
+             */
+            'afterroute'
         );
         this.callParent(arguments);
     },
@@ -203,7 +216,8 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this, {
             listeners: {
                 scope: this,
-                beforeroute: this._beforeRoute
+                beforeroute: this._beforeRoute,
+                afterroute: this._afterRoute
             }
         });
         this.route.add("", 'dashboard');
@@ -231,6 +245,10 @@ Ext.application({
 
     _beforeRoute: function(route, routeInfo) {
         this.getAlertmessagelist().removeAll();
+        this.fireEvent('beforeroute', route, routeInfo);
+    },
+    _afterRoute: function(route, routeInfo) {
+        this.fireEvent('afterroute', route, routeInfo);
     },
     
     routeNotFound: function(routeInfo) {

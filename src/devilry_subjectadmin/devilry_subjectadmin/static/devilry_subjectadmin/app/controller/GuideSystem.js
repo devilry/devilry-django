@@ -28,13 +28,22 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
 
     init: function() {
         this.pointer = Ext.widget('guidesystem_pointer', {
-            hidden: true
+            hidden: true,
+        });
+        this.application.addListener({
+            scope: this,
+            beforeroute: this._onBeforeRoute
         });
         this.control({
             'viewport guidesystemview': {
-                render: this._onRender
+                render: this._onRender,
+                close: this._onClose
             }
         });
+    },
+
+    _onClose: function() {
+        this.getBody().removeAll();
     },
 
     _onRender: function() {
@@ -42,6 +51,10 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
             xtype: 'guide-createnewassignment',
             guideSystem: this
         });
+    },
+
+    _onBeforeRoute: function() {
+        this.pointer.stopPointAt();
     },
 
     setTitle: function(title) {
@@ -56,8 +69,6 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     pointAt: function(element) {
-        this.pointer.show();
-        var offset = this.pointer.getHeight() / 2;
-        this.pointer.alignTo(element, 'r', [0, -offset]);
+        this.pointer.pointAt(element);
     }
 });

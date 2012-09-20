@@ -32,13 +32,26 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
         this.guideSystem.setTitle(gettext('Create new assignment'));
     },
 
+    _isActive: function() {
+        var view = this.getGuideView();
+        return view && view.isVisible();
+    },
+
     _onDashboardRender: function() {
+        console.log('dash0');
+        if(!this._isActive()) {
+            return;
+        }
         console.log('dash');
         this.guideSystem.setProgress(1, 3);
         this.getGuideView().getLayout().setActiveItem('dashboard');
     },
 
     _onPeriodRender: function() {
+        console.log('period0');
+        if(!this._isActive()) {
+            return;
+        }
         console.log('period');
         this.guideSystem.setProgress(2, 3);
         this.getGuideView().getLayout().setActiveItem('period');
