@@ -13156,6 +13156,175 @@ You only need something like this extjs code to make it work:
   font-size: 13px !important;
 }
 
+/* line 248, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-helpsidebar {
+  border-color: #aed48e;
+}
+
+/* line 253, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar {
+  font-size: 13px;
+  border-color: #aed48e;
+  border-width: 1px;
+  border-style: solid;
+  background-image: none;
+  background-color: #aed48e;
+  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -webkit-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -o-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  box-shadow: #c9e2b3 0 1px 0px 0 inset;
+}
+
+/* line 338, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-text-helpsidebar {
+  color: #2c552d;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 17px;
+}
+
+/* line 348, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-body-helpsidebar {
+  background: #dff0d8;
+  border-color: #aed48e;
+  color: #468847;
+  border-width: 1;
+  border-style: solid;
+}
+
+/* line 363, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-window-header-helpsidebar,
+.x-panel-collapsed .x-panel-header-helpsidebar {
+  border-color: #aed48e;
+}
+
+/* line 368, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-vertical {
+  border-color: #aed48e;
+}
+
+/* line 375, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-left,
+.x-panel-header-helpsidebar-right {
+  background-image: none;
+  background-color: #aed48e;
+}
+
+/* line 416, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-helpsidebar-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+/* line 420, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-helpsidebar-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
+  -ms-border-bottom-left-radius: null;
+  -khtml-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+}
+/* line 424, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-helpsidebar-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
+  -ms-border-top-left-radius: null;
+  -khtml-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+}
+/* line 428, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-helpsidebar-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
+  -ms-border-top-right-radius: null;
+  -khtml-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
+  -ms-border-bottom-right-radius: null;
+  -khtml-border-bottom-right-radius: null;
+  border-bottom-right-radius: null;
+}
+
+/* line 434, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-top {
+  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -webkit-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -o-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  box-shadow: #c9e2b3 0 1px 0px 0 inset;
+}
+
+/* line 438, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-right {
+  -moz-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
+  -webkit-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
+  -o-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
+  box-shadow: #c9e2b3 -1px 0 0px 0 inset;
+}
+
+/* line 442, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-bottom {
+  -moz-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
+  -webkit-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
+  -o-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
+  box-shadow: #c9e2b3 0 -1px 0px 0 inset;
+}
+
+/* line 446, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-left {
+  -moz-box-shadow: #c9e2b3 1px 0 0px 0 inset;
+  -webkit-box-shadow: #c9e2b3 1px 0 0px 0 inset;
+  -o-box-shadow: #c9e2b3 1px 0 0px 0 inset;
+  box-shadow: #c9e2b3 1px 0 0px 0 inset;
+}
+
+/* line 481, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-right-tc,
+.x-panel-header-helpsidebar-right-mc,
+.x-panel-header-helpsidebar-right-bc {
+  background-position: right 0;
+}
+
+/* line 487, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-header-helpsidebar-bottom-tc,
+.x-panel-header-helpsidebar-bottom-mc,
+.x-panel-header-helpsidebar-bottom-bc {
+  background-position: 0 bottom;
+}
+
+/* line 31, ../sass/_help-panel-ui.scss */
+.x-panel-helpsidebar .guidesystem_progress {
+  font-weight: bold;
+  background-color: #d6e9c6;
+  padding: 3px 0 3px 8px;
+}
+
 /* line 1, ../sass/pygments/_tango.scss */
 .codehilite .hll {
   background-color: #ffffcc;
