@@ -32,5 +32,36 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
         ],
         data: {
         }
+    }, {
+        itemId: 'createnewassignment1',
+        tpl: [
+            '<p>',
+                gettext('Fill out the visible fields in the form.'),
+            '</p>',
+
+            '<h3>', gettext('Exam?'), '</h3>',
+            '<p>',
+                gettext('Click Advanced, and choose Anonymous.'),
+            '</p>',
+
+            '<h3>', gettext('Paper deliveries?'), '</h3>',
+            '<p>',
+                gettext('If your students hand in deliveries on paper, choose Not using Devilry.'),
+            '</p>'
+        ],
+        data: {
+        }
+    }, {
+        itemId: 'createnewassignment2',
+        tpl: [
+            '<p>',
+                gettext('Keep the defaults, or make sure you understand the consequence of unchecking the checkboxes.'),
+            '</p>',
+            '<p>',
+                gettext('This guide closes when you click Create assignment.'),
+            '</p>'
+        ],
+        data: {
+        }
     }]
 });

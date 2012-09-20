@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
         'guides.CreateNewAssignment'
     ],
 
-    steps: 3,
+    steps: 4,
     title: gettext('Create new assignment'),
 
     refs: [{
@@ -25,20 +25,39 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
             },
             'viewport periodoverview #createNewAssignmentBox': {
                 render: this.ifActiveInterceptor(this._onPeriodRender)
+            },
+            'viewport createnewassignment #pageOne': {
+                render: this.ifActiveInterceptor(this._onCreateNewAssignmentPageOne),
+                show: this.ifActiveInterceptor(this._onCreateNewAssignmentPageOne)
+            },
+            'viewport createnewassignment #pageTwo': {
+                show: this.ifActiveInterceptor(this._onCreateNewAssignmentPageTwo)
+            },
+            'viewport createnewassignment #createButton': {
+                click: this._onCreateAssignmentClick
             }
         });
     },
 
     onFirstStep: function() {
-        console.log('onFirstStep');
         this.getGuideView().getLayout().setActiveItem('dashboard');
         this.setStep('dashboard', 1);
     },
 
     _onPeriodRender: function() {
-        console.log('_onPeriodRender');
         this.setStep('period', 2);
         var element = this.getCreateNewAssignmentBox().getEl().down('a');
         this.guideSystem.pointAt(element);
-    }
+    },
+
+    _onCreateNewAssignmentPageOne: function() {
+        this.setStep('createnewassignment1', 3);
+    },
+    _onCreateNewAssignmentPageTwo: function() {
+        this.setStep('createnewassignment2', 4);
+    },
+
+    _onCreateAssignmentClick: function() {
+        this.guideSystem.endGuide();
+    },
 });

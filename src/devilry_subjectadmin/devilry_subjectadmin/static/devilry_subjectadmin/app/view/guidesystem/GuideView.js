@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
     closable: true,
     closeAction: 'hide',
     layout: 'card',
+    autoScroll: true,
     items: [{
         xtype: 'container',
         itemId: 'main',
