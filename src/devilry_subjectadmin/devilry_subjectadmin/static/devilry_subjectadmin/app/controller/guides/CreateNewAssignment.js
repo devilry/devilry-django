@@ -1,9 +1,12 @@
 Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
-    extend: 'Ext.app.Controller',
+    extend: 'devilry_subjectadmin.controller.guides.Base',
 
     views: [
         'guides.CreateNewAssignment'
     ],
+
+    steps: 3,
+    title: gettext('Create new assignment'),
 
     refs: [{
         ref: 'guideView',
@@ -13,48 +16,28 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
         selector: 'viewport periodoverview #createNewAssignmentBox'
     }],
 
+
     init: function() {
+        this.callParent(arguments);
         this.control({
-            'viewport guide-createnewassignment': {
-                render: this._onRender
-            },
-            'viewport dashboard': {
-                render: this._onDashboardRender
+            'viewport dashboard allactivewhereisadminlist': {
+                render: Ext.Function.createInterceptor(this.onFirstStep, this.isActive)
             },
             'viewport periodoverview #createNewAssignmentBox': {
-                render: this._onPeriodRender
+                render: Ext.Function.createInterceptor(this._onPeriodRender, this.isActive)
             }
         });
     },
 
-    _onRender: function() {
-        this.guideSystem = this.getGuideView().guideSystem
-        this.guideSystem.setTitle(gettext('Create new assignment'));
-    },
-
-    _isActive: function() {
-        var view = this.getGuideView();
-        return view && view.isVisible();
-    },
-
-    _onDashboardRender: function() {
-        console.log('dash0');
-        if(!this._isActive()) {
-            return;
-        }
-        console.log('dash');
-        this.guideSystem.setProgress(1, 3);
+    onFirstStep: function() {
+        console.log('onFirstStep');
         this.getGuideView().getLayout().setActiveItem('dashboard');
+        this.setStep('dashboard', 1);
     },
 
     _onPeriodRender: function() {
-        console.log('period0');
-        if(!this._isActive()) {
-            return;
-        }
-        console.log('period');
-        this.guideSystem.setProgress(2, 3);
-        this.getGuideView().getLayout().setActiveItem('period');
+        console.log('_onPeriodRender');
+        this.setStep('period', 2);
         var element = this.getCreateNewAssignmentBox().getEl().down('a');
         this.guideSystem.pointAt(element);
     }

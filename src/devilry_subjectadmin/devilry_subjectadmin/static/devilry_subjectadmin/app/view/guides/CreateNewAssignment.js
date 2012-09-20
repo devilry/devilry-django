@@ -11,10 +11,13 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
         xtype: 'box'
     },
     items: [{
+        itemId: 'loading',
+        html: ['<p>', gettext('Loading') + ' ...', '</p>'].join('')
+    }, {
         itemId: 'dashboard',
         tpl: [
             '<p>',
-                gettext('Select an active {period_term}.'),
+                gettext('Select an active {period_term} from the list at the top of the left side of this page.'),
             '</p>'
         ],
         data: {

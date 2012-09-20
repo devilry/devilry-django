@@ -184,7 +184,8 @@ Ext.application({
             }, {
                 xtype: 'guidesystemview',
                 region: 'east',
-                width: 300
+                hidden: true,
+                width: 220
             }]
         });
     },

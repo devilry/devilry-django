@@ -2,18 +2,14 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'guidesystem.GuideView'
+        'guidesystem.GuideView',
+        'guidesystem.GuideList'
     ],
 
     requires: [
         'devilry_subjectadmin.view.guides.CreateNewAssignment',
         'devilry_subjectadmin.view.guidesystem.Pointer'
     ],
-
-    guides: {
-        'guide-createnewassignment': {
-        }
-    },
 
     refs: [{
         ref: 'guideView',
@@ -38,6 +34,9 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
             'viewport guidesystemview': {
                 render: this._onRender,
                 close: this._onClose
+            },
+            'viewport guidesystemlist': {
+                guideclick: this._onGuideClick
             }
         });
     },
@@ -47,8 +46,19 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     _onRender: function() {
+        //this.showGuide('guide-createnewassignment');
+    },
+
+    _onGuideClick: function(list, xtype) {
+        console.log('show', xtype);
+        this.showGuide(xtype);
+    },
+
+    showGuide: function(xtype) {
+        this.getGuideView().show();
+        this.getBody().removeAll();
         this.getBody().add({
-            xtype: 'guide-createnewassignment',
+            xtype: xtype,
             guideSystem: this
         });
     },
@@ -62,10 +72,28 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     setProgress: function(current, total) {
+        this._setNotLoading();
         this.getProgress().update({
             current: current,
             total: total
         });
+    },
+
+    _isVisible: function() {
+        var view = this.getGuideView();
+        var isVisible = !Ext.isEmpty(view) && view.isVisible();
+        return isVisible;
+    },
+
+    setLoading: function() {
+        if(this._isVisible()) {
+            this.getGuideView().setLoading();
+        }
+    },
+    _setNotLoading: function() {
+        if(this._isVisible()) {
+            this.getGuideView().setLoading(false);
+        }
     },
 
     pointAt: function(element) {

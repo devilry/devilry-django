@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
 
     items: [{
         xtype: 'container',
-        columnWidth: .65,
+        columnWidth: 1,
         items: [{
             xtype: 'allactivewhereisadminlist'
         }, {
@@ -37,12 +37,23 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         }]
     }, {
         xtype: 'container',
-        columnWidth: .35,
-        margin: '0 0 0 40',
+        width: 250,
+        margin: '6 0 0 40',
         border: false,
+        layout: 'anchor',
         items: [{
             xtype: 'box',
-            html: '&nbsp;'
+            cls: 'bootstrap',
+            tpl: '<h3>{heading}</h3>',
+            data: {
+                heading: gettext('Interractive guides')
+            }
+        }, {
+            xtype: 'guidesystemlist',
+            guides: [{
+                xtype: 'guide-createnewassignment',
+                title: gettext('Create new assignment')
+            }]
         }]
     }]
 });
