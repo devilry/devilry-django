@@ -94,7 +94,7 @@ Ext.define('devilry_extjsextras.Router', {
     },
 
     _onHistoryReady: function(history) {
-        this.mon(Ext.util.History, 'change', this._onHistoryChange, this);
+        this.resume();
         var token = history.getToken();
         if(token == null) {
             token = '';
@@ -104,6 +104,21 @@ Ext.define('devilry_extjsextras.Router', {
 
     _onHistoryChange: function(token) {
         this._trigger(token);
+    },
+
+    suspend: function() {
+        this.mun(Ext.util.History, 'change', this._onHistoryChange, this);
+    },
+
+    resume: function() {
+        this.mon(Ext.util.History, 'change', this._onHistoryChange, this);
+    },
+    startOrResume: function() {
+        if(this.started) {
+            this.resume();
+        } else {
+            this.start();
+        }
     },
 
     /**
