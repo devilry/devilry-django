@@ -2,13 +2,14 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.guidesystemview',
     cls: 'devilry_subjectadmin_guidesystemview bootstrap',
+    ui: 'helpsidebar',
 
     requires: [
         'devilry_extjsextras.AlertMessage'
     ],
 
     title: gettext('Loading') + ' ...',
-    bodyPadding: 10,
+    bodyPadding: 0,
     closable: true,
     closeAction: 'hide',
     layout: 'card',
@@ -20,19 +21,17 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
             xtype: 'box',
             itemId: 'progress',
             cls: 'guidesystem_progress',
-            tpl: [
-                '<p>',
-                gettext('Step {current} of {total}'),
-                '</p>'
-            ]
+            tpl: gettext('Step {current} of {total}'),
         }, {
             xtype: 'container',
+            padding: 10,
             layout: 'fit',
             itemId: 'body'
         }]
     }, {
         xtype: 'alertmessage',
         type: 'error',
+        margin: 10,
         itemId: 'invalidPageMessage',
         title: gettext('Invalid guide step'),
         message: gettext('The current guide does not recognize this page. Please use your browser back button to return to the previous page, and read the instructions one more time.')

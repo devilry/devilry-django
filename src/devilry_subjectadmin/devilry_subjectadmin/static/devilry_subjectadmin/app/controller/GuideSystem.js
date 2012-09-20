@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     _onRender: function() {
-        //this.showGuide('guide-createnewassignment');
+        this.showGuide('guide-createnewassignment');
     },
 
     _onGuideClick: function(list, xtype) {
