@@ -1,8 +1,8 @@
-from logging import getLogger
 from devilry.apps.core.models import Subject
 from djangorestframework.permissions import IsAuthenticated
 
 from .auth import IsSubjectAdmin
+from .auth import nodeadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
@@ -23,6 +23,9 @@ class ListOrCreateSubjectRest(BaseNodeListOrCreateView):
     """
     permissions = (IsAuthenticated,)
     resource = SubjectResource
+
+    def authenticate_postrequest(self, user, parentnode_id):
+        nodeadmin_required(user, parentnode_id)
 
 
 class InstanceSubjectRest(BaseNodeInstanceModelView):

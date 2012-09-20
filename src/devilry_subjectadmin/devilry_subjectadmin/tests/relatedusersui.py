@@ -121,7 +121,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.period = self.testhelper.sub_p1
 
     def _browseToManageStudentsAs(self, username, period_id):
-        path = '/period/{0}/@@related-students'.format(period_id)
+        path = '/period/{0}/@@relatedstudents'.format(period_id)
         self.loginTo(username, path)
         self.waitForCssSelector('.devilry_subjectadmin_relatedstudents')
 
@@ -157,10 +157,9 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
 
     def test_invalid_period_id(self):
         self._browseToManageStudentsAs('p1admin', 1000000)
-        # Should get one error for Period, and one for relatedusers
-        self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector('.devilry_extjsextras_alertmessage')) == 2)
+        self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector('.devilry_extjsextras_alertmessage')) == 1)
         for message in self.find_elements('.devilry_extjsextras_alertmessage'):
-            self.assertIn('403', message.text.strip())
+            self.assertIn('Permission denied', message.text.strip())
 
     def test_add_student(self):
         self._browseToManageStudentsAs('p1admin', self.period.id)

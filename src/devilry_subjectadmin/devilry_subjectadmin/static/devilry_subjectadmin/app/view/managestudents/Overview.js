@@ -6,6 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     alias: 'widget.managestudentsoverview',
     cls: 'devilry_subjectadmin_managestudentsoverview',
     requires: [
+        'devilry_subjectadmin.view.managestudents.HelpPanel',
         'devilry_subjectadmin.view.managestudents.ListOfGroups'
     ],
 
@@ -51,6 +52,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 border: false,
                 layout: 'fit',
                 itemId: 'body'
+            }, {
+                xtype: 'managestudents_help',
+                autoScroll: true,
+                title: gettext('Help'),
+                bodyPadding: 10,
+                region: 'east',
+                width: 400,
+                collapsible: true,   // make collapsible
+                collapsed: true
             }],
 
             bbar: [{

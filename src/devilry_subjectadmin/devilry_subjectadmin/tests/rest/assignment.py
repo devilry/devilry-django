@@ -11,7 +11,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
                             subjects=['duck2000'],
-                            periods=['someperiod:begins(-2):ends(6)'],
+                            periods=['someperiod:begins(-2):ends(6):admin(periodadm)'],
                             assignments=['first:admin(firstadmin)',
                                          'second:admin(secondadmin,firstadmin)',
                                          'third'])
@@ -58,7 +58,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         return self.client.rest_post(self.url, data)
 
     def test_create(self):
-        content, response = self._createas('uniadmin',
+        content, response = self._createas('periodadm',
                                            {'short_name': 'test',
                                             'long_name': 'Test',
                                             'admins': [],
@@ -166,7 +166,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['can_delete'], False)
         self.assertEquals(content['number_of_groups'], 2)
         self.assertEquals(content['number_of_deliveries'], 3)
-        self.assertEquals(content['number_of_candiates'], 5)
+        self.assertEquals(content['number_of_candidates'], 5)
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
@@ -175,7 +175,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candiates']))
+                               'number_of_candidates']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -251,7 +251,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candiates']))
+                               'number_of_candidates']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 

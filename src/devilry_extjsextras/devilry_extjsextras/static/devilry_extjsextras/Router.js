@@ -22,6 +22,7 @@ Ext.define('devilry_extjsextras.Router', {
              * @event
              * Fired before a successful route.
              * @param route The Route object.
+             * @param routeInfo The route info object (the same that is sent to the handlers).
              */
             'beforeroute',
 
@@ -29,6 +30,7 @@ Ext.define('devilry_extjsextras.Router', {
              * @event
              * Fired after a successful route.
              * @param route The Route object.
+             * @param routeInfo The route info object (the same that is sent to the handlers).
              */
             'afterroute'
         );
@@ -74,11 +76,11 @@ Ext.define('devilry_extjsextras.Router', {
             var match = token.match(route.regex);
             if(match) {
                 var args = match.slice(1);
-                this.fireEvent('beforeroute', this);
+                this.fireEvent('beforeroute', this, routeInfo);
                 Ext.bind(this.handler[route.action], this.handler, args, true)(Ext.apply(routeInfo, {
                     action: route.action
                 }));
-                this.fireEvent('afterroute', this);
+                this.fireEvent('afterroute', this, routeInfo);
                 return;
             }
         }
@@ -92,7 +94,7 @@ Ext.define('devilry_extjsextras.Router', {
     },
 
     _onHistoryReady: function(history) {
-        this.mon(Ext.util.History, 'change', this._onHistoryChange, this);
+        this.resume();
         var token = history.getToken();
         if(token == null) {
             token = '';
@@ -102,6 +104,21 @@ Ext.define('devilry_extjsextras.Router', {
 
     _onHistoryChange: function(token) {
         this._trigger(token);
+    },
+
+    suspend: function() {
+        this.mun(Ext.util.History, 'change', this._onHistoryChange, this);
+    },
+
+    resume: function() {
+        this.mon(Ext.util.History, 'change', this._onHistoryChange, this);
+    },
+    startOrResume: function() {
+        if(this.started) {
+            this.resume();
+        } else {
+            this.start();
+        }
     },
 
     /**

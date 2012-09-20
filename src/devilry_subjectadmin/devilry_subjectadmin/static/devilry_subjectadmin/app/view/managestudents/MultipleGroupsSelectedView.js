@@ -13,19 +13,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     ],
 
     /**
-     * @cfg {string} topMessage (required)
-     */
-
-    /**
-     * @cfg {string} multiselectHowto (required)
-     */
-
-    /**
      * @cfg {int} [period_id]
      */
 
+    
+
     initComponent: function() {
         var defaultmargin = '15 0 0 0';
+        var numSelectedMessage = interpolate(gettext('%(numselected)s/%(total)s %(groups_term)s selected'), {
+            numselected: this.numSelected,
+            total: this.totalGroups,
+            groups_term: gettext('groups')
+        }, true);
 
         Ext.apply(this, {
             layout: 'border',
@@ -39,11 +38,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 itemId: 'scrollableBodyContainer',
                 autoScroll: true,
                 items: [{
-                    xtype: 'alertmessage',
-                    cls: 'top_infobox',
-                    type: 'info',
-                    message: [this.topMessage, this.multiselectHowto].join(' ')
-                }, {
                     xtype: 'manageexaminersonmultiple',
                     period_id: this.period_id
                 }, {
@@ -59,11 +53,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 }]
             }, {
                 xtype: 'selectedgroupssummarygrid',
+                scroll: 'vertical',
                 region: 'south',
                 height: 300,
                 minHeight: 100, // Prevent it from beeing completely hidden (this should show at least most of the first selected item)
                 //collapsible: true,
-                title: gettext('Selected groups (click group to deselect it)'),
+                title: [
+                    numSelectedMessage,
+                    gettext('(click group to deselect it)')
+                ].join(' '),
                 frame: false,
                 border: '1 0 0 0',
 

@@ -219,10 +219,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.setBody({
             xtype: 'multiplegroupsview',
             multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            topMessage: this._createTopMessage(),
-            period_id: manageStudentsController.assignmentRecord.get('parentnode')
+            numSelected: this.groupRecords.length,
+            totalGroups: this.manageStudentsController.getTotalGroupsCount(),
+            period_id: manageStudentsController.assignmentRecord.get('parentnode'),
+            
         });
-
         this._populateSelectedGroupsStore();
     },
 
@@ -239,14 +240,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     _onRender: function() {
         //console.log('render MultipleGroupsSelectedView');
-    },
-
-    _createTopMessage: function() {
-        return interpolate(gettext('%(numselected)s/%(total)s %(groups_term)s selected.'), {
-            numselected: this.groupRecords.length,
-            total: this.manageStudentsController.getTotalGroupsCount(),
-            groups_term: gettext('groups')
-        }, true);
     },
 
     _scrollIntroView: function(widget) {

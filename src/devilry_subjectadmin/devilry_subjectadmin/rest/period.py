@@ -2,6 +2,7 @@ from django.db.models import Count
 from djangorestframework.permissions import IsAuthenticated
 
 from .auth import IsPeriodAdmin
+from .auth import subjectadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
@@ -39,6 +40,9 @@ class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
     """
     permissions = (IsAuthenticated,)
     resource = PeriodResource
+
+    def authenticate_postrequest(self, user, parentnode_id):
+        subjectadmin_required(user, parentnode_id)
 
 
 class InstancePeriodRest(BaseNodeInstanceModelView):

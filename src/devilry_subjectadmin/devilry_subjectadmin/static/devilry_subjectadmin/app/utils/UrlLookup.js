@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         return Ext.String.format('#/subject/{0}/', subject_id);
     },
     createNewPeriod: function(period_id) {
-        return Ext.String.format('#/subject/{0}/@@create-new-period/', period_id);
+        return Ext.String.format('#/subject/{0}/@@create-new-period', period_id);
     },
 
     periodOverview: function(period_id) {

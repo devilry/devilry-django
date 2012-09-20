@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
 
         '<h3>', gettext('Accociate examiners with {students_term} using tags'), '</h3>',
         '<p>',
-            gettext('If you tag your {students_term} and examiners with the same tags, you can automatically assignment examiners to {students_term} when creating a new assignment. E.g.: If you tag two examiners and 20 {students_term} with <em>group1</em>, those two examiners will be set up to correct those 20 {students_term} when you create a new assignment.'),
+            gettext('If you tag your {students_term} and examiners with the same tags, you can automatically assign examiners to {students_term} when creating a new assignment. E.g.: If you tag two examiners and 20 {students_term} with <em>group1</em>, those two examiners will be set up to correct those 20 {students_term} when you create a new assignment.'),
         '</p>'
     ],
 
@@ -44,32 +44,20 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                xtype: 'container',
-                layout: 'column',
-                items: [{
-                    xtype: 'box',
-                    columnWidth: 1,
-                    cls: 'bootstrap',
-                    anchor: '100%',
-                    html: [
-                        '<h1 style="margin-top: 0; padding-top: 0;">',
-                            gettext('Manage related examiners'),
-                        '</h1>',
-                        '<p><small class="muted">',
-                            interpolate(gettext('Manage the examiners available on this %(period_term)s.'), {
-                                period_term: gettext('period')
-                            }, true),
-                        '</small></p>'
-                    ].join('')
-                }, {
-                    width: 200,
-                    xtype: 'primarybutton',
-                    itemId: 'addButton',
-                    margin: '15 0 0 0',
-                    tabIndex: 1,
-                    cls: 'add_related_user_button add_related_examiner_button',
-                    text: gettext('Add examiner')
-                }]
+                xtype: 'box',
+                columnWidth: 1,
+                cls: 'bootstrap',
+                anchor: '100%',
+                html: [
+                    '<h1 style="margin-top: 0; padding-top: 0;">',
+                        gettext('Manage related examiners'),
+                    '</h1>',
+                    '<p><small class="muted">',
+                        interpolate(gettext('Manage the examiners available on this %(period_term)s.'), {
+                            period_term: gettext('period')
+                        }, true),
+                    '</small></p>'
+                ].join('')
             }, {
                 xtype: 'panel',
                 border: false,
@@ -110,14 +98,20 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                                 cls: 'add_tags_button',
                                 itemId: 'addTagsButton'
                             }]
+                        }, {
+                            xtype: 'primarybutton',
+                            itemId: 'addButton',
+                            tabIndex: 1,
+                            cls: 'add_related_user_button add_related_examiner_button',
+                            text: gettext('Add examiner')
                         }]
                     }]
                 }, {
                     xtype: 'container',
                     layout: 'anchor',
-                    width: 460,
-                    region: 'west',
-                    padding: '0 30 0 0',
+                    width: 390,
+                    region: 'east',
+                    padding: '0 10 0 30',
                     items: [{
                         xtype: 'panel',
                         border: false,

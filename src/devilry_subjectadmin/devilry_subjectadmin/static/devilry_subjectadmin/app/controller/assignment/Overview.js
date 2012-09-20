@@ -11,8 +11,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     },
 
     views: [
-        'assignment.Overview',
-        'ActionList'
+        'assignment.Overview'
+    ],
+
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup',
     ],
 
     models: [
@@ -40,6 +43,15 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     }, {
         ref: 'noGroupsMessage',
         selector: 'assignmentoverview #noGroupsMessage'
+    }, {
+        ref: 'adminsbox',
+        selector: 'assignmentoverview adminsbox'
+    }, {
+        ref: 'basenodehierlocation',
+        selector: 'assignmentoverview basenodehierlocation'
+    }, {
+        ref: 'linkList',
+        selector: 'assignmentoverview #linkList'
     }],
 
     init: function() {
@@ -76,13 +88,24 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
             heading: record.get('long_name')
         });
         this._setDangerousActionsLabels();
+        this._updateLinkList();
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
         if(this.assignmentRecord.get('number_of_groups') === 0) {
             this._handleNoGroups();
         }
+        this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
+        this.getBasenodehierlocation().setLocation(this.assignmentRecord);
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);
+    },
+
+    _updateLinkList: function() {
+        this.getLinkList().update({
+            managestudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
+            managedeadlines_url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
+            assignmentData: this.assignmentRecord.data
+        });
     },
 
     _setDangerousActionsLabels: function() {

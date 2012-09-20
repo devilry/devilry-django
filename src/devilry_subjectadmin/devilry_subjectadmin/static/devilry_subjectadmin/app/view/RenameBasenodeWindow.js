@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
         'devilry_extjsextras.AlertMessageList',
         'devilry_extjsextras.CancelButton',
         'devilry_extjsextras.form.Help',
-        'devilry_extjsextras.SaveButton'
+        'devilry_extjsextras.SaveButton',
+        'devilry_subjectadmin.utils.BaseNodeHelp'
     ],
     mixins: {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
@@ -64,7 +65,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                     }
                 }, {
                     xtype: 'formhelp',
-                    html: gettext("A short name with at most 20 letters. Can only contain lowercase english letters (a-z), numbers, underscore ('_') and hyphen ('-'). This is used the the regular name takes to much space."),
+                    html: devilry_subjectadmin.utils.BaseNodeHelp.getShortNameHelp(),
                     margin: '5 0 0 0'
                 }, {
                     name: "long_name",
@@ -75,7 +76,7 @@ Ext.define('devilry_subjectadmin.view.RenameBasenodeWindow', {
                     margin: '10 0 0 0'
                 }, {
                     xtype: 'formhelp',
-                    html: gettext("May contain any characters, including language-specific characters."),
+                    html: devilry_subjectadmin.utils.BaseNodeHelp.getLongNameHelp(),
                     margin: '5 0 0 0'
                 }],
                 buttons: ['->', {

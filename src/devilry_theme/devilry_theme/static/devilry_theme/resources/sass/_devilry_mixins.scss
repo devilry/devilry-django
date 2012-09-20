@@ -1,9 +1,9 @@
 @mixin inlineStyles() {
     .success, small.success {
-        color: $green;
+        color: $successText;
     }
     .danger, small.danger {
-        color: $orangeDark;
+        color: $warningText;
     }
 }
 

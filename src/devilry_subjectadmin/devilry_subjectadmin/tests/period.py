@@ -1,3 +1,4 @@
+from datetime import datetime
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Period
 
@@ -10,6 +11,9 @@ from .base import EditAdministratorsTestMixin
 class PeriodTestCommonMixin(object):
     def browseToPeriod(self, id):
         self.browseTo('/period/{id}/'.format(id=id))
+
+    def loginToPeriod(self, username, id):
+        self.loginTo(username, '/period/{id}/'.format(id=id))
 
 
 class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
@@ -70,8 +74,8 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
         self.waitForText('Delete duck9000.period1')
         self.waitForText('Rename duck9000.period1')
-        self.assertIn('Once you delete a period, there is no going back', self.selenium.page_source)
-        self.assertIn('Renaming a period should not done without a certain amount of consideration', self.selenium.page_source)
+        self.assertIn('Once you delete a ', self.selenium.page_source)
+        self.assertIn('should not done without a certain amount of consideration', self.selenium.page_source)
 
     def test_rename(self):
         self.login('period1admin')
@@ -131,3 +135,69 @@ class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommo
 
     def browseToTestBasenode(self):
         self.browseToPeriod(self.getBasenode().id)
+
+
+
+class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:admin(p1admin)'])
+        self.p1 = self.testhelper.sub_p1
+        self.p1.start_time = datetime(2005, 1, 1)
+        self.p1.end_time = datetime(2006, 1, 1)
+        self.p1.save()
+        self.loginToPeriod('p1admin', self.p1.id)
+
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editperiod_duration_widget .containerwithedittitle')
+
+    def _click_edit(self):
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editperiod_duration_widget .containerwithedittitle .edit_link')
+        button.click()
+
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editdurationpanel')
+        self.start_time_datefield = panel.find_element_by_css_selector('.start_time_field .devilry_extjsextras_datefield input')
+        self.start_time_timefield = panel.find_element_by_css_selector('.start_time_field .devilry_extjsextras_timefield input')
+        self.end_time_datefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_datefield input')
+        self.end_time_timefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_timefield input')
+        self.savebutton = panel.find_element_by_css_selector('.okbutton button')
+        self.cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
+        self.editpanel = panel
+
+    def _set_values(self, start_date, start_time, end_date, end_time):
+        self.start_time_datefield.clear()
+        self.start_time_timefield.clear()
+        self.end_time_datefield.clear()
+        self.end_time_timefield.clear()
+        self.start_time_datefield.send_keys(start_date)
+        self.start_time_timefield.send_keys(start_time)
+        self.end_time_datefield.send_keys(end_date)
+        self.end_time_timefield.send_keys(end_time)
+
+    def _get_durationdisplay(self):
+        return self.readOnlyPanel.find_element_by_css_selector('.durationdisplay').text.strip()
+
+    def test_render(self):
+        self.waitForDisplayed(self.readOnlyPanel)
+        self.assertEquals(self._get_durationdisplay(),
+                          '2005-01-01 00:00 - 2006-01-01 00:00')
+
+    def test_edit(self):
+        self._click_edit()
+        self._set_values(start_date='2000-12-24', start_time='12:00',
+                         end_date='2001-11-22', end_time='16:00')
+        self.savebutton.click()
+        self.waitForDisplayed(self.readOnlyPanel)
+        self.assertEquals(self._get_durationdisplay(),
+                          '2000-12-24 12:00 - 2001-11-22 16:00')
+        p1 = self.testhelper.reload_from_db(self.p1)
+        self.assertEquals(p1.start_time, datetime(2000, 12, 24, 12, 0))
+        self.assertEquals(p1.end_time, datetime(2001, 11, 22, 16, 0))
+
+    def test_errorhandling(self):
+        self._click_edit()
+        self._set_values(start_date='', start_time='12:00',
+                         end_date='2001-11-22', end_time='16:00')
+        self.savebutton.click()
+        self.waitFor(self.editpanel, lambda p: 'Start time: This field is required' in p.text)

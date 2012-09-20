@@ -8,6 +8,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     requires: [
         'Ext.Date',
+        'Ext.util.KeyNav',
         'devilry_extjsextras.NextButton',
         'devilry_extjsextras.form.ErrorUtils',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',

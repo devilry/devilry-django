@@ -3,11 +3,10 @@ from django.db.models import Count
 from devilry.apps.core.models import Assignment
 from djangorestframework.permissions import IsAuthenticated
 
-from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import Candidate
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
 from .auth import IsAssignmentAdmin
+from .auth import periodadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
@@ -44,7 +43,7 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb', 'number_of_groups',
                                           'number_of_deliveries',
-                                          'number_of_candiates')
+                                          'number_of_candidates')
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
@@ -53,6 +52,9 @@ class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
     """
     permissions = (IsAuthenticated,)
     resource = AssignmentResource
+
+    def authenticate_postrequest(self, user, parentnode_id):
+        periodadmin_required(user, parentnode_id)
 
     def get_queryset(self):
         qry = super(ListOrCreateAssignmentRest, self).get_queryset()
@@ -75,5 +77,5 @@ class InstanceAssignmentRest(BaseNodeInstanceModelView):
                                    'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
         qry = qry.annotate(number_of_groups=Count('assignmentgroups', distinct=True))
         qry = qry.annotate(number_of_deliveries=Count('assignmentgroups__deadlines__deliveries', distinct=True))
-        qry = qry.annotate(number_of_candiates=Count('assignmentgroups__candidates', distinct=True))
+        qry = qry.annotate(number_of_candidates=Count('assignmentgroups__candidates', distinct=True))
         return qry

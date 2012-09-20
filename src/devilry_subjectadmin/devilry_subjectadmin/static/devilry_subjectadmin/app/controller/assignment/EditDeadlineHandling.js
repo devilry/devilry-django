@@ -1,15 +1,15 @@
 /**
- * Controller for editing the anonymous attribute of an assignment.
+ * Controller for editing the deadline_handling attribute of an assignment.
  */
-Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
+Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
     extend: 'Ext.app.Controller',
     mixins: {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     },
 
     views: [
-        'assignment.EditAnonymousPanel',
-        'assignment.EditAnonymousWidget'
+        'assignment.EditDeadlineHandlingPanel',
+        'assignment.EditDeadlineHandlingWidget'
     ],
 
     controllers: [
@@ -20,27 +20,26 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     refs: [{
         ref: 'cardContainer',
-        selector: 'editanonymous-widget'
+        selector: 'editdeadline_handling-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editanonymous-widget #readAnonymous'
+        selector: 'editdeadline_handling-widget #readDeadlineHandling'
     }, {
         ref: 'readOnlyViewBody',
-        selector: 'editanonymous-widget #readAnonymous markupmoreinfobox'
-
+        selector: 'editdeadline_handling-widget #readDeadlineHandling markupmoreinfobox'
 
     }, {
-        ref: 'editAnonymous',
-        selector: 'editanonymous-widget editanonymouspanel'
+        ref: 'editDeadlineHandling',
+        selector: 'editdeadline_handling-widget editdeadline_handlingpanel'
     }, {
-        ref: 'anonymousField',
-        selector: 'editanonymous-widget editanonymouspanel checkbox'
+        ref: 'deadlineHandlingField',
+        selector: 'editdeadline_handling-widget editdeadline_handlingpanel checkbox'
     }, {
         ref: 'formPanel',
-        selector: 'editanonymous-widget editanonymouspanel form'
+        selector: 'editdeadline_handling-widget editdeadline_handlingpanel form'
     }, {
         ref: 'alertMessageList',
-        selector: 'editanonymous-widget editanonymouspanel alertmessagelist'
+        selector: 'editdeadline_handling-widget editdeadline_handlingpanel alertmessagelist'
     }],
 
     init: function() {
@@ -50,16 +49,16 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
             assignmentSuccessfullyLoaded: this._onLoadAssignment
         });
         this.control({
-            'editanonymous-widget #readAnonymous': {
+            'editdeadline_handling-widget #readDeadlineHandling': {
                 edit: this._onEdit
             },
-            'editanonymous-widget editanonymouspanel form checkbox': {
+            'editdeadline_handling-widget editdeadline_handlingpanel form checkbox': {
                 render: this._onRenderForm
             },
-            'editanonymous-widget editanonymouspanel #okbutton': {
+            'editdeadline_handling-widget editdeadline_handlingpanel #okbutton': {
                 click: this._onSave
             },
-            'editanonymous-widget editanonymouspanel #cancelbutton': {
+            'editdeadline_handling-widget editdeadline_handlingpanel #cancelbutton': {
                 click: this._onCancel
             }
         });
@@ -68,7 +67,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     _onLoadAssignment: function(assignmentRecord) {
         this.assignmentRecord = assignmentRecord;
         this.getReadOnlyView().enable();
-        this._updateAnonymousWidget();
+        this._updateDeadlineHandlingWidget();
     },
 
 
@@ -79,24 +78,30 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     //////////////////////////////////
     
     _showReadView: function() {
-        this.getCardContainer().getLayout().setActiveItem('readAnonymous');
+        this.getCardContainer().getLayout().setActiveItem('readDeadlineHandling');
     },
 
-    _updateAnonymousWidget: function() {
-        var anonymous = this.assignmentRecord.get('anonymous');
-        var title, info;
+    _updateDeadlineHandlingWidget: function() {
+        var deadline_handling = this.assignmentRecord.get('deadline_handling');
+        var title, body;
+        var SOFT = 0;
+        var HARD = 1;
 
-        if(anonymous) {
-            title = gettext('Anonymous');
-            info = gettext('Examiners and students can not see each other and they can not communicate.');
+        if(deadline_handling == SOFT) {
+            title = gettext('Soft deadlines');
+        } else if(deadline_handling == HARD) {
+            title = gettext('Hard deadlines');
         } else {
-            title = gettext('Not anonymous');
-            info = gettext('Examiners and students can see each other and communicate.');
+            // NOTE: We do not translate this, because it is a bug, and we do not raise an error because it is a bug that should not crash the entire UI.
+            title = 'Unknown deadline handling value';
         }
-        var anonymous = this.assignmentRecord.get('anonymous');
         this.getReadOnlyView().updateTitle(title);
         this.getReadOnlyViewBody().update({
-            info: info
+            deadline_handling: deadline_handling,
+            SOFT: SOFT,
+            HARD: HARD,
+            students_term: gettext('students'),
+            examiners_term: gettext('examiners')
         });
     },
 
@@ -107,12 +112,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     //////////////////////////////////
     //
-    // Edit anonymous
+    // Edit deadline_handling
     //
     //////////////////////////////////
     _showEditView: function() {
-        this.getCardContainer().getLayout().setActiveItem('editAnonymous');
-        this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
+        this.getCardContainer().getLayout().setActiveItem('editDeadlineHandling');
+        this.getDeadlineHandlingField().setValue(this.assignmentRecord.get('deadline_handling'));
         Ext.defer(function() {
             this.getFormPanel().down('checkbox').focus();
         }, 100, this);
@@ -133,7 +138,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         this.getAlertMessageList().removeAll();
         var form = this.getFormPanel().getForm();
         var assignmentRecord = this.assignmentRecord;
-        form.updateRecord(assignmentRecord);
+        var deadline_handling = form.getValues().deadline_handling;
+        assignmentRecord.set('deadline_handling', deadline_handling);
         this._getMaskElement().mask(gettext('Saving ...'));
 
         this.getAssignmentModel().proxy.addListener({
@@ -162,7 +168,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
         this._showReadView();
-        this._updateAnonymousWidget();
+        this._updateDeadlineHandlingWidget();
     },
 
     _onProxyError: function(proxy, response, operation) {

@@ -5,6 +5,8 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
     requires: [
         'devilry_usersearch.AutocompleteUserWidget'
     ],
+    frame: false,
+    border: false,
 
     /**
      * @cfg prettyFormatUserTpl
@@ -92,8 +94,6 @@ Ext.define('devilry_usersearch.AbstractManageUsersPanel' ,{
         var columns = this.columns || defaultColumns;
 
         Ext.apply(this, {
-            frame: false,
-            border: 0,
             layout: 'fit',
             items: [{
                 xtype: 'grid',

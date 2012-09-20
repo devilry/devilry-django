@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'delivery_types',  type: 'int'},
         {name: 'number_of_groups',  type: 'int'},
         {name: 'number_of_deliveries',  type: 'int'},
-        {name: 'assignmentgroups__candidates',  type: 'int'}
+        {name: 'number_of_candidates',  type: 'int'}
     ],
 
     proxy: {

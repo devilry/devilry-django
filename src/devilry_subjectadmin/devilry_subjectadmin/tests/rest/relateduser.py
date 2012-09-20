@@ -280,7 +280,7 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
     modelcls = RelatedStudent
 
     def get_url(self, periodid, reluserid):
-        return '/devilry_subjectadmin/rest/relatedstudent/{0}/{1}/'.format(periodid, reluserid)
+        return '/devilry_subjectadmin/rest/relatedstudent/{0}/{1}'.format(periodid, reluserid)
 
     def create_reluser_on_p1(self, username, tags):
         user = self.testhelper.create_user(username)
@@ -312,7 +312,7 @@ class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
     modelcls = RelatedExaminer
 
     def get_url(self, periodid, reluserid):
-        return '/devilry_subjectadmin/rest/relatedexaminer/{0}/{1}/'.format(periodid, reluserid)
+        return '/devilry_subjectadmin/rest/relatedexaminer/{0}/{1}'.format(periodid, reluserid)
 
     def create_reluser_on_p1(self, username, tags):
         user = self.testhelper.create_user(username)

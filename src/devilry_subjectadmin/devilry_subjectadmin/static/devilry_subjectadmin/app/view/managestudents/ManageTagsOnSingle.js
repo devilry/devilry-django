@@ -62,6 +62,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                 xtype: 'container',
                 itemId: 'cardBody',
                 layout: 'card',
+                deferredRender: true,
                 anchor: '100%',
                 items: [{
                     xtype: 'panel',

@@ -1,15 +1,15 @@
 /**
- * Controller for editing first deadline of an assignment.
+ * Controller for editing start/end time of a period.
  */
-Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
+Ext.define('devilry_subjectadmin.controller.period.EditDuration', {
     extend: 'Ext.app.Controller',
     mixins: [
         'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     ],
 
     views: [
-        'assignment.EditFirstDeadlinePanel',
-        'assignment.EditFirstDeadlineWidget'
+        'period.EditDurationPanel',
+        'period.EditDurationWidget'
     ],
 
     requires: [
@@ -17,61 +17,64 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
         'devilry_extjsextras.DatetimeHelpers'
     ],
 
-    models: ['Assignment'],
+    models: ['Period'],
     controllers: [
-        'assignment.Overview'
+        'period.Overview'
     ],
 
     refs: [{
         ref: 'cardContainer',
-        selector: 'editfirstdeadline-widget'
+        selector: 'editperiod_duration-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editfirstdeadline-widget #readFirstDeadline'
+        selector: 'editperiod_duration-widget #readDuration'
     }, {
         ref: 'readOnlyViewBody',
-        selector: 'editfirstdeadline-widget #readFirstDeadline markupmoreinfobox'
+        selector: 'editperiod_duration-widget #readDuration markupmoreinfobox'
     }, {
 
-        ref: 'editFirstDeadline',
-        selector: 'editfirstdeadline-widget editfirstdeadlinepanel'
+        ref: 'editDuration',
+        selector: 'editperiod_duration-widget editperiod_duration'
     }, {
-        ref: 'firstDeadlineField',
-        selector: 'editfirstdeadline-widget editfirstdeadlinepanel devilry_extjsextras-datetimefield'
+        ref: 'startTimeField',
+        selector: 'editperiod_duration-widget editperiod_duration devilry_extjsextras-datetimefield[name=start_time]'
+    }, {
+        ref: 'endTimeField',
+        selector: 'editperiod_duration-widget editperiod_duration devilry_extjsextras-datetimefield[name=end_time]'
     }, {
         ref: 'formPanel',
-        selector: 'editfirstdeadline-widget editfirstdeadlinepanel form'
+        selector: 'editperiod_duration-widget editperiod_duration form'
     }, {
         ref: 'alertMessageList',
-        selector: 'editfirstdeadline-widget editfirstdeadlinepanel alertmessagelist'
+        selector: 'editperiod_duration-widget editperiod_duration alertmessagelist'
     }],
 
     init: function() {
         // This is called when the application is initialized, not when the window is opened
         this.application.addListener({
             scope: this,
-            assignmentSuccessfullyLoaded: this._onLoadAssignment
+            periodSuccessfullyLoaded: this._onLoadPeriod
         });
         this.control({
-            'editfirstdeadline-widget #readFirstDeadline': {
+            'editperiod_duration-widget #readDuration': {
                 edit: this._onEdit
             },
-            'editfirstdeadline-widget editfirstdeadlinepanel form devilry_extjsextras-datetimefield': {
+            'editperiod_duration-widget editperiod_duration form devilry_extjsextras-datetimefield': {
                 allRendered: this._onRenderForm
             },
-            'editfirstdeadline-widget editfirstdeadlinepanel #okbutton': {
+            'editperiod_duration-widget editperiod_duration #okbutton': {
                 click: this._onSave
             },
-            'editfirstdeadline-widget editfirstdeadlinepanel #cancelbutton': {
+            'editperiod_duration-widget editperiod_duration #cancelbutton': {
                 click: this._onCancel
             },
         });
     },
 
-    _onLoadAssignment: function(assignmentRecord) {
-        this.assignmentRecord = assignmentRecord;
+    _onLoadPeriod: function(periodRecord) {
+        this.periodRecord = periodRecord;
         this.getReadOnlyView().enable();
-        this._updateFirstDeadlineWidget();
+        this._updateDurationWidget();
     },
     
     //////////////////////////////////
@@ -81,12 +84,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
     //////////////////////////////////
 
     _showReadView: function() {
-        this.getCardContainer().getLayout().setActiveItem('readFirstDeadline');
+        this.getCardContainer().getLayout().setActiveItem('readDuration');
     },
 
-    _updateFirstDeadlineWidget: function() {
+    _updateDurationWidget: function() {
         this.getReadOnlyViewBody().update({
-            first_deadline: this.assignmentRecord.formatFirstDeadline()
+            start_time: this.periodRecord.formatStartTime(),
+            end_time: this.periodRecord.formatEndTime()
         });
     },
 
@@ -102,10 +106,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
     //////////////////////////////////
 
     _showEditView: function() {
-        this.getCardContainer().getLayout().setActiveItem('editFirstDeadline');
-        this.getFirstDeadlineField().setValue(this.assignmentRecord.get('first_deadline'));
+        this.getCardContainer().getLayout().setActiveItem('editDuration');
+        this.getStartTimeField().setValue(this.periodRecord.get('start_time'));
+        this.getEndTimeField().setValue(this.periodRecord.get('end_time'));
         Ext.defer(function() {
-            this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
+            this.getStartTimeField().focus();
         }, 200, this);
     },
 
@@ -118,18 +123,18 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
 
     _onSave: function() {
         var form = this.getFormPanel().getForm();
-        var assignmentRecord = this.assignmentRecord;
-        form.updateRecord(assignmentRecord);
+        var periodRecord = this.periodRecord;
+        form.updateRecord(periodRecord);
         this._getMaskElement().mask(gettext('Saving ...'));
 
-        this.getAssignmentModel().proxy.addListener({
+        this.getPeriodModel().proxy.addListener({
             scope: this,
             exception: this._onProxyError
         });
-        assignmentRecord.save({
+        periodRecord.save({
             scope: this,
             callback: function(r, operation) {
-                this.getAssignmentModel().proxy.removeListener({
+                this.getPeriodModel().proxy.removeListener({
                     scope: this,
                     exception: this._onProxyError
                 });
@@ -151,7 +156,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditFirstDeadline', {
     _onSaveSuccess: function() {
         this._getMaskElement().unmask();
         this._showReadView();
-        this._updateFirstDeadlineWidget();
+        this._updateDurationWidget();
     },
 
     _onProxyError: function(proxy, response, operation) {

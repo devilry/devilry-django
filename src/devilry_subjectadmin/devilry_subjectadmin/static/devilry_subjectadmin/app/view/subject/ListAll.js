@@ -26,7 +26,6 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
         Ext.apply(this, {
             items: {
                 xtype: 'panel',
-                ui: 'inset-header-strong-panel',
                 title: gettext('All subjects'),
                 layout: 'fit',
                 items: [{

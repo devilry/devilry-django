@@ -8,16 +8,23 @@ Ext.define('devilry_subjectadmin.model.Period', {
         {name: 'parentnode', type: 'auto'},
         {name: 'short_name',  type: 'string'},
         {name: 'long_name',  type: 'string'},
-        {name: 'can_delete',  type: 'bool'},
-        {name: 'etag',  type: 'string'},
+        {name: 'can_delete',  type: 'bool', persist:false},
+        {name: 'etag',  type: 'string', persist:false},
         {name: 'admins',  type: 'auto'},
-        {name: 'inherited_admins',  type: 'auto'},
+        {name: 'inherited_admins',  type: 'auto', persist:false},
         {name: 'start_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
         {name: 'end_time',  type: 'date', "dateFormat": "Y-m-d H:i:s"},
-        {name: 'breadcrumb',  type: 'auto'},
-        {name: 'number_of_relatedexaminers',  type: 'int'},
-        {name: 'number_of_relatedstudents',  type: 'int'}
+        {name: 'breadcrumb',  type: 'auto', persist:false},
+        {name: 'number_of_relatedexaminers',  type: 'int', persist:false},
+        {name: 'number_of_relatedstudents',  type: 'int', persist:false}
     ],
+
+    formatStartTime: function() {
+        return Ext.Date.format(this.get('start_time'), 'Y-m-d H:i');
+    },
+    formatEndTime: function() {
+        return Ext.Date.format(this.get('end_time'), 'Y-m-d H:i');
+    },
 
     proxy: {
         type: 'rest',

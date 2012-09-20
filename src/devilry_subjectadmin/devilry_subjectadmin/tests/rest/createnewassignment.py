@@ -30,7 +30,8 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(assignment.short_name, 'a1')
         self.assertEquals(assignment.long_name, 'Assignment 1')
         self.assertEquals(assignment.publishing_time, publishing_time)
-        self.assertEquals(assignment.first_deadline, first_deadline)
+        self.assertEquals(assignment.first_deadline,
+                          first_deadline.replace(microsecond=0, tzinfo=None))
         self.assertEquals(assignment.delivery_types, 0)
         self.assertEquals(assignment.anonymous, False)
 

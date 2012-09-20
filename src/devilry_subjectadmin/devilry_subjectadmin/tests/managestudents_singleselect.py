@@ -48,7 +48,7 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
         self.browseToAndSelectAs('a1admin', g1)
         self.waitForCssSelector('.top_infobox')
         top_infobox = self.find_element('.top_infobox')
-        self.assertTrue(top_infobox.text.strip().startswith('Hold down CMD to select more groups.'))
+        self.assertTrue(top_infobox.text.strip().startswith('Use the checkboxes'))
 
 
 

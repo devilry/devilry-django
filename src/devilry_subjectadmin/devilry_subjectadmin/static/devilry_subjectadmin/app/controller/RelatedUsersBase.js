@@ -68,7 +68,8 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         this._onProxyError(response, operation);
     },
     onPeriodProxyError: function(proxy, response, operation) {
-        this._onProxyError(response, operation);
+        //this._onProxyError(response, operation);
+        // NOTE: We already do this in controller.period.Overview, so adding it here would result in duplicated error messages.
     },
 
 

@@ -12,7 +12,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
             oktext: gettext('Save'),
             items: {
                 xtype: 'form',
-                bodyPadding: 10,
+                bodyPadding: 20,
                 autoScroll: true,
                 border: 0,
                 layout: 'anchor',
@@ -22,13 +22,13 @@ Ext.define('devilry_subjectadmin.view.assignment.EditAnonymousPanel', {
                 items: [{
                     xtype: 'alertmessagelist'
                 }, {
-                    xtype: 'box',
-                    tpl: '<p>{help}</p>',
-                    data: {
-                        help: gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.')
-                    },
-                    margin: '0 0 10 0'
-                }, {
+                    //xtype: 'box',
+                    //html: [
+                        //'<p>', 
+                        //'</p>',
+                    //].join(''),
+                    //margin: '0 0 10 0'
+                //}, {
                     xtype: 'checkbox',
                     boxLabel: gettext('Anonymous'),
                     name: 'anonymous',

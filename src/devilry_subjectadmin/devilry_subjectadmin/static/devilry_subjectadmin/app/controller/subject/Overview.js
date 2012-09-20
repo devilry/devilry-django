@@ -11,7 +11,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     views: [
         'subject.Overview',
         'subject.ListOfPeriods',
-        'ActionList',
         'RenameBasenodeWindow',
         'DeleteDjangoRestframeworkRecordDialog'
     ],

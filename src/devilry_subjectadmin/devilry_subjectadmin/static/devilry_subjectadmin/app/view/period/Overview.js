@@ -10,11 +10,11 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
         'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AlertMessage',
         'devilry_extjsextras.AlertMessageList',
-        'devilry_subjectadmin.view.ActionList',
         'devilry_subjectadmin.view.AdminsBox',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_subjectadmin.view.BaseNodeHierLocation',
         'devilry_subjectadmin.view.DangerousActions',
+        'devilry_subjectadmin.view.period.EditDurationWidget',
         'devilry_extjsextras.SingleActionBox'
     ],
 
@@ -34,7 +34,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 xtype: 'alertmessagelist'
             }, {
                 xtype: 'panel',
-                ui: 'transparentpanel-overflowvisible',
+                frame: false,
+                border: false,
                 layout: 'column',
                 items: [{
                     xtype: 'container',
@@ -146,13 +147,15 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     xtype: 'container',
                     border: false,
                     width: 250,
-                    margin: '0 0 0 40',
+                    margin: '6 0 0 40',
                     defaults: {
                         margin: '20 0 0 0'
                     },
                     items: [{
-                        xtype: 'adminsbox',
-                        margin: '0 0 0 0'
+                        margin: '0 0 0 0',
+                        xtype: 'editperiod_duration-widget'
+                    }, {
+                        xtype: 'adminsbox'
                     }, {
                         xtype: 'basenodehierlocation'
                     }]
