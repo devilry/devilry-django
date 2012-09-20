@@ -21,10 +21,10 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
         this.callParent(arguments);
         this.control({
             'viewport dashboard allactivewhereisadminlist': {
-                render: Ext.Function.createInterceptor(this.onFirstStep, this.isActive)
+                render: this.ifActiveInterceptor(this.onFirstStep)
             },
             'viewport periodoverview #createNewAssignmentBox': {
-                render: Ext.Function.createInterceptor(this._onPeriodRender, this.isActive)
+                render: this.ifActiveInterceptor(this._onPeriodRender)
             }
         });
     },

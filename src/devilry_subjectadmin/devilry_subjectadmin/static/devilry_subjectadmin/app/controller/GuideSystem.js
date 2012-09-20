@@ -20,12 +20,16 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     }, {
         ref: 'body',
         selector: 'viewport guidesystemview #body'
+    }, {
+        ref: 'invalidPageMessage',
+        selector: 'viewport guidesystemview #invalidPageMessage'
     }],
 
     init: function() {
         this.pointer = Ext.widget('guidesystem_pointer', {
             hidden: true,
         });
+        this.invalidPageTask = new Ext.util.DelayedTask(this._onInvalidPage, this);
         this.application.addListener({
             scope: this,
             beforeroute: this._onBeforeRoute
@@ -50,7 +54,6 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     _onGuideClick: function(list, xtype) {
-        console.log('show', xtype);
         this.showGuide(xtype);
     },
 
@@ -65,6 +68,17 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
 
     _onBeforeRoute: function() {
         this.pointer.stopPointAt();
+        if(this._isVisible()) {
+            this.getInvalidPageMessage().hide();
+
+            // We assume that the user has navigated to a page outside the guide if
+            // the guide uses more than 5 seconds to call setProgress().
+            this.invalidPageTask.delay(5000);
+        }
+    },
+    _onInvalidPage: function() {
+        this._setNotLoading();
+        this.getGuideView().getLayout().setActiveItem('invalidPageMessage');
     },
 
     setTitle: function(title) {
@@ -72,6 +86,8 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
     },
 
     setProgress: function(current, total) {
+        this.invalidPageTask.cancel();
+        this.getGuideView().getLayout().setActiveItem('main');
         this._setNotLoading();
         this.getProgress().update({
             current: current,

@@ -47,6 +47,9 @@ Ext.define('devilry_subjectadmin.controller.guides.Base', {
         var isActive = !Ext.isEmpty(view) && view.isVisible();
         return isActive;
     },
+    ifActiveInterceptor: function(fn) {
+        return Ext.Function.createInterceptor(fn, this.isActive);
+    },
 
     setStep: function(cardItemId, progress) {
         this.getGuideView().getLayout().setActiveItem(cardItemId);
