@@ -44,7 +44,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
         items: [{
             xtype: 'box',
             cls: 'bootstrap',
-            tpl: '<h3>{heading}</h3>',
+            tpl: '<h4>{heading}</h4>',
             data: {
                 heading: gettext('Interractive guides')
             }
