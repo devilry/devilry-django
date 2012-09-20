@@ -64,7 +64,10 @@ Ext.application({
         'AllWhereIsAdmin',
         'BulkManageDeadlines',
         'RelatedStudents',
-        'RelatedExaminers'
+        'RelatedExaminers',
+
+        'GuideSystem',
+        'guides.CreateNewAssignment'
     ],
 
     refs: [{
@@ -165,6 +168,10 @@ Ext.application({
                     itemId: 'appAlertmessagelist',
                     anchor: '100%'
                 }, this.primaryContentContainer]
+            }, {
+                xtype: 'guidesystemview',
+                region: 'east',
+                width: 300
             }]
         });
     },
@@ -222,7 +229,7 @@ Ext.application({
         this.route.start();
     },
 
-    _beforeRoute: function() {
+    _beforeRoute: function(route, routeInfo) {
         this.getAlertmessagelist().removeAll();
     },
     
