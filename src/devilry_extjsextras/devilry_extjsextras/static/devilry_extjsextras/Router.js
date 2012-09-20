@@ -22,6 +22,7 @@ Ext.define('devilry_extjsextras.Router', {
              * @event
              * Fired before a successful route.
              * @param route The Route object.
+             * @param routeInfo The route info object (the same that is sent to the handlers).
              */
             'beforeroute',
 
@@ -29,6 +30,7 @@ Ext.define('devilry_extjsextras.Router', {
              * @event
              * Fired after a successful route.
              * @param route The Route object.
+             * @param routeInfo The route info object (the same that is sent to the handlers).
              */
             'afterroute'
         );
@@ -74,11 +76,11 @@ Ext.define('devilry_extjsextras.Router', {
             var match = token.match(route.regex);
             if(match) {
                 var args = match.slice(1);
-                this.fireEvent('beforeroute', this);
+                this.fireEvent('beforeroute', this, routeInfo);
                 Ext.bind(this.handler[route.action], this.handler, args, true)(Ext.apply(routeInfo, {
                     action: route.action
                 }));
-                this.fireEvent('afterroute', this);
+                this.fireEvent('afterroute', this, routeInfo);
                 return;
             }
         }
