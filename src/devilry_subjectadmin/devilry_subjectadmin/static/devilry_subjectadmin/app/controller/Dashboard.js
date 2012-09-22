@@ -43,7 +43,22 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
         });
     },
 
+    //_collectInfo: function(records) {
+        //Ext.Array.each(records, function(record) {
+            //var subject = record.data;
+            //Ext.Array.each(subject.periods, function(period) {
+                //if(period.can_administer) {
+                    //info.administers_periods = true;
+                //};
+                //Ext.Array.each(period.assignments, function(assignment) {
+                //}, this);
+            //}, this);
+        //}, this);
+        //return info;
+    //},
+
     _onLoadSuccess: function(records) {
+        //this._collectInfo(records);
         this.getAllWhereIsAdminList().update({
             loadingtext: null,
             subjects: records
