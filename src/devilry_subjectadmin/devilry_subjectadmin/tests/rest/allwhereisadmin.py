@@ -111,3 +111,19 @@ class TestRestAllWhereIsAdmin(TestCase):
         self.assertEquals(len(content[0]['periods']), 1)
         self.assertEquals(content[0]['periods'][0]['short_name'], 'p2')
         self.assertEquals(len(content[0]['periods'][0]['assignments']), 1)
+
+    def test_list_multi_active_assignments(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
+                            periods=['p1:begins(-2):ends(6)',
+                                     'p2:begins(-1):ends(6)'],
+                            assignments=['a1:admin(a1admin)'])
+        content, response = self._listas('a1admin', only_active='yes')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        periods = content[0]['periods']
+        self.assertEquals(len(periods), 2)
+        self.assertEquals(periods[0]['short_name'], 'p2')
+        self.assertEquals(periods[1]['short_name'], 'p1')
+        self.assertEquals(periods[0]['assignments'][0]['short_name'], 'a1')
+        self.assertEquals(periods[1]['assignments'][0]['short_name'], 'a1')

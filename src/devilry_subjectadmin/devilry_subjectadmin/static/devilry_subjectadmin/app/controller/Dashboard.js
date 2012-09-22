@@ -43,25 +43,39 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
         });
     },
 
-    //_collectInfo: function(records) {
-        //Ext.Array.each(records, function(record) {
-            //var subject = record.data;
-            //Ext.Array.each(subject.periods, function(period) {
-                //if(period.can_administer) {
-                    //info.administers_periods = true;
-                //};
-                //Ext.Array.each(period.assignments, function(assignment) {
-                //}, this);
-            //}, this);
-        //}, this);
-        //return info;
-    //},
+    _flattenListOfActive: function(records) {
+        var list = [];
+        Ext.Array.each(records, function(record) {
+            var subject = record.data;
+            var multipleActivePeriods = subject.periods.length > 1;
+            Ext.Array.each(subject.periods, function(period) {
+                if(period.can_administer) {
+                    list.push({
+                        text: subject.long_name,
+                        suffix: multipleActivePeriods? period.long_name: null,
+                        type: 'period',
+                        id: period.id
+                    });
+                } else {
+                    Ext.Array.each(period.assignments, function(assignment) {
+                        list.push({
+                            text: Ext.String.format('{0} - {1}',
+                                subject.short_name, assignment.long_name),
+                                suffix: multipleActivePeriods? period.long_name: null,
+                            type: 'period',
+                            id: period.id
+                        });
+                    }, this);
+                }
+            }, this);
+        }, this);
+        return list;
+    },
 
     _onLoadSuccess: function(records) {
-        //this._collectInfo(records);
         this.getAllWhereIsAdminList().update({
             loadingtext: null,
-            subjects: records
+            list: this._flattenListOfActive(records)
         });
     },
 
