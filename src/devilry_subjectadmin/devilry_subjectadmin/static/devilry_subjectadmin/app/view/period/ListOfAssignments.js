@@ -40,7 +40,7 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
                     publishing_time_offset_from_now, !is_published);
             },
             getRelativeTimeCls: function(is_published) {
-                return is_published? 'success': 'danger';
+                return is_published? 'text-success': 'text-warning';
             }
         }
     ],
