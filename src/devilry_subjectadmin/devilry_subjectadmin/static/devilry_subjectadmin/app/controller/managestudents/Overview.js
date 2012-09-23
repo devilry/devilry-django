@@ -395,12 +395,19 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.getOverview().setLoading(false);
         this.getOverview().addClass('devilry_subjectadmin_all_items_loaded'); // Mostly for the selenium tests, however someone may do something with it in a theme
         this.application.fireEvent('managestudentsSuccessfullyLoaded', this);
-        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], gettext('Manage students'));
+        this._setBreadcrumbAndTitle();
         if(groupIdsToSelectOnLoad) {
             this._selectByGroupIds(groupIdsToSelectOnLoad);
         } else {
             this._selectUrlIds();
         }
+    },
+
+    _setBreadcrumbAndTitle: function() {
+        var text = gettext('Students');
+        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
+        var path = this.getPathFromBreadcrumb(this.assignmentRecord);
+        this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
     },
 
 
