@@ -47,13 +47,13 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     },
 
     getPathFromBreadcrumb: function(basenodeRecord) {
-        var path = '';
+        var path = [];
         Ext.Array.each(basenodeRecord.get('breadcrumb'), function(item) {
             if(item.type === 'Node') {
                 return false; // break
             }
-            path = item.short_name + '.' + path;
+            path.push(item.text);
         }, this, true);
-        return path + basenodeRecord.get('short_name');
+        return path.join('.');
     }
 });
