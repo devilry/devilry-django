@@ -38,10 +38,6 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     setSubviewBreadcrumb: function(basenodeRecord, basenodeType, extra, current) {
         var breadcrumb = this._getBreadcrumbPrefix();
         this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord);
-        breadcrumb.push({
-            text: basenodeRecord.get('short_name'),
-            url: devilry_subjectadmin.utils.UrlLookup.overviewByType(basenodeType, basenodeRecord.get('id'))
-        });
         breadcrumb = breadcrumb.concat(extra);
         this.application.breadcrumbs.set(breadcrumb, current);
     },
