@@ -96,15 +96,15 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         });
     },
 
-    _setBreadcrumb: function(subviewtext) {
-        var title = interpolate(gettext('Manage %(deadlines_term)s'), {
-            deadlines_term: gettext('deadlines')
-        }, true);
-        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], title);
+    _setBreadcrumbAndTitle: function(subviewtext) {
+        var text = gettext('Deadlines');
+        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
+        var path = this.getPathFromBreadcrumb(this.assignmentRecord);
+        this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
     },
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        this._setBreadcrumb();
+        this._setBreadcrumbAndTitle();
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);
