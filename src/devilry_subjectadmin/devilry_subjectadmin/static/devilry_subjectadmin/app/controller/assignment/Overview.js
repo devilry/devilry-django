@@ -47,9 +47,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         ref: 'adminsbox',
         selector: 'assignmentoverview adminsbox'
     }, {
-        ref: 'basenodehierlocation',
-        selector: 'assignmentoverview basenodehierlocation'
-    }, {
         ref: 'linkList',
         selector: 'assignmentoverview #linkList'
     }],
@@ -94,7 +91,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
             this._handleNoGroups();
         }
         this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
-        this.getBasenodehierlocation().setLocation(this.assignmentRecord);
     },
     onLoadAssignmentFailure: function(operation) {
         this.onLoadFailure(operation);

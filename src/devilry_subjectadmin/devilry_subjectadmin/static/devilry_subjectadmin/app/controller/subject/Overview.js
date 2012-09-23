@@ -40,9 +40,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     }, {
         ref: 'adminsbox',
         selector: 'subjectoverview adminsbox'
-    }, {
-        ref: 'basenodehierlocation',
-        selector: 'subjectoverview basenodehierlocation'
     }],
 
     init: function() {
@@ -113,7 +110,6 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
         });
         this.setBreadcrumb(this.subjectRecord);
         this.getAdminsbox().setBasenodeRecord(this.subjectRecord);
-        this.getBasenodehierlocation().setLocation(this.subjectRecord);
         this._setDangerousActionsLabels();
     },
 

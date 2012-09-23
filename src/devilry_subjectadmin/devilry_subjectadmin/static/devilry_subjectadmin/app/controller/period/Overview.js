@@ -40,9 +40,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         ref: 'adminsbox',
         selector: 'periodoverview adminsbox'
     }, {
-        ref: 'basenodehierlocation',
-        selector: 'periodoverview basenodehierlocation'
-    }, {
         ref: 'createNewAssignmentBox',
         selector: 'periodoverview #createNewAssignmentBox'
     }, {
@@ -123,7 +120,6 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
         this.setBreadcrumb(this.periodRecord);
         this._setMenuLabels();
         this.getAdminsbox().setBasenodeRecord(this.periodRecord);
-        this.getBasenodehierlocation().setLocation(this.periodRecord);
         if(this.periodRecord.get('number_of_relatedstudents') === 0) {
             this._handleNoRelatedStudents();
         }

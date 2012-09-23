@@ -9,8 +9,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
         'Ext.layout.container.Column',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.AdminsBox',
-        'devilry_extjsextras.SingleActionBox',
-        'devilry_subjectadmin.view.BaseNodeHierLocation'
+        'devilry_extjsextras.SingleActionBox'
     ],
 
 
@@ -91,8 +90,6 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     items: [{
                         xtype: 'adminsbox',
                         margin: '0 0 0 0'
-                    }, {
-                        xtype: 'basenodehierlocation'
                     }]
                 }]
             }]
