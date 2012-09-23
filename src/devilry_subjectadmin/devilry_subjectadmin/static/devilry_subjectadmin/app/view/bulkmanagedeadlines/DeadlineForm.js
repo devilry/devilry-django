@@ -75,7 +75,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     margin: '20 0 0 0',
                     html: [
                         '<h2>',
-                            interpolate(gettext('Add %(deadline_term)s on'), {
+                            interpolate(gettext('Add %(deadline_term)s to'), {
                                 deadline_term: gettext('deadline')
                             }, true),
                         '</h2>'
@@ -85,7 +85,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                     anchor: '100%',
                     vertical: true,
                     columns: 1,
-                    fieldLabel: interpolate(gettext('Add %(deadline_term)s on'), {
+                    fieldLabel: interpolate(gettext('Add %(deadline_term)s to'), { // NOTE: We need the fieldLabel for error handling, even though it is hidden below.
                         deadline_term: gettext('deadline')
                     }, true),
                     hideLabel: true,
@@ -99,7 +99,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                         inputValue: 'failed',
                         checked: true
                     }, {
-                        boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and on %(groups_term)s with no %(feedback_term)s.'), {
+                        boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and to %(groups_term)s with no %(feedback_term)s.'), {
                             groups_term: gettext('groups'),
                             grade_term: gettext('grade'),
                             feedback_term: gettext('feedback')
