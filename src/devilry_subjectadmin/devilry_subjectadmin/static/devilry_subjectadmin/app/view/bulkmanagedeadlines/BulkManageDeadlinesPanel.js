@@ -91,9 +91,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                     cls: 'bootstrap',
                     html: [
                         '<h1>',
-                            interpolate(gettext('Manage %(deadlines_term)s'), {
-                                deadlines_term: gettext('deadlines')
-                            }, true),
+                            gettext('Deadlines'),
                         '</h1>'
                     ].join('')
                 }, {
