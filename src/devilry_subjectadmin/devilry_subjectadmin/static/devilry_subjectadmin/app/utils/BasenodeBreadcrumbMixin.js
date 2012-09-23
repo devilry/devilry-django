@@ -11,23 +11,27 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
         }];
     },
 
-    _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord) {
-        Ext.each(basenodeRecord.get('breadcrumb'), function(item) {
-            var ignore = item.type === 'Node';
-            if(!ignore) {
-                var url = devilry_subjectadmin.utils.UrlLookup.overviewByType(item.type, item.id);
-                breadcrumb.push({
-                    text: item.short_name,
-                    url: url
-                });
+    _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord, skipLast) {
+        var breadcrumbList = basenodeRecord.get('breadcrumb');
+        Ext.each(breadcrumbList, function(item, index) {
+            var isLast = index == breadcrumbList.length-1;
+            if(isLast && skipLast) {
+                return false; // break;
             }
-        });
+            var url = devilry_subjectadmin.utils.UrlLookup.overviewByType(item.type, item.id);
+            breadcrumb.push({
+                text: item.text,
+                url: url
+            });
+        }, this);
     },
 
     setBreadcrumb: function(basenodeRecord) {
         var breadcrumb = this._getBreadcrumbPrefix();
-        this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord);
-        this.application.breadcrumbs.set(breadcrumb, basenodeRecord.get('short_name'));
+        this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord, true);
+        var breadcrumbList = basenodeRecord.get('breadcrumb');
+        var lastBreadcrumb = breadcrumbList[breadcrumbList.length-1];
+        this.application.breadcrumbs.set(breadcrumb, lastBreadcrumb.text);
     },
 
     /** For children of basenodes */
