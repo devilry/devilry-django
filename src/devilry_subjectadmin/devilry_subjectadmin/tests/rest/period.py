@@ -173,19 +173,42 @@ class TestRestInstancePeriodRest(TestCase):
         self.assertIn('uniadmin', inherited_adminusernames)
         self.assertIn('duck2000admin', inherited_adminusernames)
 
-    def test_get_breadcrumb(self):
-        self.testhelper.add(nodes='duck.mat.inf',
-                            subjects=['s1'],
+    def test_get_breadcrumb_periodadmin(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub'],
                             periods=['p1:admin(p1admin)'])
         self.client.login(username='p1admin', password='test')
-        content, response = self.client.rest_get(self._geturl(self.testhelper.s1_p1.id))
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1.id))
         self.assertEquals(response.status_code, 200)
         th = self.testhelper
         self.assertEquals(content['breadcrumb'],
-                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
-                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
-                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'},
-                           {u'id': th.s1.id, u'short_name': u's1', u'type': u'Subject'}])
+                          [{u'id': th.sub_p1.id, u'text': u'sub.p1', u'type': u'Period'}])
+
+    def test_get_breadcrumb_subjectadmin(self):
+        self.testhelper.add(nodes='uni',
+                            subjects=['sub:admin(subadm)'],
+                            periods=['p1'])
+        self.client.login(username='subadm', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
+                           {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'}])
+
+    def test_get_breadcrumb_nodeadmin(self):
+        self.testhelper.add(nodes='uni:admin(uniadmin).inf',
+                            subjects=['sub'],
+                            periods=['p1'])
+        self.client.login(username='uniadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.uni.id, u'text': u'uni', u'type': u'Node'},
+                           {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
+                           {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
+                           {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='oneadmin', password='test')

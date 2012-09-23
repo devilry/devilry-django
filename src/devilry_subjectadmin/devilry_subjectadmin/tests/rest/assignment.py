@@ -201,21 +201,60 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertIn('uniadmin', inherited_adminusernames)
         self.assertIn('duck2000admin', inherited_adminusernames)
 
-    def test_get_breadcrumb(self):
-        self.testhelper.add(nodes='duck.mat.inf',
-                            subjects=['s1'],
+    def test_get_breadcrumb_assignmentadmin(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub'],
                             periods=['p1'],
                             assignments=['a1:admin(a1admin)'])
         self.client.login(username='a1admin', password='test')
-        content, response = self.client.rest_get(self._geturl(self.testhelper.s1_p1_a1.id))
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1_a1.id))
         self.assertEquals(response.status_code, 200)
         th = self.testhelper
         self.assertEquals(content['breadcrumb'],
-                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
-                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
-                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'},
-                           {u'id': th.s1.id, u'short_name': u's1', u'type': u'Subject'},
-                           {u'id': th.s1_p1.id, u'short_name': u'p1', u'type': u'Period'}])
+                          [{u'id': th.sub_p1_a1.id, u'text': u'sub.p1.a1', u'type': u'Assignment'}])
+
+    def test_get_breadcrumb_periodadmin(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub'],
+                            periods=['p1:admin(p1admin)'],
+                            assignments=['a1'])
+        self.client.login(username='p1admin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1_a1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.sub_p1.id, u'text': u'sub.p1', u'type': u'Period'},
+                           {u'id': th.sub_p1_a1.id, u'text': u'a1', u'type': u'Assignment'}])
+
+    def test_get_breadcrumb_subjectadmin(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub:admin(subadm)'],
+                            periods=['p1'],
+                            assignments=['a1'])
+        self.client.login(username='subadm', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1_a1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
+                           {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'},
+                           {u'id': th.sub_p1_a1.id, u'text': u'a1', u'type': u'Assignment'}])
+
+    def test_get_breadcrumb_nodeadmin(self):
+        self.testhelper.add(nodes='uni:admin(uniadm).inf',
+                            subjects=['sub'],
+                            periods=['p1'],
+                            assignments=['a1'])
+        self.client.login(username='uniadm', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1_a1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.uni.id, u'text': u'uni', u'type': u'Node'},
+                           {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
+                           {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
+                           {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'},
+                           {u'id': th.sub_p1_a1.id, u'text': u'a1', u'type': u'Assignment'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='firstadmin', password='test')

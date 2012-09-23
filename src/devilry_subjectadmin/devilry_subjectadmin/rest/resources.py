@@ -84,15 +84,17 @@ class BaseNodeInstanceResource(ModelResource):
                     for inheritedadmin in instance.get_inherited_admins()]
 
     def _add_breadcrumbitem(self, breadcrumb, basenode):
-        if basenode == None:
-            return
-        self._add_breadcrumbitem(breadcrumb, basenode.parentnode) # Add parent before self to get reversed result
+        if basenode.parentnode and basenode.parentnode.is_admin(self.view.user):
+            text = basenode.short_name
+            self._add_breadcrumbitem(breadcrumb, basenode.parentnode) # Add parent before self to get reversed result
+        else:
+            text = basenode.get_path()
         breadcrumb.append({'id': basenode.id,
                            'type': self._get_typename(basenode),
-                           'short_name': basenode.short_name})
+                           'text': text})
 
     def breadcrumb(self, instance):
         if isinstance(instance, self.model):
             breadcrumb = []
-            self._add_breadcrumbitem(breadcrumb, instance.parentnode)
+            self._add_breadcrumbitem(breadcrumb, instance)
             return breadcrumb

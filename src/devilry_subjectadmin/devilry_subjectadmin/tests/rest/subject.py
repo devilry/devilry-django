@@ -164,17 +164,27 @@ class TestRestInstanceSubjectRest(TestCase):
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
         self.assertEquals(inherited_adminusernames, ['uniadmin'])
 
-    def test_get_breadcrumb(self):
-        self.testhelper.add(nodes='duck.mat.inf',
-                            subjects=['s1:admin(s1admin)'])
-        self.client.login(username='s1admin', password='test')
-        content, response = self.client.rest_get(self._geturl(self.testhelper.s1.id))
+    def test_get_breadcrumb_subjectadmin(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub:admin(subadm)'])
+        self.client.login(username='subadm', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub.id))
         self.assertEquals(response.status_code, 200)
         th = self.testhelper
         self.assertEquals(content['breadcrumb'],
-                          [{u'id': th.duck.id, u'short_name': u'duck', u'type': u'Node'},
-                           {u'id': th.duck_mat.id, u'short_name': u'mat', u'type': u'Node'},
-                           {u'id': th.duck_mat_inf.id, u'short_name': u'inf', u'type': u'Node'}])
+                          [{u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'}])
+
+    def test_get_breadcrumb_nodeadmin(self):
+        self.testhelper.add(nodes='uni:admin(uniadm).inf',
+                            subjects=['sub'])
+        self.client.login(username='uniadm', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.uni.id, u'text': u'uni', u'type': u'Node'},
+                           {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
+                           {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'}])
 
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')
