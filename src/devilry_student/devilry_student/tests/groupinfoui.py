@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.keys import Keys
 
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from .base import StudentSeleniumTestCase
 
 
@@ -223,6 +224,36 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.waitForCssSelector('.devilry_student_groupmetadata')
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         self.assertEquals(deadlinepanel.find_element_by_css_selector('.deadlinetext').text.strip(), '')
+
+
+    def test_non_electronic(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.sub_p1_a1.delivery_types = NON_ELECTRONIC
+        self.testhelper.sub_p1_a1.save()
+
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1')
+        delivery = self.testhelper.add_delivery('sub.p1.a1.g1', self.fileinfo)
+        self.testhelper.add_feedback(delivery, verdict={'grade': 'F', 'points': 2, 'is_passing_grade': False},
+                                     rendered_view='Bad stuff')
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-warning').text.strip(), 'Closed')
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 1)
+
+        deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
+        deliverypanel = deadlinepanel.find_elements_by_css_selector('.devilry_student_groupinfo_delivery')[0]
+
+        for selector in ('.timeofdeliveryblock', '.deliverymadebyblock', '.fileblock'):
+            self.assertEquals(len(deliverypanel.find_elements_by_css_selector(selector)), 0)
+
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view').text.strip(), 'Bad stuff')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.activefeedbackblock h4').text.strip(), 'Active feedback')
 
 
 

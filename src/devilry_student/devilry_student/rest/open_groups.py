@@ -73,6 +73,7 @@ class OpenGroupsView(ListModelView):
     def get_queryset(self):
         qry = AssignmentGroup.active_where_is_candidate(self.request.user)
         qry = qry.filter(is_open=True)
+        qry = qry.filter(parentnode__delivery_types=0) # Only include ELECTRONIC - for now this makes sense, and if we need NON-ELECTRONIC, we make a new API, or add an option to this API.
         qry = qry.annotate(newest_deadline=Max('deadlines__deadline'))
         qry = qry.annotate(deadline_count=Count('deadlines__deadline'))
         qry = qry.filter(deadline_count__gt=0)
