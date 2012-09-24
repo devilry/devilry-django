@@ -62,10 +62,12 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
             '</p>',
         '</div>',
 
-        '<div class="deliverymadebyblock">',
-            '<h4>', gettext('Delivery made by'), '</h4>',
-            '<p>{delivery.delivered_by.user.displayname}</p>',
-        '</div>',
+        '<tpl if="delivery.delivered_by">',
+            '<div class="deliverymadebyblock">',
+                '<h4>', gettext('Delivery made by'), '</h4>',
+                '<p>{delivery.delivered_by.user.displayname}</p>',
+            '</div>',
+        '</tpl>',
 
         '<div class="fileblock">',
             '<h4>', gettext('Files'), '</h4>',
