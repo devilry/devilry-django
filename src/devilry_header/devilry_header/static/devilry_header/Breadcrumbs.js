@@ -20,7 +20,7 @@ Ext.define('devilry_header.Breadcrumbs', {
                     '<li class="active">{text}</li>',
                 '</tpl>',
             '</tpl>',
-        '<ul>'
+        '</ul>'
     ],
 
     /**
