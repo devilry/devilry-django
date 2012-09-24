@@ -47,6 +47,19 @@ class TestRestOpenGroups(TestCase):
         groupnames = set([group['name'] for group in content])
         self.assertEquals(groupnames, set(['g2', 'g3']))
 
+    def test_open_groups_nonelectronic(self):
+
+        # Add 3 to the active period, but close one of the groups
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a2.g2:candidate(student1).d1')
+        self.testhelper.sub_p1_a1.delivery_types = 1
+        self.testhelper.sub_p1_a1.save()
+
+        content, response = self._getas('student1')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        self.assertEquals(content[0]['name'], 'g2')
+
     def test_deadline_expired_and_order(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student1).d1:ends(70)')
