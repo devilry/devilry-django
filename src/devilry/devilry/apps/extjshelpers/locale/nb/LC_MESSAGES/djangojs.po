@@ -511,7 +511,7 @@ msgstr ""
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:36
 msgid "No %(deadlines_term)s"
-msgstr "Ingen %(deadline_term)s"
+msgstr "Ingen %(deadlines_term)s"
 
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsGrid.js:141
 #: static/extjs_classes/extjshelpers/studentsmanager/StudentsManager.js:271
