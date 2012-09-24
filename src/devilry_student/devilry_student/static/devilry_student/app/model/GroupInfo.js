@@ -12,6 +12,7 @@ Ext.define('devilry_student.model.GroupInfo', {
         {name: 'deadlines', type: 'auto'},
         {name: 'breadcrumbs', type: 'auto'},
         {name: 'add_delivery_url', type: 'string'},
+        {name: 'delivery_types', type: 'int'},
         {name: 'active_feedback', type: 'auto'}
     ],
 
