@@ -52,6 +52,9 @@ Ext.define('devilry_student.model.GroupInfo', {
         if(!this.has_any_deadlines()) {
             return false;
         }
+        if(this.get('delivery_types') == 1) { // 1 == NON_ELECTRONIC
+            return false;
+        }
         var hard_deadlines = this.get('deadline_handling') === 1;
         if(hard_deadlines) {
             return this.get('deadlines')[0].in_the_future;
