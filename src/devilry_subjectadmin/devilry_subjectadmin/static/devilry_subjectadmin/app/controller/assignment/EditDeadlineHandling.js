@@ -83,19 +83,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
 
     _updateDeadlineHandlingWidget: function() {
         var deadline_handling = this.assignmentRecord.get('deadline_handling');
-        var title, body;
         var SOFT = 0;
         var HARD = 1;
-
-        if(deadline_handling == SOFT) {
-            title = gettext('Soft deadlines');
-        } else if(deadline_handling == HARD) {
-            title = gettext('Hard deadlines');
-        } else {
-            // NOTE: We do not translate this, because it is a bug, and we do not raise an error because it is a bug that should not crash the entire UI.
-            title = 'Unknown deadline handling value';
-        }
-        this.getReadOnlyView().updateTitle(title);
         this.getReadOnlyViewBody().update({
             deadline_handling: deadline_handling,
             SOFT: SOFT,
