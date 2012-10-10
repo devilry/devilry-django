@@ -35,6 +35,10 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 items: [{
                     xtype: 'container',
                     columnWidth: 1,
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%'
+                    },
                     items: [{
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -81,6 +85,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     }]
                 }, {
                     xtype: 'container',
+                    layout: 'anchor',
                     border: false,
                     width: 250,
                     margin: '6 0 0 40',
@@ -89,6 +94,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     },
                     items: [{
                         xtype: 'adminsbox',
+                        anchor: '100%',
                         margin: '0 0 0 0'
                     }]
                 }]
