@@ -13,6 +13,11 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         'devilry_extjsextras.MarkupMoreInfoBox'
     ],
 
+    layout: 'anchor',
+    defaults: {
+        anchor: '100%'
+    },
+
     adminsTpl: [
         '<h4>', gettext('Administrator rights'), '</h4>',
         '<p class="muted">',
@@ -54,8 +59,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                         gettext('Add or edit administrators'),
                     '</a>',
                 '</p>',
-            '</tpl>',
-            '<tpl if="admins.length == 0">',
+            '<tpl else>',
                 '<p>',
                     '<small class="muted">', gettext('No administrators') ,'</small>',
                 '</p>',
