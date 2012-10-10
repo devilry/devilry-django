@@ -101,6 +101,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
         this.moretext = button.getHTML();
         button.setHTML(this.lesstext);
         this._getMoreEl().show();
+        this.hide(); this.show(); // Force re-render
         Ext.defer(function() {
             // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
             button.replaceCls('morebutton', 'lessbutton');
@@ -110,6 +111,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     _onLess: function(e) {
         e.preventDefault();
         this._getMoreEl().hide();
+        this.hide(); this.show(); // Force re-render
         var button = this._getLessButtonEl();
         button.setHTML(this.moretext);
         Ext.defer(function() {
