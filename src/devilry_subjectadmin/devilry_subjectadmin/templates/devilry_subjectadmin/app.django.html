@@ -34,6 +34,11 @@
         is_superuser: {{ user.is_superuser|lower }},
         username: '{{ user.username }}'
     };
+
+    {#NOTE: This is required for thee old restful API classes.#}
+    Ext.Ajax.defaultHeaders = {
+        'X_DEVILRY_USE_EXTJS': true
+    };
 </script>
 
 <script type="text/javascript" src="{% url devilry_subjectadmin_i18n %}"></script>
