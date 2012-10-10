@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models.deliverytypes import ELECTRONIC, NON_ELECTRONIC
 
 from .base import SubjectAdminSeleniumTestCase
 from .base import RenameBasenodeTestMixin
@@ -198,17 +199,14 @@ class TestEditAnonymous(SubjectAdminSeleniumTestCase):
         self.cancelbutton = editanonymouspanel.find_element_by_css_selector('.cancelbutton button')
 
     def test_readonlypanel(self):
-        self.assertIn('Not anonymous', self.readOnlyPanel.text)
-        self.assertIn('Examiners and students can see each other and communicate.',
-                      self.readOnlyPanel.text)
+        self.waitFor(self.readOnlyPanel, lambda p: 'Not anonymous' in p.text)
 
     def test_editanonymous(self):
         self._click_edit()
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).anonymous)
         self.anonymouscheckbox.click()
         self.savebutton.click()
-        self.waitForText('>Anonymous') # If this times out, is has not been updated
-        self.waitForText('Examiners and students can not see each other and they can not communicate.') # If this times out, is has not been updated
+        self.waitFor(self.readOnlyPanel, lambda p: 'Anonymous' in p.text)
         self.assertTrue(Assignment.objects.get(pk=self.week1.pk).anonymous)
 
     def test_cancel(self):
@@ -251,19 +249,16 @@ class TestEditDeadlineHandling(SubjectAdminSeleniumTestCase):
         self.cancelbutton = editdeadline_handlingpanel.find_element_by_css_selector('.cancelbutton button')
 
     def test_readonlypanel(self):
-        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 0)
-        self.assertIn('Soft deadlines', self.readOnlyPanel.text)
-        self.assertIn('Possible to add deliveries after active deadline',
-                      self.readOnlyPanel.text)
+        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, ELECTRONIC)
+        self.waitFor(self.readOnlyPanel, lambda p: 'Soft deadlines' in p.text)
 
     def test_editdeadline_handling(self):
         self._click_edit()
         self.assertFalse(Assignment.objects.get(pk=self.week1.pk).deadline_handling)
         self.deadline_handlingcheckbox.click()
         self.savebutton.click()
-        self.waitForText('>Hard deadlines') # If this times out, is has not been updated
-        self.waitForText('Impossible to add deliveries after active deadline') # If this times out, is has not been updated
-        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 1)
+        self.waitFor(self.readOnlyPanel, lambda p: 'Hard deadlines' in p.text)
+        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, NON_ELECTRONIC)
 
     def test_cancel(self):
         self._click_edit()
@@ -272,11 +267,11 @@ class TestEditDeadlineHandling(SubjectAdminSeleniumTestCase):
 
     def test_editdeadline_handling_nochange(self):
         self._click_edit()
-        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 0)
+        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, ELECTRONIC)
         self.savebutton.click()
         self.waitForDisplayed(self.readOnlyPanel)
         self.waitForText('Soft deadlines') # If this times out, it has been updated
-        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, 0)
+        self.assertEquals(Assignment.objects.get(pk=self.week1.pk).deadline_handling, ELECTRONIC)
 
 
 
