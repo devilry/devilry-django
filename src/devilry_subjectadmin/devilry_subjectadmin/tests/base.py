@@ -134,8 +134,8 @@ class EditAdministratorsTestMixin(object):
         raise NotImplementedError()
 
     def _open_edit_administrators_window(self):
-        self.waitForCssSelector('.devilry_subjectadmin_adminsbox .edit_link')
-        self.selenium.find_element_by_css_selector('.devilry_subjectadmin_adminsbox .edit_link').click()
+        self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_adminsbox .morebutton').click()
+        self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_adminsbox .editadmins_link').click()
         self.waitForCssSelector('.devilry_subjectadmin_manageadminspanel')
 
     def _add_user_via_ui(self, username, query=None):
