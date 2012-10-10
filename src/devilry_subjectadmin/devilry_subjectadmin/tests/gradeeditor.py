@@ -25,7 +25,7 @@ class TestGradeEditorWidget(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_subjectadmin_gradeeditorselect_widget')
         title = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .editablesidebarbox_title').text.strip()
         body = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .editablesidebarbox_body').text.strip()
-        self.assertTrue(title.startswith('Grade editor'))
+        self.assertTrue(title.startswith('Grading system'))
         self.assertEquals(body, 'Approved/not approved')
         editlink = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget a.edit_link')
         editpath = '/assignment/{id}/@@grade-editor/'.format(id=assignmentid)
@@ -81,7 +81,7 @@ class TestGradeEditorEdit(SubjectAdminSeleniumTestCase, SetConfigMixin):
     def test_render_what_is(self):
         self._loginToGradeEditorEdit('week2admin', self.assignmentid)
         title = self._find_element('.what_is_a_gradeeditor_help h3').text.strip()
-        self.assertEquals(title, 'What is a Grade editor?')
+        self.assertEquals(title, 'What is a grading system?')
 
     def test_return_to_assignmentlink(self):
         self._loginToGradeEditorEdit('week2admin', self.assignmentid)

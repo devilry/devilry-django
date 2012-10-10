@@ -38,9 +38,9 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Overview' ,{
                 xtype: 'box',
                 cls: 'bootstrap',
                 html: [
-                    '<h1>', gettext('Grade editor'), '</h1>',
+                    '<h1>', gettext('Grading system'), '</h1>',
                     '<p><small class="muted">',
-                        gettext('To make it easy for examiners to create all the information related to a grade, Devilry use grade editors. Grade editors give examiners a unified user-interface tailored for different kinds of grading systems.'),
+                        gettext('To make it easy for examiners to create all the information related to a grade, Devilry has a plugin architecture for grading systems.'),
                     '</small></p>'
                 ].join('')
             }, {

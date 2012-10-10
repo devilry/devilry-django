@@ -69,7 +69,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
         var title, body;
         var editurl = devilry_subjectadmin.utils.UrlLookup.editGradeEditor(
             this.assignmentRecord.get('id'));
-        this.getGradeEditorSelectWidget().updateTitle(gettext('Grade editor'), editurl);
+        this.getGradeEditorSelectWidget().updateTitle(gettext('Grading system'), editurl);
         var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
         this.getGradeEditorSelectWidget().updateBody({
             title: this.gradeEditorRegistryItemRecord.get('title'),

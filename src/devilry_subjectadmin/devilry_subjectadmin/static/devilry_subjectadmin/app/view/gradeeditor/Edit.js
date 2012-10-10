@@ -59,9 +59,9 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Edit' ,{
         cls: 'bootstrap what_is_a_gradeeditor_help',
         html: [
             '<div class="alert alert-info">',
-                '<h3 class="alert-heading">', gettext('What is a Grade editor?'), '</h3>',
+                '<h3 class="alert-heading">', gettext('What is a grading system?'), '</h3>',
                 '<p>',
-                    gettext('A Grade editor is what examiners use to give feedback to students.'),
+                    gettext('A grading system is what examiners use to give feedback to students.'),
                 '</p>',
 
                 '<p>', gettext('Internally in Devilry, a grade is stored as'), ':</p>',

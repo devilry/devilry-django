@@ -587,8 +587,8 @@ msgid "Delete"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:113
-msgid "Grade editor"
-msgstr ""
+msgid "Grading system"
+msgstr "Karaktersystem"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:53
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:109

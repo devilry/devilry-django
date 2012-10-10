@@ -101,7 +101,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
     },
 
     _setBreadcrumb: function(change) {
-        var title = gettext('Grade editor');
+        var title = gettext('Grading system');
         if(change) {
             this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [{
                 text: title,
