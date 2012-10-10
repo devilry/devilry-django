@@ -84,19 +84,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
 
     _updateAnonymousWidget: function() {
         var anonymous = this.assignmentRecord.get('anonymous');
-        var title, info;
-
-        if(anonymous) {
-            title = gettext('Anonymous');
-            info = gettext('Examiners and students can not see each other and they can not communicate.');
-        } else {
-            title = gettext('Not anonymous');
-            info = gettext('Examiners and students can see each other and communicate.');
-        }
-        var anonymous = this.assignmentRecord.get('anonymous');
-        this.getReadOnlyView().updateTitle(title);
         this.getReadOnlyViewBody().update({
-            info: info
+            anonymous: anonymous
         });
     },
 
