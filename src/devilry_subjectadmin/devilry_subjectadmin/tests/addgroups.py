@@ -100,7 +100,7 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         tags = student1row.find_element_by_css_selector('.tags')
         tags_and_examiners = student1row.find_element_by_css_selector('.tags_and_examiners')
 
-    def test_autosetexaminers(self):
+    def test_render_autosetexaminers(self):
         self._add_relatedstudent('student1', 'Student One', tags='group1,group2')
         self._add_relatedstudent('student2', full_name=None)
         self._add_relatedexaminer('examiner1', 'Examiner One', tags='group1')
@@ -119,9 +119,9 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         self.assertEquals(group2examiner, 'No matching examiners')
 
 
-    def test_add_student(self):
+    def test_add_student_include_tags(self):
         self.assertEquals(len(self.assignment.assignmentgroups.all()), 0)
-        self._add_relatedstudent('student1')
+        self._add_relatedstudent('student1', tags='group1,group2')
         self._add_relatedstudent('student2')
         self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
         self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
@@ -136,5 +136,59 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_subjectadmin_managestudentsoverview')
         groups = self.assignment.assignmentgroups.all()
         self.assertEquals(len(groups), 1)
+
         g1 = groups[0]
         self.assertEquals(g1.candidates.all()[0].student.username, 'student1')
+        self.assertEquals(g1.examiners.count(), 0)
+        tags = [tag.tag for tag in g1.tags.all()]
+        self.assertEquals(set(tags), set(['group1', 'group2']))
+
+    def test_add_student_autosetexaminers(self):
+        self.assertEquals(len(self.assignment.assignmentgroups.all()), 0)
+        self._add_relatedstudent('student1', 'Student One', tags='group1,group2')
+        self._add_relatedstudent('student2', full_name=None)
+        self._add_relatedexaminer('examiner1', 'Examiner One', tags='group1')
+        self._add_relatedexaminer('examiner2', 'Examiner Two', tags='group1,other')
+
+        self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview .relatedstudentsgrid')
+        self._set_checkbox(self._get_autosetexaminerscheckbox(), check=True)
+
+        self._click_row_by_username('student1')
+        self._get_addbutton().click()
+        self.waitForCssSelector('.devilry_subjectadmin_managestudentsoverview')
+        groups = self.assignment.assignmentgroups.all()
+        self.assertEquals(len(groups), 1)
+
+        g1 = groups[0]
+        self.assertEquals(g1.candidates.all()[0].student.username, 'student1')
+        examiners = g1.examiners.all()
+        self.assertEquals(len(examiners), 2)
+        examiner_usernames = [examiner.user.username for examiner in examiners]
+        self.assertEquals(set(examiner_usernames), set(['examiner1', 'examiner2']))
+        tags = [tag.tag for tag in g1.tags.all()]
+        self.assertEquals(set(tags), set(['group1', 'group2']))
+
+    def test_add_student_no_includetags(self):
+        self.assertEquals(len(self.assignment.assignmentgroups.all()), 0)
+        self._add_relatedstudent('student1', 'Student One', tags='group1,group2')
+        self._add_relatedstudent('student2', full_name=None)
+        self._add_relatedexaminer('examiner1', 'Examiner One', tags='group1')
+        self._add_relatedexaminer('examiner2', 'Examiner Two', tags='group1,other')
+
+        self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview .relatedstudentsgrid')
+        self._set_checkbox(self._get_includetagscheckbox(), check=False)
+
+        self._click_row_by_username('student1')
+        self._get_addbutton().click()
+        self.waitForCssSelector('.devilry_subjectadmin_managestudentsoverview')
+        groups = self.assignment.assignmentgroups.all()
+        self.assertEquals(len(groups), 1)
+
+        g1 = groups[0]
+        self.assertEquals(g1.candidates.all()[0].student.username, 'student1')
+        self.assertEquals(g1.examiners.count(), 0)
+        self.assertEquals(g1.tags.count(), 0)
