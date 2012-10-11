@@ -57,21 +57,35 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
 
     /** Get period info from breadcrumb.
      *
-     * @return {Object} An object with ``id``, ``short_name`` and ``path``. */
+     * @return {Object} An object with ``id``, ``path`` and ``is_admin``. If ``is_admin`` is ``false``, ``id`` is ``null``.
+     *
+     * */
     getPeriodInfoFromBreadcrumb: function() {
         var breadcrumb = this.get('breadcrumb');
-        if(breadcrumb.length < 2) {
-            return null;
+        var period_id;
+        var periodpath;
+        var is_admin;
+        console.log(breadcrumb);
+        if(breadcrumb.length == 0) {
+         throw "Breadcrumb is empty";
+        } else if(breadcrumb.length == 1) {
+            period_id = null;
+            periodpath = breadcrumb[0].text.split('.').slice(0, 2).join('.');
+            is_admin = false;
+        } else {
+            var periodpathArray = [];
+            for(var index=0; index<breadcrumb.length-1; index++)  { // Exclude the last item (the assignment)
+                var breadcrumbItem = breadcrumb[index];
+                periodpathArray.push(breadcrumbItem.text);
+            }
+            period_id = breadcrumb[breadcrumb.length - 2].id;
+            periodpath = periodpathArray.join('.');
+            is_admin = true;
         }
-        var periodpathArray = [];
-        for(var index=0; index<breadcrumb.length-1; index++)  { // Exclude the last item (the assignment)
-            var breadcrumbItem = breadcrumb[index];
-            periodpathArray.push(breadcrumbItem.text);
-        }
-        var period_id = breadcrumb[breadcrumb.length - 2].id;
         return {
             id: period_id,
-            path: periodpathArray.join('.')
+            path: periodpath,
+            is_admin: is_admin
         };
     }
 });
