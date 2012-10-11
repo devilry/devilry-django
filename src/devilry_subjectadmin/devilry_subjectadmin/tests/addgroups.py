@@ -53,7 +53,7 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
 
     def _expand_morehelp(self):
         self.waitForAndFindElementByCssSelector('.sidebarpanel .morebutton').click()
-        self.waitForDisplayed('.sidebarpanel .lessbutton')
+        self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector('.sidebarpanel .lessbutton')) == 1)
 
     def _is_checked(self, checkbox):
         return 'x-form-cb-checked' in checkbox.get_attribute('class').split()
