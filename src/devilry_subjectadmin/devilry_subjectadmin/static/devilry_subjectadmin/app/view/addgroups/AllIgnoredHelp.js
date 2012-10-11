@@ -26,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
             '</p>',
             '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}">',
                 gettext('Add more students to {periodpath}'),
-            '</a></strong> <small>(', gettext('Opens in new window') ,')</small></p>',
+            '</a></strong> <small class="muted">(', gettext('Opens in new window') ,')</small></p>',
             '<p>',
                 gettext('When you return to this page, reload it to see newly added students.'),
             '</p>'
