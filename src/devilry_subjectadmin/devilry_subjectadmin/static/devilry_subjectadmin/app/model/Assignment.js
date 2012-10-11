@@ -65,7 +65,6 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         var period_id;
         var periodpath;
         var is_admin;
-        console.log(breadcrumb);
         if(breadcrumb.length == 0) {
          throw "Breadcrumb is empty";
         } else if(breadcrumb.length == 1) {

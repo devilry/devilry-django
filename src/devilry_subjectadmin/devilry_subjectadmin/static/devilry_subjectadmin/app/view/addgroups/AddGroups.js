@@ -178,15 +178,17 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '<p>',
                 gettext('Only students registered on {periodpath} is available in the list.'),
             '</p>',
-            '<p>',
-                '<tpl if="is_periodadmin">',
+            '<tpl if="is_periodadmin">',
+                '<p>',
                     '<a target="_blank" href="{manageRelatedStudentsUrl}">',
                         gettext('Add or edit students on {periodpath}'),
                     '</a>',
-                '<tpl else>',
+                '</p>',
+            '<tpl else>',
+                '<p class="text-warning">',
                     gettext('You do not have administrator rights on {periodpath}, so you need to ask someone with administrator rights if you need to add more students than the ones available in the list.'),
-                '</tpl>',
-            '</p>'
+                '</p>',
+            '</tpl>'
         ).apply({
             periodpath: Ext.String.format('<em>{0}</em>', this.periodinfo.path),
             is_periodadmin: this.periodinfo.is_admin,
