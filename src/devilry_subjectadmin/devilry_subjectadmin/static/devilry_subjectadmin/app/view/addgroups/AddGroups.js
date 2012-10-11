@@ -114,7 +114,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 border: false,
                 region: 'west',
                 autoScroll: true,
-                width: 300,
+                width: 370,
                 bodyPadding: '0 30 0 0',
                 items: [{
                     xtype: 'box',
@@ -175,6 +175,8 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '<tpl if="hasIgnored"><p>',
                 gettext('<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment.'),
             '</p></tpl>',
+
+            '<h3>', gettext('Missing students?'), '</h3>',
             '<p>',
                 gettext('Only students registered on {periodpath} is available in the list.'),
             '</p>',
@@ -184,6 +186,9 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         gettext('Add or edit students on {periodpath}'),
                     '</a>',
                 '</p>',
+                '<p class="muted"><small>',
+                    gettext('You need to reload this page when you return after adding students.'),
+                '</small></p>',
             '<tpl else>',
                 '<p class="text-warning">',
                     gettext('You do not have administrator rights on {periodpath}, so you need to ask someone with administrator rights if you need to add more students than the ones available in the list.'),
