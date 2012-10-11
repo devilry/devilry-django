@@ -305,7 +305,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         var ignoredcount = this._getIgnoredCount();
         var allIgnored = this.getRelatedStudentsRoStore().getTotalCount() == ignoredcount;
         if(allIgnored) {
-            var periodinfo = this.assignmentRecord.getPeriodInfoFromBreadcrumb()
+            var periodinfo = this.assignmentRecord.getPeriodInfoFromBreadcrumb();
             this.getAllIgnoredHelp().setBody(periodinfo);
             this.getOverview().getLayout().setActiveItem(1);
         } else {
