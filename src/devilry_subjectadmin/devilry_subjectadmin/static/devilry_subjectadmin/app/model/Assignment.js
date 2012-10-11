@@ -60,13 +60,18 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
      * @return {Object} An object with ``id``, ``short_name`` and ``path``. */
     getPeriodInfoFromBreadcrumb: function() {
         var breadcrumb = this.get('breadcrumb');
-        var subjectBreadcrumb = breadcrumb[breadcrumb.length-2];
-        var periodBreadcrumb = breadcrumb[breadcrumb.length-1];
-        var periodpath = Ext.String.format('{0}.{1}', subjectBreadcrumb.short_name, periodBreadcrumb.short_name);
+        if(breadcrumb.length < 2) {
+            return null;
+        }
+        var periodpathArray = [];
+        for(var index=0; index<breadcrumb.length-1; index++)  { // Exclude the last item (the assignment)
+            var breadcrumbItem = breadcrumb[index];
+            periodpathArray.push(breadcrumbItem.text);
+        }
+        var period_id = breadcrumb[breadcrumb.length - 2].id;
         return {
-            id: periodBreadcrumb.id,
-            short_name: periodBreadcrumb.short_name,
-            path: periodpath
+            id: period_id,
+            path: periodpathArray.join('.')
         };
     }
 });
