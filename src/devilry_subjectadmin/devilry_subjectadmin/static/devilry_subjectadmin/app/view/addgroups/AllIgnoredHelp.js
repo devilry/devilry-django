@@ -7,20 +7,31 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
     items: [{
         xtype: 'box',
         itemId: 'help'
-    }],
-    tbar: [{
-        text: gettext('Advanced options'),
-        menu: {
-            xtype: 'menu',
-            plain: true,
-            items: [{
-                xtype: 'addgroupsallowduplicatescheckbox'
-            }]
-        }
+    }, {
+        xtype: 'fieldset',
+        margin: '20 0 0 0',
+        collapsible: true,
+        collapsed: true,
+        title: gettext('Advanced options'),
+        items: [{
+            xtype: 'box',
+            cls: 'bootstrap',
+            html: [
+                '<h2>', gettext('Allow duplicates?'), '</h2>',
+                '<p>',
+                    gettext('If you want to add the same student to more than one group on this assignment, click the button below. This will show the list of students without filtering out students already registered on the assignment.'),
+                '</p>'
+            ].join('')
+        }, {
+            xtype: 'button',
+            itemId: 'allowDuplicatesButton',
+            text: 'Allow duplicates'
+        }]
     }],
 
     setBody: function(periodinfo) {
         var help = Ext.create('Ext.XTemplate',
+            '<h1>', gettext('No students available') ,'</h1>',
             '<p>',
                 gettext('All students registered on {periodpath} is already registered on the assignment.'),
             '</p>',

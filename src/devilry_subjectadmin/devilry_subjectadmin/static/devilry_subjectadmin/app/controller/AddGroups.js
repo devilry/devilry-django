@@ -40,6 +40,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         ref: 'allIgnoredHelp',
         selector: 'addgroupsoverview addgroupsallignored'
     }, {
+        ref: 'allowDuplicatesCheckbox',
+        selector: 'addgroupsallowduplicatescheckbox'
+    }, {
         ref: 'automapExaminersCheckbox',
         selector: 'addgroupsoverview #automapExaminersCheckbox'
     }, {
@@ -67,6 +70,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             },
             'addgroupsoverview #deselectAll': {
                 click: this._onDeselectAll
+            },
+            'addgroupsallignored #allowDuplicatesButton': {
+                click: this._onAllowDuplicatesButtonClick
             },
             'addgroupsoverview addgroupsallowduplicatescheckbox': {
                 change: this._onAllowDuplicatesChange,
@@ -249,6 +255,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         selModel.deselectAll();
     },
 
+    _onAllowDuplicatesButtonClick: function() {
+        this.getAllowDuplicatesCheckbox().setValue(true);
+    },
     _onAllowDuplicatesChange: function(field, allowDuplicates) {
         if(allowDuplicates) {
             this.getRelatedStudentsRoStore().clearFilter();
@@ -257,6 +266,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         }
         this._checkAllIgnored();
     },
+
     _onIncludeTagsChange: function(field, includeTags) {
         if(includeTags) {
             this.getTagsColumn().show();
