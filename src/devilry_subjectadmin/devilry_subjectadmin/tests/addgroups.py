@@ -22,6 +22,11 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
                                               tags=tags,
                                               candidate_id=candidate_id)
 
+    def _add_relatedexaminer(self, username, full_name=None, tags=''):
+        user = self.testhelper.create_user(username, fullname=full_name)
+        self.period.relatedexaminer_set.create(user=user,
+                                               tags=tags)
+
     def _find_gridrows(self):
         return self.selenium.find_elements_by_css_selector('.relatedstudentsgrid .x-grid-row')
 
@@ -53,6 +58,13 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
     def _is_checked(self, checkbox):
         return 'x-form-cb-checked' in checkbox.get_attribute('class').split()
 
+    def _set_checkbox(self, checkbox, check):
+        if self._is_checked(checkbox) and check:
+            raise ValueError('Checkbox is already checked')
+        if not self._is_checked(checkbox) and not check:
+            raise ValueError('Checkbox is already unchecked')
+        checkbox.find_element_by_css_selector('input[type=button]').click()
+
     def test_render_sidebar(self):
         self._add_relatedstudent('student1')
         self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
@@ -70,7 +82,7 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         self.assertEquals(link.text, 'Add or edit students on sub.p1')
 
     def test_render_grid(self):
-        self._add_relatedstudent('student1', 'Student One')
+        self._add_relatedstudent('student1', 'Student One', tags='group1,group2')
         self._add_relatedstudent('student2', full_name=None)
 
         self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
@@ -84,6 +96,28 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         student2row = self._get_row_by_username('student2')
         self.assertEquals(student2row.find_element_by_css_selector('.full_name').text.strip(), 'Full name missing')
         self.assertEquals(student2row.find_element_by_css_selector('.username').text.strip(), 'student2')
+
+        tags = student1row.find_element_by_css_selector('.tags')
+        tags_and_examiners = student1row.find_element_by_css_selector('.tags_and_examiners')
+
+    def test_autosetexaminers(self):
+        self._add_relatedstudent('student1', 'Student One', tags='group1,group2')
+        self._add_relatedstudent('student2', full_name=None)
+        self._add_relatedexaminer('examiner1', 'Examiner One', tags='group1')
+
+        self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview .relatedstudentsgrid')
+
+        student1row = self._get_row_by_username('student1')
+        tags_and_examiners = student1row.find_element_by_css_selector('.tags_and_examiners')
+        self._set_checkbox(self._get_autosetexaminerscheckbox(), check=True)
+        self.assertEquals(len(tags_and_examiners.find_elements_by_css_selector('li')), 2)
+        group1examiner = tags_and_examiners.find_element_by_css_selector('.tag_group1 .examiners').text.strip()
+        self.assertEquals(group1examiner, 'Examiner One')
+        group2examiner = tags_and_examiners.find_element_by_css_selector('.tag_group2 .examiners').text.strip()
+        self.assertEquals(group2examiner, 'No matching examiners')
+
 
     def test_add_student(self):
         self.assertEquals(len(self.assignment.assignmentgroups.all()), 0)

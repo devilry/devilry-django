@@ -75,11 +75,11 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '</div>'
         );
         this.tagsAndExaminersCellTemplate = new Ext.XTemplate(
-            '<ul class="unstyled">',
+            '<ul class="unstyled tags_and_examiners tags_and_examiners_{username}">',
                 '<tpl for="tagsAndExaminers">',
-                    '<li>',
-                        '{tag}: ',
-                        '<small>',
+                    '<li class="tag_{tag}">',
+                        '<span class="tag">{tag}</span>: ',
+                        '<small class="examiners">',
                             '<tpl if="examiners">',
                                 '<tpl for="examiners">',
                                     '<tpl if="data.user.full_name">',
@@ -98,7 +98,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '</ul>'
         );
         this.tagsCellTemplate = new Ext.XTemplate(
-            '<ul class="unstyled">',
+            '<ul class="unstyled tags tags_{username}">',
                 '<tpl for="tags">',
                     '<li>{.}</li>',
                 '</tpl>',
@@ -180,7 +180,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
 
     _getGridColumns: function() {
         var includeTags = true;
-        var automapExaminers = true;
+        var automapExaminers = false;
         var showTagsAndExaminersCol = false;
         var showTagsCol = false;
         if(includeTags && automapExaminers) {
@@ -224,7 +224,8 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
 
     _renderTagsCell: function(unused1, unused2, relatedStudentRecord) {
         return this.tagsCellTemplate.apply({
-            tags: relatedStudentRecord.getTagsAsArray()
+            tags: relatedStudentRecord.getTagsAsArray(),
+            username: relatedStudentRecord.get('user').username
         });
     },
 
@@ -240,7 +241,8 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             });
         }
         return this.tagsAndExaminersCellTemplate.apply({
-            tagsAndExaminers: tagsAndExaminers
+            tagsAndExaminers: tagsAndExaminers,
+            username: relatedStudentRecord.get('user').username
         });
     }
 });
