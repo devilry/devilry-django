@@ -182,7 +182,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '</p>',
             '<tpl if="is_periodadmin">',
                 '<p>',
-                    '<a target="_blank" href="{manageRelatedStudentsUrl}">',
+                    '<a target="_blank" href="{manageRelatedStudentsUrl}" class="addoreditstudents_link">',
                         gettext('Add or edit students on {periodpath}'),
                     '</a>',
                 '</p>',
