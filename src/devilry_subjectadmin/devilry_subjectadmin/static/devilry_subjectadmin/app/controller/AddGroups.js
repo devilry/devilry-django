@@ -54,12 +54,19 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     }, {
         ref: 'tagsAndExaminersColumn',
         selector: 'addgroupsoverview #tagsAndExaminersColumn'
+    }, {
+        ref: 'saveButton',
+        selector: 'addgroupsoverview #saveButton'
     }],
 
     init: function() {
         this.control({
             'addgroupsoverview': {
                 render: this._onRender
+            },
+
+            'addgroupsoverview addgroupspanel #studentsGrid': {
+                selectionchange: this._onGridSelectionChange
             },
 
             'addgroupsoverview #saveButton': {
@@ -154,6 +161,14 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
     _onRelatedExaminersProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
+    },
+
+    _onGridSelectionChange: function(selModel, selected) {
+        if(selected.length == 0) {
+            this.getSaveButton().disable();
+        } else {
+            this.getSaveButton().enable();
+        }
     },
 
 

@@ -113,6 +113,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             items: [{
                 xtype: 'grid',
                 region: 'center',
+                itemId: 'studentsGrid',
                 cls: 'bootstrap relatedstudentsgrid',
                 store: 'RelatedStudentsRo',
                 selModel: selModel,
@@ -147,6 +148,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 }, {
                     xtype: 'primarybutton',
                     cls: 'addselectedbutton',
+                    disabled: true,
                     itemId: 'saveButton',
                     text: gettext('Add selected students')
                 }]
