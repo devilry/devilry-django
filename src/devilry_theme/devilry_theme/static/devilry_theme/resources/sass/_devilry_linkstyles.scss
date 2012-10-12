@@ -1,0 +1,24 @@
+// See http://css-tricks.com/snippets/css/css-triangle/
+span.expandable-indicator {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin: 0 3px 0 3px;
+    vertical-align: middle;
+    border-top: 4px solid $linkColor;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    content: "";
+}
+
+span.collapsible-indicator {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin: 0 3px 0 3px;
+    vertical-align: middle;
+    border-bottom: 4px solid $linkColor;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    content: "";
+}
