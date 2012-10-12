@@ -33,27 +33,34 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
         }]
     }],
 
-    setBody: function(periodinfo) {
+    setBody: function(periodinfo, totalStudentsOnPeriod) {
         var help = Ext.create('Ext.XTemplate',
             '<h1>', gettext('No students available') ,'</h1>',
-            '<p>',
-                gettext('All students registered on {periodpath} is already registered on the assignment.'),
-            '</p>',
-            '<tpl if="is_periodadmin">',
-                '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}">',
-                    gettext('Add more students to {periodpath}'),
+            '<tpl if="periodHasStudents">',
+                '<p>',
+                    gettext('All students registered on {periodpath} is already registered on the assignment.'),
+                '</p>',
+            '<tpl else>',
+                '<p class="text-warning no_students_on_period_warning">',
+                    gettext('There is no students on {periodpath}. Only students registered on {periodpath} can be added to this assignment.'),
+                '</p>',
+            '</tpl>',
+            '<tpl if="isPeriodadmin">',
+                '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}" class="add_more_students_to_period_link">',
+                    gettext('Add students to {periodpath}'),
                 '</a></strong> <small class="muted">(', gettext('Opens in new window') ,')</small></p>',
                 '<p>',
                     gettext('When you return to this page, reload it to see newly added students.'),
                 '</p>',
             '<tpl else>',
-                '<p class="text-warning">',
+                '<p class="text-warning not_periodadmin_warning">',
                     gettext('You do not have administrator rights on {periodpath}, so you need to ask someone with administrator rights if you need to add more students.'),
                 '</p>',
             '</tpl>'
         ).apply({
             periodpath: Ext.String.format('<em>{0}</em>', periodinfo.path),
-            is_periodadmin: periodinfo.is_admin,
+            periodHasStudents: totalStudentsOnPeriod > 0,
+            isPeriodadmin: periodinfo.is_admin,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(periodinfo.id)
         });
         this.down('#help').update(help);

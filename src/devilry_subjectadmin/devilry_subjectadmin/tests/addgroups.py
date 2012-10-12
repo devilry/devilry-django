@@ -192,3 +192,39 @@ class TestAddGroups(SubjectAdminSeleniumTestCase):
         self.assertEquals(g1.candidates.all()[0].student.username, 'student1')
         self.assertEquals(g1.examiners.count(), 0)
         self.assertEquals(g1.tags.count(), 0)
+
+    def test_allignored(self):
+        self._add_relatedstudent('student1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+
+        self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_addgroupsallignoredhelp')
+
+        self.assertIn('No students available', panel.text)
+        self.assertEquals(panel.find_element_by_css_selector('a.add_more_students_to_period_link').text.strip(),
+                          'Add students to sub.p1')
+
+    def test_allignored_no_relatedstudents(self):
+        self._loginTo('subadmin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_addgroupsallignoredhelp')
+
+        self.assertIn('No students available', panel.text)
+        nostudents_warning = panel.find_element_by_css_selector('.no_students_on_period_warning')
+        self.assertIn('There is no students on sub.p1', nostudents_warning.text)
+        self.assertEquals(panel.find_element_by_css_selector('a.add_more_students_to_period_link').text.strip(),
+                          'Add students to sub.p1')
+
+    def test_allignored_not_periodadmin(self):
+        self._add_relatedstudent('student1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+
+        self._loginTo('a1admin', self.testhelper.sub_p1_a1.id)
+        self.waitForCssSelector('.devilry_subjectadmin_addstudentsoverview')
+        panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_addgroupsallignoredhelp')
+
+        self.assertIn('No students available', panel.text)
+        self.assertEquals(len(panel.find_elements_by_css_selector('a.add_more_students_to_period_link')), 0)
+        not_periodadmin_warning = panel.find_element_by_css_selector('.not_periodadmin_warning')
+        self.assertIn('You do not have administrator rights on sub.p1', not_periodadmin_warning.text)
