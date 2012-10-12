@@ -57,6 +57,12 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     }, {
         ref: 'saveButton',
         selector: 'addgroupsoverview #saveButton'
+    }, {
+        ref: 'formPanel',
+        selector: 'addgroupsoverview #firstDeadlineForm'
+    }, {
+        ref: 'firstDeadlineField',
+        selector: 'addgroupsoverview #firstDeadlineForm devilry_extjsextras-datetimefield'
     }],
 
     init: function() {
@@ -92,6 +98,11 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             'addgroupsoverview #automapExaminersCheckbox': {
                 change: this._onAutomapExaminersChange,
                 render: this._setTooltip
+            },
+
+            'addgroupsoverview #firstDeadlineForm devilry_extjsextras-datetimefield': {
+                allRendered: this._onRenderFirstDeadline,
+                validitychange: this._onFirstDeadlineValidityChange
             }
         });
         this.mon(this.getAssignmentModel().proxy, {
@@ -164,10 +175,15 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
 
     _onGridSelectionChange: function(selModel, selected) {
-        if(selected.length == 0) {
-            this.getSaveButton().disable();
-        } else {
+        this._enableSaveButtonIfOk();
+    },
+
+    _enableSaveButtonIfOk: function() {
+        var selected = this.getSelectedStudentsGrid().getSelectionModel().getSelection();
+        if(selected.length > 0 && this.getFirstDeadlineField().isValid()) {
             this.getSaveButton().enable();
+        } else {
+            this.getSaveButton().disable();
         }
     },
 
@@ -194,9 +210,9 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         });
     },
 
-    onLoadAssignmentFailure: function(operation) {
-        this.getOverview().setLoading(false);
-    },
+    //onLoadAssignmentFailure: function(operation) {
+        //this.getOverview().setLoading(false);
+    //},
 
     _onLoadRelatedStudentsStoreSuccess: function(records) {
         this.getRelatedExaminersRoStore().setAssignment(this.assignmentRecord.get('id'));
@@ -252,6 +268,18 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
                 url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignmentRecord.get('id'))
             }], gettext('Add students'));
         }
+    },
+
+    //
+    //
+    // First deadline / Submission date
+    //
+    //
+    _onRenderFirstDeadline: function() {
+        this.getFirstDeadlineField().setValue(this.assignmentRecord.get('first_deadline'));
+    },
+    _onFirstDeadlineValidityChange: function(unused, isValid) {
+        this._enableSaveButtonIfOk();
     },
 
 
@@ -345,8 +373,30 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     // Save
     //
     //
+    _onSave: function() {
+        this.application.getAlertmessagelist().removeAll(); // Clear the list so we do not have to keep on removing errors manually.
+        this.getOverview().setLoading(gettext('Saving ...'));
+        this._saveFirstDeadline();
+    },
 
-    _onSave: function(button) {
+    _saveFirstDeadline: function() {
+        var form = this.getFormPanel().getForm();
+        var assignmentRecord = this.assignmentRecord;
+        form.updateRecord(assignmentRecord);
+        assignmentRecord.save({
+            scope: this,
+            callback: function(r, operation) {
+                if(operation.success) {
+                    this._onSaveFirstDeadlineSuccess();
+                }
+            }
+        });
+    },
+    _onSaveFirstDeadlineSuccess: function() {
+        this._addGroups();
+    },
+
+    _addGroups: function() {
         var selModel = this.getSelectedStudentsGrid().getSelectionModel();
         var selectedRelatedStudents = selModel.getSelection();
         var groupsStore = this.getGroupsStore();
@@ -366,7 +416,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
 
     _syncGroupsStore: function() {
-        this.getOverview().setLoading(gettext('Saving ...'));
         this.getGroupsStore().sync({
             scope: this,
             success: this._onSyncGroupsStoreSuccess,

@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         'devilry_extjsextras.GridMultiSelectModel',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.MarkupMoreInfoBox',
-        'devilry_subjectadmin.view.managestudents.TagsHelp'
+        'devilry_subjectadmin.view.managestudents.TagsHelp',
+        'devilry_extjsextras.form.DateTimeField'
     ],
 
     /**
@@ -167,9 +168,12 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 region: 'west',
                 autoScroll: true,
                 width: 370,
-                bodyPadding: '0 30 0 0',
+                bodyPadding: '0 40 0 0',
+                layout: 'anchor',
                 items: [{
                     xtype: 'box',
+                    anchor: '100%',
+                    region: 'center',
                     xtype: 'markupmoreinfobox',
                     moretext: gettext('More help') + ' ...',
                     lesstext: gettext('Less help') + ' ...',
@@ -184,6 +188,30 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         tagsintro: devilry_subjectadmin.view.managestudents.TagsHelp.getIntroText(),
                         tagsdetails: devilry_subjectadmin.view.managestudents.TagsHelp.getDetailsUl()
                     }
+                }, {
+                    xtype: 'form',
+                    margin: '20 0 0 0',
+                    anchor: '100%',
+                    itemId: 'firstDeadlineForm',
+                    border: 0,
+                    layout: 'anchor',
+                    cls: 'bootstrap',
+                    items: [{
+                        xtype: 'devilry_extjsextras-datetimefield',
+                        fieldLabel: gettext('Submission date'),
+                        labelAlign: 'top',
+                        labelStyle: 'font-weight: bold',
+                        width: 240,
+                        name: 'first_deadline'
+                    }, {
+                        xtype: 'box',
+                        anchor: '100%',
+                        html: [
+                            '<p class="muted"><small>',
+                                gettext('Students must submit their delivery before this time. This becomes their first deadline on this assignment, and it can be edited just like any other deadline.'),
+                            '</small></p>'
+                        ].join('')
+                    }]
                 }]
             }]
         });
