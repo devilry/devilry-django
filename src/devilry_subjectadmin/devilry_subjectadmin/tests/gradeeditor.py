@@ -23,10 +23,10 @@ class TestGradeEditorWidget(SubjectAdminSeleniumTestCase):
         self._loginToAssignment('week2admin', assignmentid)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.waitForCssSelector('.devilry_subjectadmin_gradeeditorselect_widget')
-        title = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .editablesidebarbox_title').text.strip()
-        body = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .editablesidebarbox_body').text.strip()
+        title = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .titlebox h4').text.strip()
+        body = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget .markupmoreinfobox').text.strip()
         self.assertTrue(title.startswith('Grading system'))
-        self.assertEquals(body, 'Approved/not approved')
+        self.assertTrue(body.startswith('Approved/not approved'))
         editlink = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditorselect_widget a.edit_link')
         editpath = '/assignment/{id}/@@grade-editor/'.format(id=assignmentid)
         self.assertEquals(editlink.get_attribute('href').split('#')[1],
