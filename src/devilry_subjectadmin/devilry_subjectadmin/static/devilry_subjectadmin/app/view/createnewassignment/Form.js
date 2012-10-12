@@ -177,7 +177,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'formhelp',
                                 margin: '5 0 0 0',
                                 itemId: 'publishingTimeHelp',
-                                html: interpolate(gettext('Choose a time when time when %(students_term)s will be able to start adding %(deliveries_term)s on the %(assignment_term)s. The default is <em>now</em>. Note that %(students_term)s must be registered on the %(assignment_term)s as well before they can add any %(deliveries_term)s.'), {
+                                html: interpolate(gettext('Choose a time when %(students_term)s will be able to start adding %(deliveries_term)s on the %(assignment_term)s. The default is <em>now</em>. Note that %(students_term)s must be registered on the %(assignment_term)s as well before they can add any %(deliveries_term)s.'), {
                                     students_term: gettext('students'),
                                     deliveries_term: gettext('deliveries'),
                                     assignment_term: gettext('assignment')

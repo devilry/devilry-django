@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimePanel', {
                     xtype: 'box',
                     tpl: '<p>{help}</p>',
                     data: {
-                        help: gettext('Choose a time when time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.')
+                        help: gettext('Choose a time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment as well before they can add any deliveries.')
                     },
                     margin: '0 0 10 0'
                 }, {
