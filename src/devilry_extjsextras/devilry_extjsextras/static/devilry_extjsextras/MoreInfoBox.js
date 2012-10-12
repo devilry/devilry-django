@@ -32,7 +32,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
      * @cfg {String} [moretext="More info"]
      * Text of the "More info"-link
      */
-    moretext: gettext('More info ...'),
+    moretext: gettext('More info'),
 
     /**
      * @cfg {String} [lesstext="More info"]
@@ -87,9 +87,11 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
                         this.small_morelink? '<small>': '',
                         ' <a href="#" class="more_button" style="white-space: nowrap;">',
                             '{moretext}',
+                            '<span class="expandable-indicator"></span>',
                         '</a>',
                         '<a href="#" class="less_button" style="white-space: nowrap; display: none;">',
                             '{lesstext}',
+                            '<span class="collapsible-indicator"></span>',
                         '</a>',
                         this.small_morelink? '</small>': '',
                     '</p>'
