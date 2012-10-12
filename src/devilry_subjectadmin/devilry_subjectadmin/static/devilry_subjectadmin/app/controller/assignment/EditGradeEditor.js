@@ -23,6 +23,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     refs: [{
         ref: 'gradeEditorSelectWidget',
         selector: 'gradeeditorselect-widget'
+    }, {
+        ref: 'readOnlyViewBody',
+        selector: 'gradeeditorselect-widget markupmoreinfobox'
     }],
 
     init: function() {
@@ -71,7 +74,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
             this.assignmentRecord.get('id'));
         this.getGradeEditorSelectWidget().updateTitle(gettext('Grading system'), editurl);
         var config_editor_url = this.gradeEditorRegistryItemRecord.get('config_editor_url');
-        this.getGradeEditorSelectWidget().updateBody({
+        this.getReadOnlyViewBody().update({
             title: this.gradeEditorRegistryItemRecord.get('title'),
             //description: this.gradeEditorRegistryItemRecord.get('description'),
             isMissingConfig: this._isMissingGradeEditorConfig(),
