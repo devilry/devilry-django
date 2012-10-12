@@ -8,7 +8,8 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.GridMultiSelectModel',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.MarkupMoreInfoBox'
+        'devilry_extjsextras.MarkupMoreInfoBox',
+        'devilry_subjectadmin.view.managestudents.TagsHelp'
     ],
 
     /**
@@ -25,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
      */
 
     helptpl: [
-        '<p>',
+        '<p class="muted">',
             gettext('Choose the students you want to add to the assignment, and click {savebuttonlabel}.'),
             '<br/><small> {MORE_BUTTON}</small>',
         '</p>',
@@ -58,6 +59,13 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                     gettext('<strong>{ignoredcount}</strong> students are not available in the list because they are already registered on the assignment. Select <em>Allow duplicates</em> if you want to allow students to be in multiple groups on the same assignment.'),
                 '</p>',
             '</tpl>',
+
+            '<h3>', gettext('Tags'), '</h3>',
+            '<p>{tagsintro}</p>',
+            '{tagsdetails}',
+            '<p>',
+                gettext('You can copy tags from {periodpath} when you add students. The tags on {periodpath} and tags on assignments in {periodpath} is not kept in sync after you add students to the assignment, so you can safely edit tags on the assignment without affecting any other assignments or {periodpath}.'),
+            '</p>',
         '</div>'
     ],
 
@@ -172,7 +180,9 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         hasIgnored: this.ignoredcount > 0,
                         ignoredcount: this.ignoredcount,
                         manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.periodinfo.id),
-                        savebuttonlabel: Ext.String.format('<em>{0}</em>', gettext('Add selected students'))
+                        savebuttonlabel: Ext.String.format('<em>{0}</em>', gettext('Add selected students')),
+                        tagsintro: devilry_subjectadmin.view.managestudents.TagsHelp.getIntroText(),
+                        tagsdetails: devilry_subjectadmin.view.managestudents.TagsHelp.getDetailsUl()
                     }
                 }]
             }]
