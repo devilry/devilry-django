@@ -134,8 +134,8 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         this.add([{
             xtype: 'markupmoreinfobox',
             moreCls: '',
-            moretext: gettext('Details') + ' ...',
-            lesstext: gettext('Hide details') + ' ...',
+            moretext: gettext('Details'),
+            lesstext: gettext('Hide details'),
             tpl: this.adminsTpl,
             data: {
                 admins: sorted_admins,
