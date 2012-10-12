@@ -53,7 +53,7 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
             /**
              * @event
              * Fired when the edit-button is clicked.
-             * @param box This EditableSidebarBox.
+             * @param box This ContainerWithEditTitle.
              */
             'edit'
         );

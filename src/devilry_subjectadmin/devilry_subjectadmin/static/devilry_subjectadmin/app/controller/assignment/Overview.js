@@ -26,9 +26,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         ref: 'globalAlertmessagelist',
         selector: 'assignmentoverview>alertmessagelist'
     }, {
-        ref: 'gradeEditorSidebarBox',
-        selector: 'assignmentoverview editablesidebarbox[itemId=gradeeditor]'
-    }, {
         ref: 'header',
         selector: 'assignmentoverview #header'
     }, {
@@ -55,9 +52,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         this.control({
             'viewport assignmentoverview': {
                 render: this._onAssignmentViewRender
-            },
-            'viewport assignmentoverview editablesidebarbox[itemId=gradeeditor] button': {
-                click: this._onEditGradeEditor
             },
             'viewport assignmentoverview #deleteButton': {
                 click: this._onDelete
@@ -114,10 +108,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
         });
         this.getRenameButton().setTitleText(renameLabel);
         this.getDeleteButton().setTitleText(deleteLabel);
-    },
-
-    _onEditGradeEditor: function() {
-        Ext.MessageBox.alert('Error', 'Not implemented yet');
     },
 
     _onRename: function() {

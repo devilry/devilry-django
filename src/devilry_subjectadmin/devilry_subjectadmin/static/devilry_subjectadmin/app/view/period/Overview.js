@@ -7,7 +7,6 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     cls: 'devilry_subjectadmin_periodoverview',
     requires: [
         'Ext.layout.container.Column',
-        'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AlertMessage',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.AdminsBox',

@@ -8,7 +8,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     requires: [
         'Ext.layout.container.Column',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.view.assignment.GradeEditorSelectWidget',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',

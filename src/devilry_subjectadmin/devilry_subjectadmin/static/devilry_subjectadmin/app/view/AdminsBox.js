@@ -8,7 +8,6 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     requires: [
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_subjectadmin.view.ManageAdminsPanel',
-        'devilry_extjsextras.EditableSidebarBox',
         'devilry_extjsextras.AutoSizedWindow',
         'devilry_extjsextras.MarkupMoreInfoBox'
     ],
