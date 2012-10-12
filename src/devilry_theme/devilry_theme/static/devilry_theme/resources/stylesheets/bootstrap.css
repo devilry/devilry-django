@@ -2190,7 +2190,7 @@ span.expandable-indicator {
   display: inline-block;
   width: 0;
   height: 0;
-  margin: 0 3px 0 3px;
+  margin: 0 0 0 2px;
   vertical-align: middle;
   border-top: 4px solid #0088cc;
   border-right: 4px solid transparent;
@@ -2203,11 +2203,24 @@ span.collapsible-indicator {
   display: inline-block;
   width: 0;
   height: 0;
-  margin: 0 3px 0 3px;
+  margin: 0 0 0 2px;
   vertical-align: middle;
   border-bottom: 4px solid #0088cc;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
+  content: "";
+}
+
+/* line 27, ../sass/_devilry_linkstyles.scss */
+.btn span.forward-indicator {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin: 0 0 2px 3px;
+  vertical-align: middle;
+  border-left: 4px solid #000;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
   content: "";
 }
 
