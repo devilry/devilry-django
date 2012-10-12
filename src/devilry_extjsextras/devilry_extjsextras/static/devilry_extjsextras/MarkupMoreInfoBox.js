@@ -40,13 +40,16 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
      * @cfg {String} [lesstext="Less info"]
      * The text to show on the Less info button. The default text is translated.
      */
-    lesstext: gettext('Less info') + ' ...',
+    lesstext: gettext('Less info'),
 
     /**
      * @cfg {String} [lesstext="More info ..."]
      * The text to show on the More info button. The default text is translated.
      */
-    moretext: gettext('More info') + ' ...',
+    moretext: gettext('More info'),
+
+    moresuffix: '<span class="expandable-indicator"></span>',
+    lesssuffix: '<span class="collapsible-indicator"></span>',
 
     /**
      * @cfg {String} [moreCls='']
@@ -57,7 +60,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     initComponent: function() {
         this.morebutton = [
             '<a href="#" class="morebutton">',
-                this.moretext,
+                this.moretext, this.moresuffix,
             '</a>'
         ].join('');
         if(!Ext.isEmpty(this.data)) {
@@ -99,7 +102,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
         e.preventDefault();
         var button = this._getMoreButtonEl();
         this.moretext = button.getHTML();
-        button.setHTML(this.lesstext);
+        button.setHTML(this.lesstext + this.lesssuffix);
         this._getMoreEl().show();
         this.hide(); this.show(); // Force re-render
         Ext.defer(function() {
@@ -111,9 +114,9 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     _onLess: function(e) {
         e.preventDefault();
         this._getMoreEl().hide();
-        this.hide(); this.show(); // Force re-render
         var button = this._getLessButtonEl();
         button.setHTML(this.moretext);
+        this.hide(); this.show(); // Force re-render
         Ext.defer(function() {
             // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
             button.replaceCls('lessbutton', 'morebutton');
