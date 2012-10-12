@@ -9,7 +9,8 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
     cls: 'devilry_subjectadmin_editpublishingtime_widget',
 
     requires: [
-        'devilry_subjectadmin.view.assignment.EditPublishingTimePanel'
+        'devilry_subjectadmin.view.assignment.EditPublishingTimePanel',
+        'devilry_extjsextras.ContainerWithEditTitle'
     ],
 
     initComponent: function() {
@@ -17,23 +18,34 @@ Ext.define('devilry_subjectadmin.view.assignment.EditPublishingTimeWidget', {
             layout: 'card',
             deferredRender: true,
             items: [{
-                xtype: 'editablesidebarbox',
+                xtype: 'containerwithedittitle',
                 itemId: 'readPublishingTime',
                 disabled: true,
-                bodyTpl: [
-                    '<p>',
-                        '<tpl if="text">',
-                            '<small>{text}</small>',
-                        '<tpl else>',
-                            '<tpl if="is_published">',
-                                '<span class="success">{offset_from_now}</span>',
+                body: {
+                    xtype: 'markupmoreinfobox',
+                    moreCls: 'alert alert-info',
+                    tpl: [
+                        '<p>',
+                            '<tpl if="loading">',
+                                '<small>{loading}</small>',
                             '<tpl else>',
-                                '<span class="danger">{offset_from_now}</span>',
+                                '<tpl if="is_published">',
+                                    '<span class="success">{offset_from_now}</span>',
+                                '<tpl else>',
+                                    '<span class="danger">{offset_from_now}</span>',
+                                '</tpl>',
+                                ' <small class="muted">({publishing_time})</small>',
+                                '<br/><small>{MORE_BUTTON}</small>',
                             '</tpl>',
-                            ' <small class="muted">({publishing_time})</small>',
-                        '</tpl>',
-                    '</p>'
-                ]
+                        '</p>',
+                        '<div {MORE_ATTRS}>',
+                            gettext('The time when students will be able to start adding deliveries on the assignment.'),
+                        '</div>'
+                    ],
+                    data: {
+                        loading: gettext('Loading') + ' ...'
+                    }
+                }
             }, {
                 xtype: 'editpublishingtimepanel',
                 itemId: 'editPublishingTime'

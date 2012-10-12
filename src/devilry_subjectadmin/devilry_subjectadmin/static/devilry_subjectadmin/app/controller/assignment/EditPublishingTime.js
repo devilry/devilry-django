@@ -27,7 +27,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         selector: 'editpublishingtime-widget'
     }, {
         ref: 'readOnlyView',
-        selector: 'editpublishingtime-widget editablesidebarbox#readPublishingTime'
+        selector: 'editpublishingtime-widget containerwithedittitle#readPublishingTime'
+    }, {
+        ref: 'readOnlyViewBody',
+        selector: 'editpublishingtime-widget markupmoreinfobox'
     }, {
 
         ref: 'editPublishingTime',
@@ -85,7 +88,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         var offset_from_now = this.assignmentRecord.formatPublishOffsetFromNow();
         var is_published = this.assignmentRecord.get('is_published');
         this.getReadOnlyView().updateTitle(gettext('Publishing time'));
-        this.getReadOnlyView().updateBody({
+        this.getReadOnlyViewBody().update({
             publishing_time: this.assignmentRecord.formatPublishingTime(),
             offset_from_now: offset_from_now,
             is_published: is_published

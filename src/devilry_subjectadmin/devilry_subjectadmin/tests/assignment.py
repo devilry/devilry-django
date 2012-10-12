@@ -129,8 +129,8 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
         self.week1 = self.testhelper.sub_period1_week1
         self.loginTo('week1admin', '/assignment/{id}/'.format(id=self.week1.id))
 
-        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox')
-        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .editablesidebarbox .edit_link')
+        self.readOnlyPanel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .markupmoreinfobox')
+        button = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtime_widget .edit_link')
         button.click()
 
         panel = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_editpublishingtimepanel')
@@ -147,7 +147,7 @@ class TestEditPublishingTime(SubjectAdminSeleniumTestCase):
 
     def test_editpublishingtime(self):
         self.assertTrue('Publishing time' in self.selenium.page_source)
-        self.assertTrue('Choose a time when time when students will be able to start adding deliveries on the assignment' in self.selenium.page_source)
+        self.assertTrue('Choose a time when students will be able to start adding deliveries on the assignment' in self.selenium.page_source)
         now = datetime.now()
         yesterday = now - timedelta(days=1)
         isoday_yesterday = yesterday.date().isoformat()
