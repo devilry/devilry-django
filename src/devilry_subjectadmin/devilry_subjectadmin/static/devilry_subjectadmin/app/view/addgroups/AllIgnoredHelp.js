@@ -3,6 +3,10 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
     alias: 'widget.addgroupsallignored',
     cls: 'devilry_subjectadmin_addgroupsallignoredhelp bootstrap',
 
+    requires: [
+        'Ext.form.FieldSet'
+    ],
+
     bodyPadding: 40,
     items: [{
         xtype: 'box',
