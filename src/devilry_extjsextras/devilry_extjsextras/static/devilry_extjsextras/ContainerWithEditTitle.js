@@ -27,7 +27,14 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
      * @cfg {String} buttontext (optional)
      * Button text. Defaults to "Edit" (translated).
      */
-    buttonText: pgettext('uibutton', 'Edit'),
+    buttonText: pgettext('uibutton', 'edit'),
+
+    /**
+     * @cfg {String} [buttonSuffix]
+     * HTML to suffix to the ``buttonText``. Typicallu used to add an icon after the text.
+     */
+    //buttonSuffix: '<i class="icon-edit"></i>',
+    buttonSuffix: '',
 
     /**
      * @cfg {String} [title]
@@ -65,10 +72,10 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
                     '<{0}>',
                         '{title}',
                         '&nbsp;',
-                        '&nbsp;',
-                        '<a class="edit_link" href="{editurl}">(',
+                        '<a class="edit_link btn btn-mini" style="margin-top: -6px;" href="{editurl}">',
                             this.buttonText,
-                        ')</a>',
+                            this.buttonSuffix,
+                        '</a>',
                     '</{1}>'
                 ].join(''), this.titleTag),
                 data: {
