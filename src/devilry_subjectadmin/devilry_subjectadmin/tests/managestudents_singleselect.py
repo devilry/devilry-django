@@ -46,10 +46,54 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('.top_infobox')
-        top_infobox = self.find_element('.top_infobox')
-        self.assertTrue(top_infobox.text.strip().startswith('Use the checkboxes'))
+        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
+        self.assertEquals(gradebox.find_element_by_css_selector('.nofeedback').text.strip(), 'No feedback')
 
+        statusbox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .statusbox')
+        self.assertTrue(g1.is_open)
+        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_open')), 1)
+        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_closed')), 0)
+        self.assertEquals(statusbox.find_element_by_css_selector('.status_open').text.strip(), 'Open')
+
+    def test_render_closed_group(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        g1.is_open = False
+        g1.save()
+        self.browseToAndSelectAs('a1admin', g1)
+        statusbox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .statusbox')
+        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_open')), 0)
+        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_closed')), 1)
+        self.assertEquals(statusbox.find_element_by_css_selector('.status_closed').text.strip(), 'Closed')
+
+    def test_render_graded_group_passed(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g1, verdict={'grade': 'C', 'points': 85, 'is_passing_grade': True},
+                                     rendered_view="Hello world")
+
+        self.browseToAndSelectAs('a1admin', g1)
+        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
+        self.assertEquals(len(gradebox.find_elements_by_css_selector('.passing_grade')), 1)
+        self.assertEquals(len(gradebox.find_elements_by_css_selector('.failing_grade')), 0)
+        self.assertEquals(gradebox.find_element_by_css_selector('.passing_grade').text.strip(), 'Passed')
+        self.assertEquals(gradebox.find_element_by_css_selector('.grade').text.strip(), '(C)')
+        self.assertEquals(gradebox.find_element_by_css_selector('.points').text.strip(), '(Points: 85)')
+
+    def test_render_graded_group_failed(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g1, verdict={'grade': 'F', 'points': 2, 'is_passing_grade': False},
+                                     rendered_view="Hello world")
+
+        self.browseToAndSelectAs('a1admin', g1)
+        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
+        self.assertEquals(len(gradebox.find_elements_by_css_selector('.passing_grade')), 0)
+        self.assertEquals(len(gradebox.find_elements_by_css_selector('.failing_grade')), 1)
+        self.assertEquals(gradebox.find_element_by_css_selector('.failing_grade').text.strip(), 'Failed')
+        self.assertEquals(gradebox.find_element_by_css_selector('.grade').text.strip(), '(F)')
+        self.assertEquals(gradebox.find_element_by_css_selector('.points').text.strip(), '(Points: 2)')
 
 
 class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
