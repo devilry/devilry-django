@@ -327,4 +327,4 @@ class TestEditFirstDeadline(SubjectAdminSeleniumTestCase):
         self._click_edit()
         self._set_datetime('2000-02-01', '12:00')
         self.savebutton.click()
-        self.waitForText("First deadline cannot be before publishing time.")
+        self.waitForText("Submission date can not be before the publishing time")
