@@ -40,10 +40,9 @@ class TestManageMultipleStudentsOverview(TestManageMultipleStudentsMixin, Subjec
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
-        self.waitForCssSelector('.top_infobox')
-        top_infobox = self.find_element('.top_infobox')
-        self.assertEquals(top_infobox.text.strip(),
-                          '2/2 groups selected. Use the checkboxes to select more groups.')
+        headertext = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_selectedgroupssummarygrid > .x-panel-header .x-panel-header-text')
+        self.assertEquals(headertext.text.strip(),
+                          '2/2 groups selected (click group to deselect it)')
 
 
 class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
