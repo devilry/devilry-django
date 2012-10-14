@@ -156,4 +156,4 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
     def test_breadcrumb(self):
         self._load()
         breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100', 'periodone', 'Create new assignment'])
+        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100.periodone', 'Create new assignment'])

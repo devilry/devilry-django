@@ -35,8 +35,8 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             assignments=['week2:pub(2):admin(week2admin)'])
         self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        self.assertTrue('Manage students' in self.selenium.page_source)
-        self.assertTrue('Manage deadlines' in self.selenium.page_source)
+        self.assertTrue('@@manage-students' in self.selenium.page_source)
+        self.assertTrue('@@bulk-manage-deadlines' in self.selenium.page_source)
 
     def test_title(self):
         self.testhelper.add(nodes='uni',
