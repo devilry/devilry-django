@@ -44,7 +44,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.login('period1admin')
         self.browseToPeriod(self.testhelper.duck9000_period1.id)
         breadcrumbtext = self.get_breadcrumbstring('duck9000')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck9000', 'period1'])
+        self.assertEquals(breadcrumbtext, ['All subjects', 'duck9000.period1'])
 
     def _get_assignment_url(self, assignment):
         return '#/assignment/{0}/'.format(assignment.id)
