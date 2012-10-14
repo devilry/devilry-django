@@ -157,9 +157,12 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
 
     def test_invalid_period_id(self):
         self._browseToManageStudentsAs('p1admin', 1000000)
-        self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector('.devilry_extjsextras_alertmessage')) == 1)
-        for message in self.find_elements('.devilry_extjsextras_alertmessage'):
-            self.assertIn('Permission denied', message.text.strip())
+        def find_permissiondeniedmessage(s):
+            for message in self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessage'):
+                if 'Permission denied' in message.text.strip():
+                    return True
+            return False
+        self.waitFor(self.selenium, find_permissiondeniedmessage)
 
     def test_add_student(self):
         self._browseToManageStudentsAs('p1admin', self.period.id)
