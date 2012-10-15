@@ -135,6 +135,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             }, {
                                 xtype: 'box',
                                 cls: 'bootstrap',
+                                itemId: 'firstDeadlineHelp',
                                 margin: '0 0 0 0',
                                 tpl: [
                                     '<p class="muted"><small>',

@@ -50,6 +50,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'firstDeadlineField',
         selector: 'createnewassignmentform devilry_extjsextras-datetimefield[name=first_deadline]'
     }, {
+        ref: 'firstDeadlineHelp',
+        selector: 'createnewassignmentform #firstDeadlineHelp'
+    }, {
         ref: 'publishingTimeField',
         selector: 'createnewassignmentform devilry_extjsextras-datetimefield[name=publishing_time]'
     }, {
@@ -204,11 +207,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var is_electronic = radio.getGroupValue() === 0;
         if(is_electronic) {
             this.getFirstDeadlineField().show();
+            this.getFirstDeadlineHelp().show();
             this.getPublishingTimeField().show();
             this.getPublishingTimeHelp().show();
             this.getFirstDeadlineField().setValue(null); // NOTE: See note in the else section below
         } else {
             this.getFirstDeadlineField().hide();
+            this.getFirstDeadlineHelp().hide();
             this.getPublishingTimeField().hide();
             this.getPublishingTimeHelp().hide();
             this.getFirstDeadlineField().setValue(new Date()); // NOTE: Set datetime to make sure the field validates - we clear it when we show the field again, and the value is not submitted as long as the type is non-electronic.
