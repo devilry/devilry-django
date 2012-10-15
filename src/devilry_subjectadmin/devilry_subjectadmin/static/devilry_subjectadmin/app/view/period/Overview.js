@@ -86,9 +86,6 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         margin: '30 0 0 0',
                         tpl: [
                             '<h2>', gettext('Related {students_term} and examiners'), '</h2>',
-                            '<p class="muted">',
-                                gettext('Related {students_term} and examiners on a {period_term} are the only users available when you add {students_term} and examiners to assignments.'),
-                            '</p>',
                             '<ul class="unstyled">',
                                 '<li><p>',
                                     '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id), '">',
