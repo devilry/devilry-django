@@ -14,6 +14,10 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
      */
 
     /**
+     * @cfg {int} [delivery_types]
+     */
+
+    /**
      * @cfg {int} [index_in_deadline]
      */
 
@@ -27,7 +31,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                     '<tpl else>',
                         '<span class="danger">', gettext('Failed') ,'</span>',
                     '</tpl>',
-                    ' <small class="muted">({latest_feedback.grade})</small>',
+                    ' <small>({latest_feedback.grade})</small>',
                 '</p>',
             '</tpl>',
         '</div>',
@@ -35,7 +39,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
         '<div class="activefeedbackblock">',
             '<tpl if="has_active_feedback">',
                 '<h4>', gettext('Active feedback'), '</h4>',
-                '<p><small class="muted">',
+                '<p><small>',
                     interpolate(gettext('This is your active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s gives you a new %(feedback_term)s, this will be you final %(grade_term)s on this %(assignment_term)s.'), {
                         feedback_term: gettext('feedback'),
                         examiner_term: gettext('examiner'),
@@ -46,48 +50,52 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
             '</tpl>',
         '</div>',
 
-        '<div class="timeofdeliveryblock">',
-            '<h4>', gettext('Time of delivery'), '</h4>',
-            '<p>',
-                '<tpl if="delivery.after_deadline">',
-                    '<span class="danger">',
-                        gettext('{offset} AFTER the deadline.'),
-                    '</span>',
-                '<tpl else>',
-                    '<small class="muted">',
-                        gettext('{offset} before the deadline.'),
-                    '</small>',
-                '</tpl>',
-                '<br/><small class="muted">({delivery.time_of_delivery})</small>',
-            '</p>',
-        '</div>',
+        '<tpl if="delivery_types !== 1">', // 1 == NON_ELECTRONIC
+            '<div class="timeofdeliveryblock">',
+                '<h4>', gettext('Time of delivery'), '</h4>',
+                '<p>',
+                    '<tpl if="delivery.after_deadline">',
+                        '<span class="danger">',
+                            gettext('{offset} AFTER the deadline.'),
+                        '</span>',
+                    '<tpl else>',
+                        '<small>',
+                            gettext('{offset} before the deadline.'),
+                        '</small>',
+                    '</tpl>',
+                    '<br/><small>({delivery.time_of_delivery})</small>',
+                '</p>',
+            '</div>',
 
-        '<div class="deliverymadebyblock">',
-            '<h4>', gettext('Delivery made by'), '</h4>',
-            '<p>{delivery.delivered_by.user.displayname}</p>',
-        '</div>',
+            '<tpl if="delivery.delivered_by">',
+                '<div class="deliverymadebyblock">',
+                    '<h4>', gettext('Delivery made by'), '</h4>',
+                    '<p>{delivery.delivered_by.user.displayname}</p>',
+                '</div>',
+            '</tpl>',
 
-        '<div class="fileblock">',
-            '<h4>', gettext('Files'), '</h4>',
-            '<ul>',
-                '<tpl for="delivery.filemetas">',
-                    '<li>',
-                        '<p><a href="{download_url}" class="filename", title="{filename}">{[Ext.String.ellipsis(values.filename, 20)]}</a>',
-                        ' <small class="filesize">({pretty_size})</small></p>',
-                    '</li>',
-                '</tpl>',
-            '</ul>',
-            '<a href="{delivery.download_all_url.zip}" class="downloadallfiles">',
-                gettext('Download all files'),
-            '</a>',
-        '</div>'
+            '<div class="fileblock">',
+                '<h4>', gettext('Files'), '</h4>',
+                '<ul>',
+                    '<tpl for="delivery.filemetas">',
+                        '<li>',
+                            '<p><a href="{download_url}" class="filename", title="{filename}">{[Ext.String.ellipsis(values.filename, 20)]}</a>',
+                            ' <small class="filesize">({pretty_size})</small></p>',
+                        '</li>',
+                    '</tpl>',
+                '</ul>',
+                '<a href="{delivery.download_all_url.zip}" class="downloadallfiles">',
+                    gettext('Download all files'),
+                '</a>',
+            '</div>',
+        '</tpl>'
     ],
 
     feedbackTpl: [
         '<tpl if="latest_feedback">',
-            '<div class="feedback_rendered_view">{latest_feedback.rendered_view}</div>',
+            '{latest_feedback.rendered_view}',
         '<tpl else>',
-            '<p><small class="muted no_feedback">', gettext('No feedback'), '</small></p>',
+            '<p><small>', gettext('No feedback'), '</small></p>',
         '</tpl>'  
     ],
 
@@ -135,6 +143,7 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                         offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
                         feedback_term: gettext('feedback'),
                         examiner_term: gettext('examiner'),
+                        delivery_types: this.delivery_types,
                         downloadAllUrl: this._getDownloadAllUrl()
                     }
                 }, {
@@ -142,8 +151,8 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
                     columnWidth: 0.7,
                     tpl: this.feedbackTpl,
                     itemId: 'feedback',
-                    cls: 'bootstrap',
-                    padding: '12 0 0 40',
+                    cls: 'bootstrap rendered_view',
+                    padding: '0 0 0 40',
                     data: {
                         latest_feedback: latest_feedback
                     }

@@ -441,7 +441,7 @@ msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:41
 msgid "No %(examiner)s"
-msgstr ""
+msgstr "Ingen %(examiner)s"
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:77
 msgid "Details"

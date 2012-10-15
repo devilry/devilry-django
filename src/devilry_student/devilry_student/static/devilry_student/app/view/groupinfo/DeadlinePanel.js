@@ -16,6 +16,10 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
      */
 
     /**
+     * @cfg {int} [delivery_types]
+     */
+
+    /**
      * @cfg {Object} [active_feedback]
      */
 
@@ -109,6 +113,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
                 xtype: 'groupinfo_delivery',
                 delivery: delivery,
                 index_in_deadline: index_in_deadline,
+                delivery_types: this.delivery_types,
                 active_feedback: this.active_feedback
             });
         }, this);

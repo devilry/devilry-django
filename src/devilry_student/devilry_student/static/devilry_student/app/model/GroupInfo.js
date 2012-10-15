@@ -12,6 +12,7 @@ Ext.define('devilry_student.model.GroupInfo', {
         {name: 'deadlines', type: 'auto'},
         {name: 'breadcrumbs', type: 'auto'},
         {name: 'add_delivery_url', type: 'string'},
+        {name: 'delivery_types', type: 'int'},
         {name: 'active_feedback', type: 'auto'}
     ],
 
@@ -49,6 +50,9 @@ Ext.define('devilry_student.model.GroupInfo', {
             return false;
         }
         if(!this.has_any_deadlines()) {
+            return false;
+        }
+        if(this.get('delivery_types') == 1) { // 1 == NON_ELECTRONIC
             return false;
         }
         var hard_deadlines = this.get('deadline_handling') === 1;
