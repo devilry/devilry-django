@@ -93,9 +93,9 @@ Ext.define('devilry_student.view.groupinfo.DeliveryPanel' ,{
 
     feedbackTpl: [
         '<tpl if="latest_feedback">',
-            '{latest_feedback.rendered_view}',
+            '<div class="feedback_rendered_view">{latest_feedback.rendered_view}</div>',
         '<tpl else>',
-            '<p><small>', gettext('No feedback'), '</small></p>',
+            '<p><small class="muted no_feedback">', gettext('No feedback'), '</small></p>',
         '</tpl>'  
     ],
 
