@@ -24,9 +24,8 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
      */
 
 
-    introhelp: interpolate(gettext('These are the examiners available on this %(period_term)s. They are the examiners that can be added to any assignments within the %(period_term)s.'), {
-        period_term: gettext('period'),
-        examiners_term: gettext('examiners')
+    introhelp: interpolate(gettext('These are the examiners that can be added to any assignments within the %(period_term)s.'), {
+        period_term: gettext('period')
     }, true),
     morehelptpl: [
         '<h3>', gettext('Removing examiners'), '</h3>',
@@ -48,16 +47,22 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                 columnWidth: 1,
                 cls: 'bootstrap',
                 anchor: '100%',
-                html: [
+                itemId: 'heading',
+                tpl: [
                     '<h1 style="margin-top: 0; padding-top: 0;">',
-                        gettext('Manage related examiners'),
-                    '</h1>',
-                    '<p><small class="muted">',
-                        interpolate(gettext('Manage the examiners available on this %(period_term)s.'), {
-                            period_term: gettext('period')
-                        }, true),
-                    '</small></p>'
-                ].join('')
+                        gettext('Examiners'),
+                        '<small class="muted"> - ',
+                            '<tpl if="periodpath">',
+                                '{periodpath}',
+                            '<tpl else>',
+                                gettext('Loading') ,' ...',
+                            '</tpl>',
+                        '</small></p>',
+                    '</h1>'
+                ],
+                data: {
+                    periodpath: null
+                }
             }, {
                 xtype: 'panel',
                 border: false,

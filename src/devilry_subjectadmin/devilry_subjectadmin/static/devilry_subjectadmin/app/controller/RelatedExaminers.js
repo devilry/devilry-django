@@ -18,6 +18,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
         ref: 'overview',
         selector: 'viewport relatedexaminers'
     }, {
+        ref: 'heading',
+        selector: 'viewport relatedexaminers #heading'
+    }, {
         ref: 'grid',
         selector: 'viewport relatedexaminers relatedexaminersgrid'
     }, {
@@ -113,6 +116,11 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
     },
     getLabel: function() {
         return gettext('Manage examiners');
+    },
+    onPeriodLoaded: function(periodpath) {
+        this.getHeading().update({
+            periodpath: periodpath
+        });
     },
 
     _onRender: function() {
