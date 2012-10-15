@@ -110,6 +110,16 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                             cls: 'add_related_user_button add_related_examiner_button',
                             text: gettext('Add examiner')
                         }]
+                    }],
+                    tbar: [{
+                        xtype: 'textfield',
+                        itemId: 'filterfield',
+                        width: 330,
+                        emptyText: gettext('Filter (name, username, tags, candidate ID)') + ' ...'
+                    }, '->', {
+                        xtype: 'box',
+                        itemId: 'gridSummaryBox',
+                        margin: '0 5 0 0'
                     }]
                 }, {
                     xtype: 'container',

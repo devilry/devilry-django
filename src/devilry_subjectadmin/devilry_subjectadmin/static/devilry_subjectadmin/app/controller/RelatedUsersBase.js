@@ -9,6 +9,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     ],
 
+    summaryTpl: gettext('Showing {visiblecount}/{totalcount}'),
 
     resetToHelpView: function() {
         this.getSidebarDeck().getLayout().setActiveItem('helpBox');
@@ -24,6 +25,36 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     },
     onPeriodLoaded: function(periodpath) {
         throw "Must be implemented in subclasses.";
+    },
+
+    onFilterChange: function(field, newValue) {
+        if(Ext.isEmpty(this.task)) {
+            this.task = new Ext.util.DelayedTask(this._filter, this, [field]);
+        }
+        this.task.delay(500);
+    },
+
+    _filter: function(field) {
+        var value = field.getValue();
+        var store = this.getGrid().getStore();
+        store.filterBy(function(record) {
+            return this.matchRelatedUser(record, value.toLocaleLowerCase());
+        }, this);
+        this.updateGridSummaryBox();
+    },
+
+    matchRelatedUser: function(record, lowercaseValue) {
+        return record.get('user').username.toLocaleLowerCase().indexOf(lowercaseValue) !== -1 ||
+            record.get('user').full_name.toLocaleLowerCase().indexOf(lowercaseValue) !== -1 ||
+            record.get('tags').toLocaleLowerCase().indexOf(lowercaseValue) !== -1;
+    },
+
+    updateGridSummaryBox: function() {
+        var store = this.getGrid().getStore();
+        this.getGridSummaryBox().update(Ext.create('Ext.XTemplate', this.summaryTpl).apply({
+            totalcount: store.getTotalCount(),
+            visiblecount: store.getCount()
+        }));
     },
 
 

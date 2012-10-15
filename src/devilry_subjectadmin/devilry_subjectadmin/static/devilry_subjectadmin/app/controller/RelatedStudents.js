@@ -24,6 +24,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         ref: 'grid',
         selector: 'viewport relatedstudents relatedstudentsgrid'
     }, {
+        ref: 'gridSummaryBox',
+        selector: 'viewport relatedstudents #gridSummaryBox'
+    }, {
         ref: 'addButton',
         selector: 'viewport relatedstudents #addButton'
     }, {
@@ -50,6 +53,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             'viewport relatedstudents relatedstudentsgrid': {
                 selectionchange: this._onGridSelectionChange,
                 edit: this._onEditGrid
+            },
+
+            'viewport relatedstudents #filterfield': {
+                change: this.onFilterChange // NOTE: Implemented in RelatedUsersBase
             },
 
             // Remove students
@@ -125,6 +132,12 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         return gettext('Manage students');
     },
 
+    // Used by RelatedUsersBase when filtering
+    matchRelatedUser: function(record, lowercaseValue) {
+        return this.callParent(arguments) ||
+            record.get('candidate_id').toLocaleLowerCase().indexOf(lowercaseValue) !== -1;
+    },
+
     onPeriodLoaded: function(periodpath) {
         this.getHeading().update({
             periodpath: periodpath
@@ -138,7 +151,18 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     //
     //
     _loadRelatedStudents: function(period_id) {
-        this.getRelatedStudentsStore().loadInPeriod(period_id);
+        this.getRelatedStudentsStore().loadInPeriod(period_id, {
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadRelatedStudentsSuccess();
+                }
+            }
+        });
+    },
+
+    _onLoadRelatedStudentsSuccess: function() {
+        this.updateGridSummaryBox();
     },
 
 

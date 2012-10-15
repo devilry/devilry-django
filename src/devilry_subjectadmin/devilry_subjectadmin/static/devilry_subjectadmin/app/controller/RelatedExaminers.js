@@ -24,6 +24,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
         ref: 'grid',
         selector: 'viewport relatedexaminers relatedexaminersgrid'
     }, {
+        ref: 'gridSummaryBox',
+        selector: 'viewport relatedexaminers #gridSummaryBox'
+    }, {
         ref: 'addButton',
         selector: 'viewport relatedexaminers #addButton'
     }, {
@@ -49,6 +52,10 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
 
             'viewport relatedexaminers relatedexaminersgrid': {
                 selectionchange: this._onGridSelectionChange
+            },
+
+            'viewport relatedexaminers #filterfield': {
+                change: this.onFilterChange // NOTE: Implemented in RelatedUsersBase
             },
 
             // Remove examiners
@@ -136,7 +143,17 @@ Ext.define('devilry_subjectadmin.controller.RelatedExaminers', {
     //
     //
     _loadRelatedExaminers: function(period_id) {
-        this.getRelatedExaminersStore().loadInPeriod(period_id);
+        this.getRelatedExaminersStore().loadInPeriod(period_id, {
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadRelatedStudentsSuccess();
+                }
+            }
+        });
+    },
+    _onLoadRelatedStudentsSuccess: function() {
+        this.updateGridSummaryBox();
     },
 
 
