@@ -121,7 +121,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 name: 'first_deadline',
                                 allowBlank: false,
                                 width: 300,
-                                fieldLabel: gettext('First deadline')
+                                fieldLabel: gettext('Submission date')
                             }]
                         }]
 
