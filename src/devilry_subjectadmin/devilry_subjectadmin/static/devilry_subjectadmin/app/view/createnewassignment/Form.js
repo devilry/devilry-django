@@ -68,9 +68,14 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             emptyText: pgettext('createnewassignment', 'Example: oblig-1')
                         }]
                     }, {
-                        xtype: 'formhelp',
-                        margin: '5 0 0 0',
-                        html: devilry_subjectadmin.utils.BaseNodeHelp.getShortAndLongNameHelp()
+                        xtype: 'box',
+                        cls: 'bootstrap',
+                        margin: '0 0 0 0',
+                        html: [
+                            '<p class="muted"><small>',
+                                devilry_subjectadmin.utils.BaseNodeHelp.getShortAndLongNameHelp(),
+                            '</small></p>'
+                        ].join('')
 
                     }, {
                         xtype: 'container',
@@ -101,9 +106,14 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                     inputValue: 1
                                 }]
                             }, {
-                                xtype: 'formhelp',
-                                margin: '5 0 0 0',
-                                tpl: gettext('If you only use Devilry to give feedback, and {students_term} deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'),
+                                xtype: 'box',
+                                cls: 'bootstrap',
+                                margin: '0 0 0 3',
+                                tpl: [
+                                    '<p class="muted"><small>',
+                                        gettext('If you only use Devilry to give feedback, and {students_term} deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'),
+                                    '</small></p>'
+                                ],
                                 data: {
                                     students_term: 'students'
                                 }
@@ -122,6 +132,18 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 allowBlank: false,
                                 width: 300,
                                 fieldLabel: gettext('Submission date')
+                            }, {
+                                xtype: 'box',
+                                cls: 'bootstrap',
+                                margin: '0 0 0 0',
+                                tpl: [
+                                    '<p class="muted"><small>',
+                                        gettext('Students must submit their delivery before this time. This becomes their first deadline on this assignment, and it can be edited just like any other deadline.'),
+                                    '</small></p>'
+                                ],
+                                data: {
+                                    students_term: 'students'
+                                }
                             }]
                         }]
 
@@ -158,13 +180,19 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 labelAlign: 'left',
                                 boxLabel: gettext('Anonymous?')
                             }, {
-                                xtype: 'formhelp',
-                                margin: '5 0 0 0',
-                                html: interpolate(gettext('For exams, this should normally be checked. If an %(assignment_term)s is anonymous, %(examiners_term)s see candidate-id instead of any personal information about the %(students_term)s.'), {
+                                xtype: 'box',
+                                cls: 'bootstrap',
+                                margin: '0 0 0 0',
+                                tpl: [
+                                    '<p class="muted"><small>',
+                                        gettext('For exams, this should normally be checked. If an {assignment_term} is anonymous, {examiners_term} see candidate-id instead of any personal information about the {students_term}.'),
+                                    '</small></p>'
+                                ],
+                                data: {
                                     students_term: gettext('students'),
                                     assignment_term: gettext('assignment'),
                                     examiners_term: gettext('examiners')
-                                }, true)
+                                }
 
                                 // Publishing time
                             }, {
@@ -174,14 +202,20 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 name: "publishing_time",
                                 value: new Date()
                             }, {
-                                xtype: 'formhelp',
-                                margin: '5 0 0 0',
+                                xtype: 'box',
+                                cls: 'bootstrap',
+                                margin: '0 0 0 0',
                                 itemId: 'publishingTimeHelp',
-                                html: interpolate(gettext('Choose a time when %(students_term)s will be able to start adding %(deliveries_term)s on the %(assignment_term)s. The default is <em>now</em>. Note that %(students_term)s must be registered on the %(assignment_term)s as well before they can add any %(deliveries_term)s.'), {
+                                tpl: [
+                                    '<p class="muted"><small>',
+                                        gettext('Choose a time when {students_term} will be able to start adding {deliveries_term} on the {assignment_term}. The default is <em>now</em>. Note that {students_term} must be registered on the {assignment_term} as well before they can add any {deliveries_term}.'),
+                                    '</small></p>'
+                                ],
+                                data: {
                                     students_term: gettext('students'),
                                     deliveries_term: gettext('deliveries'),
                                     assignment_term: gettext('assignment')
-                                }, true)
+                                }
                             }]
                         }]
                     }],
@@ -264,9 +298,10 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             examiners_term: gettext('examiners')
                         }, true)
                     }, {
-                        xtype: 'formhelp',
+                        xtype: 'box',
+                        cls: 'bootstrap',
                         itemId: 'autosetup_examiners-help',
-                        margin: '5 0 0 0',
+                        margin: '0 0 0 0',
                         tpl: [
                             '<p class="muted">',
                                 gettext('Set {examiners_term} on {students_term} that have at least one {tag_term} in common with the {examiner_term}.'),
