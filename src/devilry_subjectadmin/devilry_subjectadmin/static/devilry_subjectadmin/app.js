@@ -53,7 +53,6 @@ Ext.application({
         'assignment.EditAnonymous',
         'assignment.EditDeadlineHandling',
         'assignment.EditGradeEditor',
-        'assignment.EditFirstDeadline',
         'GradeEditor',
         'managestudents.Overview',
         'managestudents.Select',
