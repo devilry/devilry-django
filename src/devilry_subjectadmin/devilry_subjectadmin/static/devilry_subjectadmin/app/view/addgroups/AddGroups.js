@@ -202,6 +202,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         labelAlign: 'top',
                         labelStyle: 'font-weight: bold',
                         width: 240,
+                        cls: 'first_deadline_field',
                         name: 'first_deadline'
                     }, {
                         xtype: 'box',
