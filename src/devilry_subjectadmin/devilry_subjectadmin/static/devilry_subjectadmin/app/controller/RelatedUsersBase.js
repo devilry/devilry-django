@@ -22,6 +22,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     getLabel: function() {
         throw "Must be implemented in subclasses.";
     },
+    onPeriodLoaded: function(periodpath) {
+        throw "Must be implemented in subclasses.";
+    },
 
 
     //
@@ -49,6 +52,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         var label = this.getLabel();
         this.application.setTitle(Ext.String.format('{0} - {1}', label, path));
         this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], label);
+        this.onPeriodLoaded(path);
     },
 
     _onLoadPeriodFailure: function(operation) {

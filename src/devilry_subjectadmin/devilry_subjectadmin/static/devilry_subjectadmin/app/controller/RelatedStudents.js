@@ -18,6 +18,9 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
         ref: 'overview',
         selector: 'viewport relatedstudents'
     }, {
+        ref: 'heading',
+        selector: 'viewport relatedstudents #heading'
+    }, {
         ref: 'grid',
         selector: 'viewport relatedstudents relatedstudentsgrid'
     }, {
@@ -120,6 +123,12 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
     },
     getLabel: function() {
         return gettext('Manage students');
+    },
+
+    onPeriodLoaded: function(periodpath) {
+        this.getHeading().update({
+            periodpath: periodpath
+        });
     },
 
 

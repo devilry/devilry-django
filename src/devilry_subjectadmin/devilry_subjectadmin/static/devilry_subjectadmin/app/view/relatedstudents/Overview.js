@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
      */
 
 
-    introhelp: interpolate(gettext('These are the students available on this %(period_term)s. They are the students that can be added to any assignments within the %(period_term)s.'), {
+    introhelp: interpolate(gettext('These are the students that can be added to any assignments within this %(period_term)s.'), {
         period_term: gettext('period')
     }, true),
     morehelptpl: [
@@ -57,19 +57,22 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 columnWidth: 1,
                 cls: 'bootstrap',
                 anchor: '100%',
-                html: [
+                itemId: 'heading',
+                tpl: [
                     '<h1 style="margin-top: 0; padding-top: 0;">',
-                        interpolate(gettext('Manage related %(students_term)s'), {
-                            students_term: gettext('students')
-                        }, true),
-                    '</h1>',
-                    '<p><small class="muted">',
-                        interpolate(gettext('Manage the %(students_term)s available on this %(period_term)s.'), {
-                            students_term: gettext('students'),
-                            period_term: gettext('period')
-                        }, true),
-                    '</small></p>'
-                ].join('')
+                        gettext('Students'),
+                        '<small class="muted"> - ',
+                            '<tpl if="periodpath">',
+                                '{periodpath}',
+                            '<tpl else>',
+                                gettext('Loading') ,' ...',
+                            '</tpl>',
+                        '</small></p>',
+                    '</h1>'
+                ],
+                data: {
+                    periodpath: null
+                }
             }, {
                 xtype: 'panel',
                 border: false,
