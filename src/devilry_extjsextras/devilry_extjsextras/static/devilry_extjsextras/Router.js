@@ -14,7 +14,7 @@ Ext.define('devilry_extjsextras.Router', {
         this.handler = handler;
         this.routes = [];
         this.started = false;
-        this.suspendedEvents = false;
+        this.eventsSuspended = false;
 
         this.mixins.observable.constructor.call(this, config);
         this.addEvents(
@@ -60,8 +60,8 @@ Ext.define('devilry_extjsextras.Router', {
     },
 
     _trigger: function(token) {
-        if(this.suspendedEvents) {
-            this.suspendedEvents = false;
+        if(this.eventsSuspended) {
+            this.eventsSuspended = false;
             return;
         }
         if(token == null) {
@@ -133,19 +133,42 @@ Ext.define('devilry_extjsextras.Router', {
         return new RegExp('^' + regex + '$');
     },
 
-
-    navigate: function(token) {
+    /**
+     * Remove a prefixed ``#`` from ``token`` if present, or just return the unchanged token.
+     */
+    normalizeToken: function(token) {
         if(token.length > 0 && token.charAt(0) == '#') {
-            token = token.substring(1);
+            return token.substring(1);
+        } else {
+            return token;
+        }
+    },
+
+    _navigate: function(token, ignoreDuplicate, suspendEvents) {
+        token = this.normalizeToken(token);
+        if(ignoreDuplicate && token == Ext.util.History.getToken()) {
+            return;
+        }
+        if(suspendEvents) {
+            this.eventsSuspended = true;
         }
         Ext.util.History.add(token);
     },
 
+    /**
+     * @param token The token to navigate to. ``token`` is filtered through #normalizeToken.
+     * @param ignoreDuplicate Do nothing if the normalized token matches the current token.
+     */
+    navigate: function(token, ignoreDuplicate) {
+        this._navigate(token, ignoreDuplicate);
+    },
+
+    /**
+     * Set token without triggering the routing events.
+     * Use this if you just want to update the URL, but not navigate to the
+     * updated URL.
+     */
     setHashWithoutEvent: function(token) {
-        if(token == Ext.util.History.getToken()) {
-            return;
-        }
-        this.suspendedEvents = true;
-        this.navigate(token);
+        this._navigate(token, true, true);
     }
 });
