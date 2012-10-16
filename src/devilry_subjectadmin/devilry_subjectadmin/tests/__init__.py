@@ -11,3 +11,4 @@ from .rest import *
 from .gradeeditor import *
 from .relatedusersui import *
 from .addgroups import *
+from .deadlines import *

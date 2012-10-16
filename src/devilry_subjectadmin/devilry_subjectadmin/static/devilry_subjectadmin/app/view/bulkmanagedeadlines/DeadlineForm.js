@@ -1,7 +1,7 @@
 Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
     extend: 'Ext.form.Panel',
     alias: 'widget.bulkmanagedeadlines_deadlineform',
-    cls: 'devilry_subjectadmin_bulkmanagedeadlines_deadlineform',
+    cls: 'devilry_subjectadmin_bulkmanagedeadlines_deadlineform bootstrap',
 
     requires: [
         'devilry_extjsextras.form.DateTimeField',
@@ -12,7 +12,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
         'devilry_extjsextras.AlertMessageList'
     ],
 
-    cls: 'bootstrap',
     bodyPadding: 20,
     layout: 'anchor',
 
@@ -39,6 +38,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
             }, {
                 xtype: 'devilry_extjsextras-datetimefield',
                 name: 'deadline',
+                cls: 'deadlinefield',
                 fieldLabel: gettext('Deadline'), // NOTE: we need labels for devilry_extjsextras.ErrorUtils
                 hideLabel: true,
                 itemId: 'deadlineField',
@@ -97,6 +97,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                         }, true),
                         name: 'createmode',
                         inputValue: 'failed',
+                        cls: 'createmode_failed',
                         checked: true
                     }, {
                         boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, and to %(groups_term)s with no %(feedback_term)s.'), {
@@ -105,6 +106,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                             feedback_term: gettext('feedback')
                         }, true),
                         name: 'createmode',
+                        cls: 'createmode_failed_or_no_feedback',
                         inputValue: 'failed-or-no-feedback'
                     }, {
                         boxLabel: interpolate(gettext('%(groups_term)s with no %(deadlines_term)s.'), {
@@ -112,6 +114,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                             deadlines_term: gettext('deadlines')
                         }, true),
                         name: 'createmode',
+                        cls: 'createmode_no_deadlines',
                         inputValue: 'no-deadlines'
                     }]
                 }, {
@@ -137,6 +140,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                 xtype: 'primarybutton',
                 text: gettext('Save'),
                 itemId: 'saveDeadlineButton',
+                cls: 'savedeadlinebutton',
                 listeners: {
                     scope: this,
                     click: this._onSave

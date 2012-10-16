@@ -111,6 +111,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                     }, {
                         xtype: 'primarybutton',
                         itemId: 'addDeadlineButton',
+                        cls: 'add_deadline_button',
                         width: 200,
                         text: interpolate(gettext('Add %(deadline_term)s'), {
                             deadline_term: gettext('deadline')
