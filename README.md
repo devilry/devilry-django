@@ -59,6 +59,7 @@ SSD disk). You may ask a developer to send you a *db_and_deliveries_stash*, and
 use it instead of ``setup_demo``:
 
     $ cd devenv/
+    $ fab reset
     $ cp -r /path/to/db_and_deliveries_stash/ ./
     $ fab unstash_db_and_deliveries
 
