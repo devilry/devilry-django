@@ -14,7 +14,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         'devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle',
         'devilry_subjectadmin.view.managestudents.ManageTagsOnSingle',
         'devilry_subjectadmin.view.managestudents.SingleMetaInfo',
-        'devilry_subjectadmin.view.managestudents.DeliveriesList',
         'devilry_subjectadmin.view.DangerousActions',
         'devilry_extjsextras.SingleActionBox'
     ],
