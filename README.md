@@ -54,11 +54,21 @@ script does).
 
 
 ### Alternative step 4 - From database dump
-Creating the demo database takes a lot of time (12mins on a macbook air with SSD disk). You may ask a developer to send you a dump, and use it instead of ``setup_demo``:
+Creating the demo database takes a lot of time (12mins on a macbook air with
+SSD disk). You may ask a developer to send you a *db_and_deliveries_stash*, and
+use it instead of ``setup_demo``:
 
     $ cd devenv/
-    $ fab reset
-    $ fab restore_db:/path/to/dbdump.sql
+    $ cp -r /path/to/db_and_deliveries_stash/ ./
+    $ fab unstash_db_and_deliveries
+
+#### How to create a DB-stash
+Use this if you want to create a ``db_and_deliveries_stash/`` to send to other
+developers (which can follow the steps in the previous section):
+
+    $ cd devenv/
+    $ fab autodb           (optional - resets your database)
+    $ fab stash_db_and_deliveries
 
 
 ### Alternative step 4 - Manually (without fabric)
