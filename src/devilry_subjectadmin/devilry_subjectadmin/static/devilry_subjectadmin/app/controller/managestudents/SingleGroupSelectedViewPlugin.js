@@ -37,9 +37,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'deadlinesContainer',
         selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
     }, {
-        ref: 'deliveriesList',
-        selector: 'viewport singlegroupview deliverieslist'
-    }, {
 
     // Students
         ref: 'studentsCardBody',
@@ -71,9 +68,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
             'viewport singlegroupview singlegroupmetainfo': {
                 active_feedback_link_clicked: this._onActiveFeedbackLink
-            },
-            'viewport singlegroupview deliverieslist': {
-                delivery_link_clicked: this._onDeliveryLink
             },
 
             'viewport singlegroupview admingroupinfo_deadlinescontainer': {
@@ -191,9 +185,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this._selectDelivery(delivery_id);
     },
 
-    _onDeliveryLink: function(delivery_id) {
-        this._selectDelivery(delivery_id);
-    },
     _onFeedbackRender: function(component) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
     },
@@ -208,12 +199,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      ********************************************************/
     _onRenderDeadlinesContainer: function() {
         this.getDeadlinesContainer().setLoading(gettext('Loading') + ' ...');
-        this.getDeliveriesList().setLoading(gettext('Loading') + ' ...');
         this.getAggregatedGroupInfoModel().load(this.groupRecord.get('id'), {
             scope: this,
             callback: function(aggregatedGroupInfoRecord, operation) {
                 this.getDeadlinesContainer().setLoading(false);
-                this.getDeliveriesList().setLoading(false);
                 if(operation.success) {
                     this._onAggregatedGroupInfoLoadSuccess(aggregatedGroupInfoRecord);
                 } else {
@@ -225,10 +214,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onAggregatedGroupInfoLoadSuccess: function(aggregatedGroupInfoRecord) {
         var active_feedback = this.groupRecord.get('feedback');
         this.getDeadlinesContainer().populate(aggregatedGroupInfoRecord, active_feedback);
-        this.getDeliveriesList().populate(
-            this.manageStudentsController.assignmentRecord.get('id'),
-            this.groupRecord.get('id'),
-            aggregatedGroupInfoRecord.get('deadlines'));
 
         var delivery_id = this.manageStudentsController.getOverview().select_delivery_on_load;
         this.manageStudentsController.getOverview().select_delivery_on_load = undefined; //NOTE: We only want to get it on the first load.

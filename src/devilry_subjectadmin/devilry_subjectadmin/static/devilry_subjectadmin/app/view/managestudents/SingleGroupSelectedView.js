@@ -72,10 +72,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                         xtype: 'singlegroupmetainfo',
                         groupRecord: this.groupRecord,
                         assignment_id: this.assignment_id
-                    }, {
-                        xtype: 'deliverieslist',
-                        groupRecord: this.groupRecord,
-                        assignment_id: this.assignment_id
                     }]
                 }, {
                     xtype: 'container',
