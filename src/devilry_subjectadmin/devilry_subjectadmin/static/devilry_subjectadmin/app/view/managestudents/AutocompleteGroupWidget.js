@@ -1,5 +1,5 @@
 /** Related User autocomplete widget. */
-Ext.define('devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget', {
     extend: 'devilry_usersearch.AutocompleteUserWidget',
     alias: 'widget.autocompletegroupwidget',
     cls: 'devilry_usersearch_autocompletegroupwidget',
@@ -9,9 +9,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget' ,{
     minChars: 1,
     store: 'SearchForGroups',
 
-    fieldLabel: gettext('Select by search'),
-    labelWidth: 120,
-    emptyText: gettext('Search for groups by username, full name, tags or email... (adds to current selection)'),
+    //fieldLabel: gettext('Select by search'),
+    //labelWidth: 120,
+    hideLabel: true,
+    emptyText: gettext('Add to selection by search ... (username, full name, tags or email)'),
 
     listGetInnerTpl: function() {
         return[
