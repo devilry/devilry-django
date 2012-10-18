@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.fields import DateTimeField
 
-from .formfields import DevilryUserMultipleChoiceField
+from .fields import DevilryUserMultipleChoiceField
 
 
 _admins_helptext = """
