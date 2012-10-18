@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentG
     frame: false,
 
     requires: [
-        'devilry_subjectadmin.view.managestudents.SelectedGroupsButton'
+        'devilry_subjectadmin.view.managestudents.SelectedGroupsButton',
+        'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget'
     ],
 
     /**
@@ -46,6 +47,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentG
                         click: this._onDeSelectAll
                     }
                 }]
+            }, {
+                xtype: 'selectgroupsbysearch',
+                grid: this,
+                flex: 1
             }, {
                 xtype: 'selectedgroupsbutton',
                 grid: this

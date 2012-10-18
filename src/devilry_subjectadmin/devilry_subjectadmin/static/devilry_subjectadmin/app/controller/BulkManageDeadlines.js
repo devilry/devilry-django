@@ -26,7 +26,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
     stores: [
         'DeadlinesBulk',
-        'Groups'
+        'Groups',
+        'SearchForGroups'
     ],
 
     refs: [{
@@ -108,6 +109,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
+        this.getSearchForGroupsStore().setAssignment(this.assignmentRecord.get('id'));
         this._setBreadcrumbAndTitle();
     },
     onLoadAssignmentFailure: function(operation) {
