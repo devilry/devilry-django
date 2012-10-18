@@ -2,6 +2,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget'
     extend: 'devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget',
     alias: 'widget.selectgroupsbysearch',
 
+    hideLabel: true,
+    emptyText: gettext('Search (adds to selection)') + ' ...',
+
     /**
      * @cfg {Object} [grid]
      * The grid to select rows in when a searchitem is selected.
