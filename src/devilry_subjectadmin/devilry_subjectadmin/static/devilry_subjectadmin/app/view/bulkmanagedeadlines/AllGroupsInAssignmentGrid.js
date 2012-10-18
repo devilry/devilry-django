@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentG
     frame: false,
 
     requires: [
+        'devilry_subjectadmin.view.managestudents.SelectedGroupsButton'
     ],
 
     /**
@@ -28,7 +29,12 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentG
         Ext.apply(this, {
             //features: [this.groupingFeature],
             //groupHeaderTpl: '',
-            selModel: Ext.create('Ext.selection.CheckboxModel')
+            selModel: Ext.create('Ext.selection.CheckboxModel'),
+
+            bbar: [{
+                xtype: 'selectedgroupsbutton',
+                grid: this
+            }]
         });
         this.callParent(arguments);
     }

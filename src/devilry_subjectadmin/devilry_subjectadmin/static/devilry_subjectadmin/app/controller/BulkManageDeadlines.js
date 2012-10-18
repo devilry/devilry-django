@@ -449,5 +449,5 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             title: gettext('Failed to load groups'),
             bodyHtml: errormessage
         }).show();
-    },
+    }
 });
