@@ -12,7 +12,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.AutocompleteGroupWidget', {
     //fieldLabel: gettext('Select by search'),
     //labelWidth: 120,
     hideLabel: true,
-    emptyText: gettext('Search (adds to selection)') + ' ...',
 
     listGetInnerTpl: function() {
         return[
