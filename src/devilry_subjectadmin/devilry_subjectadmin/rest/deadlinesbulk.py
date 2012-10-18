@@ -115,7 +115,7 @@ class CreateOrUpdateForm(forms.Form):
                                         help_text='Only used for POST')
     group_ids = ListOfTypedField(required=False,
                                  coerce=int,
-                                 help_text='List of group IDs (int). Only used for POST when createmode is "specific-groups".')
+                                 help_text='List of group IDs (int).')
 
 
 class CreateOrUpdateResource(FormResource):
@@ -185,7 +185,7 @@ class DeadlinesBulkListOrCreate(View):
         - ``failed-or-no-feedback``: Only add deadline on groups where active feedback is failed or empty (no feedback).
         - ``no-deadlines``: Only add deadline on groups that have no deadlines.
         - ``specific-groups``: Add deadline to the groups specified in ``group_ids``.
-    - ``group_ids`` (list of int): List of group-ids used when ``createmode=="specific-groups"``.
+    - ``group_ids`` (list of int|null): List of group-ids used when ``createmode=="specific-groups"``.
 
     ## Returns
     Same as GET in the instance REST API.
@@ -324,6 +324,9 @@ class DeadlinesBulkUpdateReadOrDelete(View):
     ## Parameters
     - ``deadline`` (string "YYYY-MM-DD hh:mm:ss"): The datetime of the deadline.
     - ``text`` (string|null): Deadline text.
+    - ``group_ids`` (list of int|null): List of group-ids. If this is a non-empty
+      list, only deadlines matching the ``bulkdeadline_id`` and have their group-id in
+      this list are updated.
 
     ## Returns
     Same as GET.
@@ -331,15 +334,19 @@ class DeadlinesBulkUpdateReadOrDelete(View):
     permissions = (IsAuthenticated, IsAssignmentAdmin)
     resource = CreateOrUpdateResource
 
-    def _deadlineqry(self):
+    def _deadlineqry(self, group_ids=None):
         assignment_id = self.kwargs['id']
         bulkdeadline_id = self.kwargs['bulkdeadline_id']
         deadline_datetime, texthash = decode_bulkdeadline_id(bulkdeadline_id)
-        qry = Deadline.objects.filter(assignment_group__parentnode=assignment_id,
-                                      deadline=deadline_datetime)
-        qry = qry.annotate(num_deliveries=Count('deliveries'))
-        qry = qry.select_related('assignment_group', 'assignment_group__feedback')
-        qry = qry.prefetch_related('assignment_group__examiners',
+
+        qry = Q(assignment_group__parentnode=assignment_id) & Q(deadline=deadline_datetime)
+        if group_ids:
+            qry &= Q(assignment_group_id__in=group_ids)
+
+        queryset = Deadline.objects.filter(qry)
+        queryset = queryset.annotate(num_deliveries=Count('deliveries'))
+        queryset = queryset.select_related('assignment_group', 'assignment_group__feedback')
+        queryset = queryset.prefetch_related('assignment_group__examiners',
                                    'assignment_group__examiners__user',
                                    'assignment_group__examiners__user__devilryuserprofile',
                                    'assignment_group__candidates',
@@ -349,7 +356,7 @@ class DeadlinesBulkUpdateReadOrDelete(View):
         def hashmatch(deadline):
             match = texthashmatch(texthash, deadline.text)
             return match
-        deadlines = filter(hashmatch, qry)
+        deadlines = filter(hashmatch, queryset)
         if len(deadlines) == 0:
             raise NotFoundError('No deadline matching: {0}'.format(bulkdeadline_id))
         return deadlines
@@ -390,7 +397,8 @@ class DeadlinesBulkUpdateReadOrDelete(View):
         return deadlines
 
     def put(self, request, id, bulkdeadline_id):
-        deadlines = self._deadlineqry()
+        group_ids = self.CONTENT['group_ids']
+        deadlines = self._deadlineqry(group_ids)
         deadlines = self._update_deadlines(deadlines)
         return self._create_response(deadlines)
 

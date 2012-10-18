@@ -362,6 +362,27 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
                                                 'bulkdeadline_id': 'ignored'})
         self.assertEquals(response.status_code, 200)
 
+    def test_put_group_ids(self):
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        g1 = self.testhelper.sub_p1_a1_g1
+        g2 = self.testhelper.sub_p1_a1_g2
+        self.assertEquals(g1.deadlines.count(), 1)
+
+        content, response = self._putas('adm', {'deadline': format_datetime(new_deadline),
+                                                'text': 'Updated',
+                                                'group_ids': [g1.id, g2.id]})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content['groups']), 2)
+        group_ids = set([g['id'] for g in content['groups']])
+        self.assertEquals(group_ids, set([g1.id, g2.id]))
+
+        for group in g1, g2:
+            group = self.testhelper.reload_from_db(group)
+            self.assertEquals(group.deadlines.count(), 1)
+            deadline = group.deadlines.all()[0]
+            self.assertEquals(deadline.deadline, new_deadline)
+            self.assertEquals(deadline.text, 'Updated')
+
 
 
     def _getas(self, username, **data):
