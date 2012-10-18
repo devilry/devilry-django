@@ -25,7 +25,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     ],
 
     stores: [
-        'DeadlinesBulk'
+        'DeadlinesBulk',
+        'Groups'
     ],
 
     refs: [{
@@ -67,6 +68,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadlineform#addDeadlineForm': {
                 saveDeadline: this._onSaveNewDeadline,
                 cancel: this._onCancelAddNewDeadline
+            },
+            'viewport bulkmanagedeadlinespanel #createmodeSpecificGroups': {
+                change: this._onCreatemodeSpecificGroupsChange
             }
         });
         
@@ -358,6 +362,13 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         deadlineRecord.set('deadline', values.deadline);
         deadlineRecord.set('text', values.text);
         deadlineRecord.set('createmode', values.createmode);
+
+        if(values.createmode === 'specific-groups') {
+            var grid = formpanel.down('#createmodeSpecificGroupsSelectpanel bulkmanagedeadlines_allgroupsgrid');
+            var group_ids = this._getGroupIdsFromGridSelection(grid);
+            deadlineRecord.set('group_ids', group_ids);
+        }
+
         deadlineRecord.save({
             scope: this,
             callback: function(updatedDeadlineRecord, operation) {
@@ -373,5 +384,70 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 }
             }
         });
-    }
+    },
+
+    _getGroupIdsFromGridSelection: function(grid) {
+        var selected = grid.getSelectionModel().getSelection();
+        var group_ids = [];
+        Ext.Array.each(selected, function(groupRecord) {
+            group_ids.push(groupRecord.get('id'));
+        }, this);
+        return group_ids;
+    },
+
+
+    //
+    //
+    // Createmode specific-groups
+    //
+    //
+    _onCreatemodeSpecificGroupsChange: function(field, newValue) {
+        var formpanel = field.up('bulkmanagedeadlines_deadlineform');
+        if(newValue) {
+            this._onCreatemodeSpecificGroupsSelect(formpanel);
+        } else {
+            this._onCreatemodeSpecificGroupsDeSelect(formpanel);
+        }
+    },
+    _onCreatemodeSpecificGroupsDeSelect: function(formpanel) {
+        formpanel.down('#createmodeSpecificGroupsSelectpanel').hide();
+    },
+    _onCreatemodeSpecificGroupsSelect: function(formpanel) {
+        var selectPanel = formpanel.down('#createmodeSpecificGroupsSelectpanel');
+        selectPanel.show();
+        if(!this.getGroupsStore().isLoading()) {
+            this._loadGroupsStore();
+        }
+
+        // Adjust size of the grid to make sure it fits within the window, and scroll to the grid
+        var grid = selectPanel.down('bulkmanagedeadlines_allgroupsgrid');
+        var bodysize = Ext.getBody().getViewSize();
+        grid.setHeight(bodysize.height - 170);
+        this._scrollTo(formpanel.down('#saveDeadlineButton'));
+    },
+
+    _loadGroupsStore: function(groupIdsToSelectOnLoad) {
+        this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
+            scope: this,
+            callback: function(records, operation) {
+                if(operation.success) {
+                    this._onLoadGroupsStoreSuccess(groupIdsToSelectOnLoad);
+                } else {
+                    this._onLoadGroupsStoreFailure(operation);
+                }
+            }
+        });
+    },
+    _onLoadGroupsStoreSuccess: function(groupIdsToSelectOnLoad) {
+        //console.log('Success');
+    },
+    _onLoadGroupsStoreFailure: function(operation) {
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        error.addErrors(null, operation);
+        var errormessage = error.asHtmlList();
+        Ext.widget('htmlerrordialog', {
+            title: gettext('Failed to load groups'),
+            bodyHtml: errormessage
+        }).show();
+    },
 });

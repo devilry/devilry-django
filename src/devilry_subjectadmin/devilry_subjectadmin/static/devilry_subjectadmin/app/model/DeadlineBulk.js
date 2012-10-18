@@ -14,6 +14,7 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
         {name: 'in_the_future',  type: 'bool', persist: false},
         {name: 'offset_from_now',  type: 'auto', persist: false},
         {name: 'text',  type: 'string'},
+        {name: 'group_ids',  type: 'auto', defaultValue: null},
         {name: 'url',  type: 'string', persist: false},
         {name: 'groups',  type: 'auto', persist: false}
     ],
