@@ -31,11 +31,33 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentG
             //groupHeaderTpl: '',
             selModel: Ext.create('Ext.selection.CheckboxModel'),
 
-            bbar: [{
+            tbar: [{
+                text: gettext('Select'),
+                menu: [{
+                    text: gettext('Select all'),
+                    listeners: {
+                        scope: this,
+                        click: this._onSelectAll
+                    }
+                }, {
+                    text: gettext('Deselect all'),
+                    listeners: {
+                        scope: this,
+                        click: this._onDeSelectAll
+                    }
+                }]
+            }, {
                 xtype: 'selectedgroupsbutton',
                 grid: this
             }]
         });
         this.callParent(arguments);
+    },
+
+    _onSelectAll: function() {
+        this.getSelectionModel().selectAll();
+    },
+    _onDeSelectAll: function() {
+        this.getSelectionModel().deselectAll();
     }
 });

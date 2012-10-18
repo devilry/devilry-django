@@ -36,12 +36,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsMenu', {
     initComponent: function() {
         Ext.apply(this, {
             plain: true,
-            items: [{
+            layout: 'fit',
+            items: {
                 xtype: 'box',
                 cls: 'bootstrap',
                 padding: 10,
                 itemId: 'listingBox',
                 tpl: this.listingTpl,
+                style: 'white-space: normal !important;',
                 data: {
                     selectedGroupRecords: null
                 },
@@ -54,7 +56,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsMenu', {
                         this._onClickGroup(e);
                     }
                 }
-            }],
+            }
         });
         this.on({
             scope: this,
