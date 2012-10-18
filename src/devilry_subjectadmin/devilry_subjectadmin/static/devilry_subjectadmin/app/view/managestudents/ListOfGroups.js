@@ -10,6 +10,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
     requires: [
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
+        'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
         'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
         'Ext.grid.column.Action',
@@ -50,7 +51,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                     forceSelection: true,
                     editable: false,
                     value: 'fullname', // NOTE: This must match the argument to _sortBy in _onRenderListOfGroups in the controller
-                    flex: 1,
+                    flex: 4,
                     store: Ext.create('Ext.data.Store', {
                         fields: ['value', 'label'],
                         data : [
@@ -59,26 +60,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                             {value:'username', label:"Sort by: Username"}
                         ]
                     })
-                    
-                    //xtype: 'combobox',
-                    //itemId: 'viewselect',
-                    //queryMode: 'local',
-                    //valueField: 'value',
-                    //displayField: 'label',
-                    //forceSelection: true,
-                    //editable: false,
-                    //value: 'flat',
-                    //flex: 1,
-                    //matchFieldWidth: false,
-                    //store: Ext.create('Ext.data.Store', {
-                        //fields: ['value', 'label'],
-                        //data : [
-                            //{value:'flat', label:"View: Flat"},
-                            //{value:'examiner', label:"View: Group by examiner"},
-                            //{value:'is_passing_grade', label:"View: Group by passed/failed"},
-                            //{value:'is_open', label:"View: Group by open/closed"},
-                        //]
-                    //})
+                }, {
+                    xtype: 'selectgroupsbysearch',
+                    grid: this,
+                    flex: 6
                 }]
             }, {
                 xtype: 'toolbar',
