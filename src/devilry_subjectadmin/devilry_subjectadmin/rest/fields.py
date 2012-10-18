@@ -67,6 +67,46 @@ class DictField(forms.Field):
         return value
 
 
+class ListOfTypedField(forms.Field):
+    def __init__(self, *args, **kwargs):
+        """
+        A field similar to TypedChoiceField that takes a list of items and a
+        ``coerce`` function that is applied to all items in the given list.
+        """
+        self.coerce = kwargs.pop('coerce', id)
+        super(ListOfTypedField, self).__init__(*args, **kwargs)
+
+    def validate_to_python(self, valuelist):
+        """
+        Validate and clean data.
+        """
+        super(ListOfTypedField, self).validate(valuelist)
+        if valuelist == None:
+            return []
+        if not isinstance(valuelist, (list, tuple)):
+            raise ValidationError('Must be a list or tuple, got {0}'.format(type(valuelist).__name__))
+        cleaned = []
+        for index, value in enumerate(valuelist):
+            try:
+                cleaned_value = self.coerce(value)
+            except ValueError, e:
+                raise ValidationError('Item {0}: {1}', index, e)
+            else:
+                cleaned.append(cleaned_value)
+        return cleaned
+
+    def clean(self, value):
+        """
+        Validates the given value and returns its "cleaned" value as an
+        appropriate Python object.
+
+        Raises ValidationError for any errors.
+        """
+        value = self.validate_to_python(value)
+        self.run_validators(value)
+        return value
+
+
 class DevilryUserMultipleChoiceField(forms.ModelMultipleChoiceField):
     def _get_user_from_userdict(self, userdict):
         if 'id' in userdict:
