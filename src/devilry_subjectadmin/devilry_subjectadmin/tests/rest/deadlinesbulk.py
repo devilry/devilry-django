@@ -191,8 +191,8 @@ class TestRestDeadlinesBulkCreate(TestCase):
 
     def test_post_createmode_no_deadlines(self):
         self.assertEquals(self.testhelper.sub_p1_a1_g1.deadlines.count(), 1)
-        self.testhelper.add_to_path('uni;sub.p1.a1.g3')
-        self.assertEquals(self.testhelper.sub_p1_a1_g3.deadlines.count(), 0)
+        self.testhelper.add_to_path('uni;sub.p1.a1.extragroup')
+        self.assertEquals(self.testhelper.sub_p1_a1_extragroup.deadlines.count(), 0)
 
         new_deadline = datetime(2004, 12, 24, 20, 30, 40)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
@@ -210,12 +210,50 @@ class TestRestDeadlinesBulkCreate(TestCase):
 
         # Check actual data
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 1)
-        g3 = AssignmentGroup.objects.get(id=self.testhelper.sub_p1_a1_g3.id)
-        deadlines = g3.deadlines.all()
+        extragroup = AssignmentGroup.objects.get(id=self.testhelper.sub_p1_a1_extragroup.id)
+        deadlines = extragroup.deadlines.all()
         self.assertEquals(len(deadlines), 1)
         self.assertEquals(deadlines[0].deadline, new_deadline)
         self.assertEquals(deadlines[0].text, 'Created')
-        self.assertTrue(g3.is_open) # Group was automatically opened in devilry.apps.core.models.Deadline.save()
+        self.assertTrue(extragroup.is_open) # Group was automatically opened in devilry.apps.core.models.Deadline.save()
+
+    def test_post_createmode_specific_groups(self):
+        self.assertEquals(self.testhelper.sub_p1_a1_g1.deadlines.count(), 1)
+        self.assertEquals(self.testhelper.sub_p1_a1_g2.deadlines.count(), 1)
+
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
+        content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
+                                                 'text': 'Created',
+                                                 'group_ids': [self.testhelper.sub_p1_a1_g1.id,
+                                                               self.testhelper.sub_p1_a1_g2.id],
+                                                 'createmode': 'specific-groups'})
+
+        # Check response
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(decode_bulkdeadline_id(content['bulkdeadline_id'])[0],
+                          new_deadline)
+        self.assertEquals(len(content['groups']), 2)
+        self.assertEquals(content['text'], 'Created')
+        self.assertEquals(content['deadline'], format_datetime(new_deadline))
+
+        # Check actual data
+        self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 2)
+        g1 = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_g1)
+        deadlines = g1.deadlines.all()
+        self.assertEquals(len(deadlines), 2)
+        self.assertEquals(deadlines[0].deadline, new_deadline)
+        self.assertEquals(deadlines[0].text, 'Created')
+
+    def test_post_createmode_specific_groups_nogroups(self):
+        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
+        content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
+                                                 'text': 'Created',
+                                                 'createmode': 'specific-groups'})
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['field_errors']['group_ids'][0],
+                          '``group_ids`` is required when ``createmode=="specific-groups"``.')
 
     def test_post_nobody(self):
         self.testhelper.create_user('nobody')

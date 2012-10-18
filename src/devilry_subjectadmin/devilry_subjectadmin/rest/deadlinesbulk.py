@@ -9,8 +9,6 @@ from django.core.exceptions import ValidationError
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource, ModelResource
 from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
 from djangorestframework.response import Response
 
 from devilry.apps.core.models import Deadline
@@ -24,6 +22,7 @@ from .errors import BadRequestFieldError
 from .errors import PermissionDeniedError
 from .auth import IsAssignmentAdmin
 from .log import logger
+from .fields import ListOfTypedField
 
 
 ID_DATETIME_FORMAT = '%Y-%m-%dT%H_%M_%S'
@@ -111,8 +110,12 @@ class CreateOrUpdateForm(forms.Form):
                                         coerce=str,
                                         choices=[('failed', 'Only add deadline for groups with failing grade'),
                                                  ('failed-or-no-feedback', 'Only add deadline for groups with failing grade or no feedback'),
-                                                 ('no-deadlines', 'Only add deadline for groups with no deadlines.')],
+                                                 ('no-deadlines', 'Only add deadline for groups with no deadlines.'),
+                                                 ('specific-groups', 'Specify a list of group IDs using the group_ids argument.')],
                                         help_text='Only used for POST')
+    group_ids = ListOfTypedField(required=False,
+                                 coerce=int,
+                                 help_text='List of group IDs (int). Only used for POST when createmode is "specific-groups".')
 
 
 class CreateOrUpdateResource(FormResource):
@@ -247,6 +250,12 @@ class DeadlinesBulkListOrCreate(View):
             qry &= Q(feedback__is_passing_grade=False)
         elif createmode == 'no-deadlines':
             qry &= Q(num_deadlines=0)
+        elif createmode == 'specific-groups':
+            group_ids = self.CONTENT['group_ids']
+            if not group_ids:
+                raise BadRequestFieldError('group_ids',
+                                           '``group_ids`` is required when ``createmode=="specific-groups"``.')
+            qry &= Q(id__in=group_ids)
         else:
             raise ValueError('This is a bug - we have forgotten to handle one of the choices.')
         groups = AssignmentGroup.objects.annotate(num_deadlines=Count('deadlines'))
