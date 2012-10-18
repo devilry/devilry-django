@@ -184,6 +184,8 @@ class DeadlinesBulkListOrCreate(View):
         - ``failed``: Only add deadline on groups where active feedback is failed.
         - ``failed-or-no-feedback``: Only add deadline on groups where active feedback is failed or empty (no feedback).
         - ``no-deadlines``: Only add deadline on groups that have no deadlines.
+        - ``specific-groups``: Add deadline to the groups specified in ``group_ids``.
+    - ``group_ids`` (list of int): List of group-ids used when ``createmode=="specific-groups"``.
 
     ## Returns
     Same as GET in the instance REST API.
