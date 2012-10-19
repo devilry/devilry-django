@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Grid', {
 
     requires: [
         'Ext.XTemplate',
-        'devilry_extjsextras.GridMultiSelectModel',
+        'devilry_extjsextras.GridBigButtonCheckboxModel',
         'Ext.selection.CheckboxModel'
     ],
 
@@ -41,7 +41,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Grid', {
         this.col2TplCompiled = Ext.create('Ext.XTemplate', this.col2Tpl);
 
         Ext.apply(this, {
-            selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
+            selModel: Ext.create('devilry_extjsextras.GridBigButtonCheckboxModel'),
             columns: [{
                 dataIndex: 'id',
                 flex: 5,
