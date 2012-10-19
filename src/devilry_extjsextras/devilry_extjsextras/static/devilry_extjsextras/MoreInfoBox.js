@@ -85,11 +85,11 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
                     '<p>',
                         '{introtext}',
                         this.small_morelink? '<small>': '',
-                        ' <a href="#" class="more_button" style="white-space: nowrap;">',
+                        ' <a href="#" class="morebutton" style="white-space: nowrap;">',
                             '{moretext}',
                             '<span class="expandable-indicator"></span>',
                         '</a>',
-                        '<a href="#" class="less_button" style="white-space: nowrap; display: none;">',
+                        '<a href="#" class="lessbutton" style="white-space: nowrap; display: none;">',
                             '{lesstext}',
                             '<span class="collapsible-indicator"></span>',
                         '</a>',
@@ -119,12 +119,12 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         return this.down('#introBox');
     },
     _getLessButtonEl: function() {
-        var element = Ext.get(this._getIntroBox().getEl().query('a.less_button')[0]);
+        var element = Ext.get(this._getIntroBox().getEl().query('a.lessbutton')[0]);
         element.enableDisplayMode(); // Use css display instead of visibility for hiding.
         return element;
     },
     _getMoreButtonEl: function() {
-        var element = Ext.get(this._getIntroBox().getEl().query('a.more_button')[0]);
+        var element = Ext.get(this._getIntroBox().getEl().query('a.morebutton')[0]);
         element.enableDisplayMode(); // Use css display instead of visibility for hiding.
         return element;
     },
@@ -132,7 +132,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
     _onMoreOrLess: function(e) {
         e.preventDefault();
         var element = Ext.get(e.target);
-        if(element.hasCls('more_button')) {
+        if(element.hasCls('morebutton')) {
             this._onMore();
         } else {
             this._onLess();
