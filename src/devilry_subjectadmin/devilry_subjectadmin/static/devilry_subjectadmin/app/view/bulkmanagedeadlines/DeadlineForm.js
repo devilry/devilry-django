@@ -5,7 +5,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
 
     requires: [
         'devilry_extjsextras.form.DateTimeField',
-        'devilry_subjectadmin.utils.UrlLookup',
         'Ext.form.field.TextArea',
         'Ext.util.KeyNav',
         'devilry_extjsextras.PrimaryButton',
@@ -149,14 +148,6 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlineForm', {
                             '</small></p>'
                         ].join('')
                     }]
-                }, {
-                    xtype: 'box',
-                    cls: 'bootstrap muted',
-                    html: interpolate(gettext('Use the <a href="%(studentsmanager_url)s">students manager</a> to add %(deadlines_term)s to individual %(groups_term)s or custom selections of %(groups_term)s.'), {
-                        studentsmanager_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
-                        deadlines_term: gettext('deadlines'),
-                        groups_term: gettext('groups')
-                    }, true)
                 }]
             }],
 
