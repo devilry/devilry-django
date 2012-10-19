@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                     '</h3>'
                 ],
                 data: {
-                    heading: gettext('Manage examiners'),
+                    heading: gettext('Examiners'),
                 }
             }, {
                 xtype: 'container',
