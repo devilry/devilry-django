@@ -57,7 +57,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 minHeight: 100, // Prevent it from beeing completely hidden (this should show at least most of the first selected item)
                 collapsible: true,
                 collapsed: true,
-                title: gettext('Summary of selected groups'),
+                titleCollapse: true,
+                collapseMode: 'header',
+                title: gettext('Summary of selected groups (click to show/hide)'),
                 frame: false,
                 border: '1 0 0 0',
 

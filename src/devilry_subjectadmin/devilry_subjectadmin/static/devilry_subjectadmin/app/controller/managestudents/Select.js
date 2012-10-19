@@ -38,9 +38,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             'viewport managestudentsoverview listofgroups': {
                 render: this._onRenderListOfGroups
             },
-            'viewport multiplegroupsview selectedgroupssummarygrid': {
-                beforeselect: this._onSelectGroupInSummaryGrid
-            },
 
             'viewport managestudentsoverview #selectall': {
                 click: this._onSelectAll
@@ -151,28 +148,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             return 1;
         else
             return 0;
-    },
-
-
-    /************************************************
-     *
-     * The multiselect summary grid
-     *
-     ************************************************/
-
-    _onSelectGroupInSummaryGrid: function(rowmodel, selectedGroupRecord) {
-        // NOTE: This selectedGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use _getGroupRecordById() to get the correct receord.
-        var groupId = selectedGroupRecord.get('id');
-        var groupRecord = this._getGroupRecordById(groupId);
-        // NOTE: We defer deselecting to ensure that we return ``false`` before
-        //       deselecting. If we deselect before returning, the grid will be gone
-        //       when we return, and that causes an exception.
-        Ext.defer(function() {
-            this._deselectGroupRecords([groupRecord]);
-        }, 10, this);
-        return false;
     },
 
 
