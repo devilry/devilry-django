@@ -1,3 +1,7 @@
+$plainLinkColor: #444;
+
+
+
 // See http://css-tricks.com/snippets/css/css-triangle/
 span.expandable-indicator {
     display: inline-block;
@@ -21,6 +25,26 @@ span.collapsible-indicator {
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
     content: "";
+}
+
+.bootstrap {
+    a.morebutton, a.lessbutton {
+        &:hover {
+            color: $linkColor;
+        }
+    }
+    a.morebutton {
+        color: $plainLinkColor;
+        span.expandable-indicator {
+            border-top-color: $plainLinkColor;
+        }
+    }
+    a.lessbutton {
+        color: $plainLinkColor;
+        span.collapsible-indicator {
+            border-bottom-color: $plainLinkColor;
+        }
+    }
 }
 
 .btn {

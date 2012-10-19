@@ -2,7 +2,7 @@
 .bootstrap {
   /* White icons with optional class, or on hover/active states of certain elements */
 }
-/* line 9, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 9, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -11,23 +11,23 @@
   color: #333333;
   background-color: white;
 }
-/* line 22, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 22, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap a {
   color: #0088cc;
   text-decoration: none;
 }
-/* line 26, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 26, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap a:hover {
   color: #005580;
   text-decoration: underline;
 }
-/* line 36, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 36, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap .img-rounded {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
 }
-/* line 41, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 41, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap .img-polaroid {
   padding: 4px;
   background-color: #fff;
@@ -37,60 +37,60 @@
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-/* line 52, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_scaffolding.scss */
+/* line 52, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap .img-circle {
   -webkit-border-radius: 500px;
   -moz-border-radius: 500px;
   border-radius: 500px;
 }
-/* line 9, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 9, ../sass/bootstrap/_type.scss */
 .bootstrap p {
   margin: 0 0 10px;
 }
-/* line 12, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 12, ../sass/bootstrap/_type.scss */
 .bootstrap .lead {
   margin-bottom: 20px;
   font-size: 21px;
   font-weight: 200;
   line-height: 30px;
 }
-/* line 23, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 23, ../sass/bootstrap/_type.scss */
 .bootstrap small {
   font-size: 85%;
 }
-/* line 26, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 26, ../sass/bootstrap/_type.scss */
 .bootstrap strong {
   font-weight: bold;
 }
-/* line 29, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 29, ../sass/bootstrap/_type.scss */
 .bootstrap em {
   font-style: italic;
 }
-/* line 32, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 32, ../sass/bootstrap/_type.scss */
 .bootstrap cite {
   font-style: normal;
 }
-/* line 37, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 37, ../sass/bootstrap/_type.scss */
 .bootstrap .muted {
   color: #999999;
 }
-/* line 40, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 40, ../sass/bootstrap/_type.scss */
 .bootstrap .text-warning {
   color: #c09853;
 }
-/* line 43, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 43, ../sass/bootstrap/_type.scss */
 .bootstrap .text-error {
   color: #b94a48;
 }
-/* line 46, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 46, ../sass/bootstrap/_type.scss */
 .bootstrap .text-info {
   color: #3a87ad;
 }
-/* line 49, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 49, ../sass/bootstrap/_type.scss */
 .bootstrap .text-success {
   color: #468847;
 }
-/* line 57, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 57, ../sass/bootstrap/_type.scss */
 .bootstrap h1, .bootstrap h2, .bootstrap h3, .bootstrap h4, .bootstrap h5, .bootstrap h6 {
   margin: 10px 0;
   font-family: inherit;
@@ -99,118 +99,118 @@
   color: inherit;
   text-rendering: optimizelegibility;
 }
-/* line 64, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 64, ../sass/bootstrap/_type.scss */
 .bootstrap h1 small, .bootstrap h2 small, .bootstrap h3 small, .bootstrap h4 small, .bootstrap h5 small, .bootstrap h6 small {
   font-weight: normal;
   line-height: 1;
   color: #999999;
 }
-/* line 70, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 70, ../sass/bootstrap/_type.scss */
 .bootstrap h1 {
   font-size: 36px;
   line-height: 40px;
 }
-/* line 71, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 71, ../sass/bootstrap/_type.scss */
 .bootstrap h2 {
   font-size: 30px;
   line-height: 40px;
 }
-/* line 72, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 72, ../sass/bootstrap/_type.scss */
 .bootstrap h3 {
   font-size: 24px;
   line-height: 40px;
 }
-/* line 73, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 73, ../sass/bootstrap/_type.scss */
 .bootstrap h4 {
   font-size: 18px;
   line-height: 20px;
 }
-/* line 74, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 74, ../sass/bootstrap/_type.scss */
 .bootstrap h5 {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 75, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 75, ../sass/bootstrap/_type.scss */
 .bootstrap h6 {
   font-size: 12px;
   line-height: 20px;
 }
-/* line 77, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 77, ../sass/bootstrap/_type.scss */
 .bootstrap h1 small {
   font-size: 24px;
 }
-/* line 78, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 78, ../sass/bootstrap/_type.scss */
 .bootstrap h2 small {
   font-size: 18px;
 }
-/* line 79, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 79, ../sass/bootstrap/_type.scss */
 .bootstrap h3 small {
   font-size: 14px;
 }
-/* line 80, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 80, ../sass/bootstrap/_type.scss */
 .bootstrap h4 small {
   font-size: 14px;
 }
-/* line 86, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 86, ../sass/bootstrap/_type.scss */
 .bootstrap .page-header {
   padding-bottom: 9px;
   margin: 20px 0 30px;
   border-bottom: 1px solid #eeeeee;
 }
-/* line 98, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 98, ../sass/bootstrap/_type.scss */
 .bootstrap ul, .bootstrap ol {
   padding: 0;
   margin: 0 0 10px 25px;
 }
-/* line 105, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 105, ../sass/bootstrap/_type.scss */
 .bootstrap ul ul,
 .bootstrap ul ol,
 .bootstrap ol ol,
 .bootstrap ol ul {
   margin-bottom: 0;
 }
-/* line 108, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 108, ../sass/bootstrap/_type.scss */
 .bootstrap li {
   line-height: 20px;
 }
-/* line 112, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 112, ../sass/bootstrap/_type.scss */
 .bootstrap ul.unstyled,
 .bootstrap ol.unstyled {
   margin-left: 0;
   list-style: none;
 }
-/* line 118, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 118, ../sass/bootstrap/_type.scss */
 .bootstrap dl {
   margin-bottom: 20px;
 }
-/* line 122, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 122, ../sass/bootstrap/_type.scss */
 .bootstrap dt,
 .bootstrap dd {
   line-height: 20px;
 }
-/* line 125, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 125, ../sass/bootstrap/_type.scss */
 .bootstrap dt {
   font-weight: bold;
 }
-/* line 128, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 128, ../sass/bootstrap/_type.scss */
 .bootstrap dd {
   margin-left: 10px;
 }
-/* line 132, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 132, ../sass/bootstrap/_type.scss */
 .bootstrap .dl-horizontal {
   *zoom: 1;
 }
-/* line 15, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 15, ../sass/bootstrap/_mixins.scss */
 .bootstrap .dl-horizontal:before, .bootstrap .dl-horizontal:after {
   display: table;
   content: "";
   line-height: 0;
 }
-/* line 22, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 22, ../sass/bootstrap/_mixins.scss */
 .bootstrap .dl-horizontal:after {
   clear: both;
 }
-/* line 134, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 134, ../sass/bootstrap/_type.scss */
 .bootstrap .dl-horizontal dt {
   float: left;
   width: 160px;
@@ -220,51 +220,51 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* line 141, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 141, ../sass/bootstrap/_type.scss */
 .bootstrap .dl-horizontal dd {
   margin-left: 180px;
 }
-/* line 150, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 150, ../sass/bootstrap/_type.scss */
 .bootstrap hr {
   margin: 20px 0;
   border: 0;
   border-top: 1px solid #eeeeee;
   border-bottom: 1px solid white;
 }
-/* line 158, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 158, ../sass/bootstrap/_type.scss */
 .bootstrap abbr[title] {
   cursor: help;
   border-bottom: 1px dotted #999999;
 }
-/* line 162, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 162, ../sass/bootstrap/_type.scss */
 .bootstrap abbr.initialism {
   font-size: 90%;
   text-transform: uppercase;
 }
-/* line 168, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 168, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote {
   padding: 0 0 0 15px;
   margin: 0 0 20px;
   border-left: 5px solid #eeeeee;
 }
-/* line 172, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 172, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote p {
   margin-bottom: 0;
   font-size: 16px;
   font-weight: 300;
   line-height: 25px;
 }
-/* line 176, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 176, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote small {
   display: block;
   line-height: 20px;
   color: #999999;
 }
-/* line 180, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 180, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote small:before {
   content: '\2014 \00A0';
 }
-/* line 186, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 186, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote.pull-right {
   float: right;
   padding-right: 15px;
@@ -272,34 +272,34 @@
   border-right: 5px solid #eeeeee;
   border-left: 0;
 }
-/* line 193, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 193, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote.pull-right p,
 .bootstrap blockquote.pull-right small {
   text-align: right;
 }
-/* line 197, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 197, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote.pull-right small:before {
   content: '';
 }
-/* line 200, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 200, ../sass/bootstrap/_type.scss */
 .bootstrap blockquote.pull-right small:after {
   content: '\00A0 \2014';
 }
-/* line 211, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 211, ../sass/bootstrap/_type.scss */
 .bootstrap q:before,
 .bootstrap q:after,
 .bootstrap blockquote:before,
 .bootstrap blockquote:after {
   content: "";
 }
-/* line 216, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_type.scss */
+/* line 216, ../sass/bootstrap/_type.scss */
 .bootstrap address {
   display: block;
   margin-bottom: 20px;
   font-style: normal;
   line-height: 20px;
 }
-/* line 8, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 8, ../sass/bootstrap/_code.scss */
 .bootstrap code,
 .bootstrap pre {
   padding: 0 3px 2px;
@@ -310,14 +310,14 @@
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 17, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 17, ../sass/bootstrap/_code.scss */
 .bootstrap code {
   padding: 2px 4px;
   color: #d14;
   background-color: #f7f7f9;
   border: 1px solid #e1e1e8;
 }
-/* line 25, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 25, ../sass/bootstrap/_code.scss */
 .bootstrap pre {
   display: block;
   padding: 9.5px;
@@ -335,35 +335,35 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 41, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 41, ../sass/bootstrap/_code.scss */
 .bootstrap pre.prettyprint {
   margin-bottom: 20px;
 }
-/* line 46, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 46, ../sass/bootstrap/_code.scss */
 .bootstrap pre code {
   padding: 0;
   color: inherit;
   background-color: transparent;
   border: 0;
 }
-/* line 55, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_code.scss */
+/* line 55, ../sass/bootstrap/_code.scss */
 .bootstrap .pre-scrollable {
   max-height: 340px;
   overflow-y: scroll;
 }
-/* line 9, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 9, ../sass/bootstrap/_tables.scss */
 .bootstrap table {
   max-width: 100%;
   background-color: transparent;
   border-collapse: collapse;
   border-spacing: 0;
 }
-/* line 19, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 19, ../sass/bootstrap/_tables.scss */
 .bootstrap .table {
   width: 100%;
   margin-bottom: 20px;
 }
-/* line 24, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 24, ../sass/bootstrap/_tables.scss */
 .bootstrap .table th,
 .bootstrap .table td {
   padding: 8px;
@@ -372,15 +372,15 @@
   vertical-align: top;
   border-top: 1px solid #dddddd;
 }
-/* line 31, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 31, ../sass/bootstrap/_tables.scss */
 .bootstrap .table th {
   font-weight: bold;
 }
-/* line 35, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 35, ../sass/bootstrap/_tables.scss */
 .bootstrap .table thead th {
   vertical-align: bottom;
 }
-/* line 44, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 44, ../sass/bootstrap/_tables.scss */
 .bootstrap .table caption + thead tr:first-child th,
 .bootstrap .table caption + thead tr:first-child td,
 .bootstrap .table colgroup + thead tr:first-child th,
@@ -389,16 +389,16 @@
 .bootstrap .table thead:first-child tr:first-child td {
   border-top: 0;
 }
-/* line 48, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 48, ../sass/bootstrap/_tables.scss */
 .bootstrap .table tbody + tbody {
   border-top: 2px solid #dddddd;
 }
-/* line 60, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 60, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-condensed th,
 .bootstrap .table-condensed td {
   padding: 4px 5px;
 }
-/* line 69, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 69, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered {
   border: 1px solid #dddddd;
   border-collapse: separate;
@@ -408,12 +408,12 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 76, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 76, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered th,
 .bootstrap .table-bordered td {
   border-left: 1px solid #dddddd;
 }
-/* line 88, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 88, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered caption + thead tr:first-child th,
 .bootstrap .table-bordered caption + tbody tr:first-child th,
 .bootstrap .table-bordered caption + tbody tr:first-child td,
@@ -425,21 +425,21 @@
 .bootstrap .table-bordered tbody:first-child tr:first-child td {
   border-top: 0;
 }
-/* line 93, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 93, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered thead:first-child tr:first-child th:first-child,
 .bootstrap .table-bordered tbody:first-child tr:first-child td:first-child {
   -webkit-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topleft: 4px;
 }
-/* line 99, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 99, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered thead:first-child tr:first-child th:last-child,
 .bootstrap .table-bordered tbody:first-child tr:first-child td:last-child {
   -webkit-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-topright: 4px;
 }
-/* line 107, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 107, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered thead:last-child tr:last-child th:first-child,
 .bootstrap .table-bordered tbody:last-child tr:last-child td:first-child,
 .bootstrap .table-bordered tfoot:last-child tr:last-child td:first-child {
@@ -450,7 +450,7 @@
   border-bottom-left-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
 }
-/* line 115, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 115, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered thead:last-child tr:last-child th:last-child,
 .bootstrap .table-bordered tbody:last-child tr:last-child td:last-child,
 .bootstrap .table-bordered tfoot:last-child tr:last-child td:last-child {
@@ -458,7 +458,7 @@
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
 }
-/* line 125, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 125, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered caption + thead tr:first-child th:first-child,
 .bootstrap .table-bordered caption + tbody tr:first-child td:first-child,
 .bootstrap .table-bordered colgroup + thead tr:first-child th:first-child,
@@ -467,7 +467,7 @@
   border-top-left-radius: 4px;
   -moz-border-radius-topleft: 4px;
 }
-/* line 133, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 133, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-bordered caption + thead tr:first-child th:last-child,
 .bootstrap .table-bordered caption + tbody tr:first-child td:last-child,
 .bootstrap .table-bordered colgroup + thead tr:first-child th:last-child,
@@ -476,200 +476,200 @@
   border-top-right-radius: 4px;
   -moz-border-radius-topleft: 4px;
 }
-/* line 149, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 149, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-striped tbody tr:nth-child(odd) td,
 .bootstrap .table-striped tbody tr:nth-child(odd) th {
   background-color: #f9f9f9;
 }
-/* line 162, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 162, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-hover tbody tr:hover td,
 .bootstrap .table-hover tbody tr:hover th {
   background-color: #f5f5f5;
 }
-/* line 174, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 174, ../sass/bootstrap/_tables.scss */
 .bootstrap table [class*=span],
 .bootstrap .row-fluid table [class*=span] {
   display: table-cell;
   float: none;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span1 {
   float: none;
   width: 44px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span2 {
   float: none;
   width: 124px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span3 {
   float: none;
   width: 204px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span4 {
   float: none;
   width: 284px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span5 {
   float: none;
   width: 364px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span6 {
   float: none;
   width: 444px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span7 {
   float: none;
   width: 524px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span8 {
   float: none;
   width: 604px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span9 {
   float: none;
   width: 684px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span10 {
   float: none;
   width: 764px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span11 {
   float: none;
   width: 844px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span12 {
   float: none;
   width: 924px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span13 {
   float: none;
   width: 1004px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span14 {
   float: none;
   width: 1084px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span15 {
   float: none;
   width: 1164px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span16 {
   float: none;
   width: 1244px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span17 {
   float: none;
   width: 1324px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span18 {
   float: none;
   width: 1404px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span19 {
   float: none;
   width: 1484px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span20 {
   float: none;
   width: 1564px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span21 {
   float: none;
   width: 1644px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span22 {
   float: none;
   width: 1724px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span23 {
   float: none;
   width: 1804px;
   margin-left: 0;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 183, ../sass/bootstrap/_tables.scss */
 .bootstrap .table .span24 {
   float: none;
   width: 1884px;
   margin-left: 0;
 }
-/* line 194, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 194, ../sass/bootstrap/_tables.scss */
 .bootstrap .table tbody tr.success td {
   background-color: #dff0d8;
 }
-/* line 197, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 197, ../sass/bootstrap/_tables.scss */
 .bootstrap .table tbody tr.error td {
   background-color: #f2dede;
 }
-/* line 200, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 200, ../sass/bootstrap/_tables.scss */
 .bootstrap .table tbody tr.warning td {
   background-color: #fcf8e3;
 }
-/* line 203, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 203, ../sass/bootstrap/_tables.scss */
 .bootstrap .table tbody tr.info td {
   background-color: #d9edf7;
 }
-/* line 211, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 211, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-hover tbody tr.success:hover td {
   background-color: #d0e9c6;
 }
-/* line 214, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 214, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-hover tbody tr.error:hover td {
   background-color: #ebcccc;
 }
-/* line 217, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 217, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-hover tbody tr.warning:hover td {
   background-color: #faf2cc;
 }
-/* line 220, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_tables.scss */
+/* line 220, ../sass/bootstrap/_tables.scss */
 .bootstrap .table-hover tbody tr.info:hover td {
   background-color: #c4e3f3;
 }
-/* line 18, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 18, ../sass/bootstrap/_sprites.scss */
 .bootstrap [class^="icon-"],
 .bootstrap [class*=" icon-"] {
   display: inline-block;
@@ -683,7 +683,7 @@
   background-repeat: no-repeat;
   margin-top: 1px;
 }
-/* line 44, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 44, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-white,
 .bootstrap .nav-tabs > .active > a > [class^="icon-"],
 .bootstrap .nav-tabs > .active > a > [class*=" icon-"],
@@ -699,569 +699,569 @@
 .bootstrap .dropdown-menu > .active > a > [class*=" icon-"] {
   background-image: url("../sass/bootstrap/img/glyphicons-halflings-white.png");
 }
-/* line 48, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 48, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-glass {
   background-position: 0      0;
 }
-/* line 49, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 49, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-music {
   background-position: -24px 0;
 }
-/* line 50, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 50, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-search {
   background-position: -48px 0;
 }
-/* line 51, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 51, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-envelope {
   background-position: -72px 0;
 }
-/* line 52, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 52, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-heart {
   background-position: -96px 0;
 }
-/* line 53, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 53, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-star {
   background-position: -120px 0;
 }
-/* line 54, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 54, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-star-empty {
   background-position: -144px 0;
 }
-/* line 55, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 55, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-user {
   background-position: -168px 0;
 }
-/* line 56, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 56, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-film {
   background-position: -192px 0;
 }
-/* line 57, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 57, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-th-large {
   background-position: -216px 0;
 }
-/* line 58, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 58, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-th {
   background-position: -240px 0;
 }
-/* line 59, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 59, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-th-list {
   background-position: -264px 0;
 }
-/* line 60, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 60, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-ok {
   background-position: -288px 0;
 }
-/* line 61, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 61, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-remove {
   background-position: -312px 0;
 }
-/* line 62, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 62, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-zoom-in {
   background-position: -336px 0;
 }
-/* line 63, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 63, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-zoom-out {
   background-position: -360px 0;
 }
-/* line 64, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 64, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-off {
   background-position: -384px 0;
 }
-/* line 65, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 65, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-signal {
   background-position: -408px 0;
 }
-/* line 66, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 66, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-cog {
   background-position: -432px 0;
 }
-/* line 67, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 67, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-trash {
   background-position: -456px 0;
 }
-/* line 69, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 69, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-home {
   background-position: 0 -24px;
 }
-/* line 70, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 70, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-file {
   background-position: -24px -24px;
 }
-/* line 71, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 71, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-time {
   background-position: -48px -24px;
 }
-/* line 72, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 72, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-road {
   background-position: -72px -24px;
 }
-/* line 73, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 73, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-download-alt {
   background-position: -96px -24px;
 }
-/* line 74, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 74, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-download {
   background-position: -120px -24px;
 }
-/* line 75, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 75, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-upload {
   background-position: -144px -24px;
 }
-/* line 76, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 76, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-inbox {
   background-position: -168px -24px;
 }
-/* line 77, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 77, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-play-circle {
   background-position: -192px -24px;
 }
-/* line 78, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 78, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-repeat {
   background-position: -216px -24px;
 }
-/* line 79, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 79, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-refresh {
   background-position: -240px -24px;
 }
-/* line 80, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 80, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-list-alt {
   background-position: -264px -24px;
 }
-/* line 81, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 81, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-lock {
   background-position: -287px -24px;
 }
-/* line 82, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 82, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-flag {
   background-position: -312px -24px;
 }
-/* line 83, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 83, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-headphones {
   background-position: -336px -24px;
 }
-/* line 84, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 84, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-volume-off {
   background-position: -360px -24px;
 }
-/* line 85, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 85, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-volume-down {
   background-position: -384px -24px;
 }
-/* line 86, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 86, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-volume-up {
   background-position: -408px -24px;
 }
-/* line 87, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 87, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-qrcode {
   background-position: -432px -24px;
 }
-/* line 88, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 88, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-barcode {
   background-position: -456px -24px;
 }
-/* line 90, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 90, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-tag {
   background-position: 0 -48px;
 }
-/* line 91, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 91, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-tags {
   background-position: -25px -48px;
 }
-/* line 92, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 92, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-book {
   background-position: -48px -48px;
 }
-/* line 93, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 93, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-bookmark {
   background-position: -72px -48px;
 }
-/* line 94, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 94, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-print {
   background-position: -96px -48px;
 }
-/* line 95, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 95, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-camera {
   background-position: -120px -48px;
 }
-/* line 96, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 96, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-font {
   background-position: -144px -48px;
 }
-/* line 97, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 97, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-bold {
   background-position: -167px -48px;
 }
-/* line 98, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 98, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-italic {
   background-position: -192px -48px;
 }
-/* line 99, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 99, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-text-height {
   background-position: -216px -48px;
 }
-/* line 100, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 100, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-text-width {
   background-position: -240px -48px;
 }
-/* line 101, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 101, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-align-left {
   background-position: -264px -48px;
 }
-/* line 102, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 102, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-align-center {
   background-position: -288px -48px;
 }
-/* line 103, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 103, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-align-right {
   background-position: -312px -48px;
 }
-/* line 104, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 104, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-align-justify {
   background-position: -336px -48px;
 }
-/* line 105, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 105, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-list {
   background-position: -360px -48px;
 }
-/* line 106, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 106, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-indent-left {
   background-position: -384px -48px;
 }
-/* line 107, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 107, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-indent-right {
   background-position: -408px -48px;
 }
-/* line 108, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 108, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-facetime-video {
   background-position: -432px -48px;
 }
-/* line 109, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 109, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-picture {
   background-position: -456px -48px;
 }
-/* line 111, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 111, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-pencil {
   background-position: 0 -72px;
 }
-/* line 112, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 112, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-map-marker {
   background-position: -24px -72px;
 }
-/* line 113, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 113, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-adjust {
   background-position: -48px -72px;
 }
-/* line 114, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 114, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-tint {
   background-position: -72px -72px;
 }
-/* line 115, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 115, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-edit {
   background-position: -96px -72px;
 }
-/* line 116, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 116, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-share {
   background-position: -120px -72px;
 }
-/* line 117, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 117, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-check {
   background-position: -144px -72px;
 }
-/* line 118, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 118, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-move {
   background-position: -168px -72px;
 }
-/* line 119, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 119, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-step-backward {
   background-position: -192px -72px;
 }
-/* line 120, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 120, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-fast-backward {
   background-position: -216px -72px;
 }
-/* line 121, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 121, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-backward {
   background-position: -240px -72px;
 }
-/* line 122, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 122, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-play {
   background-position: -264px -72px;
 }
-/* line 123, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 123, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-pause {
   background-position: -288px -72px;
 }
-/* line 124, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 124, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-stop {
   background-position: -312px -72px;
 }
-/* line 125, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 125, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-forward {
   background-position: -336px -72px;
 }
-/* line 126, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 126, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-fast-forward {
   background-position: -360px -72px;
 }
-/* line 127, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 127, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-step-forward {
   background-position: -384px -72px;
 }
-/* line 128, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 128, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-eject {
   background-position: -408px -72px;
 }
-/* line 129, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 129, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-chevron-left {
   background-position: -432px -72px;
 }
-/* line 130, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 130, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-chevron-right {
   background-position: -456px -72px;
 }
-/* line 132, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 132, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-plus-sign {
   background-position: 0 -96px;
 }
-/* line 133, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 133, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-minus-sign {
   background-position: -24px -96px;
 }
-/* line 134, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 134, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-remove-sign {
   background-position: -48px -96px;
 }
-/* line 135, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 135, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-ok-sign {
   background-position: -72px -96px;
 }
-/* line 136, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 136, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-question-sign {
   background-position: -96px -96px;
 }
-/* line 137, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 137, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-info-sign {
   background-position: -120px -96px;
 }
-/* line 138, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 138, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-screenshot {
   background-position: -144px -96px;
 }
-/* line 139, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 139, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-remove-circle {
   background-position: -168px -96px;
 }
-/* line 140, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 140, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-ok-circle {
   background-position: -192px -96px;
 }
-/* line 141, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 141, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-ban-circle {
   background-position: -216px -96px;
 }
-/* line 142, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 142, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-arrow-left {
   background-position: -240px -96px;
 }
-/* line 143, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 143, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-arrow-right {
   background-position: -264px -96px;
 }
-/* line 144, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 144, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-arrow-up {
   background-position: -289px -96px;
 }
-/* line 145, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 145, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-arrow-down {
   background-position: -312px -96px;
 }
-/* line 146, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 146, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-share-alt {
   background-position: -336px -96px;
 }
-/* line 147, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 147, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-resize-full {
   background-position: -360px -96px;
 }
-/* line 148, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 148, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-resize-small {
   background-position: -384px -96px;
 }
-/* line 149, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 149, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-plus {
   background-position: -408px -96px;
 }
-/* line 150, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 150, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-minus {
   background-position: -433px -96px;
 }
-/* line 151, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 151, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-asterisk {
   background-position: -456px -96px;
 }
-/* line 153, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 153, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-exclamation-sign {
   background-position: 0 -120px;
 }
-/* line 154, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 154, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-gift {
   background-position: -24px -120px;
 }
-/* line 155, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 155, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-leaf {
   background-position: -48px -120px;
 }
-/* line 156, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 156, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-fire {
   background-position: -72px -120px;
 }
-/* line 157, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 157, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-eye-open {
   background-position: -96px -120px;
 }
-/* line 158, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 158, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-eye-close {
   background-position: -120px -120px;
 }
-/* line 159, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 159, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-warning-sign {
   background-position: -144px -120px;
 }
-/* line 160, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 160, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-plane {
   background-position: -168px -120px;
 }
-/* line 161, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 161, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-calendar {
   background-position: -192px -120px;
 }
-/* line 162, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 162, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-random {
   background-position: -216px -120px;
   width: 16px;
 }
-/* line 163, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 163, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-comment {
   background-position: -240px -120px;
 }
-/* line 164, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 164, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-magnet {
   background-position: -264px -120px;
 }
-/* line 165, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 165, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-chevron-up {
   background-position: -288px -120px;
 }
-/* line 166, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 166, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-chevron-down {
   background-position: -313px -119px;
 }
-/* line 167, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 167, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-retweet {
   background-position: -336px -120px;
 }
-/* line 168, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 168, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-shopping-cart {
   background-position: -360px -120px;
 }
-/* line 169, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 169, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-folder-close {
   background-position: -384px -120px;
 }
-/* line 170, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 170, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-folder-open {
   background-position: -408px -120px;
   width: 16px;
 }
-/* line 171, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 171, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-resize-vertical {
   background-position: -432px -119px;
 }
-/* line 172, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 172, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-resize-horizontal {
   background-position: -456px -118px;
 }
-/* line 174, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 174, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-hdd {
   background-position: 0 -144px;
 }
-/* line 175, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 175, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-bullhorn {
   background-position: -24px -144px;
 }
-/* line 176, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 176, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-bell {
   background-position: -48px -144px;
 }
-/* line 177, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 177, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-certificate {
   background-position: -72px -144px;
 }
-/* line 178, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 178, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-thumbs-up {
   background-position: -96px -144px;
 }
-/* line 179, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 179, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-thumbs-down {
   background-position: -120px -144px;
 }
-/* line 180, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 180, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-hand-right {
   background-position: -144px -144px;
 }
-/* line 181, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 181, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-hand-left {
   background-position: -168px -144px;
 }
-/* line 182, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 182, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-hand-up {
   background-position: -192px -144px;
 }
-/* line 183, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 183, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-hand-down {
   background-position: -216px -144px;
 }
-/* line 184, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 184, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-circle-arrow-right {
   background-position: -240px -144px;
 }
-/* line 185, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 185, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-circle-arrow-left {
   background-position: -264px -144px;
 }
-/* line 186, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 186, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-circle-arrow-up {
   background-position: -288px -144px;
 }
-/* line 187, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 187, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-circle-arrow-down {
   background-position: -312px -144px;
 }
-/* line 188, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 188, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-globe {
   background-position: -336px -144px;
 }
-/* line 189, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 189, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-wrench {
   background-position: -360px -144px;
 }
-/* line 190, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 190, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-tasks {
   background-position: -384px -144px;
 }
-/* line 191, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 191, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-filter {
   background-position: -408px -144px;
 }
-/* line 192, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 192, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-briefcase {
   background-position: -432px -144px;
 }
-/* line 193, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_sprites.scss */
+/* line 193, ../sass/bootstrap/_sprites.scss */
 .bootstrap .icon-fullscreen {
   background-position: -456px -144px;
 }
-/* line 7, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_wells.scss */
+/* line 7, ../sass/bootstrap/_wells.scss */
 .bootstrap .well {
   min-height: 20px;
   padding: 19px;
@@ -1275,26 +1275,26 @@
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-/* line 15, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_wells.scss */
+/* line 15, ../sass/bootstrap/_wells.scss */
 .bootstrap .well blockquote {
   border-color: #ddd;
   border-color: rgba(0, 0, 0, 0.15);
 }
-/* line 22, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_wells.scss */
+/* line 22, ../sass/bootstrap/_wells.scss */
 .bootstrap .well-large {
   padding: 24px;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
 }
-/* line 26, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_wells.scss */
+/* line 26, ../sass/bootstrap/_wells.scss */
 .bootstrap .well-small {
   padding: 9px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 6, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_component-animations.scss */
+/* line 6, ../sass/bootstrap/_component-animations.scss */
 .bootstrap .fade {
   opacity: 0;
   filter: alpha(opacity=0);
@@ -1303,12 +1303,12 @@
   -o-transition: opacity 0.15s linear;
   transition: opacity 0.15s linear;
 }
-/* line 9, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_component-animations.scss */
+/* line 9, ../sass/bootstrap/_component-animations.scss */
 .bootstrap .fade.in {
   opacity: 1;
   filter: alpha(opacity=100);
 }
-/* line 14, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_component-animations.scss */
+/* line 14, ../sass/bootstrap/_component-animations.scss */
 .bootstrap .collapse {
   position: relative;
   height: 0;
@@ -1318,11 +1318,11 @@
   -o-transition: height 0.35s ease;
   transition: height 0.35s ease;
 }
-/* line 19, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_component-animations.scss */
+/* line 19, ../sass/bootstrap/_component-animations.scss */
 .bootstrap .collapse.in {
   height: auto;
 }
-/* line 6, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_close.scss */
+/* line 6, ../sass/bootstrap/_close.scss */
 .bootstrap .close {
   float: right;
   font-size: 20px;
@@ -1333,7 +1333,7 @@
   opacity: 0.2;
   filter: alpha(opacity=20);
 }
-/* line 14, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_close.scss */
+/* line 14, ../sass/bootstrap/_close.scss */
 .bootstrap .close:hover {
   color: black;
   text-decoration: none;
@@ -1341,7 +1341,7 @@
   opacity: 0.4;
   filter: alpha(opacity=40);
 }
-/* line 25, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_close.scss */
+/* line 25, ../sass/bootstrap/_close.scss */
 .bootstrap button.close {
   padding: 0;
   cursor: pointer;
@@ -1349,7 +1349,7 @@
   border: 0;
   -webkit-appearance: none;
 }
-/* line 10, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 10, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn {
   display: inline-block;
   *display: inline;
@@ -1389,21 +1389,21 @@
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn:hover, .bootstrap .btn:active, .bootstrap .btn.active, .bootstrap .btn.disabled, .bootstrap .btn[disabled] {
   color: #333333;
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn:active, .bootstrap .btn.active {
   background-color: #cccccc \9;
 }
-/* line 61, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 61, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn:first-child {
   *margin-left: 0;
 }
-/* line 30, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 30, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn:hover {
   color: #333333;
   text-decoration: none;
@@ -1416,13 +1416,13 @@
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 43, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 43, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-/* line 49, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 49, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn.active, .bootstrap .btn:active {
   background-color: #e6e6e6;
   background-color: #d9d9d9 \9;
@@ -1432,7 +1432,7 @@
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 59, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 59, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn.disabled, .bootstrap .btn[disabled] {
   cursor: default;
   background-color: #e6e6e6;
@@ -1443,7 +1443,7 @@
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 75, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 75, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-large {
   padding: 9px 14px;
   font-size: 16px;
@@ -1452,27 +1452,27 @@
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 81, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 81, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-large [class^="icon-"] {
   margin-top: 2px;
 }
-/* line 86, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 86, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-small {
   padding: 3px 9px;
   font-size: 12px;
   line-height: 18px;
 }
-/* line 91, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 91, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-small [class^="icon-"] {
   margin-top: 0px;
 }
-/* line 96, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 96, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-mini {
   padding: 2px 6px;
   font-size: 11px;
   line-height: 17px;
 }
-/* line 106, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 106, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-block {
   display: block;
   width: 100%;
@@ -1482,17 +1482,17 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* line 115, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 115, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-block + .btn-block {
   margin-top: 5px;
 }
-/* line 123, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 123, ../sass/bootstrap/_buttons.scss */
 .bootstrap input[type="submit"].btn-block,
 .bootstrap input[type="reset"].btn-block,
 .bootstrap input[type="button"].btn-block {
   width: 100%;
 }
-/* line 139, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 139, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-primary.active,
 .bootstrap .btn-warning.active,
 .bootstrap .btn-danger.active,
@@ -1501,12 +1501,12 @@
 .bootstrap .btn-inverse.active {
   color: rgba(255, 255, 255, 0.75);
 }
-/* line 145, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 145, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn {
   border-color: #c5c5c5;
   border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
 }
-/* line 150, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 150, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-primary {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1524,17 +1524,17 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-primary:hover, .bootstrap .btn-primary:active, .bootstrap .btn-primary.active, .bootstrap .btn-primary.disabled, .bootstrap .btn-primary[disabled] {
   color: white;
   background-color: #0044cc;
   *background-color: #003bb3;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-primary:active, .bootstrap .btn-primary.active {
   background-color: #003399 \9;
 }
-/* line 154, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 154, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-warning {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1552,17 +1552,17 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-warning:hover, .bootstrap .btn-warning:active, .bootstrap .btn-warning.active, .bootstrap .btn-warning.disabled, .bootstrap .btn-warning[disabled] {
   color: white;
   background-color: #f89406;
   *background-color: #df8505;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-warning:active, .bootstrap .btn-warning.active {
   background-color: #c67605 \9;
 }
-/* line 158, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 158, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-danger {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1580,17 +1580,17 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-danger:hover, .bootstrap .btn-danger:active, .bootstrap .btn-danger.active, .bootstrap .btn-danger.disabled, .bootstrap .btn-danger[disabled] {
   color: white;
   background-color: #bd362f;
   *background-color: #a9302a;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-danger:active, .bootstrap .btn-danger.active {
   background-color: #942a25 \9;
 }
-/* line 162, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 162, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-success {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1608,17 +1608,17 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-success:hover, .bootstrap .btn-success:active, .bootstrap .btn-success.active, .bootstrap .btn-success.disabled, .bootstrap .btn-success[disabled] {
   color: white;
   background-color: #51a351;
   *background-color: #499249;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-success:active, .bootstrap .btn-success.active {
   background-color: #408140 \9;
 }
-/* line 166, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 166, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-info {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1636,17 +1636,17 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-info:hover, .bootstrap .btn-info:active, .bootstrap .btn-info.active, .bootstrap .btn-info.disabled, .bootstrap .btn-info[disabled] {
   color: white;
   background-color: #2f96b4;
   *background-color: #2a85a0;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-info:active, .bootstrap .btn-info.active {
   background-color: #24748c \9;
 }
-/* line 170, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 170, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-inverse {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -1664,47 +1664,47 @@
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-/* line 495, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 495, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-inverse:hover, .bootstrap .btn-inverse:active, .bootstrap .btn-inverse.active, .bootstrap .btn-inverse.disabled, .bootstrap .btn-inverse[disabled] {
   color: white;
   background-color: #222222;
   *background-color: #151515;
 }
-/* line 503, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 503, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-inverse:active, .bootstrap .btn-inverse.active {
   background-color: #090909 \9;
 }
-/* line 179, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 179, ../sass/bootstrap/_buttons.scss */
 .bootstrap button.btn,
 .bootstrap input[type="submit"].btn {
   *padding-top: 3px;
   *padding-bottom: 3px;
 }
-/* line 182, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 182, ../sass/bootstrap/_buttons.scss */
 .bootstrap button.btn::-moz-focus-inner,
 .bootstrap input[type="submit"].btn::-moz-focus-inner {
   padding: 0;
   border: 0;
 }
-/* line 191, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 191, ../sass/bootstrap/_buttons.scss */
 .bootstrap button.btn.btn-large,
 .bootstrap input[type="submit"].btn.btn-large {
   *padding-top: 7px;
   *padding-bottom: 7px;
 }
-/* line 195, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 195, ../sass/bootstrap/_buttons.scss */
 .bootstrap button.btn.btn-small,
 .bootstrap input[type="submit"].btn.btn-small {
   *padding-top: 3px;
   *padding-bottom: 3px;
 }
-/* line 199, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 199, ../sass/bootstrap/_buttons.scss */
 .bootstrap button.btn.btn-mini,
 .bootstrap input[type="submit"].btn.btn-mini {
   *padding-top: 1px;
   *padding-bottom: 1px;
 }
-/* line 212, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 212, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-link,
 .bootstrap .btn-link:active,
 .bootstrap .btn-link[disabled] {
@@ -1714,7 +1714,7 @@
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 217, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 217, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-link {
   border-color: transparent;
   cursor: pointer;
@@ -1723,18 +1723,18 @@
   -moz-border-radius: 0;
   border-radius: 0;
 }
-/* line 223, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 223, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-link:hover {
   color: #005580;
   text-decoration: underline;
   background-color: transparent;
 }
-/* line 228, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_buttons.scss */
+/* line 228, ../sass/bootstrap/_buttons.scss */
 .bootstrap .btn-link[disabled]:hover {
   color: #333333;
   text-decoration: none;
 }
-/* line 7, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 7, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group {
   position: relative;
   font-size: 0;
@@ -1742,62 +1742,62 @@
   white-space: nowrap;
   *margin-left: .3em;
 }
-/* line 61, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 61, ../sass/bootstrap/_mixins.scss */
 .bootstrap .btn-group:first-child {
   *margin-left: 0;
 }
-/* line 16, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 16, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group + .btn-group {
   margin-left: 5px;
 }
-/* line 21, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 21, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-toolbar {
   font-size: 0;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-/* line 25, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 25, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-toolbar .btn-group {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
   *zoom: 1;
 }
-/* line 31, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 31, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-toolbar .btn + .btn,
 .bootstrap .btn-toolbar .btn-group + .btn,
 .bootstrap .btn-toolbar .btn + .btn-group {
   margin-left: 5px;
 }
-/* line 37, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 37, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn {
   position: relative;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
 }
-/* line 41, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 41, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn + .btn {
   margin-left: -1px;
 }
-/* line 45, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 45, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn,
 .bootstrap .btn-group > .dropdown-menu {
   font-size: 14px;
 }
-/* line 50, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 50, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-mini {
   font-size: 11px;
 }
-/* line 53, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 53, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-small {
   font-size: 12px;
 }
-/* line 56, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 56, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-large {
   font-size: 16px;
 }
-/* line 61, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 61, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn:first-child {
   margin-left: 0;
   -webkit-border-top-left-radius: 4px;
@@ -1807,7 +1807,7 @@
   -moz-border-radius-bottomleft: 4px;
   border-bottom-left-radius: 4px;
 }
-/* line 72, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 72, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn:last-child,
 .bootstrap .btn-group > .dropdown-toggle {
   -webkit-border-top-right-radius: 4px;
@@ -1817,7 +1817,7 @@
   -moz-border-radius-bottomright: 4px;
   border-bottom-right-radius: 4px;
 }
-/* line 81, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 81, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn.large:first-child {
   margin-left: 0;
   -webkit-border-top-left-radius: 6px;
@@ -1827,7 +1827,7 @@
   -moz-border-radius-bottomleft: 6px;
   border-bottom-left-radius: 6px;
 }
-/* line 91, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 91, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn.large:last-child,
 .bootstrap .btn-group > .large.dropdown-toggle {
   -webkit-border-top-right-radius: 6px;
@@ -1837,19 +1837,19 @@
   -moz-border-radius-bottomright: 6px;
   border-bottom-right-radius: 6px;
 }
-/* line 104, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 104, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn:hover,
 .bootstrap .btn-group > .btn:focus,
 .bootstrap .btn-group > .btn:active,
 .bootstrap .btn-group > .btn.active {
   z-index: 2;
 }
-/* line 110, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 110, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group .dropdown-toggle:active,
 .bootstrap .btn-group.open .dropdown-toggle {
   outline: 0;
 }
-/* line 120, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 120, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn + .dropdown-toggle {
   padding-left: 8px;
   padding-right: 8px;
@@ -1859,83 +1859,83 @@
   *padding-top: 5px;
   *padding-bottom: 5px;
 }
-/* line 127, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 127, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-mini + .dropdown-toggle {
   padding-left: 5px;
   padding-right: 5px;
   *padding-top: 2px;
   *padding-bottom: 2px;
 }
-/* line 133, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 133, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-small + .dropdown-toggle {
   *padding-top: 5px;
   *padding-bottom: 4px;
 }
-/* line 137, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 137, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group > .btn-large + .dropdown-toggle {
   padding-left: 12px;
   padding-right: 12px;
   *padding-top: 7px;
   *padding-bottom: 7px;
 }
-/* line 148, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 148, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .dropdown-toggle {
   background-image: none;
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 154, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 154, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn.dropdown-toggle {
   background-color: #e6e6e6;
 }
-/* line 157, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 157, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-primary.dropdown-toggle {
   background-color: #0044cc;
 }
-/* line 160, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 160, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-warning.dropdown-toggle {
   background-color: #f89406;
 }
-/* line 163, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 163, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-danger.dropdown-toggle {
   background-color: #bd362f;
 }
-/* line 166, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 166, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-success.dropdown-toggle {
   background-color: #51a351;
 }
-/* line 169, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 169, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-info.dropdown-toggle {
   background-color: #2f96b4;
 }
-/* line 172, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 172, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group.open .btn-inverse.dropdown-toggle {
   background-color: #222222;
 }
-/* line 179, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 179, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn .caret {
   margin-top: 8px;
   margin-left: 0;
 }
-/* line 186, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 186, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-mini .caret,
 .bootstrap .btn-small .caret,
 .bootstrap .btn-large .caret {
   margin-top: 6px;
 }
-/* line 189, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 189, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-large .caret {
   border-left-width: 5px;
   border-right-width: 5px;
   border-top-width: 5px;
 }
-/* line 195, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 195, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .dropup .btn-large .caret {
   border-bottom: 5px solid black;
   border-top: 0;
 }
-/* line 209, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 209, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-primary .caret,
 .bootstrap .btn-warning .caret,
 .bootstrap .btn-danger .caret,
@@ -1945,14 +1945,14 @@
   border-top-color: white;
   border-bottom-color: white;
 }
-/* line 220, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 220, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
   *zoom: 1;
 }
-/* line 224, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 224, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn {
   display: block;
   float: none;
@@ -1961,36 +1961,36 @@
   -moz-border-radius: 0;
   border-radius: 0;
 }
-/* line 230, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 230, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn + .btn {
   margin-left: 0;
   margin-top: -1px;
 }
-/* line 234, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 234, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn:first-child {
   -webkit-border-radius: 4px 4px 0 0;
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
 }
-/* line 237, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 237, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn:last-child {
   -webkit-border-radius: 0 0 4px 4px;
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px;
 }
-/* line 240, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 240, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn-large:first-child {
   -webkit-border-radius: 6px 6px 0 0;
   -moz-border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;
 }
-/* line 243, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_button-groups.scss */
+/* line 243, ../sass/bootstrap/_button-groups.scss */
 .bootstrap .btn-group-vertical .btn-large:last-child {
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
 }
-/* line 9, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 9, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: 20px;
@@ -2002,51 +2002,51 @@
   border-radius: 4px;
   color: #c09853;
 }
-/* line 18, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 18, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert h4 {
   margin: 0;
 }
-/* line 23, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 23, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert .close {
   position: relative;
   top: -2px;
   right: -21px;
   line-height: 20px;
 }
-/* line 34, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 34, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-success {
   background-color: #dff0d8;
   border-color: #d6e9c6;
   color: #468847;
 }
-/* line 40, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 40, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-danger,
 .bootstrap .alert-error {
   background-color: #f2dede;
   border-color: #eed3d7;
   color: #b94a48;
 }
-/* line 45, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 45, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-info {
   background-color: #d9edf7;
   border-color: #bce8f1;
   color: #3a87ad;
 }
-/* line 55, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 55, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-block {
   padding-top: 14px;
   padding-bottom: 14px;
 }
-/* line 60, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 60, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-block > p,
 .bootstrap .alert-block > ul {
   margin-bottom: 0;
 }
-/* line 63, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_alerts.scss */
+/* line 63, ../sass/bootstrap/_alerts.scss */
 .bootstrap .alert-block p + p {
   margin-top: 5px;
 }
-/* line 8, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 8, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label,
 .bootstrap .badge {
   font-size: 11.844px;
@@ -2058,116 +2058,116 @@
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #999999;
 }
-/* line 19, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 19, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label {
   padding: 1px 4px 2px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 23, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 23, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .badge {
   padding: 1px 9px 2px;
   -webkit-border-radius: 9px;
   -moz-border-radius: 9px;
   border-radius: 9px;
 }
-/* line 31, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 31, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap a.label:hover, .bootstrap a.badge:hover {
   color: white;
   text-decoration: none;
   cursor: pointer;
 }
-/* line 41, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 41, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-important, .bootstrap .badge-important {
   background-color: #b94a48;
 }
-/* line 42, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 42, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-important[href], .bootstrap .badge-important[href] {
   background-color: #953b39;
 }
-/* line 44, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 44, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-warning, .bootstrap .badge-warning {
   background-color: #f89406;
 }
-/* line 45, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 45, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-warning[href], .bootstrap .badge-warning[href] {
   background-color: #c67605;
 }
-/* line 47, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 47, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-success, .bootstrap .badge-success {
   background-color: #468847;
 }
-/* line 48, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 48, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-success[href], .bootstrap .badge-success[href] {
   background-color: #356635;
 }
-/* line 50, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 50, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-info, .bootstrap .badge-info {
   background-color: #3a87ad;
 }
-/* line 51, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 51, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-info[href], .bootstrap .badge-info[href] {
   background-color: #2d6987;
 }
-/* line 53, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 53, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-inverse, .bootstrap .badge-inverse {
   background-color: #333333;
 }
-/* line 54, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 54, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .label-inverse[href], .bootstrap .badge-inverse[href] {
   background-color: #1a1a1a;
 }
-/* line 59, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 59, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .btn .label,
 .bootstrap .btn .badge {
   position: relative;
   top: -1px;
 }
-/* line 66, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_labels-badges.scss */
+/* line 66, ../sass/bootstrap/_labels-badges.scss */
 .bootstrap .btn-mini .label,
 .bootstrap .btn-mini .badge {
   top: 0;
 }
-/* line 7, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 7, ../sass/bootstrap/_utilities.scss */
 .bootstrap .pull-right {
   float: right;
 }
-/* line 10, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 10, ../sass/bootstrap/_utilities.scss */
 .bootstrap .pull-left {
   float: left;
 }
-/* line 15, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 15, ../sass/bootstrap/_utilities.scss */
 .bootstrap .hide {
   display: none;
 }
-/* line 18, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 18, ../sass/bootstrap/_utilities.scss */
 .bootstrap .show {
   display: block;
 }
-/* line 23, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 23, ../sass/bootstrap/_utilities.scss */
 .bootstrap .invisible {
   visibility: hidden;
 }
-/* line 28, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 28, ../sass/bootstrap/_utilities.scss */
 .bootstrap .affix {
   position: fixed;
 }
-/* line 33, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 33, ../sass/bootstrap/_utilities.scss */
 .bootstrap .clearfix {
   *zoom: 1;
 }
-/* line 15, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 15, ../sass/bootstrap/_mixins.scss */
 .bootstrap .clearfix:before, .bootstrap .clearfix:after {
   display: table;
   content: "";
   line-height: 0;
 }
-/* line 22, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_mixins.scss */
+/* line 22, ../sass/bootstrap/_mixins.scss */
 .bootstrap .clearfix:after {
   clear: both;
 }
-/* line 38, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 38, ../sass/bootstrap/_utilities.scss */
 .bootstrap .hide-text {
   font: 0/0 a;
   color: transparent;
@@ -2175,7 +2175,7 @@
   background-color: transparent;
   border: 0;
 }
-/* line 43, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/bootstrap/_utilities.scss */
+/* line 43, ../sass/bootstrap/_utilities.scss */
 .bootstrap .input-block-level {
   display: block;
   width: 100%;
@@ -2185,7 +2185,7 @@
   box-sizing: border-box;
 }
 
-/* line 2, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_linkstyles.scss */
+/* line 6, ../sass/_devilry_linkstyles.scss */
 span.expandable-indicator {
   display: inline-block;
   width: 0;
@@ -2198,7 +2198,7 @@ span.expandable-indicator {
   content: "";
 }
 
-/* line 14, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_linkstyles.scss */
+/* line 18, ../sass/_devilry_linkstyles.scss */
 span.collapsible-indicator {
   display: inline-block;
   width: 0;
@@ -2211,7 +2211,28 @@ span.collapsible-indicator {
   content: "";
 }
 
-/* line 27, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_linkstyles.scss */
+/* line 32, ../sass/_devilry_linkstyles.scss */
+.bootstrap a.morebutton:hover, .bootstrap a.lessbutton:hover {
+  color: #0088cc;
+}
+/* line 36, ../sass/_devilry_linkstyles.scss */
+.bootstrap a.morebutton {
+  color: #444444;
+}
+/* line 38, ../sass/_devilry_linkstyles.scss */
+.bootstrap a.morebutton span.expandable-indicator {
+  border-top-color: #444444;
+}
+/* line 42, ../sass/_devilry_linkstyles.scss */
+.bootstrap a.lessbutton {
+  color: #444444;
+}
+/* line 44, ../sass/_devilry_linkstyles.scss */
+.bootstrap a.lessbutton span.collapsible-indicator {
+  border-bottom-color: #444444;
+}
+
+/* line 51, ../sass/_devilry_linkstyles.scss */
 .btn span.forward-indicator {
   display: inline-block;
   width: 0;
@@ -2224,36 +2245,36 @@ span.collapsible-indicator {
   content: "";
 }
 
-/* line 2, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_mixins.scss */
+/* line 2, ../sass/_devilry_mixins.scss */
 .bootstrap .success, .bootstrap small.success {
   color: #468847;
 }
-/* line 5, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_mixins.scss */
+/* line 5, ../sass/_devilry_mixins.scss */
 .bootstrap .danger, .bootstrap small.danger {
   color: #c09853;
 }
-/* line 10, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 10, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap p, .bootstrap .alert, .bootstrap li {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 16, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 16, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap ul li {
   list-style: disc outside none;
 }
-/* line 21, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 21, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap ul.unstyled > li,
 .bootstrap ol.unstyled > li {
   margin-left: 0;
   list-style: none;
 }
-/* line 27, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 27, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .oneline_ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 33, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 33, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view {
   border: 1px solid #ccc;
   background-color: #fafafa;
@@ -2265,53 +2286,53 @@ span.collapsible-indicator {
   -khtml-border-radius: 6px;
   border-radius: 6px;
 }
-/* line 39, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 39, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h1 {
   font-size: 26px;
   line-height: 35px;
 }
-/* line 40, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 40, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h2 {
   font-size: 20px;
   line-height: 30px;
 }
-/* line 41, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 41, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h3 {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 42, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 42, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h4 {
   font-size: 12px;
   line-height: 24px;
 }
-/* line 43, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 43, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h5 {
   font-size: 10px;
   line-height: 15px;
 }
-/* line 44, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 44, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h6 {
   font-size: 10px;
   line-height: 15px;
 }
-/* line 46, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 46, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h1 small {
   font-size: 18px;
 }
-/* line 47, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 47, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h2 small {
   font-size: 15px;
 }
-/* line 48, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 48, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h3 small {
   font-size: 10px;
 }
-/* line 49, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 49, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h4 small {
   font-size: 8px;
 }
-/* line 52, /home/espeak/code/devilry-django/src/devilry_theme/devilry_theme/static/devilry_theme/resources/sass/_devilry_bootstrap_extras.scss */
+/* line 52, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .alert.closable:hover {
   border: 1px solid #888;
 }
