@@ -73,5 +73,5 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget'
                 }, 200);
             }
         });
-    },
+    }
 });
